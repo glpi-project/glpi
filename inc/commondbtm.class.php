@@ -1525,89 +1525,92 @@ class CommonDBTM extends CommonGLPI {
 
       if (isset($RELATION[$this->getTable()])) {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
-            $itemtype = getItemTypeForTable($tablename);
-            $item     = new $itemtype();
+            if ($tablename[0]!='_') {
 
-            if ($item->isEntityAssign()) {
-
-               // 1->N Relation
-               if (is_array($field)) {
-                  foreach ($field as $f) {
+               $itemtype = getItemTypeForTable($tablename);
+               $item     = new $itemtype();
+   
+               if ($item->isEntityAssign()) {
+   
+                  // 1->N Relation
+                  if (is_array($field)) {
+                     foreach ($field as $f) {
+                        if (countElementsInTable($tablename,
+                                                "`$f`='$ID' AND entities_id NOT IN $entities")>0) {
+                           return false;
+                        }
+                     }
+   
+                  } else {
                      if (countElementsInTable($tablename,
-                                              "`$f`='$ID' AND entities_id NOT IN $entities")>0) {
+                                             "`$field`='$ID' AND entities_id NOT IN $entities")>0) {
                         return false;
                      }
                   }
-
+   
                } else {
-                  if (countElementsInTable($tablename,
-                                           "`$field`='$ID' AND entities_id NOT IN $entities")>0) {
-                     return false;
-                  }
-               }
-
-            } else {
-               foreach ($RELATION as $othertable => $rel) {
-                  // Search for a N->N Relation with devices
-                  if ($othertable == "_virtual_device" && isset($rel[$tablename])) {
-                     $devfield  = $rel[$tablename][0]; // items_id...
-                     $typefield = $rel[$tablename][1]; // itemtype...
-
-                     $sql = "SELECT DISTINCT `$typefield` AS itemtype
-                             FROM `$tablename`
-                             WHERE `$field`='$ID'";
-                     $res = $DB->query($sql);
-
-                     // Search linked device of each type
-                     if ($res) {
-                        while ($data = $DB->fetch_assoc($res)) {
-                           $itemtype  = $data["itemtype"];
-                           $itemtable = getTableForItemType($itemtype);
-                           $item      = new $itemtype();
-
-                           if ($item->isEntityAssign()) {
-                              if (countElementsInTable(array($tablename, $itemtable),
-                                                       "`$tablename`.`$field`='$ID'
-                                                        AND `$tablename`.`$typefield`='$itemtype'
-                                                        AND `$tablename`.`$devfield`=`$itemtable`.id
-                                                        AND `$itemtable`.`entities_id`
-                                                             NOT IN $entities")>'0') {
-                                 return false;
+                  foreach ($RELATION as $othertable => $rel) {
+                     // Search for a N->N Relation with devices
+                     if ($othertable == "_virtual_device" && isset($rel[$tablename])) {
+                        $devfield  = $rel[$tablename][0]; // items_id...
+                        $typefield = $rel[$tablename][1]; // itemtype...
+   
+                        $sql = "SELECT DISTINCT `$typefield` AS itemtype
+                              FROM `$tablename`
+                              WHERE `$field`='$ID'";
+                        $res = $DB->query($sql);
+   
+                        // Search linked device of each type
+                        if ($res) {
+                           while ($data = $DB->fetch_assoc($res)) {
+                              $itemtype  = $data["itemtype"];
+                              $itemtable = getTableForItemType($itemtype);
+                              $item      = new $itemtype();
+   
+                              if ($item->isEntityAssign()) {
+                                 if (countElementsInTable(array($tablename, $itemtable),
+                                                         "`$tablename`.`$field`='$ID'
+                                                         AND `$tablename`.`$typefield`='$itemtype'
+                                                         AND `$tablename`.`$devfield`=`$itemtable`.id
+                                                         AND `$itemtable`.`entities_id`
+                                                               NOT IN $entities")>'0') {
+                                    return false;
+                                 }
                               }
+   
                            }
-
                         }
-                     }
-
-                  // Search for another N->N Relation
-                  } else if ($othertable != $this->getTable() && isset($rel[$tablename])) {
-                     $itemtype = getItemTypeForTable($othertable);
-                     $item     = new $itemtype();
-
-                     if ($item->isEntityAssign()) {
-                        if (is_array($rel[$tablename])) {
-                           foreach ($rel[$tablename] as $otherfield) {
+   
+                     // Search for another N->N Relation
+                     } else if ($othertable != $this->getTable() && isset($rel[$tablename])) {
+                        $itemtype = getItemTypeForTable($othertable);
+                        $item     = new $itemtype();
+   
+                        if ($item->isEntityAssign()) {
+                           if (is_array($rel[$tablename])) {
+                              foreach ($rel[$tablename] as $otherfield) {
+                                 if (countElementsInTable(array($tablename, $othertable),
+                                                         "`$tablename`.`$field`='$ID'
+                                                         AND `$tablename`.`$otherfield`
+                                                                     =`$othertable`.id
+                                                         AND `$othertable`.`entities_id`
+                                                                     NOT IN $entities")>'0') {
+                                    return false;
+                                 }
+                              }
+   
+                           } else {
+                              $otherfield = $rel[$tablename];
                               if (countElementsInTable(array($tablename, $othertable),
-                                                       "`$tablename`.`$field`='$ID'
-                                                        AND `$tablename`.`$otherfield`
-                                                                  =`$othertable`.id
-                                                        AND `$othertable`.`entities_id`
+                                                      "`$tablename`.`$field`=$ID
+                                                      AND `$tablename`.`$otherfield`=`$othertable`.id
+                                                      AND `$othertable`.`entities_id`
                                                                   NOT IN $entities")>'0') {
                                  return false;
                               }
                            }
-
-                        } else {
-                           $otherfield = $rel[$tablename];
-                           if (countElementsInTable(array($tablename, $othertable),
-                                                    "`$tablename`.`$field`=$ID
-                                                     AND `$tablename`.`$otherfield`=`$othertable`.id
-                                                     AND `$othertable`.`entities_id`
-                                                               NOT IN $entities")>'0') {
-                              return false;
-                           }
+   
                         }
-
                      }
                   }
                }

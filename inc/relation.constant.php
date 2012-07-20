@@ -499,11 +499,11 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_itilcategories'      => array('tickettemplates_id_incident',
                                                                      'tickettemplates_id_demand'),
                                  'glpi_ticketrecurrents'    => 'tickettemplates_id',
-                                 'glpi_tickettemplatehiddenfields'
+                                 '_glpi_tickettemplatehiddenfields'
                                                             => 'tickettemplates_id',
-                                 'glpi_tickettemplatepredefinedfields'
+                                 '_glpi_tickettemplatepredefinedfields'
                                                             => 'tickettemplates_id',
-                                 'glpi_tickettemplatemandatoryfields'
+                                 '_glpi_tickettemplatemandatoryfields'
                                                             => 'tickettemplates_id'),
 
                   "glpi_tickets"
