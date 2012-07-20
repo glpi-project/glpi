@@ -1438,7 +1438,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('priority','At least high').
               "</option>";
          $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('priority',
-                                                                        'At least very medium').
+                                                                        'At least medium').
               "</option>";
          $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('priority','At least low').
               "</option>";
