@@ -490,23 +490,25 @@ class NetworkPort extends CommonDBChild {
 
       // Make table name and add the correct show/hide parameters
       $table_name = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
-      foreach (array('characteristics'      => __('characteristics'),
-                     'internet'             => __('internet information'))
-               as $element_to_display_field => $element_to_display_name) {
+      if ($number_port > 0) {
+         foreach (array('characteristics'      => __('characteristics'),
+                        'internet'             => __('internet information'))
+                  as $element_to_display_field => $element_to_display_name) {
 
-         if ($display_options[$element_to_display_field]) {
-            //TRANS: %s is the name of the element to hide or to show
-            $element_to_display_name   = sprintf(__('Hide %s'), $element_to_display_name);
-            $element_to_display_boolean = 'false';
-         } else {
-            //TRANS: %s is the name of the element to hide or to show
-            $element_to_display_name    = sprintf(__('Show %s'), $element_to_display_name);
-            $element_to_display_boolean = 'true';
+            if ($display_options[$element_to_display_field]) {
+               //TRANS: %s is the name of the element to hide or to show
+               $element_to_display_name   = sprintf(__('Hide %s'), $element_to_display_name);
+               $element_to_display_boolean = 'false';
+            } else {
+               //TRANS: %s is the name of the element to hide or to show
+               $element_to_display_name    = sprintf(__('Show %s'), $element_to_display_name);
+               $element_to_display_boolean = 'true';
+            }
+
+            $table_name .= " - <a href='javascript:reloadTab(\"display_";
+            $table_name .= $element_to_display_field."=".$element_to_display_boolean."\");'>";
+            $table_name .= $element_to_display_name."</a>";
          }
-
-         $table_name .= " - <a href='javascript:reloadTab(\"display_";
-         $table_name .= $element_to_display_field."=".$element_to_display_boolean."\");'>";
-         $table_name .= $element_to_display_name."</a>";
       }
       $table->setTitle($table_name);
 
