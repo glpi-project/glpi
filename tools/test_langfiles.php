@@ -2,7 +2,9 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-foreach ($CFG_GLPI['languages'] as $lang) {
-   include (GLPI_ROOT . "/locales/".$lang[1]);
+Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+
+foreach ($CFG_GLPI['languages'] as $key => $lang) {
+   Session::loadLanguage($key);
 }
 ?>
