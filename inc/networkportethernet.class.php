@@ -97,27 +97,20 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                                      HTMLTable_SuperHeader $super,
                                                      array $options=array()) {
 
-      if (!isset($_SESSION['glpi_ethernet_display_opposite'])) {
-         $_SESSION['glpi_ethernet_display_opposite'] = array();
-      }
+      $display_options = &$options['display_options'];
 
-      $itemtype = $options['networkport_itemtype'];
-
-      if (!isset($_SESSION['glpi_ethernet_display_opposite'][$itemtype])) {
-         $_SESSION['glpi_ethernet_display_opposite'][$itemtype] = false;
-      }
-
-      if (isset($_POST['ethernet_display_opposite'])) {
-         $_SESSION['glpi_ethernet_display_opposite'][$itemtype] =
-            ($_POST['ethernet_display_opposite'] == 'true');
+      if (isset($_POST['display_ethernet_opposite'])) {
+         $display_options['ethernet_opposite'] =($_POST['display_ethernet_opposite'] == 'true');
+      } else if (!isset($display_options['ethernet_opposite'])) {
+         $display_options['ethernet_opposite'] = false;
       }
 
       $connect_text = __('Connected to')."<br>";
-      if ($_SESSION['glpi_ethernet_display_opposite'][$itemtype]) {
-         $connect_text .= "<a href='javascript:reloadTab(\"ethernet_display_opposite=false\");'>" .
+      if ($display_options['ethernet_opposite']) {
+         $connect_text .= "<a href='javascript:reloadTab(\"display_ethernet_opposite=false\");'>" .
                           "<i>" . __('hide the opposite link') . "</i></a>";
       } else {
-         $connect_text .= "<a href='javascript:reloadTab(\"ethernet_display_opposite=true\");'>" .
+         $connect_text .= "<a href='javascript:reloadTab(\"display_ethernet_opposite=true\");'>" .
                           "<i>" . __('show the opposite link') . "</i></a>";
       }
 
@@ -185,7 +178,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $oppositePort = new NetworkPort();
       if ($oppositePort->getFromDB($netport->getContact($netport->getID()))) {
 
-        if ($_SESSION['glpi_ethernet_display_opposite'][$options['networkport_itemtype']]) {
+         $display_options = $options['display_options'];
+
+        if ($display_options['ethernet_opposite']) {
 
             $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                   __('Local network port'));
@@ -199,7 +194,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                                                          $opposite_cell, $options);
             }
 
-            NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $opposite_cell, $options);
+            if ($display_options['internet']) {
+               NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $opposite_cell, $options);
+            }
 
          } else {
 

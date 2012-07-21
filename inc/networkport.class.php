@@ -66,6 +66,7 @@ class NetworkPort extends CommonDBChild {
     * @return array of available type of network ports
    **/
    static function getNetworkPortInstantiations() {
+      // Warning : the order is used for displaying different NetworkPort types ! Keep it !
       return array('NetworkPortEthernet', 'NetworkPortWifi' , 'NetworkPortAggregate',
                    'NetworkPortAlias', 'NetworkPortDialup',   'NetworkPortLocal' );
    }
@@ -456,11 +457,45 @@ class NetworkPort extends CommonDBChild {
          $porttypes[] = '';
       }
 
-      $table         = new HTMLTable_();
-      $number_port   = self::countForItem($item);
-      $name          = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
-      $table_options = array('canedit'              => $canedit,
-                             'networkport_itemtype' => $item->getType());
+      $itemtype = $item->getType();
+      if (!isset($_SESSION['glpi_netport_display_options'])) {
+         $_SESSION['glpi_ethernet_display_options'] = array();
+      }
+
+      if (!isset($_SESSION['glpi_ethernet_display_options'][$itemtype])) {
+         $_SESSION['glpi_ethernet_display_options'][$itemtype] = false;
+      }
+
+      $display_options = &$_SESSION['glpi_ethernet_display_options'][$itemtype];
+      $table           = new HTMLTable_();
+      $number_port     = self::countForItem($item);
+      $name            = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
+      $table_options   = array('canedit'              => $canedit,
+                               'networkport_itemtype' => $itemtype,
+                               'display_options'      => &$display_options);
+
+      foreach (array('characteristics', 'internet') as $option) {
+         if (isset($_POST['display_'.$option])) {
+            $display_options[$option] = ($_POST['display_'.$option] == 'true');
+         } else if (!isset($display_options[$option])) {
+            $display_options[$option] = false;
+         }
+      }
+
+      if ($display_options['characteristics']) {
+         $name .= " - <a href='javascript:reloadTab(\"display_characteristics=" .
+                  "false\");'>".__('Hide characteristics')."</a>";
+      } else {
+         $name .= " - <a href='javascript:reloadTab(\"display_characteristics=" .
+                  "true\");'>".__('Show characteristics')."</a>";
+      }
+      if ($display_options['internet']) {
+         $name .= " - <a href='javascript:reloadTab(\"display_internet=" .
+                  "false\");'>".__('Hide Internet informations')."</a>";
+      } else {
+         $name .= " - <a href='javascript:reloadTab(\"display_internet=" .
+                  "true\");'>".__('Show Internet informations')."</a>";
+      }
 
       $table->setTitle($name);
 
@@ -473,31 +508,46 @@ class NetworkPort extends CommonDBChild {
 
       $c_number  = $table->addHeader('NetworkPort', "#");
       $c_name    = $table->addHeader("Name", __('Name'));
-      $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
-      $c_network = $table->addHeader('Internet',
-                                     _n(__('Internet information'),__('Internet information'), 2));
-
       $c_name->setItemType('NetworkPort');
       $c_name->setHTMLClass('center');
-      $c_instant->setHTMLClass('center');
-      $c_network->setHTMLClass('center');
+
+      if ($display_options['characteristics']) {
+         $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
+         $c_instant->setHTMLClass('center');
+       }
+      if ($display_options['internet']) {
+         $c_network = $table->addHeader('Internet',
+                                        _n(__('Internet information'),__('Internet information'),
+                                           2));
+         $c_network->setHTMLClass('center');
+      }
 
       foreach ($porttypes as $portType) {
 
          if (empty($portType)) {
             $t_group = $table->createGroup('Migration',
                                            __('Network ports waiting for manual migration'));
-            $sc_instant = NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group,
-                                                                                  $c_instant,
-                                                                                  $table_options);
+            if ($display_options['characteristics']) {
+               $sc_instant = NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group,
+                                                                                     $c_instant,
+                                                                                     $table_options);
+            } else {
+               $sc_instant = NULL;
+            }
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));
-            $sc_instant = $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant,
-                                                                       $table_options);
+            if ($display_options['characteristics']) {
+               $sc_instant = $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant,
+                                                                          $table_options);
+            } else {
+               $sc_instant = NULL;
+            }
          }
 
-         NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, $sc_instant,
-                                         $table_options);
+         if ($display_options['internet']) {
+            NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, $sc_instant,
+                                            $table_options);
+         }
 
          if ($itemtype == 'NetworkPort') {
             switch ($portType) {
@@ -591,15 +641,19 @@ class NetworkPort extends CommonDBChild {
                   $t_row->addCell($c_name, $netport->fields["name"], NULL, $netport);
 
                   $instant_cell = NULL;
-                  $instantiation = $netport->getInstantiation();
-                  if ($instantiation !== false) {
-                     $instant_cell = $instantiation->getInstantiationHTMLTable_($netport, $item,
-                                                                                $t_row,
-                                                                                $table_options);
-                     unset($instantiation);
+                  if ($display_options['characteristics']) {
+                     $instantiation = $netport->getInstantiation();
+                     if ($instantiation !== false) {
+                        $instant_cell = $instantiation->getInstantiationHTMLTable_($netport, $item,
+                                                                                   $t_row,
+                                                                                   $table_options);
+                        unset($instantiation);
+                     }
                   }
-                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, $instant_cell,
-                                                        $table_options);
+                  if ($display_options['internet']) {
+                     NetworkName::getHTMLTableCellsForItem($t_row, $netport, $instant_cell,
+                                                           $table_options);
+                  }
 
                }
 
