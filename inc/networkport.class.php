@@ -458,7 +458,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       $itemtype = $item->getType();
-      if (!isset($_SESSION['glpi_netport_display_options'])) {
+      if (!isset($_SESSION['glpi_ethernet_display_options'])) {
          $_SESSION['glpi_ethernet_display_options'] = array();
       }
 
