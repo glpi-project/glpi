@@ -457,51 +457,63 @@ class NetworkPort extends CommonDBChild {
          $porttypes[] = '';
       }
 
-      $itemtype = $item->getType();
-      if (!isset($_SESSION['glpi_ethernet_display_options'])) {
-         $_SESSION['glpi_ethernet_display_options'] = array();
+      // Create the table display options
+      if (!isset($_SESSION['glpi_NetworkPort_display_options'])) {
+         $_SESSION['glpi_NetworkPort_display_options'] = array();
       }
 
-      if (!isset($_SESSION['glpi_ethernet_display_options'][$itemtype])) {
-         $_SESSION['glpi_ethernet_display_options'][$itemtype] = false;
+      if (!isset($_SESSION['glpi_NetworkPort_display_options'][$itemtype])) {
+         $_SESSION['glpi_NetworkPort_display_options'][$itemtype] = array();
       }
 
-      $display_options = &$_SESSION['glpi_ethernet_display_options'][$itemtype];
-      $table           = new HTMLTable_();
-      $number_port     = self::countForItem($item);
-      $name            = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
-      $table_options   = array('canedit'              => $canedit,
-                               'networkport_itemtype' => $itemtype,
-                               'display_options'      => &$display_options);
+      // Use an intermediate variable to don't bring this long string.
+      // That is also usefull for the instantiations !
+      $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
 
-      foreach (array('characteristics', 'internet') as $option) {
+      // Update the session regarding the POST values
+      foreach (array('characteristics' => true,
+                     'internet'        => true,
+                     'aliases'         => false,
+                     'ipaddresses'     => true,
+                     'ipnetworks'      => false) as $option => $default) {
          if (isset($_POST['display_'.$option])) {
             $display_options[$option] = ($_POST['display_'.$option] == 'true');
          } else if (!isset($display_options[$option])) {
-            $display_options[$option] = false;
+            $display_options[$option] = $default;
          }
       }
 
-      if ($display_options['characteristics']) {
-         $name .= " - <a href='javascript:reloadTab(\"display_characteristics=" .
-                  "false\");'>".__('Hide characteristics')."</a>";
-      } else {
-         $name .= " - <a href='javascript:reloadTab(\"display_characteristics=" .
-                  "true\");'>".__('Show characteristics')."</a>";
-      }
-      if ($display_options['internet']) {
-         $name .= " - <a href='javascript:reloadTab(\"display_internet=" .
-                  "false\");'>".__('Hide Internet informations')."</a>";
-      } else {
-         $name .= " - <a href='javascript:reloadTab(\"display_internet=" .
-                  "true\");'>".__('Show Internet informations')."</a>";
-      }
+      $table           = new HTMLTable_();
+      $number_port     = self::countForItem($item);
+      $table_options   = array('canedit'              => $canedit,
+                               'display_options'      => &$display_options);
 
-      $table->setTitle($name);
+      // Make table name and add the correct show/hide parameters
+      $table_name = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
+      foreach (array('characteristics'      => __('characteristics'),
+                     'internet'             => __('internet informations'))
+               as $element_to_display_field => $element_to_display_name) {
+
+         if ($display_options[$element_to_display_field]) {
+            //TRANS: %s is the name of the element to hide or to show
+            $element_to_display_name   = sprintf(__('Hide %s'), $element_to_display_name);
+            $element_to_display_boolean = 'false';
+         } else {
+            //TRANS: %s is the name of the element to hide or to show
+            $element_to_display_name    = sprintf(__('Show %s'), $element_to_display_name);
+            $element_to_display_boolean = 'true';
+         }
+
+         $table_name .= " - <a href='javascript:reloadTab(\"display_";
+         $table_name .= $element_to_display_field."=".$element_to_display_boolean."\");'>";
+         $table_name .= $element_to_display_name."</a>";
+      }
+      $table->setTitle($table_name);
 
       if (($withtemplate != 2)
           && $canedit) {
-         $c_checkbox = $table->addHeader('checkbox',Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand));
+         $c_checkbox = $table->addHeader('checkbox',Html::getCheckAllAsCheckbox('mass'.__CLASS__.
+                                                                                $rand));
       } else {
          $c_checkbox = NULL;
       }
@@ -514,11 +526,36 @@ class NetworkPort extends CommonDBChild {
       if ($display_options['characteristics']) {
          $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
          $c_instant->setHTMLClass('center');
-       }
+      }
       if ($display_options['internet']) {
-         $c_network = $table->addHeader('Internet',
-                                        _n(__('Internet information'),__('Internet information'),
-                                           2));
+         $table_options['dont_display'] = array();
+
+         $header_value  = _n(__('Internet information'),__('Internet information'), 2);
+         // Make table name and add the correct show/hide parameters
+         foreach (array('aliases'              => 'NetworkAlias',
+                        'ipaddresses'          => 'IPAddress',
+                        'ipnetworks'           => 'IPNetwork')
+                  as $element_to_display_field => $element_to_display_type) {
+            $element_to_display_name = $element_to_display_type::getTypeName(2);
+
+            if ($display_options[$element_to_display_field]) {
+               //TRANS: %s is the name of the element to hide or to show
+               $element_to_display_name   = sprintf(__('Hide %s'), $element_to_display_name);
+               $element_to_display_boolean = 'false';
+            } else {
+               //TRANS: %s is the name of the element to hide or to show
+               $element_to_display_name    = sprintf(__('Show %s'), $element_to_display_name);
+               $element_to_display_boolean = 'true';
+               // And remove the elements !
+               $table_options['dont_display'][$element_to_display_type] = true;
+            }
+
+            $header_value .= " - <a href='javascript:reloadTab(\"display_";
+            $header_value .= $element_to_display_field."=".$element_to_display_boolean."\");'>";
+            $header_value .= $element_to_display_name."</a>";
+         }
+
+         $c_network = $table->addHeader('Internet', $header_value);
          $c_network->setHTMLClass('center');
       }
 

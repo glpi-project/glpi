@@ -180,7 +180,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
          $display_options = $options['display_options'];
 
-        if ($display_options['ethernet_opposite']) {
+         if ($display_options['ethernet_opposite']) {
 
             $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                   __('Local network port'));
