@@ -491,7 +491,7 @@ class NetworkPort extends CommonDBChild {
       // Make table name and add the correct show/hide parameters
       $table_name = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
       foreach (array('characteristics'      => __('characteristics'),
-                     'internet'             => __('internet informations'))
+                     'internet'             => __('internet information'))
                as $element_to_display_field => $element_to_display_name) {
 
          if ($display_options[$element_to_display_field]) {
