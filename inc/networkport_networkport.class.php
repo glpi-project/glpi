@@ -92,6 +92,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          return false;
       }
 
+      /*
+      // TODO check for 0.84 : do not propagate informations from one side to the other
       // Check netpoint for copy
       $source      = "";
       $destination = "";
@@ -120,7 +122,10 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       } else if ($source != $destination) {
          Session::addMessageAfterRedirect(__("Warning! The network outlets of two items don't match"));
       }
+      */
 
+      /*
+      // TODO check for 0.84 : do not propagate informations from one side to the other
       // Manage VLAN : use networkings one as defaults
       $npnet = -1;
       $npdev = -1;
@@ -163,6 +168,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          }
       }
       // end manage VLAN
+      */
 
       // Manage History
       $sourcename    = NOT_AVAILABLE;
@@ -229,6 +235,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $np2 = new NetworkPort();
       if ($np1->getFromDB($this->fields['networkports_id_1'])
           && $np2->getFromDB($this->fields['networkports_id_2'])) {
+         /*
+         // TODO check for 0.84 : do not propagate informations from one side to the other
          $npnet = NULL;
          $npdev = NULL;
 
@@ -263,6 +271,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
             $npdev->update(array('id'           => $npdev->fields['id'],
                                  'netpoints_id' => 0));
          }
+         */
 
          // Manage history
 
