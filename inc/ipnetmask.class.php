@@ -47,13 +47,13 @@ class IPNetmask extends IPAddress {
     * @param $ipnetmask (default '')
     * @param $version   (default 0)
    **/
-   function __construct($ipnetmask="", $version=0) {
+   function __construct($ipnetmask='', $version=0) {
 
       // First, be sure that the parent is correctly initialised
       parent::__construct();
 
       // If $ipnetmask if empty, then, empty netmask !
-      if (!empty($ipnetmask)) {
+      if ($ipnetmask != '') {
 
          // If $ipnetmask if an IPNetmask, then just clone it
          if ($ipnetmask instanceof IPNetmask) {
