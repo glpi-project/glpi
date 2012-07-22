@@ -78,13 +78,13 @@ class IPAddress extends CommonDBChild {
    /**
     * @param $ipaddress (default '')
    **/
-   function __construct($ipaddress="") {
+   function __construct($ipaddress='') {
 
       // First, be sure that the parent is correctly initialised
       parent::__construct();
 
       // If $ipaddress if empty, then, empty address !
-      if (!empty($ipaddress)) {
+      if ($ipaddress != '') {
 
          // If $ipaddress if an IPAddress, then just clone it
          if ($ipaddress instanceof IPAddress) {
@@ -416,9 +416,9 @@ class IPAddress extends CommonDBChild {
    **/
    function disableAddress() {
 
-      $this->version = "";
-      $this->textual = "";
-      $this->binary  = "";
+      $this->version = '';
+      $this->textual = '';
+      $this->binary  = '';
    }
 
 
@@ -426,13 +426,13 @@ class IPAddress extends CommonDBChild {
     * Check address validity
    **/
    function is_valid() {
-      return (!empty($this->version) && !empty($this->textual) && !empty($this->binary));
+      return (($this->version != '') && ($this->textual != '') && ($this->binary != ''));
    }
 
 
    function getVersion() {
 
-      if (!empty($this->version)) {
+      if ($this->version != '') {
          return $this->version;
       }
       return false;
@@ -451,7 +451,7 @@ class IPAddress extends CommonDBChild {
 
    function getTextual() {
 
-      if (!empty($this->textual)) {
+      if ($this->textual != '') {
          return $this->textual;
       }
       return false;
@@ -460,7 +460,7 @@ class IPAddress extends CommonDBChild {
 
    function getBinary() {
 
-      if (!empty($this->binary)) {
+      if ($this->binary != '') {
          return $this->binary;
       }
       return false;
