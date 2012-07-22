@@ -88,7 +88,11 @@ abstract class FQDNLabel extends CommonDBChild {
          return false;
       }
 
-      if (!preg_match("/^[0-9A-Za-z][0-9A-Za-z\-]*[0-9A-Za-z]+$/", $label, $regs)) {
+      if (strlen($label) == 1) {
+         if (!preg_match("/^[0-9A-Za-z]$/", $label, $regs)) {
+            return false;
+         }
+      } else if (!preg_match("/^[0-9A-Za-z][0-9A-Za-z\-]*[0-9A-Za-z]+$/", $label, $regs)) {
          return false;
       }
 
