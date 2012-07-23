@@ -4308,14 +4308,13 @@ class Html {
       $id = 'minimal_form'.mt_rand();
 
       $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
-      foreach ($fields as $name => $value) {
-         $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
+      if (is_array($fields) && count($fields)) {
+         foreach ($fields as $name => $value) {
+            $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
+         }
       }
       $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btname'>";
-      $src='';
-      if (strpos($btname, '/') !== false) {
-         $src=$btname;
-      }
+      
       echo "<a href='#' class='vsubmit' class='submit' $btoption
             onClick=\"document.$id.submit()\">";
       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
