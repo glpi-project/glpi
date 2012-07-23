@@ -217,6 +217,43 @@ class NetworkName extends FQDNLabel {
 
 
    /**
+    * @param $tab the array to fill
+    * @param $joinparams
+    * @param $itemtype
+   **/
+   static function getSearchOptionsToAdd(array &$tab, array $joinparams, $itemtype) {
+
+      $tab[20]['table']         = 'glpi_ipaddresses';
+      $tab[20]['field']         = 'name';
+      $tab[20]['name']          = __('IP');
+      $tab[20]['forcegroupby']  = true;
+      $tab[20]['massiveaction'] = false;
+      $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
+                                        'specific_itemtype' => 'NetworkName',
+                                        'beforejoin'        =>
+                                        array('table'      => 'glpi_networknames',
+                                              'joinparams' => $joinparams));
+
+      $tab[27]['table']         = 'glpi_networknames';
+      $tab[27]['field']         = 'name';
+      $tab[27]['name']          = self::getTypeName(2);
+      $tab[27]['forcegroupby']  = true;
+      $tab[27]['massiveaction'] = false;
+      $tab[27]['joinparams']    = $joinparams;
+
+      $tab[28]['table']         = 'glpi_networkaliases';
+      $tab[28]['field']         = 'name';
+      $tab[28]['name']          = NetworkAlias::getTypeName(2);
+      $tab[28]['forcegroupby']  = true;
+      $tab[28]['massiveaction'] = false;
+      $tab[28]['joinparams']    = array('jointype'          => 'child',
+                                        'beforejoin'        =>
+                                        array('table'      => 'glpi_networknames',
+                                              'joinparams' => $joinparams));
+   }
+
+
+   /**
     * Check input validity for CommonDBTM::add and CommonDBTM::update
     *
     * @param $input the input given to CommonDBTM::add or CommonDBTM::update
