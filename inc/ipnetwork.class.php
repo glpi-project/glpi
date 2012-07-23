@@ -783,7 +783,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function computeNetworkRange(&$start, &$end=NULL, $excludeBroadcastAndNetwork='') {
 
       if (!is_bool($excludeBroadcastAndNetwork)) {
-         $excludeBroadcastAndNetwork = ($this->fields['addressable'] == 1);
+         if (isset($this->fields['addressable'])) {
+            $excludeBroadcastAndNetwork = ($this->fields['addressable'] == 1);
+         } else {
+            $excludeBroadcastAndNetwork = false;
+         }
       }
 
       self::computeNetworkRangeFromAdressAndNetmask($this->getAddress(), $this->getNetmask(),
