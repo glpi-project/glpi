@@ -851,22 +851,6 @@ class NetworkPort extends CommonDBChild {
                                                                  'nolink'   => true));
       }
 
-      $tab[20]['table']         = 'glpi_ipaddresses';
-      $tab[20]['field']         = 'name';
-      $tab[20]['name']          = __('IP');
-      $tab[20]['forcegroupby']  = true;
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
-                                        'specific_itemtype' => 'NetworkName',
-                                        'beforejoin'
-                                         => array('table'      => 'glpi_networknames',
-                                                  'joinparams'
-                                                   => array('jointype'          => 'itemtype_item',
-                                                            'specific_itemtype' => 'NetworkPort',
-                                                            'beforejoin'
-                                                             => array('table'      => 'glpi_networkports',
-                                                                      'joinparams' => $joinparams))));
-
       $tab[21]['table']         = 'glpi_networkports';
       $tab[21]['field']         = 'mac';
       $tab[21]['name']          = __('MAC address');
@@ -874,42 +858,19 @@ class NetworkPort extends CommonDBChild {
       $tab[21]['massiveaction'] = false;
       $tab[21]['joinparams']    = $joinparams;
 
-      $tab[83]['table']         = 'glpi_networkports';
-      $tab[83]['field']         = 'netmask';
-      $tab[83]['name']          = __('Netmask');
-      $tab[83]['forcegroupby']  = true;
-      $tab[83]['massiveaction'] = false;
-      $tab[83]['joinparams']    = $joinparams;
+      $networkNameJoin = array('jointype'          => 'itemtype_item',
+                               'specific_itemtype' => 'NetworkPort',
+                               'beforejoin'
+                               => array('table'      => 'glpi_networkports',
+                                        'joinparams' => $joinparams));
+      NetworkName::getSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);
 
-      $tab[84]['table']         = 'glpi_networkports';
-      $tab[84]['field']         = 'subnet';
-      $tab[84]['name']          = __('Subnet');
-      $tab[84]['forcegroupby']  = true;
-      $tab[84]['massiveaction'] = false;
-      $tab[84]['joinparams']    = $joinparams;
-
-      $tab[85]['table']         = 'glpi_networkports';
-      $tab[85]['field']         = 'gateway';
-      $tab[85]['name']          = __('Gateway');
-      $tab[85]['forcegroupby']  = true;
-      $tab[85]['massiveaction'] = false;
-      $tab[85]['joinparams']    = $joinparams;
-
-      $instantjoin = array('jointype'          => 'child',
+      $instantjoin = array('jointype'   => 'child',
                            'beforejoin' => array('table'      => 'glpi_networkports',
                                                  'joinparams' => $joinparams));
       foreach (self::getNetworkPortInstantiations() as $instantiationType) {
          $instantiationType::getSearchOptionsToAddForInstantiation($tab, $instantjoin, $itemtype);
       }
-
-      ///TODO does not exists anymore
-//       $tab[87]['table']         = 'glpi_networkinterfaces';
-//       $tab[87]['field']         = 'name';
-//       $tab[87]['name']          = __('Interface');
-//       $tab[87]['forcegroupby']  = true;
-//       $tab[87]['massiveaction'] = false;
-//       $tab[87]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
-//                                                               'joinparams' => $joinparams));
 
       $netportjoin = array(array('table'      => 'glpi_networkports',
                                  'joinparams' => array('jointype' => 'itemtype_item')),
@@ -938,7 +899,7 @@ class NetworkPort extends CommonDBChild {
      }
       return $actions;
    }
-   
+
    function showSpecificMassiveActionsParameters($input = array()) {
       switch ($input['action']) {
          case "assign_vlan" :
@@ -964,12 +925,12 @@ class NetworkPort extends CommonDBChild {
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
+            break;
       }
       return false;
    }
 
-   
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -1080,11 +1041,6 @@ class NetworkPort extends CommonDBChild {
       $tab[9]['table']         = 'glpi_netpoints';
       $tab[9]['field']         = 'name';
       $tab[9]['name']          = _n('Network outlet', 'Network outlets', 1);
-
-      ///TODO Does not exists anymore
-//       $tab[10]['table']        = 'glpi_networkinterfaces';
-//       $tab[10]['field']        = 'name';
-//       $tab[10]['name']         = _n('Network interface', 'Network interfaces', 1);
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';
