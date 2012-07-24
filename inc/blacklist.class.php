@@ -96,6 +96,7 @@ class Blacklist extends CommonDropdown {
       $tab[12]['field']      = 'type';
       $tab[12]['name']       = _n('Type','Types',1);
       $tab[12]['searchtype'] = array('equals', 'notequals');
+      $tab[12]['datatype']   = 'specific';
 
       return $tab;
    }
@@ -143,7 +144,21 @@ class Blacklist extends CommonDropdown {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
 
+         case 'type' :
+            $options['value']  = $values[$field];
+            return self::dropdownType($name, $options);
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+   
    /**
     * Dropdown of blacklist types
     *
@@ -160,6 +175,7 @@ class Blacklist extends CommonDropdown {
       $params['value']       = 0;
       $params['toadd']       = array();
       $params['on_change']   = '';
+      $params['display']     = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
