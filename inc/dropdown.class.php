@@ -860,13 +860,14 @@ class Dropdown {
     *
     * @param $myname          select name
     * @param $options   array of additionnal options :
-    *    - display_none : allow selection of no language
+    *    - display_emptychoice : allow selection of no language
+    *    - emptylabel   : specific string to empty label if display_emptychoice is true
    **/
    static function showLanguages($myname, $options=array()) {
       global $CFG_GLPI;
 
       $values = array();
-      if (isset($options['display_none']) && ($options['display_none'])) {
+      if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
          if (isset($options['emptylabel'])) {
             $values[''] = $options['emptylabel'];
          } else {

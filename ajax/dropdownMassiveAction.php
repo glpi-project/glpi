@@ -38,9 +38,8 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (isset($_POST["action"])
+if (isset($_POST["action"]) && $_POST["action"] != '-1'
     && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
-
     if (!isset($_POST['is_deleted'])) {
       $_POST['is_deleted'] = 0;
     }

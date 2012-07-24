@@ -4145,6 +4145,12 @@ class CommonDBTM extends CommonGLPI {
                break;
 
             case "language" :
+               $copytooption = array('emptylabel', 'display_emptychoice');
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
                $options['value'] = $value;
                return Dropdown::showLanguages($name, $options);
 
