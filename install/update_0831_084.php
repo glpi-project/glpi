@@ -1946,6 +1946,14 @@ function update0831to084() {
                   'action_type'  => 'fromuser',
                   'value'        => 1)));
 
+
+   // Change begin_date id for budget
+   $query = ("UPDATE `glpi_displaypreferences`
+              SET `num` = '5'
+              WHERE `itemtype` = 'Budget'
+                    AND `num` = '2'");
+   $DB->query($query);
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

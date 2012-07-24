@@ -194,16 +194,22 @@ class Budget extends CommonDropdown{
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
 
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
+
       $tab[19]['table']          = $this->getTable();
       $tab[19]['field']          = 'date_mod';
       $tab[19]['name']           = __('Last update');
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'begin_date';
-      $tab[2]['name']            = __('Start date');
-      $tab[2]['datatype']        = 'date';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'begin_date';
+      $tab[5]['name']            = __('Start date');
+      $tab[5]['datatype']        = 'date';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'end_date';
@@ -224,6 +230,7 @@ class Budget extends CommonDropdown{
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
@@ -234,6 +241,7 @@ class Budget extends CommonDropdown{
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
       $tab[90]['massiveaction']  = false;
+      $tab[90]['datatype']       = 'text';
 
       return $tab;
    }

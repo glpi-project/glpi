@@ -61,18 +61,6 @@ if (isset($_POST["itemtype"])
    $FIELDNAME_PRINTED = false;
    $USE_TABLE         = false;
 
-
-//          break;
-// 
-//             if (!$plugdisplay && !$already_display) {
-//                $cond = (isset($search['condition']) ? $search['condition'] : '');
-//                Dropdown::show(getItemTypeForTable($search["table"]),
-//                               array('name'      => $search["linkfield"],
-//                                     'entity'    => $_SESSION['glpiactiveentities'],
-//                                     'condition' => $cond));
-                  /// TODO Check all searchoption to add datatype
-//             }
-
    echo "<table class='tab_glpi'><tr><td>";
 
    $plugdisplay = false;

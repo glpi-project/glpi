@@ -625,6 +625,7 @@ class AuthLDAP extends CommonDBTM {
       $tab[2]['table']          = $this->getTable();
       $tab[2]['field']          = 'id';
       $tab[2]['name']           = __('ID');
+      $tab[2]['datatype']       = 'number';
       $tab[2]['massiveaction']  = false;
 
       $tab[3]['table']          = $this->getTable();
@@ -768,8 +769,10 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'group_search_type';
+      $tab[24]['datatype']      = 'specific'; /// TODO add specific for display and select
       $tab[24]['name']          = __('Search type');
       $tab[24]['massiveaction'] = false;
+      
 
       $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'is_active';
