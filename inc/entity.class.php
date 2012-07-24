@@ -421,7 +421,6 @@ class Entity extends CommonTreeDropdown {
       $tab[1]['field']         = 'completename';
       $tab[1]['name']          = __('Complete name');
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = $this->getTable();
@@ -498,7 +497,6 @@ class Entity extends CommonTreeDropdown {
       $tab[14]['field']         = 'name';
       $tab[14]['name']          = __('Name');
       $tab[14]['datatype']      = 'itemlink';
-      $tab[14]['itemlink_type'] = 'Entity';
       $tab[14]['massiveaction'] = false;
 
       $tab[16]['table']         = $this->getTable();

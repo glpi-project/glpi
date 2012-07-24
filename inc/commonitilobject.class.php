@@ -2164,6 +2164,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[4]['table']         = 'glpi_users';
       $tab[4]['field']         = 'name';
       $tab[4]['datatype']      = 'dropdown';
+      $tab[4]['right']          = 'all';
       $tab[4]['name']          = __('Requester');
       $tab[4]['forcegroupby']  = true;
       $tab[4]['massiveaction'] = false;
@@ -2191,6 +2192,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[22]['table']         = 'glpi_users';
       $tab[22]['field']         = 'name';
       $tab[22]['datatype']      = 'dropdown';
+      $tab[22]['right']         = 'all';
       $tab[22]['linkfield']     = 'users_id_recipient';
       $tab[22]['name']          = __('Writer');
 
@@ -2199,6 +2201,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[66]['table']         = 'glpi_users';
       $tab[66]['field']         = 'name';
       $tab[66]['datatype']      = 'dropdown';
+      $tab[66]['right']         = 'all';
       $tab[66]['name']          = __('Watcher');
       $tab[66]['forcegroupby']  = true;
       $tab[66]['massiveaction'] = false;
@@ -2228,6 +2231,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[5]['table']          = 'glpi_users';
       $tab[5]['field']          = 'name';
       $tab[5]['datatype']       = 'dropdown';
+      $tab[5]['right']          = 'own_ticket';
       $tab[5]['name']           = __('Technician');
       $tab[5]['forcegroupby']   = true;
       $tab[5]['massiveaction']  = false;
@@ -2237,7 +2241,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                                    => array('jointype'  => 'child',
                                                             'condition' => 'AND NEWTABLE.`type` ' .
                                                                             '= '.self::ASSIGN)));
-      $tab[5]['filter']         = 'own_ticket';
 
       $tab[6]['table']          = 'glpi_suppliers';
       $tab[6]['field']          = 'name';

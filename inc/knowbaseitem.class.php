@@ -1440,6 +1440,8 @@ class KnowbaseItem extends CommonDBTM {
       $tab[70]['field']         = 'name';
       $tab[70]['name']          = __('User');
       $tab[70]['massiveaction'] = false;
+      $tab[70]['datatype']      = 'dropdown';
+      $tab[70]['right']         = 'all';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';

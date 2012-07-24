@@ -429,9 +429,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          $tab[4]['name']     = __('Public followup');
          $tab[4]['datatype'] = 'bool';
       }
+      
       $tab[5]['table']        = 'glpi_users';
       $tab[5]['field']        = 'name';
       $tab[5]['name']         = __('Technician');
+      $tab[5]['datatype']     = 'dropdown';
+      $tab[5]['right']        = 'own_ticket';
+      
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'actiontime';

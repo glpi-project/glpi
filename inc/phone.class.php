@@ -394,7 +394,6 @@ class Phone extends CommonDBTM {
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
       $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
 
       $tab[2]['table']           = $this->getTable();
@@ -444,6 +443,8 @@ class Phone extends CommonDBTM {
       $tab[70]['table']          = 'glpi_users';
       $tab[70]['field']          = 'name';
       $tab[70]['name']           = __('User');
+      $tab[70]['datatype']       = 'dropdown';
+      $tab[70]['right']          = 'all';
 
       $tab[71]['table']          = 'glpi_groups';
       $tab[71]['field']          = 'completename';
@@ -484,6 +485,8 @@ class Phone extends CommonDBTM {
       $tab[24]['field']          = 'name';
       $tab[24]['linkfield']      = 'users_id_tech';
       $tab[24]['name']           = __('Technician in charge of the hardware');
+      $tab[24]['datatype']       = 'dropdown';
+      $tab[24]['right']          = 'interface';
 
       $tab[49]['table']          = 'glpi_groups';
       $tab[49]['field']          = 'completename';

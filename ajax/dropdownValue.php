@@ -246,11 +246,18 @@ if ($item instanceof CommonTreeDropdown) {
             $ID        = $data['id'];
             $level     = $data['level'];
             $outputval = $data['name'];
-
+            
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
-                  if (isset($data[$key]) && strlen($data[$key])!=0) {
-                     $outputval = sprintf(__('%1$s - %2$s'), $outputval, $data[$key]);
+                  if (isset($data[$key])) {
+                     $withoutput = $data[$key];
+                     if (isForeignKeyField($key)) {
+                        $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
+                                                               $data[$key]);
+                     }
+                     if (strlen($withoutput)>0 && $withoutput != '&nbsp;') {
+                        $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
+                     }
                   }
                }
             }
@@ -479,8 +486,15 @@ if ($item instanceof CommonTreeDropdown) {
 
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
-                  if (isset($data[$key]) && strlen($data[$key])!=0) {
-                     $outputval = sprintf(__('%1$s - %2$s'), $outputval, $data[$key]);
+                  if (isset($data[$key])) {
+                     $withoutput = $data[$key];
+                     if (isForeignKeyField($key)) {
+                        $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
+                                                               $data[$key]);
+                     }
+                     if (strlen($withoutput)>0 && $withoutput != '&nbsp;') {
+                        $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
+                     }
                   }
                }
             }

@@ -290,11 +290,15 @@ class SoftwareLicense extends CommonDBTM {
       $tab[6]['field']           = 'name';
       $tab[6]['linkfield']       = 'softwareversions_id_buy';
       $tab[6]['name']            = __('Purchase version');
+      $tab[6]['datatype']        = 'dropdown';
+      $tab[6]['displaywith']     = array('states_id');
 
       $tab[7]['table']           = 'glpi_softwareversions';
       $tab[7]['field']           = 'name';
       $tab[7]['linkfield']       = 'softwareversions_id_use';
       $tab[7]['name']            = __('Version in use');
+      $tab[7]['datatype']        = 'dropdown';
+      $tab[7]['displaywith']     = array('states_id');
 
       $tab[8]['table']           = $this->getTable();
       $tab[8]['field']           = 'expire';
@@ -572,7 +576,9 @@ class SoftwareLicense extends CommonDBTM {
          if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed' => $num_displayed,);
+               $massiveactionparams = array('num_displayed' => $num_displayed,
+                                            'extraparams' => array('options' =>
+                                                array('condition' => "`glpi_softwareversions`.`softwares_id` = $softwares_id")));
 
                Html::showMassiveActions('SoftwareLicense', $massiveactionparams);
             }

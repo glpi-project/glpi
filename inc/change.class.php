@@ -388,7 +388,6 @@ class Change extends CommonITILObject {
       $tab[1]['field']          = 'name';
       $tab[1]['name']           = __('Title');
       $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['itemlink_type']  = $this->getType();
       $tab[1]['searchtype']     = 'contains';
       $tab[1]['forcegroupby']   = true;
       $tab[1]['massiveaction']  = false;
@@ -476,6 +475,9 @@ class Change extends CommonITILObject {
       $tab[64]['linkfield']     = 'users_id_lastupdater';
       $tab[64]['name']          = __('Last edit by');
       $tab[64]['massiveaction'] = false;
+      $tab[64]['datatype']      = 'dropdown';
+      $tab[64]['right']         = 'all';
+      
 
       $tab += $this->getSearchOptionsActors();
 

@@ -3056,7 +3056,7 @@ class Html {
       if (!empty($p['check_items_id'])) {
          $p['extraparams']['check_items_id'] = $p['check_items_id'];
       }
-      
+
       if ($p['fixed']) {
          $width= '950px';
       } else {

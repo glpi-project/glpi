@@ -149,7 +149,6 @@ class NotImportedEmail extends CommonDBTM {
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = __('Mails receiver');
       $tab[4]['datatype']        = 'itemlink';
-      $tab[4]['itemlink_type']   = 'MailCollector';
 
       $tab[5]['table']           = 'glpi_notimportedemails';
       $tab[5]['field']           = 'messageid';
@@ -159,6 +158,9 @@ class NotImportedEmail extends CommonDBTM {
       $tab[6]['table']           = 'glpi_users';
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Requester');
+      $tab[6]['datatype']        = 'dropdown';
+      $tab[6]['right']           = 'all';
+      
 
       $tab[16]['table']          = 'glpi_notimportedemails';
       $tab[16]['field']          = 'reason';

@@ -2518,8 +2518,9 @@ class Search {
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
                   || (empty($searchopt[$ID]["linkfield"])
-                      && isset($searchopt[$ID]["itemlink_type"])
-                      && ($searchopt[$ID]["itemlink_type"] != $itemtype))) {
+                      && isset($searchopt[$ID]["datatype"])
+                      && ($searchopt[$ID]["datatype"] == 'itemlink'
+                      && getItemTypeForTable($searchopt[$ID]["table"]) != $itemtype))) {
                   return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
                                                         `$table$addtable`.`id`) SEPARATOR '$$$$')
                               AS ".$NAME."_$num, ";
@@ -4342,12 +4343,10 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
+               $linkitemtype = getItemTypeForTable($searchopt[$ID]["table"]);
                if (isset($data[$NAME.$num."_2"]) && strlen($data[$NAME.$num."_2"])) {
-                  if (isset($searchopt[$ID]["itemlink_type"])) {
-                     $link = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
-                  } else {
-                     $link = Toolbox::getItemTypeFormURL($itemtype);
-                  }
+                  $link = Toolbox::getItemTypeFormURL($linkitemtype);
+
                   $out  = "<a id='".$itemtype."_".$data[$NAME.$num."_2"]."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
                   $out .= 'id='.$data[$NAME.$num."_2"];
@@ -4364,36 +4363,34 @@ class Search {
                   return $out;
                }
 
-               if (isset($searchopt[$ID]["itemlink_type"])) {
-                  $out           = "";
-                  $split         = explode("$$$$", $data[$NAME.$num]);
-                  $count_display = 0;
-                  $separate      = '<br>';
-                  if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                     $separate = '<hr>';
-                  }
+               $out           = "";
+               $split         = explode("$$$$", $data[$NAME.$num]);
+               $count_display = 0;
+               $separate      = '<br>';
+               if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
+                  $separate = '<hr>';
+               }
 
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k])) > 0) {
-                        $split2 = self::explodeWithID("$$", $split[$k]);
-                        if (isset($split2[1]) && ($split2[1] > 0)) {
-                           if ($count_display) {
-                              $out .= $separate;
-                           }
-                           $count_display++;
-                           $page  = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
-                           $page .= (strpos($page,'?') ? '&id' : '?id');
-                           $name  = Dropdown::getValueWithUnit($split2[0],$unit);
-                           if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                              $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
-                           }
-                           $out  .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$data['id']."_".
-                                      $split2[1]."' href='$page=".$split2[1]."'>".$name."</a>";
+               for ($k=0 ; $k<count($split) ; $k++) {
+                  if (strlen(trim($split[$k])) > 0) {
+                     $split2 = self::explodeWithID("$$", $split[$k]);
+                     if (isset($split2[1]) && ($split2[1] > 0)) {
+                        if ($count_display) {
+                           $out .= $separate;
                         }
+                        $count_display++;
+                        $page  = Toolbox::getItemTypeFormURL($linkitemtype);
+                        $page .= (strpos($page,'?') ? '&id' : '?id');
+                        $name  = Dropdown::getValueWithUnit($split2[0],$unit);
+                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                           $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
+                        }
+                        $out  .= "<a id='".$linkitemtype."_".$data['id']."_".
+                                    $split2[1]."' href='$page=".$split2[1]."'>".$name."</a>";
                      }
                   }
-                  return $out;
                }
+               return $out;
                break;
 
             case "text" :
