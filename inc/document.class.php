@@ -813,6 +813,7 @@ class Document extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'filename';
@@ -824,7 +825,6 @@ class Document extends CommonDBTM {
       $tab[4]['field']           = 'link';
       $tab[4]['name']            = __('Web Link');
       $tab[4]['datatype']        = 'weblink';
-      $tab[4]['datatype']        = 'string';
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'mime';
@@ -839,16 +839,19 @@ class Document extends CommonDBTM {
       $tab[90]['table']          = $this->getTable();
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']   = false;
+      $tab[90]['massiveaction']  = false;
+      $tab[90]['datatype']       = 'text';
 
       $tab[7]['table']           = 'glpi_documentcategories';
       $tab[7]['field']           = 'completename';
       $tab[7]['name']            = __('Heading');
+      $tab[7]['datatype']        = 'dropdown';
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
@@ -865,6 +868,7 @@ class Document extends CommonDBTM {
       $tab[20]['field']          = 'sha1sum';
       $tab[20]['name']           = sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'));
       $tab[20]['massiveaction']  = false;
+      $tab[20]['datatype']       = 'string';
 
       $tab[72]['table']          = 'glpi_documents_items';
       $tab[72]['field']          = 'count';

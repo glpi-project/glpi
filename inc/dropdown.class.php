@@ -475,11 +475,12 @@ class Dropdown {
     * @param $myname       the name of the HTML select
     * @param $value        the preselected value we want
     * @param $store_path   path where icons are stored
+    * @param $display      bool display of get string ?
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownIcons($myname, $value, $store_path) {
-
+   static function dropdownIcons($myname, $value, $store_path, $display=true) {
+      $output = '';
       if (is_dir($store_path)) {
          if ($dh = opendir($store_path)) {
             $files = array();
@@ -490,23 +491,23 @@ class Dropdown {
 
             closedir($dh);
             sort($files);
-            echo "<select name='$myname'>";
-            echo "<option value=''>".self::EMPTY_VALUE."</option>";
+            $output .= "<select name='$myname'>";
+            $output .= "<option value=''>".self::EMPTY_VALUE."</option>";
 
             foreach ($files as $file) {
                if (preg_match("/\.png$/i",$file)) {
 
                   if ($file == $value) {
-                     echo "<option value='$file' selected>".$file;
+                     $output .= "<option value='$file' selected>".$file;
                   } else {
-                     echo "<option value='$file'>".$file;
+                     $output .= "<option value='$file'>".$file;
                   }
 
-                  echo "</option>";
+                  $output .= "</option>";
                }
             }
 
-            echo "</select>";
+            $output .= "</select>";
 
          } else {
             //TRANS: %s is the store path
@@ -516,6 +517,11 @@ class Dropdown {
       } else {
          //TRANS: %s is the store path
          printf(__('Error: %s is not a directory'), $store_path);
+      }
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
       }
    }
 
@@ -569,6 +575,7 @@ class Dropdown {
       if ($restrict_to != 1) {
          $options[1] = __('Yes');
       }
+
       $params['value'] = $value;
       return self::showFromArray($name, $options, $params);
    }

@@ -243,30 +243,37 @@ class Supplier extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'address';
       $tab[3]['name']            = __('Address');
+      $tab[3]['datatype']        = 'text';
 
       $tab[10]['table']          = $this->getTable();
       $tab[10]['field']          = 'fax';
       $tab[10]['name']           = __('Fax');
+      $tab[10]['datatype']       = 'string';
 
       $tab[11]['table']          = $this->getTable();
       $tab[11]['field']          = 'town';
       $tab[11]['name']           = __('City');
+      $tab[11]['datatype']       = 'string';
 
       $tab[14]['table']          = $this->getTable();
       $tab[14]['field']          = 'postcode';
       $tab[14]['name']           = __('Postal code');
+      $tab[14]['datatype']       = 'string';
 
       $tab[12]['table']          = $this->getTable();
       $tab[12]['field']          = 'state';
       $tab[12]['name']           = __('State');
+      $tab[12]['datatype']       = 'string';
 
       $tab[13]['table']          = $this->getTable();
       $tab[13]['field']          = 'country';
       $tab[13]['name']           = __('Country');
+      $tab[13]['datatype']       = 'string';
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'website';
@@ -276,6 +283,7 @@ class Supplier extends CommonDBTM {
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'phonenumber';
       $tab[5]['name']            =  __('Phone');
+      $tab[5]['datatype']       = 'string';
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'email';
@@ -285,6 +293,7 @@ class Supplier extends CommonDBTM {
       $tab[9]['table']           = 'glpi_suppliertypes';
       $tab[9]['field']           = 'name';
       $tab[9]['name']            = __('Third party type');
+      $tab[9]['datatype']        = 'dropdown';
 
       $tab[8]['table']           = 'glpi_contacts';
       $tab[8]['field']           = 'completename';
@@ -305,11 +314,13 @@ class Supplier extends CommonDBTM {
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
       $tab[90]['massiveaction']  = false;
+      $tab[90]['datatype']       = 'text';
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';

@@ -60,7 +60,7 @@ class DeviceMotherboard extends CommonDevice {
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'chipset';
       $tab[11]['name']     = __('Chipset');
-      $tab[11]['datatype'] = 'text';
+      $tab[11]['datatype'] = 'string';
 
       return $tab;
    }

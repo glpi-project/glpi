@@ -362,6 +362,16 @@ class Contract extends CommonDBTM {
       $tab[131]['forcegroupby']  = true;
       $tab[131]['massiveaction'] = false;
       $tab[131]['joinparams']    = $joinparams;
+      $tab[131]['datatype']      = 'number';
+      $tab[131]['min']           = 12;
+      $tab[131]['max']           = 60;
+      $tab[131]['step']          = 12;
+      $tab[131]['toadd']         = array(0 => Dropdown::EMPTY_VALUE,
+                                         1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                         2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                         3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                         6 => sprintf(_n('%d month', '%d months', 6), 6));
+      $tab[131]['unit']          = 'month';
 
       $tab[132]['table']         = 'glpi_contracts';
       $tab[132]['field']         = 'begin_date';
@@ -376,6 +386,7 @@ class Contract extends CommonDBTM {
       $tab[133]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Account number'));
       $tab[133]['forcegroupby']  = true;
       $tab[133]['massiveaction'] = false;
+      $tab[133]['datatype']      = 'string';
       $tab[133]['joinparams']    = $joinparams;
 
       $tab[134]['table']         = 'glpi_contracts';
@@ -414,6 +425,16 @@ class Contract extends CommonDBTM {
       $tab[137]['forcegroupby']  = true;
       $tab[137]['massiveaction'] = false;
       $tab[137]['joinparams']    = $joinparams;
+      $tab[137]['datatype']      = 'number';
+      $tab[137]['min']           = 12;
+      $tab[137]['max']           = 60;
+      $tab[137]['step']          = 12;
+      $tab[137]['toadd']         = array(0 => Dropdown::EMPTY_VALUE,
+                                         1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                         2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                         3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                         6 => sprintf(_n('%d month', '%d months', 6), 6));
+      $tab[137]['unit']          = 'month';
 
       $tab[138]['table']         = 'glpi_contracts';
       $tab[138]['field']         = 'renewal';
@@ -421,6 +442,8 @@ class Contract extends CommonDBTM {
       $tab[138]['forcegroupby']  = true;
       $tab[138]['massiveaction'] = false;
       $tab[138]['joinparams']    = $joinparams;
+      $tab[138]['datatype']      = 'specific';
+      
 
       return $tab;
    }
@@ -450,6 +473,10 @@ class Contract extends CommonDBTM {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownAlert($options);
+            
+         case 'renewal' :
+            $options['name']  = $name;
+            return self::dropdownContractRenewal($name, $values[$field], false);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -462,6 +489,10 @@ class Contract extends CommonDBTM {
       switch ($field) {
          case 'alert' :
             return self::getAlertName($values[$field]);
+            break;
+            
+         case 'renewal' :
+            return self::getContractRenewalName($values[$field]);
             break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -482,6 +513,7 @@ class Contract extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'num';
@@ -491,6 +523,7 @@ class Contract extends CommonDBTM {
       $tab[4]['table']           = 'glpi_contracttypes';
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = __('Type');
+      $tab[4]['datatype']        = 'dropdown';
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'begin_date';
@@ -528,11 +561,31 @@ class Contract extends CommonDBTM {
       $tab[21]['field']          = 'periodicity';
       $tab[21]['name']           = __('Periodicity');
       $tab[21]['massiveaction']  = false;
+      $tab[21]['datatype']       = 'number';
+      $tab[21]['min']            = 12;
+      $tab[21]['max']            = 60;
+      $tab[21]['step']           = 12;
+      $tab[21]['toadd']          = array(0 => Dropdown::EMPTY_VALUE,
+                                         1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                         2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                         3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                         6 => sprintf(_n('%d month', '%d months', 6), 6));
+      $tab[21]['unit']           = 'month';      
 
       $tab[22]['table']          = $this->getTable();
       $tab[22]['field']          = 'billing';
       $tab[22]['name']           = __('Invoice period');
       $tab[22]['massiveaction']  = false;
+      $tab[22]['datatype']      = 'number';
+      $tab[22]['min']           = 12;
+      $tab[22]['max']           = 60;
+      $tab[22]['step']          = 12;
+      $tab[22]['toadd']         = array(0 => Dropdown::EMPTY_VALUE,
+                                        1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                        2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                        3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                        6 => sprintf(_n('%d month', '%d months', 6), 6));
+      $tab[22]['unit']          = 'month';      
 
       $tab[10]['table']          = $this->getTable();
       $tab[10]['field']          = 'accounting_number';
@@ -543,6 +596,7 @@ class Contract extends CommonDBTM {
       $tab[23]['field']          = 'renewal';
       $tab[23]['name']           = __('Renewal');
       $tab[23]['massiveaction']  = false;
+      $tab[23]['datatype']       = 'specific';
 
       $tab[12]['table']          = $this->getTable();
       $tab[12]['field']          = 'expire';
@@ -581,6 +635,7 @@ class Contract extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[59]['table']          = $this->getTable();
       $tab[59]['field']          = 'alert';
@@ -651,10 +706,12 @@ class Contract extends CommonDBTM {
       $tab[44]['forcegroupby']   = true;
       $tab[44]['massiveaction']  = false;
       $tab[44]['joinparams']     = array('jointype' => 'child');
+      $tab[44]['datatype']       = 'dropdown';
 
       $tab[45]['table']          = 'glpi_budgets';
       $tab[45]['field']          = 'name';
       $tab[45]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Budget'));
+      $tab[45]['datatype']       = 'dropdown';
       $tab[45]['forcegroupby']   = true;
       $tab[45]['massiveaction']  = false;
       $tab[45]['joinparams']    = array('beforejoin'
@@ -1590,15 +1647,17 @@ class Contract extends CommonDBTM {
     *
     * @param $name   string   HTML select name
     * @param $value  integer  HTML select selected value (default = 0)
+    * @param $value  boolean  get or display string ?
     *
     * @return Nothing (display)
    **/
-   static function dropdownContractRenewal($name, $value=0) {
+   static function dropdownContractRenewal($name, $value=0, $display = true) {
 
       $tmp[0] = __('Never');
       $tmp[1] = __('Tacit');
       $tmp[2] = __('Express');
-      Dropdown::showFromArray($name, $tmp, array('value' => $value));
+      return Dropdown::showFromArray($name, $tmp, array('value' => $value,
+                                                 'display' => $display));
    }
 
 

@@ -76,21 +76,22 @@ class DeviceHardDrive extends CommonDevice {
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
       $tab[11]['name']     = __('Capacity by default');
-      $tab[11]['datatype'] = 'text';
+      $tab[11]['datatype'] = 'string';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'rpm';
       $tab[12]['name']     = __('Rpm');
-      $tab[12]['datatype'] = 'text';
+      $tab[12]['datatype'] = 'string';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'cache';
       $tab[13]['name']     = __('Cache');
-      $tab[13]['datatype'] = 'text';
+      $tab[13]['datatype'] = 'string';
 
       $tab[14]['table']    = 'glpi_interfacetypes';
       $tab[14]['field']    = 'name';
       $tab[14]['name']     = __('Interface');
+      $tab[14]['datatype'] = 'dropdown';
 
       return $tab;
    }

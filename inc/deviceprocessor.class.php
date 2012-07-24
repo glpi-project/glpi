@@ -70,12 +70,12 @@ class DeviceProcessor extends CommonDevice {
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
       $tab[11]['name']     = __('Frequency by default');
-      $tab[11]['datatype'] = 'text';
+      $tab[11]['datatype'] = 'string';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'frequence';
       $tab[12]['name']     = __('Frequency');
-      $tab[12]['datatype'] = 'text';
+      $tab[12]['datatype'] = 'string';
 
       return $tab;
    }

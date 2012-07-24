@@ -68,7 +68,7 @@ class DevicePowerSupply extends CommonDevice {
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'power';
       $tab[12]['name']     = __('Power');
-      $tab[12]['datatype'] = 'text';
+      $tab[12]['datatype'] = 'string';
 
       return $tab;
    }

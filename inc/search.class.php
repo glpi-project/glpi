@@ -4575,7 +4575,14 @@ class Search {
       }
       // Manage auto CONCAT id
       $split = self::explodeWithID('$$', $data[$NAME.$num]);
-
+      $split[0] = trim($split[0]);
+      if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split[0]])) {
+         return $searchopt[$ID]['toadd'][$split[0]];
+      }
+      // Empty is 0 or empty
+      if (empty($split[0])&& isset($searchopt[$ID]['emptylabel'])) {
+         return $searchopt[$ID]['emptylabel'];
+      }
       return Dropdown::getValueWithUnit($split[0], $unit);
    }
 

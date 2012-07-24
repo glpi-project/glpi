@@ -84,14 +84,18 @@ class Alert extends CommonDBTM {
     * @param $options array
    **/
    static function dropdown($options=array()) {
+      $p['name']    = 'alert';
+      $p['value']   = 0;
+      $p['display'] = true;
+      $p['inherit_parent'] = false;
 
-      if (!isset($options['value'])) {
-         $value = 0;
-      } else {
-         $value = $options['value'];
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
       }
 
-      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+      if ($p['inherit_parent']) {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
@@ -100,7 +104,7 @@ class Alert extends CommonDBTM {
       $times[WEEK_TIMESTAMP]        = __('Each week');
       $times[MONTH_TIMESTAMP]       = __('Each month');
 
-      Dropdown::showFromArray($options['name'], $times, array('value' => $value));
+      return Dropdown::showFromArray($p['name'], $times, $p);
    }
 
 
@@ -108,21 +112,25 @@ class Alert extends CommonDBTM {
     * @param $options array
    **/
    static function dropdownYesNo($options = array()) {
+      $p['name']    = 'alert';
+      $p['value']   = 0;
+      $p['display'] = true;
+      $p['inherit_parent'] = false;
 
-      if (!isset($options['value'])) {
-         $value = 0;
-      } else {
-         $value = $options['value'];
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
       }
-
-      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+      
+      if ($p['inherit_parent']) {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       $times[0] = __('No');
       $times[1] = __('Yes');
 
-      Dropdown::showFromArray($options['name'], $times, array('value' => $value));
+      return Dropdown::showFromArray($p['name'], $times, $p);
    }
 
 
@@ -133,9 +141,11 @@ class Alert extends CommonDBTM {
    **/
    static function dropdownIntegerNever($name, $value, $options=array()) {
 
+      $p['min']   = 1;
       $p['max']   = 100;
       $p['step']  = 1;
       $p['toadd'] = array();
+      $p['display']  = true;
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
          $p['toadd'][-2] = __('Inheritance of the parent entity');
@@ -150,12 +160,13 @@ class Alert extends CommonDBTM {
       } else {
          $p['toadd'][0] = $never_string;
       }
-
-
+      $p['value'] = $value;
+      
       foreach ($options as $key=>$val) {
          $p[$key] = $val;
       }
-      Dropdown::showInteger($name, $value, 1, $p['max'], $p['step'], $p['toadd'], $options);
+
+      return Dropdown::showNumber($name, $p);
    }
 
 

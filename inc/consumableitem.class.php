@@ -230,6 +230,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
+      $tab[2]['datatype']        = 'number';
       $tab[2]['massiveaction']   = false;
 
       $tab[34]['table']          = $this->getTable();
@@ -240,10 +241,12 @@ class ConsumableItem extends CommonDBTM {
       $tab[4]['table']           = 'glpi_consumableitemtypes';
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = __('Type');
+      $tab[4]['datatype']        = 'dropdown';
 
       $tab[23]['table']          = 'glpi_manufacturers';
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
+      $tab[23]['datatype']       = 'dropdown';
 
       $tab += Location::getSearchOptionsToAdd();
 
@@ -259,6 +262,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[49]['linkfield']      = 'groups_id_tech';
       $tab[49]['name']           = __('Group in charge of the hardware');
       $tab[49]['condition']      = '`is_assign`';
+      $tab[49]['datatype']       = 'dropdown';
 
       $tab[8]['table']           = $this->getTable();
       $tab[8]['field']           = 'alarm_threshold';
@@ -275,11 +279,14 @@ class ConsumableItem extends CommonDBTM {
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
       $tab[90]['massiveaction']  = false;
+      $tab[90]['datatype']       = 'text';
+      
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       return $tab;
    }
