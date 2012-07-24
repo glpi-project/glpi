@@ -148,6 +148,42 @@ class Infocom extends CommonDBChild {
    }
 
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'sink_type' :
+            return self::getAmortTypeName($values[$field]);
+
+         case 'alert' :
+            return self::getAlertName($values[$field]);
+
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case "sink_type" :
+            return self::dropdownAmortType($name, $values[$field], false);
+            break;
+            
+         case "alert" :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return self::dropdownAlert($options);
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+   
    /**
     * Retrieve an item from the database for a device
     *
@@ -490,21 +526,25 @@ class Infocom extends CommonDBChild {
     * @param $options array
    **/
    static function dropdownAlert($options) {
-
-      if (!isset($options['value'])) {
-         $value = 0;
-      } else {
-         $value = $options['value'];
+      $p['name']    = 'alert';
+      $p['value']   = 0;
+      $p['display'] = true;
+      $p['inherit_parent'] = false;
+      
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
       }
 
       $tab = array();
-      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+      if ($p['inherit_parent']) {
          $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       $tab += self::getAlertName();
 
-      Dropdown::showFromArray($options['name'], $tab, array('value' => $value));
+      return Dropdown::showFromArray($p['name'], $tab, $p);
    }
 
 
@@ -513,14 +553,21 @@ class Infocom extends CommonDBChild {
     *
     * @param $name   select name
     * @param $value  default value (default 0)
+    * @param $display display or get string
    **/
-   static function dropdownAmortType($name, $value=0) {
+   static function dropdownAmortType($name, $value=0, $display = true) {
 
-      echo "<select name='$name'>";
-      echo "<option value='0' ".($value==0?" selected ":"").">".Dropdown::EMPTY_VALUE."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".__('Linear')."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".__('Decreasing')."</option>";
-      echo "</select>";
+      $output = "<select name='$name'>";
+      $output .= "<option value='0' ".($value==0?" selected ":"").">".Dropdown::EMPTY_VALUE."</option>";
+      $output .= "<option value='2' ".($value==2?" selected ":"").">".__('Linear')."</option>";
+      $output .= "<option value='1' ".($value==1?" selected ":"").">".__('Decreasing')."</option>";
+      $output .= "</select>";
+
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
 
@@ -853,7 +900,7 @@ class Infocom extends CommonDBChild {
                echo sprintf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getName())."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
 
-               Html::showMinimalForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
+               Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
                                      'add', __('Enable the financial and administrative information'),
                                      array('itemtype' => $item->getType(),
                                            'items_id' => $dev_ID));
@@ -1214,6 +1261,7 @@ class Infocom extends CommonDBChild {
 
       $tab[50]['table']          = 'glpi_budgets';
       $tab[50]['field']          = 'name';
+      $tab[50]['datatype']       = 'dropdown';
       $tab[50]['name']           = __('Budget');
       $tab[50]['forcegroupby']   = true;
       $tab[50]['joinparams']     = $complexjoinparams;
@@ -1250,6 +1298,7 @@ class Infocom extends CommonDBChild {
 
       $tab[53]['table']          = 'glpi_suppliers';
       $tab[53]['field']          = 'name';
+      $tab[53]['datatype']       = 'dropdown';
       $tab[53]['name']           = __('Supplier');
       $tab[53]['forcegroupby']   = true;
       $tab[53]['joinparams']     = $complexjoinparams;

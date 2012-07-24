@@ -61,75 +61,7 @@ if (isset($_POST["itemtype"])
    $FIELDNAME_PRINTED = false;
    $USE_TABLE         = false;
 
-//    } else {
-//       switch ($search["table"]) {
-//          case "glpi_infocoms" :  // infocoms case
-//             echo "<input type='hidden' name='field' value='".$search["field"]."'>";
-//             $FIELDNAME_PRINTED = true;
-// 
-//             switch ($search["field"]) {
-//                case "alert" :
-//                   Infocom::dropdownAlert($search["field"]);
-//                   break;
-// 
-//                case "buy_date" :
-//                case "use_date" :
-//                case "delivery_date" :
-//                case "order_date" :
-//                case "inventory_date" :
-//                case "warranty_date" :
-//                   echo "<table><tr><td>";
-//                   Html::showDateFormItem($search["field"]);
-//                   echo "</td>";
-//                   $USE_TABLE = true;
-//                   break;
-// 
-//                case "sink_type" :
-//                   Infocom::dropdownAmortType("sink_type");
-//                   break;
-// 
-//                default :
-//                   $newtype = getItemTypeForTable($search["table"]);
-//                   if ($newtype != $_POST["itemtype"]) {
-//                      $item = new $newtype();
-//                   }
-//                   Html::autocompletionTextField($item, $search["field"],
-//                                                 array('entity' => $_SESSION["glpiactive_entity"]));
-//             }
-//             break;
-// 
-//          case "glpi_suppliers_infocoms" : // Infocoms suppliers
-//             Supplier::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
-//             echo "<input type='hidden' name='field' value='suppliers_id'>";
-//             $FIELDNAME_PRINTED = true;
-//             break;
-// 
-//          case "glpi_budgets" : // Infocoms budget
-//             Budget::dropdown();
-//             break;
-// 
-//          case "glpi_users" : // users
-//             switch ($search["linkfield"]) {
-// //                case "users_id_assign" :
-// //                   User::dropdown(array('name'   => $search["linkfield"],
-// //                                        'right'  => 'own_ticket',
-// //                                        'entity' => $_SESSION["glpiactive_entity"]));
-// //                   break;
-// 
-//                case "users_id_tech" :
-//                   User::dropdown(array('name'   => $search["linkfield"],
-//                                        'value'  => 0,
-//                                        'right'  => 'interface',
-//                                        'entity' => $_SESSION["glpiactive_entity"]));
-//                   break;
-// 
-//                default :
-//                   User::dropdown(array('name'   => $search["linkfield"],
-//                                        'entity' => $_SESSION["glpiactive_entity"],
-//                                        'right'  => 'all'));
-//             }
-//             break;
-// 
+
 //          break;
 // 
 //             if (!$plugdisplay && !$already_display) {

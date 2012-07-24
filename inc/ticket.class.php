@@ -2366,7 +2366,7 @@ class Ticket extends CommonITILObject {
       if (!is_array($values)) {
          $values = array($field => $values);
       }
-      $options['display'] = 0;
+      $options['display'] = false;
       switch ($field) {
          case 'items_id' :
             if (isset($options['itemtype_used']) && !empty($options['itemtype_used'])) {
