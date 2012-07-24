@@ -1677,6 +1677,8 @@ class Ticket extends CommonITILObject {
      return $search;
    }
 
+
+   
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1909,6 +1911,7 @@ class Ticket extends CommonITILObject {
       $tab[13]['table']          = $this->getTable();
       $tab[13]['field']          = 'items_id';
       $tab[13]['name']           = __('Associated element');
+      $tab[13]['datatype']       = 'specific';
       $tab[13]['nosearch']       = true;
       $tab[13]['nosort']         = true;
       $tab[13]['massiveaction']  = false;
@@ -2329,7 +2332,6 @@ class Ticket extends CommonITILObject {
          case 'global_validation' :
             return TicketValidation::getStatus($values[$field]);
 
-
          case 'type':
             return self::getTicketTypeName($values[$field]);
 
@@ -2356,7 +2358,34 @@ class Ticket extends CommonITILObject {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = 0;
+      switch ($field) {
+         case 'items_id' :
+            if (isset($options['itemtype_used']) && !empty($options['itemtype_used'])) {
+               $options['name']  = $name;
+               $options['value'] = $values[$field];
+               return Dropdown::show($options['itemtype_used'], $options);
+            }
+            break;
+            
+         case 'type':
+            $options['value'] = $values[$field];
+            return self::dropdownType($name, $options);
 
+         case 'global_validation' :
+            $options['global'] = true;
+            $options['value']  = $values[$field];
+            return TicketValidation::dropdownStatus($name, $options);
+
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+   
    /**
     * Dropdown of ticket type
     *
@@ -2365,6 +2394,7 @@ class Ticket extends CommonITILObject {
     *    - value : integer / preselected value (default 0)
     *    - toadd : array / array of specific values to add at the begining
     *    - on_change : string / value to transmit to "onChange"
+    *    - display    : boolean / display or get string (default true)
     *
     * @return string id of the select
    **/
@@ -2373,6 +2403,7 @@ class Ticket extends CommonITILObject {
       $params['value']       = 0;
       $params['toadd']       = array();
       $params['on_change']   = '';
+      $params['display']     = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

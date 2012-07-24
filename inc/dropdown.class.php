@@ -192,7 +192,7 @@ class Dropdown {
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";
-      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand']);
+      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand'], false);
 
       // Display comment
       if ($params['comments']) {

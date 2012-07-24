@@ -69,32 +69,6 @@ if (isset($_POST["itemtype"])
 //       switch ($search["table"].".".$search["linkfield"]) {
 // 
 // 
-//          case "glpi_tickets.items_id" :
-//             if (isset($_POST['itemtype_used']) && !empty($_POST['itemtype_used'])) {
-//                Dropdown::show($_POST['itemtype_used'], array('name' => $search["linkfield"]));
-//             }
-//             break;
-// 
-//          case "glpi_tickets.type" :
-//             Ticket::dropdownType($search["linkfield"]);
-//             break;
-// 
-//          case "glpi_tickets.priority" :
-//             Ticket::dropdownPriority($search["linkfield"]);
-//             break;
-// 
-//          case "glpi_tickets.impact" :
-//             Ticket::dropdownImpact($search["linkfield"]);
-//             break;
-// 
-//          case "glpi_tickets.urgency" :
-//             Ticket::dropdownUrgency($search["linkfield"]);
-//             break;
-// 
-//          case "glpi_tickets.global_validation" :
-//             TicketValidation::dropdownStatus($search["linkfield"]);
-//             break;
-// 
 //          case "glpi_users.language" :
 //             Dropdown::showLanguages("language", array('display_none' => true,
 //                                                       'emptylabel'   => __('Default value')));
