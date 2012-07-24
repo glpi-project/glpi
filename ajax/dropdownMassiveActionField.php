@@ -65,102 +65,6 @@ if (isset($_POST["itemtype"])
    $FIELDNAME_PRINTED = false;
    $USE_TABLE         = false;
 
-//    if ($search["table"] == getTableForItemType($_POST["itemtype"])) { // field type
-//       switch ($search["table"].".".$search["linkfield"]) {
-// 
-// 
-//          case "glpi_users.language" :
-//             Dropdown::showLanguages("language", array('display_none' => true,
-//                                                       'emptylabel'   => __('Default value')));
-//             break;
-// 
-//          case "glpi_crontasks.mode" :
-//             $options = array();
-//             $options[CronTask::MODE_INTERNAL] = CronTask::getModeName(CronTask::MODE_INTERNAL);
-//             $options[CronTask::MODE_EXTERNAL] = CronTask::getModeName(CronTask::MODE_EXTERNAL);
-//             Dropdown::showFromArray('mode', $options);
-//             break;
-// 
-//          case "glpi_crontasks.state" :
-//             CronTask::dropdownState('state');
-//             break;
-// 
-//          default :
-//             // Specific plugin Type case
-//             $plugdisplay = false;
-//             if ($plug=isPluginItemType($_POST["itemtype"])) {
-//                $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
-//                                                 array('itemtype' => $_POST["itemtype"],
-//                                                       'options'  => $search));
-//             }
-//             $already_display = false;
-// 
-//             if (isset($search['datatype'])) {
-//                switch ($search['datatype']) {
-//                   case "date" :
-//                      echo "<table><tr><td>";
-//                      Html::showDateFormItem($search["linkfield"]);
-//                      echo "</td>";
-//                      $USE_TABLE       = true;
-//                      $already_display = true;
-//                      break;
-// 
-//                   case "datetime" :
-//                      if (!isset($_POST['relative_dates']) || !$_POST['relative_dates']) {
-//                         echo "<table><tr><td>";
-//                         Html::showDateTimeFormItem($search["linkfield"]);
-//                         echo "</td>";
-//                         $already_display = true;
-//                         $USE_TABLE       = true;
-//                      } else { // For ticket template
-//                         Html::showGenericDateTimeSearch($search["linkfield"], '',
-//                                                         array('with_time'          => true,
-//                                                               'with_future'
-//                                                                   => (isset($search['maybefuture'])
-//                                                                       && $search['maybefuture']),
-//                                                               'with_days'          => false,
-//                                                               'with_specific_date' => false));
-// 
-//                         $already_display = true;
-//                      }
-//                      break;
-// 
-//                   case "itemtypename" :
-//                      if (isset($search['itemtype_list'])) {
-//                         Dropdown::showItemTypes($search["linkfield"],
-//                                                 $CFG_GLPI[$search['itemtype_list']]);
-//                         $already_display = true;
-//                      }
-//                      break;
-// 
-//                   case "bool" :
-//                      Dropdown::showYesNo($search["linkfield"]);
-//                      $already_display = true;
-//                      break;
-// 
-//                   case "timestamp" :
-//                      Dropdown::showTimeStamp($search["linkfield"]);
-//                      $already_display = true;
-//                      break;
-// 
-//                   case "text" :
-//                      echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."'></textarea>";
-//                      $already_display = true;
-//                      break;
-//                }
-//             }
-// 
-//             if (!$plugdisplay && !$already_display) {
-//                $newtype = getItemTypeForTable($search["table"]);
-//                if ($newtype != $_POST["itemtype"]) {
-//                   $item = new $newtype();
-//                }
-//                Html::autocompletionTextField($item, $search["linkfield"],
-//                                              array('name'   => $search["linkfield"],
-//                                                    'entity' => $_SESSION["glpiactive_entity"]));
-//             }
-//       }
-// 
 //    } else {
 //       switch ($search["table"]) {
 //          case "glpi_infocoms" :  // infocoms case
@@ -291,6 +195,7 @@ if (isset($_POST["itemtype"])
 //                               array('name'      => $search["linkfield"],
 //                                     'entity'    => $_SESSION['glpiactiveentities'],
 //                                     'condition' => $cond));
+                  /// TODO Check all searchoption to add datatype
 //             }
 //       }
 //    }

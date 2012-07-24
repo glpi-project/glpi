@@ -2319,6 +2319,8 @@ class User extends CommonDBTM {
       $tab[17]['field']          = 'language';
       $tab[17]['name']           = __('Language');
       $tab[17]['datatype']       = 'language';
+      $tab[17]['display_emptychoice']   = true;
+      $tab[17]['emptylabel']     = __('Default value');
 
       $tab[19]['table']          = $this->getTable();
       $tab[19]['field']          = 'date_mod';

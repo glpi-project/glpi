@@ -1976,6 +1976,7 @@ class Ticket extends CommonITILObject {
       $tab[52]['field']          = 'global_validation';
       $tab[52]['name']           = __('Approval');
       $tab[52]['searchtype']     = 'equals';
+      $tab[52]['datatype']       = 'specific';
 
       $tab[53]['table']          = 'glpi_ticketvalidations';
       $tab[53]['field']          = 'comment_submission';

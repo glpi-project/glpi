@@ -645,15 +645,17 @@ class CronTask extends CommonDBTM{
     *
     * @param $name   select name
     * @param $value  default value (default 0)
+    * @param $display  display or get string
     *
     * @return nothing (display)
    **/
-   static function dropdownState($name, $value=0) {
+   static function dropdownState($name, $value=0, $display=true) {
 
       return Dropdown::showFromArray($name,
                                      array(self::STATE_DISABLE => __('Disabled'),
                                            self::STATE_WAITING => __('Scheduled')),
-                                     array('value' => $value));
+                                     array('value' => $value,
+                                           'display' => $display));
    }
 
 
@@ -1118,6 +1120,40 @@ class CronTask extends CommonDBTM{
       echo "</div>";
    }
 
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = 0;
+      switch ($field) {
+         case 'mode':
+            $options['value'] = $values[$field];
+            $tab[self::MODE_INTERNAL] = self::getModeName(self::MODE_INTERNAL);
+            $tab[self::MODE_EXTERNAL] = self::getModeName(self::MODE_EXTERNAL);
+            return Dropdown::showFromArray($name, $tab, $options);
+            
+         case 'state' :
+            return CronTask::dropdownState($name, $values[$field], false);
+      }
+
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'mode':
+            return self::getModeName($values[$field]);
+
+         case 'state':
+            return self::getStateName($values[$field]);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+   
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1186,10 +1222,12 @@ class CronTask extends CommonDBTM{
       $tab[4]['name']          = __('Status');
       $tab[4]['searchtype']    = array('equals');
       $tab[4]['massiveaction'] = false;
+      $tab[4]['datatype']      = 'specific';
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'mode';
       $tab[5]['name']          = __('Run mode');
+      $tab[5]['datatype']      = 'specific';
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'frequency';
