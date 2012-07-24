@@ -400,23 +400,28 @@ class NetworkPortMigration extends CommonDBChild {
 
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'ip';
+      $tab[20]['datatype']      = 'ip';
       $tab[20]['name']          = IPAddress::getTypeName(1);
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'netmask';
+      $tab[21]['datatype']      = 'string';
       $tab[21]['name']          = IPNetmask::getTypeName(1);
 
       $tab[22]['table']         = $this->getTable();
       $tab[22]['field']         = 'subnet';
+      $tab[22]['datatype']      = 'string';
       $tab[22]['name']          = __('Network address');
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'gateway';
+      $tab[23]['datatype']      = 'string';
       $tab[23]['name']          = IPAddress::getTypeName(1);
 
       if (TableExists('glpi_networkinterfaces')) {
          $tab[24]['table']         = 'glpi_networkinterfaces';
          $tab[24]['field']         = 'name';
+         $tab[24]['datatype']      = 'dropdown';
          $tab[24]['name']          = __('Network interface');
       }
 

@@ -1286,7 +1286,6 @@ class Infocom extends CommonDBChild {
       $tab[120]['table']         = 'glpi_infocoms';
       $tab[120]['field']         = 'end_warranty';
       $tab[120]['name']          = __('Warranty expiration date');
-      $tab[120]['datatype']      = 'date';
       $tab[120]['datatype']      = 'date_delay';
       $tab[120]['datafields'][1] = 'warranty_date';
       $tab[120]['datafields'][2] = 'warranty_duration';
@@ -1333,18 +1332,22 @@ class Infocom extends CommonDBChild {
       $tab[57]['name']           = __('Amortization type');
       $tab[57]['forcegroupby']   = true;
       $tab[57]['joinparams']     = $joinparams;
+      $tab[57]['datatype']       = 'specific';
 
       $tab[58]['table']          = 'glpi_infocoms';
       $tab[58]['field']          = 'sink_coeff';
       $tab[58]['name']           = __('Amortization coefficient');
       $tab[58]['forcegroupby']   = true;
       $tab[58]['joinparams']     = $joinparams;
+      $tab[58]['datatype']       = 'decimal';
+
 
       $tab[59]['table']          = 'glpi_infocoms';
       $tab[59]['field']          = 'alert';
       $tab[59]['name']           = __('Email alarms');
       $tab[59]['forcegroupby']   = true;
       $tab[59]['joinparams']     = $joinparams;
+      $tab[59]['datatype']       = 'specific';
 
       $tab[122]['table']         = 'glpi_infocoms';
       $tab[122]['field']         = 'comment';
@@ -1366,6 +1369,7 @@ class Infocom extends CommonDBChild {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'buy_date';
@@ -1422,6 +1426,7 @@ class Infocom extends CommonDBChild {
       $tab[9]['table']           = 'glpi_suppliers';
       $tab[9]['field']           = 'name';
       $tab[9]['name']            = __('Supplier');
+      $tab[9]['datatype']        = 'dropdown';
 
       $tab[10]['table']          = $this->getTable();
       $tab[10]['field']          = 'order_number';
@@ -1496,6 +1501,8 @@ class Infocom extends CommonDBChild {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
+      
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';

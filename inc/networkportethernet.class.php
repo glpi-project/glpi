@@ -376,18 +376,23 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'mac';
+      $tab[10]['datatype']      = 'mac';
       $tab[10]['name']          = __('MAC');
       $tab[10]['massiveaction'] = false;
 
+      /// TODO do specific functions to display and select for type.
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'type';
       $tab[11]['name']          = __('Ethernet port type');
       $tab[11]['massiveaction'] = false;
+      $tab[11]['datatype']      = 'specific';
 
+      /// TODO do specific functions to display and select for speed.
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'speed';
       $tab[12]['name']          = __('Ethernet port speed');
       $tab[12]['massiveaction'] = false;
+      $tab[12]['datatype']      = 'specific';
 
       return $tab;
 
@@ -399,6 +404,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[22]['table']         = 'glpi_netpoints';
       $tab[22]['field']         = 'name';
+      $tab[22]['datatype']      = 'dropdown';
       $tab[22]['name']          = __('Network outlet');
       $tab[22]['forcegroupby']  = true;
       $tab[22]['massiveaction'] = false;

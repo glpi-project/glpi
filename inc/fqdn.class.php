@@ -209,6 +209,7 @@ class FQDN extends CommonDropdown {
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'fqdn';
       $tab[11]['name']  = __('FQDN');
+      $tab[11]['datatype']  = 'string';
 
       return $tab;
    }

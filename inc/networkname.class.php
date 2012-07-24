@@ -192,6 +192,7 @@ class NetworkName extends FQDNLabel {
       $tab[12]['table']         = 'glpi_fqdns';
       $tab[12]['field']         = 'fqdn';
       $tab[12]['name']          = FQDN::getTypeName(1);
+      $tab[12]['datatype']      = 'dropdown';
 
       $tab[13]['table']         = 'glpi_ipaddresses';
       $tab[13]['field']         = 'name';
@@ -199,6 +200,7 @@ class NetworkName extends FQDNLabel {
       $tab[13]['joinparams']    = array('jointype' => 'itemtype_item');
       $tab[13]['forcegroupby']  = true;
       $tab[13]['massiveaction'] = false;
+      $tab[13]['datatype']      = 'dropdown';
 
       $tab[20]['table']        = $this->getTable();
       $tab[20]['field']        = 'itemtype';

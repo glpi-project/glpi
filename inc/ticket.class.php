@@ -1915,6 +1915,7 @@ class Ticket extends CommonITILObject {
       $tab[13]['nosearch']       = true;
       $tab[13]['nosort']         = true;
       $tab[13]['massiveaction']  = false;
+      $tab[13]['additionalfields'] = array('itemtype');
 
       $tab[131]['table']         = $this->getTable();
       $tab[131]['field']         = 'itemtype';

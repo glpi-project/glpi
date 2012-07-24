@@ -73,20 +73,25 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $tab[10]['field']         = 'version';
       $tab[10]['name']          = __('IP version');
       $tab[10]['massiveaction'] = false;
+      $tab[10]['datatype']      = 'number';
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'address';
       $tab[11]['name']          = IPAddress::getTypeName(1);
       $tab[11]['massiveaction'] = false;
+      $tab[11]['datatype']      = 'string';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'netmask';
       $tab[12]['name']          = IPNetmask::getTypeName(1);
+      $tab[12]['massiveaction'] = false;
+      $tab[12]['datatype']      = 'string';
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'gateway';
       $tab[13]['name']          = __('Gateway');
-      $tab[11]['massiveaction'] = false;
+      $tab[13]['massiveaction'] = false;
+      $tab[13]['datatype']      = 'string';
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'addressable';
