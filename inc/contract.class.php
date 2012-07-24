@@ -1647,19 +1647,25 @@ class Contract extends CommonDBTM {
     * @param $options array
    **/
    static function dropdownAlert(array $options) {
+      $p['name']    = 'alert';
+      $p['value']   = 0;
+      $p['display'] = true;
+      $p['inherit_parent'] = false;
 
-      if (!isset($options['value'])) {
-         $options['value'] = 0;
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
       }
 
       $tab = array();
-      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+      if ($p['inherit_parent']) {
          $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       $tab += self::getAlertName();
 
-      return Dropdown::showFromArray($options['name'], $tab, $options);
+      return Dropdown::showFromArray($p['name'], $tab, $p);
    }
 
 

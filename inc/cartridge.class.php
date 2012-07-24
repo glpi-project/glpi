@@ -539,7 +539,7 @@ class Cartridge extends CommonDBTM {
             if ($canedit) {
                echo "<td class='center'>";
                if (!is_null($date_use)) {
-                  Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+                  Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
                                         'restore', __('Back to stock'),
                                         array('cartridgeitems_id' => $tID,
                                               'id'                => $data['id']));
@@ -550,7 +550,7 @@ class Cartridge extends CommonDBTM {
             }
             if ($canedit) {
                echo "<td class='center'>";
-               Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+               Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
                                      $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
                                      array('delete'            => 1,
                                            'cartridgeitems_id' => $tID,
@@ -739,12 +739,12 @@ class Cartridge extends CommonDBTM {
          if ($canedit) {
             echo "<td class='center'>";
             if (is_null($date_out)) {
-               Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+               Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
                                      'uninstall', __('End of life'),
                                      array('cartridgeitems_id' => $data['tID'],
                                            'id'                => $data['id']));
             } else {
-               Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+               Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
                                      $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
                                      array('delete'            => 1,
                                            'cartridgeitems_id' => $data['tID'],
