@@ -392,7 +392,8 @@ class Group extends CommonTreeDropdown {
       $tab[70]['table']         = 'glpi_users';
       $tab[70]['field']         = 'name';
       $tab[70]['name']          = __('Manager');
-      $tab[70]['itemlink_type'] = 'User';
+      $tab[70]['datatype']      = 'dropdown';
+      $tab[70]['right']         = 'all';
       $tab[70]['forcegroupby']  = true;
       $tab[70]['massiveaction'] = false;
       $tab[70]['joinparams']    = array('beforejoin'
@@ -403,7 +404,8 @@ class Group extends CommonTreeDropdown {
       $tab[71]['table']         = 'glpi_users';
       $tab[71]['field']         = 'name';
       $tab[71]['name']          = __('Delegatee');
-      $tab[71]['itemlink_type'] = 'User';
+      $tab[71]['datatype']      = 'dropdown';
+      $tab[71]['right']         = 'all';
       $tab[71]['forcegroupby']  = true;
       $tab[71]['massiveaction'] = false;
       $tab[71]['joinparams']    = array('beforejoin'

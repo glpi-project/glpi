@@ -2223,7 +2223,6 @@ class User extends CommonDBTM {
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Login');
       $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['forcegroupby']    = true;
       $tab[1]['massiveaction']   = false;
 
@@ -2277,7 +2276,6 @@ class User extends CommonDBTM {
       $tab[13]['name']           = _n('Group','Groups',2);
       $tab[13]['forcegroupby']   = true;
       $tab[13]['datatype']       = 'itemlink';
-      $tab[13]['itemlink_type']  = 'Group';
       $tab[13]['massiveaction']  = false;
       $tab[13]['joinparams']     = array('beforejoin'=> array('table' => 'glpi_groups_users',
                                                               'joinparams'

@@ -2597,7 +2597,6 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['field']         = 'name';
       $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
       return $tab;
@@ -2654,6 +2653,12 @@ class CommonDBTM extends CommonGLPI {
                            _sx('button', 'Delete')."'>";
             break;
          case "update" :
+            // Specific options for update fields
+            if (isset($input['options'])) {
+               $input['options'] = unserialize(stripslashes($input['options']));
+            } else {
+               $input['options'] = array();
+            }
             $first_group    = true;
             $newgroup       = "";
             $items_in_group = 0;
@@ -2725,7 +2730,8 @@ class CommonDBTM extends CommonGLPI {
             echo "</select>";
 
             $paramsmassaction = array('id_field' => '__VALUE__',
-                                      'itemtype' => $input["itemtype"]);
+                                      'itemtype' => $input["itemtype"],
+                                      'options'  => $input['options']);
 
             foreach ($input as $key => $val) {
                if (preg_match("/extra_/",$key,$regs)) {
@@ -3885,6 +3891,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                   return "&nbsp;";
 
+               case "itemlink" :
                case "dropdown" :
                   if ($searchoptions['table'] == 'glpi_users') {
                      if ($param['comments']) {
@@ -4095,7 +4102,7 @@ class CommonDBTM extends CommonGLPI {
                return Dropdown::showTimeStamp($name, $options);
 
             case "dropdown" :
-               $copytooption = array('condition', 'right');
+               $copytooption = array('condition', 'right', 'displaywith');
                $options['name']  = $name;
                $options['value'] = $value;
                foreach ($copytooption as $key) {
@@ -4106,7 +4113,7 @@ class CommonDBTM extends CommonGLPI {
                if (!isset($options['entity'])) {
                   $options['entity'] = $_SESSION['glpiactiveentities'];
                }
-
+               
                if ($searchoptions['table'] == 'glpi_users') {
                   return User::dropdown($options);
                }

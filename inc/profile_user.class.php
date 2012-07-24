@@ -744,6 +744,9 @@ class Profile_User extends CommonDBTM {
       $tab[5]['field']           = 'name';
       $tab[5]['name']            = __('User');
       $tab[5]['massiveaction']   = false;
+      $tab[5]['datatype']        = 'dropdown';
+      $tab[5]['right']           = 'all';
+      
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';

@@ -750,6 +750,9 @@ class TicketFollowup  extends CommonDBTM {
       $tab[5]['table']        = 'glpi_users';
       $tab[5]['field']        = 'name';
       $tab[5]['name']         = __('User');
+      $tab[5]['datatype']     = 'dropdown';
+      $tab[5]['right']        = 'all';
+      
 
       return $tab;
    }

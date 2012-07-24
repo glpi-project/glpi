@@ -79,7 +79,6 @@ class Netpoint extends CommonDropdown {
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[3]['datatype']      = 'itemlink';
-      $tab[3]['itemlink_type'] = 'Location';
 
       return $tab;
    }

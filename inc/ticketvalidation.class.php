@@ -799,14 +799,14 @@ class TicketValidation  extends CommonDBChild {
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Approval requester');
       $tab[6]['datatype']        = 'itemlink';
-      $tab[6]['itemlink_type']   = 'User';
+      $tab[6]['right']           = 'create_validation';
 
       $tab[7]['table']           = 'glpi_users';
       $tab[7]['field']           = 'name';
       $tab[7]['linkfield']       = 'users_id_validate';
       $tab[7]['name']            = __('Approver');
       $tab[7]['datatype']        = 'itemlink';
-      $tab[7]['itemlink_type']   = 'User';
+      $tab[7]['right']           = 'validate_ticket';
 
       return $tab;
    }

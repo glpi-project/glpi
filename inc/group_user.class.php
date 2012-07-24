@@ -641,6 +641,9 @@ class Group_User extends CommonDBRelation{
       $tab[5]['field']           = 'name';
       $tab[5]['name']            = __('User');
       $tab[5]['massiveaction']   = false;
+      $tab[5]['datatype']      = 'dropdown';
+      $tab[5]['right']         = 'all';
+      
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'is_manager';

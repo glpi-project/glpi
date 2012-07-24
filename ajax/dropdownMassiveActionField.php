@@ -49,10 +49,6 @@ if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
    $item->checkGlobal("w");
 }
 
-/// TODO move actions classes  / create standard function to set value : like getValueToDisplay for display
-///                                showValueToSelect
-
-
 if (isset($_POST["itemtype"])
     && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);
@@ -136,59 +132,6 @@ if (isset($_POST["itemtype"])
 // 
 //          break;
 // 
-//          case "glpi_softwareversions" :
-//             switch ($search["linkfield"]) {
-//                case "softwareversions_id_use" :
-//                case "softwareversions_id_buy" :
-//                   $_POST['softwares_id'] = $_POST['extra_softwares_id'];
-//                   $_POST['myname']       = $search['linkfield'];
-//                   include("dropdownInstallVersion.php");
-//                   break;
-//             }
-//             break;
-// 
-//          default : // dropdown case
-//             $plugdisplay = false;
-//             // Specific plugin Type case
-//             if (($plug=isPluginItemType($_POST["itemtype"]))
-//                 // Specific for plugin which add link to core object
-//                 || ($plug=isPluginItemType(getItemTypeForTable($search['table'])))) {
-//                $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
-//                                                 array('itemtype' => $_POST["itemtype"],
-//                                                       'options'  => $search));
-//             }
-//             $already_display = false;
-// 
-//             if (isset($search['datatype'])) {
-//                switch ($search['datatype']) {
-//                   case "date" :
-//                      echo "<table><tr><td>";
-//                      Html::showDateFormItem($search["linkfield"]);
-//                      echo "</td>";
-//                      $USE_TABLE       = true;
-//                      $already_display = true;
-//                      break;
-// 
-//                   case "datetime" :
-//                      echo "<table><tr><td>";
-//                      Html::showDateTimeFormItem($search["linkfield"]);
-//                      echo "</td>";
-//                      $already_display = true;
-//                      $USE_TABLE = true;
-//                      break;
-// 
-//                   case "bool" :
-//                      Dropdown::showYesNo($search["linkfield"]);
-//                      $already_display = true;
-//                      break;
-// 
-//                   case "text" :
-//                      echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."'></textarea>";
-//                      $already_display = true;
-//                      break;
-//                }
-//             }
-// 
 //             if (!$plugdisplay && !$already_display) {
 //                $cond = (isset($search['condition']) ? $search['condition'] : '');
 //                Dropdown::show(getItemTypeForTable($search["table"]),
@@ -197,12 +140,6 @@ if (isset($_POST["itemtype"])
 //                                     'condition' => $cond));
                   /// TODO Check all searchoption to add datatype
 //             }
-//       }
-//    }
-// 
-//    if ($USE_TABLE) {
-//       echo "<td>";
-//    }
 
    echo "<table class='tab_glpi'><tr><td>";
 
@@ -217,6 +154,7 @@ if (isset($_POST["itemtype"])
    }
 
    $fieldname = '';
+   
    if (empty($search["linkfield"]) || $search['table'] == 'glpi_infocoms') {
       $fieldname = $search["field"];
    } else {
@@ -224,7 +162,8 @@ if (isset($_POST["itemtype"])
    }
    if (!$plugdisplay) {
       $options = array();
-      // For ticket template
+      // For ticket template or aditional options of massive actions
+
       if (isset($_POST['options']) && strlen($_POST['options'])) {
          $options = unserialize(stripslashes($_POST['options']));
       }

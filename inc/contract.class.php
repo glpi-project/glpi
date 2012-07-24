@@ -334,7 +334,6 @@ class Contract extends CommonDBTM {
       $tab[29]['name']           = self::getTypeName(1);
       $tab[29]['forcegroupby']   = true;
       $tab[29]['datatype']       = 'itemlink';
-      $tab[29]['itemlink_type']  = 'Contract';
       $tab[29]['massiveaction']  = false;
       $tab[29]['joinparams']     = $joinparams;
 
@@ -477,7 +476,6 @@ class Contract extends CommonDBTM {
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
       $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
 
       $tab[2]['table']           = $this->getTable();
@@ -608,7 +606,6 @@ class Contract extends CommonDBTM {
       $tab[29]['name']          = _n('Associated supplier', 'Associated suppliers', 2);
       $tab[29]['forcegroupby']  = true;
       $tab[29]['datatype']      = 'itemlink';
-      $tab[29]['itemlink_type'] = 'Supplier';
       $tab[29]['massiveaction'] = false;
       $tab[29]['joinparams']    = array('beforejoin'
                                        => array('table'      => 'glpi_contracts_suppliers',

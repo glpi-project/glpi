@@ -53,6 +53,23 @@ function getForeignKeyFieldForTable($table) {
 
 
 /**
+ * Check if field is a foreign key field
+ *
+ * @param $field string field name
+ *
+ * @return string field name used for a foreign key to the parameter table
+**/
+function isForeignKeyField($field) {
+
+   // No _id drop
+   if (strpos($field,'_id') === false) {
+      return false;
+   }
+   
+   return preg_match("/_id$/", $field) || preg_match("/_id_/", $field);
+}
+
+/**
  * Return foreign key field name for an itemtype
  *
  * @param $itemtype string itemtype

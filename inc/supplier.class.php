@@ -237,7 +237,6 @@ class Supplier extends CommonDBTM {
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
       $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
 
       $tab[2]['table']           = $this->getTable();
@@ -292,7 +291,6 @@ class Supplier extends CommonDBTM {
       $tab[8]['name']            = _n('Associated contact', 'Associated contacts', 2);
       $tab[8]['forcegroupby']    = true;
       $tab[8]['datatype']        = 'itemlink';
-      $tab[8]['itemlink_type']   = 'Contact';
       $tab[8]['massiveaction']   = false;
       $tab[8]['joinparams']      = array('beforejoin'
                                           => array('table'      => 'glpi_contacts_suppliers',
@@ -323,7 +321,6 @@ class Supplier extends CommonDBTM {
       $tab[29]['name']           = _n('Associated contract', 'Associated contracts', 2);
       $tab[29]['forcegroupby']   = true;
       $tab[29]['datatype']       = 'itemlink';
-      $tab[29]['itemlink_type']  = 'Contract';
       $tab[29]['massiveaction']  = false;
       $tab[29]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_contracts_suppliers',

@@ -282,7 +282,6 @@ class Contact extends CommonDBTM{
       $tab[1]['field']          = 'name';
       $tab[1]['name']           = __('Surname');
       $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['itemlink_type']  = $this->getType();
       $tab[1]['massiveaction']  = false;
 
       $tab[11]['table']         = $this->getTable();
@@ -354,7 +353,6 @@ class Contact extends CommonDBTM{
       $tab[8]['name']           = __('Associated suppliers');
       $tab[8]['forcegroupby']   = true;
       $tab[8]['datatype']       = 'itemlink';
-      $tab[8]['itemlink_type']  = 'Supplier';
       $tab[8]['joinparams']     = array('beforejoin'
                                          => array('table'      => 'glpi_contacts_suppliers',
                                                   'joinparams' => array('jointype' => 'child')));

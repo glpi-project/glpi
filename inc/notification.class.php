@@ -189,7 +189,6 @@ class Notification extends CommonDBTM {
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
       $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
 
       $tab[2]['table']           = $this->getTable();
@@ -206,7 +205,6 @@ class Notification extends CommonDBTM {
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = _n('Notification template', 'Notification templates', 2);
       $tab[4]['datatype']        = 'itemlink';
-      $tab[4]['itemlink_type']   = 'NotificationTemplate';
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'itemtype';

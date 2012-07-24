@@ -48,7 +48,7 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
       exit();
    }
    $checkitem = NULL;
-   
+ 
    if (isset($_POST['check_itemtype'])) {
       if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
          exit();

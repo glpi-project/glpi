@@ -410,7 +410,6 @@ abstract class CommonDropdown extends CommonDBTM {
       $tab[1]['field']             = 'name';
       $tab[1]['name']              = __('Name');
       $tab[1]['datatype']          = 'itemlink';
-      $tab[1]['itemlink_link']     = $this->getType();
       $tab[1]['massiveaction']     = false;
 
       $tab[2]['table']             = $this->getTable();

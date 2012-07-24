@@ -115,6 +115,8 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[70]['table']     = 'glpi_users';
       $tab[70]['field']     = 'name';
       $tab[70]['name']      = __('Technician in charge of the hardware');
+      $tab[70]['datatype']  = 'dropdown';
+      $tab[70]['right']     = 'own_ticket';
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'completename';

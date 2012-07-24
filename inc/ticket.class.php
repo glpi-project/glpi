@@ -1953,6 +1953,9 @@ class Ticket extends CommonITILObject {
       $tab[64]['linkfield']      = 'users_id_lastupdater';
       $tab[64]['name']           = __('Last updater');
       $tab[64]['massiveaction']  = false;
+      $tab[64]['datatype']       = 'dropdown';
+      $tab[64]['right']          = 'all';
+      
 
       $tab += $this->getSearchOptionsActors();
 
@@ -2023,7 +2026,7 @@ class Ticket extends CommonITILObject {
       $tab[58]['field']          = 'name';
       $tab[58]['name']           = __('Requester');
       $tab[58]['datatype']       = 'itemlink';
-      $tab[58]['itemlink_type']  = 'User';
+      $tab[58]['right']          = 'all';
       $tab[58]['forcegroupby']   = true;
       $tab[58]['massiveaction']  = false;
       $tab[58]['joinparams']     = array('beforejoin'
@@ -2035,7 +2038,7 @@ class Ticket extends CommonITILObject {
       $tab[59]['linkfield']      = 'users_id_validate';
       $tab[59]['name']           = __('Approver');
       $tab[59]['datatype']       = 'itemlink';
-      $tab[59]['itemlink_type']  = 'User';
+      $tab[59]['right']          = 'validate_ticket';
       $tab[59]['forcegroupby']   = true;
       $tab[59]['massiveaction']  = false;
       $tab[59]['joinparams']     = array('beforejoin'
@@ -2122,7 +2125,7 @@ class Ticket extends CommonITILObject {
       $tab[93]['field']          = 'name';
       $tab[93]['name']           = __('Writer');
       $tab[93]['datatype']       = 'itemlink';
-      $tab[93]['itemlink_type']  = 'User';
+      $tab[93]['right']          = 'all';
       $tab[93]['forcegroupby']   = true;
       $tab[93]['massiveaction']  = false;
       $tab[93]['joinparams']     = array('beforejoin'
@@ -2222,7 +2225,7 @@ class Ticket extends CommonITILObject {
          $tab[94]['field']          = 'name';
          $tab[94]['name']           = __('Writer');
          $tab[94]['datatype']       = 'itemlink';
-         $tab[94]['itemlink_type']  = 'User';
+         $tab[94]['right']          = 'all';
          $tab[94]['forcegroupby']   = true;
          $tab[94]['massiveaction']  = false;
          $tab[94]['joinparams']     = array('beforejoin'
@@ -2233,7 +2236,7 @@ class Ticket extends CommonITILObject {
          $tab[95]['linkfield']      = 'users_id_tech';
          $tab[95]['name']           = __('Technician');
          $tab[95]['datatype']       = 'itemlink';
-         $tab[95]['itemlink_type']  = 'User';
+         $tab[95]['right']          = 'own_ticket';
          $tab[95]['forcegroupby']   = true;
          $tab[95]['massiveaction']  = false;
          $tab[95]['joinparams']     = array('beforejoin'
