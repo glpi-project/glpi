@@ -169,7 +169,35 @@ class AuthLDAP extends CommonDBTM {
       }
       return $input;
    }
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'group_search_type' :
+            return self::getGroupSearchTypeName($values[$field]);
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+
+         case 'group_search_type' :
+            $options['value'] = $values[$field];
+            $options['name']  = $name;
+            return self::dropdownGroupSearchType($options);
+
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * Print the auth ldap form
@@ -424,7 +452,50 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
+   /**
+    * @param $options array
+   **/
+   static function dropdownGroupSearchType(array $options) {
+      $p['name']    = 'group_search_type';
+      $p['value']   = 0;
+      $p['display'] = true;
 
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $tab = self::getGroupSearchTypeName();
+
+      return Dropdown::showFromArray($p['name'], $tab, $p);
+   }
+
+
+   /**
+    * Get the possible value for contract alert
+    *
+    * @since version 0.83
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getGroupSearchTypeName($val=NULL) {
+
+      $tmp[0] = __('In users');
+      $tmp[1] = __('In groups');
+      $tmp[2] = __('In users and groups');
+
+      if (is_null($val)) {
+         return $tmp;
+      }
+      if (isset($tmp[$val])) {
+         return $tmp[$val];
+      }
+      return NOT_AVAILABLE;
+   }
+   
    function showFormGroupsConfig() {
 
       $ID = $this->getField('id');
@@ -436,15 +507,8 @@ class AuthLDAP extends CommonDBTM {
       echo "<th class='center' colspan='4'>" . __('Belonging to groups') . "</th></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Search type') . "</td><td>";
-      $group_search_type = $this->fields["group_search_type"];
-      echo "<select name='group_search_type'>";
-      echo "<option value='0' " . (($group_search_type == 0) ? " selected " : "") . ">" .
-             __('In users') . "</option>";
-      echo "<option value='1' " . (($group_search_type == 1) ? " selected " : "") . ">" .
-             __('In groups') . "</option>";
-      echo "<option value='2' " . (($group_search_type == 2) ? " selected " : "") . ">" .
-             __('In users and groups') . "</option>";
-      echo "</select></td>";
+      self::dropdownGroupSearchType(array('value' => $this->fields["group_search_type"]));
+      echo "</td>";
       echo "<td>" . __('User attribute containing its groups') . "</td>";
       echo "<td><input type='text' name='group_field' value='".$this->fields["group_field"]."'>";
       echo "</td></tr>";
@@ -769,7 +833,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'group_search_type';
-      $tab[24]['datatype']      = 'specific'; /// TODO add specific for display and select
+      $tab[24]['datatype']      = 'specific'; 
       $tab[24]['name']          = __('Search type');
       $tab[24]['massiveaction'] = false;
       
