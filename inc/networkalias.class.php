@@ -471,11 +471,13 @@ class NetworkAlias extends FQDNLabel {
       $tab[12]['table']        = 'glpi_fqdns';
       $tab[12]['field']        = 'fqdn';
       $tab[12]['name']         = FQDN::getTypeName(1);
+      $tab[12]['datatype']     = 'string';
 
       $tab[20]['table']        = 'glpi_networknames';
       $tab[20]['field']        = 'name';
       $tab[20]['name']         = NetworkName::getTypeName(1);
       $tab[20]['massiveation'] = false;
+      $tab[20]['datatype']     = 'dropdown';
 
       return $tab;
    }

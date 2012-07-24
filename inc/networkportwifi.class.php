@@ -149,21 +149,28 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $tab[10]['field']         = 'mac';
       $tab[10]['name']          = __('MAC');
       $tab[10]['massiveaction'] = false;
+      $tab[10]['datatype']      = 'mac';
 
+      /// TODO do specific functions to display and select for mode.
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'mode';
       $tab[11]['name']          = __('Wifi mode');
       $tab[11]['massiveaction'] = false;
+      $tab[11]['datatype']      = 'specific';
 
+      /// TODO do specific functions to display and select for version.
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'version';
       $tab[12]['name']          = __('Wifi protocol version');
       $tab[12]['massiveaction'] = false;
+      $tab[11]['datatype']      = 'specific';
 
       $tab[13]['table']         = 'glpi_wifinetworks';
       $tab[13]['field']         = 'name';
       $tab[13]['name']          = WifiNetwork::getTypeName(1);
       $tab[13]['massiveaction'] = false;
+      $tab[13]['datatype']      = 'dropdown';
+      
 
       return $tab;
    }

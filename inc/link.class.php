@@ -161,6 +161,7 @@ class Link extends CommonDBTM {
       $tab[2]['field']          = 'id';
       $tab[2]['name']           = __('ID');
       $tab[2]['massiveaction']  = false;
+      $tab[2]['datatype']       = 'number';
 
       $tab[3]['table']          = $this->getTable();
       $tab[3]['field']          = 'link';
@@ -171,6 +172,7 @@ class Link extends CommonDBTM {
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
+      $tab[80]['datatype']      = 'dropdown';
 
       return $tab;
    }

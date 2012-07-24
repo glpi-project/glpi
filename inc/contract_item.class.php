@@ -135,6 +135,7 @@ class Contract_Item extends CommonDBRelation{
       $tab[3]['name']          = __('Associated item ID');
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'specific';
+      $tab[3]['additionalfields'] = array('itemtype');
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'itemtype';

@@ -625,6 +625,7 @@ class Group_User extends CommonDBRelation{
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'is_dynamic';
@@ -636,6 +637,7 @@ class Group_User extends CommonDBRelation{
       $tab[4]['field']           = 'completename';
       $tab[4]['name']            = __('Group');
       $tab[4]['massiveaction']   = false;
+      $tab[4]['datatype']        = 'dropdown';
 
       $tab[5]['table']           = 'glpi_users';
       $tab[5]['field']           = 'name';

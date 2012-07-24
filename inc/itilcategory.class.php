@@ -121,16 +121,19 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'completename';
       $tab[71]['name']      = __('Group');
+      $tab[71]['datatype']  = 'dropdown';
 
       $tab[72]['table']     = 'glpi_tickettemplates';
       $tab[72]['field']     = 'name';
       $tab[72]['linkfield'] = 'tickettemplates_id_demand';
       $tab[72]['name']      = __('Template for a request');
+      $tab[72]['datatype']  = 'dropdown';
 
       $tab[73]['table']     = 'glpi_tickettemplates';
       $tab[73]['field']     = 'name';
       $tab[73]['linkfield'] = 'tickettemplates_id_incident';
       $tab[73]['name']      = __('Template for an incident');
+      $tab[73]['datatype']  = 'dropdown';
 
       $tab[74]['table']     = $this->getTable();
       $tab[74]['field']     = 'is_incident';

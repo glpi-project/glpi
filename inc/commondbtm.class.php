@@ -3834,6 +3834,8 @@ class CommonDBTM extends CommonGLPI {
                   return $value;
 
                case "string" :
+               case "mac" :
+               case "ip" :
                   return $value;
 
                case "text" :
@@ -4050,6 +4052,8 @@ class CommonDBTM extends CommonGLPI {
                return Dropdown::showNumber($name, $options);
 
             case "decimal" :
+            case "mac" :
+            case "ip" :
             case "string" :
             case "email" :
             case "weblink" :

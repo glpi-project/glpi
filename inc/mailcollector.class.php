@@ -344,10 +344,12 @@ class MailCollector  extends CommonDBTM {
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'accepted';
       $tab[20]['name']           = __('Accepted mail archive folder (optional)');
+      $tab[20]['datatype']       = 'string';
 
       $tab[21]['table']          = $this->getTable();
       $tab[21]['field']          = 'refused';
       $tab[21]['name']           = __('Refused mail archive folder (optional)');
+      $tab[21]['datatype']       = 'string';
 
       return $tab;
    }

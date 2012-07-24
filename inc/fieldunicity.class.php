@@ -291,18 +291,22 @@ class FieldUnicity extends CommonDropdown {
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
+      $tab[2]['datatype']        = 'number';
       $tab[2]['massiveaction']   = false;
 
+      /// TODO do specific functions to display and select for fields.
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'fields';
       $tab[3]['name']            = __('Unique fields');
       $tab[3]['massiveaction']   = false;
+      $tab[3]['datatype']        = 'specific'; 
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'itemtype';
       $tab[4]['name']            = __('Type');
       $tab[4]['massiveaction']   = false;
       $tab[4]['datatype']        = 'itemtypename';
+      $tab[4]['itemtype_list']   = 'unicity_types';
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'action_refuse';
@@ -333,6 +337,7 @@ class FieldUnicity extends CommonDropdown {
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
+      $tab[80]['datatype']       = 'dropdown';
 
       return $tab;
    }

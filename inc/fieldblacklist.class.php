@@ -60,7 +60,7 @@ class Fieldblacklist extends CommonDropdown {
                          'label' => __('Type'),
                          'type'  => 'blacklist_itemtype'),
                    array('name'  => 'field',
-                         'label' => _n('Field', 'Fields', 2),
+                         'label' => _n('Field', 'Fields', 1),
                          'type'  => 'blacklist_field'),
                    array('name'  => 'value',
                          'label' => __('Value'),
@@ -84,20 +84,86 @@ class Fieldblacklist extends CommonDropdown {
       $tab[4]['datatype']        = 'itemtypename';
       $tab[4]['forcegroupby']    = true;
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'field';
-      $tab[6]['name']            = _n('Field', 'Fields', 2);
-      $tab[6]['datatype']        = 'string';
+      $tab[6]['table']            = $this->getTable();
+      $tab[6]['field']            = 'field';
+      $tab[6]['name']             = _n('Field', 'Fields', 1);
+      $tab[6]['massiveaction']   = false;
+      $tab[6]['datatype']         = 'specific';
+      $tab[6]['additionalfields'] = array('itemtype');
 
+      /// TODO do specific functions to display and select for value.
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'value';
-      $tab[7]['name']            = __('Value');
+      $tab[7]['name']            = __('Value'); // Is also specific
       $tab[7]['datatype']        = 'string';
+      $tab[7]['additionalfields'] = array('itemtype', 'field');
+      $tab[7]['massiveaction']   = false;
 
       return $tab;
    }
+   
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'field':
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+               $target = getItemForItemtype($values['itemtype']);
+               $searchOption = $target->getSearchOptionByField('field', $values[$field]);
+               if (empty($searchOption)) {
+                  if ($table = getTableNameForForeignKeyField($values[$field])) {
+                     $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+                  }
+               }
 
+               return $searchOption['name'];
+            }
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+   
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      echo $field;
+      switch ($field) {
+         case 'field' :
+            /// TODO create function to do it clean
+            if (isset($options['itemtype_used'])
+              && !empty($options['itemtype_used'])
+              && $target = getItemForItemtype($options['itemtype_used'])) {
+               $criteria = array();
+               foreach ($DB->list_fields($target->getTable()) as $tmpfield) {
+                  $searchOption = $target->getSearchOptionByField('field', $tmpfield['Field']);
+
+                  if (empty($searchOption)) {
+                     if ($table = getTableNameForForeignKeyField($tmpfield['Field'])) {
+                        $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+                     }
+                  }
+
+                  if (!empty($searchOption)
+                     && !in_array($tmpfield['Type'], $target->getUnallowedFieldsForUnicity())
+                     && !in_array($tmpfield['Field'], $target->getUnallowedFieldsForUnicity())) {
+                     $criteria[$tmpfield['Field']] = $searchOption['name'];
+                  }
+               }
+
+               $options['value'] = $values[$field];
+               return Dropdown::showFromArray($name, $criteria, $options);
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+   
    /**
     * @see inc/CommonDBTM::prepareInputForAdd()
    **/
