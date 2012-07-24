@@ -68,6 +68,7 @@ class DeviceControl extends CommonDevice {
       $tab[14]['table']    = 'glpi_interfacetypes';
       $tab[14]['field']    = 'name';
       $tab[14]['name']     = __('Interface');
+      $tab[14]['datatype'] = 'dropdown';
 
       return $tab;
    }

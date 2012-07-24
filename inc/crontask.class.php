@@ -1208,6 +1208,7 @@ class CronTask extends CommonDBTM{
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
+      $tab[2]['datatype']      = 'number';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'description';
@@ -1215,6 +1216,7 @@ class CronTask extends CommonDBTM{
       $tab[3]['nosearch']      = true;
       $tab[3]['nosort']        = true;
       $tab[3]['massiveaction'] = false;
+      $tab[3]['datatype']      = 'text';
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'state';
@@ -1242,8 +1244,9 @@ class CronTask extends CommonDBTM{
 
       $tab[8]['table']         = $this->getTable();
       $tab[8]['field']         = 'itemtype';
-      $tab[8]['name']          = __('Plugins');
+      $tab[8]['name']          = __('Item type');
       $tab[8]['massiveaction'] = false;
+      $tab[8]['datatype']      = 'itemtypename';
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';

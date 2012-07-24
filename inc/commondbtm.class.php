@@ -3819,6 +3819,9 @@ class CommonDBTM extends CommonGLPI {
 
             switch ($searchoptions['datatype']) {
                case "number" :
+                  if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
+                     return $searchoptions['toadd'][$value];
+                  }
                   if ($options['html']) {
                      return Html::formatNumber($value, false, 0). $unit;
                   }
@@ -3866,6 +3869,9 @@ class CommonDBTM extends CommonGLPI {
                   return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
 
                case "timestamp" :
+                  if ($value==0 && isset($searchoptions['emptylabel'])) {
+                     return $searchoptions['emptylabel'];
+                  }
                   $withseconds = false;
                   if (isset($searchoptions['withseconds'])) {
                      $withseconds = $searchoptions['withseconds'];
@@ -3893,6 +3899,13 @@ class CommonDBTM extends CommonGLPI {
 
                case "itemlink" :
                case "dropdown" :
+                  if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
+                     return $searchoptions['toadd'][$value];
+                  }
+                  if ($value==0 && isset($searchoptions['emptylabel'])) {
+                     return $searchoptions['emptylabel'];
+                  }
+
                   if ($searchoptions['table'] == 'glpi_users') {
                      if ($param['comments']) {
                         $tmp = getUserName($value,2);
@@ -4102,7 +4115,7 @@ class CommonDBTM extends CommonGLPI {
                return Dropdown::showTimeStamp($name, $options);
 
             case "dropdown" :
-               $copytooption = array('condition', 'right', 'displaywith');
+               $copytooption = array('condition', 'right', 'displaywith', 'emptylabel', 'toadd');
                $options['name']  = $name;
                $options['value'] = $value;
                foreach ($copytooption as $key) {

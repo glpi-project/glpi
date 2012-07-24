@@ -71,11 +71,12 @@ class DeviceDrive extends CommonDevice {
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'speed';
       $tab[13]['name']     = __('Speed');
-      $tab[13]['datatype'] = 'text';
+      $tab[13]['datatype'] = 'string';
 
       $tab[14]['table']    = 'glpi_interfacetypes';
       $tab[14]['field']    = 'name';
       $tab[14]['name']     = __('Interface');
+      $tab[14]['datatype'] = 'dropdown';
 
       return $tab;
    }

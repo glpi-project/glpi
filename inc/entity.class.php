@@ -413,7 +413,8 @@ class Entity extends CommonTreeDropdown {
 
 
    function getSearchOptions() {
-
+      /// TODO lots of specific values may be passed to standard ones.
+      
       $tab                     = array();
       $tab['common']           = __('Characteristics');
 
@@ -427,6 +428,7 @@ class Entity extends CommonTreeDropdown {
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
+      $tab[2]['datatype']      = 'number';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'address';
@@ -468,6 +470,7 @@ class Entity extends CommonTreeDropdown {
       $tab[9]['field']         = 'name';
       $tab[9]['name']          = __('LDAP directory of an entity');
       $tab[9]['massiveaction'] = false;
+      $tab[9]['datatype']      = 'dropdown';
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'fax';
@@ -558,12 +561,14 @@ class Entity extends CommonTreeDropdown {
       $tab[26]['name']          = __('Alarms on cartridges');
       $tab[26]['massiveaction'] = false;
       $tab[26]['nosearch']      = true;
+      $tab[26]['datatype']      = 'specific';
 
       $tab[27]['table']         = $this->getTable();
       $tab[27]['field']         = 'consumables_alert_repeat';
       $tab[27]['name']          = __('Alarms on consumables');
       $tab[27]['massiveaction'] = false;
       $tab[27]['nosearch']      = true;
+      $tab[27]['datatype']      = 'specific';
 
       $tab[28]['table']         = $this->getTable();
       $tab[28]['field']         = 'notepad';
@@ -575,108 +580,133 @@ class Entity extends CommonTreeDropdown {
       $tab[29]['name']          = __('Alarms on expired licenses');
       $tab[29]['massiveaction'] = false;
       $tab[29]['nosearch']      = true;
+      $tab[29]['datatype']      = 'specific';
 
       $tab[53]['table']         = $this->getTable();
       $tab[53]['field']         = 'send_licenses_alert_before_delay';
       $tab[53]['name']          = __('Send license alarms before');
       $tab[53]['massiveaction'] = false;
       $tab[53]['nosearch']      = true;
+      $tab[53]['datatype']      = 'specific';
 
       $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'use_contracts_alert';
       $tab[30]['name']          = __('Alarms on contracts');
       $tab[30]['massiveaction'] = false;
       $tab[30]['nosearch']      = true;
+      $tab[30]['datatype']      = 'specific';
 
       $tab[54]['table']         = $this->getTable();
       $tab[54]['field']         = 'send_contracts_alert_before_delay';
       $tab[54]['name']          = __('Send contract alarms before');
       $tab[54]['massiveaction'] = false;
       $tab[54]['nosearch']      = true;
+      $tab[54]['datatype']      = 'specific';
 
       $tab[31]['table']         = $this->getTable();
       $tab[31]['field']         = 'use_infocoms_alert';
       $tab[31]['name']          = __('Alarms on financial and administrative information');
       $tab[31]['massiveaction'] = false;
       $tab[31]['nosearch']      = true;
+      $tab[31]['datatype']      = 'specific';
 
       $tab[55]['table']         = $this->getTable();
       $tab[55]['field']         = 'send_infocoms_alert_before_delay';
       $tab[55]['name']          = __('Send financial and administrative information alarms before');
       $tab[55]['massiveaction'] = false;
       $tab[55]['nosearch']      = true;
+      $tab[55]['datatype']      = 'specific';
 
       $tab[32]['table']         = $this->getTable();
       $tab[32]['field']         = 'use_reservations_alert';
       $tab[32]['name']          = __('Alerts on reservations');
       $tab[32]['massiveaction'] = false;
       $tab[32]['nosearch']      = true;
+      $tab[32]['datatype']      = 'specific';
 
       $tab[33]['table']         = $this->getTable();
       $tab[33]['field']         = 'autoclose_delay';
       $tab[33]['name']          = __('Automatic closing of solved tickets after');
       $tab[33]['massiveaction'] = false;
       $tab[33]['nosearch']      = true;
+      $tab[33]['datatype']      = 'number';
+      $tab[33]['min']           = 1;
+      $tab[33]['max']           = 99;
+      $tab[33]['step']          = 1;
+      $tab[33]['unit']          = 'day';
+      $tab[33]['toadd']         = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                                        self::CONFIG_NEVER  => __('Never'),
+                                        0                   => __('Immediatly'));
 
       $tab[34]['table']         = $this->getTable();
       $tab[34]['field']         = 'notclosed_delay';
       $tab[34]['name']          = __('Alerts on tickets which are not solved');
       $tab[34]['massiveaction'] = false;
       $tab[34]['nosearch']      = true;
+      $tab[34]['datatype']      = 'specific';
 
       $tab[35]['table']         = $this->getTable();
       $tab[35]['field']         = 'auto_assign_mode';
       $tab[35]['name']          = __('Automatic assignment of tickets');
       $tab[35]['massiveaction'] = false;
       $tab[35]['nosearch']      = true;
+      $tab[35]['datatype']      = 'specific';
 
       $tab[36]['table']         = $this->getTable();
-      $tab[36]['field']         = 'calendars_id';        // not a dropdown because of special value
+      $tab[36]['field']         = 'calendars_id'; // not a dropdown because of special value
       $tab[36]['name']          = __('Calendar');
       $tab[36]['massiveaction'] = false;
       $tab[36]['nosearch']      = true;
+      $tab[36]['datatype']      = 'specific';
 
       $tab[37]['table']         = $this->getTable();
       $tab[37]['field']         = 'tickettype';
       $tab[37]['name']          = __('Tickets default type');
       $tab[37]['massiveaction'] = false;
       $tab[37]['nosearch']      = true;
+      $tab[37]['datatype']      = 'specific';
 
       $tab[38]['table']         = $this->getTable();
       $tab[38]['field']         = 'autofill_buy_date';
       $tab[38]['name']          = __('Date of purchase');
       $tab[38]['massiveaction'] = false;
       $tab[38]['nosearch']      = true;
+      $tab[38]['datatype']      = 'specific';
 
       $tab[39]['table']         = $this->getTable();
       $tab[39]['field']         = 'autofill_order_date';
       $tab[39]['name']          = __('Order date');
       $tab[39]['massiveaction'] = false;
       $tab[39]['nosearch']      = true;
+      $tab[39]['datatype']      = 'specific';
 
       $tab[40]['table']         = $this->getTable();
       $tab[40]['field']         = 'autofill_delivery_date';
       $tab[40]['name']          = __('Delivery date');
       $tab[40]['massiveaction'] = false;
       $tab[40]['nosearch']      = true;
+      $tab[40]['datatype']      = 'specific';
 
       $tab[41]['table']         = $this->getTable();
       $tab[41]['field']         = 'autofill_use_date';
       $tab[41]['name']          = __('Startup date');
       $tab[41]['massiveaction'] = false;
       $tab[41]['nosearch']      = true;
+      $tab[41]['datatype']      = 'specific';
 
       $tab[42]['table']         = $this->getTable();
       $tab[42]['field']         = 'autofill_warranty_date';
       $tab[42]['name']          = __('Start date of warranty');
       $tab[42]['massiveaction'] = false;
       $tab[42]['nosearch']      = true;
+      $tab[42]['datatype']      = 'specific';
 
       $tab[43]['table']         = $this->getTable();
       $tab[43]['field']         = 'inquest_config';
       $tab[43]['name']          = __('Satisfaction survey configuration');
       $tab[43]['massiveaction'] = false;
       $tab[43]['nosearch']      = true;
+      $tab[43]['datatype']      = 'specific';
 
       $tab[44]['table']         = $this->getTable();
       $tab[44]['field']         = 'inquest_rate';
@@ -701,18 +731,21 @@ class Entity extends CommonTreeDropdown {
       $tab[47]['name']          = _n('Ticket template', 'Ticket templates', 1);
       $tab[47]['massiveaction'] = false;
       $tab[47]['nosearch']      = true;
+      $tab[47]['datatype']      = 'specific';
 
       $tab[48]['table']         = $this->getTable();
       $tab[48]['field']         = 'default_contract_alert';
       $tab[48]['name']          =__('Default value for alarms on contracts');
       $tab[48]['massiveaction'] = false;
       $tab[48]['nosearch']      = true;
+      $tab[48]['datatype']      = 'specific';
 
       $tab[49]['table']         = $this->getTable();
       $tab[49]['field']         = 'default_infocom_alert';
       $tab[49]['name']          = __('Default value for alarms on financial and administrative information');
       $tab[49]['massiveaction'] = false;
       $tab[49]['nosearch']      = true;
+      $tab[49]['datatype']      = 'specific';
 
       $tab[50]['table']         = $this->getTable();
       $tab[50]['field']         = 'default_cartridges_alarm_threshold';
@@ -734,6 +767,7 @@ class Entity extends CommonTreeDropdown {
       $tab[51]['name']          = __('Entity for software creation');
       $tab[51]['massiveaction'] = false;
       $tab[51]['nosearch']      = true;
+      $tab[51]['datatype']      = 'specific';
 
       return $tab;
    }
@@ -1997,7 +2031,24 @@ class Entity extends CommonTreeDropdown {
       return NOT_AVAILABLE;
    }
 
+   /**
+    * @param $options array
+   **/
+   static function dropdownAutoAssignMode(array $options) {
+      $p['name']    = 'auto_assign_mode';
+      $p['value']   = 0;
+      $p['display'] = true;
 
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $tab = self::getAutoAssignMode();
+
+      return Dropdown::showFromArray($p['name'], $tab, $p);
+   }
    /**
     * @since version 0.84 (before in entitydata.class)
     *
@@ -2063,33 +2114,18 @@ class Entity extends CommonTreeDropdown {
             break;
 
          case 'notclosed_delay' :   // 0 means never
-            if ($values[$field] == 0) {
-               return __('Never');
-            }
-            // nobreak;
-
-         case 'autoclose_delay' :   // 0 means immediatly
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
-
-               case self::CONFIG_NEVER :
-                  return __('Never');
-            }
-            return sprintf(_n('%d day','%d days',$values[$field]), $values[$field]);
-
-         case 'auto_assign_mode' :
-            return self::getAutoAssignMode($values[$field]);
-
-         case 'calendars_id' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
                   return __('Inheritance of the parent entity');
 
                case 0 :
-                  return __('24/7');
-            }
-            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
+              return __('Never');
+             }
+         
+           return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+
+         case 'auto_assign_mode' :
+            return self::getAutoAssignMode($values[$field]);
 
          case 'tickettype' :
             if ($values[$field] == self::CONFIG_PARENT) {
@@ -2136,12 +2172,6 @@ class Entity extends CommonTreeDropdown {
             }
             return TicketSatisfaction::getTypeInquestName($values[$field]);
 
-         case 'tickettemplates_id' :
-            if ($values[$field] == self::CONFIG_PARENT) {
-               return __('Inheritance of the parent entity');
-            }
-            return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
-
          case 'default_contract_alert' :
             return Contract::getAlertName($values[$field]);
 
@@ -2157,8 +2187,136 @@ class Entity extends CommonTreeDropdown {
             }
             return Dropdown::getDropdownName('glpi_entities', $values[$field]);
 
+         case 'tickettemplates_id' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
+            
+         case 'calendars_id' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return __('Inheritance of the parent entity');
+
+               case 0 :
+                  return __('24/7');
+            }
+            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);            
+
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'use_licenses_alert' :
+         case 'use_contracts_alert' :
+         case 'use_infocoms_alert' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return Alert::dropdownYesNo($options);
+            
+         case 'cartridges_alert_repeat' :
+         case 'consumables_alert_repeat' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return Alert::dropdown($options);
+            
+         case 'send_contracts_alert_before_delay' :
+         case 'send_infocoms_alert_before_delay' :
+         case 'send_licenses_alert_before_delay' :
+            $options['unit']  = 'day';
+            $options['never_string'] = __('No');
+            return Alert::dropdownIntegerNever($name, $values[$field], $options);
+            
+         case 'use_reservations_alert' :
+            $options['unit']  = 'hour';
+            return Alert::dropdownIntegerNever($name, $values[$field], $options);
+
+         case 'notclosed_delay' :
+            $options['unit']  = 'hour';
+            return Alert::dropdownIntegerNever($name, $values[$field], $options);
+            
+         case 'auto_assign_mode' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+         
+            return self::dropdownAutoAssignMode($options);
+            
+         case 'tickettype' :
+            $options['value'] = $values[$field];
+            $options['toadd'] = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
+            return Ticket::dropdownType($name, $options);
+            
+         case 'autofill_buy_date' :
+         case 'autofill_order_date' :
+         case 'autofill_delivery_date' :
+         case 'autofill_use_date' :
+
+            $tab[0] = __('No autofill');
+            $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+
+            foreach (getAllDatasFromTable('glpi_states') as $state) {
+               $tab[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+                           //TRANS: %s is the name of the state
+                  = sprintf(__('Fill when shifting to state %s'), $state['name']);
+            }
+
+            $tab[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
+
+            if ($field != 'autofill_buy_date') {
+               $tab[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
+               if ($field != 'autofill_order_date') {
+                  $tab[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
+                  if ($field != 'autofill_delivery_date') {
+                     $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
+                  }
+               }
+            }
+            $options['value'] = $values[$field];
+            return Dropdown::showFromArray($name, $tab, $options);
+
+      
+         case 'autofill_warranty_date' :
+            $tab = array(0                           => __('No autofill'),
+                         Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+                         Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+                         Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
+                         self::CONFIG_PARENT         => __('Inheritance of the parent entity'));
+            $options['value'] = $values[$field];
+            return Dropdown::showFromArray($name, $tab, $options);
+
+         case 'inquest_config' :
+         
+            $typeinquest = array(self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+                                 1                    => __('Internal survey'),
+                                 2                    => __('External survey'));
+            $options['value'] = $values[$field];
+
+            return Dropdown::showFromArray($name, $typeinquest, $options);
+
+         case 'default_contract_alert' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return Contract::dropdownAlert($options);
+            
+         case 'default_infocom_alert' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return Infocom::dropdownAlert($options);
+
+         case 'entities_id_software' :
+            $options['toadd'] = array(self::CONFIG_NEVER => __('No change of entity')); // Keep software in PC entity
+            $options['toadd'][self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+
+            return self::dropdown($options);
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }   
 }
 ?>

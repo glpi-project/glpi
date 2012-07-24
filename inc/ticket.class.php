@@ -2339,12 +2339,6 @@ class Ticket extends CommonITILObject {
          case 'type':
             return self::getTicketTypeName($values[$field]);
 
-         case 'itemtype':
-            if (class_exists($values[$field])) {
-               return call_user_func(array($values[$field], 'getTypeName'));
-            }
-            break;
-
          case 'items_id':
             if (isset($values['itemtype'])) {
                if (isset($options['comments']) && $options['comments']) {
