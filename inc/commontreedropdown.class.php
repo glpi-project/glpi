@@ -553,6 +553,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $tab[2]['field']              = 'id';
       $tab[2]['name']               = __('ID');
       $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'number';
 
       $tab[14]['table']             = $this->getTable();
       $tab[14]['field']             = 'name';
@@ -569,6 +570,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[80]['field']          = 'completename';
          $tab[80]['name']           = __('Entity');
          $tab[80]['massiveaction']  = false;
+         $tab[80]['datatype']       = 'dropdown';
       }
 
       if ($this->maybeRecursive()) {
