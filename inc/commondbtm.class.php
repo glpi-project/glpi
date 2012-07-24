@@ -3992,7 +3992,6 @@ class CommonDBTM extends CommonGLPI {
                                                            $this->getTable());
          }
       }
-
       if (count($searchoptions)) {
          $field = $searchoptions['field'];
 
@@ -4007,156 +4006,157 @@ class CommonDBTM extends CommonGLPI {
          if (empty($name)) {
             $name = $searchoptions['linkfield'];
          }
-         if (isset($searchoptions['datatype'])) {
-            $options['display'] = false;
-            $unit = '';
-            if (isset($searchoptions['unit'])) {
-               $unit = $searchoptions['unit'];
-            }
-
-            switch ($searchoptions['datatype']) {
-               case "number" :
-               case "integer" :
-                  $copytooption = array('min', 'max', 'step', 'toadd', 'unit');
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-                  $options['value'] = $value;
-                  return Dropdown::showNumber($name, $options);
-
-               case "decimal" :
-               case "string" :
-               case "email" :
-               case "weblink" :
-                  $this->fields[$name] = $value;
-                  return Html::autocompletionTextField($this, $name, $options);
-
-               case "text" :
-                  return "<textarea cols='45' rows='5' name='$name'>$value</textarea>";
-
-               case "bool" :
-                  return Dropdown::showYesNo($name, $value, -1, $options);
-
-               case "date" :
-               case "date_delay" :
-                  if (isset($options['relative_dates']) && $options['relative_dates']) {
-                     if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
-                        $options['maybefuture'] = true;
-                     }
-
-                     return Html::showGenericDateTimeSearch($name, $value, $options);
-                  } else {
-                     $copytooption = array('min', 'max', 'maybeempty', 'showyear');
-
-                     foreach ($copytooption as $key) {
-                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                           $options[$key] = $searchoptions[$key];
-                        }
-                     }
-                     $options['value'] = $value;
-                     return Html::showDateField($name, $options);
-                  }
-
-               case "datetime" :
-                  if (isset($options['relative_dates']) && $options['relative_dates']) {
-                     if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
-                        $options['maybefuture'] = true;
-                     }
-                     
-                     return Html::showGenericDateTimeSearch($name, $value, $options);
-                  } else {
-                     $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
-                                          'maybeempty', 'timestep');
-
-                     foreach ($copytooption as $key) {
-                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                           $options[$key] = $searchoptions[$key];
-                        }
-                     }
-                     $options['value'] = $value;
-                     return Html::showDateTimeField($name, $options);
-                  }
-                  break;
- 
-               case "timestamp" :
-                  $copytooption = array('min', 'max', 'step', 'toadd', 'emptylabel',
-                                        'addfirstminutes', 'inhours');
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-                  $options['value'] = $value;
-                  return Dropdown::showTimeStamp($name, $options);
-
-               case "dropdown" :
-                  $copytooption = array('condition', 'right');
-                  $options['name']  = $name;
-                  $options['value'] = $value;
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-                  if (!isset($options['entity'])) {
-                     $options['entity'] = $_SESSION['glpiactiveentities'];
-                  }
-
-                  if ($searchoptions['table'] == 'glpi_users') {
-                     return User::dropdown($options);
-                  }
-
-                  return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
-                              $options);
-
-               case "right" :
-                  $copytooption = array('nonone', 'noread', 'nowrite');
-                  $options['value'] = $value;
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-                  return Profile::dropdownRight($name, $options);
-
-               case "itemtypename" :
-                  if (isset($searchoptions['itemtype_list'])) {
-                     $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']];
-                  }
-                  $copytooption = array('types');
-                  $options['value'] = $value;
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-
-                  if (isset($options['types'])) {
-                     return Dropdown::showItemTypes($name, $options['types'],
-                                                      $options);
-                  } else {
-                     return false;
-                  }
-                  break;
-
-               case "language" :
-                  $options['value'] = $value;
-                  return Dropdown::showLanguages($name, $options);
-
-            }
+         // If not set : set to specific
+         if (!isset($searchoptions['datatype'])) {
+            $searchoptions['datatype'] = 'specific';
+         }
+         
+         $options['display'] = false;
+         $unit = '';
+         if (isset($searchoptions['unit'])) {
+            $unit = $searchoptions['unit'];
          }
 
+         switch ($searchoptions['datatype']) {
+            case "number" :
+            case "integer" :
+               $copytooption = array('min', 'max', 'step', 'toadd', 'unit');
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+               $options['value'] = $value;
+               return Dropdown::showNumber($name, $options);
+
+            case "decimal" :
+            case "string" :
+            case "email" :
+            case "weblink" :
+               $this->fields[$name] = $value;
+               return Html::autocompletionTextField($this, $name, $options);
+
+            case "text" :
+               return "<textarea cols='45' rows='5' name='$name'>$value</textarea>";
+
+            case "bool" :
+               return Dropdown::showYesNo($name, $value, -1, $options);
+
+            case "date" :
+            case "date_delay" :
+               if (isset($options['relative_dates']) && $options['relative_dates']) {
+                  if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
+                     $options['maybefuture'] = true;
+                  }
+
+                  return Html::showGenericDateTimeSearch($name, $value, $options);
+               } else {
+                  $copytooption = array('min', 'max', 'maybeempty', 'showyear');
+
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+                  $options['value'] = $value;
+                  return Html::showDateField($name, $options);
+               }
+
+            case "datetime" :
+               if (isset($options['relative_dates']) && $options['relative_dates']) {
+                  if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
+                     $options['maybefuture'] = true;
+                  }
+
+                  return Html::showGenericDateTimeSearch($name, $value, $options);
+               } else {
+                  $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
+                                       'maybeempty', 'timestep');
+
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+                  $options['value'] = $value;
+                  return Html::showDateTimeField($name, $options);
+               }
+               break;
+
+            case "timestamp" :
+               $copytooption = array('min', 'max', 'step', 'toadd', 'emptylabel',
+                                       'addfirstminutes', 'inhours');
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+               $options['value'] = $value;
+               return Dropdown::showTimeStamp($name, $options);
+
+            case "dropdown" :
+               $copytooption = array('condition', 'right');
+               $options['name']  = $name;
+               $options['value'] = $value;
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+               if (!isset($options['entity'])) {
+                  $options['entity'] = $_SESSION['glpiactiveentities'];
+               }
+
+               if ($searchoptions['table'] == 'glpi_users') {
+                  return User::dropdown($options);
+               }
+
+               return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
+                           $options);
+
+            case "right" :
+               $copytooption = array('nonone', 'noread', 'nowrite');
+               $options['value'] = $value;
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+               return Profile::dropdownRight($name, $options);
+
+            case "itemtypename" :
+               if (isset($searchoptions['itemtype_list'])) {
+                  $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']];
+               }
+               $copytooption = array('types');
+               $options['value'] = $value;
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+
+               if (isset($options['types'])) {
+                  return Dropdown::showItemTypes($name, $options['types'],
+                                                   $options);
+               } else {
+                  return false;
+               }
+               break;
+
+            case "language" :
+               $options['value'] = $value;
+               return Dropdown::showLanguages($name, $options);
+
+         }
          // Get specific display if available
          $itemtype = getItemTypeForTable($searchoptions['table']);
          if ($item = getItemForItemtype($itemtype)) {
             $specific = $item->getSpecificValueToSelect($field, $name, $values, $options);
-            if (!empty($specific)) {
+            if (strlen($specific)) {
                return $specific;
             }
          }
-
       }
       // default case field text
       $this->fields[$name] = $value;

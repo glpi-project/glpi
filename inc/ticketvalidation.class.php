@@ -376,32 +376,39 @@ class TicketValidation  extends CommonDBChild {
     * @param $name          select name
     * @param $options array of possible options:
     *      - value : default value (default waiting)
-    *      - all   : display all (default false)
-    *      - global
+    *      - all   : boolean display all (default false)
+    *      - global : for global validation (default false)
+    *      - display : boolean display or get string ? (default true)
     *
     * @return nothing (display)
    **/
    static function dropdownStatus($name, $options=array()) {
 
-      $value  = 'waiting';
-      $global = false;
-      $all    = false;
-      if (isset($options['value'])) {
-         $value = $options['value'];
-      }
-      if (isset($options['all'])) {
-         $all = $options['all'];
-      }
-      if (isset($options['global'])) {
-         $global = $options['global'];
-      }
-      $tab = self::getAllStatusArray($all, $global);
+      $p['value']   = 'waiting';
+      $p['global']  = false;
+      $p['all']     = false;
+      $p['display'] = true;
 
-      echo "<select name='$name'>";
-      foreach ($tab as $key => $val) {
-         echo "<option value='$key' ".(($value == $key) ?" selected ":"").">$val</option>";
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
       }
-      echo "</select>";
+      
+      $tab = self::getAllStatusArray($p['all'], $p['global']);
+
+      $output = "<select name='$name'>";
+      foreach ($tab as $key => $val) {
+         $output .= "<option value='$key' ".(($p['value'] == $key) ?" selected ":"").">$val</option>";
+      }
+      $output .= "</select>";
+
+      if ($p['display']) {
+         echo $output;
+         return true;
+      } else {
+         return $output;
+      }
    }
 
 
