@@ -126,6 +126,8 @@ abstract class CommonDBRelation extends CommonDBTM {
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
+      $tab[2]['datatype']      = 'number';
+      
 
       $tab[3]['table']         = getTableForItemType($this->itemtype_1);
       $tab[3]['field']         = $this->items_id_1;

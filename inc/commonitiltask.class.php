@@ -412,11 +412,13 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[1]['table']        = $this->getTable();
       $tab[1]['field']        = 'content';
       $tab[1]['name']         = __('Description');
+      $tab[1]['datatype']     = 'text';
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';
       $tab[2]['name']         = __('Task category');
       $tab[2]['forcegroupby'] = true;
+      $tab[2]['datatype']     = 'dropdown';
 
       $tab[3]['table']        = $this->getTable();
       $tab[3]['field']        = 'date';

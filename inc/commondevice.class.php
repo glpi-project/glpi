@@ -94,6 +94,7 @@ abstract class CommonDevice extends CommonDropdown {
       $tab[23]['table']        = 'glpi_manufacturers';
       $tab[23]['field']        = 'name';
       $tab[23]['name']         = __('Manufacturer');
+      $tab[23]['datatype']     = 'dropdown';
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';
