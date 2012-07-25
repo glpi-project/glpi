@@ -4240,41 +4240,43 @@ class Search {
                   $out .= "</a>";
                   return $out;
                }
-               if (isset($searchopt[$ID]["itemlink_type"])) {
-                  $out   = "";
-                  $split = explode("$$$$", $data[$NAME.$num]);
-                  $count_display = 0;
+               
+               if (!isset($searchopt[$ID]["itemlink_type"])) {
+                  $searchopt[$ID]["itemlink_type"] = getItemTypeForTable($searchopt[$ID]["table"]);
+               }
+               $out   = "";
+               $split = explode("$$$$", $data[$NAME.$num]);
+               $count_display = 0;
 
-                  $separate = '<br>';
-                  if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                     $separate = '<hr>';
-                  }
+               $separate = '<br>';
+               if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
+                  $separate = '<hr>';
+               }
 
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k]))>0) {
-                        $split2 = self::explodeWithID("$$", $split[$k]);
-                        // integer begin by
-                        if ($split2[1][0] == '$') {
+               for ($k=0 ; $k<count($split) ; $k++) {
+                  if (strlen(trim($split[$k]))>0) {
+                     $split2 = self::explodeWithID("$$", $split[$k]);
+                     // integer begin by
+                     if ($split2[1][0] == '$') {
 
+                     }
+                     if (isset($split2[1]) && $split2[1]>0) {
+                        if ($count_display) {
+                           $out .= $separate;
                         }
-                        if (isset($split2[1]) && $split2[1]>0) {
-                           if ($count_display) {
-                              $out .= $separate;
-                           }
-                           $count_display++;
-                           $page = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
-                           $page .= (strpos($page,'?') ? '&id' : '?id');
-                           $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$data['id']."_".
-                                     $split2[1]."' href='$page=".$split2[1]."'>".$split2[0].$unit;
-                           if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                              $out .= " (".$split2[1].")";
-                           }
-                           $out .= "</a>";
+                        $count_display++;
+                        $page = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
+                        $page .= (strpos($page,'?') ? '&id' : '?id');
+                        $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$data['id']."_".
+                                    $split2[1]."' href='$page=".$split2[1]."'>".$split2[0].$unit;
+                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                           $out .= " (".$split2[1].")";
                         }
+                        $out .= "</a>";
                      }
                   }
-                  return $out;
                }
+               return $out;
                break;
 
             case "text" :
