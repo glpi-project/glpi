@@ -587,7 +587,7 @@ class NetworkPort extends CommonDBChild {
       $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
 
       // Add the link to the popup to display the options ...
-      $table_name .= " - <img alt=\"".__s('Select NetworkPort display options')."\" title=\"";
+      $table_name .= " - <img alt=\"".__s('Select network ports display options')."\" title=\"";
       $table_name .= __s('Select NetworkPort display options')."\" src='";
       $table_name .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
       $table_name .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
