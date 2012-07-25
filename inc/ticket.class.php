@@ -2379,13 +2379,14 @@ class Ticket extends CommonITILObject {
       if (!is_array($values)) {
          $values = array($field => $values);
       }
+      print_r($values);
       $options['display'] = false;
       switch ($field) {
          case 'items_id' :
-            if (isset($options['itemtype_used']) && !empty($options['itemtype_used'])) {
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                $options['name']  = $name;
                $options['value'] = $values[$field];
-               return Dropdown::show($options['itemtype_used'], $options);
+               return Dropdown::show($values['itemtype'], $options);
             }
             break;
             

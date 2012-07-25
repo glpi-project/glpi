@@ -60,7 +60,7 @@ if (isset($_REQUEST['searchtype'])) {
    $inputname = 'contains'.$addmeta.'['.$_REQUEST['num'].']';
    $display   = false;
    $item = getItemForItemtype($_REQUEST['itemtype']);
-            print_r($searchopt);
+//             print_r($searchopt);
 
    switch ($_REQUEST['searchtype']) {
       case "equals" :
