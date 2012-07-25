@@ -2523,11 +2523,7 @@ class Search {
 
             case "itemlink" :
                if ($meta
-                  || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
-                  || (empty($searchopt[$ID]["linkfield"])
-                      && isset($searchopt[$ID]["datatype"])
-                      && ($searchopt[$ID]["datatype"] == 'itemlink'
-                      && getItemTypeForTable($searchopt[$ID]["table"]) != $itemtype))) {
+                  || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
                                                         `$table$addtable`.`id`) SEPARATOR '$$$$')
                               AS ".$NAME."_$num, $ADDITONALFIELDS";

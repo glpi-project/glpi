@@ -2365,14 +2365,13 @@ class Html {
     * @param $keepDB booleen, closeDBConnections if false (false by default)
    **/
    static function footer($keepDB=false) {
-      global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG, $SIMPLE_FORMS;
+      global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
       // Print foot for every page
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
-      echo $SIMPLE_FORMS;
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer' >";
@@ -2426,9 +2425,6 @@ class Html {
     * Display Ajax Footer for debug
    **/
    static function ajaxFooter() {
-      global $SIMPLE_FORMS;
-
-      echo $SIMPLE_FORMS;
       
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
@@ -2724,7 +2720,7 @@ class Html {
     * Print footer for help page
    **/
    static function helpFooter() {
-      global $CFG_GLPI, $FOOTER_LOADED, $SIMPLE_FORMS;
+      global $CFG_GLPI, $FOOTER_LOADED;
 
       // Print foot for help page
       if ($FOOTER_LOADED) {
@@ -2732,7 +2728,6 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      echo $SIMPLE_FORMS;
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer'>";
@@ -2801,14 +2796,13 @@ class Html {
     * Print footer for null page
    **/
    static function nullFooter() {
-      global $CFG_GLPI, $FOOTER_LOADED, $SIMPLE_FORMS;
+      global $CFG_GLPI, $FOOTER_LOADED;
 
       // Print foot for null page
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
-      echo $SIMPLE_FORMS;
       
       if (!isCommandLine()) {
          echo "</div></div>";
@@ -2850,14 +2844,13 @@ class Html {
     * Print footer for a popup window
    **/
    static function popFooter() {
-      global $FOOTER_LOADED, $SIMPLE_FORMS;
+      global $FOOTER_LOADED;
 
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
 
-      echo $SIMPLE_FORMS;
       // Print foot
       echo "</body></html>";
    }
@@ -4300,34 +4293,68 @@ class Html {
     * @param $btimage  String   button image uri (optional)
     * @param $btoption String   optionnal button option
     *
+    * @since version 0.84
+   **/
+   static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='') {
+      if (GLPI_USE_CSRF_CHECK) {
+         $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
+      }
+      $fields['_glpi_simple_form'] = 1;
+      $fields[$btname] = $btname;
+      $javascriptArray = array();
+      foreach ($fields as $name => $value) {
+         $javascriptArray[] = "$name:'".urlencode($value)."'";
+      }
+
+      $link = "<a class='vsubmit' ";
+
+      if (!empty($btoption)) {
+         $link .= $btoption.' ';
+      }
+      $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
+      $link .= "onclick=\"submitGetLink('$action', {" . implode(', ', $javascriptArray) .
+               "});\">$btlabel</a>\n";
+
+      return $link;
+
+//       global $SIMPLE_FORMS;
+//       $id = 'minimal_form'.mt_rand();
+// 
+//       $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
+//       if (is_array($fields) && count($fields)) {
+//          foreach ($fields as $name => $value) {
+//             $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
+//          }
+//       }
+//       $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btname'>";
+//       
+//       echo "<a href='#' class='vsubmit' class='submit' $btoption
+//             onClick=\"document.$id.submit()\">";
+//       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
+//       if (empty($btimage)) {
+//          echo $btlabel;
+//       } else {
+//          echo "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
+//       }
+//       echo "</a>";
+// 
+//       $SIMPLE_FORMS .= Html::closeForm(false);
+   }
+   /**
+    * create a minimal form for simple action
+    *
+    * @param $action   String   URL to call on submit
+    * @param $btname   String   button name
+    * @param $btlabel  String   button label
+    * @param $fields   Array    field name => field  value
+    * @param $btimage  String   button image uri (optional)
+    * @param $btoption String   optionnal button option
+    *
     * @since version 0.83.3
    **/
    static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='') {
-      global $SIMPLE_FORMS;
-
-      $id = 'minimal_form'.mt_rand();
-
-      $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
-      if (is_array($fields) && count($fields)) {
-         foreach ($fields as $name => $value) {
-            $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
-         }
-      }
-      $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btname'>";
-      
-      echo "<a href='#' class='vsubmit' class='submit' $btoption
-            onClick=\"document.$id.submit()\">";
-      $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
-      if (empty($btimage)) {
-         echo $btlabel;
-      } else {
-         echo "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
-      }
-      echo "</a>";
-
-      $SIMPLE_FORMS .= Html::closeForm(false);
+      echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption);
    }
-
 
    /**
     * Create a close form part including CSRF token

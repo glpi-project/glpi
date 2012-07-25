@@ -641,7 +641,6 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
             if (img_name != ''){
                document[img_name].src = img_src_close;
             }
-            
          }
       }
    }
@@ -657,4 +656,19 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
    if (document.getElementById(tbl+'5')) {
       toggleTableDisplay(tbl+'5','');
    }
+}
+
+function submitGetLink(target,fields) {
+    var myForm = document.createElement("form");
+    myForm.method="post" ;
+    myForm.action = target ;
+    for (var name in fields) {
+        var myInput = document.createElement("input") ;
+        myInput.setAttribute("name", name) ;
+        myInput.setAttribute("value", fields[name]);
+        myForm.appendChild(myInput) ;
+    }
+    document.body.appendChild(myForm) ;
+    myForm.submit() ;
+    document.body.removeChild(myForm) ;
 }

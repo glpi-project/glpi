@@ -71,7 +71,9 @@ if (isset($_POST)) {
    if (Toolbox::get_magic_quotes_gpc()) {
       $_POST = array_map(array('Toolbox', 'stripslashes_deep'), $_POST);
    }
-
+   if (isset($_POST['_glpi_simple_form'])) {
+      $_POST = array_map('urldecode', $_POST);
+   }
    $_POST = array_map(array('Toolbox','addslashes_deep'), $_POST);
    $_POST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_POST);
 }
