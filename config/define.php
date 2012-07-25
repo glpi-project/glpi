@@ -320,4 +320,7 @@ $CFG_GLPI['missingclasses'] = array('computer_devicecase',
                                     'rulecacheprinter',
                                     'rulecacheprintertype',
                                     'rulecachesoftware');
+
+$PLUGIN_HOOKS['networkport_instantiations'] = array();
+
 ?>

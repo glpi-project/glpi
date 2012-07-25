@@ -66,9 +66,14 @@ class NetworkPort extends CommonDBChild {
     * @return array of available type of network ports
    **/
    static function getNetworkPortInstantiations() {
+      global $PLUGIN_HOOKS;
+
       // Warning : the order is used for displaying different NetworkPort types ! Keep it !
-      return array('NetworkPortEthernet', 'NetworkPortWifi' , 'NetworkPortAggregate',
-                   'NetworkPortAlias', 'NetworkPortDialup',   'NetworkPortLocal' );
+      $types = array('NetworkPortEthernet', 'NetworkPortWifi' , 'NetworkPortAggregate',
+                     'NetworkPortAlias', 'NetworkPortDialup',   'NetworkPortLocal' );
+
+      return array_merge($types, $PLUGIN_HOOKS['networkport_instantiations']);
+
    }
 
    static function getNetworkPortInstantiationsWithNames() {
@@ -123,7 +128,10 @@ class NetworkPort extends CommonDBChild {
           && in_array($this->fields['instantiation_type'], self::getNetworkPortInstantiations())) {
          if ($instantiation = getItemForItemtype($this->fields['instantiation_type'])) {
             if (!$instantiation->getFromDB($this->getID())) {
-               $instantiation->getEmpty();
+               if (!$instantiation->getEmpty()) {
+                  unset($instantiation);
+                  return false;
+               }
             }
             return $instantiation;
          }
