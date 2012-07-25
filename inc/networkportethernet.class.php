@@ -183,6 +183,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
             $opposite_cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                            $connect_cell_value);
+            $opposite_cell->setAttributForTheRow(array('class' =>
+                                                       'htmltable_upper_separation_cell'));
 
             $oppositeEthernetPort = $oppositePort->getInstantiation();
             if ($oppositeEthernetPort !== false) {

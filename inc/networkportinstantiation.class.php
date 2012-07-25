@@ -227,6 +227,8 @@ class NetworkPortInstantiation extends CommonDBChild {
                $cell_value = '<i>'.$virtualPort->getLink().'</i>';
 
                $virtual_cell = $row->addCell($virtual_header, $cell_value, $father);
+               $virtual_cell->setAttributForTheRow(array('class' =>
+                                                         'htmltable_upper_separation_cell'));
 
                if (($this->canHaveVLAN) && ($display_options['vlans'])) {
                   NetworkPort_Vlan::getHTMLTableCellsForItem($row, $virtualPort, $virtual_cell,

@@ -52,6 +52,8 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    private $sons = array();
    private $item;
 
+   // List of rows that have specific attributs
+   private  $attributForTheRow = false;
 
    /**
     * @param $row
@@ -130,6 +132,11 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       } else {
          $this->header->addCell();
       }
+   }
+
+
+   function setAttributForTheRow($attributForTheRow) {
+      $this->attributForTheRow = $attributForTheRow;
    }
 
 
@@ -222,6 +229,9 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    function computeStartEnd(&$start) {
 
       if (!isset($this->start)) {
+         if ($this->attributForTheRow !== false) {
+            $this->row->addAttributForLine($start, $this->attributForTheRow);
+         }
          $this->start = $start;
          foreach ($this->sons as $sons_by_header) {
 
@@ -242,7 +252,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    /**
     * @param $index
    **/
-   function display($index) {
+   function display($index, array $options = array()) {
 
       if (($index >= $this->start)
           && ($index < $this->start + $this->numberOfLines)) {
@@ -255,7 +265,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
             if ($this->numberOfLines > 1) {
                echo " rowspan='".$this->numberOfLines."'";
             }
-            $this->displayEntityAttributs();
+            $this->displayEntityAttributs($options);
             echo ">";
             $this->displayContent();
             echo "</td>\n";
