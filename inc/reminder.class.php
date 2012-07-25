@@ -335,6 +335,7 @@ class Reminder extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;
+      $tab[1]['forcegroupby']  = true;
 
       $tab[2]['table']         = 'glpi_users';
       $tab[2]['field']         = 'name';
