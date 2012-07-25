@@ -381,6 +381,106 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
+    * Update $_SESSION to set the display options of NetworkPort. If the _REQUEST variable is not
+    * defined, then, set it to default value.
+    *
+    * Is called by the popup to get the links to update and by the showForItem to set initial
+    * values, if neccesary
+    *
+    * @param $itemtype     (string) the type of the item we wan't to set the display options
+    * @param $setLinks     (bool)   do we update the options to add the link ?
+    * @param $link_options (string) the fields to add to the link (for instance, itemtype and so on)
+    *
+    * @result all the options + the links if ($setLinks == true)
+   **/
+   static function updateAndGetDisplayOptions($itemtype, $setLinks, $link_options = '') {
+
+      $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
+
+      $options[__('Global displays')]  =
+         array('characteristics' => array('name'    => __('characteristics'),
+                                          'default' => true),
+               'internet'        => array('name'    => __('internet information'),
+                                          'default' => true));
+      $options[__('Common Instantaion options')] = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
+      $options[__('Internet informations')] =
+         array('aliases'     => array('name'    => NetworkAlias::getTypeName(2),
+                                      'default' => false),
+               'ipaddresses' => array('name'    => IPAddress::getTypeName(2),
+                                      'default' => true),
+               'ipnetworks'  => array('name'    => IPNetwork::getTypeName(2),
+                                      'default' => false));
+
+      foreach (self::getNetworkPortInstantiations() as $portType) {
+         $portTypeName = $portType::getTypeName(0);
+         $options[$portTypeName] = $portType::getInstantiationNetworkPortDisplayOptions();
+      }
+
+      foreach ($options as $option_group_name => $option_group) {
+         foreach ($option_group as $option_name => $attributs) {
+            if (isset($_REQUEST['display_'.$option_name])) {
+               $display_options[$option_name] = ($_REQUEST['display_'.$option_name] == 'true');
+            } else if (!isset($display_options[$option_name])) {
+               $display_options[$option_name] = $attributs['default'];
+            }
+
+            if ($setLinks) {
+               $optionLink = "<a href='".$_SERVER["PHP_SELF"]."?display_".$option_name.'=';
+               if ($display_options[$option_name]) {
+                  $optionLink .= 'false';
+                  $content      = sprintf(__('Hide %s'), $attributs['name']);
+               } else {
+                  $optionLink .= 'true';
+                  $content      = sprintf(__('Show %s'), $attributs['name']);
+               }
+               $optionLink .= "&amp;$link_options'>$content</a>";
+
+               $options[$option_group_name][$option_name]['link'] = $optionLink;
+            }
+         }
+      }
+
+      return $options;
+   }
+
+
+   static function showDislayOptions($itemtype) {
+
+      if (isset($_REQUEST['reset'])) {
+         $_SESSION['glpi_NetworkPort_display_options'][$itemtype] = array();
+      }
+
+      $link_options = "itemtype=$itemtype&amp;popup=networkport_display_options&amp;update_origin";
+      $options = self::updateAndGetDisplayOptions($itemtype, true, $link_options);
+
+      if (isset($_REQUEST['update_origin'])) {
+         Ajax::refreshPopupTab();
+      }
+
+      echo "<div class='center'>";
+
+      echo "<table class='tab_cadre'>";
+      echo "<tr><th>".__s('Select NetworkPort display options')."</th></tr>\n";
+
+      echo "<tr><td><a href='".$_SERVER["PHP_SELF"]."?reset&amp;$link_options'>" .
+            __('Reset display options') . "</a></td></tr>\n";
+
+      foreach ($options as $option_group_name => $option_group) {
+         if (count($option_group) > 0) {
+            echo "<tr><th>$option_group_name</th></tr>\n";
+            foreach ($option_group as $attributs) {
+               echo "<tr><td>".$attributs['link']."</td></tr>\n";
+            }
+         }
+      }
+
+      echo "</table>";
+
+      echo "</div>";
+   }
+
+
+   /**
     * Show ports for an item
     *
     * @param $item                     CommonDBTM object
@@ -400,6 +500,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       $netport = new self();
+      $netport->item = $item;
 
       if ($itemtype == 'NetworkPort') {
          $canedit = false;
@@ -422,7 +523,8 @@ class NetworkPort extends CommonDBChild {
          echo "<tr><td class='tab_bg_2 center'>\n";
          _e('Network port type to be added');
          echo "&nbsp;";
-         Dropdown::showFromArray('instantiation_type', self::getNetworkPortInstantiationsWithNames(),
+         Dropdown::showFromArray('instantiation_type',
+                                 self::getNetworkPortInstantiationsWithNames(),
                                  array('value'   => 'NetworkPortEthernet'));
          echo "</td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
@@ -466,22 +568,12 @@ class NetworkPort extends CommonDBChild {
          $_SESSION['glpi_NetworkPort_display_options'][$itemtype] = array();
       }
 
+      self::updateAndGetDisplayOptions($itemtype, false);
+
       // Use an intermediate variable to don't bring this long string.
       // That is also usefull for the instantiations !
       $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
 
-      // Update the session regarding the POST values
-      foreach (array('characteristics' => true,
-                     'internet'        => true,
-                     'aliases'         => false,
-                     'ipaddresses'     => true,
-                     'ipnetworks'      => false) as $option => $default) {
-         if (isset($_POST['display_'.$option])) {
-            $display_options[$option] = ($_POST['display_'.$option] == 'true');
-         } else if (!isset($display_options[$option])) {
-            $display_options[$option] = $default;
-         }
-      }
 
       $table           = new HTMLTable_();
       $number_port     = self::countForItem($item);
@@ -489,27 +581,17 @@ class NetworkPort extends CommonDBChild {
                                'display_options'      => &$display_options);
 
       // Make table name and add the correct show/hide parameters
-      $table_name = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
-      if ($number_port > 0) {
-         foreach (array('characteristics'      => __('characteristics'),
-                        'internet'             => __('internet information'))
-                  as $element_to_display_field => $element_to_display_name) {
+      $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
 
-            if ($display_options[$element_to_display_field]) {
-               //TRANS: %s is the name of the element to hide or to show
-               $element_to_display_name   = sprintf(__('Hide %s'), $element_to_display_name);
-               $element_to_display_boolean = 'false';
-            } else {
-               //TRANS: %s is the name of the element to hide or to show
-               $element_to_display_name    = sprintf(__('Show %s'), $element_to_display_name);
-               $element_to_display_boolean = 'true';
-            }
+      // Add the link to the popup to display the options ...
+      $table_name .= " - <img alt=\"".__s('Select NetworkPort display options')."\" title=\"";
+      $table_name .= __s('Select NetworkPort display options')."\" src='";
+      $table_name .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+      $table_name .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
+      $table_name .= "/front/popup.php?popup=networkport_display_options&amp;";
+      $table_name .= "itemtype=$itemtype' ,'glpipopup', 'height=300, width=200, top=100,";
+      $table_name .= "left=100, scrollbars=yes'); w.focus();\">";
 
-            $table_name .= " - <a href='javascript:reloadTab(\"display_";
-            $table_name .= $element_to_display_field."=".$element_to_display_boolean."\");'>";
-            $table_name .= $element_to_display_name."</a>";
-         }
-      }
       $table->setTitle($table_name);
 
       if (($withtemplate != 2)
@@ -529,36 +611,26 @@ class NetworkPort extends CommonDBChild {
          $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
          $c_instant->setHTMLClass('center');
       }
+
       if ($display_options['internet']) {
+
+         $options = array('aliases'     => 'NetworkAlias',
+                          'ipaddresses' => 'IPAddress',
+                          'ipnetworks'  => 'IPNetwork');
+
          $table_options['dont_display'] = array();
-
-         $header_value  = _n(__('Internet information'),__('Internet information'), 2);
-         // Make table name and add the correct show/hide parameters
-         foreach (array('aliases'              => 'NetworkAlias',
-                        'ipaddresses'          => 'IPAddress',
-                        'ipnetworks'           => 'IPNetwork')
-                  as $element_to_display_field => $element_to_display_type) {
-            $element_to_display_name = $element_to_display_type::getTypeName(2);
-
-            if ($display_options[$element_to_display_field]) {
-               //TRANS: %s is the name of the element to hide or to show
-               $element_to_display_name   = sprintf(__('Hide %s'), $element_to_display_name);
-               $element_to_display_boolean = 'false';
-            } else {
-               //TRANS: %s is the name of the element to hide or to show
-               $element_to_display_name    = sprintf(__('Show %s'), $element_to_display_name);
-               $element_to_display_boolean = 'true';
-               // And remove the elements !
-               $table_options['dont_display'][$element_to_display_type] = true;
+         foreach ($options as $option => $itemtype_for_option) {
+            if (!$display_options[$option]) {
+               $table_options['dont_display'][$itemtype_for_option] = true;
             }
-
-            $header_value .= " - <a href='javascript:reloadTab(\"display_";
-            $header_value .= $element_to_display_field."=".$element_to_display_boolean."\");'>";
-            $header_value .= $element_to_display_name."</a>";
          }
 
-         $c_network = $table->addHeader('Internet', $header_value);
+         $c_network = $table->addHeader('Internet', _n(__('Internet information'),
+                                                       __('Internet information'), 2));
          $c_network->setHTMLClass('center');
+
+      } else {
+         $c_network = NULL;
       }
 
       foreach ($porttypes as $portType) {
@@ -567,25 +639,22 @@ class NetworkPort extends CommonDBChild {
             $t_group = $table->createGroup('Migration',
                                            __('Network ports waiting for manual migration'));
             if ($display_options['characteristics']) {
-               $sc_instant = NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group,
-                                                                                     $c_instant,
-                                                                                     $table_options);
-            } else {
-               $sc_instant = NULL;
+               NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group, $c_instant,
+                                                                       $table_options);
             }
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));
             if ($display_options['characteristics']) {
-               $sc_instant = $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant,
-                                                                          $table_options);
-            } else {
-               $sc_instant = NULL;
+               $instantiation = new $portType();
+               $instantiation->getInstantiationHTMLTable_Headers($t_group, $c_instant, $c_network,
+                                                                 NULL, $table_options);
+               unset ($instantiation);
             }
          }
 
-         if ($display_options['internet']) {
-            NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, $sc_instant,
-                                            $table_options);
+         if (($display_options['internet'])
+             && (!$display_options['characteristics'])) {
+            NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, NULL, $table_options);
          }
 
          if ($itemtype == 'NetworkPort') {
@@ -638,8 +707,6 @@ class NetworkPort extends CommonDBChild {
                   $t_row = $t_group->createRow();
 
                   $netport->getFromDB(current($devid));
-                  // This is added by HTMLTable
-                  // Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                   // No massive action for migration ports
                   if (($withtemplate != 2)
@@ -683,15 +750,12 @@ class NetworkPort extends CommonDBChild {
                   if ($display_options['characteristics']) {
                      $instantiation = $netport->getInstantiation();
                      if ($instantiation !== false) {
-                        $instant_cell = $instantiation->getInstantiationHTMLTable_($netport, $item,
-                                                                                   $t_row,
-                                                                                   $table_options);
+                        $instantiation->getInstantiationHTMLTable_($netport, $t_row, NULL,
+                                                                   $table_options);
                         unset($instantiation);
                      }
-                  }
-                  if ($display_options['internet']) {
-                     NetworkName::getHTMLTableCellsForItem($t_row, $netport, $instant_cell,
-                                                           $table_options);
+                  } else if ($display_options['internet']) {
+                     NetworkName::getHTMLTableCellsForItem($t_row, $netport, NULL, $table_options);
                   }
 
                }

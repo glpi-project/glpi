@@ -102,7 +102,13 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          $kb->check($_GET["id"],'r');
          $kb->showFull(true);
          break;
-   }
+
+      case "networkport_display_options" :
+         Html::popHeader(__('Select NetworkPort display options'), $_SERVER['PHP_SELF']);
+         include "networkport.display.php";
+         break;
+
+  }
    echo "<div class='center'><br><a href='javascript:window.close()'>".__('Close')."</a>";
    echo "</div>";
    Html::popFooter();

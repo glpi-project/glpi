@@ -88,41 +88,37 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
+   static function getInstantiationNetworkPortDisplayOptions() {
+      return array('ethernet_opposite' => array('name'    => __('the opposite link'),
+                                                'default' => false));
+   }
+
+
   /**
    * @param $group               HTMLTable_Group object
    * @param $super               HTMLTable_SuperHeader object
    * @param $options    array
   **/
-   static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $super,
-                                                     array $options=array()) {
+   function getInstantiationHTMLTable_Headers(HTMLTable_Group $group, HTMLTable_SuperHeader $super,
+                                              HTMLTable_SuperHeader $internet_super = NULL,
+                                              HTMLTable_Header $father=NULL,
+                                              array $options=array()) {
 
       $display_options = &$options['display_options'];
 
-      if (isset($_POST['display_ethernet_opposite'])) {
-         $display_options['ethernet_opposite'] =($_POST['display_ethernet_opposite'] == 'true');
-      } else if (!isset($display_options['ethernet_opposite'])) {
-         $display_options['ethernet_opposite'] = false;
-      }
+      $header = $group->addHeader('Connected', __('Connected to'), $super);
 
-      $connect_text = __('Connected to')."<br>";
-      if ($display_options['ethernet_opposite']) {
-         $connect_text .= "<a href='javascript:reloadTab(\"display_ethernet_opposite=false\");'>" .
-                          "<i>" . __('hide the opposite link') . "</i></a>";
-      } else {
-         $connect_text .= "<a href='javascript:reloadTab(\"display_ethernet_opposite=true\");'>" .
-                          "<i>" . __('show the opposite link') . "</i></a>";
-      }
-
-      $header = $group->addHeader('Connected', $connect_text, $super);
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header,
                                             $options);
-      $group->addHeader('MAC', __('MAC'), $super, $header);
+
       $group->addHeader('speed', __('Ethernet port speed'), $super, $header);
       $group->addHeader('type', __('Ethernet port type'), $super, $header);
-      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, $header, $options);
+
       Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header, $options);
+
       $group->addHeader('Outlet', __('Network outlet'), $super, $header);
+
+      parent::getInstantiationHTMLTable_Headers($group, $super, $internet_super, $header, $options);
 
       return $header;
 
@@ -142,13 +138,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @return the father cell for the Internet Informations ...
    **/
    private function getEthernetInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
-                                                       HTMLTable_Cell $father,
+                                                       HTMLTable_Cell $father = NULL,
                                                        array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
-
-      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'),
-                    $netport->fields["mac"], $father);
 
       if (!empty($this->fields['speed'])) {
          $row->addCell($row->getHeaderByName('Instantiation', 'speed'),
@@ -160,7 +153,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                        $this->fields["type"], $father);
       }
 
-      NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, $father, $options);
+      parent::getInstantiationHTMLTable_($netport, $row, $father, $options);
 
       Netpoint::getHTMLTableCellsForItem($row, $this, $father, $options);
 
@@ -169,14 +162,17 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   /**
    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
   **/
-   function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, array $options=array()) {
+   function getInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
+                                       HTMLTable_Cell $father=NULL, array $options=array()) {
 
       $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
                                         'parameters' => array(clone $netport)));
 
       $oppositePort = new NetworkPort();
       if ($oppositePort->getFromDB($netport->getContact($netport->getID()))) {
+
+         $opposite_options = $options;
+         $opposite_options['canedit'] = false;
 
          $display_options = $options['display_options'];
 
@@ -191,11 +187,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             $oppositeEthernetPort = $oppositePort->getInstantiation();
             if ($oppositeEthernetPort !== false) {
                $oppositeEthernetPort->getEthernetInstantiationHTMLTable_($oppositePort, $row,
-                                                                         $opposite_cell, $options);
-            }
-
-            if ($display_options['internet']) {
-               NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $opposite_cell, $options);
+                                                                         $opposite_cell,
+                                                                         $opposite_options);
             }
 
          } else {

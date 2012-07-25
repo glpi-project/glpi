@@ -28,25 +28,25 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Damien Touraine
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   define('GLPI_ROOT', '..');
+   include (GLPI_ROOT . "/inc/includes.php");
 }
 
-/// NetworkPortLocal class : local instantiation of NetworkPort. Among others, loopback
-/// (ie.: 127.0.0.1)
-/// @since 0.84
-class NetworkPortLocal extends NetworkPortInstantiation {
-
-
-   public $canHaveVLAN = false;
-   public $haveMAC     = false;
-
-   static function getTypeName($nb=0) {
-     return __('Local loop');
-   }
+if (isset($_POST["itemtype"])) {
+   $itemtype = $_POST["itemtype"];
+} else if (isset($_GET["itemtype"])) {
+   $itemtype = $_GET["itemtype"];
+} else {
+   $itemtype = 0;
 }
+
+Session::checkRight("networking", "r");
+Session::checkRight("internet", "r");
+NetworkPort::showDislayOptions($itemtype);
+Html::ajaxFooter();
 ?>

@@ -101,16 +101,18 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $super              HTMLTable_SuperHeader object
     * @param $options   array
    **/
-   static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $super,
-                                                     array $options=array()) {
+   function getInstantiationHTMLTable_Headers(HTMLTable_Group $group, HTMLTable_SuperHeader $super,
+                                              HTMLTable_SuperHeader $internet_super = NULL,
+                                              HTMLTable_Header $father=NULL,
+                                              array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, NULL, $options);
-      $group->addHeader('MAC', __('MAC'), $super);
+
       $group->addHeader('ESSID', __('ESSID'), $super);
       $group->addHeader('Mode', __('Wifi mode'), $super);
       $group->addHeader('Version', __('Wifi protocol version'), $super);
-      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, NULL, $options);
+
+      parent::getInstantiationHTMLTable_Headers($group, $super, $internet_super, $father, $options);
 
       return NULL;
    }
@@ -119,12 +121,10 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    /**
     * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
    **/
-   function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, array $options=array()) {
+   function getInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
+                                       HTMLTable_Cell $father=NULL, array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
-
-      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
       $row->addCell($row->getHeaderByName('Instantiation', 'ESSID'),
                     Dropdown::getDropdownName("glpi_wifinetworks",
@@ -134,7 +134,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
 
-      NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
+      parent::getInstantiationHTMLTable_($netport, $row, $father, $options);
 
       return NULL;
    }
