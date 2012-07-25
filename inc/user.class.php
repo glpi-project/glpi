@@ -2288,7 +2288,7 @@ class User extends CommonDBTM {
       $tab[14]['datatype']       = 'datetime';
       $tab[14]['massiveaction']  = false;
 
-      /// TODO do specific functions to display and select for auth_tables.
+      // Virtual field so not able to manage it
       $tab[15]['table']          = 'glpi_auth_tables';
       $tab[15]['field']          = 'name';
       $tab[15]['linkfield']      = 'auths_id';
