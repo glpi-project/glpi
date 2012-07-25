@@ -359,10 +359,11 @@ class Reminder extends CommonDBTM {
       $tab[2]['massiveaction'] = false;
       $tab[2]['right']           = 'all';
 
+      /// TODO do specific functions to display and select for speed.
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'state';
       $tab[3]['name']          = __('Status');
-      $tab[3]['datatype']      = 'dropdown';
+      $tab[3]['datatype']      = 'specific';
       $tab[3]['massiveaction'] = false;
       $tab[3]['searchtype']    = 'equals';
 

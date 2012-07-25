@@ -5170,6 +5170,18 @@ class Search {
 
          if (isset($searchopt[$field_num]['datatype'])) {
             switch ($searchopt[$field_num]['datatype']) {
+               case 'number' :
+                  $opt = array('contains'  => __('contains'),
+                               'equals'    => __('is'),
+                               'notequals' => __('is not'),
+                               'searchopt' => $searchopt[$field_num]);
+                  // No is / isnot if no limits defined
+                  if (!isset($searchopt[$field_num]['min']) 
+                     && !isset($searchopt[$field_num]['max'])) {
+                     unset($opt['equals']);
+                     unset($opt['notequals']);
+                  }
+                  return $opt;
                case 'bool' :
                   return array('equals'    => __('is'),
                                'notequals' => __('is not'),

@@ -59,6 +59,8 @@ if (isset($_REQUEST['searchtype'])) {
 
    $inputname = 'contains'.$addmeta.'['.$_REQUEST['num'].']';
    $display   = false;
+   $item = getItemForItemtype($_REQUEST['itemtype']);
+            print_r($searchopt);
 
    switch ($_REQUEST['searchtype']) {
       case "equals" :
@@ -68,6 +70,10 @@ if (isset($_REQUEST['searchtype'])) {
       case "under" :
       case "notunder" :
         if (!$display && isset($searchopt['field'])) {
+/*            $options = array();
+            echo $item->getValueToSelect($searchopt, $inputname, $_REQUEST['value'], $options);
+            $display = true;
+            break;*/
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
                case "glpi_reminders.state" :
