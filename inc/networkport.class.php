@@ -402,8 +402,8 @@ class NetworkPort extends CommonDBChild {
                                           'default' => true),
                'internet'        => array('name'    => __('internet information'),
                                           'default' => true));
-      $options[__('Common Instantaion options')] = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
-      $options[__('Internet informations')] =
+      $options[__('Common options')] = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
+      $options[__('Internet information')] =
          array('aliases'     => array('name'    => NetworkAlias::getTypeName(2),
                                       'default' => false),
                'ipaddresses' => array('name'    => IPAddress::getTypeName(2),
@@ -460,7 +460,7 @@ class NetworkPort extends CommonDBChild {
       echo "<div class='center'>";
 
       echo "<table class='tab_cadre'>";
-      echo "<tr><th>".__s('Select NetworkPort display options')."</th></tr>\n";
+      echo "<tr><th>".__s('Select network ports display options')."</th></tr>\n";
 
       echo "<tr><td><a href='".$_SERVER["PHP_SELF"]."?reset&amp;$link_options'>" .
             __('Reset display options') . "</a></td></tr>\n";
@@ -589,7 +589,7 @@ class NetworkPort extends CommonDBChild {
       $table_name .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
       $table_name .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
       $table_name .= "/front/popup.php?popup=networkport_display_options&amp;";
-      $table_name .= "itemtype=$itemtype' ,'glpipopup', 'height=300, width=200, top=100,";
+      $table_name .= "itemtype=$itemtype' ,'glpipopup', 'height=400, width=600, top=100,";
       $table_name .= "left=100, scrollbars=yes'); w.focus();\">";
 
       $table->setTitle($table_name);
