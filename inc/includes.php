@@ -140,7 +140,8 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
       if (!isset($_SERVER['HTTP_REFERER'])
           || !is_array($url=parse_url($_SERVER['HTTP_REFERER']))
           || !isset($url['host'])
-          || ($url['host']!=$_SERVER['SERVER_NAME'])
+          || ($url['host']!=$_SERVER['SERVER_NAME'] 
+		&& (!isset($_SERVER['HTTP_X_FORWARDED_HOST']) || $url['host'] != $_SERVER['HTTP_X_FORWARDED_HOST']))
           || !isset($url['path'])
           || (!empty($CFG_GLPI['root_doc']) && strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
          Html::displayErrorAndDie("Error calling the previous page from forbidden one.", true);
