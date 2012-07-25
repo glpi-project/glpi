@@ -1821,12 +1821,11 @@ class Ticket extends CommonITILObject {
 
       $tab['common']             = __('Characteristics');
 
-      /// TODO do specific functions to display and select for name adding toolbox of content
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Title');
       $tab[1]['searchtype']      = 'contains';
-      $tab[1]['datatype']        = 'specific';
+      $tab[1]['datatype']        = 'itemlink';
       $tab[1]['forcegroupby']    = true;
       $tab[1]['massiveaction']   = false;
 
@@ -2056,7 +2055,6 @@ class Ticket extends CommonITILObject {
 
       $tab['satisfaction']       = __('Satisfaction survey');
 
-      /// TODO do specific functions to display and select for type.
       $tab[31]['table']          = 'glpi_ticketsatisfactions';
       $tab[31]['field']          = 'type';
       $tab[31]['name']           = __('Type');
@@ -2160,7 +2158,6 @@ class Ticket extends CommonITILObject {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
-      /// TODO do specific functions to display and select for tickets_id_1 ?
          $tab[40]['table']          = 'glpi_tickets_tickets';
          $tab[40]['field']          = 'tickets_id_1';
          $tab[40]['name']           = __('All linked tickets');
@@ -2169,7 +2166,6 @@ class Ticket extends CommonITILObject {
          $tab[40]['joinparams']     = array('jointype' => 'item_item');
          $tab[40]['datatype']       = 'specific';
 
-      /// TODO do specific functions to display and select for tickets_id_1 ?
          $tab[47]['table']          = 'glpi_tickets_tickets';
          $tab[47]['field']          = 'tickets_id_1';
          $tab[47]['name']           = __('Duplicated tickets');
@@ -2379,7 +2375,6 @@ class Ticket extends CommonITILObject {
       if (!is_array($values)) {
          $values = array($field => $values);
       }
-      print_r($values);
       $options['display'] = false;
       switch ($field) {
          case 'items_id' :

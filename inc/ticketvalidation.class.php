@@ -394,7 +394,7 @@ class TicketValidation  extends CommonDBChild {
             $p[$key] = $val;
          }
       }
-      
+
       $tab = self::getAllStatusArray($p['all'], $p['global']);
 
       $output = "<select name='$name'>";
@@ -780,12 +780,11 @@ class TicketValidation  extends CommonDBChild {
       $tab[2]['name']            = __('Approval comments');
       $tab[2]['datatype']        = 'text';
 
-      /// TODO do specific functions to display and select for status.
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'status';
       $tab[3]['name']            = __('Status');
       $tab[3]['searchtype']      = 'equals';
-      $tab[3]['datatype']        = 'text';
+      $tab[3]['datatype']        = 'specific';
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'submission_date';
@@ -811,6 +810,34 @@ class TicketValidation  extends CommonDBChild {
       $tab[7]['right']           = 'validate_ticket';
 
       return $tab;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'status':
+            return self::getStatus($values[$field]);
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'status' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return self::dropdownStatus($options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
 }

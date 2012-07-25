@@ -222,5 +222,34 @@ class TicketSatisfaction extends CommonDBTM {
       }
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'type':
+            return self::getTypeInquestName($values[$field]);
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'type' :
+            $options['value'] = $values[$field];
+            $typeinquest = array(1 => __('Internal survey'),
+                                 2 => __('External survey'));
+            return Dropdown::showFromArray($name, $typeinquest, $options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
 }
 ?>
