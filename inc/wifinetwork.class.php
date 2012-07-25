@@ -44,13 +44,19 @@ class WifiNetwork extends CommonDropdown {
 
 
    static function getWifiCardVersion() {
-      return array('a', 'a/b', 'a/b/g', 'a/b/g/n', 'a/b/g/n/y');
+      return array(''         => '', 
+                  'a'         => 'a',
+                  'a/b'       => 'a/b', 
+                  'a/b/g'     => 'a/b/g', 
+                  'a/b/g/n'   => 'a/b/g/n', 
+                  'a/b/g/n/y' => 'a/b/g/n/y');
    }
 
 
    static function getWifiCardModes() {
 
-      return array('ad-hoc'    => __('Ad-hoc'),
+      return array(''          => Dropdown::EMPTY_VALUE,
+                   'ad-hoc'    => __('Ad-hoc'),
                    'managed'   => __('Managed'),
                    'master'    => __('Master'),
                    'repeater'  => __('Repeater'),
@@ -62,7 +68,8 @@ class WifiNetwork extends CommonDropdown {
 
    static function getWifiNetworkModes() {
 
-      return array('infrastructure' => __('Infrastructure (with access point)'),
+      return array(''               => Dropdown::EMPTY_VALUE,
+                   'infrastructure' => __('Infrastructure (with access point)'),
                    'ad-hoc'         => __('Ad-hoc (without access point)'));
    }
 
@@ -105,16 +112,9 @@ class WifiNetwork extends CommonDropdown {
    function displaySpecificTypeField($ID, $field=array()) {
 
       if ($field['type'] == 'wifi_mode') {
-         echo "<select name='".$field['name']."'>";
-         echo "<option value=''></option>";
-         foreach (self::getWifiNetworkModes() as $value => $name) {
-            echo "<option value='$value'";
-            if ($this->fields[$field['name']] == $value) {
-               echo " selected";
-            }
-            echo ">$name</option>";
-         }
-         echo "</select>";
+         Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
+                                 array('value' => $this->fields[$field['name']]));
+
       }
    }
 

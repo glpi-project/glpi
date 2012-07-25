@@ -67,26 +67,18 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
          echo "<tr class='tab_bg_1'>\n";
          echo "<td>" . __('Wifi mode') . "</td>";
-         echo "<td><select name='mode'>";
-         echo "<option value=''></option>";
-         foreach (WifiNetwork::getWifiCardModes() as $value => $name) {
-            echo "<option value='$value'";
-            if ($this->fields['mode'] == $value) {
-               echo " selected";
-            }
-            echo ">$name</option>";
-         }
-         echo "</select></td>\n";
-         echo "<td>" . __('Wifi protocol version') . "</td><td><select name='version'>";
-         echo "<option value=''></option>";
-         foreach (WifiNetwork::getWifiCardVersion() as $value) {
-            echo "<option value='$value'";
-            if ($this->fields['version'] == $value) {
-               echo " selected";
-            }
-            echo ">$value</option>";
-         }
-         echo "</select></td>\n";
+         echo "<td>";
+         
+         Dropdown::showFromArray('mode', WifiNetwork::getWifiCardModes(),
+                                 array('value' => $this->fields['mode']));
+
+         echo "</td>\n";
+         echo "<td>" . __('Wifi protocol version') . "</td><td>";
+
+         Dropdown::showFromArray('version', WifiNetwork::getWifiCardVersion(),
+                                 array('value' => $this->fields['version']));
+
+         echo "</td>\n";
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>\n";
@@ -151,14 +143,12 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $tab[10]['massiveaction'] = false;
       $tab[10]['datatype']      = 'mac';
 
-      /// TODO do specific functions to display and select for mode.
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'mode';
       $tab[11]['name']          = __('Wifi mode');
       $tab[11]['massiveaction'] = false;
       $tab[11]['datatype']      = 'specific';
 
-      /// TODO do specific functions to display and select for version.
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'version';
       $tab[12]['name']          = __('Wifi protocol version');
@@ -170,11 +160,58 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $tab[13]['name']          = WifiNetwork::getTypeName(1);
       $tab[13]['massiveaction'] = false;
       $tab[13]['datatype']      = 'dropdown';
-      
 
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'mode':
+            $tab = WifiNetwork::getWifiCardModes();
+            if (isset($tab[$values[$field]])) {
+               return $tab[$values[$field]];
+            }
+            return NOT_AVAILABLE;
+            break;
+
+         case 'version':
+            $tab = WifiNetwork::getWifiCardVersion();
+            if (isset($tab[$values[$field]])) {
+               return $tab[$values[$field]];
+            }
+            return NOT_AVAILABLE;
+            break;
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'mode':
+            $options['value'] = $values[$field];
+            Dropdown::showFromArray($name, WifiNetwork::getWifiCardModes(), $options);
+            break;
+
+         case 'version':
+            $options['value'] = $values[$field];
+            Dropdown::showFromArray($name, WifiNetwork::getWifiCardVersion(), $options);
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
                                                          $itemtype) {
