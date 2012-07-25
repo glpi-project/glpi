@@ -2650,11 +2650,11 @@ class Search {
                $toadd2 = " OR `$table`.`$field` IS NULL";
             }
 
-            return $link." ((`$table`.`$name1` $SEARCH
+            return $link." (((`$table`.`$name1` $SEARCH
                             $tmplink `$table`.`$name2` $SEARCH
                             $tmplink `$table`.`$field` $SEARCH
                             $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
-                            $toadd2) $toadd";
+                            $toadd2) $toadd)";
 
 //          case "glpi_groups.name" :
 //             $linkfield = "";
