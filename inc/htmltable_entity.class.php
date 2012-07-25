@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 abstract class HTMLTable_Entity {
 
    private $html_id;
-   private $html_style;
+   private $html_style = array();;
    private $html_class = array();
 
    private $content;
@@ -92,7 +92,11 @@ abstract class HTMLTable_Entity {
     * @param $html_style
    **/
    function setHTMLStyle($html_style) {
-      $this->html_style = $html_style;
+      if (is_array($html_style)) {
+         $this->html_style = array_merge($this->html_style, $html_style);
+      } else {
+         $this->html_style[] = $html_style;
+      }
    }
 
 
@@ -114,7 +118,7 @@ abstract class HTMLTable_Entity {
          echo " id='".$this->html_id."'";
       }
       if (!empty($this->html_style)) {
-         echo " style='".$this->html_style."'";
+         echo " style='".implode(';', $this->html_style)."'";
       }
       if (count($this->html_class) > 0) {
          echo " class='".implode(' ', $this->html_class)."'";
