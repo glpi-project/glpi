@@ -118,6 +118,7 @@ class ReservationItem extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab += Location::getSearchOptionsToAdd();
 
@@ -135,6 +136,7 @@ class ReservationItem extends CommonDBTM {
       $tab[71]['table']          = 'glpi_groups';
       $tab[71]['field']          = 'completename';
       $tab[71]['name']           = __('Group');
+      $tab[71]['datatype']       = 'dropdown';
 
       $tab[19]['table']          = 'reservation_types';
       $tab[19]['field']          = 'date_mod';
@@ -145,6 +147,7 @@ class ReservationItem extends CommonDBTM {
       $tab[23]['table']          = 'glpi_manufacturers';
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
+      $tab[23]['datatype']       = 'dropdown';
 
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
@@ -157,6 +160,7 @@ class ReservationItem extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       return $tab;
    }

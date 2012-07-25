@@ -141,6 +141,7 @@ class NotificationTemplate extends CommonDBTM {
       $tab[4]['field']         = 'itemtype';
       $tab[4]['name']          = __('Type');
       $tab[4]['datatype']      = 'itemtypename';
+      $tab[4]['itemtype_list'] = 'notificationtemplates_types';
       $tab[4]['massiveaction'] = false;
 
       $tab[16]['table']        = $this->getTable();

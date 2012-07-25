@@ -266,11 +266,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $tab[2]['field']         = 'subject';
       $tab[2]['name']          = __('Subject');
       $tab[2]['massiveaction'] = false;
+      $tab[2]['datatype']      = 'string';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'content_html';
       $tab[3]['name']          = __('Email HTML body');
       $tab[3]['datatype']      = 'text';
+      $tab[3]['htmltext']      = 'true';
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();

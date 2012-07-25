@@ -78,23 +78,29 @@ class RuleCriteria extends CommonDBChild {
 
       $tab                     = array();
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'criteria';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['massiveaction'] = false;
-      $tab[1]['datatype']      = 'string';
+      /// TODO do specific functions to display and select for criteria. Or put string ?
+      $tab[1]['table']            = $this->getTable();
+      $tab[1]['field']            = 'criteria';
+      $tab[1]['name']             = __('Name');
+      $tab[1]['massiveaction']    = false;
+      $tab[1]['datatype']         = 'specific';
+      $tab[1]['additionalfields'] = array('rules_id');
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'condition';
-      $tab[2]['name']          = __('Condition');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'string';
+      /// TODO do specific functions to display and select for condition
+      $tab[2]['table']            = $this->getTable();
+      $tab[2]['field']            = 'condition';
+      $tab[2]['name']             = __('Condition');
+      $tab[2]['massiveaction']    = false;
+      $tab[2]['datatype']         = 'specific';
+      $tab[2]['additionalfields'] = array('rules_id');
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'pattern';
-      $tab[3]['name']          = __('Reason');
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'string';
+      /// TODO do specific functions to display and select for pattern
+      $tab[3]['table']            = $this->getTable();
+      $tab[3]['field']            = 'pattern';
+      $tab[3]['name']             = __('Reason');
+      $tab[3]['massiveaction']    = false;
+      $tab[3]['datatype']         = 'specific';
+      $tab[3]['additionalfields'] = array('rules_id');
 
       return $tab;
    }

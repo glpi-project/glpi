@@ -2230,6 +2230,7 @@ class User extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[34]['table']          = $this->getTable();
       $tab[34]['field']          = 'realname';
@@ -2287,12 +2288,14 @@ class User extends CommonDBTM {
       $tab[14]['datatype']       = 'datetime';
       $tab[14]['massiveaction']  = false;
 
+      /// TODO do specific functions to display and select for auth_tables.
       $tab[15]['table']          = 'glpi_auth_tables';
       $tab[15]['field']          = 'name';
       $tab[15]['linkfield']      = 'auths_id';
       $tab[15]['name']           = __('Authentication');
       $tab[15]['searchtype']     = 'contains';
       $tab[15]['massiveaction']  = false;
+      $tab[15]['datatype']       = 'specific';
 
       $tab[30]['table']          = 'glpi_authldaps';
       $tab[30]['field']          = 'name';
@@ -2300,6 +2303,7 @@ class User extends CommonDBTM {
       $tab[30]['name']           = __('LDAP directory for authentication');
       $tab[30]['massiveaction']  = false;
       $tab[30]['joinparams']     = array('condition' => "AND REFTABLE.`authtype` = ".Auth::LDAP);
+      $tab[30]['datatype']       = 'dropdown';
 
       $tab[31]['table']          = 'glpi_authmails';
       $tab[31]['field']          = 'name';
@@ -2307,6 +2311,7 @@ class User extends CommonDBTM {
       $tab[31]['name']           = __('Email server for authentication');
       $tab[31]['massiveaction']  = false;
       $tab[31]['joinparams']     = array('condition' => "AND REFTABLE.`authtype` = ".Auth::MAIL);
+      $tab[31]['datatype']       = 'dropdown';
 
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
@@ -2332,6 +2337,7 @@ class User extends CommonDBTM {
                                            _n('Entity', 'Entities', 1));
       $tab[20]['forcegroupby']   = true;
       $tab[20]['massiveaction']  = false;
+      $tab[20]['datatype']       = 'dropdown';
       $tab[20]['joinparams']     = array('beforejoin'
                                          => array('table'      => 'glpi_profiles_users',
                                                   'joinparams' => array('jointype' => 'child')));
@@ -2340,10 +2346,12 @@ class User extends CommonDBTM {
       $tab[21]['field']          = 'user_dn';
       $tab[21]['name']           = __('User DN');
       $tab[21]['massiveaction']  = false;
+      $tab[21]['datatype']       = 'string';
 
       $tab[22]['table']          = $this->getTable();
       $tab[22]['field']          = 'registration_number';
       $tab[22]['name']           = __('Administrative number');
+      $tab[22]['datatype']       = 'string';
 
       $tab[23]['table']          = $this->getTable();
       $tab[23]['field']          = 'date_sync';
@@ -2357,6 +2365,7 @@ class User extends CommonDBTM {
       $tab[80]['name']           = sprintf(__('%1$s (%2$s)'), _n('Entity', 'Entities', 2),
                                            _n('Profile', 'Profiles', 1));
       $tab[80]['forcegroupby']   = true;
+      $tab[80]['datatype']       = 'dropdown';
       $tab[80]['massiveaction']  = false;
       $tab[80]['joinparams']     = array('beforejoin'
                                          => array('table'      => 'glpi_profiles_users',
@@ -2366,19 +2375,23 @@ class User extends CommonDBTM {
       $tab[81]['table']          = 'glpi_usertitles';
       $tab[81]['field']          = 'name';
       $tab[81]['name']           = __('Title');
+      $tab[81]['datatype']       = 'dropdown';
 
       $tab[82]['table']          = 'glpi_usercategories';
       $tab[82]['field']          = 'name';
       $tab[82]['name']           = __('Category');
+      $tab[82]['datatype']       = 'dropdown';
 
       $tab[79]['table']          = 'glpi_profiles';
       $tab[79]['field']          = 'name';
       $tab[79]['name']           = __('Default profile');
+      $tab[79]['datatype']       = 'dropdown';
 
       $tab[77]['table']          = 'glpi_entities';
       $tab[77]['field']          = 'name';
       $tab[77]['massiveaction']  = true;
       $tab[77]['name']           = __('Default entity');
+      $tab[77]['datatype']       = 'dropdown';
 
       $tab[60]['table']          = 'glpi_tickets';
       $tab[60]['field']          = 'count';

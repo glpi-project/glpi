@@ -191,15 +191,20 @@ class Notification extends CommonDBTM {
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
 
+      /// TODO do specific functions to display and select for event.
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'event';
       $tab[2]['name']            = _n('Event', 'Events', 1);
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'specific';
+      $tab[2]['additionalfields'] = array('itemtype');
 
+      /// TODO do specific functions to display and select for mode.
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'mode';
       $tab[3]['name']            = __('Notification method');
       $tab[3]['massiveaction']   = false;
+      $tab[3]['datatype']        = 'specific';
 
       $tab[4]['table']           = 'glpi_notificationtemplates';
       $tab[4]['field']           = 'name';
@@ -226,6 +231,7 @@ class Notification extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[16]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';

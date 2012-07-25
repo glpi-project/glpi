@@ -731,11 +731,13 @@ class TicketFollowup  extends CommonDBTM {
       $tab[1]['table']        = $this->getTable();
       $tab[1]['field']        = 'content';
       $tab[1]['name']         = __('Description');
+      $tab[1]['datatype']     = 'text';
 
       $tab[2]['table']        = 'glpi_requesttypes';
       $tab[2]['field']        = 'name';
       $tab[2]['name']         = __('Request source');
       $tab[2]['forcegroupby'] = true;
+      $tab[2]['datatype']     = 'dropdown';
 
       $tab[3]['table']        = $this->getTable();
       $tab[3]['field']        = 'date';

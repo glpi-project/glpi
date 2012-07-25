@@ -3846,6 +3846,8 @@ class Search {
       $field     = $searchopt[$ID]["field"];
       $linkfield = $searchopt[$ID]["linkfield"];
 
+      /// TODO try to clean all specific cases using SpecificToDisplay
+
       switch ($table.'.'.$field) {
          case "glpi_users.name" :
             // USER search case
@@ -4348,6 +4350,7 @@ class Search {
          $unit = $searchopt[$ID]['unit'];
       }
 
+      /// TODO try to use getvalueToDisplay instead of redefine display system
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {

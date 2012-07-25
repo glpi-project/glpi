@@ -126,6 +126,7 @@ class WifiNetwork extends CommonDropdown {
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'essid';
       $tab[10]['name']     = __('ESSID');
+      $tab[10]['datatype'] = 'string';
 
       return $tab;
    }

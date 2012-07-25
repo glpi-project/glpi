@@ -2008,17 +2008,17 @@ abstract class CommonITILObject extends CommonDBTM {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownStatus($options);
-            
+
          case 'impact' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownImpact($options);
-            
+
          case 'urgency' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownUrgency($options);
-            
+
          case 'priority' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
