@@ -238,6 +238,11 @@ $CFG_GLPI["helpdesk_visible_types"]       = array('Software');
 $CFG_GLPI["networkport_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer');
 
+// Warning : the order is used for displaying different NetworkPort types ! Keep it !
+$CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'NetworkPortWifi' ,
+                                                  'NetworkPortAggregate', 'NetworkPortAlias',
+                                                  'NetworkPortDialup',   'NetworkPortLocal' );
+
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'ConsumableItem', 'Contract', 'Crontask',
                                                   'DBConnection', 'FieldUnicity', 'Infocom',
                                                   'PlanningRecall',
@@ -321,6 +326,5 @@ $CFG_GLPI['missingclasses'] = array('computer_devicecase',
                                     'rulecacheprintertype',
                                     'rulecachesoftware');
 
-$PLUGIN_HOOKS['networkport_instantiations'] = array();
 
 ?>

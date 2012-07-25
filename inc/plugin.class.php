@@ -997,7 +997,7 @@ class Plugin extends CommonDBTM {
 
       foreach (array('contract_types', 'document_types', 'helpdesk_visible_types', 'infocom_types',
                      'linkgroup_tech_types', 'linkgroup_types', 'linkuser_tech_types',
-                     'linkuser_types',
+                     'linkuser_types', 'networkport_instantiations',
                      'networkport_types', 'notificationtemplates_types', 'planning_types',
                      'reservation_types', 'rulecollections_types', 'systeminformations_types',
                      'ticket_types', 'unicity_types') as $att) {
