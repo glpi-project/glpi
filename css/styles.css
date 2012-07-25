@@ -649,6 +649,10 @@ td.numeric {
 /*   padding-right:4%;*/
 }
 
+td.htmltable_upper_separation_cell {
+    border-top: dashed 1px #a0a0a0;
+}
+
 td.nopadding { 
    padding:0;
 }

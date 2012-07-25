@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 abstract class HTMLTable_Entity {
 
-   private $html_id;
+   private $html_id    = '';
    private $html_style = array();
    private $html_class = array();
 
@@ -112,16 +112,38 @@ abstract class HTMLTable_Entity {
    }
 
 
-   function displayEntityAttributs() {
+   function displayEntityAttributs(array $options = array()) {
 
-      if (!empty($this->html_id)) {
-         echo " id='".$this->html_id."'";
+      $id = $this->html_id;
+      if (isset($options['id'])) {
+         $id = $options['id'];
       }
-      if (!empty($this->html_style)) {
-         echo " style='".implode(';', $this->html_style)."'";
+      if (!empty($id)) {
+         echo " id='$id'";
       }
-      if (count($this->html_class) > 0) {
-         echo " class='".implode(' ', $this->html_class)."'";
+
+      $style = $this->html_style;
+      if (isset($options['style'])) {
+         if (is_array($options['style'])) {
+            $style = array_merge($style, $options['style']);
+         } else {
+            $style[] = $options['style'];
+         }
+      }
+      if (count($style) > 0) {
+         echo " style='".implode(';', $style)."'";
+      }
+
+      $class = $this->html_class;
+      if (isset($options['class'])) {
+         if (is_array($options['class'])) {
+            $class = array_merge($class, $options['class']);
+         } else {
+            $class[] = $options['class'];
+         }
+      }
+      if (count($class) > 0) {
+         echo " class='".implode(' ', $class)."'";
       }
    }
 

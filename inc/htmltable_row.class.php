@@ -43,9 +43,10 @@ if (!defined('GLPI_ROOT')) {
 class HTMLTable_Row extends HTMLTable_Entity {
 
    private $group;
-   private $empty = true;
-   private $cells = array();
-   private $numberOfSubRows = 1;
+   private $empty              = true;
+   private $cells              = array();
+   private $numberOfSubRows    = 1;
+   private $linesWithAttributs = array();
 
 
    /**
@@ -73,6 +74,11 @@ class HTMLTable_Row extends HTMLTable_Entity {
 
    function createAnotherRow() {
       return $this->group->createRow();
+   }
+
+
+   function addAttributForLine($lineIndex, $attributs) {
+      $this->linesWithAttributs[$lineIndex] = $attributs;
    }
 
 
@@ -159,22 +165,27 @@ class HTMLTable_Row extends HTMLTable_Entity {
       $this->displayEntityAttributs();
       echo ">";
       for ($i = 0 ; $i < $this->numberOfSubRows ; $i++) {
+         if (isset($this->linesWithAttributs[$i])) {
+            $options = $this->linesWithAttributs[$i];
+         } else {
+            $options = array();
+         }
          echo "\t\t<tr>";
          foreach ($headers as $header) {
             $header_name = $header->getCompositeName();
             if (isset($this->cells[$header_name])) {
                $display = false;
                foreach ($this->cells[$header_name] as $cell) {
-                  $display |= $cell->display($i);
+                  $display |= $cell->display($i, $options);
                }
                if (!$display) {
                   echo "\t\t\t<td colspan='".$header->getColSpan()."'";
-                  $header->displayEntityAttributs();
+                  $header->displayEntityAttributs($options);
                   echo "></td>\n";
                }
             } else {
                echo "\t\t\t<td colspan='".$header->getColSpan()."'";
-               $header->displayEntityAttributs();
+               $header->displayEntityAttributs($options);
                echo "></td>\n";
             }
          }
