@@ -66,14 +66,9 @@ class NetworkPort extends CommonDBChild {
     * @return array of available type of network ports
    **/
    static function getNetworkPortInstantiations() {
-      global $PLUGIN_HOOKS;
+      global $CFG_GLPI;
 
-      // Warning : the order is used for displaying different NetworkPort types ! Keep it !
-      $types = array('NetworkPortEthernet', 'NetworkPortWifi' , 'NetworkPortAggregate',
-                     'NetworkPortAlias', 'NetworkPortDialup',   'NetworkPortLocal' );
-
-      return array_merge($types, $PLUGIN_HOOKS['networkport_instantiations']);
-
+      return $CFG_GLPI['networkport_instantiations'];
    }
 
    static function getNetworkPortInstantiationsWithNames() {
