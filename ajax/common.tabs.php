@@ -35,39 +35,47 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+if (isset($_POST['full_page_tab'])) {
+   Html::header('Only tab for debug', $_SERVER['PHP_SELF']);
+} else {
+   header("Content-Type: text/html; charset=UTF-8");
+   Html::header_nocache();
+}
 
-
-if (!isset($_REQUEST['glpi_tab'])) {
+if (!isset($_POST['glpi_tab'])) {
    exit();
 }
 
-if (!isset($_REQUEST['itemtype']) || empty($_REQUEST['itemtype'])) {
+if (!isset($_POST['itemtype']) || empty($_POST['itemtype'])) {
    exit();
 }
 
-if (!isset($_REQUEST["sort"])) {
-   $_REQUEST["sort"] = "";
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
 }
 
-if (!isset($_REQUEST["order"])) {
-   $_REQUEST["order"] = "";
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
 }
 
-if (!isset($_REQUEST["withtemplate"])) {
-   $_REQUEST["withtemplate"] = "";
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
 }
 
-if ($item = getItemForItemtype($_REQUEST['itemtype'])) {
+if ($item = getItemForItemtype($_POST['itemtype'])) {
    if ($item instanceof CommonDBTM
        && $item->isNewItem()
-       && (!isset($_REQUEST["id"]) || !$item->can($_REQUEST["id"],'r'))) {
+       && (!isset($_POST["id"]) || !$item->can($_POST["id"],'r'))) {
       exit();
    }
 }
 
-CommonGLPI::displayStandardTab($item, $_REQUEST['glpi_tab'],$_REQUEST["withtemplate"]);
+CommonGLPI::displayStandardTab($item, $_POST['glpi_tab'],$_POST["withtemplate"]);
 
-Html::ajaxFooter();
+
+if (isset($_POST['full_page_tab'])) {
+   Html::footer();
+} else {
+   Html::ajaxFooter();
+}
 ?>

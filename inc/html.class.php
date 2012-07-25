@@ -2430,7 +2430,13 @@ class Html {
          $rand = mt_rand();
          echo "<div class='center' id='debugajax'>";
          echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\">
-                AJAX DEBUG</a></div>";
+                AJAX DEBUG</a>&nbsp;&nbsp;";
+         if (!isset($_POST['full_page_tab'])
+            && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
+            Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab',
+                                 'Display only tab for debug', $_POST);
+         }
+         echo "</div>";
          echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
          self::displayDebugInfos(false);
          echo "</div></div>";
