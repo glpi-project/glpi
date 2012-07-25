@@ -190,6 +190,7 @@ class SoftwareVersion extends CommonDBChild {
       $tab[4]['table']     = 'glpi_operatingsystems';
       $tab[4]['field']     = 'name';
       $tab[4]['name']      = __('Operating system');
+      $tab[4]['datatype']  = 'dropdown';
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
@@ -199,6 +200,7 @@ class SoftwareVersion extends CommonDBChild {
       $tab[31]['table']    = 'glpi_states';
       $tab[31]['field']    = 'completename';
       $tab[31]['name']     = __('Status');
+      $tab[31]['datatype'] = 'dropdown';
 
       return $tab;
    }

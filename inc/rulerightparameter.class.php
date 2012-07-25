@@ -81,9 +81,10 @@ class RuleRightParameter extends CommonDropdown {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table'] = $this->getTable();
-      $tab[11]['field'] = 'value';
-      $tab[11]['name']  = _n('Criterion', 'Criteria', 1);
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'value';
+      $tab[11]['name']     = _n('Criterion', 'Criteria', 1);
+      $tab[11]['datatype'] = 'string';
 
       return $tab;
    }

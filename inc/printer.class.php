@@ -527,20 +527,24 @@ class Printer  extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[4]['table']           = 'glpi_printertypes';
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = __('Type');
+      $tab[4]['datatype']       = 'dropdown';
 
       $tab[40]['table']          = 'glpi_printermodels';
       $tab[40]['field']          = 'name';
       $tab[40]['name']           = __('Model');
+      $tab[40]['datatype']       = 'dropdown';
 
       $tab[31]['table']          = 'glpi_states';
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
+      $tab[31]['datatype']       = 'dropdown';
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
@@ -572,6 +576,7 @@ class Printer  extends CommonDBTM {
       $tab[71]['field']          = 'completename';
       $tab[71]['name']           = __('Group');
       $tab[71]['condition']      = '`is_itemgroup`';
+      $tab[71]['datatype']       = 'dropdown';
 
       $tab[19]['table']          = $this->getTable();
       $tab[19]['field']          = 'date_mod';
@@ -624,18 +629,22 @@ class Printer  extends CommonDBTM {
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
       $tab[90]['massiveaction']  = false;
+      $tab[90]['datatype']       = 'text';
 
       $tab[32]['table']          = 'glpi_networks';
       $tab[32]['field']          = 'name';
       $tab[32]['name']           = __('Network');
+      $tab[32]['datatype']       = 'dropdown';
 
       $tab[33]['table']          = 'glpi_domains';
       $tab[33]['field']          = 'name';
       $tab[33]['name']           = __('Domain');
+      $tab[33]['datatype']       = 'dropdown';
 
       $tab[23]['table']          = 'glpi_manufacturers';
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
+      $tab[23]['datatype']       = 'dropdown';
 
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
@@ -649,11 +658,13 @@ class Printer  extends CommonDBTM {
       $tab[49]['linkfield']      = 'groups_id_tech';
       $tab[49]['name']           = __('Group in charge of the hardware');
       $tab[49]['condition']      = '`is_assign`';
+      $tab[49]['datatype']       = 'dropdown';
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[82]['table']          = $this->getTable();
       $tab[82]['field']          = 'is_global';

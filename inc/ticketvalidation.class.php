@@ -780,10 +780,12 @@ class TicketValidation  extends CommonDBChild {
       $tab[2]['name']            = __('Approval comments');
       $tab[2]['datatype']        = 'text';
 
+      /// TODO do specific functions to display and select for status.
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'status';
       $tab[3]['name']            = __('Status');
       $tab[3]['searchtype']      = 'equals';
+      $tab[3]['datatype']        = 'text';
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'submission_date';

@@ -263,6 +263,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'name';
       $tab[2]['name']            = __('Name');
+      $tab[2]['datatype']        = 'itemlink';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'serial';
@@ -285,6 +286,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[5]['table']           = 'glpi_softwarelicensetypes';
       $tab[5]['field']           = 'name';
       $tab[5]['name']            = __('Type');
+      $tab[5]['datatype']        = 'dropdown';
 
       $tab[6]['table']           = 'glpi_softwareversions';
       $tab[6]['field']           = 'name';

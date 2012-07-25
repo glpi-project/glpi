@@ -1415,10 +1415,12 @@ class Profile extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      /// TODO do specific functions to display and select for interface.
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'interface';
       $tab[2]['name']            = __("Profile's interface");
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'specific';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'is_default';
@@ -1611,7 +1613,6 @@ class Profile extends CommonDBTM {
       $tab[48]['name']           = __('Business rules for tickets');
       $tab[48]['datatype']       = 'right';
       $tab[48]['nowrite']        = true;
-      
 
       $tab[105]['table']         = $this->getTable();
       $tab[105]['field']         = 'rule_mailcollector';
@@ -1809,15 +1810,19 @@ class Profile extends CommonDBTM {
       $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', 2);
       $tab[119]['datatype']      = 'right';
 
+      /// TODO do specific functions to display and select for helpdesk_hardware.
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'helpdesk_hardware';
       $tab[86]['name']           = __('Link with items for the creation of tickets');
       $tab[86]['massiveaction']  = false;
+      $tab[86]['datatype']       = 'specific';
 
+      /// TODO do specific functions to display and select for helpdesk_item_type.
       $tab[87]['table']          = $this->getTable();
       $tab[87]['field']          = 'helpdesk_item_type';
       $tab[87]['name']           = __('Associable items to a ticket');
       $tab[87]['massiveaction']  = false;
+      $tab[87]['datatype']       = 'specific';
 
       $tab[88]['table']          = $this->getTable();
       $tab[88]['field']          = 'show_group_ticket';

@@ -396,6 +396,7 @@ class Software extends CommonDBTM {
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab+=Location::getSearchOptionsToAdd();
 
@@ -408,10 +409,12 @@ class Software extends CommonDBTM {
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
       $tab[90]['massiveaction']  = false;
+      $tab[90]['datatype']       = 'text';
 
       $tab[62]['table']          = 'glpi_softwarecategories';
       $tab[62]['field']          = 'name';
       $tab[62]['name']           = __('Category');
+      $tab[62]['datatype']       = 'dropdown';
 
       $tab[19]['table']          = $this->getTable();
       $tab[19]['field']          = 'date_mod';
@@ -422,6 +425,7 @@ class Software extends CommonDBTM {
       $tab[23]['table']          = 'glpi_manufacturers';
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Publisher');
+      $tab[23]['datatype']       = 'dropdown';
 
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
@@ -435,6 +439,7 @@ class Software extends CommonDBTM {
       $tab[49]['linkfield']      = 'groups_id_tech';
       $tab[49]['name']           = __('Group in charge of the hardware');
       $tab[49]['condition']      = '`is_assign`';
+      $tab[49]['datatype']       = 'dropdown';
 
       $tab[70]['table']          = 'glpi_users';
       $tab[70]['field']          = 'name';
@@ -446,6 +451,7 @@ class Software extends CommonDBTM {
       $tab[71]['field']          = 'completename';
       $tab[71]['name']           = __('Group');
       $tab[71]['condition']      = '`is_itemgroup`';
+      $tab[71]['datatype']       = 'dropdown';
 
       $tab[61]['table']          = $this->getTable();
       $tab[61]['field']          = 'is_helpdesk_visible';
@@ -456,6 +462,7 @@ class Software extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[72]['table']          = 'glpi_computers_softwareversions';
       $tab[72]['field']          = 'count';
@@ -488,10 +495,12 @@ class Software extends CommonDBTM {
       $tab[5]['forcegroupby']    = true;
       $tab[5]['massiveaction']   = false;
       $tab[5]['joinparams']      = array('jointype' => 'child');
+      $tab[5]['datatype']       = 'dropdown';
 
       $tab[31]['table']          = 'glpi_states';
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
+      $tab[31]['datatype']       = 'dropdown';
       $tab[31]['forcegroupby']   = true;
       $tab[31]['massiveaction']  = false;
       $tab[31]['joinparams']     = array('beforejoin'
@@ -508,6 +517,7 @@ class Software extends CommonDBTM {
 
       $tab[4]['table']           = 'glpi_operatingsystems';
       $tab[4]['field']           = 'name';
+      $tab[4]['datatype']        = 'dropdown';
       $tab[4]['name']            = __('Operating system');
       $tab[4]['forcegroupby']    = true;
       $tab[4]['joinparams']      = array('beforejoin'
@@ -519,12 +529,14 @@ class Software extends CommonDBTM {
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';
       $tab[160]['name']          = __('License name');
+      $tab[160]['datatype']      = 'dropdown';
       $tab[160]['forcegroupby']  = true;
       $tab[160]['massiveaction'] = false;
       $tab[160]['joinparams']    = array('jointype' => 'child');
 
       $tab[161]['table']         = 'glpi_softwarelicenses';
       $tab[161]['field']         = 'serial';
+      $tab[161]['datatype']      = 'string';
       $tab[161]['name']          = __('License serial number');
       $tab[161]['forcegroupby']  = true;
       $tab[161]['massiveaction'] = false;
@@ -532,6 +544,7 @@ class Software extends CommonDBTM {
 
       $tab[162]['table']         = 'glpi_softwarelicenses';
       $tab[162]['field']         = 'otherserial';
+      $tab[162]['datatype']      = 'string';
       $tab[162]['name']          = __('License inventory number');
       $tab[162]['forcegroupby']  = true;
       $tab[162]['massiveaction'] = false;
@@ -548,6 +561,7 @@ class Software extends CommonDBTM {
 
       $tab[164]['table']         = 'glpi_softwarelicensetypes';
       $tab[164]['field']         = 'name';
+      $tab[164]['datatype']      = 'dropdown';
       $tab[164]['name']          = __('License types');
       $tab[164]['forcegroupby']  = true;
       $tab[164]['massiveaction'] = false;

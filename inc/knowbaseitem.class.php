@@ -1420,6 +1420,7 @@ class KnowbaseItem extends CommonDBTM {
       $tab[7]['field']          = 'answer';
       $tab[7]['name']           = __('Content');
       $tab[7]['datatype']       = 'text';
+      $tab[7]['htmltext']       = true;
 
       $tab[8]['table']          = $this->getTable();
       $tab[8]['field']          = 'is_faq';

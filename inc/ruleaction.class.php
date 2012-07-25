@@ -77,10 +77,12 @@ class RuleAction extends CommonDBChild {
 
       $tab                     = array();
 
+      /// TODO do specific functions to display and select for action_type.
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'action_type';
       $tab[1]['name']          = self::getTypeName(1);
       $tab[1]['massiveaction'] = false;
+      $tab[1]['datatype']      = 'specific';
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'field';

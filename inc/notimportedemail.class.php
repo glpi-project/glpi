@@ -134,16 +134,19 @@ class NotImportedEmail extends CommonDBTM {
       $tab[1]['field']           = 'from';
       $tab[1]['name']            = __('From email header');
       $tab[1]['massiveaction']   = false;
+      $tab[1]['datatype']        = 'string';
 
       $tab[2]['table']           = 'glpi_notimportedemails';
       $tab[2]['field']           = 'to';
       $tab[2]['name']            = __('To email header');
       $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'string';
 
       $tab[3]['table']           = 'glpi_notimportedemails';
       $tab[3]['field']           = 'subject';
       $tab[3]['name']            = __('Subject email header');
       $tab[3]['massiveaction']   = false;
+      $tab[3]['datatype']        = 'string';
 
       $tab[4]['table']           = 'glpi_mailcollectors';
       $tab[4]['field']           = 'name';
@@ -154,18 +157,19 @@ class NotImportedEmail extends CommonDBTM {
       $tab[5]['field']           = 'messageid';
       $tab[5]['name']            = __('Message-ID email header');
       $tab[5]['massiveaction']   = false;
+      $tab[5]['datatype']        = 'string';
 
       $tab[6]['table']           = 'glpi_users';
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Requester');
       $tab[6]['datatype']        = 'dropdown';
       $tab[6]['right']           = 'all';
-      
 
+      /// TODO do specific functions to display and select for reason.
       $tab[16]['table']          = 'glpi_notimportedemails';
       $tab[16]['field']          = 'reason';
       $tab[16]['name']           = __('Reason of rejection');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['datatype']       = 'specific';
       $tab[16]['massiveaction']  = false;
 
       $tab[19]['table']          = 'glpi_notimportedemails';

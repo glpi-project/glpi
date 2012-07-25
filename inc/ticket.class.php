@@ -1821,11 +1821,12 @@ class Ticket extends CommonITILObject {
 
       $tab['common']             = __('Characteristics');
 
+      /// TODO do specific functions to display and select for name adding toolbox of content
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Title');
       $tab[1]['searchtype']      = 'contains';
-      $tab[1]['datatype']        = 'string';
+      $tab[1]['datatype']        = 'specific';
       $tab[1]['forcegroupby']    = true;
       $tab[1]['massiveaction']   = false;
 
@@ -1845,26 +1846,31 @@ class Ticket extends CommonITILObject {
       $tab[12]['field']          = 'status';
       $tab[12]['name']           = __('Status');
       $tab[12]['searchtype']     = 'equals';
+      $tab[12]['datatype']       = 'specific';
 
       $tab[14]['table']          = $this->getTable();
       $tab[14]['field']          = 'type';
       $tab[14]['name']           = __('Type');
       $tab[14]['searchtype']     = 'equals';
+      $tab[14]['datatype']       = 'specific';
 
       $tab[10]['table']          = $this->getTable();
       $tab[10]['field']          = 'urgency';
       $tab[10]['name']           = __('Urgency');
       $tab[10]['searchtype']     = 'equals';
+      $tab[10]['datatype']       = 'specific';
 
       $tab[11]['table']          = $this->getTable();
       $tab[11]['field']          = 'impact';
       $tab[11]['name']           = __('Impact');
       $tab[11]['searchtype']     = 'equals';
+      $tab[11]['datatype']       = 'specific';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'priority';
       $tab[3]['name']            = __('Priority');
       $tab[3]['searchtype']      = 'equals';
+      $tab[3]['datatype']       = 'specific';
 
       $tab[15]['table']          = $this->getTable();
       $tab[15]['field']          = 'date';
@@ -1956,7 +1962,7 @@ class Ticket extends CommonITILObject {
       $tab[64]['massiveaction']  = false;
       $tab[64]['datatype']       = 'dropdown';
       $tab[64]['right']          = 'all';
-      
+
 
       $tab += $this->getSearchOptionsActors();
 
@@ -1972,6 +1978,7 @@ class Ticket extends CommonITILObject {
       $tab[32]['field']          = 'name';
       $tab[32]['name']           = __('Escalation level');
       $tab[32]['massiveaction']  = false;
+      $tab[32]['datatype']       = 'dropdown';
 
 
       $tab['validation']         = __('Approval');
@@ -2000,6 +2007,7 @@ class Ticket extends CommonITILObject {
 
       $tab[55]['table']          = 'glpi_ticketvalidations';
       $tab[55]['field']          = 'status';
+      $tab[55]['datatype']       = 'specific';
       $tab[55]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Status'));
       $tab[55]['searchtype']     = 'equals';
       $tab[55]['forcegroupby']   = true;
@@ -2009,7 +2017,6 @@ class Ticket extends CommonITILObject {
       $tab[56]['table']          = 'glpi_ticketvalidations';
       $tab[56]['field']          = 'submission_date';
       $tab[56]['name']           = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
-
       $tab[56]['datatype']       = 'datetime';
       $tab[56]['forcegroupby']   = true;
       $tab[56]['massiveaction']  = false;
@@ -2049,12 +2056,14 @@ class Ticket extends CommonITILObject {
 
       $tab['satisfaction']       = __('Satisfaction survey');
 
+      /// TODO do specific functions to display and select for type.
       $tab[31]['table']          = 'glpi_ticketsatisfactions';
       $tab[31]['field']          = 'type';
       $tab[31]['name']           = __('Type');
       $tab[31]['massiveaction']  = false;
       $tab[31]['searchtype']     = 'equals';
       $tab[31]['joinparams']     = array('jointype' => 'child');
+      $tab[31]['datatype']       = 'specific';
 
       $tab[60]['table']          = 'glpi_ticketsatisfactions';
       $tab[60]['field']          = 'date_begin';
@@ -2094,6 +2103,7 @@ class Ticket extends CommonITILObject {
       $tab[25]['splititems']     = true;
       $tab[25]['massiveaction']  = false;
       $tab[25]['joinparams']     = array('jointype' => 'child');
+      $tab[25]['datatype']       = 'text';
 
       $tab[27]['table']          = 'glpi_ticketfollowups';
       $tab[27]['field']          = 'count';
@@ -2107,6 +2117,7 @@ class Ticket extends CommonITILObject {
       $tab[29]['table']          = 'glpi_requesttypes';
       $tab[29]['field']          = 'name';
       $tab[29]['name']           = __('Request source');
+      $tab[29]['datatype']       = 'dropdown';
       $tab[29]['forcegroupby']   = true;
       $tab[29]['massiveaction']  = false;
       $tab[29]['joinparams']     = array('beforejoin'
@@ -2149,18 +2160,22 @@ class Ticket extends CommonITILObject {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
+      /// TODO do specific functions to display and select for tickets_id_1 ?
          $tab[40]['table']          = 'glpi_tickets_tickets';
          $tab[40]['field']          = 'tickets_id_1';
          $tab[40]['name']           = __('All linked tickets');
          $tab[40]['massiveaction']  = false;
          $tab[40]['searchtype']     = 'equals';
          $tab[40]['joinparams']     = array('jointype' => 'item_item');
+         $tab[40]['datatype']       = 'specific';
 
+      /// TODO do specific functions to display and select for tickets_id_1 ?
          $tab[47]['table']          = 'glpi_tickets_tickets';
          $tab[47]['field']          = 'tickets_id_1';
          $tab[47]['name']           = __('Duplicated tickets');
          $tab[47]['massiveaction']  = false;
          $tab[47]['searchtype']     = 'equals';
+         $tab[47]['datatype']       = 'specific';
          $tab[47]['joinparams']     = array('jointype'  => 'item_item',
                                             'condition' => "AND NEWTABLE.`link` = ".
                                                             Ticket_Ticket::DUPLICATE_WITH);
@@ -2189,6 +2204,7 @@ class Ticket extends CommonITILObject {
          $tab[26]['table']          = 'glpi_tickettasks';
          $tab[26]['field']          = 'content';
          $tab[26]['name']           = __('Description');
+         $tab[26]['datatype']       = 'text';
          $tab[26]['forcegroupby']   = true;
          $tab[26]['splititems']     = true;
          $tab[26]['massiveaction']  = false;
@@ -2205,6 +2221,7 @@ class Ticket extends CommonITILObject {
 
          $tab[20]['table']          = 'glpi_taskcategories';
          $tab[20]['field']          = 'name';
+         $tab[20]['datatype']       = 'dropdown';
          $tab[20]['name']           = __('Task category');
          $tab[20]['forcegroupby']   = true;
          $tab[20]['splititems']     = true;
@@ -2250,6 +2267,7 @@ class Ticket extends CommonITILObject {
          $tab[23]['table']          = 'glpi_solutiontypes';
          $tab[23]['field']          = 'name';
          $tab[23]['name']           = __('Solution type');
+         $tab[23]['datatype']       = 'dropdown';
 
          $tab[24]['table']          = $this->getTable();
          $tab[24]['field']          = 'solution';

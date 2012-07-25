@@ -432,26 +432,32 @@ class Problem extends CommonITILObject {
       $tab[2]['field']          = 'id';
       $tab[2]['name']           = __('ID');
       $tab[2]['massiveaction']  = false;
+      $tab[2]['datatype']       = 'number';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'status';
       $tab[12]['name']          = __('Status');
       $tab[12]['searchtype']    = 'equals';
+      $tab[12]['datatype']      = 'specific';
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'urgency';
       $tab[10]['name']          = __('Urgency');
       $tab[10]['searchtype']    = 'equals';
+      $tab[10]['datatype']      = 'specific';
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'impact';
       $tab[11]['name']          = __('Impact');
       $tab[11]['searchtype']    = 'equals';
+      $tab[11]['datatype']      = 'specific';
 
       $tab[3]['table']          = $this->getTable();
       $tab[3]['field']          = 'priority';
       $tab[3]['name']           = __('Priority');
       $tab[3]['searchtype']     = 'equals';
+      $tab[3]['datatype']      = 'specific';
+
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'date';
@@ -487,11 +493,13 @@ class Problem extends CommonITILObject {
       $tab[7]['table']          = 'glpi_itilcategories';
       $tab[7]['field']          = 'completename';
       $tab[7]['name']           = __('Category');
+      $tab[7]['datatype']       = 'dropdown';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
+      $tab[80]['datatype']      = 'dropdown';
 
       $tab[45]['table']         = $this->getTable();
       $tab[45]['field']         = 'actiontime';
@@ -543,6 +551,7 @@ class Problem extends CommonITILObject {
       $tab[90]['field']         = 'notepad';
       $tab[90]['name']          = __('Notes');
       $tab[90]['massiveaction'] = false;
+      $tab[90]['datatype']      = 'text';
 
 
       $tab['task']              = _n('Task', 'Tasks', 2);
@@ -554,6 +563,7 @@ class Problem extends CommonITILObject {
       $tab[26]['splititems']    = true;
       $tab[26]['massiveaction'] = false;
       $tab[26]['joinparams']    = array('jointype' => 'child');
+      $tab[26]['datatype']      = 'text';
 
       $tab[28]['table']         = 'glpi_problemtasks';
       $tab[28]['field']         = 'count';
@@ -567,6 +577,7 @@ class Problem extends CommonITILObject {
       $tab[20]['table']         = 'glpi_taskcategories';
       $tab[20]['field']         = 'name';
       $tab[20]['name']          = __('Task category');
+      $tab[20]['datatype']      = 'dropdown';
       $tab[20]['forcegroupby']  = true;
       $tab[20]['splititems']    = true;
       $tab[20]['massiveaction'] = false;
@@ -579,11 +590,13 @@ class Problem extends CommonITILObject {
       $tab[23]['table']         = 'glpi_solutiontypes';
       $tab[23]['field']         = 'name';
       $tab[23]['name']          = __('Solution type');
+      $tab[23]['datatype']      = 'dropdown';
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'solution';
       $tab[24]['name']          = _n('Solution', 'Solutions', 1);
       $tab[24]['datatype']      = 'text';
+      $tab[24]['htmltext']      = true;
       $tab[24]['massiveaction'] = false;
 
       $tab += $this->getSearchOptionsStats();

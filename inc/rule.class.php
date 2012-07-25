@@ -223,19 +223,20 @@ class Rule extends CommonDBTM {
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'ranking';
       $tab[3]['name']            = __('Position');
-      $tab[3]['datatype']        = 'integer';
+      $tab[3]['datatype']        = 'number';
       $tab[3]['massiveaction']   = false;
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'description';
       $tab[4]['name']            = __('Description');
-      $tab[4]['datatype']        = 'string';
+      $tab[4]['datatype']        = 'text';
       $tab[4]['massiveaction']   = false;
 
+      /// TODO do specific functions to display and select for match.
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'match';
       $tab[5]['name']            = __('Logical operator');
-      $tab[5]['datatype']        = 'string';
+      $tab[5]['datatype']        = 'specific';
       $tab[5]['massiveaction']   = false;
 
       $tab[8]['table']           = $this->getTable();
@@ -252,13 +253,13 @@ class Rule extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
       $tab[86]['massiveaction']  = false;
-      
 
       return $tab;
    }

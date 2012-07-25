@@ -75,15 +75,18 @@ class SolutionTemplate extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab              = parent::getSearchOptions();
+      $tab                = parent::getSearchOptions();
 
-      $tab[4]['name']   = __('Content');
-      $tab[4]['field']  = 'content';
-      $tab[4]['table']  = $this->getTable();
+      $tab[4]['name']     = __('Content');
+      $tab[4]['field']    = 'content';
+      $tab[4]['table']    = $this->getTable();
+      $tab[4]['datatype'] = 'text';
+      $tab[4]['htmltext'] = true;
 
-      $tab[3]['name']   = __('Solution type');
-      $tab[3]['field']  = 'name';
-      $tab[3]['table']  = getTableForItemType('SolutionType');
+      $tab[3]['name']     = __('Solution type');
+      $tab[3]['field']    = 'name';
+      $tab[3]['table']    = getTableForItemType('SolutionType');
+      $tab[3]['datatype'] = 'dropdown';
 
       return $tab;
    }
