@@ -150,7 +150,7 @@ class FieldUnicity extends CommonDropdown {
       //Criteria already added : only display the selected itemtype
       if ($ID > 0) {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
-            echo $item->getTypeName();
+            echo $item->getTypeName().'--';
          }
          echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'";
 
@@ -165,6 +165,7 @@ class FieldUnicity extends CommonDropdown {
             }
          }
          asort($options);
+//          print_r($options);
          $rand = Dropdown::showFromArray('itemtype', $options);
 
          $params = array('itemtype' => '__VALUE__',
@@ -229,8 +230,6 @@ class FieldUnicity extends CommonDropdown {
    static function selectCriterias(CommonDBTM $unicity) {
       global $DB;
 
-      //Do not check unicity on fields in DB with theses types
-      $blacklisted_types = array('longtext', 'text');
 
       echo "<span id='span_fields' name='span_fields'>";
 
@@ -244,38 +243,56 @@ class FieldUnicity extends CommonDropdown {
       }
 
       $unicity_fields = explode(',', $unicity->fields['fields']);
+      echo "<span id='span_fields' name='span_fields'>";
+      self::dropdownFields($unicity->fields['itemtype'],
+                           array('values' => $unicity_fields,
+                                 'name'  => '_fields'));
+      echo "</span>";
+   }
+
+   /** Dropdown fields for a specific itemtype
+    * @param $itemtype itemtype
+    * @param $options array of options
+   **/
+   static function dropdownFields($itemtype, $options = array()) {
+      global $DB;
+      $p['name']    = 'fields';
+      $p['display'] = true;
+      $p['values']   = array();
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
       //Search option for this type
-      if ($target = getItemForItemtype($unicity->fields['itemtype'])) {
+      if ($target = getItemForItemtype($itemtype)) {
+         //Do not check unicity on fields in DB with theses types
+         $blacklisted_types = array('longtext', 'text');
 
          //Construct list
-         echo "<span id='span_fields' name='span_fields'>";
-         echo "<select name='_fields[]' multiple size='15' style='width:400px'>";
-
-         foreach ($DB->list_fields(getTableForItemType($unicity->fields['itemtype'])) as $field) {
+         $values = array();
+         foreach ($DB->list_fields(getTableForItemType($itemtype)) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
-
-            if (empty($searchOption)) {
-               if ($table = getTableNameForForeignKeyField($field['Field'])) {
-                  $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-               }
-            }
-
+//             if (empty($searchOption)) {
+//                if ($table = getTableNameForForeignKeyField($field['Field'])) {
+//                   $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+//                }
+//             }
             if (!empty($searchOption)
                 && !in_array($field['Type'], $blacklisted_types)
                 && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {
-
-               echo "<option value='".$field['Field']."'";
-               if (isset($unicity_fields)
-                   && in_array($field['Field'], $unicity_fields)) {
-                  echo " selected ";
-               }
-               echo  ">".$searchOption['name']."</option>";
+               $values[$field['Field']] = $searchOption['name'];
             }
          }
-         echo "</select></span>";
+         $p['multiple'] = true;
+         $p['size']     = 15;
+         return Dropdown::showFromArray($p['name'], $values, $p); 
+      } else {
+         return false;
       }
    }
-
 
    function getSearchOptions() {
 
@@ -294,12 +311,12 @@ class FieldUnicity extends CommonDropdown {
       $tab[2]['datatype']        = 'number';
       $tab[2]['massiveaction']   = false;
 
-      /// TODO do specific functions to display and select for fields.
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'fields';
       $tab[3]['name']            = __('Unique fields');
       $tab[3]['massiveaction']   = false;
       $tab[3]['datatype']        = 'specific'; 
+      $tab[3]['additionalfields'] = array('itemtype');
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'itemtype';
@@ -342,6 +359,54 @@ class FieldUnicity extends CommonDropdown {
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'fields':
+            if (isset($values['itemtype'])
+              && !empty($values['itemtype'])) {
+               if ($target = getItemForItemtype($values['itemtype'])) {
+                  $searchOption = $target->getSearchOptionByField('field', $values[$field]);
+                  $fields = explode(',', $values[$field]);
+                  $message = array();
+                  foreach ($fields as $field) {
+                     $searchOption = $target->getSearchOptionByField('field',$field);
+
+                     if (isset($searchOption['name'])) {
+                        $message[] = $searchOption['name'];
+                     }
+                  }
+                  return implode(', ',$message);
+               }
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'fields' :
+            if (isset($values['itemtype'])
+              && !empty($values['itemtype'])) {
+               $options['values'] = explode(',', $values[$field]);
+               $options['name']  = $name;
+               return self::dropdownFields($values['itemtype'], $options);
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * Perform checks to be sure that an itemtype and at least a field are selected

@@ -108,14 +108,16 @@ class Fieldblacklist extends CommonDropdown {
       }
       switch ($field) {
          case 'field':
+
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                $target = getItemForItemtype($values['itemtype']);
                $searchOption = $target->getSearchOptionByField('field', $values[$field]);
-               if (empty($searchOption)) {
-                  if ($table = getTableNameForForeignKeyField($values[$field])) {
-                     $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-                  }
-               }
+//                if (empty($searchOption)) {
+//                   if ($table = getTableNameForForeignKeyField($values[$field])) {
+//                      $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+//                   }
+//                   echo $table.'--';
+//                }
 
                return $searchOption['name'];
             }
@@ -316,7 +318,6 @@ class Fieldblacklist extends CommonDropdown {
       } else {
          return false;
       }
-
    }
    /**
     * @param $field  (default '')
