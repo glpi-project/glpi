@@ -4306,14 +4306,24 @@ class Html {
          $javascriptArray[] = "$name:'".urlencode($value)."'";
       }
 
-      $link = "<a class='vsubmit' ";
+      $link = "<a ";
+      if (empty($btimage)) {
+         $link.=" class='vsubmit' ";
+      } else {
+         $link.=" class='pointer' ";
+      }
 
       if (!empty($btoption)) {
          $link .= $btoption.' ';
       }
       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
-      $link .= "onclick=\"submitGetLink('$action', {" . implode(', ', $javascriptArray) .
-               "});\">$btlabel</a>\n";
+      $link .= " onclick=\"submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});\">";
+      if (empty($btimage)) {
+         $link .= $btlabel;
+      } else {
+         $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
+      }
+      $link .="</a>\n";
 
       return $link;
 
