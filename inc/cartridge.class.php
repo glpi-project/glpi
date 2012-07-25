@@ -551,10 +551,9 @@ class Cartridge extends CommonDBTM {
             if ($canedit) {
                echo "<td class='center'>";
                Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                     $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
-                                     array('delete'            => 1,
-                                           'cartridgeitems_id' => $tID,
-                                           'id'                => $data['id']));
+                                     'delete', __('Delete'),
+                                     array('cartridgeitems_id' => $tID,
+                                           'id'                => $data['id']), $CFG_GLPI['root_doc']."/pics/delete.png");
               echo "</td>";
             }
             echo "</tr>";
