@@ -56,6 +56,10 @@ class NetworkPortInstantiation extends CommonDBChild {
    public $mustBeAttached        = true;
    public $inheritEntityFromItem = true;
 
+   // Instantiation properties
+   public $canHaveVLAN           = true;
+   public $canHaveVirtualPort    = true;
+   public $haveMAC               = true;
 
    function getIndexName() {
       return 'networkports_id';
@@ -111,18 +115,65 @@ class NetworkPortInstantiation extends CommonDBChild {
 
 
    /**
+    * Get all the instantiation specific options to display
+    *
+    * @return array containing the options
+   **/
+   static function getInstantiationNetworkPortDisplayOptions() {
+      return array();
+   }
+
+
+   /**
+    * Get the instantiation specific options to display that applies for all instantiations
+    *
+    * @return array containing the options
+   **/
+   static function getGlobalInstantiationNetworkPortDisplayOptions() {
+      return array('mac'           => array('name'    => __('MAC'),
+                                            'default' => true),
+                   'vlans'         => array('name'    => __('VLAN'),
+                                            'default' => false),
+                   'virtual_ports' => array('name'    => __('Virtual ports'),
+                                            'default' => false));
+   }
+
+
+   /**
     * Get HTMLTable columns headers for a given item type
+    * Beware : the internet informations are "sons" of each instantiation ...
     *
     * @param $group           HTMLTable_Group object
     * @param $super           HTMLTable_SuperHeader object
+    * @param $internet_super  HTMLTable_SuperHeader object for the internet sub part
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the columns that must not be display
     *
     * @return the father group for the Internet Informations ...
    **/
-   static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $super,
-                                                     array $options=array()) {
+   function getInstantiationHTMLTable_Headers(HTMLTable_Group $group, HTMLTable_SuperHeader $super,
+                                              HTMLTable_SuperHeader $internet_super = NULL,
+                                              HTMLTable_Header $father=NULL,
+                                              array $options=array()) {
+
+      $display_options = &$options['display_options'];
+
+      if (($this->canHaveVirtualPort) && ($display_options['virtual_ports'])) {
+         $father = $group->addHeader('VirtualPorts', '<i>'.__('Virtual ports').'</i>',
+                                     $super, $father);
+      }
+
+      if (($this->canHaveVLAN) && ($display_options['vlans'])) {
+         NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, $father, $options);
+      }
+
+      if (($this->haveMAC) && ($display_options['mac'])) {
+         $group->addHeader('MAC', __('MAC'), $super, $father);
+      }
+
+      if (($internet_super !== NULL) && ($display_options['internet'])) {
+         NetworkName::getHTMLTableHeader('NetworkPort', $group, $internet_super, $father, $options);
+      }
 
       return NULL;
    }
@@ -131,17 +182,81 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get HTMLTable row for a given item
     *
-    * @param $netport         NetworkPort object
-    * @param $item            CommonDBTM object
+    * @param $netport         NetworkPort object (contains item)
     * @param $row             HTMLTable_Row object
+    * @param $father          HTMLTable_Header object (default NULL)
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
     * @return the father cell for the Internet Informations ...
    **/
-   function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, array $options=array()) {
+   function getInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
+                                       HTMLTable_Cell $father=NULL, array $options=array()) {
+
+      global $DB;
+
+      $display_options = $options['display_options'];
+
+      if (($this->canHaveVirtualPort) && ($display_options['virtual_ports'])) {
+
+         $virtual_header = $row->getHeaderByName('Instantiation', 'VirtualPorts');
+
+         $query = "(SELECT `networkports_id`
+                    FROM `glpi_networkportaliases`
+                    WHERE `networkports_id_alias`='".$netport->getID()."')
+                   UNION
+                   (SELECT `networkports_id`
+                    FROM `glpi_networkportaggregates`
+                    WHERE `networkports_id_list` LIKE '%\"".$netport->getID()."\"%')";
+
+         $iterator = $DB->request($query);
+
+         if ($iterator->numrows() > 0) {
+            $new_father = $row->addCell($virtual_header, __('this port'), $father);
+         } else {
+            $new_father = $row->addCell($virtual_header, '', $father);
+         }
+
+         foreach ($iterator as $networkports_ids) {
+
+            $virtualPort = new NetworkPort();
+
+            if ($virtualPort->getFromDB($networkports_ids['networkports_id'])) {
+
+               $cell_value = '<i>'.$virtualPort->getLink().'</i>';
+
+               $virtual_cell = $row->addCell($virtual_header, $cell_value, $father);
+
+               if (($this->canHaveVLAN) && ($display_options['vlans'])) {
+                  NetworkPort_Vlan::getHTMLTableCellsForItem($row, $virtualPort, $virtual_cell,
+                                                             $options);
+               }
+
+               if ($display_options['internet']) {
+                  NetworkName::getHTMLTableCellsForItem($row, $virtualPort, $virtual_cell,
+                                                        $options);
+               }
+            }
+            unset($virtualPort);
+         }
+
+         $father = $new_father;
+      }
+
+      if (($this->canHaveVLAN) && ($display_options['vlans'])) {
+         NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, $father, $options);
+      }
+
+      if (($this->haveMAC) && ($display_options['mac']) && (!empty($netport->fields["mac"]))) {
+         $row->addCell($row->getHeaderByName('Instantiation', 'MAC'),
+                       $netport->fields["mac"], $father);
+      }
+
+      if ($display_options['internet']) {
+         NetworkName::getHTMLTableCellsForItem($row, $netport, $father, $options);
+      }
+
 
       return NULL;
    }
