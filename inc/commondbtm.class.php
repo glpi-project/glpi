@@ -3900,6 +3900,9 @@ class CommonDBTM extends CommonGLPI {
                   return "&nbsp;";
 
                case "itemlink" :
+                  if ($searchoptions['table'] == $this->getTable()) {
+                     break;
+                  }
                case "dropdown" :
                   if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
                      return $searchoptions['toadd'][$value];
@@ -4015,8 +4018,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       if (count($searchoptions)) {
-         $field = $searchoptions['field'];
-
+         $field = $searchoptions['linkfield'];
          // Normalize option
          if (is_array($values)) {
             $value = $values[$field];
@@ -4118,8 +4120,12 @@ class CommonDBTM extends CommonGLPI {
                $options['value'] = $value;
                return Dropdown::showTimeStamp($name, $options);
 
-            case "dropdown" :
             case "itemlink" :
+               // Same as dropdown id table != table of item
+               if ($searchoptions['table'] == $this->getTable()) {
+                  break;
+               }
+            case "dropdown" :
                $copytooption = array('condition', 'right', 'displaywith', 'emptylabel', 'toadd');
                $options['name']  = $name;
                $options['value'] = $value;
@@ -4131,7 +4137,6 @@ class CommonDBTM extends CommonGLPI {
                if (!isset($options['entity'])) {
                   $options['entity'] = $_SESSION['glpiactiveentities'];
                }
-               
                if ($searchoptions['table'] == 'glpi_users') {
                   return User::dropdown($options);
                }

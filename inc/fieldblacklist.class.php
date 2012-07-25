@@ -91,11 +91,10 @@ class Fieldblacklist extends CommonDropdown {
       $tab[6]['datatype']         = 'specific';
       $tab[6]['additionalfields'] = array('itemtype');
 
-      /// TODO do specific functions to display and select for value.
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'value';
       $tab[7]['name']            = __('Value'); // Is also specific
-      $tab[7]['datatype']        = 'string';
+      $tab[7]['datatype']        = 'specific';
       $tab[7]['additionalfields'] = array('itemtype', 'field');
       $tab[7]['massiveaction']   = false;
 
@@ -121,44 +120,52 @@ class Fieldblacklist extends CommonDropdown {
                return $searchOption['name'];
             }
             break;
+         case  'value' :
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+               $target = getItemForItemtype($values['itemtype']);
+               if (isset($values['field']) && !empty($values['field'])) {
+                  $searchOption = $target->getSearchOptionByField('field', $values['field']);
+                  // MoYo : do not know why this part ?
+//                   if ($table = getTableNameForForeignKeyField($values['field'])) {
+//                      $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+//                   }
+                  return $target->getValueToDisplay($searchOption, $values[$field]);
+               }
+            }
+            break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
    static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
       global $DB;
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = false;
-      echo $field;
       switch ($field) {
          case 'field' :
-            /// TODO create function to do it clean
-            if (isset($options['itemtype_used'])
-              && !empty($options['itemtype_used'])
-              && $target = getItemForItemtype($options['itemtype_used'])) {
-               $criteria = array();
-               foreach ($DB->list_fields($target->getTable()) as $tmpfield) {
-                  $searchOption = $target->getSearchOptionByField('field', $tmpfield['Field']);
-
-                  if (empty($searchOption)) {
-                     if ($table = getTableNameForForeignKeyField($tmpfield['Field'])) {
-                        $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-                     }
-                  }
-
-                  if (!empty($searchOption)
-                     && !in_array($tmpfield['Type'], $target->getUnallowedFieldsForUnicity())
-                     && !in_array($tmpfield['Field'], $target->getUnallowedFieldsForUnicity())) {
-                     $criteria[$tmpfield['Field']] = $searchOption['name'];
-                  }
-               }
-
+            if (isset($values['itemtype'])
+              && !empty($values['itemtype'])) {
                $options['value'] = $values[$field];
-               return Dropdown::showFromArray($name, $criteria, $options);
+               $options['name']  = $name;
+               return self::dropdownField($values['itemtype'], $options);
             }
             break;
+
+         case 'value' :
+            if (isset($values['itemtype'])
+              && !empty($values['itemtype'])) {
+               if ($item = getItemForItemtype($values['itemtype'])) {
+                  if (isset($values['field'])
+                  && !empty($values['field'])) {
+                     $searchOption = $item->getSearchOptionByField('field', $values['field']);
+                     return $item->getValueToSelect($searchOption, $name, $values[$field], $options);
+                  }
+               }
+            }
+            break;
+
 
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -246,7 +253,7 @@ class Fieldblacklist extends CommonDropdown {
 
 
    function selectCriterias() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<span id='span_fields' name='span_fields'>";
 
@@ -259,26 +266,8 @@ class Fieldblacklist extends CommonDropdown {
          $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
 
-      if ($target = getItemForItemtype($this->fields['itemtype'])) {
-         $criteria = array();
-         foreach ($DB->list_fields($target->getTable()) as $field) {
-            $searchOption = $target->getSearchOptionByField('field', $field['Field']);
-
-            if (empty($searchOption)) {
-               if ($table = getTableNameForForeignKeyField($field['Field'])) {
-                  $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-               }
-            }
-
-            if (!empty($searchOption)
-                && !in_array($field['Type'], $target->getUnallowedFieldsForUnicity())
-                && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {
-               $criteria[$field['Field']] = $searchOption['name'];
-            }
-         }
-         $rand   = Dropdown::showFromArray('field', $criteria,
-                                           array('value' => $this->fields['field']));
-
+      if ($rand = self::dropdownField($this->fields['itemtype'],
+                                      array('value' => $this->fields['field']))) {
          $params = array('itemtype' => $this->fields['itemtype'],
                          'id_field' => '__VALUE__',
                          'id'       => $this->fields['id']);
@@ -289,7 +278,46 @@ class Fieldblacklist extends CommonDropdown {
       echo "</span>";
    }
 
+   /** Dropdown fields for a specific itemtype
+    * @param $itemtype itemtype
+    * @param $options array of options
+   **/
+   static function dropdownField($itemtype, $options = array()) {
+      global $DB;
+      $p['name']    = 'field';
+      $p['display'] = true;
+      $p['value']   = '';
 
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      if ($target = getItemForItemtype($itemtype)) {
+         $criteria = array();
+         foreach ($DB->list_fields($target->getTable()) as $field) {
+            $searchOption = $target->getSearchOptionByField('field', $field['Field']);
+
+         // MoYo : do not know why  this part ?
+//             if (empty($searchOption)) {
+//                if ($table = getTableNameForForeignKeyField($field['Field'])) {
+//                   $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+//                }
+//             }
+
+            if (!empty($searchOption)
+                && !in_array($field['Type'], $target->getUnallowedFieldsForUnicity())
+                && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {
+               $criteria[$field['Field']] = $searchOption['name'];
+            }
+         }
+         return Dropdown::showFromArray($p['name'], $criteria, $p);
+      } else {
+         return false;
+      }
+
+   }
    /**
     * @param $field  (default '')
    **/
@@ -303,45 +331,52 @@ class Fieldblacklist extends CommonDropdown {
       if ($this->fields['itemtype'] != '') {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             $searchOption = $item->getSearchOptionByField('field', $field);
-            if (isset($searchOption['linkfield'])) {
-               $linkfield = $searchOption['linkfield'];
-            } else {
-               $linkfield = $searchOption['field'];
+//             print_r($searchOption);
+            $options = array();
+            if (isset($this->fields['entity'])) {
+               $options['entity'] = $this->fields['entity'];
+               $options['entity_sons'] = $this->fields['is_recursive'];
             }
-
-            if ($linkfield == $this->fields['field']) {
-               $value = $this->fields['value'];
-            } else {
-               $value = '';
-            }
+            echo $item->getValueToSelect($searchOption, 'value', $this->fields['value'], $options);
+//             if (isset($searchOption['linkfield'])) {
+//                $linkfield = $searchOption['linkfield'];
+//             } else {
+//                $linkfield = $searchOption['field'];
+//             }
+// 
+//             if ($linkfield == $this->fields['field']) {
+//                $value = $this->fields['value'];
+//             } else {
+//                $value = '';
+//             }
          }
 
-         //If field is a foreign key on another table or not
-         $table = getTableNameForForeignKeyField($linkfield);
-         if ($table == '') {
-            if (isset($searchOption['datatype'])) {
-               $datatype = $searchOption['datatype'];
-            } else {
-               $datatype = 'text';
-            }
-
-            switch ($datatype) {
-               case 'text' :
-               case 'string' :
-               default :
-                  Html::autocompletionTextField($this, 'value', array('value' => $value));
-                  break;
-
-               case 'bool':
-                  Dropdown::showYesNo('value',$value);
-                  break;
-            }
-
-         } else {
-            $itemtype = getItemTypeForTable($table);
-            Dropdown::show($itemtype, array('name'  => 'value',
-                                            'value' => $value));
-         }
+//          //If field is a foreign key on another table or not
+//          $table = getTableNameForForeignKeyField($linkfield);
+//          if ($table == '') {
+//             if (isset($searchOption['datatype'])) {
+//                $datatype = $searchOption['datatype'];
+//             } else {
+//                $datatype = 'text';
+//             }
+// 
+//             switch ($datatype) {
+//                case 'text' :
+//                case 'string' :
+//                default :
+//                   Html::autocompletionTextField($this, 'value', array('value' => $value));
+//                   break;
+// 
+//                case 'bool':
+//                   Dropdown::showYesNo('value',$value);
+//                   break;
+//             }
+// 
+//          } else {
+//             $itemtype = getItemTypeForTable($table);
+//             Dropdown::show($itemtype, array('name'  => 'value',
+//                                             'value' => $value));
+//          }
 
       }
       echo "</span>";

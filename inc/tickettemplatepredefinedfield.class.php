@@ -276,10 +276,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                               'toadd'));
             echo "</td><td colspan='2' class='top'>";
-            $paramsmassaction = array('id_field'        => '__VALUE__',
-                                      'itemtype'        => 'Ticket',
-                                      'options'         => array(
-                                                   'itemtype_used'      => $itemtype_used,
+            $paramsmassaction = array('id_field'         => '__VALUE__',
+                                      'itemtype'         => 'Ticket',
+                                      'additionalvalues' => array('itemtype' => $itemtype_used),
+                                      'options'          => array(
                                                    'relative_dates'     => 1,
                                                    'with_time'          => 1,
                                                    'with_days'          => 0,
