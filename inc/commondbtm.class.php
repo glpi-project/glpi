@@ -4119,6 +4119,7 @@ class CommonDBTM extends CommonGLPI {
                return Dropdown::showTimeStamp($name, $options);
 
             case "dropdown" :
+            case "itemlink" :
                $copytooption = array('condition', 'right', 'displaywith', 'emptylabel', 'toadd');
                $options['name']  = $name;
                $options['value'] = $value;
