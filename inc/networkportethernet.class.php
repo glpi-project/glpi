@@ -62,18 +62,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Ethernet port type') . "</td><td>\n";
-      Dropdown::showFromArray('type', array(''   => Dropdown::EMPTY_VALUE,
-                                            'T'  => __('Twisted pair (RJ-45)'),
-                                            'SX' => __('Multimode fiber'),
-                                            'LX' => __('Single mode fiber')),
+      Dropdown::showFromArray('type', self::getPortTypeName(),
                               array('value' => $this->fields['type']));
       echo "</td>";
       echo "<td>" . __('Ethernet port speed') . "</td><td>\n";
-      Dropdown::showFromArray('speed', array(0     => "",
-                                             10    => 10,
-                                             100   => 100,
-                                             1000  => 1000,
-                                             10000 => 10000),
+      Dropdown::showFromArray('speed', self::getPortSpeed(),
                               array('value' => $this->fields['speed']));
       echo "</td>";
       echo "</tr>\n";
@@ -375,14 +368,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $tab[10]['name']          = __('MAC');
       $tab[10]['massiveaction'] = false;
 
-      /// TODO do specific functions to display and select for type.
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'type';
       $tab[11]['name']          = __('Ethernet port type');
       $tab[11]['massiveaction'] = false;
       $tab[11]['datatype']      = 'specific';
 
-      /// TODO do specific functions to display and select for speed.
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'speed';
       $tab[12]['name']          = __('Ethernet port speed');
@@ -393,6 +384,97 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    }
 
+   /**
+    * Get the possible value for Ethernet port type
+    *
+    * @since version 0.84
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getPortTypeName($val=NULL) {
+
+      $tmp['']   = Dropdown::EMPTY_VALUE;
+      $tmp['T']  = __('Twisted pair (RJ-45)');
+      $tmp['SX'] = __('Multimode fiber');
+      $tmp['LX'] = __('Single mode fiber');
+
+      if (is_null($val)) {
+         return $tmp;
+      }
+      if (isset($tmp[$val])) {
+         return $tmp[$val];
+      }
+      return NOT_AVAILABLE;
+   }
+
+   /**
+    * Get the possible value for Ethernet port speed
+    *
+    * @since version 0.84
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getPortSpeed($val=NULL) {
+
+      $tmp = array(0     => "",
+                   10    => 10,
+                   100   => 100,
+                   1000  => 1000,
+                   10000 => 10000);
+
+      if (is_null($val)) {
+         return $tmp;
+      }
+      if (isset($tmp[$val])) {
+         return $tmp[$val];
+      }
+      return NOT_AVAILABLE;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'type':
+            return self::getPortTypeName($values[$field]);
+            break;
+
+         case 'speed':
+            return self::getPortSpeed($values[$field]);
+            break;
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'type':
+            $options['value'] = $values[$field];
+            Dropdown::showFromArray($name, self::getPortTypeName(), $options);
+            break;
+
+         case 'speed':
+            $options['value'] = $values[$field];
+            Dropdown::showFromArray($name, self::getPortSpeed(), $options);
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
                                                          $itemtype) {
