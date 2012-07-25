@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 abstract class HTMLTable_Entity {
 
    private $html_id;
-   private $html_style = array();;
+   private $html_style = array();
    private $html_class = array();
 
    private $content;
