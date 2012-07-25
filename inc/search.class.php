@@ -4308,25 +4308,6 @@ class Search {
             $clean = array('<' => '',
                            '>' => '');
             return strtr($data[$NAME.$num], $clean);
-
-         case 'glpi_fieldunicities.fields':
-            $values  = explode(',',$data[$NAME.$num]);
-            if (!($item = getItemForItemtype($data['ITEMTYPE']))) {
-               continue;
-            }
-            $message = array();
-            foreach ($values as $field) {
-               $table = getTableNameForForeignKeyField($field);
-               if ($table != '') {
-                  $searchOption = $item->getSearchOptionByField('field','name',$table);
-               } else {
-                  $searchOption = $item->getSearchOptionByField('field',$field);
-               }
-               if (isset($searchOption['name'])) {
-                  $message[] = $searchOption['name'];
-               }
-            }
-            return implode(',',$message);
       }
 
 
