@@ -136,9 +136,11 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Retrieve an item from the database
+    * Retrieve an item from the database by query. The query must include the WHERE keyword. Thus,
+    * we can replace "WHERE" to make complex SQL JOINED queries (for instance, see
+    * User::getFromDBbyEmail()).
     *
-    * @param $ID ID of the item to get
+    * @param $query the "WHERE" or "JOIN" part of the SQL query
     *
     * @return true if succeed else false
    **/
