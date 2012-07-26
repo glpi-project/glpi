@@ -102,13 +102,6 @@ if (isset($_POST["update"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete_replicate"])) {
-   $replicate = new AuthLdapReplicate();
-   foreach ($_POST["item"] as $index=>$val) {
-      $replicate->delete(array("id" => $index));
-   }
-   Html::back();
-
 } else if (isset($_POST["add_replicate"])) {
    $replicate = new AuthLdapReplicate();
    unset($_POST["next"]);

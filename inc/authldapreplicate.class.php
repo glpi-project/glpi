@@ -37,6 +37,15 @@
 **/
 class AuthLdapReplicate extends CommonDBTM {
 
+   function canCreate() {
+      return Session::haveRight('config', 'w');
+   }
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
 
    function prepareInputForAdd($input) {
 
