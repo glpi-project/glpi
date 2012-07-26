@@ -1305,7 +1305,6 @@ class AuthLDAP extends CommonDBTM {
       $values['end_date']     = date('Y-m-d H:i:s', time()-DAY_TIMESTAMP);
       //Called by an external script or not
       $values['script']       = 0;
-
       foreach ($options as $option => $value) {
          // this test break mode detection - if ($value != '') {
          $values[$option] = $value;
@@ -1335,12 +1334,11 @@ class AuthLDAP extends CommonDBTM {
             $filter = $values['ldap_filter'];
          }
 
-         if ($values['script'] && $values['begin_date']) {
+         if ($values['script'] && !empty($values['begin_date'])) {
             $filter_timestamp = self::addTimestampRestrictions($values['begin_date'],
                                                                $values['end_date']);
             $filter           = "(&$filter $filter_timestamp)";
          }
-
          // TODO $user_infos not initialized
          $result = self::searchForUsers($ds, $values, $filter, $attrs, $limitexceeded,
                                         $user_infos, $ldap_users, $config_ldap);
@@ -2655,6 +2653,7 @@ class AuthLDAP extends CommonDBTM {
       //Build search filter
       $counter = 0;
       $filter  = '';
+
       if (!empty($_SESSION['ldap_import']['criterias'])
           && ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE)) {
 
@@ -2684,14 +2683,13 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //If time restriction
-      $begin_date = (isset($_SESSION['ldap_import']['begin_date'])
+      $begin_date = (isset($_SESSION['ldap_import']['begin_date']) && !empty($_SESSION['ldap_import']['begin_date'])
                         ?$_SESSION['ldap_import']['begin_date']
                         :NULL);
-      $end_date   = (isset($_SESSION['ldap_import']['end_date'])
+      $end_date   = (isset($_SESSION['ldap_import']['end_date']) && !empty($_SESSION['ldap_import']['end_date'])
                         ?$_SESSION['ldap_import']['end_date']
-                        :date('Y-m-d H:i:s', time()-DAY_TIMESTAMP));
+                        :NULL);
       $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
-
       $ldap_condition = $authldap->getField('condition');
       //Add entity filter and filter filled in directory's configuration form
       return  "(&".(isset($_SESSION['ldap_import']['entity_filter'])
