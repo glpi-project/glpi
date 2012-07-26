@@ -73,12 +73,17 @@ class RuleCriteria extends CommonDBChild {
       }
    }
 
+   function prepareInputForAdd($input) {
+      if (!isset($input['criteria']) || empty($input['criteria'])) {
+         return false;
+      }
+      return $input;
+   }
 
    function getSearchOptions() {
 
       $tab                     = array();
 
-      /// TODO do specific functions to display and select for criteria. Or put string ?
       $tab[1]['table']            = $this->getTable();
       $tab[1]['field']            = 'criteria';
       $tab[1]['name']             = __('Name');
@@ -105,6 +110,51 @@ class RuleCriteria extends CommonDBChild {
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'criteria':
+
+             $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  return $rule->getCriteria($values[$field]);
+               }
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'criteria' :
+             $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  $options['value'] = $values[$field];
+                  $options['name']  = $name;
+                  return $rule->dropdownCriteria($options);
+               }
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * Get all criterias for a given rule
