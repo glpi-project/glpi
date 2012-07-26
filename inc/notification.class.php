@@ -160,12 +160,12 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Notification method') . "</td>";
       echo "<td>";
-      self::dropdownMode($this->fields['mode']);
+      self::dropdownMode(array('value'=>$this->fields['mode']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
       echo "<td><span id='show_events'>";
-      NotificationEvent::dropdownEvents($this->fields['itemtype'],$this->fields['event']);
+      NotificationEvent::dropdownEvents($this->fields['itemtype'],array('value'=>$this->fields['event']));
       echo "</span></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>". NotificationTemplate::getTypeName(1)."</td>";
@@ -179,6 +179,50 @@ class Notification extends CommonDBTM {
       return true;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'event':
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+               return NotificationEvent:getEventName($values['itemtype'],$values[$field]);
+            }
+            break;
+         case 'mode':
+            return self::getMode($values[$field]);
+            break;
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'event' :
+            if (isset($values['itemtype'])
+              && !empty($values['itemtype'])) {
+               $options['value'] = $values[$field];
+               $options['name']  = $name;
+               return NotificationEvent::dropdownEvents($values['itemtype'],$options);
+            }
+            break;
+
+         case 'mode' :
+            $options['value'] = $values[$field];
+            $options['name']  = $name;
+            return self::dropdownMode($options);
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    function getSearchOptions() {
 
@@ -191,7 +235,6 @@ class Notification extends CommonDBTM {
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
 
-      /// TODO do specific functions to display and select for event.
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'event';
       $tab[2]['name']            = _n('Event', 'Events', 1);
@@ -199,7 +242,6 @@ class Notification extends CommonDBTM {
       $tab[2]['datatype']        = 'specific';
       $tab[2]['additionalfields'] = array('itemtype');
 
-      /// TODO do specific functions to display and select for mode.
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'mode';
       $tab[3]['name']            = __('Notification method');
@@ -282,12 +324,20 @@ class Notification extends CommonDBTM {
    /**
     * Display a dropdown with all the available notification modes
     *
-    * @param $value the default value for the dropdown
+    * @param $options array of options
    **/
-   static function dropdownMode($value) {
+   static function dropdownMode($options) {
+      $p['name']    = 'mode';
+      $p['display'] = true;
+      $p['value']   = '';
 
-      $modes['mail'] = __('Email');
-      Dropdown::showFromArray('mode', $modes, array('value' => $value));
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      Dropdown::showFromArray($p['name'], self::getModes(), $p);
    }
 
 
@@ -299,7 +349,22 @@ class Notification extends CommonDBTM {
     * @return the mode's label
    **/
    static function getMode($mode) {
-      return __('Email');
+      $tab = self::getModes();
+      if (isset($tab[$mode])) {
+         return $tab[$mode];
+      }
+      return NOT_AVAILABLE;
+   }
+
+   /**
+    * Get notification method label (email only for the moment)
+    *
+    * @param $mode the mode to use
+    *
+    * @return the mode's label
+   **/
+   static function getModes() {
+      return array('mail' => __('Email'));
    }
 
 
