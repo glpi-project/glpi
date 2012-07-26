@@ -690,8 +690,10 @@ class Auth {
    static function dropdown($options=array()) {
       global $DB;
 
-      $p['name']  = 'auths_id';
-      $p['value'] = 0;
+      $p['name']    = 'auths_id';
+      $p['value']   = 0;
+      $p['display'] = true;
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;

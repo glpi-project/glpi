@@ -2288,14 +2288,13 @@ class User extends CommonDBTM {
       $tab[14]['datatype']       = 'datetime';
       $tab[14]['massiveaction']  = false;
 
-      // Virtual field so not able to manage it
-      $tab[15]['table']          = 'glpi_auth_tables';
-      $tab[15]['field']          = 'name';
-      $tab[15]['linkfield']      = 'auths_id';
-      $tab[15]['name']           = __('Authentication');
-      $tab[15]['searchtype']     = 'contains';
-      $tab[15]['massiveaction']  = false;
-      $tab[15]['datatype']       = 'specific';
+      $tab[15]['table']            = 'glpi_users';
+      $tab[15]['field']            = 'authtype';
+      $tab[15]['name']             = __('Authentication');
+      $tab[15]['massiveaction']    = false;
+      $tab[15]['datatype']         = 'specific';
+      $tab[15]['searchtype']       = 'equals';
+      $tab[15]['additionalfields'] = array('auths_id');
 
       $tab[30]['table']          = 'glpi_authldaps';
       $tab[30]['field']          = 'name';
@@ -2417,6 +2416,38 @@ class User extends CommonDBTM {
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'authtype':
+            $auths_id = 0;
+            if (isset($values['auths_id']) && !empty($values['auths_id'])) {
+               $auths_id = $values['auths_id'];
+            }
+            return Auth::getMethodName($values[$field], $auths_id);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'authtype' :
+            $options['name'] = $name;
+            $options['value'] = $values[$field];
+
+            return Auth::dropdown($options);
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * Get all groups where the current user have delegating
