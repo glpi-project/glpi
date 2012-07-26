@@ -60,6 +60,7 @@ if (isset($_REQUEST['searchtype'])) {
    $inputname = 'contains'.$addmeta.'['.$_REQUEST['num'].']';
    $display   = false;
    $item = getItemForItemtype($_REQUEST['itemtype']);
+   $options['value'] = $_REQUEST['value'];
 
    switch ($_REQUEST['searchtype']) {
       case "equals" :
@@ -69,193 +70,57 @@ if (isset($_REQUEST['searchtype'])) {
       case "under" :
       case "notunder" :
         if (!$display && isset($searchopt['field'])) {
-/*            $options = array();
-            echo $item->getValueToSelect($searchopt, $inputname, $_REQUEST['value'], $options);
-            $display = true;*/
-            break;
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
-               case "glpi_reminders.state" :
-                  Planning::dropdownState($inputname, $_REQUEST['value']);
-                  $display = true;
-                  break;
 
 
                case "glpi_changes.status" :
-                  Change::dropdownStatus(array('name'     => $inputname, 
-                                               'value'    => $_REQUEST['value'], 
-                                               'showtype' => 'search'));
-                  $display = true;
+               case "glpi_changes.impact" :
+               case "glpi_changes.urgency" :
+               case "glpi_problems.status" :
+               case "glpi_problems.impact" :
+               case "glpi_problems.urgency" :
+               case "glpi_tickets.status" :
+               case "glpi_tickets.impact" :
+               case "glpi_tickets.urgency" :
+                  $options['showtype']='search';
                   break;
 
                case "glpi_changes.priority" :
-                  Change::dropdownPriority(array('name'    => $inputname,
-                                               'value'     => $_REQUEST['value'],
-                                               'showtype'  => 'search',
-                                               'withmajor' => true));
-                  $display = true;
-                  break;
-
-               case "glpi_changes.impact" :
-                  Change::dropdownImpact(array('name'     => $inputname,
-                                               'value'    => $_REQUEST['value'],
-                                               'showtype' => 'search'));
-                  $display = true;
-                  break;
-
-               case "glpi_changes.urgency" :
-                  Change::dropdownUrgency(array('name'     => $inputname,
-                                                'value'    => $_REQUEST['value'],
-                                                'showtype' => 'search'));
-                  $display = true;
-                  break;
-
-               case "glpi_problems.status" :
-                  Problem::dropdownStatus(array('name'    => $inputname, 
-                                               'value'    => $_REQUEST['value'], 
-                                               'showtype' => 'search'));
-                  $display = true;
-                  break;
-
                case "glpi_problems.priority" :
-                  Problem::dropdownPriority(array('name'    => $inputname,
-                                               'value'     => $_REQUEST['value'],
-                                               'showtype'  => 'search',
-                                               'withmajor' => true));
-                  $display = true;
-                  break;
-
-               case "glpi_problems.impact" :
-                  Problem::dropdownImpact(array('name'     => $inputname,
-                                               'value'    => $_REQUEST['value'],
-                                               'showtype' => 'search'));
-                  $display = true;
-                  break;
-
-               case "glpi_problems.urgency" :
-                  Problem::dropdownUrgency(array('name'     => $inputname,
-                                                 'value'    => $_REQUEST['value'],
-                                                 'showtype' => 'search'));                  $display = true;
-                  break;
-
-               case "glpi_tickets.status" :
-                  Ticket::dropdownStatus(array('name'     => $inputname, 
-                                               'value'    => $_REQUEST['value'], 
-                                               'showtype' => 'search'));
-                  $display = true;
-                  break;
-
-               case "glpi_tickets.type" :
-                  Ticket::dropdownType($inputname, array('value' => $_REQUEST['value']));
-                  $display = true;
-                  break;
-
                case "glpi_tickets.priority" :
-                  Ticket::dropdownPriority(array('name'    => $inputname,
-                                               'value'     => $_REQUEST['value'],
-                                               'showtype'  => 'search',
-                                               'withmajor' => true));
-                  $display = true;
+                  $options['showtype']  ='search';
+                  $options['withmajor'] =true;
                   break;
 
-               case "glpi_tickets.impact" :
-                  Ticket::dropdownImpact(array('name'     => $inputname,
-                                               'value'    => $_REQUEST['value'],
-                                               'showtype' => 'search'));
-                  $display = true;
-                  break;
-
-               case "glpi_tickets.urgency" :
-                  Ticket::dropdownUrgency(array('name'     => $inputname,
-                                                'value'    => $_REQUEST['value'],
-                                                'showtype' => 'search'));
-                  $display = true;
-                  break;
 
                case "glpi_tickets.global_validation" :
-                  TicketValidation::dropdownStatus($inputname,
-                                                   array('value'  => $_REQUEST['value'],
-                                                         'global' => true,
-                                                         'all'    => 1));
-                  $display =true;
+                  $options['all'] =true;
                   break;
 
-               case "glpi_users.name" :
-                  User::dropdown(array('name'     => $inputname,
-                                       'value'    => $_REQUEST['value'],
-                                       'comments' => false,
-                                       'right'    => isset($searchopt['right'])
-                                                      ?$searchopt['right'] :'all'));
-                  $display = true;
-                  break;
 
                case "glpi_ticketvalidations.status" :
-                  TicketValidation::dropdownStatus($inputname, array('value' => $_REQUEST['value'],
-                                                                     'all'   => 1));
-                  $display = true;
-                  break;
-
-               case "glpi_ticketsatisfactions.type" :
-                  Dropdown::showFromArray($inputname,
-                                          array(1 => __('Internal survey'),
-                                                2 => __('External survey')),
-                                          array('value' => $_REQUEST['value']));
-                  $display = true;
-                  break;
-
-               case "glpi_crontasks.state" :
-                  CronTask::dropdownState($inputname, $_REQUEST['value']);
-                  $display = true;
-                  break;
-
-               case "glpi_blacklists.type" :
-                  Blacklist::dropdownType($inputname, array('value' => $_REQUEST['value']));
-                  $display = true;
+                  $options['all'] =true;
                   break;
             }
 
             // Standard datatype usage
             if (!$display && isset($searchopt['datatype'])) {
                switch ($searchopt['datatype']) {
-                  case "bool" :
-                     Dropdown::showYesNo($inputname, $_REQUEST['value']);
-                     $display = true;
-                     break;
-
-                  case "right" :
-                     // No access not displayed because empty not take into account for search
-                     Profile::dropdownNoneReadWrite($inputname, $_REQUEST['value'], 1, 1, 1);
-                     $display = true;
-                     break;
-
-                  case "itemtypename" :
-                     Dropdown::dropdownUsedItemTypes($inputname,
-                                                     getItemTypeForTable($searchopt['table']),
-                                                     array('value'    => $_REQUEST['value'],
-                                                           'comments' => 0));
-                     $display = true;
-                     break;
 
                   case "date" :
                   case "date_delay" :
-                     Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'],
-                                                     array('with_time'   => false,
-                                                           'with_future'
-                                                               => (isset($searchopt['maybefuture'])
-                                                                   && $searchopt['maybefuture'])));
-                     $display = true;
-                     break;
-
                   case "datetime" :
-                     Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'],
-                                                     array('with_time'   => true,
-                                                           'with_future'
-                                                               => (isset($searchopt['maybefuture'])
-                                                                   && $searchopt['maybefuture'])));
-                     $display = true;
+                     $options['relative_dates'] = true;
                      break;
                }
             }
+            $out = $item->getValueToSelect($searchopt, $inputname, $_REQUEST['value'], $options);
+            if (strlen($out)) {
+               echo $out;
+               $display = true;
+            }
+            break;
 
             //Could display be handled by a plugin ?
             if (!$display
@@ -270,23 +135,8 @@ if (isset($_REQUEST['searchtype'])) {
                }
             }
 
-            // Standard field usage
-            if (!$display) {
-               switch ($searchopt['field']) {
-                  case "name" :
-                  case "completename" :
-                     $cond = (isset($searchopt['condition']) ? $searchopt['condition'] : '');
-                     Dropdown::show(getItemTypeForTable($searchopt['table']),
-                                    array('value'     => $_REQUEST['value'],
-                                          'name'      => $inputname,
-                                          'comments'  => 0,
-                                          'condition' => $cond));
-                     $display = true;
-                     break;
-               }
-            }
         }
-        break; //case "lessthan" :
+        break; 
    }
 
    // Default case : text field

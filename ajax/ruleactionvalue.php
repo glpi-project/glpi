@@ -48,5 +48,6 @@ Session::checkLoginUser();
 $display = false;
 
 $ra = new RuleAction();
+
 $ra->displayActionSelectPattern($_POST);
 ?>

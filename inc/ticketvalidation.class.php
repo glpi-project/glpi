@@ -833,9 +833,8 @@ class TicketValidation  extends CommonDBChild {
 
       switch ($field) {
          case 'status' :
-            $options['name']  = $name;
             $options['value'] = $values[$field];
-            return self::dropdownStatus($options);
+            return self::dropdownStatus($name, $options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
