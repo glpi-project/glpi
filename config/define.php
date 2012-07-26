@@ -257,9 +257,9 @@ $CFG_GLPI["union_search_type"]            = array('ReservationItem' => "reservat
 $CFG_GLPI["systeminformations_types"]     = array('AuthLDAP', 'DBConnection', 'MailCollector',
                                                   'Plugin');
 
-$CFG_GLPI["rulecollections_types"]        = array('RuleImportComputerCollection',
+$CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
+                                                  'RuleImportComputerCollection',
                                                   'RuleMailCollectorCollection',
-                                                  'RuleImportEntityCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection');
