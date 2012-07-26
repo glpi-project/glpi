@@ -201,12 +201,12 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       switch ($field) {
          case 'mode':
             $options['value'] = $values[$field];
-            Dropdown::showFromArray($name, WifiNetwork::getWifiCardModes(), $options);
+            return Dropdown::showFromArray($name, WifiNetwork::getWifiCardModes(), $options);
             break;
 
          case 'version':
             $options['value'] = $values[$field];
-            Dropdown::showFromArray($name, WifiNetwork::getWifiCardVersion(), $options);
+            return Dropdown::showFromArray($name, WifiNetwork::getWifiCardVersion(), $options);
             break;
 
       }

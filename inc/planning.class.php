@@ -132,15 +132,22 @@ class Planning extends CommonGLPI {
     *
     * @param $name   select name
     * @param $value  default value (default '')
+    * @param $display  display of send string ?
    **/
-   static function dropdownState($name, $value='') {
+   static function dropdownState($name, $value='', $display= true) {
 
-      echo "<select name='$name' id='$name'>";
-      echo "<option value='0'".(($value == 0)?" selected ":"").">".
+      $output = "<select name='$name' id='$name'>";
+      $output .= "<option value='0'".(($value == 0)?" selected ":"").">".
             _n('Information', 'Information', 1)."</option>";
-      echo "<option value='1'".(($value == 1)?" selected ":"").">".__('To do')."</option>";
-      echo "<option value='2'".(($value == 2)?" selected ":"").">".__('Done')."</option>";
-      echo "</select>";
+      $output .= "<option value='1'".(($value == 1)?" selected ":"").">".__('To do')."</option>";
+      $output .= "<option value='2'".(($value == 2)?" selected ":"").">".__('Done')."</option>";
+      $output .= "</select>";
+
+      if ($display) {
+         echo  $output;
+      } else {
+         return $output;
+      }
    }
 
 
