@@ -257,41 +257,5 @@ class Ticket_Ticket extends CommonDBRelation {
          }
       }
    }
-
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
-
-      if (!is_array($values)) {
-         $values = array($field => $values);
-      }
-      switch ($field) {
-         case 'tickets_id_1':
-         case 'tickets_id_2':
-            return Dropdown::getDropdownName('glpi_tickets', $values[$field]);
-            break;
-
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
-
-
-
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
-      global $DB;
-      if (!is_array($values)) {
-         $values = array($field => $values);
-      }
-      $options['display'] = false;
-      switch ($field) {
-         case 'tickets_id_1':
-         case 'tickets_id_2':
-            $options['value'] = $values[$field];
-            $options['name']  = $name;
-            return Dropdown::show('Ticket', $options);
-            break;
-
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
-
 }
 ?>
