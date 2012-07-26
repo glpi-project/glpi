@@ -54,20 +54,8 @@ class ReservationItem extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyItem($itemtype, $ID) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE (`itemtype` = '$itemtype'
-                       AND `items_id` = '$ID')";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)==1) {
-            $this->fields = $DB->fetch_assoc($result);
-            return true;
-         }
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
+                                       AND `".$this->getTable()."`.`items_id` = '$ID'");
    }
 
 

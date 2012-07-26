@@ -132,9 +132,27 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $query = "SELECT *
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`".$this->getIndexName()."` = '$ID'");
+   }
+
+   /**
+    * Retrieve an item from the database
+    *
+    * @param $ID ID of the item to get
+    *
+    * @return true if succeed else false
+   **/
+   function getFromDBByQuery($query) {
+      global $DB;
+      // Make new database object and fill variables
+
+      if (empty($query)) {
+         return false;
+      }
+
+      $query = "SELECT `".$this->getTable()."`.*
                 FROM `".$this->getTable()."`
-                WHERE `".$this->getIndexName()."` = '$ID'";
+                $query";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) == 1) {
@@ -147,7 +165,6 @@ class CommonDBTM extends CommonGLPI {
 
       return false;
    }
-
 
    /**
     * Get the identifier of the current item

@@ -470,7 +470,6 @@ class Document extends CommonDBTM {
     * @return boolean
    **/
    function getFromDBbyContent($entity, $path) {
-      global $DB;
 
       if (empty($path)) {
          return false;
@@ -480,14 +479,9 @@ class Document extends CommonDBTM {
       if (!$sum) {
          return false;
       }
-      $crit = array('sha1sum'     => $sum,
-                    'entities_id' => $entity);
 
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
-         $this->fields = $data;
-         return true;
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`sha1sum` = '$sum'
+                      AND `".$this->getTable()."`.`entities_id` = '$entity'");
    }
 
 

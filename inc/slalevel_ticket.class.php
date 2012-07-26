@@ -48,24 +48,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBForTicket($ID) {
-      global $DB;
-
-      // Make new database object and fill variables
-      if (empty($ID)) {
-         return false;
-      }
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `tickets_id` = '$ID'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $this->fields = $DB->fetch_assoc($result);
-            return true;
-         }
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`tickets_id` = '$ID'");
    }
 
 

@@ -335,22 +335,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyName($name) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `name` = '$name'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'");
    }
 
 
@@ -364,26 +349,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyDn($user_dn) {
-      global $DB;
-
-      if (empty($user_dn)) {
-         return false;
-      }
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `user_dn` = '$user_dn'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`user_dn` = '$user_dn'");
    }
 
 
@@ -395,24 +361,9 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyEmail($email) {
-      global $DB;
-
-      if (empty($email)) {
-         return false;
-      }
-
-      $query = "SELECT `users_id`
-                FROM `glpi_useremails`
-                WHERE `email` = '$email'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $data = $DB->fetch_assoc($result);
-         return $this->getFromDB($data['users_id']);
-      }
-      return false;
+      return $this->getFromDBByQuery("LEFT JOIN `glpi_useremails` 
+                  ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`) 
+                  WHERE `glpi_useremails`.`email` = '$email'");
    }
 
 
@@ -468,26 +419,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyToken($token) {
-      global $DB;
-
-      if (empty($token)) {
-         return false;
-      }
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `personal_token` = '$token'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`personal_token` = '$token'");
    }
 
 

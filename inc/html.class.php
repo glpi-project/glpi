@@ -2976,8 +2976,8 @@ class Html {
    static function getCheckAllAsCheckbox($container_id) {
       $rand = mt_rand();
       $out = "<input type='checkbox' name='_checkall_$rand' ".
-                  "id='_checkall_$rand' ".
-                  "onclick= \"if ( checkAsCheckboxes('_checkall_$rand',
+                  "id='checkall_$rand' ".
+                  "onclick= \"if ( checkAsCheckboxes('checkall_$rand',
                                                    '$container_id'))
                                              {return true;}\">";
 
@@ -3093,7 +3093,7 @@ class Html {
          echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                 ($p['ontop']?'-top':'').".png' alt=''></td>";
-         echo "<td width=100% class='left'>";
+         echo "<td width='100%' class='left'>";
          echo "<a class='vsubmit' onclick='massiveaction_window$identifier.show();' ".
                "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">".
                _n('Action', 'Actions',2)."</a>";
