@@ -191,7 +191,20 @@ class RuleCriteria extends CommonDBChild {
             }
             break;
 
-
+         case 'pattern':
+            if (!isset($values["criteria"]) || !isset($values["condition"])) {
+               return NOT_AVAILABLE;
+            }
+            $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) { 
+                  /// TODO : manage display param to this function : need to send ot to all under functions
+                  $rule->displayCriteriaSelectPattern($name, $values["criteria"], $values["condition"], $values[$field]);
+               }
+            }
+            break;
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }

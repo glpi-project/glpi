@@ -254,7 +254,7 @@ class SlaLevel extends RuleTicket {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Logical operator')."</td>";
       echo "<td>";
-      $this->dropdownRulesMatch("match", $this->fields["match"], $this->restrict_matching);
+      $this->dropdownRulesMatch(array('value' => $this->fields["match"]));
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td></tr>";
 

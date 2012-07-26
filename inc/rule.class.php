@@ -232,7 +232,6 @@ class Rule extends CommonDBTM {
       $tab[4]['datatype']        = 'text';
       $tab[4]['massiveaction']   = false;
 
-      /// TODO do specific functions to display and select for match.
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'match';
       $tab[5]['name']            = __('Logical operator');
@@ -264,6 +263,46 @@ class Rule extends CommonDBTM {
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'match':
+            switch ($values[$field]) {
+               case self::AND_MATCHING :
+                  return __('and');
+               case self::OR_MATCHING :
+                  return __('or');
+               default :
+                  return NOT_AVAILABLE;
+            }
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'match' :
+            if (isset($values['itemtype'])
+              && !empty($values['itemtype'])) {
+               $options['value'] = $values[$field];
+               $options['name']  = $name;
+               $rule = new static();
+               return $rule->dropdownRulesMatch($options);
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * Show the rule
@@ -303,7 +342,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Logical operator')."</td>";
       echo "<td>";
-      $this->dropdownRulesMatch("match", $this->fields["match"], $this->restrict_matching);
+      $this->dropdownRulesMatch(array('value' => $this->fields["match"]));
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
@@ -353,22 +392,29 @@ class Rule extends CommonDBTM {
    /**
     * Display a dropdown with all the rule matching
     *
-    * @param $name         dropdown name
-    * @param $value        default value (default '')
-    * @param $restrict     may be self::AND_MATCHING or self::OR_MATCHING
-    *                      to restrict to its type / false if both displayed (false by default)
+    * @param $options      array of parameters
    **/
-   function dropdownRulesMatch($name, $value='', $restrict=false) {
+   function dropdownRulesMatch($options = array()) {
+      $p['name']     = 'match';
+      $p['value']    = '';
+      $p['restrict'] = $this->restrict_matching;
+      $p['display']  = true;
 
-      if (!$restrict || ($restrict == self::AND_MATCHING)) {
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      if (!$p['restrict'] || ($p['restrict'] == self::AND_MATCHING)) {
          $elements[self::AND_MATCHING] = __('and');
       }
 
-      if (!$restrict || ($restrict == self::OR_MATCHING)) {
+      if (!$p['restrict'] || ($p['restrict'] == self::OR_MATCHING)) {
          $elements[self::OR_MATCHING]  = __('or');
       }
 
-      return Dropdown::showFromArray($name, $elements, array('value' => $value));
+      return Dropdown::showFromArray($p['name'], $elements, $p);
    }
 
 
@@ -1930,7 +1976,7 @@ class Rule extends CommonDBTM {
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
       echo "</td><td>".__('Logical operator') . "</td><td>";
-      $this->dropdownRulesMatch("match", self::AND_MATCHING);
+      $this->dropdownRulesMatch();
       echo "</td><td class='tab_bg_2 center'>";
       echo "<input type=hidden name='sub_type' value='".get_class($this)."'>";
       echo "<input type=hidden name='entities_id' value='-1'>";
