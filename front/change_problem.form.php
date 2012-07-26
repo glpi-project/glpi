@@ -43,23 +43,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            if ($item->can($key, 'w')) {
-               $item->delete(array('id' => $key));
-            }
-         }
-      }
-      Event::log($_POST["changes_id"], "change", 4, "maintain",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-}
+} 
 
 Html::displayErrorAndDie("lost");
 ?>
