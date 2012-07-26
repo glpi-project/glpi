@@ -93,11 +93,6 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-//       if ($canedit && $numrows) {
-//          Html::openArrowMassives("changeticket_form$rand", true, true);
-//          Html::closeArrowMassives(array('delete' => __('Delete')));
-//       }
-
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".__('Title')."</th>";
@@ -187,11 +182,6 @@ class Change_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-
-//       if ($canedit && $numrows) {
-//          Html::openArrowMassives("changeticket_form$rand", true, true);
-//          Html::closeArrowMassives(array('delete' => __('Delete')));
-//       }
 
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";

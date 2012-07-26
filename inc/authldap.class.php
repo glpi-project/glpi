@@ -1117,7 +1117,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
                    $_SERVER['PHP_SELF']."'>";
 
-//             Html::openArrowMassives("ldap_form", true, true);
+
             $form_action = "process_ok";
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {
@@ -1125,7 +1125,6 @@ class AuthLDAP extends CommonDBTM {
             } else {
                $textbutton = _x('button','Import');
             }
-//             Html::closeArrowMassives(array($form_action => $textbutton));
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
