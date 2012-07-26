@@ -523,11 +523,15 @@ class Rule extends CommonDBTM {
 
          echo "<tr class='tab_bg_1 center'>";
          echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
-         $val = $this->dropdownActions($ra->getAlreadyUsedForRuleID($rules_id, $this->getType()));
-         echo "</td><td class='left'><span id='action_span'>\n";
-         $_POST["sub_type"] = $this->getType();
-         $_POST["field"]    = $val;
-         include (GLPI_ROOT."/ajax/ruleaction.php");
+         $rand = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
+         $params = array('field'    => '__VALUE__',
+                         'sub_type' => $this->getType());
+   
+         Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
+                                       $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
+   
+
+         echo "</td><td class='left' width='30%'><span id='action_span'>\n";
          echo "</span></td>\n";
          echo "<td class='tab_bg_2 left' width='80px'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='".
@@ -555,11 +559,27 @@ class Rule extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td>";
-      $val = $this->dropdownCriterias();
+      $rand = $this->dropdownCriteria();
+      $params = array('criteria' => '__VALUE__',
+                      'rand'     => $rand,
+                      'sub_type' => $this->getType());
+
+      Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
+                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
+
+      if ($this->specific_parameters) {
+         $itemtype = get_class($this).'Parameter';
+         echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
+                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                onClick=\"var w = window.open('".Toolbox::getItemTypeFormURL($itemtype).
+                "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
+                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+      }
+
       echo "</td><td class='left'><span id='criteria_span'>\n";
-      $_POST["sub_type"] = $this->getType();
+/*      $_POST["sub_type"] = $this->getType();
       $_POST["criteria"] = $val;
-      include (GLPI_ROOT."/ajax/rulecriteria.php");
+      include (GLPI_ROOT."/ajax/rulecriteria.php");*/
       echo "</span></td>\n";
       echo "<td class='tab_bg_2' width='80px'>";
       echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
@@ -645,27 +665,35 @@ class Rule extends CommonDBTM {
    }
 
 
+   
    /**
     * Display the dropdown of the criterias for the rule
     *
+    * @param $options   array of options : may be readonly
     * @return the initial value (first)
    **/
-   function dropdownCriterias() {
+   function dropdownCriteria($options = array()) {
       global $CFG_GLPI;
 
-      $items      = array();
+      $p['name']    = 'criteria';
+      $p['display'] = true;
+      $p['value']   = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $items      = array('' => Dropdown::EMPTY_VALUE);
       $group      = array();
-      $groupname  = '';
-      $first = NULL;
+      $groupname  = _n('Criterion', 'Criteria', 2);
       foreach ($this->getAllCriteria() as $ID => $crit) {
          // Manage group system
          if (!is_array($crit)) {
             if (count($group)) {
                asort($group);
                $items[$groupname] = $group;
-               if (is_null($first)) {
-                  $first = key($group);
-               }
             }
             $group     = array();
             $groupname = $crit;
@@ -676,60 +704,51 @@ class Rule extends CommonDBTM {
       if (count($group)) {
          asort($group);
          $items[$groupname] = $group;
-         if (is_null($first)) {
-            $first = key($group);
-         }
       }
-      $rand   = Dropdown::showFromArray("criteria", $items);
-      $params = array('criteria' => '__VALUE__',
-                      'rand'     => $rand,
-                      'sub_type' => $this->getType());
-
-      Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
-                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
-
-      if ($this->specific_parameters) {
-         $itemtype = get_class($this).'Parameter';
-         echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
-                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"var w = window.open('".Toolbox::getItemTypeFormURL($itemtype).
-                "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
-                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
-      }
-
-      return $first;
+      return Dropdown::showFromArray($p['name'], $items, $p);
    }
 
 
    /**
     * Display the dropdown of the actions for the rule
     *
-    * @param $used already used actions
+    * @param $options already used actions
     *
     * @return the initial value (first non used)
    **/
-   function dropdownActions($used=array()) {
+   function dropdownActions($options=array()) {
       global $CFG_GLPI;
+
+      $p['name']    = 'field';
+      $p['display'] = true;
+      $p['used']    = array();
+      $p['value']   = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
 
       $actions = $this->getAllActions();
 
       // Complete used array with duplicate items
       // add duplicates of used items
-      foreach ($used as $ID) {
+      foreach ($p['used'] as $ID) {
          if (isset($actions[$ID]['duplicatewith'])) {
-            $used[$actions[$ID]['duplicatewith']] = $actions[$ID]['duplicatewith'];
+            $p['used'][$actions[$ID]['duplicatewith']] = $actions[$ID]['duplicatewith'];
          }
       }
 
       // Parse for duplicates of already used items
       foreach ($actions as $ID => $act) {
          if (isset($actions[$ID]['duplicatewith'])
-             && in_array($actions[$ID]['duplicatewith'], $used)) {
-            $used[$ID] = $ID;
+             && in_array($actions[$ID]['duplicatewith'], $p['used'])) {
+            $p['used'][$ID] = $ID;
          }
       }
 
-      $items = array();
+      $items = array('' => Dropdown::EMPTY_VALUE);
       $value = '';
 
       foreach ($actions as $ID => $act) {
@@ -741,15 +760,7 @@ class Rule extends CommonDBTM {
       }
       asort($items);
 
-      $rand   = Dropdown::showFromArray("field", $items, array('value' => $value,
-                                                               'used'  => $used));
-      $params = array('field'    => '__VALUE__',
-                      'sub_type' => $this->getType());
-
-      Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
-                                    $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
-
-      return $value;
+      return Dropdown::showFromArray($p['name'], $items, $p);
    }
 
 

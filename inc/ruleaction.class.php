@@ -72,6 +72,12 @@ class RuleAction extends CommonDBChild {
       }
    }
 
+   function prepareInputForAdd($input) {
+      if (!isset($input['field']) || empty($input['field'])) {
+         return false;
+      }
+      return $input;
+   }
 
    function getSearchOptions() {
 
