@@ -194,25 +194,13 @@ class Infocom extends CommonDBChild {
    **/
    function getFromDBforDevice ($itemtype, $ID) {
       global $DB;
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype`='$itemtype'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $data = $DB->fetch_assoc($result);
-            foreach ($data as $key => $val) {
-               $this->fields[$key] = $val;
-            }
-            return true;
-         }
-         $this->getEmpty();
-         $this->fields["items_id"] = $ID;
-         $this->fields["itemtype"] = $itemtype;
-         return false;
+      if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`items_id` = '$ID'
+                      AND `".$this->getTable()."`.`itemtype` = '$itemtype'")) {
+         return true;
       }
+      $this->getEmpty();
+      $this->fields["items_id"] = $ID;
+      $this->fields["itemtype"] = $itemtype;
       return false;
    }
 

@@ -89,26 +89,8 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `".$this->items_id_1."` = '".$item1->getID()."'
-                      AND `".$this->items_id_2."` = '".$item2->getID()."' ";
-      if ($itemtype_foritem1) {
-         $query .= " AND `itemtype` = '$type1' ";
-      }
-      if ($itemtype_foritem2) {
-         $query .= " AND `itemtype` = '$type2' ";
-      }
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $this->fields = $DB->fetch_assoc($result);
-            $this->post_getFromDB();
-
-            return true;
-         }
-      }
-
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`".$this->items_id_1."` = '".$item1->getID()."'
+                                       AND `".$this->getTable()."`.`".$this->items_id_2."` = '".$item2->getID()."'");
    }
 
 

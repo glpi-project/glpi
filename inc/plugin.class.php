@@ -57,22 +57,7 @@ class Plugin extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyDir($dir) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE (`directory` = '" . $dir . "')";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
-      }
-      return false;
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`directory` = '$dir'");
    }
 
 
