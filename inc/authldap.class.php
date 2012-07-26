@@ -424,10 +424,10 @@ class AuthLDAP extends CommonDBTM {
             unset($_SESSION["LDAP_TEST_MESSAGE"]);
          }
 
-         echo "<tr class='tab_bg_2'><td></td>";
-         echo "<td class='center b'>".__('Name')."</td>";
-         echo "<td class='center b'>".__('List of LDAP directory replicates')."</td>".
-              "<td class='center'></td></tr>";
+         echo "<tr class='tab_bg_2'><th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
+         echo "<th class='center b'>".__('Name')."</th>";
+         echo "<th class='center b'>".__('List of LDAP directory replicates')."</th>".
+              "<th class='center'></th></tr>";
 
          while ($ldap_replicate = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
