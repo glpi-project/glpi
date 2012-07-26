@@ -97,7 +97,7 @@ class RuleRight extends Rule {
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
       echo "</td><td>".__('Logical operator') . "</td><td>";
-      $this->dropdownRulesMatch("match", "AND");
+      $this->dropdownRulesMatch();
       echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
       echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
       echo "<input type=hidden name='entities_id' value='-1'>";

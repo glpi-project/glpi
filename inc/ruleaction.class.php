@@ -83,28 +83,116 @@ class RuleAction extends CommonDBChild {
 
       $tab                     = array();
 
-      /// TODO do specific functions to display and select for action_type.
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'action_type';
       $tab[1]['name']          = self::getTypeName(1);
       $tab[1]['massiveaction'] = false;
       $tab[1]['datatype']      = 'specific';
+      $tab[1]['additionalfields'] = array('rules_id');
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'field';
       $tab[2]['name']          = _n('Field', 'Fields', 2);
       $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'string';
+      $tab[2]['datatype']      = 'specific';
+      $tab[2]['additionalfields'] = array('rules_id');
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'value';
       $tab[3]['name']          = __('Value');
       $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'string';
+      $tab[3]['datatype']      = 'specific';
+      $tab[3]['additionalfields'] = array('rules_id');
 
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'field':
+            $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  return $rule->getAction($values[$field]);
+               }
+            }
+            break;
+
+         case 'action_type':
+            return self::getActionByID($values[$field]);
+            break;
+
+         case 'value':
+            if (!isset($values["field"]) || !isset($values["action_type"])) {
+               return NOT_AVAILABLE;
+            }
+            $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  return $rule->getCriteriaDisplayPattern($values["criteria"], $values["condition"],
+                                                          $values[$field]);
+               }
+            }
+            break;
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'field' :
+            $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  $options['value'] = $values[$field];
+                  $options['name']  = $name;
+                  return $rule->dropdownActions($options);
+               }
+            }
+            break;
+
+         case 'action_type':
+            $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               return self::dropdownActions($generic_rule->fields["sub_type"], $name, $values[$field], false);
+            }
+            break;
+
+         case 'pattern':
+            if (!isset($values["field"]) || !isset($values["action_type"])) {
+               return NOT_AVAILABLE;
+            }
+            $generic_rule = new Rule;
+            if (isset($values['rules_id'])
+              && !empty($values['rules_id'])
+              && $generic_rule->getFromDB($values['rules_id'])) {
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) { 
+                  /// TODO review it : need to pass display param and others... 
+                  return $this->displayActionSelectPattern($values);
+               }
+            }
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * Get all actions for a given rule
@@ -156,8 +244,9 @@ class RuleAction extends CommonDBChild {
     * @param $sub_type
     * @param $name
     * @param $value     (default '')
+    * @param $display
    **/
-   static function dropdownActions($sub_type, $name, $value='') {
+   static function dropdownActions($sub_type, $name, $value='', $display = true) {
 
       if ($rule = getItemForItemtype($sub_type)) {
          $actions_options = $rule->getAllActions();
@@ -172,7 +261,8 @@ class RuleAction extends CommonDBChild {
             $elements[$action] = self::getActionByID($action);
          }
 
-         return Dropdown::showFromArray($name, $elements, array('value' => $value));
+         return Dropdown::showFromArray($name, $elements, array('value'   => $value,
+                                                                'display' => $display));
       }
    }
 
