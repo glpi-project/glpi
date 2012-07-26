@@ -165,7 +165,6 @@ class NotImportedEmail extends CommonDBTM {
       $tab[6]['datatype']        = 'dropdown';
       $tab[6]['right']           = 'all';
 
-      /// TODO do specific functions to display and select for reason.
       $tab[16]['table']          = 'glpi_notimportedemails';
       $tab[16]['field']          = 'reason';
       $tab[16]['name']           = __('Reason of rejection');
@@ -194,21 +193,49 @@ class NotImportedEmail extends CommonDBTM {
     * @param $reason_id
    **/
    static function getReason($reason_id) {
-
-      switch ($reason_id) {
-         case self::MATCH_NO_RULE :
-            return __('Unable to affect the email to an entity');
-
-         case self::USER_UNKNOWN :
-            return __('Email not found. Impossible import');
-
-         case self::FAILED_INSERT :
-            return __('Failed operation');
-
-         default :
-            return '';
+      $tab = self::getAllReasons();
+      if (isset($tab[$reason_id])) {
+         return $tab[$reason_id];
       }
+      return NOT_AVAILABLE;
    }
+
+   /**
+    * Get All possible reasons array
+   **/
+   static function getAllReasons() {
+      return array(self::MATCH_NO_RULE =>  __('Unable to affect the email to an entity'),
+                   self::USER_UNKNOWN  => __('Email not found. Impossible import'),
+                   self::FAILED_INSERT => __('Failed operation'));
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'reason':
+            return self::getReason($values[$field]);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'reason' :
+            $options['value'] = $values[$field];
+            return Dropdown::showFromArray($name, self::getAllReasons(), $options);
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
 
 }
 ?>

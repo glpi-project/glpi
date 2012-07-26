@@ -360,7 +360,6 @@ class Reminder extends CommonDBTM {
       $tab[2]['massiveaction'] = false;
       $tab[2]['right']           = 'all';
 
-      /// TODO do specific functions to display and select for speed.
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'state';
       $tab[3]['name']          = __('Status');
@@ -410,6 +409,32 @@ class Reminder extends CommonDBTM {
       return $tab;
    }
 
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'state':
+            return Planning::getState($values[$field]);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      global $DB;
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'state' :
+            return Planning::dropdownState($name, $values[$field], false);
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    /**
     * @see inc/CommonGLPI::getTabNameForItem()

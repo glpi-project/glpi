@@ -464,12 +464,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       switch ($field) {
          case 'type':
             $options['value'] = $values[$field];
-            Dropdown::showFromArray($name, self::getPortTypeName(), $options);
+            return Dropdown::showFromArray($name, self::getPortTypeName(), $options);
             break;
 
          case 'speed':
             $options['value'] = $values[$field];
-            Dropdown::showFromArray($name, self::getPortSpeed(), $options);
+            return Dropdown::showFromArray($name, self::getPortSpeed(), $options);
             break;
 
       }
