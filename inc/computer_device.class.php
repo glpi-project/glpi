@@ -373,8 +373,6 @@ class Computer_Device extends CommonDBTM {
          echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
          echo "</td></tr></table>";
-//          Html::openArrowMassives("form_device_action$rand", false, true, true);
-//          Html::closeArrowMassives(array());
       }
 
       $table->display(array('display_super_for_each_group' => false,
@@ -383,11 +381,6 @@ class Computer_Device extends CommonDBTM {
 /*                            'display_tfoot'                => false,*/));
 
       if ($canedit) {
-//          Html::openArrowMassives("form_device_action$rand", false, false, true);
-//          Html::closeArrowMassives(array());
-
-/*         echo __('Add a new component')."&nbsp;";
-         Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);*/
          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
 
          Html::closeForm();
