@@ -79,6 +79,7 @@ if (isset($_POST['full_page_tab'])) {
    // I think that we should display this warning, because tabs are not prepare
    // for being used full space ...
    if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
+      //TRANS: Javascript text. Don't include any single or double quotes nor backslach.
       $msg  = __('WARNING : full page tabs are only for debug/validation purpose !').'\n';
       $msg .= __('Actions on this page may have undefined result.').'\n';
       echo "<script type='text/javascript' >\n";
