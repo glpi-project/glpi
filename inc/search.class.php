@@ -2462,10 +2462,16 @@ class Search {
                      `glpi_notifications`.`event` AS ".$NAME."_".$num.", $ADDITONALFIELDS";
 
          case 'glpi_tickets.name' :
-            return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                     `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
-                     `$table$addtable`.`content` AS ".$NAME."_".$num."_3,
-                     `$table$addtable`.`status` AS ".$NAME."_".$num."_4, $ADDITONALFIELDS";
+            if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
+               return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`,'$$',
+                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
+                           AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            } else {
+               return " `$table$addtable`.`$field` AS ".$NAME."_$num,
+                        `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
+                        `$table$addtable`.`content` AS ".$NAME."_".$num."_3,
+                        `$table$addtable`.`status` AS ".$NAME."_".$num."_4, $ADDITONALFIELDS";
+            }
 
          case 'glpi_tickets.items_id':
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
@@ -3367,6 +3373,7 @@ class Search {
       // Rename table for meta left join
       $AS = "";
       $nt = $new_table;
+      $cleannt    = $nt;
 
       // Multiple link possibilies case
 //       if ($new_table=="glpi_users"
@@ -3526,6 +3533,16 @@ class Search {
                                                    = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_1`
                                                OR `$rt`.`id`
                                                    = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_2`)
+                                              $addcondition)";
+                  break;
+
+               case 'item_item_revert' : 
+                  // Item_Item join reverting previous item_item
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                          ON ((`$nt`.`id`
+                                                   = `$rt`.`".getForeignKeyFieldForTable($cleannt)."_1`
+                                               OR `$nt`.`id`
+                                                   = `$rt`.`".getForeignKeyFieldForTable($cleannt)."_2`)
                                               $addcondition)";
                   break;
 
@@ -4252,26 +4269,49 @@ class Search {
             return '&nbsp;';
 
          case 'glpi_tickets.name' :
-            $link = Toolbox::getItemTypeFormURL('Ticket');
-            $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
-            $out .= (strstr($link,'?') ?'&amp;' :  '?');
-            $out .= 'id='.$data[$NAME.$num."_2"];
-            // Force solution tab if solved
-            if ($data[$NAME.$num."_4"]=='solved') {
-               $out .= "&amp;forcetab=Ticket$2";
+            if (isset($searchopt[$ID]['forcegroupby'])
+             && $searchopt[$ID]['forcegroupby']) {
+               $split = explode("$$$$",$data[$NAME.$num]);
+               $out   = '';
+               $link = Toolbox::getItemTypeFormURL('Ticket');
+               foreach ($split as $val) {
+                  if (!empty($val)) {
+                     $split2 = self::explodeWithID("$$", $val);
+                     $out .= "<a id='ticket".$split2[1]."' href=\"".$link;
+                     $out .= (strstr($link,'?') ?'&amp;' :  '?');
+                     $out .= 'id='.$split2[1];
+                     $out .= "\">";
+                     $name = $split2[0];
+                     if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                        $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
+                     }
+                     $out .= $name."</a><br>";
+                  }
+               }
+               return $out;
+            } else {
+               $link = Toolbox::getItemTypeFormURL('Ticket');
+               $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
+               $out .= (strstr($link,'?') ?'&amp;' :  '?');
+               $out .= 'id='.$data[$NAME.$num."_2"];
+               // Force solution tab if solved
+               if ($data[$NAME.$num."_4"]=='solved') {
+                  $out .= "&amp;forcetab=Ticket$2";
+               }
+               $out .= "\">";
+               $name = $data[$NAME.$num];
+               if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
+                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
+               }
+               $out .= $name."</a>";
+   
+               $out = sprintf(__('%1$s %2$s'), $out,
+                              Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
+                                                array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
+                                                      'display' => false)));
+               return $out;
             }
-            $out .= "\">";
-            $name = $data[$NAME.$num];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
-               $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
-            }
-            $out .= $name."</a>";
-
-            $out = sprintf(__('%1$s %2$s'), $out,
-                           Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
-                                             array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
-                                                   'display' => false)));
-            return $out;
+            break;
 
          case "glpi_tickets.due_date" :
             // No due date in waiting status
