@@ -104,7 +104,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "networkport_display_options" :
-         Html::popHeader(__('Select network ports display options'), $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Network ports display options'), $_SERVER['PHP_SELF']);
          include "networkport.display.php";
          break;
 
