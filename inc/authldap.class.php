@@ -394,6 +394,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ID     = $this->getField('id');
       $target = $this->getFormURL();
+      $rand   = mt_rand();
 
       AuthLdapReplicate::addNewReplicateForm($target, $ID);
 
@@ -403,12 +404,14 @@ class AuthLDAP extends CommonDBTM {
               ORDER BY `name`";
       $result = $DB->query($sql);
 
-      if ($DB->numrows($result) > 0) {
+      if (($nb=$DB->numrows($result)) > 0) {
          echo "<br>";
          $canedit = Session::haveRight("config", "w");
-         echo "<form action='$target' method='post' name='ldap_replicates_form'
-                id='ldap_replicates_form'>";
+         Html::openMassiveActionsForm('massAuthLdapReplicate'.$rand);
          echo "<div class='center'>";
+         $massiveactionparams = array('num_displayed'  => $nb);
+
+         Html::showMassiveActions('AuthLdapReplicate', $massiveactionparams);
          echo "<table class='tab_cadre_fixe'>";
 
          echo "<input type='hidden' name='id' value='$ID'>";
@@ -443,9 +446,8 @@ class AuthLDAP extends CommonDBTM {
             echo"</tr>";
          }
          echo "</table>";
-
-         Html::openArrowMassives("ldap_replicates_form", true);
-         Html::closeArrowMassives(array('delete_replicate' => __('Delete')));
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions('AuthLdapReplicate', $massiveactionparams);
 
          echo "</div>";
          Html::closeForm();
