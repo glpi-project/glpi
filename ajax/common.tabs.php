@@ -78,7 +78,7 @@ if (isset($_POST['full_page_tab'])) {
 
    // I think that we should display this warning, because tabs are not prepare
    // for being used full space ...
-   if (isset($_SESSION['glpi_warned_about_full_page_tab'])) {
+   if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
       // Debug string : not really need translation.
       $msg  = 'WARNING : full page tabs are only for debug/validation purpose !\n';
       $msg .= 'Actions on this page may have undefined result.';
