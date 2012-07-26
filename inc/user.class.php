@@ -2750,7 +2750,7 @@ class User extends CommonDBTM {
          }
       }
 
-      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand']);
+      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand'], false);
 
       // Display comment
       if ($p['comments']) {

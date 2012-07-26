@@ -74,7 +74,7 @@ if (isset($_POST["itemtype"])
    }
 
    $fieldname = '';
-   
+
    if (empty($search["linkfield"]) || $search['table'] == 'glpi_infocoms') {
       $fieldname = $search["field"];
    } else {
@@ -90,7 +90,7 @@ if (isset($_POST["itemtype"])
       if (isset($_POST['additionalvalues']) && strlen($_POST['additionalvalues'])) {
          $values = unserialize(stripslashes($_POST['additionalvalues']));
       }
-      $values[$fieldname] = '';
+      $values[$search["field"]] = '';
       echo $item->getValueToSelect($search, $fieldname, $values, $options);
    }
 

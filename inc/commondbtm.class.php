@@ -4018,7 +4018,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       if (count($searchoptions)) {
-         $field = $searchoptions['linkfield'];
+         $field = $searchoptions['field'];
          // Normalize option
          if (is_array($values)) {
             $value = $values[$field];
@@ -4028,13 +4028,14 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if (empty($name)) {
+            echo "iii-----";
             $name = $searchoptions['linkfield'];
          }
          // If not set : set to specific
          if (!isset($searchoptions['datatype'])) {
             $searchoptions['datatype'] = 'specific';
          }
-         
+
          $options['display'] = false;
          $unit = '';
          if (isset($searchoptions['unit'])) {
@@ -4093,6 +4094,7 @@ class CommonDBTM extends CommonGLPI {
                   if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
                      $options['maybefuture'] = true;
                   }
+                  $options['with_time'] = true;
 
                   return Html::showGenericDateTimeSearch($name, $value, $options);
                } else {
@@ -4188,7 +4190,7 @@ class CommonDBTM extends CommonGLPI {
          // Get specific display if available
          $itemtype = getItemTypeForTable($searchoptions['table']);
          if ($item = getItemForItemtype($itemtype)) {
-            $specific = $item->getSpecificValueToSelect($field, $name, $values, $options);
+            $specific = $item->getSpecificValueToSelect($searchoptions['field'], $name, $values, $options);
             if (strlen($specific)) {
                return $specific;
             }
