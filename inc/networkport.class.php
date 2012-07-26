@@ -136,7 +136,9 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-    * Change the instantion type of a NetworkPort
+    * Change the instantion type of a NetworkPort : check validity of the new type of
+    * instantiation and that it is not equal to current ones. Update the NetworkPort and delete
+    * the previous instantiation. It is up to the caller to create the new instantiation !
     *
     * @since version 0.84
     *

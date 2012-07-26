@@ -98,7 +98,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
                                               HTMLTable_Header $father=NULL,
                                               array $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, NULL, $options);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, NULL, $options);
 
       $group->addHeader('ESSID', __('ESSID'), $super);
       $group->addHeader('Mode', __('Wifi mode'), $super);
