@@ -1091,7 +1091,8 @@ class Rule extends CommonDBTM {
       $input = $this->prepareInputDataForProcess($input, $params);
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            $results = Plugin::doOneHook($plugin, "rulePrepareInputDataForProcess", $this->getType());
+            $results = Plugin::doOneHook($plugin, "rulePrepareInputDataForProcess",
+                                         array('input' => $input, 'params' => $params));
             if (is_array($results)) {
                foreach ($results as $result) {
                   $input[] = $result;

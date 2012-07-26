@@ -152,12 +152,12 @@ class RuleImportEntity extends Rule {
       $criterias['SSN']['field']                = 'SSN';
       $criterias['SSN']['name']                 = __('Serial number');
       $criterias['SSN']['linkfield']            = 'HARDWARE_ID';
-
+*/
       $criterias['_source']['table']            = '';
       $criterias['_source']['field']            = '_source';
       $criterias['_source']['name']             = __('Source');
       $criterias['_source']['allow_condition']  = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
-*/
+
       return $criterias;
    }
 
@@ -169,11 +169,10 @@ class RuleImportEntity extends Rule {
    **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
       global $PLUGIN_HOOKS;
-
       if ($criteria['field'] == '_source') {
          $tab = array();
          foreach($PLUGIN_HOOKS['import_item'] as $plug => $types) {
-            $tab[] = Plugin::getInfo($plug, 'name');
+            $tab[$plug] = Plugin::getInfo($plug, 'name');
          }
          Dropdown::showFromArray($name, $tab);
          return true;
@@ -181,6 +180,22 @@ class RuleImportEntity extends Rule {
       return false;
    }
 
+   /**
+    * @since version 0.84
+    *
+    * @see inc/Rule::getAdditionalCriteriaDisplayPattern()
+   **/
+   function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
+      $crit = $this->getCriteria($ID);
+      if ($crit['field'] == '_source') {
+         $name = Plugin::getInfo($pattern, 'name');
+         if (empty($name)) {
+            return false;
+         } else {
+            return $name;
+         }
+      }
+   }
 
    /**
     * @see inc/Rule::getActions()
