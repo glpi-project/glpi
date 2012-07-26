@@ -47,6 +47,11 @@ class Change_Problem extends CommonDBRelation{
 
    var $checks_only_for_itemtype1 = true;
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
 
    static function getTypeName($nb=0) {
       return _n('Link Problem/Change','Links Problem/Change',$nb);
@@ -78,11 +83,8 @@ class Change_Problem extends CommonDBRelation{
 
       $canedit = $problem->can($ID,'w');
       $rand    = mt_rand();
-      echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-      $colspan = 1;
 
+      $colspan = 1;
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_changes`.*
@@ -94,11 +96,47 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
-      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
-      _e('Create a change from this problem');
-      echo "</a>";
+
+      $changes = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $changes[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+
+      if ($canedit) {
+         echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a change')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td>";
+         echo "<input type='hidden' name='problems_id' value='$ID'>";
+         Change::dropdown(array('used'        => $used,
+                                'entity'      => $problem->getEntityID(),
+                                'entity_sons' => $problem->isRecursive()));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td><td>";
+         echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
+         _e('Create a change from this problem');
+         echo "</a>";
+
+         echo "</td></tr></table>";
+         Html::closeForm();
+      }
+
+      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+
+      echo "<div class='center'>";
+      if ($canedit && $numrows) {
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='2'>"._n('Change', 'Changes', 2);
       echo "</th>";
       if ($problem->isRecursive()) {
          echo "<th>".__('Entity')."</th>";
@@ -116,8 +154,7 @@ class Change_Problem extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'), $problem->getTypeName(1),
                                                 $problem->fields["name"]));
 
-         while ($data = $DB->fetch_assoc($result)) {
-            $used[$data['id']] = $data['id'];
+         foreach ($changes as $data) {
             Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
@@ -136,23 +173,14 @@ class Change_Problem extends CommonDBRelation{
          }
       }
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
-         echo "<input type='hidden' name='problems_id' value='$ID'>";
-         Change::dropdown(array('used'        => $used,
-                                'entity'      => $problem->getEntityID(),
-                                'entity_sons' => $problem->isRecursive()));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr>";
-      }
 
-      echo "</table></div>";
-
+      echo "</table>";
       if ($canedit && $numrows) {
-         Html::openArrowMassives("changeproblem_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
+      echo "</div>";
+
       Html::closeForm();
    }
 
@@ -172,9 +200,6 @@ class Change_Problem extends CommonDBRelation{
 
       $canedit = $change->can($ID,'w');
       $rand    = mt_rand();
-      echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
@@ -185,11 +210,39 @@ class Change_Problem extends CommonDBRelation{
                 WHERE `glpi_changes_problems`.`changes_id` = '$ID'
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
-      $numrows = $DB->numrows($result);
+      
+      $profiles = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $profiles[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
 
+      if ($canedit) {
+         echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a problem')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td>";
+         echo "<input type='hidden' name='changes_id' value='$ID'>";
+         Problem::dropdown(array('used'   => $used,
+                                 'entity' => $change->getEntityID()));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td></tr></table>";
+         Html::closeForm();
+      }
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+      echo "<div class='center'>";
+      if ($canedit && $numrows) {
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Problem', 'Problems', 2)."</th></tr>";
       echo "<tr><th colspan='2'>".__('Title')."</th>";
       echo "</tr>";
@@ -203,8 +256,7 @@ class Change_Problem extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $change->getTypeName(1), $change->fields["name"]));
 
-         while ($data = $DB->fetch_assoc($result)) {
-            $used[$data['id']] = $data['id'];
+         foreach ($profiles as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
@@ -219,23 +271,13 @@ class Change_Problem extends CommonDBRelation{
             echo "</tr>";
          }
       }
-
-      if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
-         echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Problem::dropdown(array('used'   => $used,
-                                 'entity' => $change->getEntityID()));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr>";
-      }
-
-      echo "</table></div>";
-
+      echo "</table>";
       if ($canedit && $numrows) {
-         Html::openArrowMassives("changeproblem_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
+      echo "</div>";
+
       Html::closeForm();
    }
 

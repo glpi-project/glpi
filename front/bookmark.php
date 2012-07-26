@@ -82,16 +82,7 @@ if (isset($_POST["add"])) {
    $bookmark->delete($_POST);
    $_GET["action"] = "load";
 
-} else if (isset($_POST["delete_several"])) {
-   if (isset($_POST["bookmark"])) {
-      foreach ($_POST["bookmark"] as $ID=>$value) {
-         if ($bookmark->can($ID, 'w')) {
-            $bookmark->delete(array("id" => $ID));
-         }
-      }
-   }
-   $_GET["action"] = "load";
-}
+} 
 
 if ($_GET["action"] == "edit") {
 
