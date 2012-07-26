@@ -3039,6 +3039,8 @@ class Html {
       $p['check_items_id'] = '';
       $p['is_deleted']     = false;
       $p['extraparams']    = array();
+      $p['width']          = 800;
+      $p['height']         = 400;
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3084,11 +3086,17 @@ class Html {
          // Create Modal window on top
          if ($p['ontop'] || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<div id='massiveactioncontent$identifier'></div>";
+//             echo "<script type='text/javascript' >\n";
+//             echo "Ext.DomHelper.append(document.body, {tag: 'div', id: 'massiveactioncontent$identifier'});";
+//             echo "</script>";
+
             Ajax::createModalWindow('massiveaction_window'.$identifier,
                                     $url,
                                     array('title'       => _n('Action', 'Actions',2),
                                           'container'   => 'massiveactioncontent'.$identifier,
-                                          'extraparams' => $p['extraparams']));
+                                          'extraparams' => $p['extraparams'],
+                                          'width'       => $p['width'],
+                                          'height'      => $p['height'],));
          }
          echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".

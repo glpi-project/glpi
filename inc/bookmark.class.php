@@ -44,6 +44,13 @@ class Bookmark extends CommonDBTM {
    const URI    = 2;
 
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
+
    function canCreate() {
       return Session::haveRight('bookmark_public', 'w');
    }
@@ -238,11 +245,10 @@ class Bookmark extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='id' value='$ID'>";
-         echo "<div class='center'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-         echo "<input type='hidden' name='id' value='$ID'>";
+         echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
          echo "<input type='submit' name='delete' value=\"".__s('Delete')."\" class='submit'>";
-         echo "</div></td></tr>";
+         echo "</td></tr>";
       }
       echo "</table></div>";
       Html::closeForm();
@@ -526,18 +532,20 @@ class Bookmark extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $rand = mt_rand();
-         echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
          $numrows = $DB->numrows($result);
-/*         if ($numrows) {
-            Html::openArrowMassives("form_load_bookmark$rand", false, true);
-            Html::closeArrowMassives(array('delete_several' => __('Delete')));
-         }*/
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
          echo "<div class='center' id='tabsbody' >";
+         $massiveactionparams = array('num_displayed'  => $numrows,
+                                      'width'          => 600,
+                                      'height'         => 200);
 
-         echo "<table class='tab_cadrehov' width='".self::WIDTH."px'>";
+//          Html::showMassiveActions(__CLASS__, $massiveactionparams);
+
+         echo "<table class='tab_cadre_fixehov'>";
          echo "<tr>";
-         echo "<th class='center' colspan='3'>".__('Bookmarks')."</th>";
+         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th class='center' colspan='2'>".__('Bookmarks')."</th>";
          echo "<th width='20px'>&nbsp;</th>";
          echo "<th>".__('Default view')."</th></tr>";
 
@@ -564,7 +572,7 @@ class Bookmark extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='bookmark[".$this->fields["id"]."]'". $sel.">";
+                  echo "<input type='checkbox' name='item[".$this->fields["id"]."]'". $sel.">";
                } else {
                   echo "&nbsp;";
                }
@@ -596,9 +604,9 @@ class Bookmark extends CommonDBTM {
             }
             echo "</table></div>";
 
-            Html::openArrowMassives("form_load_bookmark$rand");
-            Html::closeArrowMassives(array('delete_several' => __('Delete')));
-
+            $massiveactionparams['ontop']       = false;
+            $massiveactionparams['forcecreate'] = true;
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
          } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>";
             _e('You have not recorded any bookmarks yet');
