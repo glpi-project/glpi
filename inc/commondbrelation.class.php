@@ -145,6 +145,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       // Must can read first Item of the relation
       $type1 = $this->itemtype_1;
       if (preg_match('/^itemtype/',$this->itemtype_1)) {
+         // TODO : where does $input comes from ?
          $type1 = $input[$this->itemtype_1];
       }
       if (!($item1 = getItemForItemtype($type1))) {
@@ -183,6 +184,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       // Must can read first Item of the relation
       $type1 = $this->itemtype_1;
       if (preg_match('/^itemtype/',$this->itemtype_1)) {
+         // TODO : where does $input comes from ?
          $type1 = $input[$this->itemtype_1];
       }
       if (!($item1 = getItemForItemtype($type1))) {
