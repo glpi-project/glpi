@@ -55,7 +55,22 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
+   function canUpdate() {
+      return Session::haveRight('networking','w');
+   }
+
+
    function canView() {
+      return Session::haveRight('networking','r');
+   }
+
+
+  function canDelete() {
+      return true;
+   }
+
+
+   function canViewItem() {
 
       if (isset($this->fields['itemtype'])) {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
@@ -66,18 +81,13 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   function canUpdate() {
+   function canUpdateItem() {
 
       if (isset($this->fields['itemtype'])) {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             return $item->canUpdate();
          }
       }
-      return true;
-   }
-
-
-   function canDelete() {
       return true;
    }
 
