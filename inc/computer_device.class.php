@@ -356,7 +356,8 @@ class Computer_Device extends CommonDBTM {
                      }
 
                       if ($canedit) {
-                         $cell_value   = "<input id='$device_group' type='checkbox' name='remove_" .
+                         // Remove ID because it is conflicting with tbody id ...
+                         $cell_value   = "<input type='checkbox' name='remove_" .
                                            $itemtype."_".$data['id']."' value='1'>";
                          $current_row->addCell($delete_one, $cell_value, $cell_anchor);
                        }

@@ -191,14 +191,17 @@ class HTMLTable_Group extends HTMLTable_Base {
 
          if ($p['display_title_for_each_group']
              && !empty($this->content)) {
-            echo "\t<tr><th colspan='$totalNumberOfColumn'>".$this->content."</th></tr>\n";
+            echo "\t<tbody><tr><th colspan='$totalNumberOfColumn'>" . $this->content .
+                 "</th></tr></tbody>\n";
          }
 
          if ($p['display_super_for_each_group']) {
+            echo "\t<tbody>\n";
             $this->table->displaySuperHeader();
+            echo "\t</tbody>\n";
          }
 
-         echo "<tr>";
+         echo "\t<tbody><tr>\n";
          foreach ($this->ordered_headers as $header) {
             if ($header instanceof HTMLTable_SubHeader) {
                $header->updateColSpan($header->numberOfSubHeaders);
@@ -210,7 +213,7 @@ class HTMLTable_Group extends HTMLTable_Base {
             $header->displayTableHeader($with_content);
             echo "\n";
          }
-         echo "</tr>";
+         echo "\t</tr></tbody>\n";
 
          $previousNumberOfSubRows = 0;
          foreach ($this->rows as $row) {
@@ -219,7 +222,7 @@ class HTMLTable_Group extends HTMLTable_Base {
             }
             $currentNumberOfSubRow = $row->getNumberOfSubRows();
             if (($previousNumberOfSubRows * $currentNumberOfSubRow) > 1) {
-               echo "<tr><td colspan='$totalNumberOfColumn'><hr></td></tr>";
+               echo "\t<tbody><tr><td colspan='$totalNumberOfColumn'><hr></td></tr></tbody>\n";
             }
             $row->display($this->ordered_headers);
             $previousNumberOfSubRows = $currentNumberOfSubRow;

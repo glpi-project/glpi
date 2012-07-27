@@ -4338,7 +4338,7 @@ class Html {
       } else {
          $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
       }
-      $link .="</a>\n";
+      $link .="</a>";
 
       return $link;
 

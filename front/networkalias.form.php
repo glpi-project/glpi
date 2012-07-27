@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["delete"]) || isset($_GET['remove_alias'])) {
+} else if (isset($_POST["delete"]) || isset($_POST['remove_alias'])) {
    $alias->check($_REQUEST["id"],'d');
    $alias->delete($_REQUEST, 1);
    Ajax::refreshPopupMainWindow();
@@ -72,11 +72,15 @@ if (isset($_POST["add"])) {
    Event::log($_REQUEST["id"], $alias->getType(), 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $node = new NetworkName();
-   if ($node->can($alias->fields["networknames_id"], 'r')) {
-      Html::redirect($node->getLinkURL());
+   if (isset($_POST['remove_alias'])) {
+      Html::back();
+   } else {
+      $node = new NetworkName();
+      if ($node->can($alias->fields["networknames_id"], 'r')) {
+         Html::redirect($node->getLinkURL());
+      }
+      Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 }
 
 if (empty($_GET["networknames_id"])) {

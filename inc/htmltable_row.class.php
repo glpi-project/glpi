@@ -161,16 +161,16 @@ class HTMLTable_Row extends HTMLTable_Entity {
    **/
    function display($headers) {
 
-      echo "\t\t<tbody";
+      echo "\t<tbody";
       $this->displayEntityAttributs();
-      echo ">";
+      echo ">\n";
       for ($i = 0 ; $i < $this->numberOfSubRows ; $i++) {
          if (isset($this->linesWithAttributs[$i])) {
             $options = $this->linesWithAttributs[$i];
          } else {
             $options = array();
          }
-         echo "\t\t<tr>";
+         echo "\t\t<tr>\n";
          foreach ($headers as $header) {
             $header_name = $header->getCompositeName();
             if (isset($this->cells[$header_name])) {
@@ -189,9 +189,9 @@ class HTMLTable_Row extends HTMLTable_Entity {
                echo "></td>\n";
             }
          }
-         echo "\t\t</tr>";
+         echo "\t\t</tr>\n";
       }
-      echo "\t\t</tbody>\n";
+      echo "\t</tbody>\n";
    }
 
 

@@ -136,14 +136,14 @@ class HTMLTable_ extends HTMLTable_Base {
    **/
    function displaySuperHeader() {
 
-      echo "\t\t<tr>";
+      echo "\t\t<tr>\n";
       foreach ($this->getHeaderOrder() as $header_name) {
          $header = $this->getSuperHeaderByName($header_name);
-         echo "\t\t";
+         echo "\t\t\t";
          $header->displayTableHeader(true);
          echo "\n";
       }
-      echo "</tr>\n";
+      echo "\t\t</tr>\n";
    }
 
 
@@ -198,32 +198,38 @@ class HTMLTable_ extends HTMLTable_Base {
          $totalNumberOfColumn += $colspan;
       }
 
-      echo "<table class='tab_cadre_fixe'";
+      echo "\n<table class='tab_cadre_fixe'";
       if (!empty($p['html_id'])) {
          echo " id='".$p['html_id']."'";
       }
-      echo ">";
+      echo ">\n";
+
+      $open_thead = ((!empty($this->title)) || ($p['display_thead']));
+      if ($open_thead) {
+         echo "\t<thead>\n";
+      }
 
       if (!empty($this->title)) {
-         echo "\t<thead>\n";
          echo "\t\t<tr><th colspan='$totalNumberOfColumn'>".$this->title."</th></tr>\n";
-         echo "\t</thead>\n";
       }
 
       if ($totalNumberOfRow == 0) {
+
+         if ($open_thead) {
+            echo "\t</thead>\n";
+         }
+
          echo "\t\t<tr><td class='center' colspan='$totalNumberOfColumn'>" . __('None') .
               "</td></tr>\n";
 
       } else {
 
          if ($p['display_thead']) {
-            echo "\t<thead>\n";
             $this->displaySuperHeader();
-            echo "\t</thead>\n";
          }
 
-         foreach ($this->groups as $group) {
-            $group->display($totalNumberOfColumn, $p);
+         if ($open_thead) {
+            echo "\t</thead>\n";
          }
 
          if ($p['display_tfoot']) {
@@ -232,6 +238,9 @@ class HTMLTable_ extends HTMLTable_Base {
             echo "\t</tfoot>\n";
          }
 
+         foreach ($this->groups as $group) {
+            $group->display($totalNumberOfColumn, $p);
+         }
      }
 
       echo "</table>\n";
