@@ -83,8 +83,7 @@ class Change_Problem extends CommonDBRelation{
 
       $canedit = $problem->can($ID,'w');
       $rand    = mt_rand();
-
-      $colspan = 1;
+      $showentities = Session::isMultiEntitiesMode();
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_changes`.*
@@ -96,7 +95,6 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-
       $changes = array();
       $used = array();
       if ($numrows = $DB->numrows($result)) {
@@ -105,7 +103,6 @@ class Change_Problem extends CommonDBRelation{
             $used[$data['id']] = $data['id'];
          }
       }
-
       if ($canedit) {
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -136,11 +133,14 @@ class Change_Problem extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>"._n('Change', 'Changes', 2);
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>"._n('Change', 'Changes', 2);
       echo "</th>";
-      if ($problem->isRecursive()) {
+      if ($showentities) {
          echo "<th>".__('Entity')."</th>";
-         $colspan++;
       }
       echo "</tr>";
 
@@ -153,20 +153,17 @@ class Change_Problem extends CommonDBRelation{
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $problem->getTypeName(1),
                                                 $problem->fields["name"]));
-
          foreach ($changes as $data) {
             Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
             if ($canedit) {
+               echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
+               echo "</td>";
+            } 
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
-            if ($problem->isRecursive()) {
+            if ($showentities) {
                echo "<td>".Dropdown::getDropdownName('glpi_entities', $data["entities_id"])."</td>";
             }
             echo "</tr>";
@@ -200,7 +197,7 @@ class Change_Problem extends CommonDBRelation{
 
       $canedit = $change->can($ID,'w');
       $rand    = mt_rand();
-      $colspan = 1;
+      $showentities = Session::isMultiEntitiesMode();
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_problems`.*
@@ -243,8 +240,14 @@ class Change_Problem extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>"._n('Problem', 'Problems', 2)."</th></tr>";
-      echo "<tr><th colspan='2'>".__('Title')."</th>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>"._n('Problem', 'Problems', 2)."</th>";
+      if ($showentities) {
+         echo "<th>".__('Entity')."</th>";
+      }
       echo "</tr>";
 
 
@@ -259,15 +262,16 @@ class Change_Problem extends CommonDBRelation{
          foreach ($profiles as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
             if ($canedit) {
+               echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
+               echo "</td>";
+            } 
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Problem')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
+            if ($showentities) {
+               echo "<td>".Dropdown::getDropdownName('glpi_entities', $data["entities_id"])."</td>";
+            }
             echo "</tr>";
          }
       }
