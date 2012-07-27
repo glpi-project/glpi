@@ -710,18 +710,16 @@ class NetworkName extends FQDNLabel {
 
             $name_cell = $row->addCell($header, $content, $father, $address);
             if ($canedit) {
-               $content = "<a href='" . $address->getFormURL() .
-                           "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
-                           "<img src=\"" . $CFG_GLPI["root_doc"] .
-                           "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
-                           "\" title=\"" . __s('Dissociate') . "\"></a>";
+               $content = Html::getSimpleForm($address->getFormURL(), 'remove', __s('Dissociate'),
+                                              array('remove_address' => 'unaffect',
+                                                    'id'             => $address->getID()),
+                                              $CFG_GLPI["root_doc"] . "/pics/sub_dropdown.png");
                $row->addCell($headerbutton1, $content, $name_cell, $address);
 
-               $content = "<a href='" . $address->getFormURL() .
-                           "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
-                           "<img src=\"" . $CFG_GLPI["root_doc"] .
-                           "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
-                           __s('Purge') . "\"></a>";
+               $content = Html::getSimpleForm($address->getFormURL(), 'remove', __s('Purge'),
+                                              array('remove_address' => 'purge',
+                                                    'id'             => $address->getID()),
+                                              $CFG_GLPI["root_doc"] . "/pics/delete.png");
                $row->addCell($headerbutton2, $content, $name_cell, $address);
             }
 
