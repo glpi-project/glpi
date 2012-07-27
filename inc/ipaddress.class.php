@@ -103,18 +103,24 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   function canView() {
+      return Session::haveRight('internet', 'r');
+   }
 
-      if (!Session::haveRight('internet', 'w')) {
-         return false;
-      }
+
+   function canCreate() {
+      return Session::haveRight('internet', 'w');
+   }
+
+
+   function canViewItem() {
 
       if (!empty($this->fields['itemtype'])
           && !empty($this->fields['items_id'])) {
 
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             if ($item->getFromDB($this->fields['items_id'])) {
-               return $item->canCreate();
+               return $item->canView();
             }
          }
       }
@@ -123,18 +129,14 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   function canView() {
-
-      if (!Session::haveRight('internet', 'r')) {
-         return false;
-      }
+   function canCreateItem() {
 
       if (!empty($this->fields['itemtype'])
           && !empty($this->fields['items_id'])) {
 
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             if ($item->getFromDB($this->fields['items_id'])) {
-               return $item->canView();
+               return $item->canCreate();
             }
          }
       }
