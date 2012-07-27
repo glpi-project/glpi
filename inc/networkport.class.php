@@ -51,6 +51,37 @@ class NetworkPort extends CommonDBChild {
    public $dohistory = true;
 
 
+   function canCreate() {
+      return Session::haveRight('networking','w');
+   }
+
+
+   function canView() {
+      return Session::haveRight('networking','r');
+   }
+
+
+   function canCreateItem() {
+
+      if (isset($this->fields['itemtype'])
+          && ($item = getItemForItemtype($this->fields['itemtype']))) {
+         return $item->canCreate();
+      }
+
+      return false;
+   }
+
+
+   function canViewItem() {
+
+      if (isset($this->fields['itemtype'])
+          && ($item = getItemForItemtype($this->fields['itemtype']))) {
+         return $item->canView();
+      }
+
+      return false;
+   }
+
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -83,28 +114,6 @@ class NetworkPort extends CommonDBChild {
 
    static function getTypeName($nb=0) {
       return _n('Network port', 'Network ports', $nb);
-   }
-
-
-   function canCreate() {
-
-      if (isset($this->fields['itemtype'])
-          && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return $item->canCreate();
-      }
-
-      return false;
-   }
-
-
-   function canView() {
-
-      if (isset($this->fields['itemtype'])
-          && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return $item->canView();
-      }
-
-      return false;
    }
 
 

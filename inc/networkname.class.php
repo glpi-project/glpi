@@ -55,10 +55,16 @@ class NetworkName extends FQDNLabel {
 
 
    function canCreate() {
+      return Session::haveRight('internet', 'w');
+   }
 
-      if (!Session::haveRight('internet', 'w')) {
-         return false;
-      }
+
+   function canView() {
+      return Session::haveRight('internet', 'r');
+   }
+
+
+   function canCreateItem() {
 
       if (!empty($this->fields['itemtype'])
           && !empty($this->fields['items_id'])) {
@@ -69,15 +75,11 @@ class NetworkName extends FQDNLabel {
          }
       }
 
-      return true;
+      return parent::canCreateItem();
    }
 
 
-   function canView() {
-
-      if (!Session::haveRight('internet', 'r')) {
-         return false;
-      }
+   function canViewItem() {
 
       if (!empty($this->fields['itemtype'])
           && !empty($this->fields['items_id'])) {
@@ -88,7 +90,7 @@ class NetworkName extends FQDNLabel {
          }
       }
 
-      return true;
+      return parent::canViewItem();
    }
 
 

@@ -53,10 +53,16 @@ class NetworkAlias extends FQDNLabel {
 
 
    function canCreate() {
+      return Session::haveRight('internet', 'w');
+   }
 
-      if (!Session::haveRight('internet', 'w')) {
-         return false;
-      }
+
+   function canView() {
+      return Session::haveRight('internet', 'r');
+   }
+
+
+   function canCreateItem() {
 
       if (!empty($this->fields['networknames_id'])) {
          $item = new NetworkName();
@@ -69,11 +75,7 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   function canView() {
-
-      if (!Session::haveRight('internet', 'r')) {
-         return false;
-      }
+   function canViewItem() {
 
       if (!empty($this->fields['networknames_id'])) {
          $item = new NetworkName();
@@ -83,8 +85,6 @@ class NetworkAlias extends FQDNLabel {
 
       return true;
    }
-
-
 
 
    /**
