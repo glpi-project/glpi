@@ -551,10 +551,6 @@ class NetworkName extends FQDNLabel {
          $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
       }
       $name_header = $base->addHeader($column_name, $content, $super, $father);
-      if ($canedit) {
-         $base->addHeader('button1', '', $super, $name_header);
-         $base->addHeader('button2', '', $super, $name_header);
-      }
 
       NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
       IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
@@ -690,10 +686,6 @@ class NetworkName extends FQDNLabel {
       $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
       $address              = new self();
-      if ($canedit) {
-         $headerbutton1 = $row->getGroup()->getHeaderByName('Internet', 'button1');
-         $headerbutton2 = $row->getGroup()->getHeaderByName('Internet', 'button2');
-      }
 
       foreach ($DB->request($query) as $line) {
          if ($address->getFromDB($line["id"])) {
@@ -708,20 +700,23 @@ class NetworkName extends FQDNLabel {
             }
             $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
 
-            $name_cell = $row->addCell($header, $content, $father, $address);
+            //$name_cell = $row->addCell($header, $content, $father, $address);
             if ($canedit) {
-               $content = Html::getSimpleForm($address->getFormURL(), 'remove', __s('Dissociate'),
-                                              array('remove_address' => 'unaffect',
-                                                    'id'             => $address->getID()),
-                                              $CFG_GLPI["root_doc"] . "/pics/sub_dropdown.png");
-               $row->addCell($headerbutton1, $content, $name_cell, $address);
 
-               $content = Html::getSimpleForm($address->getFormURL(), 'remove', __s('Purge'),
-                                              array('remove_address' => 'purge',
-                                                    'id'             => $address->getID()),
-                                              $CFG_GLPI["root_doc"] . "/pics/delete.png");
-               $row->addCell($headerbutton2, $content, $name_cell, $address);
+               $content .= "<br>";
+               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __s('Dissociate'),
+                                               array('remove_address' => 'unaffect',
+                                                     'id'             => $address->getID()),
+                                               $CFG_GLPI["root_doc"] . "/pics/sub_dropdown.png");
+
+               $content .= "&nbsp;";
+               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __s('Purge'),
+                                               array('remove_address' => 'purge',
+                                                     'id'             => $address->getID()),
+                                               $CFG_GLPI["root_doc"] . "/pics/delete.png");
             }
+
+            $name_cell = $row->addCell($header, $content, $father, $address);
 
             NetworkAlias::getHTMLTableCellsForItem($row, NULL, $name_cell, $options);
             IPAddress::getHTMLTableCellsForItem($row, NULL, $name_cell, $options);

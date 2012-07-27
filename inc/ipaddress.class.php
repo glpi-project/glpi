@@ -113,6 +113,11 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   function canUpdate() {
+      return false;
+   }
+
+
    function canViewItem() {
 
       if (!empty($this->fields['itemtype'])
