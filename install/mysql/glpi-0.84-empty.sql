@@ -2808,7 +2808,6 @@ CREATE TABLE `glpi_networknames` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `fqdns_id` int(11) NOT NULL DEFAULT '0',
-  `ip_addresses` text COLLATE utf8_unicode_ci COMMENT 'caching value of IPAddress',
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `FQDN` (`name`,`fqdns_id`),

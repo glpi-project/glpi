@@ -88,22 +88,21 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
    if ($IPaddress->setAddressFromString($IP)) {
 
       $input = array('name'         => $name,
-                     'ip_addresses' => $IPaddress->getTextual(),
                      'fqdns_id'     => $domainID,
                      'entities_id'  => $entities_id,
                      'items_id'     => $items_id,
                      'itemtype'     => $itemtype);
 
-      $networkNameID = $migration->insertInTable('glpi_networknames', $input);
+      $networknames_id = $migration->insertInTable('glpi_networknames', $input);
 
       $input = $IPaddress->setArrayFromAddress(array('entities_id'   => $entities_id,
                                                      'itemtype'      => 'NetworkName',
-                                                     'items_id'      => $networkNameID),
+                                                     'items_id'      => $networknames_id),
                                                "version", "name", "binary");
 
       $migration->insertInTable($IPaddress->getTable(), $input);
 
-   } else {
+   } else { // Don't add the NetworkName if the address is not valid
       addNetworkPortMigrationError($items_id, 'invalid_address');
       logNetworkPortError('invalid IP address', $items_id, $main_itemtype,
                           $main_items_id, "$IP");
@@ -498,7 +497,6 @@ function update0831to084() {
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `fqdns_id` int(11) NOT NULL DEFAULT '0',
-                  `ip_addresses` TEXT COLLATE utf8_unicode_ci COMMENT 'caching value of IPAddress',
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `FQDN` (`name`,`fqdns_id`),

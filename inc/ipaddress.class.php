@@ -41,20 +41,10 @@ if (!defined('GLPI_ROOT')) {
 * and binary (ie. : used for SQL requests) are present inside the DB.
 * The class itself contains three protected attributes. If the address is valid, then, these
 * attributes are not empty.
-* This object is usefull for SQL research and binary<=>textual conversions. There is no update
-* mecanism. Entries in the database are create "on the fly" when creating or updating addresses
-* To add an address to an item, the form must include the IPAddress::showAddButtonForChildItem()
-* and IPAddress::showFieldsForItemForm inherited from CommDBChild method that display
-* the HTML TEXTAREA field with previous addresses. When validating the addresses, the item must
-* call, before updating or adding the item the checkInputFromItem() method. This method will
-* validate all the IP addresses and sorting them as invalid, new or already defined. After having
-* updating or adding the item (ie. : when the item exists and the IPAddress can be attached to
-* it), the item must call updateDatabase() with the array of addresses. This method add new
-* addresses, remove unused addresses and return an array of the addresses attached to the item,
-* for the item to update its own IP Address cache field
+* This object is usefull for SQL research and binary<=>textual conversions.
 * @since version 0.84
 * \warning textual (ie. human readable) representation is not unique for IPv6 addresses :
-* 2001:db8:0:85a3\::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
+* 2001:db8:0:85a3::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
 **/
 class IPAddress extends CommonDBChild {
 
@@ -72,7 +62,12 @@ class IPAddress extends CommonDBChild {
    protected $textual = '';
    /// $this->binary (bytes[4]) : binary version for the SQL requests. For IPv4 addresses, the
    /// first three bytes are set to [0, 0, 0xffff]
-   protected $binary = '';
+   protected $binary  = '';
+
+
+   //////////////////////////////////////////////////////////////////////////////
+   // CommonDBTM related methods
+   //////////////////////////////////////////////////////////////////////////////
 
 
    /**
@@ -113,11 +108,6 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   function canUpdate() {
-      return false;
-   }
-
-
    function canViewItem() {
 
       if (!empty($this->fields['itemtype'])
@@ -152,6 +142,228 @@ class IPAddress extends CommonDBChild {
 
    static function getTypeName($nb=0) {
       return _n('IP address', 'IP addresses', $nb);
+   }
+
+
+   function prepareInput($input) {
+
+      $valid = false;
+      if ((isset($this->fields['name'])) && ($this->fields['name'] == $input['name'])) {
+         // Previous value is the same than current !
+         $valid = true;
+      } else { // New value or update !
+         $this->setAddressFromString($input['name']);
+         $valid = $this->is_valid();
+      }
+
+      if (!$valid) {
+         //TRANS: %s is the invalid address
+         $msg = sprintf(__('Invalid address: %s'), $input['name']);
+         Session::addMessageAfterRedirect($msg, false, ERROR);
+         return false;
+      }
+      return $this->setArrayFromAddress($input, "version", "name", "binary");
+
+   }
+
+   /**
+    * @see inc/CommonDBChild::prepareInputForAdd()
+   **/
+   function prepareInputForAdd($input) {
+
+     $input = $this->prepareInput($input);
+
+      if (is_array($input)) {
+         return parent::prepareInputForAdd($input);
+      }
+      return false;
+
+   }
+
+
+   /**
+    * @see inc/CommonDBChild::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+
+      $input = $this->prepareInput($input);
+
+      if (is_array($input)) {
+         return parent::prepareInputForUpdate($input);
+      }
+      return false;
+
+   }
+
+
+   /**
+    * @see inc/CommonDBTM::post_addItem()
+   **/
+   function post_addItem() {
+      IPAddress_IPNetwork::addIPAddress($this);
+   }
+
+
+   /**
+    * @see inc/CommonDBTM::post_updateItem()
+   **/
+   function post_updateItem($history=1) {
+
+      if ((isset($this->oldvalues['binary_0']))
+          || (isset($this->oldvalues['binary_1']))
+          || (isset($this->oldvalues['binary_2']))
+          || (isset($this->oldvalues['binary_3']))) {
+
+         $link = new IPAddress_IPNetwork();
+         $link->cleanDBonItemDelete($this->getType(), $this->getID());
+         $link->addIPAddress($this);
+      }
+
+   }
+
+
+   function cleanDBonPurge() {
+
+      $link = new IPAddress_IPNetwork();
+      $link->cleanDBonItemDelete($this->getType(), $this->getID());
+
+      return true;
+   }
+
+
+   function post_getFromDB () {
+
+      // Don't forget set local object from DB field
+      $this->setAddressFromArray($this->fields, "version", "name", "binary");
+   }
+
+
+   static function showForItem(CommonGLPI $item, $withtemplate=0) {
+      global $DB, $CFG_GLPI;
+
+      if ($item->getType() == 'IPNetwork') {
+
+         if (isset($_REQUEST["start"])) {
+            $start = $_REQUEST["start"];
+         } else {
+            $start = 0;
+         }
+
+         if (!empty($_REQUEST["order"])) {
+            $table_options['order'] = $_REQUEST["order"];
+         } else {
+            $table_options['order'] = 'ip';
+         }
+
+         $order_by_itemtype = ($table_options['order'] == 'itemtype');
+
+         $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
+                                           OFFSET $start";
+
+         $table           = new HTMLTable_();
+         $content         = "<a href='javascript:reloadTab(\"order=ip\");'>" .
+                            self::getTypeName(2) . "</a>";
+         $internet_column = $table->addHeader('IP Address', $content);
+         $content         = _n('Item', 'Items', 2) .
+                            " - <a href='javascript:reloadTab(\"order=itemtype\");'>" .
+                            __('Order by item type') . "</a>";
+         $item_column     = $table->addHeader('Item', $content);
+
+         if ($order_by_itemtype) {
+            foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+               $table_options['group_'.$itemtype] = $table->createGroup($itemtype,
+                                                                        $itemtype::getTypeName(2));
+
+               self::getHTMLTableHeader($item->getType(), $table_options['group_'.$itemtype],
+                                        $item_column, NULL, $table_options);
+
+            }
+         }
+
+         $table_options['group_None'] = $table->createGroup('Main', __('Other kind of items'));
+
+         self::getHTMLTableHeader($item->getType(), $table_options['group_None'], $item_column,
+                                  NULL, $table_options);
+
+         self::getHTMLTableCellsForItem(NULL, $item, NULL, $table_options);
+
+         if ($table->getNumberOfRows() > 0) {
+
+            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+
+            Session::initNavigateListItems(__CLASS__,
+                                           //TRANS : %1$s is the itemtype name,
+                                           //        %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'),
+                                                   $item->getTypeName(1), $item->getName()));
+            $table->display(array('display_title_for_each_group' => $order_by_itemtype,
+                                  'display_super_for_each_group' => false,
+                                  'display_tfoot'                => false));
+
+            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+         } else {
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th>".__('No IP address found')."</th></tr>";
+            echo "</table>";
+         }
+      }
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'IPNetwork' :
+            self::showForItem($item, $withtemplate);
+            break;
+      }
+   }
+
+
+   /**
+    * @param $item      CommonDBTM object
+   **/
+   static function countForItem(CommonDBTM $item) {
+      global $DB;
+
+      switch ($item->getType()) {
+         case 'IPNetwork' :
+            $query = "SELECT DISTINCT COUNT(*) AS cpt
+                      FROM `glpi_ipaddresses_ipnetworks`
+                      WHERE `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
+            $result = $DB->query($query);
+            $ligne  = $DB->fetch_assoc($result);
+            return $ligne['cpt'];
+      }
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if ($item->getID()
+          && $item->can($item->getField('id'),'r')) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+         }
+         return self::getTypeName(2);
+      }
+      return '';
+   }
+
+
+   //////////////////////////////////////////////////////////////////////////////
+   // IP address specific methods (check, transformation ...)
+   //////////////////////////////////////////////////////////////////////////////
+
+
+   /**
+    * Disable the address
+   **/
+   function disableAddress() {
+
+      $this->version = '';
+      $this->textual = '';
+      $this->binary  = '';
    }
 
 
@@ -244,188 +456,6 @@ class IPAddress extends CommonDBChild {
       $this->binary[2]  = ($array[$binaryField."_2"] + 0);
       $this->binary[3]  = ($array[$binaryField."_3"] + 0);
       return true;
-   }
-
-
-   /**
-    * @see inc/CommonDBChild::prepareInputForAdd()
-   **/
-   function prepareInputForAdd($input) {
-
-      // Update $input to get information from the local object
-      $input = $this->setArrayFromAddress($input, "version", "name", "binary");
-
-      // Don't forget that if we cannot set the object, then, $inout === false;
-      if (!is_array($input)) {
-         return false;
-      }
-      return parent::prepareInputForAdd($input);
-   }
-
-
-   function post_getFromDB () {
-
-      // Don't forget set local object from DB field
-      $this->setAddressFromArray($this->fields, "version", "name", "binary");
-   }
-
-
-   /**
-    * \brief check input validity from the object prepareInput*
-    * Create the objects associated with each entry in the IP address field of the form of the item.
-    * Each address is sort as :
-    *            "previous" : addresses already registered for the given item
-    *            "new" : addresses that are currently not attached to the item
-    *            "invalid" : addresses that not valid
-    *
-    * @param $inputAddresses  string   of comma, CR, LF or space separated addresses
-    * @param $itemtype                 type of the item this address has to be attached
-    * @param $items_id                 id of the item this address has to be attached
-    *
-    * @return array of "previous", "new" and "invalid" addresses
-   **/
-   static function checkInputFromItem($inputAddresses, $itemtype, $items_id) {
-
-      $invalidAddresses  = array();
-      $previousAddresses = array();
-      $newAddresses      = array();
-      // then, check each address
-      foreach ($inputAddresses as $ipaddress) {
-         // Create the object
-         $addressObject = new self();
-         if ($addressObject->setAddressFromString($ipaddress, $itemtype, $items_id)) {
-            // Update the textual to represent the canonical representation of the address ...
-            $addressObject->canonicalizeTextual();
-            // If it is valid and its ID is not NULL, then, the address already exists
-            if ($addressObject->getID() > 0) {
-               $previousAddresses[] = $addressObject;
-            } else { // Otherwise, it is a new address
-               $newAddresses[] = $addressObject;
-            }
-         } else {
-            unset($addressObject); // Clear the object : we don't need it any more
-            if (!empty($ipaddress)) {// There may be empty lines
-               $invalidAddresses[] = addslashes($ipaddress);
-            }
-         }
-      }
-      return array("previous" => $previousAddresses,
-                   "new"      => $newAddresses,
-                   "invalid"  => $invalidAddresses);
-   }
-
-
-   /**
-    * Update the database by removing old address and creating new ones.
-    * Already known addresses remains
-    *
-    * @param $addressesFromCheck array the array previously created by checkInputFromItem()
-    * @param $itemtype                 type of the item this address has to be attached
-    * @param $items_id                 id of the item this address has to be attached
-    *
-    * @return an array of all addresses attached the the item
-    *         That should be use to fill cache IP field of the item
-   **/
-   static function updateDatabase($addressesFromCheck, $itemtype, $items_id) {
-      global $DB;
-
-      $currentAddresses  = array();
-      $previousAddresses = array();
-
-      // Get the addresses that was previously inside the database
-      foreach ($addressesFromCheck["previous"] as $ipAddress) {
-         $previousAddresses[] = $ipAddress->getID();
-         $currentAddresses[]  = $ipAddress->getTextual();
-      }
-
-      // Remove all the addresses attached to the item except previous ones
-      $query = "SELECT `id`, `name`
-                FROM `glpi_ipaddresses`
-                WHERE `itemtype` = '".$itemtype."'
-                      AND `items_id` = '".$items_id."'
-                      AND `id` NOT IN ('".implode("', '", $previousAddresses)."')";
-      $addressObject = new self();
-      foreach ($DB->request($query) as $previousAddress) {
-         if ($addressObject->can($previousAddress["id"], "d")) {
-            $addressObject->delete(array($addressObject->getIndexName() => $previousAddress["id"]));
-         }
-      }
-
-      // Add the new addresses
-      $newEntry = array("items_id" => $items_id,
-                        "itemtype" => $itemtype);
-      foreach ($addressesFromCheck["new"] as $ipAddress) {
-         if (!$ipAddress->can(-1, 'w', $newEntry)) {
-            continue;
-         }
-         if ($ipAddress->add($newEntry)) {
-            $currentAddresses[] = $ipAddress->getTextual();
-         }
-      }
-
-      // Return all the addresses attached to the item
-      return $currentAddresses;
-   }
-
-
-   /**
-    * Remove the unused addresses from the database. That is used when deleting an item, to clean
-    * the database. That is also use by updateDatabase() to remove unuse addresses
-    *
-    * @param $itemtype                 type of the item this address has to be attached
-    * @param $items_id                 id of the item this address has to be attached
-    * @param $excludeFromDelete  array of the IDs that must not be delete
-   **/
-   static function cleanAddress($itemtype, $items_id, $excludeFromDelete=array()) {
-      global $DB;
-
-      $addressObject = new IPaddress();
-      $query = "SELECT `id`, `name`
-                FROM `".$addressObject->getTable()."`
-                WHERE `itemtype` = '".$itemtype."'
-                      AND `items_id` = '".$items_id."'
-                      AND `id` NOT IN ('".implode("', '", $excludeFromDelete)."')";
-      $result = array();
-
-      foreach ($DB->request($query) as $previousAddress) {
-         if ($addressObject->can($previousAddress["id"], "d")) {
-            $addressObject->delete(array($addressObject->getIndexName() => $previousAddress["id"]));
-         }
-      }
-      return $result;
-   }
-
-
-   /**
-    * @see inc/CommonDBTM::post_updateItem()
-   **/
-   function post_updateItem($history=1) {
-      IPAddress_IPNetwork::addIPAddress($this);
-   }
-
-
-   function post_addItem() {
-      IPAddress_IPNetwork::addIPAddress($this);
-   }
-
-
-   function cleanDBonPurge() {
-
-      $link = new IPAddress_IPNetwork();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      return true;
-   }
-
-
-   /**
-    * Disable the address
-   **/
-   function disableAddress() {
-
-      $this->version = '';
-      $this->textual = '';
-      $this->binary  = '';
    }
 
 
@@ -970,67 +1000,248 @@ class IPAddress extends CommonDBChild {
 
       $column_name = __CLASS__;
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
       $content = self::getTypeName();
-      if (isset($options['column_links'][$column_name])) {
-         $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
-      }
-      $this_header = $base->addHeader($column_name, $content, $super, $father);
 
-      IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $this_header, $options);
+      if ($itemtype == 'IPNetwork') {
+
+         $base->addHeader('Item'       , _n('Item', 'Items', 1)     , $super, $father);
+         $base->addHeader('NetworkPort', NetworkPort::getTypeName(0), $super, $father);
+         $base->addHeader('NetworkName', NetworkName::getTypeName(1), $super, $father);
+
+      } else {
+
+         if (isset($options['dont_display'][$column_name])) {
+            return;
+         }
+
+         if (isset($options['column_links'][$column_name])) {
+            $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
+         }
+
+         $this_header = $base->addHeader($column_name, $content, $super, $father);
+
+         IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $this_header, $options);
+      }
 
    }
 
 
    /**
-    * @param $row                HTMLTable_Row object
+    * @param $row                HTMLTable_Row object (default NULL)
     * @param $item               CommonDBTM object (default NULL)
     * @param $father             HTMLTable_Cell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row=NULL, CommonDBTM $item=NULL,
                                             HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
-      if (isset($options['dont_display']['IPAddress'])) {
-         return;
-      }
+      if (($item !== NULL) && ($item->getType() == 'IPNetwork')) {
 
-      $header= $row->getGroup()->getHeaderByName('Internet', __CLASS__);
-      if (!$header) {
-         return;
-      }
-
-      if (empty($item)) {
-         if (empty($father)) {
-            return;
+         $queries = array();
+         foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+            $table = getTableForItemType($itemtype);
+            $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
+                                  ADDR.`binary_1` AS binary_1,
+                                  ADDR.`binary_2` AS binary_2,
+                                  ADDR.`binary_3` AS binary_3,
+                                  ADDR.`name`     AS ip,
+                                  ADDR.`id`       AS id,
+                                  ADDR.`itemtype` AS addr_item_type,
+                                  ADDR.`items_id` AS addr_item_id,
+                                  NAME.`id`       AS name_id,
+                                  PORT.`id`       AS port_id,
+                                  ITEM.`id`       AS item_id,
+                                  '$itemtype'     AS item_type
+                           FROM `glpi_ipaddresses_ipnetworks` AS LINK
+                           JOIN `glpi_ipaddresses` AS ADDR ON (
+                                 ADDR.`id` = LINK.`ipaddresses_id`
+                             AND ADDR.`itemtype` = 'NetworkName')
+                           JOIN `glpi_networknames` AS NAME ON (
+                                 NAME.`id` = ADDR.`items_id`
+                             AND NAME.`itemtype` = 'NetworkPort')
+                           JOIN `glpi_networkports` AS PORT ON (
+                                 NAME.`items_id` = PORT.`id`
+                             AND PORT.`itemtype` = '$itemtype')
+                           JOIN `$table` AS ITEM ON (ITEM.`id` = PORT.`items_id`)
+                           WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
          }
-         $item = $father->getItem();
-      }
 
-      $query                = "SELECT `id`
-                               FROM `glpi_ipaddresses`
-                               WHERE `items_id` = '" . $item->getID() . "'
-                                     AND `itemtype` = '" . $item->getType() . "'";
+         $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
+                               ADDR.`binary_1` AS binary_1,
+                               ADDR.`binary_2` AS binary_2,
+                               ADDR.`binary_3` AS binary_3,
+                               ADDR.`name`     AS ip,
+                               ADDR.`id`       AS id,
+                               ADDR.`itemtype` AS addr_item_type,
+                               ADDR.`items_id` AS addr_item_id,
+                               NAME.`id`       AS name_id,
+                               PORT.`id`       AS port_id,
+                               NULL            AS item_id,
+                               NULL            AS item_type
+                        FROM `glpi_ipaddresses_ipnetworks` AS LINK
+                        JOIN `glpi_ipaddresses` AS ADDR ON (
+                              ADDR.`id` = LINK.`ipaddresses_id`
+                          AND ADDR.`itemtype` = 'NetworkName')
+                        JOIN `glpi_networknames` AS NAME ON (
+                              NAME.`id` = ADDR.`items_id`
+                          AND NAME.`itemtype` = 'NetworkPort')
+                        JOIN `glpi_networkports` AS PORT ON (
+                              NAME.`items_id` = PORT.`id`
+                          AND PORT.`itemtype` NOT IN ('" .
+                              implode("', '", $CFG_GLPI["networkport_types"])."'))
+                        WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
 
-      $canedit              = (isset($options['canedit']) && $options['canedit']);
-      $createRow            = (isset($options['createRow']) && $options['createRow']);
-      $options['createRow'] = false;
-      $address              = new self();
+         $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
+                               ADDR.`binary_1` AS binary_1,
+                               ADDR.`binary_2` AS binary_2,
+                               ADDR.`binary_3` AS binary_3,
+                               ADDR.`name`     AS ip,
+                               ADDR.`id`       AS id,
+                               ADDR.`itemtype` AS addr_item_type,
+                               ADDR.`items_id` AS addr_item_id,
+                               NAME.`id`       AS name_id,
+                               NULL            AS port_id,
+                               NULL            AS item_id,
+                               NULL            AS item_type
+                        FROM `glpi_ipaddresses_ipnetworks` AS LINK
+                        JOIN `glpi_ipaddresses` AS ADDR ON (
+                              ADDR.`id` = LINK.`ipaddresses_id`
+                          AND ADDR.`itemtype` = 'NetworkName')
+                        JOIN `glpi_networknames` AS NAME ON (
+                              NAME.`id` = ADDR.`items_id`
+                          AND NAME.`itemtype` != 'NetworkPort')
+                        WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
 
-      foreach ($DB->request($query) as $ipaddress) {
-         if ($address->getFromDB($ipaddress['id'])) {
+         $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
+                               ADDR.`binary_1` AS binary_1,
+                               ADDR.`binary_2` AS binary_2,
+                               ADDR.`binary_3` AS binary_3,
+                               ADDR.`name`     AS ip,
+                               ADDR.`id`       AS id,
+                               ADDR.`itemtype` AS addr_item_type,
+                               ADDR.`items_id` AS addr_item_id,
+                               NULL            AS name_id,
+                               NULL            AS port_id,
+                               NULL            AS item_id,
+                               NULL            AS item_type
+                        FROM `glpi_ipaddresses_ipnetworks` AS LINK
+                        JOIN `glpi_ipaddresses` AS ADDR ON (
+                              ADDR.`id` = LINK.`ipaddresses_id`
+                          AND ADDR.`itemtype` != 'NetworkName')
+                        WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
 
-            if ($createRow) {
-               $row = $row->createRow();
+         $query = implode('UNION ', $queries);
+
+         if (($options['order'] == 'ip')
+             || ($options['order'] == 'itemtype')){
+            $query .= " ORDER BY binary_0, binary_1, binary_2, binary_3";
+         }
+
+         if (isset($options['SQL_options'])) {
+            $query .= "\n".$options['SQL_options'];
+         }
+
+         $canedit              = (isset($options['canedit']) && $options['canedit']);
+         $options['createRow'] = false;
+         $address              = new self();
+
+         $ipaddress = new IPAddress();
+         $networkname = new NetworkName();
+         $networkport = new NetworkPort();
+
+         $item = NULL;
+         foreach ($DB->request($query) as $line) {
+
+            unset($row);
+
+            if (($options['order'] == 'itemtype')
+                && (!empty($line['item_type']))) {
+               $row = $options['group_'.$line['item_type']]->createRow();
             }
 
-            $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
+            if (!isset($row)) {
+               $row = $options['group_None']->createRow();
+            }
 
-            IPNetwork::getHTMLTableCellsForItem($row, NULL, $this_cell, $options);
+            $ip_header= $row->getGroup()->getSuperHeaderByName('IP Address');
+            $item_header= $row->getGroup()->getHeaderByName('Item', 'Item');
+            $port_header= $row->getGroup()->getHeaderByName('Item', 'NetworkPort');
+            $name_header= $row->getGroup()->getHeaderByName('Item', 'NetworkName');
+
+            $row->addCell($ip_header, $line['ip'], $father);
+
+            if (!empty($line['name_id'])) {
+               $networkname->getFromDB($line['name_id']);
+               $row->addCell($name_header, $networkname->getLink(), $father);
+
+               if (!empty($line['port_id'])) {
+                  $networkport->getFromDB($line['port_id']);
+                  $row->addCell($port_header, $networkport->getLink(), $father);
+
+                  if ((!empty($line['item_id'])) && (!empty($line['item_type']))) {
+                     $itemtype = $line['item_type'];
+                     $item = new $itemtype();
+                     $item->getFromDB($line['item_id']);
+                     $row->addCell($item_header, $item->getLink(), $father);
+                  }
+               }
+            } else if ((!empty($line['addr_item_id'])) && (!empty($line['addr_item_type']))) {
+               $itemtype = $line['addr_item_type'];
+               $item = new $itemtype();
+               $item->getFromDB($line['addr_item_id']);
+               if ($item instanceof CommonDBChild) {
+                  $items = $item->recursivelyGetItems();
+                  $elements = array($item->getLink());
+                  foreach ($items as $item_) {
+                     $elements[] = $item_->getLink();
+                  }
+                  $row->addCell($item_header, implode(' > ', $elements), $father);
+               } else {
+                  $row->addCell($item_header, $item->getLink(), $father);
+               }
+            }
+         }
+
+      } else {
+
+         if (isset($options['dont_display']['IPAddress'])) {
+            return;
+         }
+
+         $header= $row->getGroup()->getHeaderByName('Internet', __CLASS__);
+         if (!$header) {
+            return;
+         }
+
+         if (empty($item)) {
+            if (empty($father)) {
+               return;
+            }
+            $item = $father->getItem();
+         }
+
+         $query                = "SELECT `id`
+                                  FROM `glpi_ipaddresses`
+                                  WHERE `items_id` = '" . $item->getID() . "'
+                                        AND `itemtype` = '" . $item->getType() . "'";
+
+         $canedit              = (isset($options['canedit']) && $options['canedit']);
+         $createRow            = (isset($options['createRow']) && $options['createRow']);
+         $options['createRow'] = false;
+         $address              = new self();
+
+         foreach ($DB->request($query) as $ipaddress) {
+            if ($address->getFromDB($ipaddress['id'])) {
+
+               if ($createRow) {
+                  $row = $row->createRow();
+               }
+
+               $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
+
+               IPNetwork::getHTMLTableCellsForItem($row, NULL, $this_cell, $options);
+            }
          }
       }
    }

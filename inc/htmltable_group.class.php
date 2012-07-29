@@ -241,5 +241,15 @@ class HTMLTable_Group extends HTMLTable_Base {
       }
       return $numberOfRows;
    }
+
+
+   function getSuperHeaderByName($name) {
+      try {
+         return $this->getHeaderByName($name, '');
+      } catch (HTMLTable_UnknownHeader $e) {
+         return $this->table->getSuperHeaderByName($name);
+      }
+   }
 }
+
 ?>
