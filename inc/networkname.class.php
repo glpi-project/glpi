@@ -37,10 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class NetworkName : represent the internet name of an element. It is compose of the name itself,
-/// its domain and one or several IP addresses (IPv4 and/or IPv6). It relies on IPAddress object.
-/// There is no network associated with the addresses as the addresses can be inside several
-/// different kind of networks : at least one real network (ie : the one that is configured in the
-/// computer with gateways) and several administrative networks (for instance, entity sub-network).
+/// its domain and one or several IP addresses (IPv4 and/or IPv6).
 /// An address can be affected to an item, or can be "free" to be reuse by another item (for
 /// instance, in case of maintenance, when you change the network card of a computer, but not its
 /// network information
@@ -258,95 +255,32 @@ class NetworkName extends FQDNLabel {
 
 
    /**
-    * Check input validity for CommonDBTM::add and CommonDBTM::update
-    *
-    * @param $input the input given to CommonDBTM::add or CommonDBTM::update
-    *
-    * @return $input altered array of new values;
-   **/
-   function prepareInput($input) {
-
-      if (isset($input["_ipaddresses"])) {
-         $addresses = IPAddress::checkInputFromItem($input["_ipaddresses"],
-                                                    self::getType(), $this->getID());
-
-         if (count($addresses["invalid"]) > 0) {
-            $msg = sprintf(__('%1$s: %2$s'), _n('Invalid IP address', 'Invalid IP addresses',
-                                               count($addresses["invalid"])),
-                           implode (', ',$addresses["invalid"]));
-            Session::addMessageAfterRedirect($msg, false, ERROR);
-            unset($addresses["invalid"]);
-         }
-
-         // TODO : is it usefull to check that there is at least one IP address ?
-         // if ((count($addresses["new"]) + count($addresses["previous"])) == 0) {
-         //    Session::addMessageAfterRedirect(__('No IP address (v4 or v6) defined'), false, ERROR);
-         //    return false;
-         // }
-
-         $this->IPs             = $addresses;
-         $input["_ipaddresses"] = "";
-      }
-
-      return $input;
-   }
-
-
-   function prepareInputForAdd($input) {
-
-      $input = $this->prepareInput($input);
-
-      if (!is_array($input)) {
-         return false;
-      }
-      return parent::prepareInputForAdd($input);
-   }
-
-
-   function prepareInputForUpdate($input) {
-
-      $input = $this->prepareInput($input);
-
-      if (!is_array($input)) {
-         return false;
-      }
-      return parent::prepareInputForUpdate($input);
-   }
-
-
-   function pre_deleteItem() {
-
-      IPAddress::cleanAddress($this->getType(), $this->GetID());
-      return parent::pre_deleteItem();
-   }
-
-
-   /**
     * \brief Update IPAddress database
-    * Update IPAddress database to remove old IPs and add new ones. Update this "IPs" cache field
-    * with the current IP addresses according to the database
-    * And, if the addresses are different than before, recreate the link with the networks
+    * Update IPAddress database to remove old IPs and add new ones.
    **/
    function post_workOnItem() {
 
-      if (isset($this->IPs)) {
-         global $DB;
-
-         // Update IPAddress database : return value is a list of
-         $newIPaddressField      = IPAddress::updateDatabase($this->IPs, $this->getType(),
-                                                             $this->getID());
-
-         $new_ip_addresses_field = implode('\n', $newIPaddressField);
-
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `ip_addresses` = '$new_ip_addresses_field'
-                   WHERE `id` = '".$this->getID()."'";
-         $DB->query($query);
-
-         unset($this->IPs);
-
-      } else {
-         $new_ip_addresses_field = "";
+      if ((isset($this->input['_ipaddresses']))
+          && (is_array($this->input['_ipaddresses']))) {
+         $input = array('itemtype' => 'NetworkName',
+                        'items_id' => $this->getID());
+         foreach ($this->input['_ipaddresses'] as $id => $ip) {
+            $ipaddress = new IPAddress();
+            $input['name'] = $ip;
+            if ($id < 0) {
+               if (!empty($ip)) {
+                  $ipaddress->add($input);
+               }
+            } else {
+               if (!empty($ip)) {
+                  $input['id'] = $id;
+                  $ipaddress->update($input);
+                  unset($input['id']);
+               } else {
+                  $ipaddress->delete(array('id' => $id));
+               }
+            }
+         }
       }
    }
 
@@ -587,42 +521,6 @@ class NetworkName extends FQDNLabel {
       }
 
       switch ($item->getType()) {
-         case 'IPNetwork' :
-            $query = "SELECT `glpi_networknames`.`id`
-                      FROM `glpi_networknames`
-                      JOIN `glpi_ipaddresses` ON (
-                                `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`
-                            AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')
-                      JOIN `glpi_ipaddresses_ipnetworks` ON (
-                                `glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                                 = `glpi_ipaddresses`.`id`
-                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id`
-                                 = '".$item->getID()."')";
-
-            if (isset($options['order'])) {
-               switch ($options['order']) {
-                  case 'name' :
-                     $query .= " ORDER BY `glpi_networknames`.`name`";
-                     break;
-
-                  case 'ip' :
-                     $query .= " ORDER BY `glpi_ipaddresses`.`binary_3`,
-                                          `glpi_ipaddresses`.`binary_2`,
-                                          `glpi_ipaddresses`.`binary_1`,
-                                          `glpi_ipaddresses`.`binary_0`";
-                     break;
-
-                  case 'alias' :
-                     $query .= " LEFT JOIN `glpi_networkaliases` ON (
-                                               `glpi_networkaliases`.`networknames_id`
-                                               = `glpi_networknames`.`id`)
-                                 ORDER BY ISNULL(`glpi_networkaliases`.`name`),
-                                          `glpi_networkaliases`.`name`";
-                     break;
-               }
-            }
-            break;
-
          case 'FQDN' :
             $JOINS = "";
             $ORDER = "`glpi_networknames`.`name`";
@@ -700,7 +598,6 @@ class NetworkName extends FQDNLabel {
             }
             $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
 
-            //$name_cell = $row->addCell($header, $content, $father, $address);
             if ($canedit) {
 
                $content .= "<br>";
@@ -740,8 +637,7 @@ class NetworkName extends FQDNLabel {
 
       $table_options = array('createRow' => true);
 
-      if (($item->getType() == 'IPNetwork')
-          || ($item->getType() == 'FQDN')
+      if (($item->getType() == 'FQDN')
           || ($item->getType() == 'NetworkEquipment')) {
          if (isset($_REQUEST["start"])) {
             $start = $_REQUEST["start"];
@@ -756,16 +652,7 @@ class NetworkName extends FQDNLabel {
          }
 
 
-         if ($item->getType() == 'IPNetwork') {
-
-            $table_options['dont_display'] = array('IPNetwork' => true);
-
-            $table_options['column_links'] =
-                 array('NetworkName'  => 'javascript:reloadTab("order=name");',
-                       'NetworkAlias' => 'javascript:reloadTab("order=alias");',
-                       'IPAddress'    => 'javascript:reloadTab("order=ip");');
-
-         } else if ($item->getType() == 'FQDN') {
+         if ($item->getType() == 'FQDN') {
 
             $table_options['column_links'] =
                  array('NetworkName'  => 'javascript:reloadTab("order=name");',
@@ -801,9 +688,6 @@ class NetworkName extends FQDNLabel {
          case 'FQDN' :
             break;
 
-         case 'IPNetwork' :
-            //$table->setColumnOrder(array('NetworkName', 'IPAddress', 'NetworkAlias'));
-            break;
       }
 
       self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);
@@ -817,7 +701,7 @@ class NetworkName extends FQDNLabel {
       if ($display_table) {
          if ($table->getNumberOfRows() > 0) {
 
-            if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+            if ($item->getType() == 'FQDN') {
                Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
             }
             Session::initNavigateListItems(__CLASS__,
@@ -828,7 +712,7 @@ class NetworkName extends FQDNLabel {
             $table->display(array('display_title_for_each_group' => false,
                                   'display_thead'                => false,
                                   'display_tfoot'                => false));
-            if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+            if ($item->getType() == 'FQDN') {
                Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
             }
          } else {
@@ -877,7 +761,6 @@ class NetworkName extends FQDNLabel {
 
       switch ($item->getType()) {
          case 'NetworkPort' :
-         case 'IPNetwork' :
          case 'FQDN' :
          case 'NetworkEquipment' :
             self::showForItem($item, $withtemplate);
@@ -893,16 +776,6 @@ class NetworkName extends FQDNLabel {
       global $DB;
 
       switch ($item->getType()) {
-         case 'IPNetwork' :
-            $query = "SELECT DISTINCT COUNT(*) AS cpt
-                      FROM `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
-                      WHERE `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                            AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
-            $result = $DB->query($query);
-            $ligne  = $DB->fetch_assoc($result);
-            return $ligne['cpt'];
-
          case 'FQDN' :
             return countElementsInTable('glpi_networknames',
                                         "`fqdns_id` = '".$item->fields["id"]."'");
