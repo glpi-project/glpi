@@ -922,7 +922,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $father             HTMLTable_Cell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row=NULL, CommonDBTM $item=NULL,
                                             HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
