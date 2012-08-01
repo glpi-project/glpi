@@ -210,7 +210,7 @@ class Computer_Device extends CommonDBTM {
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
 
-      $table = new HTMLTable_();
+      $table = new HTMLTableMain();
 
       $table->setTitle(_n('Component', 'Components', 2));
 

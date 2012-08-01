@@ -37,14 +37,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-class HTMLTable_CellFatherSameRow         extends Exception {}
-class HTMLTable_CellFatherCoherentHeader  extends Exception {}
-class HTMLTable_CellWithoutFather         extends Exception {}
+class HTMLTableCellFatherSameRow         extends Exception {}
+class HTMLTableCellFatherCoherentHeader  extends Exception {}
+class HTMLTableCellWithoutFather         extends Exception {}
 
 /**
  * @since version 0.84
 **/
-class HTMLTable_Cell extends HTMLTable_Entity {
+class HTMLTableCell extends HTMLTableEntity {
 
    private $row;
    private $header;
@@ -58,11 +58,11 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    /**
     * @param $row
     * @param $header
-    * @param $content   see HTMLTable_Entity#__construct()
-    * @param $father    HTMLTable_Cell object (default NULL)
+    * @param $content   see HTMLTableEntity#__construct()
+    * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function __construct($row, $header, $content, HTMLTable_Cell $father=NULL,
+   function __construct($row, $header, $content, HTMLTableCell $father=NULL,
                         CommonDBTM $item=NULL) {
 
       parent::__construct($content);
@@ -80,36 +80,36 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       if (!is_null($this->father)) {
 
          if ($this->father->row != $this->row) {
-            throw new HTMLTable_CellSameRow();
+            throw new HTMLTableCellSameRow();
          }
 
          if ($this->father->header != $this->header->getFather()) {
 
-            if (($this->father->header instanceof HTMLTable_Header)
-                && ($this->header->getFather() instanceof HTMLTable_Header)) {
-               throw new HTMLTable_CellFatherCoherentHeader($this->header->getFather()->getName() .
+            if (($this->father->header instanceof HTMLTableHeader)
+                && ($this->header->getFather() instanceof HTMLTableHeader)) {
+               throw new HTMLTableCellFatherCoherentHeader($this->header->getFather()->getName() .
                                                             ' != ' .
                                                             $this->father->header->getName());
             }
 
-            if ($this->father->header instanceof HTMLTable_Header) {
-               throw new HTMLTable_CellFatherCoherentHeader('NULL != '.
+            if ($this->father->header instanceof HTMLTableHeader) {
+               throw new HTMLTableCellFatherCoherentHeader('NULL != '.
                                                             $this->father->header->getName());
             }
 
-            if ($this->header->getFather() instanceof HTMLTable_Header) {
-               throw new HTMLTable_CellFatherCoherentHeader($this->header->getFather()->getName() .
+            if ($this->header->getFather() instanceof HTMLTableHeader) {
+               throw new HTMLTableCellFatherCoherentHeader($this->header->getFather()->getName() .
                                                             ' != NULL');
             }
 
-            throw new HTMLTable_CellFatherCoherentHeader('NULL != NULL');
+            throw new HTMLTableCellFatherCoherentHeader('NULL != NULL');
 
          }
 
          $this->father->addSon($this, $header);
 
       } else if (!is_null($this->header->getFather())) {
-         throw new HTMLTable_CellWithoutFather();
+         throw new HTMLTableCellWithoutFather();
       }
 
       if (!empty($this->itemtype)) {
@@ -155,10 +155,10 @@ class HTMLTable_Cell extends HTMLTable_Entity {
 
 
    /**
-    * @param $son          HTMLTable_Cell object
-    * @param $sons_header  HTMLTable_Header object
+    * @param $son          HTMLTableCell object
+    * @param $sons_header  HTMLTableHeader object
    **/
-   function addSon(HTMLTable_Cell $son, HTMLTable_Header $sons_header) {
+   function addSon(HTMLTableCell $son, HTMLTableHeader $sons_header) {
 
       if (!isset($this->sons[$sons_header->getName()])) {
          $this->sons[$sons_header->getName()] = array();

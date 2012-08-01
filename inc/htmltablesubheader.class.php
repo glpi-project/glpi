@@ -40,20 +40,20 @@ if (!defined('GLPI_ROOT')) {
 /**
  * @since version 0.84
 **/
-class HTMLTable_SubHeader extends HTMLTable_Header {
+class HTMLTableSubHeader extends HTMLTableHeader {
 
    // The headers of each column
    private $header;
 
 
    /**
-    * @param $header    HTMLTable_SuperHeader object
+    * @param $header    HTMLTableSuperHeader object
     * @param $name
-    * @param $content   see HTMLTable_Entity#__construct()
-    * @param $father    HTMLTable_Header object (default NULL)
+    * @param $content   see HTMLTableEntity#__construct()
+    * @param $father    HTMLTableHeader object (default NULL)
    **/
-   function __construct(HTMLTable_SuperHeader $header, $name,  $content,
-                        HTMLTable_Header $father=NULL) {
+   function __construct(HTMLTableSuperHeader $header, $name,  $content,
+                        HTMLTableHeader $father=NULL) {
 
       $this->header = $header;
       parent::__construct($name, $content, $father);

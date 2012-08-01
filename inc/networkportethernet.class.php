@@ -88,13 +88,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
   /**
-   * @param $group               HTMLTable_Group object
-   * @param $super               HTMLTable_SuperHeader object
+   * @param $group               HTMLTableGroup object
+   * @param $super               HTMLTableSuperHeader object
    * @param $options    array
   **/
-   function getInstantiationHTMLTable_Headers(HTMLTable_Group $group, HTMLTable_SuperHeader $super,
-                                              HTMLTable_SuperHeader $internet_super = NULL,
-                                              HTMLTable_Header $father=NULL,
+   function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
+                                              HTMLTableSuperHeader $internet_super = NULL,
+                                              HTMLTableHeader $father=NULL,
                                               array $options=array()) {
 
       $display_options = &$options['display_options'];
@@ -111,7 +111,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $group->addHeader('Outlet', __('Network outlet'), $super, $header);
 
-      parent::getInstantiationHTMLTable_Headers($group, $super, $internet_super, $header, $options);
+      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
 
       return $header;
 
@@ -122,16 +122,16 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * Get HTMLTable row for a given ethernet network port and a given extremity
     *
     * @param $netport         NetworkPort object
-    * @param $row             HTMLTable_Row object
-    * @param $father          HTMLTable_Cell object : the given extremity
+    * @param $row             HTMLTableRow object
+    * @param $father          HTMLTableCell object : the given extremity
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
     * @return the father cell for the Internet Informations ...
    **/
-   private function getEthernetInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
-                                                       HTMLTable_Cell $father = NULL,
+   private function getEthernetInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                                       HTMLTableCell $father = NULL,
                                                        array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
@@ -146,17 +146,17 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                        $this->fields["type"], $father);
       }
 
-      parent::getInstantiationHTMLTable_($netport, $row, $father, $options);
+      parent::getInstantiationHTMLTable($netport, $row, $father, $options);
 
       Netpoint::getHTMLTableCellsForItem($row, $this, $father, $options);
 
    }
 
   /**
-   * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
+   * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
   **/
-   function getInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
-                                       HTMLTable_Cell $father=NULL, array $options=array()) {
+   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                       HTMLTableCell $father=NULL, array $options=array()) {
 
       $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
                                         'parameters' => array(clone $netport)));
@@ -181,7 +181,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
             $oppositeEthernetPort = $oppositePort->getInstantiation();
             if ($oppositeEthernetPort !== false) {
-               $oppositeEthernetPort->getEthernetInstantiationHTMLTable_($oppositePort, $row,
+               $oppositeEthernetPort->getEthernetInstantiationHTMLTable($oppositePort, $row,
                                                                          $opposite_cell,
                                                                          $opposite_options);
             }
@@ -198,7 +198,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                $connect_cell_value);
       }
 
-      $this->getEthernetInstantiationHTMLTable_($netport, $row, $cell, $options);
+      $this->getEthernetInstantiationHTMLTable($netport, $row, $cell, $options);
 
       return $cell;
 

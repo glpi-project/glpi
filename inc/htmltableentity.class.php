@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
  * provides facilities to manage the cells such as attributs or specific content (mixing of strings
  * and call of method during table display)
 **/
-abstract class HTMLTable_Entity {
+abstract class HTMLTableEntity {
 
    private $html_id    = '';
    private $html_style = array();
@@ -70,7 +70,7 @@ abstract class HTMLTable_Entity {
    /**
     * @param $origin
    **/
-   function copyAttributsFrom(HTMLTable_Entity $origin) {
+   function copyAttributsFrom(HTMLTableEntity $origin) {
 
       $this->html_id    = $origin->html_id;
       $this->html_style = $origin->html_style;

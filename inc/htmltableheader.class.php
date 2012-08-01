@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * @since version 0.84
 **/
-abstract class HTMLTable_Header extends HTMLTable_Entity {
+abstract class HTMLTableHeader extends HTMLTableEntity {
 
    private $name;
    private $father;
@@ -52,7 +52,7 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    /**
     * get the table of the header (for a subheader, it is the table of its super header)
     *
-    * @return HTMLTable_ the table owning the current header
+    * @return HTMLTableMain the table owning the current header
    **/
    abstract protected function getTable();
 
@@ -78,11 +78,11 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
 
    /**
     * @param $name      string   the name of the header
-    * @param $content            see HTMLTable_Entity#__construct()
-    * @param $father             HTMLTable_Header object:
+    * @param $content            see HTMLTableEntity#__construct()
+    * @param $father             HTMLTableHeader object:
     *                            the father of the current column (default NULL)
    **/
-   function __construct($name, $content, HTMLTable_Header $father=NULL) {
+   function __construct($name, $content, HTMLTableHeader $father=NULL) {
 
       parent::__construct($content);
 

@@ -115,14 +115,14 @@ class DeviceDrive extends CommonDevice {
     * @since version 0.84
     *
     * @param $itemtype
-    * @param $base               HTMLTable_Base object
-    * @param $super              HTMLTable_SuperHeader object (default NULL)
-    * @param $father             HTMLTable_Header object (default NULL)
+    * @param $base               HTMLTableBase object
+    * @param $super              HTMLTableSuperHeader object (default NULL)
+    * @param $father             HTMLTableHeader object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                      HTMLTable_SuperHeader $super=NULL,
-                                      HTMLTable_Header $father=NULL, array $options=array()) {
+   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
+                                      HTMLTableSuperHeader $super=NULL,
+                                      HTMLTableHeader $father=NULL, array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -147,7 +147,7 @@ class DeviceDrive extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCell()
    **/
-   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father=NULL,
+   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
                              array $options=array()) {
 
       switch ($item_type) {

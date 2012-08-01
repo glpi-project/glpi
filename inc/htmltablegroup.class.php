@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * @since v ersion 0.84
 **/
-class HTMLTable_Group extends HTMLTable_Base {
+class HTMLTableGroup extends HTMLTableBase {
 
    private $name;
    private $content;
@@ -50,11 +50,11 @@ class HTMLTable_Group extends HTMLTable_Base {
 
 
    /**
-    * @param $table     HTMLTable_ object
+    * @param $table     HTMLTableMain object
     * @param $name
     * @param $content
    **/
-   function __construct(HTMLTable_ $table, $name, $content) {
+   function __construct(HTMLTableMain $table, $name, $content) {
 
       parent::__construct(false);
       $this->table      = $table;
@@ -69,18 +69,18 @@ class HTMLTable_Group extends HTMLTable_Base {
 
 
    /**
-    * @param $header    HTMLTable_Header object
+    * @param $header    HTMLTableHeader object
    **/
-   function haveHeader(HTMLTable_Header $header) {
+   function haveHeader(HTMLTableHeader $header) {
 
     //TODO $header_name AND $subHeader_name  not initialized
       $header->getHeaderAndSubHeaderName($header_name, $subheader_name);
       try {
          $subheaders = $this->getHeaders($header_name);
-      } catch (HTMLTable_UnknownHeaders $e) {
+      } catch (HTMLTableUnknownHeaders $e) {
          try {
             $subheaders = $this->table->getHeaders($header_name);
-         } catch (HTMLTable_UnknownHeaders $e) {
+         } catch (HTMLTableUnknownHeaders $e) {
             return false;
          }
       }
@@ -119,7 +119,7 @@ class HTMLTable_Group extends HTMLTable_Base {
    function createRow() {
 
       //$this->completeHeaders();
-      $new_row      = new HTMLTable_Row($this);
+      $new_row      = new HTMLTableRow($this);
       $this->rows[] = $new_row;
       return $new_row;
    }
@@ -155,7 +155,7 @@ class HTMLTable_Group extends HTMLTable_Base {
                }
             }
 
-         } catch (HTMLTable_UnknownHeadersOrder $e) {
+         } catch (HTMLTableUnknownHeadersOrder $e) {
             $this->ordered_headers[] = $super_header;
          }
       }
@@ -203,7 +203,7 @@ class HTMLTable_Group extends HTMLTable_Base {
 
          echo "\t<tbody><tr>\n";
          foreach ($this->ordered_headers as $header) {
-            if ($header instanceof HTMLTable_SubHeader) {
+            if ($header instanceof HTMLTableSubHeader) {
                $header->updateColSpan($header->numberOfSubHeaders);
                $with_content = true;
             } else {
@@ -246,7 +246,7 @@ class HTMLTable_Group extends HTMLTable_Base {
    function getSuperHeaderByName($name) {
       try {
          return $this->getHeaderByName($name, '');
-      } catch (HTMLTable_UnknownHeader $e) {
+      } catch (HTMLTableUnknownHeader $e) {
          return $this->table->getSuperHeaderByName($name);
       }
    }
