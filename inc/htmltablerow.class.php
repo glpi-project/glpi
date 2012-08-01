@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * @since version 0.84
 **/
-class HTMLTable_Row extends HTMLTable_Entity {
+class HTMLTableRow extends HTMLTableEntity {
 
    private $group;
    private $empty              = true;
@@ -83,12 +83,12 @@ class HTMLTable_Row extends HTMLTable_Entity {
 
 
    /**
-    * @param $header    HTMLTable_Header object
+    * @param $header    HTMLTableHeader object
     * @param $content
-    * @param $father    HTMLTable_Cell object (default NULL)
+    * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father=NULL,
+   function addCell(HTMLTableHeader $header, $content, HTMLTableCell $father=NULL,
                     CommonDBTM $item=NULL) {
 
       if (!$this->group->haveHeader($header)) {
@@ -100,7 +100,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
          $this->cells[$header_name] = array();
       }
 
-      $cell = new HTMLTable_Cell($this, $header, $content, $father, $item);
+      $cell = new HTMLTableCell($this, $header, $content, $father, $item);
       $this->cells[$header_name][] = $cell;
       $this->empty = false;
       return $cell;
@@ -142,7 +142,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
             // Only do this for cells that don't have father: they will propagate this to there sons
             if (is_null($header->getFather())) {
 
-               HTMLTable_Cell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
+               HTMLTableCell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
 
                $start = 0;
                foreach ($cellsOfHeader as $cell) {

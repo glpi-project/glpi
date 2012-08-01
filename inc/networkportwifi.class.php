@@ -89,13 +89,13 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    /**
-    * @param $group              HTMLTable_Group object
-    * @param $super              HTMLTable_SuperHeader object
+    * @param $group              HTMLTableGroup object
+    * @param $super              HTMLTableSuperHeader object
     * @param $options   array
    **/
-   function getInstantiationHTMLTable_Headers(HTMLTable_Group $group, HTMLTable_SuperHeader $super,
-                                              HTMLTable_SuperHeader $internet_super = NULL,
-                                              HTMLTable_Header $father=NULL,
+   function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
+                                              HTMLTableSuperHeader $internet_super = NULL,
+                                              HTMLTableHeader $father=NULL,
                                               array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, NULL, $options);
@@ -104,17 +104,17 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $group->addHeader('Mode', __('Wifi mode'), $super);
       $group->addHeader('Version', __('Wifi protocol version'), $super);
 
-      parent::getInstantiationHTMLTable_Headers($group, $super, $internet_super, $father, $options);
+      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
 
       return NULL;
    }
 
 
    /**
-    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
-   function getInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
-                                       HTMLTable_Cell $father=NULL, array $options=array()) {
+   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                       HTMLTableCell $father=NULL, array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
@@ -126,7 +126,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
 
-      parent::getInstantiationHTMLTable_($netport, $row, $father, $options);
+      parent::getInstantiationHTMLTable($netport, $row, $father, $options);
 
       return NULL;
    }

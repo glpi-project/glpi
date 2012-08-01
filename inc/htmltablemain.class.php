@@ -41,29 +41,29 @@ if (!defined('GLPI_ROOT')) {
 /// Create a smart HTML table. The table allows cells to depend on other ones. As such, it is
 /// possible to have rowspan for cells that are "father" of other ones. If a "father" has several
 /// sons, then, it "rowspans" on all.
-/// The table integrates the notion of group of rows (HTMLTable_Group). For instance, for
+/// The table integrates the notion of group of rows (HTMLTableGroup). For instance, for
 /// Computer_Device, each group represents a kind of device (network card, graphique card,
 /// processor, memory, ...).
-/// There is HTMLTable_SuperHeader that defines global headers for all groups. Each group can cut
-/// these HTMLTable_SuperHeader as many HTMLTable_SubHeader as necessary. There is an automatic
+/// There is HTMLTableSuperHeader that defines global headers for all groups. Each group can cut
+/// these HTMLTableSuperHeader as many HTMLTableSubHeader as necessary. There is an automatic
 /// organisation of the headers between groups.
 ///
 /// The (strict) order of definition of the table is:
-///    * Define all HTMLTable_SuperHeader that are used by each group: HTMLTable_::addHeader()
-///    * Define one HTMLTable_Group: HTMLTable_::createGroup()
-///      * Define all HTMLTable_SubHeader depending of previously defined HTMLTable_SuperHeader
-///                                       for the given group: HTMLTable_Group::addHeader()
-///      * Create all HTMLTable_Row for the given group: HTMLTable_Group::createRow()
-///          * Create all HTMLTable_Cell for the given row : HTMLTable_Row::addCell()
+///    * Define all HTMLTableSuperHeader that are used by each group: HTMLTableMain::addHeader()
+///    * Define one HTMLTableGroup: HTMLTableMain::createGroup()
+///      * Define all HTMLTableSubHeader depending of previously defined HTMLTableSuperHeader
+///                                       for the given group: HTMLTableGroup::addHeader()
+///      * Create all HTMLTableRow for the given group: HTMLTableGroup::createRow()
+///          * Create all HTMLTableCell for the given row : HTMLTableRow::addCell()
 /// and so on for each group.
-/// When done, call HTMLTable_::display() to render the table.
+/// When done, call HTMLTableMain::display() to render the table.
 ///
 /// A column that don't have any content is collapse
 ///
 /// For further explaination, refer to NetworkPort and all its dependencies (NetworkName, IPAddress,
 /// IPNetwork, ...) or Computer_Device and each kind of device.
 /// @since 0.84
-class HTMLTable_ extends HTMLTable_Base {
+class HTMLTableMain extends HTMLTableBase {
 
 
    private $groups = array();
@@ -96,8 +96,8 @@ class HTMLTable_ extends HTMLTable_Base {
 
    /**
     * @param $name      string   The name of the group, to be able to retrieve the group
-    *                            later with HTMLTable_::getHeaderByName()
-    * @param $content            (@see inc/HTMLTable_Entity::content)
+    *                            later with HTMLTableMain::getHeaderByName()
+    * @param $content            (@see inc/HTMLTableEntity::content)
     *                             The title of the group : display before the group itself
     *
     * TODO : study to be sure that the order is the one we have defined ...
@@ -108,7 +108,7 @@ class HTMLTable_ extends HTMLTable_Base {
 
       if (!empty($name)) {
          if (!isset($this->groups[$name])) {
-            $this->groups[$name] = new HTMLTable_Group($this, $name, $content);
+            $this->groups[$name] = new HTMLTableGroup($this, $name, $content);
          }
       }
       return $this->getGroup($name);

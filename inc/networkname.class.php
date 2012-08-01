@@ -463,14 +463,14 @@ class NetworkName extends FQDNLabel {
     * @since version 0.84
     *
     * @param $itemtype
-    * @param $base            HTMLTable_Base object
-    * @param $super           HTMLTable_SuperHeader object (default NULL
-    * @param $father          HTMLTable_Header object (default NULL)
+    * @param $base            HTMLTableBase object
+    * @param $super           HTMLTableSuperHeader object (default NULL
+    * @param $father          HTMLTableHeader object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                      HTMLTable_SuperHeader $super=NULL,
-                                      HTMLTable_Header $father=NULL, array $options=array()) {
+   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
+                                      HTMLTableSuperHeader $super=NULL,
+                                      HTMLTableHeader $father=NULL, array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -494,13 +494,13 @@ class NetworkName extends FQDNLabel {
    /**
     * @since version 0.84
     *
-    * @param $row             HTMLTable_Row object
+    * @param $row             HTMLTableRow object
     * @param $item            CommonDBTM object (default NULL)
-    * @param $father          HTMLTable_Cell object (default NULL)
+    * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTable_Cell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                            HTMLTableCell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -671,7 +671,7 @@ class NetworkName extends FQDNLabel {
 
       $table_options['canedit']  = $canedit;
 
-      $table                     = new HTMLTable_();
+      $table                     = new HTMLTableMain();
       $column                    = $table->addHeader('Internet', self::getTypeName(2));
       $t_group                   = $table->createGroup('Main', '');
 

@@ -38,10 +38,10 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * Only an HTMLTable_ can create an HTMLTable_SuperHeader.
+ * Only an HTMLTableMain can create an HTMLTableSuperHeader.
  * @since version 0.84
 **/
-class HTMLTable_SuperHeader extends HTMLTable_Header {
+class HTMLTableSuperHeader extends HTMLTableHeader {
 
    /// The headers of each column
    private $headerSets = array();
@@ -50,12 +50,12 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
 
 
    /**
-    * @param $table              HTMLTable_ object: table owning the current header
+    * @param $table              HTMLTableMain object: table owning the current header
     * @param $name      string   the name of the header
-    * @param $content            see inc/HTMLTable_Entity#__construct()
-    * @param $father             HTMLTable_SuperHeader objet (default NULL)
+    * @param $content            see inc/HTMLTableEntity#__construct()
+    * @param $father             HTMLTableSuperHeader objet (default NULL)
    **/
-   function __construct(HTMLTable_ $table, $name, $content, HTMLTable_SuperHeader $father=NULL) {
+   function __construct(HTMLTableMain $table, $name, $content, HTMLTableSuperHeader $father=NULL) {
 
       $this->table = $table;
       parent::__construct($name, $content, $father);
@@ -92,7 +92,7 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
 
 
    /**
-    * @see inc/HTMLTable_Header::getHeaderAndSubHeaderName()
+    * @see inc/HTMLTableHeader::getHeaderAndSubHeaderName()
    **/
    function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
 

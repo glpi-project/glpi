@@ -143,17 +143,17 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Get HTMLTable columns headers for a given item type
     * Beware : the internet informations are "sons" of each instantiation ...
     *
-    * @param $group           HTMLTable_Group object
-    * @param $super           HTMLTable_SuperHeader object
-    * @param $internet_super  HTMLTable_SuperHeader object for the internet sub part
+    * @param $group           HTMLTableGroup object
+    * @param $super           HTMLTableSuperHeader object
+    * @param $internet_super  HTMLTableSuperHeader object for the internet sub part
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the columns that must not be display
     *
     * @return the father group for the Internet Informations ...
    **/
-   function getInstantiationHTMLTable_Headers(HTMLTable_Group $group, HTMLTable_SuperHeader $super,
-                                              HTMLTable_SuperHeader $internet_super = NULL,
-                                              HTMLTable_Header $father=NULL,
+   function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
+                                              HTMLTableSuperHeader $internet_super = NULL,
+                                              HTMLTableHeader $father=NULL,
                                               array $options=array()) {
 
       $display_options = &$options['display_options'];
@@ -183,16 +183,16 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Get HTMLTable row for a given item
     *
     * @param $netport         NetworkPort object (contains item)
-    * @param $row             HTMLTable_Row object
-    * @param $father          HTMLTable_Header object (default NULL)
+    * @param $row             HTMLTableRow object
+    * @param $father          HTMLTableHeader object (default NULL)
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
     *
     * @return the father cell for the Internet Informations ...
    **/
-   function getInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
-                                       HTMLTable_Cell $father=NULL, array $options=array()) {
+   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                       HTMLTableCell $father=NULL, array $options=array()) {
 
       global $DB;
 

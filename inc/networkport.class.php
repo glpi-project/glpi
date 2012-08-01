@@ -589,7 +589,7 @@ class NetworkPort extends CommonDBChild {
       $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
 
 
-      $table           = new HTMLTable_();
+      $table           = new HTMLTableMain();
       $number_port     = self::countForItem($item);
       $table_options   = array('canedit'              => $canedit,
                                'display_options'      => &$display_options);
@@ -653,14 +653,14 @@ class NetworkPort extends CommonDBChild {
             $t_group = $table->createGroup('Migration',
                                            __('Network ports waiting for manual migration'));
             if ($display_options['characteristics']) {
-               NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group, $c_instant,
+               NetworkPortMigration::getInstantiationHTMLTableHeaders($t_group, $c_instant,
                                                                        $table_options);
             }
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));
             if ($display_options['characteristics']) {
                $instantiation = new $portType();
-               $instantiation->getInstantiationHTMLTable_Headers($t_group, $c_instant, $c_network,
+               $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
                                                                  NULL, $table_options);
                unset ($instantiation);
             }
@@ -764,7 +764,7 @@ class NetworkPort extends CommonDBChild {
                   if ($display_options['characteristics']) {
                      $instantiation = $netport->getInstantiation();
                      if ($instantiation !== false) {
-                        $instantiation->getInstantiationHTMLTable_($netport, $t_row, NULL,
+                        $instantiation->getInstantiationHTMLTable($netport, $t_row, NULL,
                                                                    $table_options);
                         unset($instantiation);
                      }
