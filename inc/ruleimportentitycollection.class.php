@@ -43,20 +43,6 @@ class RuleImportEntityCollection extends RuleCollection {
    public $right               = 'rule_ocs';
    public $menu_option         = 'ocs';
 
-   // Specific ones
-   ///Store the id of the ocs server
-   var $ocsservers_id;
-
-
-   /**
-    * Constructor
-    *
-    * @param $ocsservers_id ID of the OCS server (default -1)
-   **/
-   function __construct($ocsservers_id=-1) {
-      $this->ocsservers_id = $ocsservers_id;
-   }
-
 
    /**
     * @see inc/RuleCollection::canList()

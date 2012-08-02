@@ -107,52 +107,6 @@ class RuleImportEntity extends Rule {
     * @see inc/Rule::getCriterias()
    **/
    function getCriterias() {
-
-      $criterias                                = array();
-/*
-      $criterias['TAG']['table']                = 'accountinfo';
-      $criterias['TAG']['field']                = 'TAG';
-      $criterias['TAG']['name']                 = __('OCSNG TAG');
-      $criterias['TAG']['linkfield']            = 'HARDWARE_ID';
-
-      $criterias['DOMAIN']['table']             = 'hardware';
-      $criterias['DOMAIN']['field']             = 'WORKGROUP';
-      $criterias['DOMAIN']['name']              = __('Domain');
-      $criterias['DOMAIN']['linkfield']         = '';
-
-      $criterias['OCS_SERVER']['table']         = 'glpi_ocsservers';
-      $criterias['OCS_SERVER']['field']         = 'name';
-      $criterias['OCS_SERVER']['name']          = _n('OCSNG server', 'OCSNG servers', 1);
-      $criterias['OCS_SERVER']['linkfield']     = '';
-      $criterias['OCS_SERVER']['type']          = 'dropdown';
-      $criterias['OCS_SERVER']['virtual']       = true;
-      $criterias['OCS_SERVER']['id']            = 'ocs_server';
-
-      $criterias['IPSUBNET']['table']           = 'networks';
-      $criterias['IPSUBNET']['field']           = 'IPSUBNET';
-      $criterias['IPSUBNET']['name']            = __('Subnet');
-      $criterias['IPSUBNET']['linkfield']       = 'HARDWARE_ID';
-
-      $criterias['IPADDRESS']['table']          = 'networks';
-      $criterias['IPADDRESS']['field']          = 'IPADDRESS';
-      $criterias['IPADDRESS']['name']           = __('IP address');
-      $criterias['IPADDRESS']['linkfield']      = 'HARDWARE_ID';
-
-      $criterias['MACHINE_NAME']['table']       = 'hardware';
-      $criterias['MACHINE_NAME']['field']       = 'NAME';
-      $criterias['MACHINE_NAME']['name']        = __("Computer's name");
-      $criterias['MACHINE_NAME']['linkfield']   = '';
-
-      $criterias['DESCRIPTION']['table']        = 'hardware';
-      $criterias['DESCRIPTION']['field']        = 'DESCRIPTION';
-      $criterias['DESCRIPTION']['name']         = __('Description');
-      $criterias['DESCRIPTION']['linkfield']    = '';
-
-      $criterias['SSN']['table']                = 'bios';
-      $criterias['SSN']['field']                = 'SSN';
-      $criterias['SSN']['name']                 = __('Serial number');
-      $criterias['SSN']['linkfield']            = 'HARDWARE_ID';
-*/
       $criterias['_source']['table']            = '';
       $criterias['_source']['field']            = '_source';
       $criterias['_source']['name']             = __('Source');
@@ -211,10 +165,6 @@ class RuleImportEntity extends Rule {
       $actions['locations_id']['name']                   = __('Location');
       $actions['locations_id']['type']                   = 'dropdown';
       $actions['locations_id']['table']                  = 'glpi_locations';
-
-      $actions['_affect_entity_by_tag']['name']          = __('Entity from TAG');
-      $actions['_affect_entity_by_tag']['type']          = 'text';
-      $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
       $actions['_ignore_ocs_import']['name']             = __('To be unaware of import');
       $actions['_ignore_ocs_import']['type']             = 'yesonly';
