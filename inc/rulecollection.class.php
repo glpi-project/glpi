@@ -668,7 +668,9 @@ class RuleCollection extends CommonDBTM {
       $this->getCollectionDatas(1,1);
       $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
       $output["_no_rule_matches"] = true;
-
+      //Store rule type being processed (for plugins)
+      $params['rule_itemtype']    = $this->getRuleClassName();
+      
       if (count($this->RuleList->list)) {
          foreach ($this->RuleList->list as $rule) {
             //If the rule is active, process it

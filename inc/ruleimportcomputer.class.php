@@ -91,16 +91,7 @@ class RuleImportComputer extends Rule {
       //Means that this criterion can only be used in a global search query
       $criterias['states_id']['is_global']       = true;
       $criterias['states_id']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
-// TODO OCS
-/*
-      $criterias['ocsservers_id']['table']       = 'glpi_ocsservers';
-      $criterias['ocsservers_id']['field']       = 'name';
-      $criterias['ocsservers_id']['name']        = _n('OCSNG server', 'OCSNG servers', 1);
-      $criterias['ocsservers_id']['linkfield']   = '';
-      $criterias['ocsservers_id']['type']        = 'dropdown';
 
-      $criterias['TAG']['name']                  = __('OCSNG TAG');
-*/
       $criterias['DOMAIN']['name']               = __('Domain');
 
       $criterias['IPSUBNET']['name']             = __('Subnet');
@@ -418,7 +409,6 @@ class RuleImportComputer extends Rule {
 
    }
 
-
    /**
     * Execute the actions as defined in the rule
     *
@@ -433,32 +423,14 @@ class RuleImportComputer extends Rule {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
-            if ($action->fields['field'] == '_fusion') {
-               if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_IMPORT) {
-                  if (isset($this->criterias_results['found_computers'])) {
-                     $output['found_computers'] = $this->criterias_results['found_computers'];
-                     $output['action']          = OcsServer::LINK_RESULT_LINK;
-                  } else {
-                     $output['action'] = OcsServer::LINK_RESULT_IMPORT;
-                  }
-
-               } else if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_NO_IMPORT) {
-                  if (isset($this->criterias_results['found_computers'])) {
-                     $output['found_computers'] = $this->criterias_results['found_computers'];
-                     $output['action']          = OcsServer::LINK_RESULT_LINK;
-                  } else {
-                     $output['action'] = OcsServer::LINK_RESULT_NO_IMPORT;
-                  }
-               }
-
-            } else {
-               $output['action'] = OcsServer::LINK_RESULT_NO_IMPORT;
+            $ruleoutput = self::executePluginsActions($action, $output, $params);
+            foreach ($ruleoutput as $key => $value) {
+               $output[$key] = $value;
             }
          }
       }
       return $output;
    }
-
 
    /**
     * Function used to display type specific criterias during rule's preview

@@ -199,7 +199,7 @@ class RuleCriteria extends CommonDBChild {
             if (isset($values['rules_id'])
               && !empty($values['rules_id'])
               && $generic_rule->getFromDB($values['rules_id'])) {
-               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) { 
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   /// TODO : manage display param to this function : need to send ot to all under functions
                   $rule->displayCriteriaSelectPattern($name, $values["criteria"], $values["condition"], $values[$field]);
                }

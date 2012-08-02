@@ -1104,6 +1104,27 @@ class Rule extends CommonDBTM {
    }
    
    /**
+    *
+    * Execute plugins actions if needed
+    * @since 0.84
+    * @param $output rule execution output
+    * @param $params parameters
+    *
+    * @return output parameters array updated
+    */
+   static function executePluginsActions($action, $output, $params) {
+      global $PLUGIN_HOOKS;
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $output = Plugin::doOneHook($plugin, "executeActions",
+                                         array('output' => $output, 'params' => $params,
+                                                'action' => $action));
+         }
+      }
+      return $output;
+   }
+   
+   /**
     * Execute the actions as defined in the rule
     *
     * @param $output the fields to manipulate
@@ -1138,6 +1159,11 @@ class Rule extends CommonDBTM {
                      $res .= $action->fields["value"];
                   }
                   $output[$action->fields["field"]] = $res;
+                  break;
+                  
+               default:
+                  //plugins actions
+                  $ouput = self::executePluginsActions($action, $output, $params);
                   break;
             }
          }
