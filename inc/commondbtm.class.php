@@ -517,21 +517,23 @@ class CommonDBTM extends CommonGLPI {
 
                $itemtype = getItemTypeForTable($tablename);
 
+               // Code factorization : we transform the singleton to an array
                if (!is_array($field)) {
-                  foreach ($DB->request($tablename, array($field => $this->fields['id'])) as $data) {
+                  $field = array($field);
+               }
+
+               foreach ($field as $f) {
+                  foreach ($DB->request($tablename, array($f => $this->getID())) as $data) {
+                     // Be carefull : we must use getIndexName because self::update rely on that !
                      if ($object = getItemForItemtype($itemtype)) {
-                        $object->update(array('id'            => $data['id'],
-                                              $field          => $newval,
-                                              '_disablenotif' => true)); // Disable notifs
-                     }
-                  }
-               } else {
-                  foreach ($field as $f) {
-                     foreach ($DB->request($tablename, array($f => $this->fields['id'])) as $data) {
-                        if ($object = getItemForItemtype($itemtype)) {
-                           $object->update(array('id'             => $data['id'],
-                                                  $f              => $newval,
-                                                  '_disablenotif' => true)); // Disable notifs
+                        $idName = $object->getIndexName();
+                        // And we must ensure that the index name is not the same as the field
+                        // we try to modify. Otherwise we will loose this element because all
+                        // will be set to $newval ...
+                        if ($idName != $f) {
+                           $object->update(array($idName          => $data[$idName],
+                                                 $f               => $newval,
+                                                 '_disablenotif'  => true)); // Disable notifs
                         }
                      }
                   }
