@@ -59,7 +59,7 @@ class Group extends CommonTreeDropdown {
    function canManageUsersItem() {
       return ($this->can($this->getID(), 'r') && $this->canUpdate());
    }
-   
+
    function post_getEmpty () {
 
       $this->fields['is_requester'] = 1;
@@ -314,7 +314,7 @@ class Group extends CommonTreeDropdown {
       switch ($input['action']) {
          case "add_user_group" :
          case "add_supervisor_group" :
-         case "add_delegatee_group" :         
+         case "add_delegatee_group" :
             $gu = new Group_User();
             return $gu->showSpecificMassiveActionsParameters($input);
          break;
@@ -325,7 +325,7 @@ class Group extends CommonTreeDropdown {
 
       }
       return false;
-   }   
+   }
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -342,7 +342,7 @@ class Group extends CommonTreeDropdown {
       }
       return $res;
    }
-   
+
    function getSearchOptions() {
 
       $tab = parent::getSearchOptions();
@@ -423,7 +423,7 @@ class Group extends CommonTreeDropdown {
    function showLDAPForm($ID) {
       $options = array();
       $this->initForm($ID, $options);
-      
+
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".
              $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
@@ -568,6 +568,8 @@ class Group extends CommonTreeDropdown {
    function showItems($tech) {
       global $DB, $CFG_GLPI;
 
+      $rand = mt_rand();
+
       $ID = $this->fields['id'];
       if ($tech) {
          $types = $CFG_GLPI['linkgroup_tech_types'];
@@ -621,7 +623,7 @@ class Group extends CommonTreeDropdown {
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
       $nbcan  = 0;
 
-      echo "<form name='group_form' id='group_form_$field' method='post' action='".
+      echo "<form name='group_form' id='group_form_$field$rand' method='post' action='".
              $this->getFormURL()."'>";
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
@@ -671,7 +673,7 @@ class Group extends CommonTreeDropdown {
       }
 
       if ($nbcan) {
-         Html::openArrowMassives("group_form_$field", true);
+         Html::openArrowMassives("group_form_$field$rand", true);
          echo __('Group')."&nbsp;";
          echo "<input type='hidden' name='field' value='$field'>";
          self::dropdown(array('entity'    => $this->fields["entities_id"],
