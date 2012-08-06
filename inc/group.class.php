@@ -361,7 +361,7 @@ class Group extends CommonTreeDropdown {
       $tab[70]['name']  = $LANG['common'][64];
       $tab[70]['itemlink_type'] = 'User';
       $tab[70]['forcegroupby']  = true;
-      $tab[70]['massiveaction'] = false;     
+      $tab[70]['massiveaction'] = false;
       $tab[70]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
@@ -537,6 +537,8 @@ class Group extends CommonTreeDropdown {
    function showItems($tech) {
       global $DB, $CFG_GLPI, $LANG;
 
+      $rand = mt_rand();
+
       $ID = $this->fields['id'];
       if ($tech) {
          $types = $CFG_GLPI['linkgroup_tech_types'];
@@ -589,7 +591,7 @@ class Group extends CommonTreeDropdown {
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
       $nbcan  = 0;
 
-      echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
+      echo "<form name='group_form' id='group_form_$field$rand' method='post' action='".$this->getFormURL()."'>";
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
 
@@ -636,7 +638,7 @@ class Group extends CommonTreeDropdown {
       }
 
       if ($nbcan) {
-         Html::openArrowMassives("group_form_$field", true);
+         Html::openArrowMassives("group_form_$field$rand", true);
          echo $LANG['common'][35]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='field' value='$field'>";
          Dropdown::show('Group', array('entity'    => $this->fields["entities_id"],
