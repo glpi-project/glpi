@@ -60,7 +60,7 @@ class Dropdown {
     *    - displaywith : array / array of field to display with request
     *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
-    *    - display    : boolean / display or get string (default true)    
+    *    - display    : boolean / display or get string (default true)
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -91,7 +91,7 @@ class Dropdown {
       //Display emptychoice ?
       $params['display_emptychoice'] = ($itemtype != 'Entity');
       $params['display']        = true;
-      
+
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -100,7 +100,7 @@ class Dropdown {
       }
 
       $output = '';
-      
+
       $name         = $params['emptylabel'];
       $comment      = "";
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
@@ -1063,7 +1063,7 @@ class Dropdown {
       $options = array();
       $options['checkright'] = $checkright;
       $options['name'] = $itemtypename;
-      
+
       $rand = self::showItemType($types, $options);
       if ($rand) {
          $params = array('idtable'          => '__VALUE__',
@@ -1124,8 +1124,8 @@ class Dropdown {
          }
       }
 
-      
-   
+
+
 // $value, $min=0, $max=100, $step=1, $toadd=array(),
       $out = "<select name='$myname' id='$myname".$params['rand']."'>\n";
 
@@ -1191,7 +1191,7 @@ class Dropdown {
             return sprintf(__('%1$s %2$s'), $value, $unit);
       }
    }
-   
+
    /**
     * Dropdown integers
     *
@@ -1477,7 +1477,7 @@ class Dropdown {
                $output .= $elements[$value]." ";
             }
          }
-         
+
       } else {
 
          $field_id = "dropdown_".$name.$param['rand'];
@@ -1631,10 +1631,10 @@ class Dropdown {
     * @param $itemtype        string   name of the class
     * @param $value           string   Value of the new dropdown. (need to be addslashes)
     * @param $entities_id     integer  entity in case of specific dropdown (default -1)
-    * @param $external_params array (need to be addslashes)
+    * @param $external_params array    (need to be addslashes)
     * @param $comment                  (default '') (need to be addslashes)
-    * @param $add             if true, add it if not found. if false, just check if exists
-    *                         (true by default)
+    * @param $add                      if true, add it if not found. if false, just check if exists
+    *                                  (true by default)
     *
     * @return integer : dropdown id.
    **/

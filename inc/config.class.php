@@ -1411,7 +1411,7 @@ class Config extends CommonDBTM {
          $item->computePreferences();
          $config->showFormUserPrefs($item->fields);
 
-      } else if($item->getType() == __CLASS__) {
+      } else if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
                $item->showFormDisplay();

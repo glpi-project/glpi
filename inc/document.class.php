@@ -663,7 +663,7 @@ class Document extends CommonDBTM {
 
       return $tab;
    }
-   
+
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -679,10 +679,10 @@ class Document extends CommonDBTM {
       }
       return $actions;
    }
-   
+
    function showSpecificMassiveActionsParameters($input = array()) {
       global $CFG_GLPI;
-      
+
       switch ($input['action']) {
          case "add_document_item" :
             Dropdown::showAllItems("items_id", 0, 0, 1,
@@ -706,7 +706,7 @@ class Document extends CommonDBTM {
       }
       return false;
    }
-   
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -721,7 +721,7 @@ class Document extends CommonDBTM {
                   $input2 = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'documents_id' => $key);
-               } elseif (isset($input['documents_id'])) { // Add document to item
+               } else if (isset($input['documents_id'])) { // Add document to item
                   $input2 = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $key,
                                  'documents_id' => $input['documents_id']);
@@ -790,8 +790,8 @@ class Document extends CommonDBTM {
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
-   }   
-   
+   }
+
    function getSearchOptions() {
 
       $tab                       = array();
