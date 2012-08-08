@@ -71,7 +71,7 @@ abstract class FQDNLabel extends CommonDBChild {
 
    /**
     * \brief Check FQDN label
-    * Check a label regarding section 6.1.3.5 of RFC 1123 : 63 lengths and no other characters
+    * Check a label regarding section 2.1 of RFC 1123 : 63 lengths and no other characters
     * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
     *
     * @param $label        the label to check
