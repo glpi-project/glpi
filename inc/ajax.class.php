@@ -50,7 +50,6 @@ class Ajax {
     *          - modal : is a modal window ? (default true)
     *          - container : specify a html element to render (default empty to html.body)
     *          - title : window title (default empty)
-    *
    **/
    static function createModalWindow($name, $url, $options=array() ) {
 
@@ -86,27 +85,26 @@ class Ajax {
             echo ", params: '".Toolbox::append_params($param['extraparams'])."'";
          }
          echo "},";
-         
+
      echo " }); ";
       echo "</script>";
    }
 
+
    /**
-    * Create modal window
+    * Create fixed modal window
     * After display it using $name.show()
     * May be constraint to a predefined html item setting container options
     *
     * @since version 0.84
     *
     * @param $name            name of the js object
-    * @param $url             URL to display in modal
     * @param $options array   of possible options:
     *          - width (default 800)
     *          - height (default 400)
     *          - modal : is a modal window ? (default true)
     *          - container : specify a html element to render (default empty to html.body)
     *          - title : window title (default empty)
-    *
    **/
    static function createFixedModalWindow($name, $options=array() ) {
 
@@ -136,7 +134,8 @@ class Ajax {
          }); ";
       echo "</script>";
    }
-   
+
+
    /**
     * Call from a popup Windows, refresh the dropdown in main window
    **/
@@ -201,7 +200,7 @@ class Ajax {
       return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
              "\" type='text' ondblclick=\"this.value='".
              $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
-   }   
+   }
 
    /**
     *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
@@ -325,7 +324,7 @@ class Ajax {
     * @param $events       array of the observed events (default 'change')
     * @param $minsize            minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
-    * @param $display            boolean : display or get string (default true)    
+    * @param $display            boolean : display or get string (default true)
    **/
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
                                      $events=array("change"), $minsize = -1,
@@ -366,7 +365,7 @@ class Ajax {
     * @param $parameters   array of parameters to send to ajax URL
     * @param $minsize            minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
-    * @param $display            boolean : display or get string (default true)    
+    * @param $display            boolean : display or get string (default true)
     *
    **/
    static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
@@ -396,7 +395,7 @@ class Ajax {
     * @param $events       array of the observed events (default 'change')
     * @param $minsize            minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
-    * @param $display            boolean : display or get string (default true)    
+    * @param $display            boolean : display or get string (default true)
    **/
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
                                            $events=array("change"), $minsize = -1,
@@ -499,7 +498,7 @@ class Ajax {
     * @param $parameters   array of parameters to send to ajax URL
     * @param $toobserve          id of another item used to get value in case of __VALUE__ used
     *                      array of id to get value in case of __VALUE#__ used (default '')
-    * @param $display            boolean : display or get string (default true)    
+    * @param $display            boolean : display or get string (default true)
    **/
    static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="", $display = true) {
 
@@ -557,7 +556,7 @@ class Ajax {
     * @param $default            Default datas to print in case of $use_ajax (default '&nbsp;')
     * @param $rand               Random parameter used (default 0)
     * @param $display            boolean : display or get string (default true)
-    
+
    **/
    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0, $display = true) {
       global $CFG_GLPI, $DB;
@@ -585,7 +584,7 @@ class Ajax {
          include (GLPI_ROOT.$relativeurl);
          $locoutput .= ob_get_contents();
          ob_end_clean();
-         
+
          // Restore $_POST datas
          if (count($oldpost)) {
             $_POST = $oldpost;
@@ -634,7 +633,7 @@ class Ajax {
          echo $output;
       } else {
          return $output;
-      }      
+      }
    }
 
 }
