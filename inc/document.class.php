@@ -647,6 +647,10 @@ class Document extends CommonDBTM {
       return false;
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    static function getSearchOptionsToAdd() {
 
       $tab                       = array();
@@ -664,7 +668,12 @@ class Document extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -673,14 +682,18 @@ class Document extends CommonDBTM {
          $actions['remove_document_item'] = _x('button', 'Remove an item');
       }
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
 
       switch ($input['action']) {
@@ -690,7 +703,6 @@ class Document extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Add')."'>";
             return true;
-            break;
 
          case "remove_document_item" :
             Dropdown::showAllItems("items_id", 0, 0, 1,
@@ -698,19 +710,23 @@ class Document extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Delete')."'>";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-               break;
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "add_document" :
          case "add_document_item" :
@@ -719,15 +735,16 @@ class Document extends CommonDBTM {
                if (isset($input['items_id'])) {
                   // Add items to documents
                   $input2 = array('itemtype'     => $input["item_itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'documents_id' => $key);
+                                  'items_id'     => $input["items_id"],
+                                  'documents_id' => $key);
                } else if (isset($input['documents_id'])) { // Add document to item
                   $input2 = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'documents_id' => $input['documents_id']);
+                                  'items_id'     => $key,
+                                  'documents_id' => $input['documents_id']);
                } else {
                   return false;
                }
+
                if ($documentitem->can(-1, 'w', $input2)) {
                   if ($documentitem->add($input2)) {
                      $res['ok']++;
@@ -746,14 +763,13 @@ class Document extends CommonDBTM {
                if (isset($input['items_id'])) {
                   // Remove item to documents
                   $input2 = array('itemtype'     => $input["item_itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'documents_id' => $key);
+                                  'items_id'     => $input["items_id"],
+                                  'documents_id' => $key);
                } else if (isset($input['documents_id'])) {
                   // Remove contract to items
                   $input2 = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'documents_id' => $input['documents_id']);
-
+                                  'items_id'     => $key,
+                                  'documents_id' => $input['documents_id']);
                } else {
                   return false;
                }
@@ -761,7 +777,7 @@ class Document extends CommonDBTM {
                if ($docitem->can(-1, 'w', $input2)) {
                   if ($item = getItemForItemtype($input2["itemtype"])) {
                      if ($item->getFromDB($input2['items_id'])) {
-                        $doc = new Document();
+                        $doc = new self();
                         if ($doc->getFromDB($input2['documents_id'])) {
                            if ($docitem->getFromDBForItems($doc, $item)) {
                               if ($docitem->delete(array('id' => $docitem->getID()))) {
@@ -786,11 +802,13 @@ class Document extends CommonDBTM {
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
+
 
    function getSearchOptions() {
 

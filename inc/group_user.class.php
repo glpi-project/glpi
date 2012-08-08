@@ -445,8 +445,7 @@ class Group_User extends CommonDBRelation{
             echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
          }
          if ($canedit) {
-            $paramsma = array('num_displayed' =>
-                                 min($number-$start, $_SESSION['glpilist_limit']));
+            $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']));
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
 
@@ -500,7 +499,6 @@ class Group_User extends CommonDBRelation{
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
-
             Html::showMassiveActions('Group_User', $paramsma);
             Html::closeForm();
          }
@@ -533,7 +531,7 @@ class Group_User extends CommonDBRelation{
                return true;
             }
             break;
-            
+
          default :
             return parent::showSpecificMassiveActionsParameters($input);
             break;
@@ -541,7 +539,7 @@ class Group_User extends CommonDBRelation{
       }
       return false;
    }
-   
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -610,7 +608,7 @@ class Group_User extends CommonDBRelation{
       }
       return $res;
    }
-   
+
    /**
     * Get search function for the class
     *
@@ -645,7 +643,7 @@ class Group_User extends CommonDBRelation{
       $tab[5]['massiveaction']   = false;
       $tab[5]['datatype']      = 'dropdown';
       $tab[5]['right']         = 'all';
-      
+
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'is_manager';

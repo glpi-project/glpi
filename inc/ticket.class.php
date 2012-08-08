@@ -72,7 +72,7 @@ class Ticket extends CommonITILObject {
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();
-      
+
       if (!Session::haveRight('update_ticket', 1)) {
          $forbidden[] = 'update';
       }
@@ -84,7 +84,7 @@ class Ticket extends CommonITILObject {
 
       return $forbidden;
    }
-   
+
    /**
     * Name of the type
     *
@@ -1049,16 +1049,19 @@ class Ticket extends CommonITILObject {
                         $_SESSION["helpdeskSaved"]['name'] = $input['name'];
                      }
                      // If content is also predefined need to be different from predefined value
-                     if ($key == 'content' && isset($tt->predefined['content'])) {
+                     if (($key == 'content')
+                         && isset($tt->predefined['content'])) {
                         // Clean new lines to be fix encoding
                         if (!isset($input[$key])
-                           || (strcmp(preg_replace("/\r?\n/", "", Html::cleanPostForTextArea($input[$key])),
-                                      preg_replace("/\r?\n/", "", $tt->predefined['content']))==0)) {
+                           || (strcmp(preg_replace("/\r?\n/", "",
+                                                   Html::cleanPostForTextArea($input[$key])),
+                                      preg_replace("/\r?\n/", "",
+                                                   $tt->predefined['content'])) == 0)) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
 
-                     if (!isset($input[$key]) || empty($input[$key]) ||($input[$key] == 'NULL')) {
+                     if (!isset($input[$key]) || empty($input[$key]) || ($input[$key] == 'NULL')) {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
                   }
@@ -1678,11 +1681,11 @@ class Ticket extends CommonITILObject {
    }
 
 
-   
+
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      
+
       $tmp = new TicketFollowup();
       if ($tmp->canCreate()
             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
@@ -1718,7 +1721,7 @@ class Ticket extends CommonITILObject {
             TicketFollowup::showFormMassiveAction();
             return true;
             break;
-            
+
          case "link_ticket" :
             $rand = Ticket_Ticket::dropdownLinks('link');
             printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
@@ -1739,7 +1742,7 @@ class Ticket extends CommonITILObject {
       }
       return false;
    }
-   
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -1788,7 +1791,7 @@ class Ticket extends CommonITILObject {
                }
             }
             break;
-            
+
          case "add_followup" :
             $fup = new TicketFollowup();
             foreach ($input["item"] as $key => $val) {
@@ -1814,7 +1817,7 @@ class Ticket extends CommonITILObject {
       }
       return $res;
    }
-   
+
    function getSearchOptions() {
 
       $tab                       = array();
@@ -2349,7 +2352,7 @@ class Ticket extends CommonITILObject {
       }
       return $tab;
    }
-   
+
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -2392,7 +2395,7 @@ class Ticket extends CommonITILObject {
                return Dropdown::show($values['itemtype'], $options);
             }
             break;
-            
+
          case 'type':
             $options['value'] = $values[$field];
             return self::dropdownType($name, $options);
@@ -2406,7 +2409,7 @@ class Ticket extends CommonITILObject {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
    /**
     * Dropdown of ticket type
     *
@@ -3530,7 +3533,7 @@ class Ticket extends CommonITILObject {
                   }
                }
             }
-   
+
          } else { // No template load : reset predefined values
             if (count($values['_predefined_fields'])) {
                foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
@@ -3859,7 +3862,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize2%'>";
       echo $tt->getBeginHiddenFieldValue('status');
       if ($canupdate) {
-         self::dropdownStatus(array('value' => $this->fields["status"], 
+         self::dropdownStatus(array('value' => $this->fields["status"],
                                     'showtype' => 'allowed'));
       } else {
          echo self::getStatus($this->fields["status"]);
