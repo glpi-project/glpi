@@ -2425,7 +2425,7 @@ class Html {
     * Display Ajax Footer for debug
    **/
    static function ajaxFooter() {
-      
+
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div class='center' id='debugajax'>";
@@ -2810,7 +2810,7 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
-      
+
       if (!isCommandLine()) {
          echo "</div></div>";
 
@@ -3009,8 +3009,11 @@ class Html {
                action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
    }
 
+
    /**
     * Display massive actions
+    *
+    * @since 0.84 (before Search::displayMassiveActions)
     *
     * @param $itemtype  string itemtype for massive actions
     * @param $options   array    of parameters
@@ -3028,7 +3031,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function showMassiveActions($itemtype, $options = array()) {
+   static function showMassiveActions($itemtype, $options=array()) {
       global $CFG_GLPI;
 
       $p['ontop']          = true;
@@ -3047,8 +3050,8 @@ class Html {
             $p[$key] = $val;
          }
       }
-      $p['extraparams']['itemtype']=$itemtype;
-      $url = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
+      $p['extraparams']['itemtype'] = $itemtype;
+      $url                          = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
       if ($p['is_deleted']) {
          $p['extraparams']['is_deleted'] = 1;
       }
@@ -3064,16 +3067,18 @@ class Html {
       } else {
          $width= '80%';
       }
-      $identifier = md5($url);
 
-      $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
+      $identifier = md5($url);
+      $max        = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
       }
 
-      if ($p['num_displayed'] >= 0
-          && ($max > 0) && ($max < ($p['num_displayed']+10))) {
-         if (!$p['ontop'] || (isset($p['forcecreate']) && $p['forcecreate'])) {
+      if (($p['num_displayed'] >= 0)
+          && ($max > 0)
+          && ($max < ($p['num_displayed']+10))) {
+         if (!$p['ontop']
+             || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
                   "<td><span class='b'>";
             echo __('Selection too large, massive action disabled.')."</span>";
@@ -3084,7 +3089,8 @@ class Html {
          }
       } else {
          // Create Modal window on top
-         if ($p['ontop'] || (isset($p['forcecreate']) && $p['forcecreate'])) {
+         if ($p['ontop']
+             || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<div id='massiveactioncontent$identifier'></div>";
 //             echo "<script type='text/javascript' >\n";
 //             echo "Ext.DomHelper.append(document.body, {tag: 'div', id: 'massiveactioncontent$identifier'});";
@@ -3110,6 +3116,7 @@ class Html {
          echo "</tr></table>";
       }
    }
+
 
    /**
     * Display Date form with calendar
@@ -3138,7 +3145,7 @@ class Html {
     * Display Date form with calendar
     *
     * @param $name      name of the element
-    * @param $options  array of options may be 
+    * @param $options  array of options may be
     *      - value        default value to display (default '')
     *      - maybeempty   may be empty ? (true by default)
     *      - canedit     could not modify element (true by default)
@@ -3255,7 +3262,7 @@ class Html {
                                                      'mintime'    => $minTime,
                                                      'maxtime'    => $maxTime));
    }
-   
+
    /**
     * Display DateTime form with calendar
     *
@@ -3294,7 +3301,7 @@ class Html {
             $p[$key] = $val;
          }
       }
-      
+
       if ($p['timestep'] < 0) {
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
@@ -3311,7 +3318,7 @@ class Html {
       if (!empty($p['value'])) {
          list($date_value, $hour_value) = explode(' ', $p['value']);
       }
-      
+
       if (!empty($p['mintime'])) {
          list($minHour, $minMinute, $minSec) = explode(':', $p['mintime']);
          $minMinute = 0;
@@ -3400,7 +3407,7 @@ class Html {
       });";
       $output .= "</script>\n";
 
-       
+
       if ($p['display']) {
          echo $output;
          return $p['rand'];
@@ -3484,7 +3491,7 @@ class Html {
       $output .= Ajax::updateItem("displaygenericdate$element$rand",
                        $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, '',false);
       $output .= "</td></tr></table>";
-      
+
       if ($p['display']) {
          echo $output;
          return $rand;
@@ -4344,7 +4351,7 @@ class Html {
 
 //       global $SIMPLE_FORMS;
 //       $id = 'minimal_form'.mt_rand();
-// 
+//
 //       $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
 //       if (is_array($fields) && count($fields)) {
 //          foreach ($fields as $name => $value) {
@@ -4352,7 +4359,7 @@ class Html {
 //          }
 //       }
 //       $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btname'>";
-//       
+//
 //       echo "<a href='#' class='vsubmit' class='submit' $btoption
 //             onClick=\"document.$id.submit()\">";
 //       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
@@ -4362,7 +4369,7 @@ class Html {
 //          echo "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
 //       }
 //       echo "</a>";
-// 
+//
 //       $SIMPLE_FORMS .= Html::closeForm(false);
    }
    /**

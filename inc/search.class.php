@@ -910,9 +910,8 @@ class Search {
                    && ($output_type == self::HTML_OUTPUT)) {
                   Html::openMassiveActionsForm('massform'.$itemtype);
                   $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
-                                               'fixed' => false,
-                                               'is_deleted' => $p['is_deleted']
-                                                );
+                                               'fixed'         => false,
+                                               'is_deleted'    => $p['is_deleted']);
                   Html::showMassiveActions($itemtype, $massiveactionparams);
                }
             }
@@ -3536,7 +3535,7 @@ class Search {
                                               $addcondition)";
                   break;
 
-               case 'item_item_revert' : 
+               case 'item_item_revert' :
                   // Item_Item join reverting previous item_item
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$nt`.`id`
@@ -4079,7 +4078,7 @@ class Search {
 //                return $out;
 //             }
 //             return "&nbsp;";
-// 
+//
 //          case "glpi_infocoms.warranty_duration" :
 //             if (!empty($data[$NAME.$num])) {
 //                $split = explode("$$$$", $data[$NAME.$num]);
@@ -4304,7 +4303,7 @@ class Search {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
                }
                $out .= $name."</a>";
-   
+
                $out = sprintf(__('%1$s %2$s'), $out,
                               Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
                                                 array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
@@ -4509,7 +4508,7 @@ class Search {
                   $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0));
                   return Dropdown::getValueWithUnit($number, $unit);
                }
-               
+
 
             case "decimal" :
                if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
@@ -5193,7 +5192,7 @@ class Search {
                                'notequals' => __('is not'),
                                'searchopt' => $searchopt[$field_num]);
                   // No is / isnot if no limits defined
-                  if (!isset($searchopt[$field_num]['min']) 
+                  if (!isset($searchopt[$field_num]['min'])
                      && !isset($searchopt[$field_num]['max'])) {
                      unset($opt['equals']);
                      unset($opt['notequals']);

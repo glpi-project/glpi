@@ -43,7 +43,7 @@ class Profile_User extends CommonDBTM {
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
@@ -149,17 +149,16 @@ class Profile_User extends CommonDBTM {
                 WHERE `glpi_profiles_users`.`users_id` = '$ID'
                 ORDER BY `glpi_profiles`.`name`, `glpi_entities`.`completename`";
       $result = $DB->query($query);
-      $num = $DB->numrows($result);
-      
+      $num    = $DB->numrows($result);
+
       echo "<div class='spaced'>";
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-      
+
       if ($canedit && $num) {
          $paramsma = array('num_displayed' => $num);
-
          Html::showMassiveActions('Profile_User', $paramsma);
       }
-      
+
       if ($num > 0) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr>";
@@ -748,7 +747,7 @@ class Profile_User extends CommonDBTM {
       $tab[5]['massiveaction']   = false;
       $tab[5]['datatype']        = 'dropdown';
       $tab[5]['right']           = 'all';
-      
+
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
