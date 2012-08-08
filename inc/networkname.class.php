@@ -485,6 +485,7 @@ class NetworkName extends FQDNLabel {
          $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
       }
       $name_header = $base->addHeader($column_name, $content, $super, $father);
+      $name_header->setItemType('NetworkName');
 
       NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
       IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);

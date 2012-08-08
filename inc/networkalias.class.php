@@ -187,6 +187,7 @@ class NetworkAlias extends FQDNLabel {
          $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
       }
       $this_header = $base->addHeader($column_name, $content, $super, $father);
+      $this_header->setItemType('NetworkAlias');
    }
 
 
@@ -248,7 +249,7 @@ class NetworkAlias extends FQDNLabel {
                                                $CFG_GLPI["root_doc"] . "/pics/delete.png");
             }
 
-            $row->addCell($header, $content, $father, $item);
+            $row->addCell($header, $content, $father, $alias);
 
          }
       }
