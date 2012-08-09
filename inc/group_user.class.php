@@ -126,13 +126,10 @@ class Group_User extends CommonDBRelation{
       $canedit     = $user->can($ID,'w');
 
       $rand        = mt_rand();
-      $nb_per_line = 3;
       if ($canedit) {
-         $headerspan = $nb_per_line*2;
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'";
          echo " action='".Toolbox::getItemTypeFormURL('User')."'>";
       } else {
-         $headerspan = $nb_per_line;
       }
 
       $groups = self::getUserGroups($ID);
@@ -147,7 +144,7 @@ class Group_User extends CommonDBRelation{
          echo "<div class='firstbloc'>";
 
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='2'>".__('Associate to a group')."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Associate to a group')."</th></tr>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
@@ -166,9 +163,16 @@ class Group_User extends CommonDBRelation{
             Group::dropdown(array('entity'    => $strict_entities,
                                   'used'      => $used,
                                   'condition' => '`is_usergroup`'));
+            echo "</td><td>".__('Manager')."</td><td>";
+            Dropdown::showYesNo('is_manager');
+
+            echo "</td><td>".__('Delegatee')."</td><td>";
+            Dropdown::showYesNo('is_userdelegate');
+
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='submit' name='addgroup' value=\""._sx('button','Add')."\"
                    class='submit'>";
+
          } else {
             _e('None');
          }
@@ -180,13 +184,19 @@ class Group_User extends CommonDBRelation{
 
       echo "<div class='spaced'>";
       if ($canedit && count($used)) {
+         $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
          $paramsma = array('num_displayed' => count($used));
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'><tr>";
-      echo "<th>&nbsp;</th><th>".Group::getTypeName(1)."</th>";
+      if ($canedit) {
+         echo "<th width='10'>";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".Group::getTypeName(1)."</th>";
       echo "<th>".__('Dynamic')."</th>";
       echo "<th>".__('Manager')."</th>";
       echo "<th>".__('Delegatee')."</th></tr>";
@@ -245,7 +255,7 @@ class Group_User extends CommonDBRelation{
 
       } else {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='$headerspan' class='center'>".__('None')."</td></tr>";
+         echo "<td colspan='5' class='center'>".__('None')."</td></tr>";
       }
       echo "</table>";
 
