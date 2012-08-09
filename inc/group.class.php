@@ -623,10 +623,10 @@ class Group extends CommonTreeDropdown {
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
       $nbcan  = 0;
 
-      echo "<form name='group_form' id='group_form_$field$rand' method='post' action='".
-             $this->getFormURL()."'>";
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
+         echo "<form name='group_form' id='group_form_$field$rand' method='post' action='".
+                $this->getFormURL()."'>";
 
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
          echo "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
@@ -685,7 +685,9 @@ class Group extends CommonTreeDropdown {
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
       }
-      Html::closeForm();
+      if ($nb) {
+         Html::closeForm();
+      }
       echo "</div>";
    }
 
