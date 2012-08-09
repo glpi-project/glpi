@@ -510,6 +510,7 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       $tech = (Session::haveRight("global_add_followups", "1")
+               || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
 
@@ -754,7 +755,7 @@ class TicketFollowup  extends CommonDBTM {
       $tab[5]['name']         = __('User');
       $tab[5]['datatype']     = 'dropdown';
       $tab[5]['right']        = 'all';
-      
+
 
       return $tab;
    }
