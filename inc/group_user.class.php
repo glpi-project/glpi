@@ -175,16 +175,24 @@ class Group_User extends CommonDBRelation{
 
          echo "</td></tr>";
          echo "</table></div>";
+         Html::closeForm();
       }
 
       echo "<div class='spaced'>";
+      if ($canedit && count($used)) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
+         $paramsma = array('num_displayed' => count($used));
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
       echo "<table class='tab_cadre_fixehov'><tr>";
-      echo "<th colspan='$headerspan'>".sprintf(__('%1$s (%2$s)'),
-                                                Group::getTypeName(2), __('D=Dynamic')).
-           "</th>";
+      echo "<th>&nbsp;</th><th>".Group::getTypeName(1)."</th>";
+      echo "<th>".__('Dynamic')."</th>";
+      echo "<th>".__('Manager')."</th>";
+      echo "<th>".__('Delegatee')."</th></tr>";
       echo "</tr>";
 
-
+      $group = new Group();
       if (!empty($groups)) {
          Session::initNavigateListItems('Group',
                               //TRANS : %1$s is the itemtype name,
@@ -192,15 +200,12 @@ class Group_User extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $user->getTypeName(1), $user->getName()));
 
-         $i = 0;
          foreach ($groups as $data) {
-            Session::addToNavigateListItems('Group', $data["id"]);
-            if (($i%$nb_per_line) == 0) {
-               if ($i != 0) {
-                  echo "</tr>";
-               }
-               echo "<tr class='tab_bg_1'>";
+            if (!$group->getFromDB($data["id"])) {
+               continue;
             }
+            Session::addToNavigateListItems('Group', $data["id"]);
+            echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {
                echo "<td width='10'>";
@@ -221,18 +226,22 @@ class Group_User extends CommonDBRelation{
             if ($data["is_dynamic"]) {
                $href = sprintf(__('%1$s (%2$s)'), $href, "<span class='b'>".__('D')."</span>");
             }
-            echo "<td>".$href."</td>";
-            $i++;
+            echo "<td>".$group->getLink()."</td>";
+            echo "<td class='center'>";
+            if ($data['is_dynamic']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+            }
+            echo "<td class='center'>";
+            if ($data['is_manager']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+            }
+            echo "</td><td class='center'>";
+            if ($data['is_userdelegate']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+            }
+            echo "</td></tr>";
          }
 
-         while (($i%$nb_per_line) != 0) {
-            if ($canedit) {
-               echo "<td>&nbsp;</td>";
-            }
-            echo "<td>&nbsp;</td>";
-            $i++;
-         }
-         echo "</tr>";
 
       } else {
          echo "<tr class='tab_bg_1'>";
@@ -240,11 +249,9 @@ class Group_User extends CommonDBRelation{
       }
       echo "</table>";
 
-      if ($canedit) {
-         if (count($used)) {
-            Html::openArrowMassives("groupuser_form$rand", true);
-            Html::closeArrowMassives(array('deletegroup' => __('Delete')));
-         }
+      if ($canedit && count($used)) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions('Group_User', $paramsma);
          Html::closeForm();
       }
       echo "</div>";
