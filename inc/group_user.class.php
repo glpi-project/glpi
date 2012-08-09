@@ -477,6 +477,7 @@ class Group_User extends CommonDBRelation{
          if ($tree) {
            echo "<th>".Group::getTypeName(1)."</th>";
          }
+         echo "<th>".__('Dynamic')."</th>";
          echo "<th>".__('Manager')."</th>";
          echo "<th>".__('Delegatee')."</th></tr>";
 
@@ -493,16 +494,16 @@ class Group_User extends CommonDBRelation{
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
                echo "</td>";
             }
-            $link = $user->getLink();
-            if ($data["is_dynamic"]) {
-               $link = sprintf(__('%1$s %2$s'), $link, "<span class='b'>(".__('D').")</span>");
-            }
-            echo "<td>".$link;
+            echo "<td>".$user->getLink();
             if ($tree) {
                echo "</td><td>";
                if ($tmpgrp->getFromDB($data['groups_id'])) {
                   echo $tmpgrp->getLink(true);
                }
+            }
+            echo "</td><td class='center'>";
+            if ($data['is_dynamic']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
             }
             echo "</td><td class='center'>";
             if ($data['is_manager']) {
