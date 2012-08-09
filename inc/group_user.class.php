@@ -120,7 +120,8 @@ class Group_User extends CommonDBRelation{
             }
          }
 
-         if (countElementsInTableForEntity("glpi_groups", $strict_entities) > count($used)) {
+         $nb = countElementsInTableForEntity("glpi_groups", $strict_entities, '`is_usergroup`');
+         if ($nb > count($used)) {
             Dropdown::show('Group', array('entity'    => $strict_entities,
                                           'used'      => $used,
                                           'condition' => '`is_usergroup`'));
