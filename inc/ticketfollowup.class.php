@@ -511,11 +511,9 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       $tech = (Session::haveRight("global_add_followups", "1")
-               // TODO there is no users_id_assign in glpi_tickets
-          //     || $ticket->fields["users_id_assign"] === Session::getLoginUserID()
-          )
+               || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
-                   && $ticket->haveAGroup(CommonITILObject::ASSIGN,$_SESSION['glpigroups']));
+                   && $ticket->haveAGroup(CommonITILObject::ASSIGN,$_SESSION['glpigroups'])));
 
       if ($tech) {
          $this->showFormHeader($options);
