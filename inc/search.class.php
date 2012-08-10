@@ -4793,7 +4793,6 @@ class Search {
                                                              => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
             $search[$itemtype][140]['table']         = 'glpi_problems';
-            //$search[$itemtype][140]['linkfield']     = 'items_id';
             $search[$itemtype][140]['field']         = 'count';
             $search[$itemtype][140]['name']          = $LANG['stats'][15];
             $search[$itemtype][140]['forcegroupby']  = true;
