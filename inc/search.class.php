@@ -2179,9 +2179,6 @@ class Search {
                            / COUNT(`$table$addtable`.`id`)) AS ".$NAME."_".$num.",
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2, ";
 
-         case "glpi_items_problems.count" :
-            return " COUNT(DISTINCT `glpi_items_problems`.`id`) AS ".$NAME."_".$num.", ";
-
          case "glpi_documents_items.count" :
             return " COUNT(DISTINCT `glpi_documents_items`.`id`) AS ".$NAME."_".$num.", ";
 
@@ -2217,6 +2214,7 @@ class Search {
             }
             break;
 
+         case "glpi_problems.count" :
          case "glpi_tickets.count" :
          case "glpi_ticketfollowups.count" :
          case "glpi_tickettasks.count" :
@@ -4240,7 +4238,7 @@ class Search {
                   $out .= "</a>";
                   return $out;
                }
-               
+
                if (!isset($searchopt[$ID]["itemlink_type"])) {
                   $searchopt[$ID]["itemlink_type"] = getItemTypeForTable($searchopt[$ID]["table"]);
                }
@@ -4794,17 +4792,18 @@ class Search {
                                                             'condition'
                                                              => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
-            $search[$itemtype][140]['table']         = 'glpi_items_problems';
+            $search[$itemtype][140]['table']         = 'glpi_problems';
+            //$search[$itemtype][140]['linkfield']     = 'items_id';
             $search[$itemtype][140]['field']         = 'count';
             $search[$itemtype][140]['name']          = $LANG['stats'][15];
             $search[$itemtype][140]['forcegroupby']  = true;
             $search[$itemtype][140]['usehaving']     = true;
             $search[$itemtype][140]['datatype']      = 'number';
             $search[$itemtype][140]['massiveaction'] = false;
-            $search[$itemtype][140]['joinparams']    = array('jointype'  => "itemtype_item",
-                                                            'condition'
-                                                             => getEntitiesRestrictRequest('AND',
-                                                                                           'NEWTABLE'));
+            $search[$itemtype][140]['joinparams']
+               = array('beforejoin' => array('table'      => 'glpi_items_problems',
+                                             'joinparams' => array('jointype' => 'itemtype_item')),
+                       'condition'  => getEntitiesRestrictRequest('AND', 'NEWTABLE'));
 
          }
 
