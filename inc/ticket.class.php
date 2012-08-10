@@ -381,9 +381,9 @@ class Ticket extends CommonITILObject {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (Session::haveRight("show_all_ticket","1")) {
+         $nb    = 0;
+         $title = self::getTypeName(2);
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb    = 0;
-            $title = self::getTypeName(2);
             switch ($item->getType()) {
                case 'Change' :
                   $nb = countElementsInTable('glpi_changes_tickets',
@@ -432,12 +432,13 @@ class Ticket extends CommonITILObject {
                   break;
             }
 
-            // Not for Ticket class
-            if ($item->getType() != __CLASS__) {
-               return self::createTabEntry($title, $nb);
-            }
+         } // glpishow_count_on_tabs
+         // Not for Ticket class
+         if ($item->getType() != __CLASS__) {
+            return self::createTabEntry($title, $nb);
          }
-      }
+      } // show_all_ticket right check
+
       // Not check show_all_ticket for Ticket itself
       switch ($item->getType()) {
          case __CLASS__ :
