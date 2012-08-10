@@ -363,9 +363,9 @@ class Ticket extends CommonITILObject {
       global $LANG;
 
       if (Session::haveRight("show_all_ticket","1")) {
+         $nb    = 0;
+         $title = $LANG['title'][28];
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb    = 0;
-            $title = $LANG['title'][28];
             switch ($item->getType()) {
 //                case 'Change' :
 //                   $nb = countElementsInTable('glpi_changes_tickets',
@@ -413,13 +413,15 @@ class Ticket extends CommonITILObject {
                   }
                   break;
             }
+         } // glpishow_count_on_tabs
 
-            // Not for Ticket class
-            if ($item->getType() != __CLASS__) {
-               return self::createTabEntry($title, $nb);
-            }
+         // Not for Ticket class
+         if ($item->getType() != __CLASS__) {
+            toolbox::logdebug("RETURN1", self::createTabEntry($title, $nb));
+            return self::createTabEntry($title, $nb);
          }
-      }
+      } // show_all_ticket right check
+
       // Not check show_all_ticket for Ticket itself
       switch ($item->getType()) {
          case __CLASS__ :
@@ -3488,7 +3490,7 @@ class Ticket extends CommonITILObject {
                   }
                }
             }
-   
+
          } else { // No template load : reset predefined values
             if (count($values['_predefined_fields'])) {
                foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
