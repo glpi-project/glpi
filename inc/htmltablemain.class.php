@@ -66,7 +66,8 @@ if (!defined('GLPI_ROOT')) {
 class HTMLTableMain extends HTMLTableBase {
 
 
-   private $groups = array();
+   private $groups    = array();
+   private $itemtypes = array();
 
 
    function __construct() {
@@ -114,6 +115,10 @@ class HTMLTableMain extends HTMLTableBase {
       return $this->getGroup($name);
    }
 
+
+   function addItemType($itemtype, $title) {
+      $this->itemtypes[$itemtype] = $title;
+   }
 
    /**
     * Retrieve a group by its name
@@ -196,6 +201,11 @@ class HTMLTableMain extends HTMLTableBase {
       foreach ($this->getHeaders() as $header) {
          $colspan              = $header['']->getColSpan();
          $totalNumberOfColumn += $colspan;
+      }
+
+
+      foreach ($this->itemtypes as $itemtype => $title) {
+         Session::initNavigateListItems($itemtype, $title);
       }
 
       echo "\n<table class='tab_cadre_fixe'";

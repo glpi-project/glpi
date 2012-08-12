@@ -44,7 +44,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
    private $name;
    private $father;
-   private $itemtype;
+   private $itemtypes    = array();
    private $colSpan     = 1;
    private $numberCells = 0;
 
@@ -86,22 +86,29 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
       parent::__construct($content);
 
-      $this->name       = $name;
-      $this->itemtype   = '';
-      $this->father     = $father;
+      $this->name           = $name;
+      $this->father         = $father;
    }
 
 
    /**
-    * @param $itemtype
+    * @param $itemtypes
    **/
-   function setItemType($itemtype) {
-      $this->itemtype = $itemtype;
+   function setItemType($itemtype, $title = '') {
+      $this->itemtypes[$itemtype] = $title;
    }
 
 
-   function getItemType() {
-      return $this->itemtype;
+   function checkItemType(CommonDBTM $item = NULL) {
+      if (($item === NULL) && (count($this->itemtypes) > 0)) {
+         throw new Exception('Implementation error: header requires an item');
+      }
+      if ($item !== NULL) {
+         if (!isset($this->itemtypes[$item->getType()])) {
+            throw new Exception('Implementation error: type mismatch between header and cell');
+         }
+         $this->getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
+      }
    }
 
 
