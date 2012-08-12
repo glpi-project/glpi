@@ -75,7 +75,6 @@ class HTMLTableCell extends HTMLTableEntity {
       } else {
          $this->item = NULL;
       }
-      $this->itemtype = $this->header->getItemType();
 
       if (!is_null($this->father)) {
 
@@ -112,14 +111,7 @@ class HTMLTableCell extends HTMLTableEntity {
          throw new HTMLTableCellWithoutFather();
       }
 
-      if (!empty($this->itemtype)) {
-         if (empty($this->item)) {
-            throw new Exception('Implementation error: header requires an item');
-         }
-         if (!($this->item instanceof $this->itemtype)) {
-            throw new Exception('Implementation error: type mismatch between header and cell');
-         }
-      }
+      $this->header->checkItemType($this->item);
 
       $this->copyAttributsFrom($this->header);
       if (is_string($content)) {
@@ -258,7 +250,7 @@ class HTMLTableCell extends HTMLTableEntity {
           && ($index < $this->start + $this->numberOfLines)) {
 
          if ($index == $this->start) {
-            if (!empty($this->itemtype)) {
+            if ($this->item instanceof CommonDBTM) {
                Session::addToNavigateListItems($this->item->getType(), $this->item->getID());
             }
             echo "\t\t\t<td colspan='".$this->header->getColSpan()."'";
