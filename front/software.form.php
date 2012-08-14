@@ -78,12 +78,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $soft->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
+} else if (isset($_POST["purge"])) {
+   $soft->check($_POST["id"],'d');
 
-   $soft->check($_REQUEST["id"],'d');
-
-   $soft->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "software", 4, "inventory",
+   $soft->delete($_POST,1);
+   Event::log($_POST["id"], "software", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $soft->redirectToList();

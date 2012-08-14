@@ -78,11 +78,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
-   $phone->check($_REQUEST["id"],'d');
+} else if (isset($_POST["purge"])) {
+   $phone->check($_POST["id"],'d');
 
-   $phone->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "phones", 4, "inventory",
+   $phone->delete($_POST,1);
+   Event::log($_POST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $phone->redirectToList();

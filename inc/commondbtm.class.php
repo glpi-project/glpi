@@ -1630,9 +1630,9 @@ class CommonDBTM extends CommonGLPI {
 
                $itemtype = getItemTypeForTable($tablename);
                $item     = new $itemtype();
-   
+
                if ($item->isEntityAssign()) {
-   
+
                   // 1->N Relation
                   if (is_array($field)) {
                      foreach ($field as $f) {
@@ -1641,14 +1641,14 @@ class CommonDBTM extends CommonGLPI {
                            return false;
                         }
                      }
-   
+
                   } else {
                      if (countElementsInTable($tablename,
                                              "`$field`='$ID' AND entities_id NOT IN $entities") > 0) {
                         return false;
                      }
                   }
-   
+
                } else {
                   foreach ($RELATION as $othertable => $rel) {
                      // Search for a N->N Relation with devices
@@ -1656,19 +1656,19 @@ class CommonDBTM extends CommonGLPI {
                         && isset($rel[$tablename])) {
                         $devfield  = $rel[$tablename][0]; // items_id...
                         $typefield = $rel[$tablename][1]; // itemtype...
-   
+
                         $sql = "SELECT DISTINCT `$typefield` AS itemtype
                               FROM `$tablename`
                               WHERE `$field`='$ID'";
                         $res = $DB->query($sql);
-   
+
                         // Search linked device of each type
                         if ($res) {
                            while ($data = $DB->fetch_assoc($res)) {
                               $itemtype  = $data["itemtype"];
                               $itemtable = getTableForItemType($itemtype);
                               $item      = new $itemtype();
-   
+
                               if ($item->isEntityAssign()) {
                                  if (countElementsInTable(array($tablename, $itemtable),
                                                          "`$tablename`.`$field`='$ID'
@@ -1679,16 +1679,16 @@ class CommonDBTM extends CommonGLPI {
                                     return false;
                                  }
                               }
-   
+
                            }
                         }
-   
+
                      // Search for another N->N Relation
                      } else if (($othertable != $this->getTable())
                               && isset($rel[$tablename])) {
                         $itemtype = getItemTypeForTable($othertable);
                         $item     = new $itemtype();
-   
+
                         if ($item->isEntityAssign()) {
                            if (is_array($rel[$tablename])) {
                               foreach ($rel[$tablename] as $otherfield) {
@@ -1701,7 +1701,7 @@ class CommonDBTM extends CommonGLPI {
                                     return false;
                                  }
                               }
-   
+
                            } else {
                               $otherfield = $rel[$tablename];
                               if (countElementsInTable(array($tablename, $othertable),
@@ -1712,7 +1712,7 @@ class CommonDBTM extends CommonGLPI {
                                  return false;
                               }
                            }
-   
+
                         }
                      }
                   }
@@ -2633,7 +2633,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function showMassiveActionsParameters($input = array()) {
       global $CFG_GLPI;
-      
+
       switch ($input['action']) {
          case "add_contract_item" :
             if ($input['itemtype']=='Contract') {
@@ -2661,7 +2661,7 @@ class CommonDBTM extends CommonGLPI {
                               _sx('button', 'Delete')."'>";
             }
             break;
-            
+
          case "add_document" :
             Document::dropdown(array('name' => 'documents_id'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
@@ -2771,7 +2771,7 @@ class CommonDBTM extends CommonGLPI {
                echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
             }
       }
-      
+
       return false;
    }
 
@@ -2790,7 +2790,7 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
-   
+
    /**
     * Do the standard massive actions
     *
@@ -2798,7 +2798,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $input array of input datas
     * @since version 0.84
     * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
-   **/   
+   **/
    function doMassiveActions($input = array()) {
       global $CFG_GLPI;
       if (!isset($input["item"]) || count($input["item"]) == 0) {
@@ -2876,7 +2876,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             break;
-            
+
          case "update" :
             $searchopt = Search::getCleanedOptions($input["itemtype"],'w');
             if (isset($searchopt[$input["id_field"]])) {
@@ -2984,7 +2984,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             break;
-            
+
          case "activate_infocoms" :
                $ic = new Infocom();
                if ($ic->canCreate()) {
@@ -3112,8 +3112,8 @@ class CommonDBTM extends CommonGLPI {
    function doSpecificMassiveActions($input = array()) {
       return false;
    }
-   
-   
+
+
    /**
     * Get the standard massive actions
     *
@@ -3125,7 +3125,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getAllMassiveActions($is_deleted=0, $checkitem=NULL) {
       global $CFG_GLPI;
-      
+
 
       if (!is_null($checkitem)) {
          $isadmin = $checkitem->canUpdate();
@@ -3220,14 +3220,14 @@ class CommonDBTM extends CommonGLPI {
     * Get the specific massive actions
     *
     * This should be overloaded in Class
-    * @param $checkitem link item to check right    
+    * @param $checkitem link item to check right
     * @since version 0.84
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
       return array();
    }
-   
+
    /**
     * Print out an HTML "<select>" for a dropdown
     *
@@ -4221,7 +4221,7 @@ class CommonDBTM extends CommonGLPI {
       $this->fields[$name] = $value;
       return Html::autocompletionTextField($this, $name, $options);
    }
-   
+
 
    /**
     * @param $itemtype
@@ -4281,8 +4281,10 @@ class CommonDBTM extends CommonGLPI {
                echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                echo "<td class='tab_bg_2 center b'>";
-               echo "<a href=\"$target?id=" . $data["id"]."&amp;purge=purge&amp;withtemplate=1\">".
-                      __('Purge') . "</a></td>";
+               Html::showSimpleForm($target, 'purge', __('Purge'),
+                                        array('withtemplate' => 1,
+                                              'id'           => $data['id']));
+               echo "</td>";
             } else {
                echo "<tr><td class='tab_bg_1 center' colspan='2'>";
                echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=2\">";
