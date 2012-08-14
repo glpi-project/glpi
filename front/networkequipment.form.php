@@ -78,12 +78,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $netdevice->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
+} else if (isset($_POST["purge"])) {
+   $netdevice->check($_POST["id"],'d');
 
-   $netdevice->check($_REQUEST["id"],'d');
-
-   $netdevice->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "networkequipment", 4, "inventory",
+   $netdevice->delete($_POST,1);
+   Event::log($_POST["id"], "networkequipment", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $netdevice->redirectToList();

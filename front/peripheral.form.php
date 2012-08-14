@@ -78,11 +78,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $peripheral->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
-   $peripheral->check($_REQUEST["id"],'d');
+} else if (isset($_POST["purge"])) {
+   $peripheral->check($_POST["id"],'d');
 
-   $peripheral->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "peripherals", 4, "inventory",
+   $peripheral->delete($_POST,1);
+   Event::log($_POST["id"], "peripherals", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $peripheral->redirectToList();

@@ -83,10 +83,10 @@ if (isset($_POST["add"])) {
    }
    $computer->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
-   $computer->check($_REQUEST['id'], 'd');
-   if ($computer->delete($_REQUEST,1)) {
-      Event::log($_REQUEST["id"], "computers", 4, "inventory",
+} else if (isset($_POST["purge"])) {
+   $computer->check($_POST['id'], 'd');
+   if ($computer->delete($_POST,1)) {
+      Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
