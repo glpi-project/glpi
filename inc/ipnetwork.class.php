@@ -911,6 +911,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $content     = self::getTypeName();
       $this_header = $base->addHeader($column_name, $content, $super, $father);
+      $this_header->setItemType(__CLASS__);
    }
 
 
@@ -964,7 +965,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                $content = "<span class='b'>".$content."</span>";
             }
             $content = sprintf(__('%1$s - %2$s'), $content, $network->getLink());
-            $this_cell = $row->addCell($header, $content, $father, $item);
+            $this_cell = $row->addCell($header, $content, $father, $network);
          }
       }
    }

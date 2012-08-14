@@ -1240,9 +1240,9 @@ class IPAddress extends CommonDBChild {
                   $row = $row->createRow();
                }
 
-               $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
+               $this_cell = $row->addCell($header, $address->fields['name'], $father);
 
-               IPNetwork::getHTMLTableCellsForItem($row, NULL, $this_cell, $options);
+               IPNetwork::getHTMLTableCellsForItem($row, $address, $this_cell, $options);
             }
          }
       }
