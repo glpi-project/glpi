@@ -75,11 +75,11 @@ if (isset($_POST["add"])) {
    }
    $contract->redirectToList();
 
-} else if (isset($_POST["purge"])) {
-   $contract->check($_POST['id'],'w');
+} else if (isset($_REQUEST["purge"])) {
+   $contract->check($_REQUEST['id'],'d');
 
-   if ($contract->delete($_POST,1)) {
-      Event::log($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   if ($contract->delete($_REQUEST,1)) {
+      Event::log($_REQUEST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    $contract->redirectToList();
 
