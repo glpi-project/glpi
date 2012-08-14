@@ -78,6 +78,23 @@ class TicketValidation  extends CommonDBChild {
 
 
    /**
+    * Is the current user have right to delete the current validation ?
+    *
+    * @since version 0.83.5
+    *
+    * @return boolean
+   */
+   function canDeleteItem() {
+
+      If (($this->fields["users_id"] == Session::getLoginUserID())
+          || Session::haveRight('validate_ticket', 1)) {
+         return true;
+      }
+      return false;
+   }
+
+
+   /**
     * Is the current user have right to update the current validation ?
     *
     * @return boolean
