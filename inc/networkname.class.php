@@ -474,21 +474,22 @@ class NetworkName extends FQDNLabel {
 
       $column_name = __CLASS__;
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
+      if (!isset($options['dont_display'][$column_name])) {
+
+         $content = self::getTypeName();
+         if (isset($options['column_links'][$column_name])) {
+            $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
+         }
+         $name_header = $base->addHeader($column_name, $content, $super, $father);
+         $name_header->setItemType('NetworkName');
+         $father_for_children = $name_header;
+
+      } else {
+         $father_for_children = $father;
       }
 
-      $canedit = (isset($options['canedit']) && $options['canedit']);
-
-      $content = self::getTypeName();
-      if (isset($options['column_links'][$column_name])) {
-         $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
-      }
-      $name_header = $base->addHeader($column_name, $content, $super, $father);
-      $name_header->setItemType('NetworkName');
-
-      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
-      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
+      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $father_for_children, $options);
+      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $father_for_children, $options);
    }
 
 
@@ -505,14 +506,6 @@ class NetworkName extends FQDNLabel {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $header= $row->getGroup()->getHeaderByName('Internet', __CLASS__);
-      if (!$header) {
-         return;
-      }
 
       if (empty($item)) {
          if (empty($father)) {
@@ -614,10 +607,16 @@ class NetworkName extends FQDNLabel {
                                                $CFG_GLPI["root_doc"] . "/pics/delete.png");
             }
 
-            $name_cell = $row->addCell($header, $content, $father, $address);
+            if (!isset($options['dont_display'][$column_name])) {
+               $header= $row->getGroup()->getHeaderByName('Internet', $column_name);
+               $name_cell = $row->addCell($header, $content, $father, $address);
+               $father_for_children = $name_cell;
+            } else {
+               $father_for_children = $father;
+            }
 
-            NetworkAlias::getHTMLTableCellsForItem($row, NULL, $name_cell, $options);
-            IPAddress::getHTMLTableCellsForItem($row, NULL, $name_cell, $options);
+            NetworkAlias::getHTMLTableCellsForItem($row, $address, $father_for_children, $options);
+            IPAddress::getHTMLTableCellsForItem($row, $address, $father_for_children, $options);
 
          }
       }

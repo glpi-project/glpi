@@ -418,12 +418,14 @@ class NetworkPort extends CommonDBChild {
                                           'default' => true));
       $options[__('Common options')] = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
       $options[__('Internet information')] =
-         array('aliases'     => array('name'    => NetworkAlias::getTypeName(2),
+         array('names'       => array('name'    => NetworkName::getTypeName(2),
+                                      'default' => false),
+               'aliases'     => array('name'    => NetworkAlias::getTypeName(2),
                                       'default' => false),
                'ipaddresses' => array('name'    => IPAddress::getTypeName(2),
                                       'default' => true),
                'ipnetworks'  => array('name'    => IPNetwork::getTypeName(2),
-                                      'default' => false));
+                                      'default' => true));
 
       foreach (self::getNetworkPortInstantiations() as $portType) {
          $portTypeName = $portType::getTypeName(0);
@@ -628,7 +630,8 @@ class NetworkPort extends CommonDBChild {
 
       if ($display_options['internet']) {
 
-         $options = array('aliases'     => 'NetworkAlias',
+         $options = array('names'       => 'NetworkName',
+                          'aliases'     => 'NetworkAlias',
                           'ipaddresses' => 'IPAddress',
                           'ipnetworks'  => 'IPNetwork');
 
