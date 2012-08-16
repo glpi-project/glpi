@@ -571,10 +571,12 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
-      // automatic recalculate if user changes urgence
-      if (isset($input['urgency'])
-          && isset($input['impact'])
-          && !isset($input['priority'])) {
+      // automatic recalculate if user changes urgence or technician change impact
+    if (isset($input['urgency'])
+        && isset($input['impact'])
+        && (($input['urgency'] != $this->fields['urgency'])
+            || $input['impact'] != $this->fields['impact'])
+        && !isset($input['priority'])) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
 
@@ -661,6 +663,7 @@ class Ticket extends CommonITILObject {
          if ($this->numberOfFollowups() == 0
              && $this->numberOfTasks() == 0
              && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
+             	toolbox::logdebug ("champs", $allowed_fields);
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
             $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
@@ -668,6 +671,7 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'itemtype';
             $allowed_fields[] = 'items_id';
             $allowed_fields[] = 'name';
+            toolbox::logdebug ("champs finaux", $allowed_fields);
          }
 
          if ($this->canSolve()) {
