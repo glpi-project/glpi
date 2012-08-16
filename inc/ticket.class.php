@@ -592,9 +592,11 @@ class Ticket extends CommonITILObject {
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
 
-      // automatic recalculate if user changes urgence
+      // automatic recalculate if user changes urgence or technician change impact
       if (isset($input['urgency'])
           && isset($input['impact'])
+          && (($input['urgency'] != $this->fields['urgency'])
+              || $input['impact'] != $this->fields['impact'])
           && !isset($input['priority'])) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
