@@ -221,7 +221,7 @@ class RuleCriteria extends CommonDBChild {
 
       $sql = "SELECT *
               FROM `".$this->getTable()."`
-              WHERE `".self::$items_id."` = '$ID'
+              WHERE `".static::$items_id."` = '$ID'
               ORDER BY `id`";
 
       $result     = $DB->query($sql);

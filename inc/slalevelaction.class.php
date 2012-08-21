@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class SlaLevelAction extends RuleAction {
 
 
-   public $itemtype  = 'SlaLevel';
-   public $items_id  = 'slalevels_id';
+   static public $itemtype  = 'SlaLevel';
+   static public $items_id  = 'slalevels_id';
    public $dohistory = true;
 
    /**
