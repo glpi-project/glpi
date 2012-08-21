@@ -44,9 +44,7 @@ class Problem_Ticket extends CommonDBRelation{
 
    static public $itemtype_2 = 'Ticket';
    static public $items_id_2 = 'tickets_id';
-
-   static public $checks_only_for_itemtype1 = true;
-
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    static function getTypeName($nb=0) {
       return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);

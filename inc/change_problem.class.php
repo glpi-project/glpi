@@ -44,8 +44,7 @@ class Change_Problem extends CommonDBRelation{
 
    static public $itemtype_2 = 'Problem';
    static public $items_id_2 = 'problems_id';
-
-   static public $checks_only_for_itemtype1 = true;
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();
