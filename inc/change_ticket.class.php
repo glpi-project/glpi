@@ -96,7 +96,6 @@ class Change_Ticket extends CommonDBRelation{
                 WHERE `glpi_changes_tickets`.`changes_id` = '$ID'
                 ORDER BY `glpi_tickets`.`name`";
       $result = $DB->query($query);
-      $numrows = $DB->numrows($result);
 
       $tickets = array();
       $used = array();
@@ -108,6 +107,7 @@ class Change_Ticket extends CommonDBRelation{
       }
 
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -125,6 +125,7 @@ class Change_Ticket extends CommonDBRelation{
 
          echo "</table>";
          Html::closeForm();
+         echo "</div>";
       }
       
 
@@ -139,7 +140,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $numrows) {
-         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Title')."</th>";
       if ($change->isRecursive()) {
@@ -217,7 +218,6 @@ class Change_Ticket extends CommonDBRelation{
                 WHERE `glpi_changes_tickets`.`tickets_id` = '$ID'
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
-      $numrows = $DB->numrows($result);
 
       $changes = array();
       $used = array();
@@ -228,6 +228,7 @@ class Change_Ticket extends CommonDBRelation{
          }
       }
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -246,10 +247,11 @@ class Change_Ticket extends CommonDBRelation{
 
          echo "</td></tr></table>";
          Html::closeForm();
+         echo "</div>";
       }
 
       
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows);
@@ -258,7 +260,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $numrows) {
-         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Title')."</th>";
       echo "</tr>";

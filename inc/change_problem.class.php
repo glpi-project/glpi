@@ -93,7 +93,6 @@ class Change_Problem extends CommonDBRelation{
                 WHERE `glpi_changes_problems`.`problems_id` = '$ID'
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
-      $numrows = $DB->numrows($result);
 
       $changes = array();
       $used = array();
@@ -104,6 +103,8 @@ class Change_Problem extends CommonDBRelation{
          }
       }
       if ($canedit) {
+         echo "<div class='firstbloc'>";
+
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -123,9 +124,10 @@ class Change_Problem extends CommonDBRelation{
 
          echo "</td></tr></table>";
          Html::closeForm();
+         echo "</div>";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows);
@@ -135,7 +137,7 @@ class Change_Problem extends CommonDBRelation{
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $numrows) {
-         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>"._n('Change', 'Changes', 2);
       echo "</th>";
@@ -218,6 +220,8 @@ class Change_Problem extends CommonDBRelation{
       }
 
       if ($canedit) {
+         echo "<div class='firstbloc'>";
+
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -231,9 +235,10 @@ class Change_Problem extends CommonDBRelation{
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr></table>";
          Html::closeForm();
+         echo "</div>";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows);
@@ -242,7 +247,7 @@ class Change_Problem extends CommonDBRelation{
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $numrows) {
-         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>"._n('Problem', 'Problems', 2)."</th>";
       if ($showentities) {

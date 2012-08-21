@@ -113,6 +113,7 @@ class Change_Item extends CommonDBRelation{
 
 
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<form name='changeitem_form$rand' id='changeitem_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -133,9 +134,10 @@ class Change_Item extends CommonDBRelation{
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
+         echo "</div>";
       }
       
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array();
@@ -145,7 +147,7 @@ class Change_Item extends CommonDBRelation{
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       if ($canedit && $number) {
-         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Entity')."</th>";

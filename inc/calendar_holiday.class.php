@@ -96,7 +96,6 @@ class Calendar_Holiday extends CommonDBRelation {
                 WHERE `glpi_calendars_holidays`.`calendars_id` = '$ID'
                 ORDER BY `glpi_holidays`.`name`";
       $result = $DB->query($query);
-      $numrows = $DB->numrows($result);
 
       $holidays = array();
       $used = array();
@@ -109,7 +108,7 @@ class Calendar_Holiday extends CommonDBRelation {
       
       
       if ($canedit) {
-         echo "<div class='spaced'>";
+         echo "<div class='firstbloc'>";
          echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
                action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -129,7 +128,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       }
       
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
 
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);

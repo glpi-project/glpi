@@ -113,9 +113,9 @@ class Profile_User extends CommonDBTM {
       $rand          = mt_rand();
 
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-         echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
 
@@ -130,8 +130,9 @@ class Profile_User extends CommonDBTM {
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></div>";
+         echo "</table>";
          Html::closeForm();
+         echo "</div>";
       }
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,

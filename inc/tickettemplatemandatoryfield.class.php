@@ -52,7 +52,12 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    /**
     * @see inc/CommonDBTM::getName()
     *
@@ -192,30 +197,62 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')";
 
       if ($result = $DB->query($query)) {
-         echo "<form name='tickettemplatemandatoryfields_form$rand'
-                     id='tickettemplatemandatoryfields_form$rand' method='post' action='";
-         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         $mandatoryfields = array();
+         $used = array();
+         if ($numrows = $DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $mandatoryfields[$data['id']] = $data;
+               $used[$data['num']] = $data['num'];
+            }
+         }
+         if ($canedit) {
+            echo "<div class='firstbloc'>";
+            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-         echo "<div class='center'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
+            echo "<tr class='tab_bg_2'><td class='right'>";
+            echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
+            echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
+            echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
+            Dropdown::showFromArray('num', $fields, array('used'=> $used));
+            echo "</td><td class='center'>";
+            echo "&nbsp;<input type='submit' name='add' value=\""._sx('Button', 'Add').
+                           "\" class='submit'>";
+            echo "</td></tr>";
+
+
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+         }
+
+
+         echo "<div class='spaced'>";
+         if ($canedit && $numrows) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = array('num_displayed'  => $numrows);
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         }         
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>";
          echo self::getTypeName($DB->numrows($result));
          echo "</th></tr>";
-         $used = array();
-         if ($DB->numrows($result)) {
-            echo "<tr><th>&nbsp;</th>";
+         if ($numrows) {
+            echo "<tr>";
+            if ($canedit) {
+               echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            }            
             echo "<th>".__('Name')."</th>";
             echo "</tr>";
 
-            while ($data = $DB->fetch_assoc($result)) {
+            foreach ($mandatoryfields as $data) {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
                }
                echo "<td>".$fields[$data['num']]."</td>";
-               $used[$data['num']] = $data['num'];
                echo "</tr>";
             }
 
@@ -223,23 +260,13 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
          }
 
-         if ($canedit) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
-            echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
-            echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
-            Dropdown::showFromArray('num', $fields, array('used'  => $used));
-            echo "&nbsp;<input type='submit' name='add' value=\""._sx('button','Add').
-                         "\" class='submit'>";
-            echo "</td></tr>";
+         echo "</table>";
+         if ($canedit && $numrows) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::closeForm();
          }
-         echo "</table></div>";
-
-         if ($canedit) {
-            Html::openArrowMassives("tickettemplatemandatoryfields_form$rand", true);
-            Html::closeArrowMassives(array('delete' => __('Delete')));
-         }
-         Html::closeForm();
+         echo "</div>";
 
       }
    }

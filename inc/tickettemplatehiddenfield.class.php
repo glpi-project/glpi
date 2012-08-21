@@ -47,6 +47,11 @@ class TicketTemplateHiddenField extends CommonDBChild {
    public $items_id  = 'tickettemplates_id';
    public $dohistory = true;
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }      
 
    static function getTypeName($nb=0) {
       return _n('Hidden field', 'Hidden fields', $nb);
@@ -187,61 +192,82 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $canedit = $tt->can($ID, "w");
       $fields  = $tt->getAllowedFieldsNames(false, isset($used['itemtype']));
       $rand    = mt_rand();
-      echo "<form name='tickettemplatehiddenfields_form$rand'
-             id='tickettemplatehiddenfields_form$rand' method='post' action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-
-      echo "<div class='center'>";
 
       $query = "SELECT `glpi_tickettemplatehiddenfields`.*
                 FROM `glpi_tickettemplatehiddenfields`
                 WHERE (`tickettemplates_id` = '$ID')";
-
       if ($result = $DB->query($query)) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>";
-         echo self::getTypeName($DB->numrows($result));
-         echo "</th></tr>";
+      
+         $hiddenfields = array();
          $used = array();
-         if ($DB->numrows($result)) {
-            echo "<tr><th>&nbsp;</th>";
-            echo "<th>".__('Name')."</th>";
-            echo "</tr>";
-
+         if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
-               echo "<td>".$fields[$data['num']]."</td>";
+               $hiddenfields[$data['id']] = $data;
                $used[$data['num']] = $data['num'];
-               echo "</tr>";
             }
-
-         } else {
-            echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
          }
 
          if ($canedit) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
+            echo "<div class='firstbloc'>";
+            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a hidden field')."</th></tr>";
+            echo "<tr class='tab_bg_2'><td class='right'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             Dropdown::showFromArray('num', $fields, array('used'=> $used));
+            echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('Button', 'Add').
-                         "\" class='submit'>";
+                           "\" class='submit'>";
             echo "</td></tr>";
-         }
-         echo "</table></div>";
 
-         if ($canedit) {
-            Html::openArrowMassives("tickettemplatehiddenfields_form$rand", true);
-            Html::closeArrowMassives(array('delete' => __('Delete')));
-         }
-         Html::closeForm();
 
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+         }
+
+         echo "<div class='spaced'>";
+
+         if ($canedit && $numrows) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = array('num_displayed'  => $numrows);
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         }
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>";
+         echo self::getTypeName($DB->numrows($result));
+         echo "</th></tr>";
+         if ($numrows) {
+            echo "<tr>";
+            if ($canedit) {
+               echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            }
+            echo "<th>".__('Name')."</th>";
+            echo "</tr>";
+
+            foreach ($hiddenfields as $data) {
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+               }
+               echo "<td>".$fields[$data['num']]."</td>";
+               echo "</tr>";
+            }
+         } else {
+            echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
+         }
+
+         echo "</table>";
+         if ($canedit && $numrows) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::closeForm();
+         }
+         echo "</div>";
       }
    }
 
