@@ -47,6 +47,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    public $items_id  = 'tickettemplates_id';
    public $dohistory = true;
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
 
    static function getTypeName($nb=0) {
       return _n('Predefined field', 'Predefined fields', $nb);
@@ -210,11 +215,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $searchOption  = Search::getOptions('Ticket');
       $ticket        = new Ticket();
       $rand          = mt_rand();
-      echo "<form name='tickettemplatepredefinedfields_form$rand'
-                  id='tickettemplatepredefinedfields_form$rand' method='post' action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-      echo "<div class='center'>";
 
       $query = "SELECT `glpi_tickettemplatepredefinedfields`.*
                 FROM `glpi_tickettemplatepredefinedfields`
@@ -226,44 +227,21 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                                'comments'       => true,
                                'html'           => true);
       if ($result = $DB->query($query)) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='3'>";
-         echo self::getTypeName($DB->numrows($result));
-         echo "</th></tr>";
+         $predeffields = array();
          $used = array();
-         if ($DB->numrows($result)) {
-            echo "<tr><th>&nbsp;</th>";
-            echo "<th>".__('Name')."</th>";
-            echo "<th>".__('Value')."</th>";
-            echo "</tr>";
-
+         if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
-               if (!isset($fields[$data['num']])) {
-                  // could happen when itemtype removed and items_id present
-                  continue;
-               }
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
-               echo "<td>".$fields[$data['num']]."</td>";
-
-               echo "<td>";
-               $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
-               echo $ticket->getValueToDisplay($searchOption[$data['num']], $display_datas,
-                                               $display_options);
-               echo "</td>";
-               $used[$data['num']] = $data['value'];
-               echo "</tr>";
+               $predeffields[$data['id']] = $data;
+               $used[$data['num']] = $data['num'];
             }
-
-         } else {
-            echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
          }
-
          if ($canedit) {
+            echo "<div class='firstbloc'>";
+            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a predefined field')."</th></tr>";
             echo "<tr class='tab_bg_2'><td class='right top' width='30%'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
@@ -275,10 +253,12 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             $used[-2] = -2;
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                               'toadd'));
-            echo "</td><td colspan='2' class='top'>";
+            echo "</td><td class='top'>";
             $paramsmassaction = array('id_field'         => '__VALUE__',
                                       'itemtype'         => 'Ticket',
                                       'additionalvalues' => array('itemtype' => $itemtype_used),
+                                      'inline'           => true,
+                                      'submitname'       => __s('Add'),
                                       'options'          => array(
                                                    'relative_dates'     => 1,
                                                    'with_time'          => 1,
@@ -288,17 +268,64 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
                                           $paramsmassaction);
-
+            echo "</td><td>";
             echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
             echo "</td></tr>";
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
          }
-         echo "</table></div>";
+         
+         echo "<div class='spaced'>";
+         if ($canedit && $numrows) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = array('num_displayed'  => $numrows);
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         }
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='3'>";
+         echo self::getTypeName($DB->numrows($result));
+         echo "</th></tr>";
+         if ($numrows) {
+            echo "<tr>";
+            if ($canedit) {
+               echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            }
+            echo "<th>".__('Name')."</th>";
+            echo "<th>".__('Value')."</th>";
+            echo "</tr>";
 
-         if ($canedit) {
-            Html::openArrowMassives("tickettemplatepredefinedfields_form$rand", true);
-            Html::closeArrowMassives(array('delete' => __('Delete')));
+            foreach ($predeffields as $data) {
+               if (!isset($fields[$data['num']])) {
+                  // could happen when itemtype removed and items_id present
+                  continue;
+               }
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+               }
+               echo "<td>".$fields[$data['num']]."</td>";
+
+               echo "<td>";
+               $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
+               echo $ticket->getValueToDisplay($searchOption[$data['num']], $display_datas,
+                                               $display_options);
+               echo "</td>";
+               echo "</tr>";
+            }
+
+         } else {
+            echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
          }
-         Html::closeForm();
+
+
+         echo "</table>";
+         if ($canedit && $numrows) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::closeForm();
+         }
+         echo "</div>";
 
       }
    }

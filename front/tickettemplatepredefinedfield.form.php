@@ -45,22 +45,6 @@ if (isset($_POST["massiveaction"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            if ($item->can($key, 'w')) {
-               $item->delete(array('id' => $key));
-            }
-         }
-      }
-      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes predefined fields'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 }
 
 Html::displayErrorAndDie("lost");

@@ -305,7 +305,7 @@ class CalendarSegment extends CommonDBChild {
 
 
       if ($canedit) {
-         echo "<div class='spaced'>";
+         echo "<div class='firstbloc'>";
          echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
                action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -333,7 +333,7 @@ class CalendarSegment extends CommonDBChild {
       }
 
 
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed' => $numrows);

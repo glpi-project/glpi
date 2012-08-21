@@ -49,6 +49,16 @@ if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
    $item->checkGlobal("w");
 }
 
+$inline = false;
+if (isset($_POST['inline']) && $_POST['inline']) {
+   $inline= true;
+}
+$submitname = __s('Post');
+if (isset($_POST['submitname']) && $_POST['submitname']) {
+   $submitname= stripslashes($_POST['submitname']);
+}
+
+
 if (isset($_POST["itemtype"])
     && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);
@@ -97,9 +107,15 @@ if (isset($_POST["itemtype"])
    if (!$FIELDNAME_PRINTED) {
       echo "<input type='hidden' name='field' value='$fieldname'>";
    }
-   echo "</td></tr></table>";
+   echo "</td>";
+   if ($inline) {
+      echo "<td><input type='submit' name='massiveaction' class='submit' value='$submitname'></td>";
+   }
+   echo "</tr></table>";
 
-   echo "<br><input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
+   if (!$inline) {
+      echo "<br><input type='submit' name='massiveaction' class='submit' value='$submitname'>";
+   }
 
 }
 ?>

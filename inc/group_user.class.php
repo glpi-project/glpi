@@ -126,11 +126,6 @@ class Group_User extends CommonDBRelation{
       $canedit     = $user->can($ID,'w');
 
       $rand        = mt_rand();
-      if ($canedit) {
-         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'";
-         echo " action='".Toolbox::getItemTypeFormURL('User')."'>";
-      } else {
-      }
 
       $groups = self::getUserGroups($ID);
       $used   = array();
@@ -142,6 +137,8 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
+         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'";
+         echo " action='".Toolbox::getItemTypeFormURL('User')."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Associate to a group')."</th></tr>";
@@ -178,8 +175,9 @@ class Group_User extends CommonDBRelation{
          }
 
          echo "</td></tr>";
-         echo "</table></div>";
+         echo "</table>";
          Html::closeForm();
+         echo "</div>";
       }
 
       echo "<div class='spaced'>";
