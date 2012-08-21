@@ -39,7 +39,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
-   public $right               = 'rule_dictionnary_printer';
+   static public $right               = 'rule_dictionnary_printer';
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'printer';
 

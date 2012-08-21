@@ -145,7 +145,6 @@ class SLA extends CommonDBTM {
       $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
