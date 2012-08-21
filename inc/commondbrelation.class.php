@@ -288,26 +288,28 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          // If one of both extremity is not valid => not allowed !
          /// @TODO : we may check this in all case, not only when checking coherency
+         /// MoYo : I think only for add and update purpose. When viewing or deleting this check is not needed.
          if ((!$item1 instanceof CommonDBTM)
              || (!$item2 instanceof CommonDBTM)) {
             return false;
          }
+         if ($item1->isEntityAssign() && $item26>isEntityAssign()) {
+            $entity1 = $item1->getEntityID();
+            $entity2 = $item2->getEntityID();
 
-         $entity1 = $item1->getEntityID();
-         $entity2 = $item2->getEntityID();
-
-         if ($entity1 == $entity2) {
-            return true;
+            if ($entity1 == $entity2) {
+               return true;
+            }
+            if (($item1->isRecursive())
+               && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))) {
+               return true;
+            }
+            if (($item2->isRecursive())
+               && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))) {
+               return true;
+            }
+            return false;
          }
-         if (($item1->isRecursive())
-             && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))) {
-            return true;
-         }
-         if (($item2->isRecursive())
-             && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))) {
-            return true;
-         }
-         return false;
       }
 
       return true;
