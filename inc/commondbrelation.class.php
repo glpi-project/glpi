@@ -142,68 +142,71 @@ abstract class CommonDBRelation extends CommonDBTM {
 
 
    function canUpdate() {
+      /// TODO tmeporary solution to work on massive actions
       // Must can read first Item of the relation
       $type1 = $this->itemtype_1;
-      if (preg_match('/^itemtype/',$this->itemtype_1)) {
+      if (!preg_match('/^itemtype/',$this->itemtype_1)) {
          // TODO : where does $input comes from ?
-         $type1 = $input[$this->itemtype_1];
-      }
-      if (!($item1 = getItemForItemtype($type1))) {
-         return false;
-      }
-      // Can create a relation with a dropdown/device (use it) without read right
-      if (!($item1 instanceof CommonDropdown)
-          && !$item1->canView()) {
-         return false;
-      }
-      
-      // Must can read second Item of the relation
-      $type2 = $this->itemtype_2;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $input[$this->itemtype_2];
-      }
-
-      if (!($item2 = getItemForItemtype($type2))) {
-         return false;
-      }
-      if (!$this->checks_only_for_itemtype1
-          && !($item2 instanceof CommonDropdown)) {
-         if (!$item2->canView()) {
+//          $type1 = $input[$this->itemtype_1];
+         if (!($item1 = getItemForItemtype($type1))) {
+            return false;
+         }
+         // Can create a relation with a dropdown/device (use it) without read right
+         if (!($item1 instanceof CommonDropdown)
+            && !$item1->canView()) {
             return false;
          }
       }
+      // Must can read second Item of the relation
+      $type2 = $this->itemtype_2;
+      if (!preg_match('/^itemtype/',$this->itemtype_2)) {
+//          $type2 = $input[$this->itemtype_2];
+         if (!($item2 = getItemForItemtype($type2))) {
+            return false;
+         }
+         if (!$this->checks_only_for_itemtype1
+            && !($item2 instanceof CommonDropdown)) {
+            if (!$item2->canView()) {
+               return false;
+            }
+         }
+      }
+
       // can write one item is enough
-      if ($item1->canUpdate()
+      if (($type1 != 'itemtype' && $item1->canUpdate())
           || ($this->checks_only_for_itemtype1
-              || $item2->canUpdate())) {
+              || ($type2 != 'itemtype' && $item2->canUpdate()))) {
          return true;
-      }      
+      }
    }
    
    function canView() {
+      /// TODO tmeporary solution to work on massive actions
       // Must can read first Item of the relation
       $type1 = $this->itemtype_1;
-      if (preg_match('/^itemtype/',$this->itemtype_1)) {
+      if (!preg_match('/^itemtype/',$this->itemtype_1)) {
          // TODO : where does $input comes from ?
-         $type1 = $input[$this->itemtype_1];
-      }
-      if (!($item1 = getItemForItemtype($type1))) {
-         return false;
-      }
-      // Can create a relation with a dropdown/device (use it) without read right
-      if (!($item1 instanceof CommonDropdown)
-          && !$item1->canView()) {
-         return false;
-      }
-      // Must can read second Item of the relation
-      $type2 = $this->itemtype_2;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $input[$this->itemtype_2];
+//          $type1 = $input[$this->itemtype_1];
+         if (!($item1 = getItemForItemtype($type1))) {
+            return false;
+         }
+         // Can create a relation with a dropdown/device (use it) without read right
+         if (!($item1 instanceof CommonDropdown)
+            && !$item1->canView()) {
+            return false;
+         }
       }
 
-      if (!($item2 = getItemForItemtype($type2))) {
-         return false;
+      // Must can read second Item of the relation
+      $type2 = $this->itemtype_2;
+      if (!preg_match('/^itemtype/',$this->itemtype_2)) {
+//          $type2 = $input[$this->itemtype_2];
+         if (!($item2 = getItemForItemtype($type2))) {
+            return false;
+         }
       }
+
+
       if (!$this->checks_only_for_itemtype1
           && !($item2 instanceof CommonDropdown)) {
          if (!$item2->canView()) {

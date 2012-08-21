@@ -378,7 +378,7 @@ class CalendarSegment extends CommonDBChild {
       if ($canedit) {
          if ($numrows) {
             $paramsma['ontop'] =false;
-            Html::showMassiveActions('Group_User', $paramsma);
+            Html::showMassiveActions(__CLASS__, $paramsma);
          }
          Html::closeForm();
       }
