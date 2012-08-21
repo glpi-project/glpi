@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: item_devicepci.class.php 19068 2012-08-01 07:57:38Z webmyster $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
@@ -28,39 +28,23 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Damien Touraine
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-Session::checkCentralAccess();
-
-$compdev = new Computer_Device();
-
-if (isset($_POST["add"])) {
-   $compdev->check(-1, 'w', $_POST);
-   if (isset($_POST['itemtype']) && !empty($_POST['itemtype'])
-       && isset($_POST['items_id'])&& !empty($_POST['items_id'])) {
-      $compdev->addDevices(1, $_POST['itemtype'], $_POST['computers_id'], $_POST['items_id']);
-   }
-   Html::back();
-} else if (isset($_POST["updateall"])) {
-   $compdev->check(-1, 'w', $_POST);
-   $compdev->updateAll($_POST);
-   Event::log($_POST["computers_id"], "computers", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates components'), $_SESSION["glpiname"]));
-   Html::back();
-} else if (isset($_POST["delete"])) {
-   $compdev->check(-1, 'w', $_POST);
-   $compdev->deleteAll($_POST);
-   Event::log($_POST["computers_id"], "computers", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges components'), $_SESSION["glpiname"]));
-   Html::back();
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
-Html::displayErrorAndDie('Lost');
+
+/**
+ * Relation between item and devices
+**/
+class Item_DevicePci extends Item_Devices {
+
+   static public $itemtype_2 = 'DevicePci';
+   static public $items_id_2 = 'devicepcis_id';
+
+   static protected $notable = false;
+
+}
 ?>

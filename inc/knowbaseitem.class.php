@@ -52,12 +52,12 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return (Session::haveRight('knowbase', 'w') || Session::haveRight('faq', 'w'));
    }
 
 
-   function canView() {
+   static function canView() {
       global $CFG_GLPI;
 
       return (Session::haveRight('knowbase', 'r')
@@ -101,7 +101,7 @@ class KnowbaseItem extends CommonDBTM {
     *
     * @param $full path or relative one (true by default)
    **/
-   function getSearchURL($full=true) {
+   static function getSearchURL($full=true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');

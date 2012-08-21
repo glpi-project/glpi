@@ -63,12 +63,12 @@ class Transfer extends CommonDBTM {
                               'DeviceProcessor', 'DeviceSoundCard');
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('transfer', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('transfer', 'r');
    }
 

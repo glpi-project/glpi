@@ -50,12 +50,12 @@ class Contract extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('contract', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('contract', 'r');
    }
 
@@ -449,7 +449,7 @@ class Contract extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_contract_item']    = _x('button', 'Add an item');

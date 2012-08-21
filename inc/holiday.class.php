@@ -44,12 +44,12 @@ class Holiday extends CommonDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('calendar', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('calendar', 'r');
    }
 

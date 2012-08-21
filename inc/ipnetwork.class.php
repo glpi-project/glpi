@@ -50,12 +50,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    public $dohistory = true;
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('internet', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('internet', 'r');
    }
 

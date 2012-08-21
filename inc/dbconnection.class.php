@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DBConnection extends CommonDBTM {
 
-   var $notable = true;
+   static protected $notable = true;
 
 
    static function getTypeName($nb=0) {

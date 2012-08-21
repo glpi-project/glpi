@@ -52,14 +52,14 @@ class Document extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
 
       // Have right to add document OR ticket followup
       return Session::haveRight('document', 'w') || Session::haveRight('add_followups', '1');
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
       return Session::haveRight('document', 'w');
    }
 
@@ -83,7 +83,7 @@ class Document extends CommonDBTM {
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('document', 'r');
    }
 
@@ -674,7 +674,7 @@ class Document extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

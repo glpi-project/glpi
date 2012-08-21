@@ -39,13 +39,13 @@ if (!defined('GLPI_ROOT')) {
 class Change_Problem extends CommonDBRelation{
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Change';
-   public $items_id_1 = 'changes_id';
+   static public $itemtype_1 = 'Change';
+   static public $items_id_1 = 'changes_id';
 
-   public $itemtype_2 = 'Problem';
-   public $items_id_2 = 'problems_id';
+   static public $itemtype_2 = 'Problem';
+   static public $items_id_2 = 'problems_id';
 
-   var $checks_only_for_itemtype1 = true;
+   static public $checks_only_for_itemtype1 = true;
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();

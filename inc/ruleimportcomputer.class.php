@@ -49,12 +49,12 @@ class RuleImportComputer extends Rule {
    public $can_sort = true;
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('rule_ocs', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('rule_ocs', 'r');
    }
 

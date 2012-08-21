@@ -44,11 +44,6 @@ class DeviceNetworkCard extends CommonDevice {
    }
 
 
-   static function getSpecifityLabel() {
-      return array('specificity' => __('MAC address'));
-   }
-
-
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
@@ -76,28 +71,6 @@ class DeviceNetworkCard extends CommonDevice {
       $tab[12]['datatype'] = 'string';
 
       return $tab;
-   }
-
-
-   /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-
-      $data['label'] = $data['value'] = array();
-
-      if (!empty($this->fields["bandwidth"])) {
-         $data['label'][] = __('Flow');
-         $data['value'][] = $this->fields["bandwidth"];
-      }
-
-      // Specificity
-      $data['label'][] = __('MAC address');
-      $data['size']    = 18;
-
-      return $data;
    }
 
 
@@ -157,9 +130,13 @@ class DeviceNetworkCard extends CommonDevice {
             $base->addHeader($column_name, __('Interface'), $super, $father);
             break;
 
-         case 'Computer_Device' :
+         case 'Computer':
+            $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
+            if ($column == $father)  {
+               return $father;
+            }
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('bandwidth', __('Flow'), $super, $father);
+            $base->addHeader('devicenetworkcard_bandwidth', __('Flow'), $super, $father);
             break;
       }
    }
@@ -189,28 +166,34 @@ class DeviceNetworkCard extends CommonDevice {
          $item = $father->getItem();
       }
 
-      $compdev = new Computer_Device();
-      $card_id = $item->fields['computers_devicenetworkcards_id'];
-      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard", $card_id);
-
-      $row->addCell($row->getHeaderByName($column_name), ($device ? $device->getLink() : ''),
-                    $father);
+      switch ($item->getType()) {
+         case 'NetworkPortWifi':
+         case 'NetworkPortEthernet':
+            $link = new Item_DeviceNetworkCard();
+            if ($link->getFromDB($item->fields['items_devicenetworkcards_id'])) {
+               $device = $link->getOnePeer(1);
+               if ($device) {
+                  $row->addCell($row->getHeaderByName($column_name), $device->getLink(), $father);
+               }
+            }
+      }
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see inc/CommonDevice::getHTMLTableCell()
-   **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
-      switch ($item_type) {
-         case 'Computer_Device' :
+      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+      if ($column == $father) {
+         return $father;
+      }
+
+      switch ($item->getType()) {
+         case 'Computer' :
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["bandwidth"]) {
-               $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
+               $row->addCell($row->getHeaderByName('devicenetworkcard_bandwidth'),
                              $this->fields["bandwidth"], $father);
             }
             break;

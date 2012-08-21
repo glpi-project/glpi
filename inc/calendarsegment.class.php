@@ -43,8 +43,8 @@ class CalendarSegment extends CommonDBChild {
    var $dohistory = true;
 
    // From CommonDBChild
-   public $itemtype = 'Calendar';
-   public $items_id = 'calendars_id';
+   static public $itemtype = 'Calendar';
+   static public $items_id = 'calendars_id';
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -57,12 +57,12 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('calendar', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('calendar', 'r');
    }
 

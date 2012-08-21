@@ -43,8 +43,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    /// TODO delete items_id if itemtype is deleted
 
    // From CommonDBChild
-   public $itemtype  = 'TicketTemplate';
-   public $items_id  = 'tickettemplates_id';
+   static public $itemtype  = 'TicketTemplate';
+   static public $items_id  = 'tickettemplates_id';
    public $dohistory = true;
 
    function getForbiddenStandardMassiveAction() {
@@ -58,12 +58,12 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('tickettemplate', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('tickettemplate', 'r');
    }
 

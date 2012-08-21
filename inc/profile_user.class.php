@@ -50,12 +50,12 @@ class Profile_User extends CommonDBTM {
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('user','r');
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('user','w');
    }
 

@@ -39,25 +39,19 @@ if (!defined('GLPI_ROOT')) {
 /// Class Ticket_User
 abstract class CommonITILActor extends CommonDBRelation {
 
-   // From CommonDBRelation
-   // itemtype_1 : always ITIL object
-//    public $itemtype_1 = 'Ticket';
-//    public $items_id_1 = 'tickets_id';
-   // itemtype_1 : always actor object
-//    public $itemtype_2 = 'User';
-//    public $items_id_2 = 'users_id';
+   // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
 
-   var $checks_only_for_itemtype1 = true;
+   static $checks_only_for_itemtype1 = true;
    var $no_form_page              = true;
 
 
    function getActorForeignKey() {
-      return $this->items_id_2;
+      return static::$items_id_2;
    }
 
 
-   function getItilObjectForeignKey() {
-      return $this->items_id_1;
+   static function getItilObjectForeignKey() {
+      return static::$items_id_1;
    }
 
 
@@ -92,7 +86,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       $users = array();
       $query = "SELECT `".$this->getTable()."`.*
                 FROM `".$this->getTable()."`
-                WHERE `".$this->getItilObjectForeignKey()."` = '$items_id'";
+                WHERE `".static::getItilObjectForeignKey()."` = '$items_id'";
 
       foreach ($DB->request($query) as $data) {
          $users[$data['type']][] = $data;
@@ -111,7 +105,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       $users = array();
       $query = "SELECT `".$this->getTable()."`.*
                 FROM `".$this->getTable()."`
-                WHERE `".$this->getItilObjectForeignKey()."` = '$items_id'
+                WHERE `".static::getItilObjectForeignKey()."` = '$items_id'
                   AND `alternative_email` = '$email'";
 
       foreach ($DB->request($query) as $data) {
@@ -166,14 +160,14 @@ abstract class CommonITILActor extends CommonDBRelation {
       if (!isset($this->fields['users_id'])) {
          return false;
       }
-      $item = new $this->itemtype_1();
+      $item = new static::$itemtype_1();
 
       echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."</td>";
       echo "<td>";
-      if ($item->getFromDB($this->fields[$this->getItilObjectForeignKey()])) {
+      if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
          echo $item->getField('name');
       }
       echo "</td></tr>";
@@ -239,19 +233,19 @@ abstract class CommonITILActor extends CommonDBRelation {
          $donotif = false;
       }
 
-      $item = new $this->itemtype_1();
+      $item = new static::$itemtype_1();
 
-      if ($item->getFromDB($this->fields[$this->getItilObjectForeignKey()])) {
+      if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
          if (($item->countSuppliers(CommonITILObject::ASSIGN) == 0)
              && ($item->countUsers(CommonITILObject::ASSIGN) == 0)
              && ($item->countGroups(CommonITILObject::ASSIGN) == 0)
              && ($item->fields['status'] != 'closed')
              && ($item->fields['status'] != 'solved')) {
 
-            $item->update(array('id'     => $this->fields[$this->getItilObjectForeignKey()],
+            $item->update(array('id'     => $this->fields[static::getItilObjectForeignKey()],
                                 'status' => 'new'));
          } else {
-            $item->updateDateMod($this->fields[$this->getItilObjectForeignKey()]);
+            $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
             if ($donotif) {
                $options = array();
@@ -269,13 +263,13 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    function post_addItem() {
 
-      $item = new $this->itemtype_1();
+      $item = new static::$itemtype_1();
 
       $no_stat_computation = true;
       if ($this->input['type']==CommonITILObject::ASSIGN) {
          $no_stat_computation = false;
       }
-      $item->updateDateMod($this->fields[$this->getItilObjectForeignKey()], $no_stat_computation);
+      $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
 
       parent::post_addItem();
    }

@@ -39,10 +39,10 @@ if (!defined('GLPI_ROOT')) {
 class Computer_SoftwareVersion extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Computer';
-   public $items_id_1 = 'computers_id';
-   public $itemtype_2 = 'SoftwareVersion';
-   public $items_id_2 = 'softwareversions_id';
+   static public $itemtype_1 = 'Computer';
+   static public $items_id_1 = 'computers_id';
+   static public $itemtype_2 = 'SoftwareVersion';
+   static public $items_id_2 = 'softwareversions_id';
 
 
    static function getTypeName($nb=0) {

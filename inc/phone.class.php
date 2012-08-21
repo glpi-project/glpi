@@ -52,12 +52,12 @@ class Phone extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('phone', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('phone', 'r');
    }
 
@@ -341,7 +341,7 @@ class Phone extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['connect']    = _x('button', 'Connect');

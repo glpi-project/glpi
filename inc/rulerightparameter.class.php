@@ -53,12 +53,12 @@ class RuleRightParameter extends CommonDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('rule_ldap', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('rule_ldap', 'r');
    }
 

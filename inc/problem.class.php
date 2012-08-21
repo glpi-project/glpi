@@ -90,12 +90,12 @@ class Problem extends CommonITILObject {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('edit_all_problem', '1');
    }
 
 
-   function canView() {
+   static function canView() {
 
       return (Session::haveRight('show_all_problem', '1')
               || Session::haveRight('show_my_problem', '1'));
@@ -392,10 +392,9 @@ class Problem extends CommonITILObject {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      $tmp = new ProblemTask();
-      if ($tmp->canCreate()) {
+      if (ProblemTask::canCreate()) {
          $actions['add_task'] = __('Add a new task');
       }
       if (Session::haveRight("edit_all_problem","1")) {
@@ -1083,7 +1082,7 @@ class Problem extends CommonITILObject {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
 
-      if (!$this->canView()) {
+      if (!static::canView()) {
         return false;
       }
 

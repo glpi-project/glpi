@@ -47,14 +47,14 @@ class TicketTask  extends CommonITILTask {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
 
       return (Session::haveRight('global_add_tasks', 1)
               || Session::haveRight('own_ticket', 1));
    }
 
 
-   function canView() {
+   static function canView() {
 
       return (Session::haveRight('observe_ticket', 1)
               || Session::haveRight('show_full_ticket', 1)
@@ -62,7 +62,7 @@ class TicketTask  extends CommonITILTask {
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
 
       return (Session::haveRight('global_add_tasks', 1)
               || Session::haveRight('own_ticket', 1)

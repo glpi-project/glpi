@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class Reservation extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype = 'ReservationItem';
-   public $items_id = 'reservationitems_id';
+   static public $itemtype = 'ReservationItem';
+   static public $items_id = 'reservationitems_id';
 
 
    /**

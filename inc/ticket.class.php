@@ -113,12 +113,12 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('create_ticket', 1);
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
 
       return (Session::haveRight('update_ticket', 1)
               || Session::haveRight('create_ticket', 1)
@@ -128,7 +128,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function canView() {
+   static function canView() {
 
       if (isset($_SESSION['glpiactiveprofile']['interface'])
          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
@@ -312,7 +312,7 @@ class Ticket extends CommonITILObject {
          return true;
       }
 
-      return $this->canUpdate();
+      return static::canUpdate();
    }
 
 
@@ -653,9 +653,8 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'status';
          }
          // for post-only with validate right or validation created by rules
-         $ticketval = new TicketValidation();
          if (TicketValidation::canValidate($this->fields['id'])
-             || $ticketval->canCreate()
+             || TicketValidation::canCreate()
              || isset($input["_rule_process"])) {
             $allowed_fields[] = 'global_validation';
          }
@@ -1686,22 +1685,19 @@ class Ticket extends CommonITILObject {
 
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      $tmp = new TicketFollowup();
-      if ($tmp->canCreate()
+      if (TicketFollowup::canCreate()
             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
          $actions['add_followup'] = __('Add a new followup');
       }
 
-      $tmp = new TicketTask();
-      if ($tmp->canCreate()) {
+      if (TicketTask::canCreate()) {
          $actions['add_task'] = __('Add a new task');
       }
 
-      $tmp = new TicketValidation();
-      if ($tmp->canCreate()) {
+      if (TicketValidation::canCreate()) {
          $actions['submit_validation'] = __('Approval request');
       }
 

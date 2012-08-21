@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleAction extends CommonDBChild {
 
    // From CommonDBChild
-   public $items_id  = 'rules_id';
+   static public $items_id  = 'rules_id';
    public $dohistory = true;
 
 
@@ -46,7 +46,7 @@ class RuleAction extends CommonDBChild {
     * @param $rule_type
    **/
    function __construct($rule_type='Rule') {
-      $this->itemtype = $rule_type;
+      static::$itemtype = $rule_type;
    }
 
 
@@ -67,7 +67,7 @@ class RuleAction extends CommonDBChild {
    **/
    function getName($with_comment=0) {
 
-      if ($rule = getItemForItemtype($this->itemtype)) {
+      if ($rule = getItemForItemtype(static::$itemtype)) {
          return Html::clean($rule->getMinimalActionText($this->fields));
       }
    }

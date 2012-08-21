@@ -48,12 +48,12 @@ class SolutionTemplate extends CommonDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('entity_dropdown', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('entity_dropdown', 'r');
    }
 

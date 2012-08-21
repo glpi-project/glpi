@@ -80,7 +80,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return booleen
    **/
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('dropdown', 'w');
    }
 
@@ -92,7 +92,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return booleen
    **/
-   function canView() {
+   static function canView() {
       return Session::haveRight('dropdown', 'r');
    }
 
@@ -312,7 +312,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin &&  $this->maybeRecursive()

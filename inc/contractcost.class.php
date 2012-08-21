@@ -41,9 +41,9 @@ if (!defined('GLPI_ROOT')) {
 class ContractCost extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'Contract';
-   public $items_id  = 'contracts_id';
-   public $dohistory = true;
+   static public $itemtype = 'Contract';
+   static public $items_id = 'contracts_id';
+   public $dohistory       = true;
 
 
    static function getTypeName($nb=0) {
@@ -51,12 +51,12 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('contract', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('contract', 'r');
    }
 

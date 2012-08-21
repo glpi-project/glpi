@@ -35,8 +35,8 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTemplateTranslation extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'NotificationTemplate';
-   public $items_id  = 'notificationtemplates_id';
+   static public $itemtype  = 'NotificationTemplate';
+   static public $items_id  = 'notificationtemplates_id';
    public $dohistory = true;
 
 
@@ -71,12 +71,12 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('config', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('config', 'r');
    }
 

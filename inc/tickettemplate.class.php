@@ -122,12 +122,12 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('tickettemplate', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('tickettemplate', 'r');
    }
 

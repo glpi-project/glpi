@@ -55,12 +55,12 @@ class Calendar extends CommonDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('calendar', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('calendar', 'r');
    }
 
@@ -74,7 +74,7 @@ class Calendar extends CommonDropdown {
       return $ong;
    }
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

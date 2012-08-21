@@ -43,12 +43,12 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    public $dohistory = true;
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('entity_dropdown', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('entity_dropdown', 'r');
    }
 

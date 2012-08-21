@@ -38,12 +38,13 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPort_Vlan extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'NetworkPort';
-   public $items_id_1 = 'networkports_id';
+   static public $itemtype_1 = 'NetworkPort';
+   static public $items_id_1 = 'networkports_id';
+   static public $checkItem_1_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
-   public $itemtype_2 = 'Vlan';
-   public $items_id_2 = 'vlans_id';
-
+   static public $itemtype_2 = 'Vlan';
+   static public $items_id_2 = 'vlans_id';
+   static public $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
    /**
     * Get search function for the class
@@ -150,92 +151,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
          }
       }
       return $ok;
-   }
-
-
-   /**
-    * @since version 0.84
-    *
-    * @param $itemtype
-    * @param $base                  HTMLTableBase object
-    * @param $super                 HTMLTableSuperHeader object (default NULL)
-    * @param $father                HTMLTableHeader object (default NULL)
-    * @param $options      array
-   **/
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $base->addHeader($column_name, Vlan::getTypeName(), $super, $father);
-   }
-
-
-   /**
-    * @since version 0.84
-    *
-    * @param $row                HTMLTableRow object
-    * @param $item               CommonDBTM object (default NULL)
-    * @param $father             HTMLTableCell object (default NULL)
-    * @param $options   array
-   **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
-      global $DB, $CFG_GLPI;
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      if (empty($item)) {
-         if (empty($father)) {
-            return;
-         }
-         $item = $father->getItem();
-      }
-
-      $canedit = (isset($options['canedit']) && $options['canedit']);
-
-      $query = "SELECT `glpi_networkports_vlans`.*,
-                       `glpi_vlans`.`tag` AS vlantag,
-                       `glpi_vlans`.`comment` AS vlancomment
-                FROM `glpi_networkports_vlans`
-                LEFT JOIN `glpi_vlans`
-                        ON (`glpi_networkports_vlans`.`vlans_id` = `glpi_vlans`.`id`)
-                WHERE `networkports_id` = '".$item->getID()."'";
-
-      foreach ($DB->request($query) as $line) {
-         if (isset($line["tagged"]) && ($line["tagged"] == 1)) {
-            $content = sprintf(__('%1$s - %2$s'),
-                               Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]),
-                               __('Tagged'));
-         } else {
-            $content = sprintf(__('%1$s - %2$s'),
-                               Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]),
-                               __('Untagged'));
-         }
-         $content .= Html::showToolTip(sprintf(__('%1$s: %2$s'),
-                                               __('ID TAG'), $line['vlantag'])."<br>".
-                                       sprintf(__('%1$s: %2$s'),
-                                               __('Comments'), $line['vlancomment']),
-                                       array('display' => false));
-         if ($canedit) {
-            $content .= "<a href='" . $CFG_GLPI["root_doc"] .
-                         "/front/networkport.form.php?unassign_vlan=" . "unassigned&amp;id=" .
-                         $line["id"] . "'>";
-            $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                          __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
-         }
-
-         $this_cell = $row->addCell($row->getHeaderByName($column_name), $content, $father);
-      }
    }
 
 

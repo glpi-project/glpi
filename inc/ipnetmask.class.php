@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /// since version 0.84
 class IPNetmask extends IPAddress {
 
-   var $notable = true;
+   static protected $notable = true;
 
 
    /**

@@ -41,10 +41,10 @@ class Calendar_Holiday extends CommonDBRelation {
    public $auto_message_on_action = false;
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Calendar';
-   public $items_id_1 = 'calendars_id';
-   public $itemtype_2 = 'Holiday';
-   public $items_id_2 = 'holidays_id';
+   static public $itemtype_1 = 'Calendar';
+   static public $items_id_1 = 'calendars_id';
+   static public $itemtype_2 = 'Holiday';
+   static public $items_id_2 = 'holidays_id';
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();

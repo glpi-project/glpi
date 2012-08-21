@@ -67,24 +67,6 @@ class DeviceSoundCard extends CommonDevice {
 
 
    /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-
-      $data['label'] = $data['value'] = array();
-
-      if (!empty($this->fields["type"])) {
-         $data['label'][] = __('Type');
-         $data['value'][] = $this->fields["type"];
-      }
-
-      return $data;
-   }
-
-
-   /**
     * @since version 0.84
     *
     * @param $itemtype
@@ -97,16 +79,16 @@ class DeviceSoundCard extends CommonDevice {
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
 
-      $column_name = __CLASS__;
+      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
+      if ($column == $father) {
+         return $father;
       }
 
       switch ($itemtype) {
-         case 'Computer_Device' :
+         case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('type', __('Type'), $super, $father);
+            $base->addHeader('devicesoundcard_type', __('Type'), $super, $father);
             break;
       }
 
@@ -116,23 +98,25 @@ class DeviceSoundCard extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableCell()
+    * @see inc/CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
-      switch ($item_type) {
-         case 'Computer_Device' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
-            if ($this->fields["type"]) {
-               $row->addCell($row->getHeaderByName('specificities', 'type'), $this->fields["type"],
-                             $father);
-            }
+      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
-            break;
+      if ($column == $father) {
+         return $father;
       }
 
+      switch ($item->getType()) {
+         case 'Computer' :
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            if ($this->fields["type"]) {
+               $row->addCell($row->getHeaderByName('devicesoundcard_type'), $this->fields["type"],
+                             $father);
+            }
+      }
    }
-
 }
 ?>

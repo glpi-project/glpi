@@ -37,7 +37,7 @@
 **/
 class AuthLdapReplicate extends CommonDBTM {
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('config', 'w');
    }
 

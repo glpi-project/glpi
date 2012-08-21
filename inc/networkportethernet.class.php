@@ -161,8 +161,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
                                         'parameters' => array(clone $netport)));
 
-      $oppositePort = new NetworkPort();
-      if ($oppositePort->getFromDB($netport->getContact($netport->getID()))) {
+      $oppositePort = NetworkPort_NetworkPort::getOpposite($netport);
+      if ($oppositePort !== false) {
 
          $opposite_options = $options;
          $opposite_options['canedit'] = false;
@@ -222,13 +222,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       if (!$device1->can($device1->getID(), 'r')) {
          return false;
       }
-
-      $contact = new NetworkPort_NetworkPort();
       $canedit = $device1->can($device1->fields["id"], 'w');
 
-      if ($contact_id = $contact->getOppositeContact($ID)) {
-         $oppositePort = new NetworkPort();
-         $oppositePort->getFromDB($contact_id);
+      $relations_id = 0;
+      $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
+
+      if ($oppositePort !== false) {
 
          $device2 = $oppositePort->getItem();
 
@@ -252,7 +251,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                echo " <span class='b'>";
 
                echo "<a href=\"".$oppositePort->getFormURL()."?disconnect=".
-                  "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
+                  "disconnect&amp;id=$relations_id\">". __('Disconnect').
                   "</a>";
 
                echo "</span>";

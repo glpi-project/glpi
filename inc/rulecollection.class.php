@@ -58,20 +58,18 @@ class RuleCollection extends CommonDBTM {
    var $entity                                = 0;
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->forceTable('glpi_rules');
+   // Temproray hack for this class
+   static function getTable() {
+      return 'glpi_rules';
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight($this->right, 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight($this->right, 'r');
    }
 
@@ -85,7 +83,7 @@ class RuleCollection extends CommonDBTM {
 
 
    function canList() {
-      return $this->canView();
+      return static::canView();
    }
 
 

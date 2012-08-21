@@ -47,21 +47,21 @@ class ChangeTask extends CommonITILTask {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
 
       return (Session::haveRight('show_my_change', '1')
               || Session::haveRight('edit_all_change', '1'));
    }
 
 
-   function canView() {
+   static function canView() {
 
       return (Session::haveRight('show_all_change', 1)
               || Session::haveRight('show_my_change', 1));
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
 
       return (Session::haveRight('edit_all_change', 1)
              || Session::haveRight('show_my_change', 1));

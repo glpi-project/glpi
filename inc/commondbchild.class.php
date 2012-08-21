@@ -32,12 +32,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Common DataBase Relation Table Manager Class
-abstract class CommonDBChild extends CommonDBTM {
+abstract class CommonDBChild extends CommonDBConnexity {
 
-   /// @TODO : transform $itemtype and $items_id to static thanks to late state binding
-   // Mapping between DB fields
-   public $itemtype; // Class name or field name (start with itemtype) for link to Parent
-   public $items_id; // Field name
+  // Mapping between DB fields
+   static public $itemtype; // Class name or field name (start with itemtype) for link to Parent
+   static public $items_id; // Field name
+
+   static public $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
 
    // Make an history of the changes -
    // if true, will write a event in the history of parent for add/delete
@@ -49,9 +50,44 @@ abstract class CommonDBChild extends CommonDBTM {
    /// If it is attached, inherit entity from the item
    /// since version 0.84
    public $inheritEntityFromItem = false;
-   // TODO : thinking of factorizing the CommonDBTM::can* methods as checking the item ability
-   // may be use for most CommonDBChild
 
+
+   protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+      $conditions = array();
+      $fields = array('`'.static::getIndexName().'`');
+
+      // Check item 1 type
+      $condition_id = "`".static::$items_id."` = '$items_id'";
+      $fields[] = "`".static::$items_id."` as items_id";
+      if (preg_match('/^itemtype/', static::$itemtype)) {
+         $fields[] = "`".static::$itemtype."` AS itemtype";
+         $condition = "($condition_id AND `".static::$itemtype."` = '$itemtype')";
+      } else {
+         $fields[] = "'".static::$itemtype."' AS itemtype";
+         if (($itemtype ==  static::$itemtype)
+             || is_subclass_of($itemtype,  static::$itemtype)) {
+            $condition = $condition_id;
+         }
+      }
+      if (isset($condition)) {
+         return "SELECT ".implode(', ', $fields)."
+                 FROM `".static::getTable()."`
+                 WHERE $condition";
+      }
+      return '';
+  }
+
+
+   static function canChild($method) {
+      return static::canConnexity($method, static::$checkParentRights,
+                                  static::$itemtype, static::$items_id);
+   }
+
+
+   function canChildItem($methodItem, $methodNotItem) {
+      return static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
+                                      static::$itemtype, static::$items_id);
+   }
 
    /**
     * Get the item associated with the current object. Rely on getItemFromArray()
@@ -61,51 +97,8 @@ abstract class CommonDBChild extends CommonDBTM {
     * @return object of the concerned item or false on error
    **/
    function getItem($getFromDB = true, $getEmpty = true) {
-      return $this->getItemFromArray($this->fields, $getFromDB, $getEmpty);
-   }
-
-
-   /**
-    * Get the item associated with the elements inside the array (for instance : add method)
-    *
-    * @TODO : transform to static with late state binding
-    *
-    * @since version 0.84
-    *
-    * @param $array the array containing the item information (type and id) may be $this->field
-    *
-    * @return object of the concerned item or false on error
-   **/
-   function getItemFromArray(array $array, $getFromDB = true, $getEmpty = true) {
-
-      if (preg_match('/^itemtype/', $this->itemtype)) {
-         if (isset($array[$this->itemtype])) {
-            $type = $array[$this->itemtype];
-         } else {
-            $type = '';
-         }
-      } else {
-         $type = $this->itemtype;
-      }
-
-      $item = getItemForItemtype($type);
-      if ($item !== false) {
-         if ($getFromDB) {
-            if ((isset($array[$this->items_id]))
-                && ($item->getFromDB($array[$this->items_id]))) {
-               return $item;
-            }
-         } else if ($getEmpty) {
-            if ($item->getEmpty()) {
-               return $item;
-            }
-         } else {
-            return $item;
-         }
-         unset($item);
-      }
-
-      return false;
+      return $this->getConnexityItem(static::$itemtype, static::$items_id,
+                                         $getFromDB, $getEmpty);
    }
 
 
@@ -253,7 +246,7 @@ abstract class CommonDBChild extends CommonDBTM {
    **/
    function prepareInputForAdd($input) {
 
-      $item = self::getItemFromArray($input);
+     $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       // Invalidate the element if it is not attached to an item although it must
       if ($this->mustBeAttached
@@ -279,7 +272,7 @@ abstract class CommonDBChild extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
-      $item = self::getItemFromArray($input);
+      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       // TODO : must we apply this filter for the update ?
       // Return invalidate the element if it must be attached but it won't
@@ -319,9 +312,10 @@ abstract class CommonDBChild extends CommonDBTM {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = addslashes($this->getNameID(false, true));
-         Log::history($item->getID(), $item->getType(), $changes, get_class($this),
+         Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       Log::HISTORY_ADD_SUBITEM);
       }
+
    }
 
 
@@ -340,70 +334,48 @@ abstract class CommonDBChild extends CommonDBTM {
          return;
       }
 
-      // Update log of previous and current item to attach the item
+      $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
 
-      // $previousItemArray contains the informations about previous item
-      $newItemArray = array();
-      $previousItemArray = array();
+      if (!isset($items_for_log['previous'])) {
 
-      $newItemArray[$this->items_id] = $this->fields[$this->items_id];
-      if (isset($this->oldvalues[$this->items_id])) {
-         $previousItemArray[$this->items_id] = $this->oldvalues[$this->items_id];
-      } else {
-         $previousItemArray[$this->items_id] = $this->fields[$this->items_id];
-      }
-
-      if (preg_match('/^itemtype/', $this->itemtype)) {
-         $newItemArray[$this->itemtype] = $this->fields[$this->itemtype];
-         if (isset($this->oldvalues[$this->itemtype])) {
-            $previousItemArray[$this->itemtype] = $this->oldvalues[$this->itemtype];
-         } else {
-            $previousItemArray[$this->itemtype] = $this->fields[$this->itemtype];
-         }
-      }
-
-      if ($previousItemArray === $newItemArray) {
-
+         // Haven't updated the connexity relation
          $oldvalues = $this->oldvalues;
-         unset($oldvalues[$this->itemtype]);
-         unset($oldvalues[$this->items_id]);
+         unset($oldvalues[static::$itemtype]);
+         unset($oldvalues[static::$items_id]);
          if (count($oldvalues) > 0) {
+            $item = $items_for_log['new'];
+            if (($item !== false) && ($item->dohistory)) {
+               $changes[0] = '0';
+               $changes[1] = addslashes($this->getNameID(false, true));
+               $changes[2] = addslashes($this->getNameID(false, true));
+               Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
+                            Log::HISTORY_UPDATE_SUBITEM);
+            }
          }
 
-         $item = $this->getItemFromArray($newItemArray);
+      } else {
+         // Have updated the connexity relation
 
-         if (($item !== false) && ($item->dohistory)) {
+         $prevItem = $items_for_log['previous'];
+         $newItem = $items_for_log['new'];
+
+         if (($prevItem !== false) && ($prevItem->dohistory)) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getNameID(false, true));
-            $changes[2] = addslashes($this->getNameID(false, true));
-            Log::history($item->getID(), $item->getType(), $changes, get_class($this),
-                         Log::HISTORY_UPDATE_SUBITEM);
+            $changes[2] = "";
+            Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
+                         Log::HISTORY_DELETE_SUBITEM);
          }
 
-        return;
+         if (($newItem !== false) && ($newItem->dohistory)) {
+            $changes[0] = '0';
+            $changes[1] = "";
+            $changes[2] = addslashes($this->getNameID(false, true));
+            Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
+                         Log::HISTORY_ADD_SUBITEM);
+         }
       }
-
-      $previousItem = $this->getItemFromArray($previousItemArray);
-
-      if (($previousItem !== false) && ($previousItem->dohistory)) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($this->getNameID(false, true));
-         $changes[2] = "";
-         Log::history($previousItem->getID(), $previousItem->getType(), $changes, get_class($this),
-                      Log::HISTORY_DELETE_SUBITEM);
-      }
-
-      $newItem = $this->getItemFromArray($newItemArray);
-
-      if (($newItem !== false) && ($newItem->dohistory)) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($this->getNameID(false, true));
-         Log::history($newItem->getID(), $newItem->getType(), $changes, get_class($this),
-                      Log::HISTORY_ADD_SUBITEM);
-      }
-
-   }
+  }
 
    /**
     * Actions done after the DELETE of the item in the database
@@ -422,42 +394,8 @@ abstract class CommonDBChild extends CommonDBTM {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = addslashes($this->getNameID(false, true));
-         Log::history($item->getID(), $item->getType(), $changes, get_class($this),
+         Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       Log::HISTORY_DELETE_SUBITEM);
-      }
-   }
-
-
-   /**
-    * Clean the Relation Table when item of the relation is deleted
-    * To be call from the cleanDBonPurge of each Item class
-    *
-    * @TODO : transform to static with late state binding but require getTable and getIndexName to be static ...
-    *
-    * @param $itemtype  type of the item
-    * @param $item_id   id of the item
-   **/
-   function cleanDBonItemDelete ($itemtype, $item_id) {
-      global $DB;
-
-      $query = "SELECT `".$this->getIndexName()."`
-                FROM `".$this->getTable()."`";
-
-      if ($itemtype == $this->itemtype) {
-         $where = " WHERE `".$this->items_id."` = '$item_id'";
-
-      } else if (preg_match('/^itemtype/',$this->itemtype)) {
-         $where = " WHERE (`".$this->itemtype."` = '$itemtype'
-                           AND `".$this->items_id."` = '$item_id')";
-
-      } else {
-         return false;
-      }
-
-      foreach ($DB->request($query.$where) as $input) {
-         $input['_no_history'] = true; // Parent is deleted
-         $input['_no_notif']   = true; // Parent is deleted
-         $this->delete($input);
       }
    }
 
@@ -477,7 +415,7 @@ abstract class CommonDBChild extends CommonDBTM {
     *
     * @return nothing (display only)
    **/
-   function showAddButtonForChildItem(CommonDBTM $item, $html_field) {
+   static function showAddButtonForChildItem(CommonDBTM $item, $html_field) {
       global $CFG_GLPI;
 
       $items_id = $item->getID();
@@ -487,7 +425,7 @@ abstract class CommonDBChild extends CommonDBTM {
 
       $canedit     = $item->can($items_id,"w");
 
-      $lower_name  = strtolower($this->getType());
+      $lower_name  = strtolower(get_called_class());
       $nb_item_var = 'nb'.$lower_name.'s';
       $div_id      = $lower_name."add$items_id";
 
@@ -540,11 +478,11 @@ abstract class CommonDBChild extends CommonDBTM {
          $items_id = -99;
       }
 
-      $query = "SELECT `$db_field`, `".$this->getIndexName()."`
+      $query = "SELECT `$db_field`, `".static::getIndexName()."`
                 FROM `" . $this->getTable() . "`
-                WHERE `".$this->items_id."` = '".$item->getID()."'";
+                WHERE `".static::$items_id."` = '".$item->getID()."'";
 
-      if (preg_match('/^itemtype/', $this->itemtype)) {
+      if (preg_match('/^itemtype/', static::$itemtype)) {
          $query .= " AND `itemtype` = '".$item->getType()."'";
       }
 
@@ -563,11 +501,11 @@ abstract class CommonDBChild extends CommonDBTM {
 
          if ($setDefault) {
             echo "<input title='" . sprintf(__s('Default %s'), $this->getTypeName(1)) .
-                   "' type='radio' name='_default_email' value='".$data[$this->getIndexName()]."'".
+                   "' type='radio' name='_default_email' value='".$data[static::getIndexName()]."'".
                    ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
          }
 
-         $input_name  = $html_field . "[" . $data[$this->getIndexName()] . "]";
+         $input_name  = $html_field . "[" . $data[static::getIndexName()] . "]";
          $input_value = $data[$db_field];
 
          if (!$canedit

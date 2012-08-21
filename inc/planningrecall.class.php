@@ -41,7 +41,7 @@ class PlanningRecall extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return true;
    }
 

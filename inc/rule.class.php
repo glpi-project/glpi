@@ -93,12 +93,9 @@ class Rule extends CommonDBTM {
    const OR_MATCHING             = "OR";
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      // Temproray hack for this class
-      $this->forceTable('glpi_rules');
+   // Temproray hack for this class
+   static function getTable() {
+      return 'glpi_rules';
    }
 
 
@@ -107,12 +104,12 @@ class Rule extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight($this->right, 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight($this->right, 'r');
    }
 
@@ -137,7 +134,7 @@ class Rule extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       

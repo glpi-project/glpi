@@ -47,17 +47,17 @@ class Group extends CommonTreeDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('group', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('group', 'r');
    }
 
    function canManageUsersItem() {
-      return ($this->can($this->getID(), 'r') && $this->canUpdate());
+      return ($this->can($this->getID(), 'r') && static::canUpdate());
    }
 
    function post_getEmpty () {
@@ -294,7 +294,7 @@ class Group extends CommonTreeDropdown {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_user_group']        = _x('button', 'Add a user');

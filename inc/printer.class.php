@@ -56,12 +56,12 @@ class Printer  extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('printer', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('printer', 'r');
    }
 
@@ -467,7 +467,7 @@ class Printer  extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['connect']    = _x('button', 'Connect');

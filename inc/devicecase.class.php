@@ -61,26 +61,8 @@ class DeviceCase extends CommonDevice {
       $tab[12]['field']    = 'name';
       $tab[12]['name']     = __('Size');
       $tab[12]['datatype'] = 'dropdown';
-      
 
       return $tab;
-   }
-
-
-   /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-
-      $data['label'] = $data['value'] = array();
-      if ($this->fields["devicecasetypes_id"]) {
-         $data['label'][] = __('Size');
-         $data['value'][] = Dropdown::getDropdownName("glpi_devicecasetypes",
-                                                      $this->fields["devicecasetypes_id"]);
-      }
-      return $data;
    }
 
 
@@ -97,14 +79,14 @@ class DeviceCase extends CommonDevice {
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
 
-      $column_name = __CLASS__;
+      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
+      if ($column == $father) {
+         return $father;
       }
 
       switch ($itemtype) {
-         case 'Computer_Device' :
+         case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
@@ -114,16 +96,22 @@ class DeviceCase extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableCell()
+    * @see inc/CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
-      switch ($item_type) {
-         case 'Computer_Device' :
+      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+      if ($column == $father) {
+         return $father;
+      }
+
+      switch ($item->getType()) {
+         case 'Computer' :
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            break;
       }
    }
-
 }
 ?>

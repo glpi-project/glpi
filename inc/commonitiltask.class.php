@@ -1020,7 +1020,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showSummary(CommonITILObject $item) {
       global $DB, $CFG_GLPI;
 
-      if (!$this->canView()) {
+      if (!static::canView()) {
          return false;
       }
 

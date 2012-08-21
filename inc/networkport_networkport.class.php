@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPort_NetworkPort extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'NetworkPort';
-   public $items_id_1 = 'networkports_id_1';
-   public $itemtype_2 = 'NetworkPort';
-   public $items_id_2 = 'networkports_id_2';
+   static public $itemtype_1 = 'NetworkPort';
+   static public $items_id_1 = 'networkports_id_1';
+   static public $itemtype_2 = 'NetworkPort';
+   static public $items_id_2 = 'networkports_id_2';
 
 
    /**

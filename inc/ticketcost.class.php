@@ -41,8 +41,8 @@ if (!defined('GLPI_ROOT')) {
 class TicketCost extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'Ticket';
-   public $items_id  = 'tickets_id';
+   static public $itemtype  = 'Ticket';
+   static public $items_id  = 'tickets_id';
    public $dohistory = true;
 
 
@@ -51,12 +51,12 @@ class TicketCost extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('ticketcost', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('ticketcost', 'r');
    }
 

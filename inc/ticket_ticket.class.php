@@ -41,19 +41,19 @@ class Ticket_Ticket extends CommonDBRelation {
 
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Ticket';
-   public $items_id_1 = 'tickets_id_1';
-   public $itemtype_2 = 'Ticket';
-   public $items_id_2 = 'tickets_id_2';
+   static public $itemtype_1 = 'Ticket';
+   static public $items_id_1 = 'tickets_id_1';
+   static public $itemtype_2 = 'Ticket';
+   static public $items_id_2 = 'tickets_id_2';
 
-   public $check_entities = false;
+   static public $check_entities = false;
 
    // Ticket links
    const LINK_TO        = 1;
    const DUPLICATE_WITH = 2;
 
 
-   function canCreate() {
+   static function canCreate() {
 
       return (Session::haveRight('create_ticket', 1) // Add on creation
               || Session::haveRight('update_ticket', 1));

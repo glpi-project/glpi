@@ -62,12 +62,10 @@ class CommonGLPI {
     *
     * @return string
    **/
-   function getType() {
+   static function getType() {
 
-      if ($this->type == -1) {
-         $this->type = get_class($this);
-      }
-      return $this->type;
+      return get_called_class();
+
    }
 
 
@@ -546,8 +544,8 @@ class CommonGLPI {
     *
     * @param $full path or relative one (true by default)
    **/
-   function getTabsURL($full=true) {
-      return Toolbox::getItemTypeTabsURL(get_class($this), $full);
+   static function getTabsURL($full=true) {
+      return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
    }
 
 
@@ -556,8 +554,8 @@ class CommonGLPI {
     *
     * @param $full path or relative one (true by default)
    **/
-   function getSearchURL($full=true) {
-      return Toolbox::getItemTypeSearchURL(get_class($this), $full);
+   static function getSearchURL($full=true) {
+      return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
    }
 
 
@@ -566,8 +564,8 @@ class CommonGLPI {
     *
     * @param $full path or relative one (true by default)
    **/
-   function getFormURL($full=true) {
-      return Toolbox::getItemTypeFormURL(get_class($this), $full);
+   static function getFormURL($full=true) {
+      return Toolbox::getItemTypeFormURL(get_called_class(), $full);
    }
 
 

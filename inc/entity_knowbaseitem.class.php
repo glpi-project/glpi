@@ -41,10 +41,10 @@ if (!defined('GLPI_ROOT')) {
 class Entity_KnowbaseItem extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'KnowbaseItem';
-   public $items_id_1 = 'knowbaseitems_id';
-   public $itemtype_2 = 'Entity';
-   public $items_id_2 = 'entities_id';
+   static public $itemtype_1 = 'KnowbaseItem';
+   static public $items_id_1 = 'knowbaseitems_id';
+   static public $itemtype_2 = 'Entity';
+   static public $items_id_2 = 'entities_id';
 
 
    /**

@@ -46,40 +46,31 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'itemtype';
-   public $items_id  = 'items_id';
-   public $dohistory = true;
+   static public $itemtype  = 'itemtype';
+   static public $items_id  = 'items_id';
+   public $dohistory        = true;
 
+   static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
-   function canCreate() {
-      return Session::haveRight('networking','w');
+   static function canCreate() {
+      return (Session::haveRight('networking','w')
+              && parent::canChild('canCreate'));
    }
 
 
-   function canView() {
-      return Session::haveRight('networking','r');
+   static function canView() {
+      return (Session::haveRight('networking','r')
+              && parent::canChild('canView'));
    }
 
 
    function canCreateItem() {
-
-      if (isset($this->fields['itemtype'])
-          && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return $item->canCreate();
-      }
-
-      return false;
+      return parent::canChildItem('canCreateItem', 'canCreate');
    }
 
 
    function canViewItem() {
-
-      if (isset($this->fields['itemtype'])
-          && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return $item->canView();
-      }
-
-      return false;
+      return parent::canChildItem('canViewItem', 'canView');
    }
 
 
@@ -927,7 +918,7 @@ class NetworkPort extends CommonDBChild {
       $joinparams                = array('jointype' => 'itemtype_item');
 
       if ($itemtype == 'Computer') {
-         $joinparams['beforejoin'] = array('table'      => 'glpi_computers_devicenetworkcards',
+         $joinparams['beforejoin'] = array('table'      => 'glpi_items_devicenetworkcards',
                                            'joinparams' => array('jointype' => 'child',
                                                                  'nolink'   => true));
       }

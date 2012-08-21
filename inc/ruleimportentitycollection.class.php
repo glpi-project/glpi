@@ -51,7 +51,7 @@ class RuleImportEntityCollection extends RuleCollection {
       global $PLUGIN_HOOKS;
 
       if (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item'])) {
-         return $this->canView();
+         return static::canView();
       }
       return false;
    }

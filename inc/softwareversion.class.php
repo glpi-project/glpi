@@ -43,8 +43,8 @@ class SoftwareVersion extends CommonDBChild {
    public $dohistory = true;
 
    // From CommonDBChild
-   public $itemtype  = 'Software';
-   public $items_id  = 'softwares_id';
+   static public $itemtype  = 'Software';
+   static public $items_id  = 'softwares_id';
 
 
    static function getTypeName($nb=0) {
@@ -52,11 +52,11 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('software', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('software', 'r');
    }
 

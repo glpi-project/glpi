@@ -40,11 +40,11 @@ if (!defined('GLPI_ROOT')) {
 class Contract_Supplier extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Contract';
-   public $items_id_1 = 'contracts_id';
+   static public $itemtype_1 = 'Contract';
+   static public $items_id_1 = 'contracts_id';
 
-   public $itemtype_2 = 'Supplier';
-   public $items_id_2 = 'suppliers_id';
+   static public $itemtype_2 = 'Supplier';
+   static public $items_id_2 = 'suppliers_id';
 
 
    /**

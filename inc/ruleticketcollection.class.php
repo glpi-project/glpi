@@ -52,7 +52,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    function canList() {
-      return Session::haveRight("rule_ticket","r") || $this->canView();
+      return Session::haveRight("rule_ticket","r") || static::canView();
    }
 
 

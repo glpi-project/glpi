@@ -39,13 +39,13 @@ if (!defined('GLPI_ROOT')) {
 class Problem_Ticket extends CommonDBRelation{
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Problem';
-   public $items_id_1 = 'problems_id';
+   static public $itemtype_1 = 'Problem';
+   static public $items_id_1 = 'problems_id';
 
-   public $itemtype_2 = 'Ticket';
-   public $items_id_2 = 'tickets_id';
+   static public $itemtype_2 = 'Ticket';
+   static public $items_id_2 = 'tickets_id';
 
-   var $checks_only_for_itemtype1 = true;
+   static public $checks_only_for_itemtype1 = true;
 
 
    static function getTypeName($nb=0) {

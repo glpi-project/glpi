@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class Ticket_User extends CommonITILActor {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Ticket';
-   public $items_id_1 = 'tickets_id';
-   public $itemtype_2 = 'User';
-   public $items_id_2 = 'users_id';
+   static public $itemtype_1 = 'Ticket';
+   static public $items_id_1 = 'tickets_id';
+   static public $itemtype_2 = 'User';
+   static public $items_id_2 = 'users_id';
 
 
 }

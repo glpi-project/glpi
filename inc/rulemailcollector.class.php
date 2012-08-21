@@ -44,22 +44,18 @@ class RuleMailCollector extends Rule {
    public $can_sort = true;
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-
-      // Temproray hack for this class
-      $this->forceTable('glpi_rules');
+   // Temproray hack for this class
+   static function getTable() {
+      return 'glpi_rules';
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('rule_mailcollector', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('rule_mailcollector', 'r');
    }
 

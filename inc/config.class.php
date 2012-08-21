@@ -54,17 +54,17 @@ class Config extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return false;
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
       return Session::haveRight('config', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('config', 'r');
    }
 
