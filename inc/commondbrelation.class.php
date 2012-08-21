@@ -308,6 +308,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
              && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))) {
             return true;
          }
+         return false;
       }
 
       return true;
