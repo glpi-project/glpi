@@ -43,7 +43,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $items_id_2; // Field name
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
+   static public $check_entity_coherency = true;
    /// TODO : clean $logs_only_for_itemtype1 and $checks_only_for_itemtype1 !
+
    static public $logs_for_itemtype_1 = true;
    static public $logs_for_itemtype_2 = true;
 
@@ -268,14 +270,44 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
    function canRelationItem($method, $methodNotItem) {
 
+      $item1 = NULL;
+
       if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
-                                   static::$itemtype_1, static::$items_id_1)) {
+                                   static::$itemtype_1, static::$items_id_1, $item1)) {
          return false;
       }
 
+      $item2 = NULL;
+
       if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
-                                   static::$itemtype_2, static::$items_id_2)) {
+                                   static::$itemtype_2, static::$items_id_2, $item2)) {
          return false;
+      }
+
+      // Check coherency of entities
+      if (static::$check_entity_coherency) {
+
+         // If one of both extremity is not valid => not allowed !
+         /// @TODO : we may check this in all case, not only when checking coherency
+         if ((!$item1 instanceof CommonDBTM)
+             || (!$item1 instanceof CommonDBTM)) {
+            return false;
+         }
+
+         $entity1 = $item1->getEntityID();
+         $entity2 = $item2->getEntityID();
+
+         if ($entity1 == $entity2) {
+            return true;
+         }
+         if (($item1->isRecursive())
+             && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))) {
+            return true;
+         }
+         if (($item2->isRecursive())
+             && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))) {
+            return true;
+         }
       }
 
       return true;

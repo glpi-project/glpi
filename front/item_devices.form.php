@@ -41,7 +41,6 @@ Session::checkCentralAccess();
 if (isset($_POST["add"])) {
    $link_type = 'Item_'.$_POST['devicetype'];
    $link = new $link_type();
-   $link->check(-1, 'w', $_POST);
    $link->addDevices(1, $_POST['itemtype'], $_POST['items_id'], $_POST['devices_id']);
    Html::back();
 } else if (isset($_POST["updateall"])) {
