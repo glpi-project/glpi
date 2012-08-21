@@ -267,7 +267,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   function canRelationItem($method, $methodNotItem) {
+   function canRelationItem($method, $methodNotItem, $check_entity=true) {
 
       $item1 = NULL;
 
@@ -284,7 +284,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       // Check coherency of entities
-      if (static::$check_entity_coherency) {
+      if ($check_entity && static::$check_entity_coherency) {
 
          // If one of both extremity is not valid => not allowed !
          /// @TODO : we may check this in all case, not only when checking coherency
@@ -293,7 +293,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
              || (!$item2 instanceof CommonDBTM)) {
             return false;
          }
-         if ($item1->isEntityAssign() && $item26>isEntityAssign()) {
+         if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
             $entity1 = $item1->getEntityID();
             $entity2 = $item2->getEntityID();
 
@@ -333,19 +333,19 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
    function canCreateItem() {
-      return $this->canRelationItem('canCreateItem', 'canCreate');
+      return $this->canRelationItem('canCreateItem', 'canCreate', true);
    }
 
    function canViewItem() {
-      return $this->canRelationItem('canViewItem', 'canView');
+      return $this->canRelationItem('canViewItem', 'canView', false);
    }
 
    function canUpdateItem() {
-      return $this->canRelationItem('canUpdateItem', 'canUpdate');
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', true);
    }
 
    function canDeleteItem() {
-      return $this->canRelationItem('canDeleteItem', 'canDelete');
+      return $this->canRelationItem('canDeleteItem', 'canDelete', false);
    }
 
 

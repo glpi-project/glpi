@@ -1413,8 +1413,9 @@ class Problem extends CommonITILObject {
 
    /**
     * @param $output_type  (default Search::HTML_OUTPUT)
+    * @param $mass_id id of the form to check all
    **/
-   static function commonListHeader($output_type=Search::HTML_OUTPUT) {
+   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
 
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);
@@ -1423,6 +1424,7 @@ class Problem extends CommonITILObject {
 
       $items = array();
 
+      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Status')]       = "glpi_problems.status";
       $items[__('Date')]         = "glpi_problems.date";
       $items[__('Last update')]  = "glpi_problems.date_mod";
@@ -1487,17 +1489,7 @@ class Problem extends CommonITILObject {
 
          echo Search::showNewLine($output_type,$row_num%2);
 
-         // First column
-         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
-         if ($output_type == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
-                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
-                           self::getStatus($job->fields["status"])."\">";
-         } else {
-            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
-                                 self::getStatus($job->fields["status"]));
-         }
-
+         $check_col = '';
          if (($candelete || $canupdate)
              && ($output_type == Search::HTML_OUTPUT)) {
 
@@ -1508,8 +1500,20 @@ class Problem extends CommonITILObject {
             if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
                $sel = "checked";
             }
-            $first_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
+            $check_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
                                   value='1' $sel>";
+         }
+         echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
+
+         // First column
+         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+         if ($output_type == Search::HTML_OUTPUT) {
+            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
+                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
+                           self::getStatus($job->fields["status"])."\">";
+         } else {
+            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
+                                 self::getStatus($job->fields["status"]));
          }
 
          echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);

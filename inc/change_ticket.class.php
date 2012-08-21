@@ -85,7 +85,6 @@ class Change_Ticket extends CommonDBRelation{
       echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-      $colspan = 1;
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
                                 `glpi_tickets`.*
@@ -113,7 +112,7 @@ class Change_Ticket extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a ticket')."</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
+         echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
          Ticket::dropdown(array('used'        => $used,
                                 'entity'      => $change->getEntityID(),
@@ -144,7 +143,6 @@ class Change_Ticket extends CommonDBRelation{
       echo "<th>".__('Title')."</th>";
       if ($change->isRecursive()) {
          echo "<th>".__('Entity')."</th>";
-         $colspan++;
       }
       echo "</tr>";
 
@@ -203,7 +201,6 @@ class Change_Ticket extends CommonDBRelation{
       echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-      $colspan = 1;
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
                                 `glpi_changes`.*
