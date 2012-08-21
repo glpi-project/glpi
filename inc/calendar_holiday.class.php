@@ -46,7 +46,12 @@ class Calendar_Holiday extends CommonDBRelation {
    public $itemtype_2 = 'Holiday';
    public $items_id_2 = 'holidays_id';
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    function canCreateItem() {
 
       $calendar = new Calendar();
@@ -93,13 +98,54 @@ class Calendar_Holiday extends CommonDBRelation {
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
+      $holidays = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $holidays[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+      
+      
+      if ($canedit) {
+         echo "<div class='spaced'>";
+         echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
+               action='";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a close time')."</tr>";
+         echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
+         echo "<input type='hidden' name='calendars_id' value='$ID'>";
+         Holiday::dropdown(array('used'   => $used,
+                                 'entity' => $calendar->fields["entities_id"]));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
 
-      echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".__('Name')."</th>";
+      }
+      
+      echo "<div class='center'>";
+
+      if ($canedit) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         if ($numrows) {
+            $paramsma = array('num_displayed' => $numrows);
+            Html::showMassiveActions(__CLASS__, $paramsma);
+         }
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th width='10'>";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".__('Name')."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
       echo "<th>".__('Recurrent')."</th>";
@@ -116,16 +162,14 @@ class Calendar_Holiday extends CommonDBRelation {
                                         sprintf(__('%1$s = %2$s'), $calendar->getTypeName(1),
                                                 $calendar->fields["name"]));
 
-         while ($data = $DB->fetch_assoc($result)) {
+         foreach ($holidays as $data) {
             Session::addToNavigateListItems('Holiday', $data["id"]);
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
             if ($canedit) {
+               echo "<td>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
-            }
             echo "</td>";
+            }
             $used[$data['id']] = $data['id'];
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
@@ -135,24 +179,16 @@ class Calendar_Holiday extends CommonDBRelation {
             echo "</tr>";
          }
       }
+      echo "</table>";
 
       if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
-         echo "<input type='hidden' name='calendars_id' value='$ID'>";
-         Holiday::dropdown(array('used'   => $used,
-                                 'entity' => $calendar->fields["entities_id"]));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr>";
+         if ($numrows) {
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions('Group_User', $paramsma);
+         }
+         Html::closeForm();
       }
-
-      echo "</table></div>";
-
-      if ($canedit && $numrows) {
-         Html::openArrowMassives("calendarholiday_form$rand",true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
-      Html::closeForm();
+      echo "</div>";
    }
 
 

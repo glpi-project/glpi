@@ -43,23 +43,6 @@ if (isset($_POST["add"])) {
                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
-
-} else if (isset($_POST["delete"])) {
-
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            if ($item->can($key, 'w')) {
-               $item->delete(array('id' => $key));
-            }
-         }
-      }
-      Event::log($_POST["calendars_id"], "calendars", 4, "setup",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 }
 
 Html::displayErrorAndDie("lost");
