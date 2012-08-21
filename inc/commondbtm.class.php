@@ -55,11 +55,11 @@ class CommonDBTM extends CommonGLPI {
    var $additional_fields_for_dictionnary = array();
 
    /// Forward entity datas to linked items
-   protected $forward_entity_to = array();
+   static protected $forward_entity_to = array();
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
-   //Forward entity to plugins itemtypes
+   ///Forward entity to plugins itemtypes
    static protected $plugins_forward_entity = array();
 
    const SUCCESS                    = 0; //Process is OK
@@ -82,7 +82,6 @@ class CommonDBTM extends CommonGLPI {
     * @return string
    **/
    static function getTable() {
-
       if (static::$notable) {
          return '';
       }
@@ -1017,11 +1016,11 @@ class CommonDBTM extends CommonGLPI {
                      //Fill forward_entity_to array with itemtypes coming from plugins
                      if (isset(self::$plugins_forward_entity[$this->getType()])) {
                         foreach (self::$plugins_forward_entity[$this->getType()] as $itemtype) {
-                           $this->forward_entity_to[] = $itemtype;
+                           static::$forward_entity_to[] = $itemtype;
                         }
                      }
                      // forward entity information if needed
-                     if (count($this->forward_entity_to)
+                     if (count(static::$forward_entity_to)
                          && (in_array("entities_id",$this->updates)
                              || in_array("is_recursive",$this->updates)) ) {
                         $this->forwardEntityInformations();
@@ -1057,8 +1056,8 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if (count($this->forward_entity_to)) {
-         foreach ($this->forward_entity_to as $type) {
+      if (count(static::$forward_entity_to)) {
+         foreach (static::$forward_entity_to as $type) {
             $item  = new $type();
             $query = "SELECT `id`
                       FROM `".$item->getTable()."`
@@ -4319,5 +4318,26 @@ class CommonDBTM extends CommonGLPI {
       self::$plugins_forward_entity[$for_itemtype][] = $to_itemtype;
    }
 
+   /**
+    * Is entity informations forward To ?
+    *
+    * @since 0.84
+    *
+    * @param $itemtype    itemtype to check
+    *
+    * @return boolean 
+   **/
+   static function isEntityForwardTo($itemtype) {
+      if (in_array($itemtype, static::$forward_entity_to)) {
+         return true;
+      }
+      //Fill forward_entity_to array with itemtypes coming from plugins
+      if (isset(static::$plugins_forward_entity[static::getType()])
+         && in_array($itemtype, static::$plugins_forward_entity[static::getType()])) {
+         return true;
+      }
+      return false;
+   }
+   
 }
 ?>

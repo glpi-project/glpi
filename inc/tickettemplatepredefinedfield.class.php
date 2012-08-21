@@ -46,6 +46,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    static public $itemtype  = 'TicketTemplate';
    static public $items_id  = 'tickettemplates_id';
    public $dohistory = true;
+   
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();

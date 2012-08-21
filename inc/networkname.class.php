@@ -48,8 +48,9 @@ class NetworkName extends FQDNLabel {
    static public $itemtype              = 'itemtype';
    static public $items_id              = 'items_id';
    public $dohistory             = true;
-   public $inheritEntityFromItem = true;
 
+   static protected $forward_entity_to = array('IPAddress');
+   
    static public $canDeleteOnItemClean = false;
 
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;

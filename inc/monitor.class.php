@@ -42,7 +42,7 @@ class Monitor extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory            = true;
-   protected $forward_entity_to = array('Infocom', 'ReservationItem');
+   static protected $forward_entity_to = array('Infocom', 'ReservationItem');
 
 
    /**

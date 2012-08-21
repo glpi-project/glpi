@@ -43,7 +43,7 @@ class Software extends CommonDBTM {
    // From CommonDBTM
    public $dohistory            = true;
 
-   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
+   static protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
 
    static function getTypeName($nb=0) {

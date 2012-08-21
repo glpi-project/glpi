@@ -63,9 +63,7 @@ class CommonGLPI {
     * @return string
    **/
    static function getType() {
-
       return get_called_class();
-
    }
 
 
@@ -369,7 +367,6 @@ class CommonGLPI {
       } else {
          $ID = 0;
       }
-
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
       $extraparam     = "";

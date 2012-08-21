@@ -44,7 +44,7 @@ class Document extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   protected $forward_entity_to = array('Document_Item');
+   static protected $forward_entity_to = array('Document_Item');
 
 
    static function getTypeName($nb=0) {

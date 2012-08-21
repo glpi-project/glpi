@@ -45,7 +45,6 @@ class TicketCost extends CommonDBChild {
    static public $items_id  = 'tickets_id';
    public $dohistory = true;
 
-
    static function getTypeName($nb=0) {
       return _n('Cost', 'Costs', $nb);
    }
@@ -69,11 +68,8 @@ class TicketCost extends CommonDBChild {
       if (!isset($input['tickets_id']) || ($input['tickets_id'] <= 0)) {
          return false;
       }
+      $input = parent::prepareInputForAdd($input);
 
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($input['tickets_id'])) {
-         $input['entities_id'] = $ticket->getEntityID();
-      }
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
           || ($input['end_date'] < $input['begin_date'])) {
@@ -168,7 +164,7 @@ class TicketCost extends CommonDBChild {
 
 
    /**
-    * Get total action time used on costs for a ticket
+    * Get total actiNULL        11400   0.0000  0.0000  0.0000  on time used on costs for a ticket
     *
     * @param $tickets_id        integer  ID of the ticket
    **/
@@ -246,7 +242,7 @@ class TicketCost extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
-      echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
+//       echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
       Html::autocompletionTextField($this,'name');
       echo "</td>";
       echo "<td>".__('Begin date')."</td>";

@@ -54,7 +54,6 @@ class NetworkPortInstantiation extends CommonDBChild {
    static public $items_id       = 'networkports_id';
    public $dohistory             = true;
    public $mustBeAttached        = true;
-   public $inheritEntityFromItem = true;
 
    // Instantiation properties
    public $canHaveVLAN           = true;

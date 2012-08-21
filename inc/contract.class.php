@@ -43,7 +43,7 @@ class Contract extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory            = true;
-   protected $forward_entity_to = array('ContractCost');
+   static protected $forward_entity_to = array('ContractCost');
 
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);

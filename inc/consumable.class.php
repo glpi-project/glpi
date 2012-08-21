@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class Consumable extends CommonDBTM {
 
    // From CommonDBTM
-   protected $forward_entity_to = array('Infocom');
+   static protected $forward_entity_to = array('Infocom');
 
    var $no_form_page            = false;
 
