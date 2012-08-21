@@ -46,7 +46,12 @@ class CalendarSegment extends CommonDBChild {
    public $itemtype = 'Calendar';
    public $items_id = 'calendars_id';
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Time range','Time ranges',$nb);
    }
@@ -289,9 +294,7 @@ class CalendarSegment extends CommonDBChild {
 
       $canedit = $calendar->can($ID,'w');
       $rand    = mt_rand();
-      echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
 
       $query = "SELECT *
                 FROM `glpi_calendarsegments`
@@ -303,6 +306,9 @@ class CalendarSegment extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='spaced'>";
+         echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
+               action='";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a schedule')."</tr>";
 
@@ -319,14 +325,30 @@ class CalendarSegment extends CommonDBChild {
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
 
 
       }
 
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".__('Day')."</th>";
+      echo "<div class='center'>";
+      if ($canedit) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         if ($numrows) {
+            $paramsma = array('num_displayed' => $numrows);
+            Html::showMassiveActions(__CLASS__, $paramsma);
+         }
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th width='10'>";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }      
+      echo "<th>".__('Day')."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
       echo "</tr>";
@@ -337,15 +359,13 @@ class CalendarSegment extends CommonDBChild {
       if ($numrows) {
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
 
             if ($canedit) {
+               echo "<td>";
                echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
+               echo "</td>";
             }
-            echo "</td>";
-
+            
             echo "<td>";
             echo $daysofweek[$data['day']];
             echo "</td>";
@@ -354,13 +374,15 @@ class CalendarSegment extends CommonDBChild {
          }
          echo "</tr>";
       }
-      echo "</table></div>";
-
-      if ($canedit && $numrows) {
-         Html::openArrowMassives("calendarsegment_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+      echo "</table>";
+      if ($canedit) {
+         if ($numrows) {
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions('Group_User', $paramsma);
+         }
+         Html::closeForm();
       }
-      Html::closeForm();
+      echo "</div>";
    }
 
 
