@@ -52,6 +52,10 @@ class SlaLevel extends RuleTicket {
    function __construct() {
       // Override in order not to use glpi_rules table.
    }
+   // Temproray hack for this class
+   static function getTable() {
+      return 'glpi_slalevels';
+   }
    
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();
