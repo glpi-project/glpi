@@ -131,7 +131,7 @@ class CommonDBTM extends CommonGLPI {
 
       $query = "SELECT *
                 FROM `".$this->getTable()."`
-                WHERE `".$this->getIndexName()."` = '$ID'";
+                WHERE `".$this->getIndexName()."` = '".Toolbox::cleanInteger($ID)."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)==1) {
@@ -1952,7 +1952,8 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function can($ID, $right, &$input=NULL) {
-
+      // Clean ID value
+      $ID = Toolbox::cleanInteger($ID);
       // Create process
       if ($this->isNewID($ID)) {
          if (!isset($this->fields['id'])) {

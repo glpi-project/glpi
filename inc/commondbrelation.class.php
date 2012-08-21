@@ -130,7 +130,7 @@ abstract class CommonDBRelation extends CommonDBTM {
             return false;
          }
       } else {
-         // TODO : need to be improved, only some classe should allow relation to 0
+         /// TODO : need to be improved, only some classe should allow relation to 0
          // id==0 is used in some relation (tickets_users)
          if ($input[$this->items_id_2]>0 && !$item2->getFromDB($input[$this->items_id_2])) {
             return false;

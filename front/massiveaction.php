@@ -865,8 +865,8 @@ if (isset($_POST["action"])
             if ($ticket->getFromDB($_POST['tickets_id_1'])) {
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
-                     $input['id']                    = $_POST['tickets_id_1'];
-                     $input['_link']['tickets_id_1'] = $_POST['tickets_id_1'];
+                     $input['id']                    = Toolbox::cleanInteger($_POST['tickets_id_1']);
+                     $input['_link']['tickets_id_1'] = Toolbox::cleanInteger($_POST['tickets_id_1']);
                      $input['_link']['link']         = $_POST['link'];
                      $input['_link']['tickets_id_2'] = $key;
                      if ($ticket->can($_POST['tickets_id_1'],'w')) {

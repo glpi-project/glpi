@@ -179,6 +179,9 @@ class Ticket_Ticket extends CommonDBRelation {
 
 
    function prepareInputForAdd($input) {
+      // Clean values
+      $input['tickets_id_1'] = Toolbox::cleanInteger($input['tickets_id_1']);
+      $input['tickets_id_2'] = Toolbox::cleanInteger($input['tickets_id_2']);
 
       $ticket = new Ticket();
       if (!isset($input['tickets_id_1'])

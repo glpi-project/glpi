@@ -1755,6 +1755,15 @@ class Toolbox {
       return $out;
    }
 
-
+   /**
+    * Clean integer value (strip all chars not - and spaces )
+    *
+    * @param $integer string: integer string
+    * @since versin 0.83.5
+    * @return clean integer
+   **/
+   static function cleanInteger($integer) {
+      return preg_replace("/[^0-9-]/", "", $integer);
+   }
 }
 ?>
