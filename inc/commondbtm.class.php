@@ -132,7 +132,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`".$this->getIndexName()."` = '$ID'");
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`".$this->getIndexName()."` = '".Toolbox::cleanInteger($ID)."'");
    }
 
    /**
@@ -2103,6 +2103,9 @@ class CommonDBTM extends CommonGLPI {
    **/
    function can($ID, $right, array &$input=NULL) {
 
+      // Clean ID :
+      $ID = Toolbox::cleanInteger($ID);
+   
       // Create process
       if ($this->isNewID($ID)) {
          if (!isset($this->fields['id'])) {
@@ -3343,11 +3346,11 @@ class CommonDBTM extends CommonGLPI {
                   case 'decimal' :
                      $value = str_replace(',','.',$value);
                      if ($searchOption['datatype'] == 'decimal') {
-                        $this->input[$key] = floatval($value);
+                        $this->input[$key] = floatval(Toolbox::cleanDecimal($value));
                      } else {
-                        $this->input[$key] = intval($value);
+                        $this->input[$key] = intval(Toolbox::cleanInteger($value));
                      }
-                     if (!is_numeric($value)) {
+                     if (!is_numeric($this->input[$key])) {
                         $unset = true;
                      }
                      break;
@@ -3416,6 +3419,7 @@ class CommonDBTM extends CommonGLPI {
             }
          }
       }
+
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
          //TRANS: %s is the list of the failed fields
