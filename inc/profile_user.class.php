@@ -156,7 +156,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit && $num) {
          $paramsma = array('num_displayed' => $num);
-         Html::showMassiveActions('Profile_User', $paramsma);
+         Html::showMassiveActions(__CLASS__, $paramsma);
       }
 
       if ($num > 0) {
@@ -228,7 +228,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit && $num) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions('Profile_User', $paramsma);
+         Html::showMassiveActions(__CLASS__, $paramsma);
       }
       Html::closeForm();
       echo "</div>";

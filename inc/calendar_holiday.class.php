@@ -131,16 +131,14 @@ class Calendar_Holiday extends CommonDBRelation {
       
       echo "<div class='center'>";
 
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         if ($numrows) {
-            $paramsma = array('num_displayed' => $numrows);
-            Html::showMassiveActions(__CLASS__, $paramsma);
-         }
+         $paramsma = array('num_displayed' => $numrows);
+         Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
-      if ($canedit) {
+      if ($canedit && $numrows) {
          echo "<th width='10'>";
          Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
@@ -170,7 +168,6 @@ class Calendar_Holiday extends CommonDBRelation {
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
             echo "</td>";
             }
-            $used[$data['id']] = $data['id'];
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             echo "<td>".Html::convDate($data["begin_date"])."</td>";
@@ -181,11 +178,9 @@ class Calendar_Holiday extends CommonDBRelation {
       }
       echo "</table>";
 
-      if ($canedit) {
-         if ($numrows) {
-            $paramsma['ontop'] =false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
-         }
+      if ($canedit && $numrows) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
       echo "</div>";

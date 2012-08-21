@@ -125,17 +125,16 @@ class Change_Problem extends CommonDBRelation{
          Html::closeForm();
       }
 
-      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-
       echo "<div class='center'>";
       if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
-      if ($canedit) {
+      if ($canedit && $numrows) {
          echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>"._n('Change', 'Changes', 2);
@@ -176,10 +175,10 @@ class Change_Problem extends CommonDBRelation{
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
       }
       echo "</div>";
 
-      Html::closeForm();
    }
 
 
@@ -209,11 +208,11 @@ class Change_Problem extends CommonDBRelation{
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
       
-      $profiles = array();
+      $problems = array();
       $used = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $profiles[$data['id']] = $data;
+            $problems[$data['id']] = $data;
             $used[$data['id']] = $data['id'];
          }
       }
@@ -234,15 +233,15 @@ class Change_Problem extends CommonDBRelation{
          Html::closeForm();
       }
 
-      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
       echo "<div class='center'>";
       if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
-      if ($canedit) {
+      if ($canedit && $numrows) {
          echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>"._n('Problem', 'Problems', 2)."</th>";
@@ -260,7 +259,7 @@ class Change_Problem extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $change->getTypeName(1), $change->fields["name"]));
 
-         foreach ($profiles as $data) {
+         foreach ($problems as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -280,10 +279,10 @@ class Change_Problem extends CommonDBRelation{
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
       }
       echo "</div>";
 
-      Html::closeForm();
    }
 
 

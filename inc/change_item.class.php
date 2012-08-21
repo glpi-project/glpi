@@ -136,17 +136,15 @@ class Change_Item extends CommonDBRelation{
       }
       
       echo "<div class='center'>";
-      if ($canedit) {
+      if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         if ($number) {
-            $massiveactionparams = array();
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
-         }
+         $massiveactionparams = array();
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      if ($canedit) {
+      if ($canedit && $number) {
          echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Type')."</th>";
@@ -233,11 +231,9 @@ class Change_Item extends CommonDBRelation{
       echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
       echo "</table>";
-      if ($canedit) {
-         if ($number) {
-            $paramsma['ontop'] =false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
-         }
+      if ($canedit && $number) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
       echo "</div>";

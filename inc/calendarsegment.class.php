@@ -334,16 +334,14 @@ class CalendarSegment extends CommonDBChild {
 
 
       echo "<div class='center'>";
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         if ($numrows) {
-            $paramsma = array('num_displayed' => $numrows);
-            Html::showMassiveActions(__CLASS__, $paramsma);
-         }
+         $paramsma = array('num_displayed' => $numrows);
+         Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
-      if ($canedit) {
+      if ($canedit && $numrows) {
          echo "<th width='10'>";
          Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
@@ -375,11 +373,9 @@ class CalendarSegment extends CommonDBChild {
          echo "</tr>";
       }
       echo "</table>";
-      if ($canedit) {
-         if ($numrows) {
-            $paramsma['ontop'] =false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
-         }
+      if ($canedit && $numrows) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
       echo "</div>";

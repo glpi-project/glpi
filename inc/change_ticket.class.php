@@ -47,6 +47,11 @@ class Change_Ticket extends CommonDBRelation{
 
    var $checks_only_for_itemtype1 = true;
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }   
 
    static function getTypeName($nb=0) {
       return _n('Link Ticket/Change','Links Ticket/Change',$nb);
@@ -93,9 +98,50 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
+      $tickets = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $tickets[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".__('Title')."</th>";
+      if ($canedit) {
+         echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a ticket')."</th></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
+         echo "<input type='hidden' name='changes_id' value='$ID'>";
+         Ticket::dropdown(array('used'        => $used,
+                                'entity'      => $change->getEntityID(),
+                                'entity_sons' => $change->isRecursive()));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td></tr>";
+
+         echo "</table>";
+         Html::closeForm();
+      }
+      
+
+      echo "<div class='center'>";
+
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit && $numrows) {
+         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Title')."</th>";
       if ($change->isRecursive()) {
          echo "<th>".__('Entity')."</th>";
          $colspan++;
@@ -112,8 +158,7 @@ class Change_Ticket extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'), $change->getTypeName(1),
                                                 $change->fields["name"]));
 
-         while ($data = $DB->fetch_assoc($result)) {
-            $used[$data['id']] = $data['id'];
+         foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
@@ -132,24 +177,15 @@ class Change_Ticket extends CommonDBRelation{
          }
       }
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
-         echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Ticket::dropdown(array('used'        => $used,
-                                'entity'      => $change->getEntityID(),
-                                'entity_sons' => $change->isRecursive()));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr>";
-      }
 
-      echo "</table></div>";
+      echo "</table>";
 
       if ($canedit && $numrows) {
-         Html::openArrowMassives("changeticket_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
       }
-      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -183,14 +219,48 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
+      $changes = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $changes[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+      if ($canedit) {
+         echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
-      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>";
-      _e('Create a change from this ticket');
-      echo "</a></th></tr>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a change')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td>";
+         echo "<input type='hidden' name='tickets_id' value='$ID'>";
+         Change::dropdown(array('used'        => $used,
+                                'entity'      => $ticket->getEntityID()));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td><td>";
+         echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>";
+         _e('Create a change from this ticket');
+         echo "</a>";
 
-      echo "<tr><th colspan='2'>".__('Title')."</th>";
+         echo "</td></tr></table>";
+         Html::closeForm();
+      }
+
+      
+      echo "<div class='center'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit && $numrows) {
+         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Title')."</th>";
       echo "</tr>";
 
 
@@ -202,40 +272,29 @@ class Change_Ticket extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'), $ticket->getTypeName(1),
                                                 $ticket->fields["name"]));
 
-         while ($data = $DB->fetch_assoc($result)) {
+         foreach ($changes as $data) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
             if ($canedit) {
+               echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
+               echo "</td>";
             }
-            echo "</td>";
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             echo "</tr>";
          }
       }
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
-         echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Change::dropdown(array('used'   => $used,
-                                'entity' => $ticket->getEntityID()));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr>";
-      }
-
-      echo "</table></div>";
-
+      echo "</table>";
       if ($canedit && $numrows) {
-         Html::openArrowMassives("changeticket_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
       }
-      Html::closeForm();
+      echo "</div>";
+
    }
 
 
