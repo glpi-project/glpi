@@ -122,7 +122,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       if ($this->fields['num'] == $itemtype_id) {
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
-                   WHERE `".$this->items_id."` = '".$this->fields['tickettemplates_id']."'
+                   WHERE `".static::$items_id."` = '".$this->fields['tickettemplates_id']."'
                          AND `num` = '$items_id_id'";
 
          if ($result = $DB->query($query)) {
@@ -150,7 +150,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       $sql = "SELECT *
               FROM `".$this->getTable()."`
-              WHERE `".$this->items_id."` = '$ID'
+              WHERE `".static::$items_id."` = '$ID'
               ORDER BY `id`";
       $result = $DB->query($sql);
 
