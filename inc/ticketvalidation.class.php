@@ -84,14 +84,14 @@ class TicketValidation  extends CommonDBChild {
     *
     * @return boolean
    */
-   function canDeleteItem() {
-
-      If (($this->fields["users_id"] == Session::getLoginUserID())
-          || Session::haveRight('validate_ticket', 1)) {
-         return true;
-      }
-      return false;
-   }
+//    function canDeleteItem() {
+// 
+//       If (($this->fields["users_id"] == Session::getLoginUserID())
+//           || Session::haveRight('validate_ticket', 1)) {
+//          return true;
+//       }
+//       return false;
+//    }
 
 
    /**
