@@ -600,17 +600,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
       $datas["##$objettype.status##"]
-                           = CommonITILObject::getGenericStatus($item->getType(),
+                           = $item->getStatus(
                                                                 $item->getField('status'));
 
       $datas["##$objettype.urgency##"]
-                           = CommonITILObject::getUrgencyName($item->getField('urgency'));
+                           = $item->getUrgencyName($item->getField('urgency'));
       $datas["##$objettype.impact##"]
-                           = CommonITILObject::getImpactName($item->getField('impact'));
+                           = $item->getImpactName($item->getField('impact'));
       $datas["##$objettype.priority##"]
-                           = CommonITILObject::getPriorityName($item->getField('priority'));
+                           = $item->getPriorityName($item->getField('priority'));
       $datas["##$objettype.time##"]
-                           = CommonITILObject::getActionTime($item->getField('actiontime'));
+                           = $item->getActionTime($item->getField('actiontime'));
 
       $datas["##$objettype.creationdate##"] = Html::convDateTime($item->getField('date'));
       $datas["##$objettype.closedate##"]    = Html::convDateTime($item->getField('closedate'));

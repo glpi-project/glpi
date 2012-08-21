@@ -4811,7 +4811,7 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          //TRANS: %d is the number of new tickets
-         echo "<tr><th colspan='10'>".sprintf(_n('%d new ticket','%d new tickets', $number), $number);
+         echo "<tr><th colspan='11'>".sprintf(_n('%d new ticket','%d new tickets', $number), $number);
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
          echo "</th></tr>";
@@ -4836,8 +4836,9 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $output_type     (default 'Search::HTML_OUTPUT')
+    * @param $mass_id id of the form to check all 
     */
-   static function commonListHeader($output_type=Search::HTML_OUTPUT) {
+   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
 
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);
@@ -4846,6 +4847,8 @@ class Ticket extends CommonITILObject {
 
       $items                           = array();
 
+      
+      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Status')]             = "glpi_tickets.status";
       $items[__('Date')]               = "glpi_tickets.date";
       $items[__('Last update')]        = "glpi_tickets.date_mod";
@@ -5004,7 +5007,7 @@ class Ticket extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
-         echo "<tr><th colspan='10'>";
+         echo "<tr><th colspan='11'>";
          $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
          $link = "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
@@ -5017,7 +5020,7 @@ class Ticket extends CommonITILObject {
 
       if ($item->getID()
           && ($item->getType() == 'User')) {
-         echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
+         echo "<tr><td class='tab_bg_2 center b' colspan='11'>";
          echo "<a class='vsubmit' href=\"".$CFG_GLPI["root_doc"].
                 "/front/ticket.form.php?_users_id_requester=".$item->getID()."\">".
                 __('New ticket for this item...')."</a>";
@@ -5048,7 +5051,7 @@ class Ticket extends CommonITILObject {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='10'>";
+         echo "<tr><th colspan='11'>";
          echo _n('Ticket on linked items', 'Tickets on linked items', $number);
          echo "</th></tr>";
          if ($number > 0) {
@@ -5111,17 +5114,7 @@ class Ticket extends CommonITILObject {
 
          echo Search::showNewLine($output_type,$row_num%2);
 
-         // First column
-         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
-         if ($output_type == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
-                                alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
-                                self::getStatus($job->fields["status"])."\">";
-         } else {
-            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
-                                 self::getStatus($job->fields["status"]));
-         }
-
+         $check_col = '';
          if (($candelete || $canupdate)
              && ($output_type == Search::HTML_OUTPUT)
              && $id_for_massaction) {
@@ -5133,8 +5126,20 @@ class Ticket extends CommonITILObject {
             if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
                $sel = "checked";
             }
-            $first_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
+            $check_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
                                   value='1' $sel>";
+         }
+         echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
+         
+         // First column
+         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+         if ($output_type == Search::HTML_OUTPUT) {
+            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
+                                alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
+                                self::getStatus($job->fields["status"])."\">";
+         } else {
+            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
+                                 self::getStatus($job->fields["status"]));
          }
 
          echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);

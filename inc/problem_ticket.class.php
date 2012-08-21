@@ -46,6 +46,13 @@ class Problem_Ticket extends CommonDBRelation{
    static public $items_id_2 = 'tickets_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);
    }
@@ -77,15 +84,6 @@ class Problem_Ticket extends CommonDBRelation{
       $canedit = $problem->can($ID,'w');
 
       $rand = mt_rand();
-      echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-             action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='10'>".Ticket::getTypeName(2)."</th>";
-      if ($problem->isRecursive()) {
-         echo "<th>".__('Entity')."</th>";
-      }
-      echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
                                 `glpi_tickets`.*
@@ -96,10 +94,49 @@ class Problem_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_tickets`.`name`";
       $result = $DB->query($query);
 
-      $used   = array();
 
-      if ($DB->numrows($result) > 0) {
-         Ticket::commonListHeader(Search::HTML_OUTPUT);
+      $tickets = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $tickets[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a ticket')."</th></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='right'>";
+         echo "<input type='hidden' name='problems_id' value='$ID'>";
+         Ticket::dropdown(array('used'        => $used,
+                                'entity'      => $problem->getEntityID(),
+                                'entity_sons' => $problem->isRecursive()));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td></tr>";
+
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='11'>".Ticket::getTypeName($numrows)."</th>";
+      echo "</tr>";
+      if ($numrows) {
+         Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -107,32 +144,22 @@ class Problem_Ticket extends CommonDBRelation{
                                                 $problem->fields["name"]));
 
          $i = 0;
-         while ($data = $DB->fetch_assoc($result)) {
-            $used[$data['id']] = $data['id'];
+         foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
             $i++;
          }
       }
-
-      if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='8'>";
-         echo "<input type='hidden' name='problems_id' value='$ID'>";
-         Ticket::dropdown(array('used'        => $used,
-                                'entity'      => $problem->getEntityID(),
-                                'entity_sons' => $problem->isRecursive()));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
-         echo "</td></tr>";
+      echo "</table>";
+      if ($canedit && $numrows) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
       }
+      echo "</div>";
 
-      echo "</table></div>";
 
-      if ($canedit) {
-         Html::openArrowMassives("problemticket_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
-      Html::closeForm();
+
    }
 
 
@@ -152,17 +179,17 @@ class Problem_Ticket extends CommonDBRelation{
       $canedit = $ticket->can($ID,'w');
 
       $rand = mt_rand();
-      echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-             action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='9'>";
-      printf(__('%1$s - %2$s'), _n('Problem', 'Problems', 2),
-             "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".
-               __('Create a problem from this ticket')."</a>");
-      echo "</th></tr>";
-      echo "<tr><th colspan='9'>".__('Title')."</th>";
-      echo "</tr>";
+//       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
+//              action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+// 
+//       echo "<div class='center'><table class='tab_cadre_fixehov'>";
+//       echo "<tr><th colspan='9'>";
+//       printf(__('%1$s - %2$s'), _n('Problem', 'Problems', 2),
+//              "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".
+//                __('Create a problem from this ticket')."</a>");
+//       echo "</th></tr>";
+//       echo "<tr><th colspan='9'>".__('Title')."</th>";
+//       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
                                 `glpi_problems`.*
@@ -173,10 +200,48 @@ class Problem_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
 
-      $used   = array();
+      $problems = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $problems[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-      if ($DB->numrows($result) > 0) {
-         Problem::commonListHeader(Search::HTML_OUTPUT);
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a problem')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td>";
+         echo "<input type='hidden' name='tickets_id' value='$ID'>";
+         Problem::dropdown(array('used'        => $used,
+                                'entity'      => $ticket->getEntityID()));
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "</td><td>";
+         echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>";
+         _e('Create a problem from this ticket');
+         echo "</a>";
+
+         echo "</td></tr></table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='11'>".Problem::getTypeName($numrows)."</th>";
+      echo "</tr>";      
+      if ($numrows) {
+         Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Problem',
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
@@ -184,31 +249,20 @@ class Problem_Ticket extends CommonDBRelation{
                                                 $ticket->getTypeName(1), $ticket->fields["name"]));
 
          $i = 0;
-         while ($data = $DB->fetch_assoc($result)) {
-            $used[$data['id']] = $data['id'];
+         foreach ($problems as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
+            Problem::showShort($data['id'], Search::HTML_OUTPUT, $i, $data['linkID']);
             $i++;
          }
       }
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='7'>";
-         echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Problem::dropdown(array('used'   => $used,
-                                'entity' => $ticket->getEntityID()));
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
-         echo "</td></tr>";
+      echo "</table>";
+      if ($canedit && $numrows) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
       }
-
-      echo "</table></div>";
-
-      if ($canedit) {
-         Html::openArrowMassives("problemticket_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
-      Html::closeForm();
+      echo "</div>";
    }
 
 
