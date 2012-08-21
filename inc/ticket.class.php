@@ -417,7 +417,7 @@ class Ticket extends CommonITILObject {
 
          // Not for Ticket class
          if ($item->getType() != __CLASS__) {
-            toolbox::logdebug("RETURN1", self::createTabEntry($title, $nb));
+            //toolbox::logdebug("RETURN1", self::createTabEntry($title, $nb));
             return self::createTabEntry($title, $nb);
          }
       } // show_all_ticket right check
