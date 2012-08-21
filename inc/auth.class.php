@@ -307,11 +307,14 @@ class Auth {
          case self::EXTERNAL :
             $ssovariable = Dropdown::getDropdownName('glpi_ssovariables',
                                                      $CFG_GLPI["ssovariables_id"]);
+            $login_string = '';
+            // MoYo : checking REQUEST create a security hole for me !
             if (isset($_SERVER[$ssovariable])) {
                $login_string = $_SERVER[$ssovariable];
-            } else {
-               $login_string = $_REQUEST[$ssovariable];
             }
+//             else {
+//                $login_string = $_REQUEST[$ssovariable];
+//             }
             $login        = $login_string;
             $pos          = stripos($login_string,"\\");
             if (!$pos === false) {
@@ -912,10 +915,11 @@ class Auth {
       }
       // Existing auth method
       //Look for the field in $_SERVER AND $_REQUEST
+      // MoYo : checking REQUEST create a security hole for me !
       $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
       if ($CFG_GLPI["ssovariables_id"]
           && ((isset($_SERVER[$ssovariable]) && !empty($_SERVER[$ssovariable]))
-              || (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable])))) {
+              /*|| (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable]))*/)) {
 
          if ($redirect) {
             Html::redirect("login.php".$redir_string);
