@@ -47,7 +47,12 @@ class Change_Item extends CommonDBRelation{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    function prepareInputForAdd($input) {
 
       if (empty($input['itemtype'])
@@ -106,31 +111,43 @@ class Change_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>";
-      if ($DB->numrows($result)==0) {
-         _e('No associated item');
-      } else {
-         echo _n('Associated item', 'Associated items', $DB->numrows($result));
-      }
-      echo "</th></tr>";
+
       if ($canedit) {
-         echo "</table></div>";
-
-         echo "<form method='post' name='itemchange_form$rand' id='itemchange_form$rand' action=\"".
-                $CFG_GLPI["root_doc"]."/front/change_item.form.php\">";
-         echo "<div class='spaced'>";
-
-/*         if ($number) {
-            Html::openArrowMassives("itemchange_form$rand", true, true);
-            Html::closeArrowMassives(array('delete' => __('Delete')));
-         }*/
+         echo "<form name='changeitem_form$rand' id='changeitem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
-         // massive action checkbox
-         echo "<tr><th>&nbsp;</th>";
-      } else {
-         echo "<tr>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td class='right'>";
+         $types = array();
+         foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
+            $types[] = $key;
+         }
+         Dropdown::showAllItems("items_id", 0, 0,
+                                ($change->fields['is_recursive']?-1:$change->fields['entities_id']),
+                                $types);
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='hidden' name='changes_id' value='$instID'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+      }
+      
+      echo "<div class='center'>";
+      if ($canedit) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         if ($number) {
+            $massiveactionparams = array();
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         }
+      }
+      
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Entity')."</th>";
@@ -192,9 +209,9 @@ class Change_Item extends CommonDBRelation{
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel></td>";
                }
                if ($prem) {
-                  $name = $item->getTypeName($nb);
+                  $itemname = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
-                         ($nb>1 ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
+                         ($nb>1 ? sprintf(__('%1$s: %2$s'), $itemname, $nb) : $itemname)."</td>";
                }
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
@@ -215,30 +232,15 @@ class Change_Item extends CommonDBRelation{
              (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
       echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
+      echo "</table>";
       if ($canedit) {
-         echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
-         $types = array();
-         foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
-            $types[] = $key;
-         }
-         Dropdown::showAllItems("items_id", 0, 0,
-                                ($change->fields['is_recursive']?-1:$change->fields['entities_id']),
-                                $types);
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "<input type='hidden' name='changes_id' value='$instID'>";
-         echo "</td><td>&nbsp;</td></tr>";
-         echo "</table>";
          if ($number) {
-            Html::openArrowMassives("itemchange_form$rand", true);
-            Html::closeArrowMassives(array('delete' => __('Delete')));
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
          }
-
-      } else {
-         echo "</table>";
+         Html::closeForm();
       }
       echo "</div>";
-      Html::closeForm();
    }
 
 

@@ -132,6 +132,7 @@ class Change_Problem extends CommonDBRelation{
          $massiveactionparams = array('num_displayed'  => $numrows);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
+      
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit) {

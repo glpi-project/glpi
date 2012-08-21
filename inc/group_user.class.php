@@ -261,7 +261,7 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit && count($used)) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions('Group_User', $paramsma);
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -518,7 +518,7 @@ class Group_User extends CommonDBRelation{
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
-            Html::showMassiveActions('Group_User', $paramsma);
+            Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
