@@ -439,7 +439,7 @@ class SlaLevel extends RuleTicket {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
-                                                                   "slas_id = '".$item->getID()."'"));
+                                                                   "`slas_id` = '".$item->getID()."'"));
                }
                return self::getTypeName(2);
          }

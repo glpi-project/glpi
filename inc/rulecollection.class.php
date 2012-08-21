@@ -41,7 +41,7 @@ class RuleCollection extends CommonDBTM {
    /// process collection stop on first matched rule
    var $stop_on_first_match                   = false;
    /// Right needed to use this rule collection
-   var $right                                 = "config";
+   static public $right                       = "config";
    /// field used to order rules
    var $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
@@ -65,12 +65,12 @@ class RuleCollection extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight($this->right, 'w');
+      return Session::haveRight(static::$right, 'w');
    }
 
 
    static function canView() {
-      return Session::haveRight($this->right, 'r');
+      return Session::haveRight(static::$right, 'r');
    }
 
 
@@ -375,7 +375,7 @@ class RuleCollection extends CommonDBTM {
                            && ($p['inherited'] || $p['childrens']));
 
       // Do not know what it is ?
-      $canedit    = (Session::haveRight($this->right, "w") && !$display_entities);
+      $canedit    = (Session::haveRight(self::$right, "w") && !$display_entities);
 
       $nb         = $this->getCollectionSize($p['inherited']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);

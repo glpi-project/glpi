@@ -36,7 +36,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
    // From RuleCollection
 //   public $rule_class_name = 'RuleDictionnaryDropdown';
-   public $right     = 'rule_dictionnary_dropdown';
+   static public $right     = 'rule_dictionnary_dropdown';
    public $menu_type = 'dictionnary';
 
    // Specific ones
