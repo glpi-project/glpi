@@ -300,15 +300,15 @@ class Item_Devices extends CommonDBRelation {
          return;
       }
 
-      $device_type = static::getDeviceType();
-      $device = new $device_type();
-      if (!$device->getFromDB($devices_id)) {
-         return false;
-      }
-
       $input = array('itemtype'                    => $itemtype,
                      'items_id'                    => $items_id,
                      static::getDeviceForeignKey() => $devices_id);
+
+      $this->check(-1, 'w', $input);
+
+      $device_type = static::getDeviceType();
+      $device = new $device_type();
+      $device->getFromDB($devices_id);
 
       foreach (static::getSpecificities() as $field => $attributs) {
          if (isset($device->fields[$field.'_default'])) {
