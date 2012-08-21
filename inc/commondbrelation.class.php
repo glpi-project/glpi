@@ -290,7 +290,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          // If one of both extremity is not valid => not allowed !
          /// @TODO : we may check this in all case, not only when checking coherency
          if ((!$item1 instanceof CommonDBTM)
-             || (!$item1 instanceof CommonDBTM)) {
+             || (!$item2 instanceof CommonDBTM)) {
             return false;
          }
 
