@@ -133,16 +133,20 @@ class Rule extends CommonDBTM {
       return __('Rules management');
    }
 
+   function getCollectionClassName() {
+      return $this->getType().'Collection';
+   }
+   
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       
-      $collectiontype = $this->getType().'Collection';
-      $collection = new $collectiontype();
-      
-      if ($isadmin && $collection->orderby=="ranking") {
-         $actions['move_rule'] = __('Move');
+      $collectiontype = $this->getCollectionClassName();
+      if ($collection = getItemForItemtype($collectiontype)) {
+         if ($isadmin && $collection->orderby=="ranking") {
+            $actions['move_rule'] = __('Move');
+         }
       }
 
       return $actions;

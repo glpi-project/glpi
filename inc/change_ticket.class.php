@@ -129,7 +129,7 @@ class Change_Ticket extends CommonDBRelation{
       }
       
 
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
 
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -162,13 +162,9 @@ class Change_Ticket extends CommonDBRelation{
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
             if ($canedit) {
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
+               echo "<td><input type='checkbox' name='item[".$data["linkID"]."]' value='1'></td>";
             }
-            echo "</td>";
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             if ($change->isRecursive()) {

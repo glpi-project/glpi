@@ -56,19 +56,7 @@ if (isset($_POST["update"])) {
 
 } else if (isset($_POST["delete"])) {
 
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            if ($item->can($key, 'w')) {
-               $item->delete(array('id' => $key));
-            }
-         }
-      }
-      Event::log($_POST["slas_id"], "slas", 4, "config",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes several sla levels'), $_SESSION["glpiname"]));
-
-   } else if (isset($_POST['id'])) {
+   if (isset($_POST['id'])) {
       $item->check($_POST['id'], 'd');
       $ok = $item->delete($_POST);
       if ($ok) {

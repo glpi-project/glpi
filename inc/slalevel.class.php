@@ -52,8 +52,13 @@ class SlaLevel extends RuleTicket {
    function __construct() {
       // Override in order not to use glpi_rules table.
    }
-
-
+   
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Escalation level', 'Escalation levels', $nb);
    }
@@ -85,11 +90,12 @@ class SlaLevel extends RuleTicket {
       $canedit = $sla->can($ID,'w');
 
       $rand    = mt_rand();
-      echo "<form name='slalevel_form$rand' id='slalevel_form$rand' method='post' action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
          echo "<div class='center first-bloc'>";
+         echo "<form name='slalevel_form$rand' id='slalevel_form$rand' method='post' action='";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add an escalation level')."</tr>";
 
@@ -110,73 +116,81 @@ class SlaLevel extends RuleTicket {
          Dropdown::showYesNo("is_active",array('value' => 1));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         Html::closeForm();
          echo "</td></tr>";
 
          echo "</table></div>";
-
-         $query = "SELECT *
-                   FROM `glpi_slalevels`
-                   WHERE `slas_id` = '$ID'
-                   ORDER BY `execution_time`";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
-            echo "<div class='center'><table class='tab_cadre_fixehov'>";
-            echo "<tr><th colspan='2'>".__('Name')."</th>";
-            echo "<th>".__('Execution')."</th>";
-            echo "<th>".__('Active')."</th>";
-            echo "</tr>";
-            Session::initNavigateListItems('SlaLevel',
-            //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
-                                                   $sla->getName()));
-
-            while ($data = $DB->fetch_assoc($result)) {
-               Session::addToNavigateListItems('SlaLevel', $data["id"]);
-
-               echo "<tr class='tab_bg_2'>";
-               echo "<td width='10'>";
-               if ($canedit) {
-                  echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
-               } else {
-                  echo "&nbsp;";
-               }
-               echo "</td>";
-
-               echo "<td>";
-               if ($canedit) {
-                  echo "<a href='".Toolbox::getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
-               }
-               echo $data["name"];
-               if (empty($data["name"])) {
-                  echo "(".$data['id'].")";
-               }
-               if ($canedit) {
-                  echo "</a>";
-               }
-               echo "</td>";
-               echo "<td>".(($data["execution_time"] <> 0)
-                              ?Html::timestampToString($data["execution_time"], false)
-                              :__('Due date'))."</td>";
-               echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
-               echo "</tr>";
-
-               echo "<tr class='tab_bg_1'><td colspan='2'>";
-               $this->getRuleWithCriteriasAndActions($data['id'],1,1);
-               $this->showCriteriasList($data["id"], array('readonly' => true));
-               echo "</td><td colspan='2'>";
-               $this->showActionsList($data["id"], array('readonly' => true));
-               echo "</td></tr>";
-            }
-
-            Html::openArrowMassives("slalevel_form$rand",true);
-            Html::closeArrowMassives(array('delete' => __('Delete')));
-
-            echo "</table></div>";
-         }
       }
-      Html::closeForm();
+      
+      $query = "SELECT *
+                  FROM `glpi_slalevels`
+                  WHERE `slas_id` = '$ID'
+                  ORDER BY `execution_time`";
+      $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+      
+      echo "<div class='spaced'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit && $numrows) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Execution')."</th>";
+      echo "<th>".__('Active')."</th>";
+      echo "</tr>";
+      Session::initNavigateListItems('SlaLevel',
+      //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                       sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
+                                             $sla->getName()));
 
+      while ($data = $DB->fetch_assoc($result)) {
+         Session::addToNavigateListItems('SlaLevel', $data["id"]);
+
+         echo "<tr class='tab_bg_2'>";
+         if ($canedit) {
+            echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+         }
+
+         echo "<td>";
+         if ($canedit) {
+            echo "<a href='".Toolbox::getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
+         }
+         echo $data["name"];
+         if (empty($data["name"])) {
+            echo "(".$data['id'].")";
+         }
+         if ($canedit) {
+            echo "</a>";
+         }
+         echo "</td>";
+         echo "<td>".(($data["execution_time"] <> 0)
+                        ?Html::timestampToString($data["execution_time"], false)
+                        :__('Due date'))."</td>";
+         echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'><td colspan='2'>";
+         $this->getRuleWithCriteriasAndActions($data['id'],1,1);
+         $this->showCriteriasList($data["id"], array('readonly' => true));
+         echo "</td><td colspan='2'>";
+         $this->showActionsList($data["id"], array('readonly' => true));
+         echo "</td></tr>";
+      }
+
+      echo "</table>";
+      if ($canedit && $numrows) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
+      }      
+      echo "</div>";
    }
 
 
