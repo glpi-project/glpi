@@ -42,7 +42,7 @@ class Calendar extends CommonDropdown {
    // From CommonDBTM
    var $dohistory = true;
 
-   protected $forward_entity_to = array('CalendarSegment');
+   static protected $forward_entity_to = array('CalendarSegment');
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();

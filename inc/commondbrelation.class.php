@@ -43,7 +43,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $items_id_2; // Field name
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   // TODO : clean $logs_only_for_itemtype1 and $checks_only_for_itemtype1 !
+   /// TODO : clean $logs_only_for_itemtype1 and $checks_only_for_itemtype1 !
    static public $logs_for_itemtype_1 = true;
    static public $logs_for_itemtype_2 = true;
 

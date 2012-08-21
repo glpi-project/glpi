@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
-   protected $forward_entity_to = array('Consumable', 'Infocom');
+   static protected $forward_entity_to = array('Consumable', 'Infocom');
 
    static function getTypeName($nb=0) {
 

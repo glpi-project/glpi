@@ -41,7 +41,7 @@ class Ticket extends CommonITILObject {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to = array('TicketValidation', 'TicketCost');
+   static protected $forward_entity_to = array('TicketValidation', 'TicketCost');
 
    // From CommonITIL
    public $userlinkclass     = 'Ticket_User';

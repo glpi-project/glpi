@@ -43,7 +43,7 @@ class TicketTemplate extends CommonDropdown {
    // From CommonDBTM
    public $dohistory = true;
 
-   protected $forward_entity_to = array('TicketTemplateHiddenField',
+   static protected $forward_entity_to = array('TicketTemplateHiddenField',
                                         'TicketTemplateMandatoryField',
                                         'TicketTemplatePredefinedField');
 

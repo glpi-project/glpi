@@ -55,7 +55,6 @@ class IPAddress extends CommonDBChild {
    static public $items_id       = 'items_id';
    public $dohistory             = true;
    public $mustBeAttached        = true;
-   public $inheritEntityFromItem = true;
 
    /// $version (integer) : version of the adresse. Should be 4 or 6, or empty if not valid address
    protected $version = '';
