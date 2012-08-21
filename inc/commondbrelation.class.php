@@ -37,11 +37,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    // Mapping between DB fields
    static public $itemtype_1; // Type ref or field name (must start with itemtype)
    static public $items_id_1; // Field name
-   static public $checkItem_1_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $checkItem_1_Rights  = self::HAVE_SAME_RIGHT_ON_ITEM ;
 
    static public $itemtype_2; // Type ref or field name (must start with itemtype)
    static public $items_id_2; // Field name
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $checkItem_2_Rights  = self::HAVE_SAME_RIGHT_ON_ITEM;
 
    static public $check_entity_coherency = true;
    /// TODO : clean $logs_only_for_itemtype1 and $checks_only_for_itemtype1 !

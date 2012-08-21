@@ -45,11 +45,9 @@ class Group_User extends CommonDBRelation{
 
    static $itemtype_2 = 'Group';
    static $items_id_2 = 'groups_id';
-
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   
    static public $logs_for_itemtype_1 = false;
-      
-   static $checks_only_for_itemtype1 = true;
-   static $logs_only_for_itemtype1   = false;
 
 
    /**
