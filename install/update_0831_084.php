@@ -203,6 +203,35 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
 }
 
 
+function migrateComputerDevice($deviceType, $new_specif = NULL, $new_specif_type = NULL,
+                               array $other_specif = array()) {
+   global $DB, $migration;
+
+   $table = getTableForItemType('Item_'.$deviceType);
+   $device_table = getTableForItemType($deviceType);
+   $migration->renameTable(getTableForItemType('Computer_'.$deviceType), $table);
+
+   $migration->changeField($table, 'computers_id', 'items_id', 'integer', array('value' => 0));
+   $migration->addField($table, 'itemtype', 'string', array('after'  => 'items_id',
+                                                            'update' => "'Computer'"));
+
+   if (!empty($new_specif) && !empty($new_specif_type)) {
+      $migration->changeField($table, 'specificity', $new_specif, $new_specif_type);
+      $migration->changeField($device_table, 'specif_default',
+                              $new_specif.'_default', $new_specif_type);
+
+      // Update the log ...
+      $query = "UPDATE `glpi_logs`
+                SET `itemtype_link` = 'Item_".$deviceType."#".$new_specif."'
+                WHERE `itemtype_link` = '$deviceType'";
+      $DB->queryOrDie($query, "0.84 adapt glpi_logs to new item_devices");
+   }
+
+   foreach ($other_specif as $field => $format) {
+      $migration->addField($table, $field, $format);
+   }
+}
+
 /**
  * Update from 0.83.1 to 0.84
  *
@@ -1951,6 +1980,38 @@ function update0831to084() {
               WHERE `itemtype` = 'Budget'
                     AND `num` = '2'");
    $DB->query($query);
+
+
+   migrateComputerDevice('DeviceProcessor', 'frequency', 'integer',
+                         array('serial'    => 'integer'));
+
+   migrateComputerDevice('DeviceMemory', 'size', 'integer',
+                         array('serial' => 'string'));
+
+   migrateComputerDevice('DeviceHardDrive', 'capacity', 'integer',
+                         array('serial'   => 'string'));
+
+   migrateComputerDevice('DeviceGraphicCard', 'memory', 'integer');
+   migrateComputerDevice('DeviceNetworkCard', 'mac', 'string');
+   migrateComputerDevice('DeviceSoundCard');
+   migrateComputerDevice('DeviceMotherBoard');
+   migrateComputerDevice('DeviceDrive');
+   migrateComputerDevice('DeviceControl');
+   migrateComputerDevice('DevicePci');
+   migrateComputerDevice('DeviceCase');
+   migrateComputerDevice('DevicePowerSupply');
+
+
+   $query = "ALTER TABLE `glpi_networkportethernets`
+             CHANGE `computers_devicenetworkcards_id`
+                    `items_devicenetworkcards_id` int(11) NOT NULL";
+   $DB->query($query);
+   $query = "ALTER TABLE `glpi_networkportwifis`
+             CHANGE `computers_devicenetworkcards_id`
+                    `items_devicenetworkcards_id` int(11) NOT NULL";
+   $DB->query($query);
+
+
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

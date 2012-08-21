@@ -44,11 +44,6 @@ class DeviceGraphicCard extends CommonDevice {
    }
 
 
-   static function getSpecifityLabel() {
-      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio')));
-   }
-
-
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
@@ -81,27 +76,6 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-
-      $data['label'] = $data['value'] = array();
-      if ($this->fields["interfacetypes_id"]) {
-         $data['label'][] = __('Interface');
-         $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
-                                                      $this->fields["interfacetypes_id"]);
-      }
-      // Specificity
-      $data['label'][] = __('Memory');
-      $data['size']    = 10;
-
-      return $data;
-   }
-
-
-   /**
     * @since version 0.84
     *
     * @param $itemtype
@@ -114,14 +88,14 @@ class DeviceGraphicCard extends CommonDevice {
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
 
-      $column_name = __CLASS__;
+      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
+      if ($column == $father) {
+         return $father;
       }
 
       switch ($itemtype) {
-         case 'Computer_Device' :
+         case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
@@ -132,18 +106,23 @@ class DeviceGraphicCard extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableCell()
+    * @see inc/CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
-      switch ($item_type) {
-         case 'Computer_Device' :
+      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+      if ($column == $father) {
+         return $father;
+      }
+
+      switch ($item->getType()) {
+         case 'Computer' :
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
             break;
       }
    }
-
 }
 ?>

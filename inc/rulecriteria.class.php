@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleCriteria extends CommonDBChild {
 
    // From CommonDBChild
-   public $items_id  = 'rules_id';
+   static public $items_id  = 'rules_id';
    public $dohistory = true;
 
 
@@ -47,7 +47,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $rule_type (default 'Rule)
    **/
    function __construct($rule_type='Rule') {
-      $this->itemtype = $rule_type;
+      static::$itemtype = $rule_type;
    }
 
 
@@ -68,7 +68,7 @@ class RuleCriteria extends CommonDBChild {
    **/
    function getName($with_comment=0) {
 
-      if ($rule = getItemForItemtype($this->itemtype)) {
+      if ($rule = getItemForItemtype(static::$itemtype)) {
          return Html::clean($rule->getMinimalCriteriaText($this->fields));
       }
    }

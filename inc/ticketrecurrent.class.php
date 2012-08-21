@@ -55,12 +55,12 @@ class TicketRecurrent extends CommonDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('ticketrecurrent', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('ticketrecurrent', 'r');
    }
 

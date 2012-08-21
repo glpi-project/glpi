@@ -62,12 +62,12 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('config', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('config', 'r');
    }
 

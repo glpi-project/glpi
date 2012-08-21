@@ -44,11 +44,6 @@ class DeviceMemory extends CommonDevice {
    }
 
 
-   static function getSpecifityLabel() {
-      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')));
-   }
-
-
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
@@ -90,34 +85,6 @@ class DeviceMemory extends CommonDevice {
 
 
    /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-
-      $data['label'] = $data['value'] = array();
-
-      if ($this->fields["devicememorytypes_id"]) {
-         $data['label'][] = __('Type');
-         $data['value'][] = Dropdown::getDropdownName("glpi_devicememorytypes",
-                                                      $this->fields["devicememorytypes_id"]);
-      }
-
-      if (!empty($this->fields["frequence"])) {
-         $data['label'][] = __('Frequency');
-         $data['value'][] = $this->fields["frequence"];
-      }
-
-      // Specificity
-      $data['label'][] = __('Size');
-      $data['size']    = 10;
-
-      return $data;
-   }
-
-
-   /**
     * @since version 0.84
     *
     * @param $itemtype
@@ -130,17 +97,17 @@ class DeviceMemory extends CommonDevice {
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
 
-      $column_name = __CLASS__;
+      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
+      if ($column == $father) {
+         return $father;
       }
 
       switch ($itemtype) {
-         case 'Computer_Device' :
+         case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('type', __('Type'), $super, $father);
-            $base->addHeader('frequency', __('Frequency'), $super, $father);
+            $base->addHeader('devicememory_type', __('Type'), $super, $father);
+            $base->addHeader('devicememory_frequency', __('Frequency'), $super, $father);
             break;
       }
 
@@ -150,29 +117,33 @@ class DeviceMemory extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableCell()
+    * @see inc/CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
-      switch ($item_type) {
-         case 'Computer_Device' :
+      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+      if ($column == $father) {
+         return $father;
+      }
+
+      switch ($item->getType()) {
+         case 'Computer' :
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["devicememorytypes_id"]) {
-               $row->addCell($row->getHeaderByName('specificities', 'type'),
+               $row->addCell($row->getHeaderByName('devicememory_type'),
                              Dropdown::getDropdownName("glpi_devicememorytypes",
                                                        $this->fields["devicememorytypes_id"]),
                              $father);
             }
 
             if (!empty($this->fields["frequence"])) {
-               $row->addCell($row->getHeaderByName('specificities', 'frequency'),
+               $row->addCell($row->getHeaderByName('devicememory_frequency'),
                              $this->fields["frequence"], $father);
             }
             break;
       }
-
    }
-
 }
 ?>

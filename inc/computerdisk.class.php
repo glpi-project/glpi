@@ -40,9 +40,9 @@ if (!defined('GLPI_ROOT')) {
 class ComputerDisk extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'Computer';
-   public $items_id  = 'computers_id';
-   public $dohistory = true;
+   static public $itemtype = 'Computer';
+   static public $items_id = 'computers_id';
+   public $dohistory       = true;
 
 
    static function getTypeName($nb=0) {
@@ -50,12 +50,12 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('computer', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('computer', 'r');
    }
 

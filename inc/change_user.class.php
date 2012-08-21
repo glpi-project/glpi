@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class Change_User extends CommonITILActor {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Change';
-   public $items_id_1 = 'changes_id';
-   public $itemtype_2 = 'User';
-   public $items_id_2 = 'users_id';
+   static public $itemtype_1 = 'Change';
+   static public $items_id_1 = 'changes_id';
+   static public $itemtype_2 = 'User';
+   static public $items_id_2 = 'users_id';
 
 
 }

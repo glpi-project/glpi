@@ -55,12 +55,12 @@ class Monitor extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('monitor', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('monitor', 'r');
    }
 
@@ -356,7 +356,7 @@ class Monitor extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['connect']    = _x('button', 'Connect');

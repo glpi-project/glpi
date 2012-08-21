@@ -41,8 +41,8 @@ class UserEmail  extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // From CommonDBChild
-   public $itemtype = 'User';
-   public $items_id = 'users_id';
+   static public $itemtype = 'User';
+   static public $items_id = 'users_id';
 
 
    static function getTypeName($nb=0) {
@@ -50,7 +50,7 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       // All users can create own emails
       return true;
    }
@@ -63,7 +63,7 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function canView() {
+   static function canView() {
       return true;
    }
 
@@ -75,13 +75,13 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
       // All users can update own emails
       return true;
    }
 
 
-   function canDelete() {
+   static function canDelete() {
       // All users can delete own emails
       return true;
    }

@@ -51,8 +51,8 @@ if (!defined('GLPI_ROOT')) {
 class IPAddress extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype              = 'itemtype';
-   public $items_id              = 'items_id';
+   static public $itemtype       = 'itemtype';
+   static public $items_id       = 'items_id';
    public $dohistory             = true;
    public $mustBeAttached        = true;
    public $inheritEntityFromItem = true;
@@ -100,45 +100,25 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   function canView() {
-      return Session::haveRight('internet', 'r');
+   static function canView() {
+      return (Session::haveRight('internet', 'r')
+              && parent::canChild('canView'));
    }
 
 
-   function canCreate() {
-      return Session::haveRight('internet', 'w');
+   static function canCreate() {
+      return (Session::haveRight('internet', 'w')
+              && parent::canChild('canCreate'));
    }
 
 
    function canViewItem() {
-
-      if (!empty($this->fields['itemtype'])
-          && !empty($this->fields['items_id'])) {
-
-         if ($item = getItemForItemtype($this->fields['itemtype'])) {
-            if ($item->getFromDB($this->fields['items_id'])) {
-               return $item->canView();
-            }
-         }
-      }
-
-      return true;
+      return parent::canChildItem('canViewItem', 'canView');
    }
 
 
    function canCreateItem() {
-
-      if (!empty($this->fields['itemtype'])
-          && !empty($this->fields['items_id'])) {
-
-         if ($item = getItemForItemtype($this->fields['itemtype'])) {
-            if ($item->getFromDB($this->fields['items_id'])) {
-               return $item->canCreate();
-            }
-         }
-      }
-
-      return true;
+      return parent::canChildItem('canCreateItem', 'canCreate');
    }
 
 

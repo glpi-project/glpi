@@ -45,49 +45,34 @@ if (!defined('GLPI_ROOT')) {
 class NetworkName extends FQDNLabel {
 
    // From CommonDBChild
-   public $itemtype              = 'itemtype';
-   public $items_id              = 'items_id';
+   static public $itemtype              = 'itemtype';
+   static public $items_id              = 'items_id';
    public $dohistory             = true;
    public $inheritEntityFromItem = true;
 
+   static public $canDeleteOnItemClean = false;
 
-   function canCreate() {
-      return Session::haveRight('internet', 'w');
+   static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+
+   static function canCreate() {
+      return (Session::haveRight('internet', 'w')
+              && parent::canChild('canCreate'));
    }
 
 
-   function canView() {
-      return Session::haveRight('internet', 'r');
+   static function canView() {
+      return (Session::haveRight('internet', 'r')
+              && parent::canChild('canView'));
    }
 
 
    function canCreateItem() {
-
-      if (!empty($this->fields['itemtype'])
-          && !empty($this->fields['items_id'])) {
-
-         if (($item = getItemForItemtype($this->fields['itemtype']))
-             && $item->getFromDB($this->fields['items_id'])) {
-            return $item->canCreate();
-         }
-      }
-
-      return parent::canCreateItem();
+      return parent::canChildItem('canCreateItem', 'canCreate');
    }
 
 
    function canViewItem() {
-
-      if (!empty($this->fields['itemtype'])
-          && !empty($this->fields['items_id'])) {
-
-         if (($item = getItemForItemtype($this->fields['itemtype']))
-             && $item->getFromDB($this->fields['items_id'])) {
-            return $item->canView();
-         }
-      }
-
-      return parent::canViewItem();
+      return parent::canChildItem('canViewItem', 'canView');
    }
 
 

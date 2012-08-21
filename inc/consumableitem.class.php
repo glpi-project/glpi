@@ -52,12 +52,12 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('consumable', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('consumable', 'r');
    }
 
@@ -205,7 +205,7 @@ class ConsumableItem extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if (Session::haveRight('transfer','r')

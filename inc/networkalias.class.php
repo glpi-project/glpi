@@ -42,48 +42,36 @@ class NetworkAlias extends FQDNLabel {
 
    var $refresh_page = true;
    // From CommonDBChild
-   public $itemtype  = 'NetworkName';
-   public $items_id  = 'networknames_id';
-   public $dohistory = true;
+   static public $itemtype  = 'NetworkName';
+   static public $items_id  = 'networknames_id';
+   public $dohistory        = true;
 
+   static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
    static function getTypeName($nb=0) {
       return _n('Network alias', 'Network aliases', $nb);
    }
 
 
-   function canCreate() {
-      return Session::haveRight('internet', 'w');
+   static function canCreate() {
+      return (Session::haveRight('internet', 'w')
+              && parent::canChild('canCreate'));
    }
 
 
-   function canView() {
-      return Session::haveRight('internet', 'r');
+   static function canView() {
+      return (Session::haveRight('internet', 'r')
+              && parent::canChild('canView'));
    }
 
 
    function canCreateItem() {
-
-      if (!empty($this->fields['networknames_id'])) {
-         $item = new NetworkName();
-         if ($item->getFromDB($this->fields['networknames_id'])) {
-            return $item->canCreate();
-         }
-      }
-
-      return true;
+      return parent::canChildItem('canCreateItem', 'canCreate');
    }
 
 
    function canViewItem() {
-
-      if (!empty($this->fields['networknames_id'])) {
-         $item = new NetworkName();
-         if ($item->getFromDB($this->fields['networknames_id']))
-            return $item->canView();
-      }
-
-      return true;
+      return parent::canChildItem('canViewItem', 'canView');
    }
 
 

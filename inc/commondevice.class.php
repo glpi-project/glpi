@@ -36,41 +36,14 @@ if (!defined('GLPI_ROOT')) {
 abstract class CommonDevice extends CommonDropdown {
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('device', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('device', 'r');
    }
-
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
-      if (($item->getType() == 'Computer')
-          && Session::haveRight("computer","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb    = 0;
-            $types =  Computer_Device::getDeviceTypes();
-            foreach ($types as $type) {
-               $table = getTableForItemType('Computer_'.$type);
-               $nb   += countElementsInTable($table, "computers_id = '".$item->getID()."'");
-            }
-            return self::createTabEntry(_n('Component', 'Components', 2), $nb);
-         }
-         return _n('Component', 'Components', 2);
-      }
-      return '';
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      Computer_Device::showForComputer($item, $withtemplate);
-      return true;
-   }
-
 
    function getAdditionalFields() {
 
@@ -135,16 +108,6 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-      return false;
-   }
-
-
-   /**
     * @since version 0.84
     * get the HTMLTable Header for the current device according to the type of the item that
     * is requesting
@@ -163,40 +126,88 @@ abstract class CommonDevice extends CommonDropdown {
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
+
+      $this_type = get_called_class();
+
+      if (isset($options['dont_display'][$this_type])) {
+         return $father;
+      }
+
+      if (static::canView()) {
+         $content = "<a href='".static::getSearchURL()."'>" . static::getTypeName(1) . "</a>";
+      } else {
+         $content = static::getTypeName(1);
+      }
+
+      switch ($itemtype) {
+         case 'Computer':
+            $column = $base->addHeader('device', $content, $super, $father);
+            $column->setItemType($this_type, (isset($options['itemtype_title']) ?
+                                              $options['itemtype_title'] : ''));
+            break;
+         default:
+            $column = $father;
+            break;
+      }
+
+      return $column;
+
    }
 
 
    /**
     * @since version 0.84
     *
-    * Adding $this values to an HTMLTableMain according to the type of the item that is requesting
+    * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem
     *
-    * @param $itemtype  string   the type of the item
-    * @param $row                HTMLTableRow object: the row on which adding the cells
-    * @param $father             HTMLTableCell object: the father of this cell (default NULL)
-    * @param $options   array    parameter such as restriction
-    *
-    * @return nothing (elements added to $base)
+    * @param $row                HTMLTableRow object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTableCell object (default NULL)
+    * @param $options   array
    **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
-   }
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
+      global $CFG_GLPI;
 
-   /**
-    * Return the specifities localized name for the Device
-    *
-    * @return string
-   **/
-   static function getSpecifityLabel() {
-      return array();
-   }
+      $this_type = $this->getType();
 
+      if (isset($options['dont_display'][$this_type])) {
+         return $father;
+      }
 
-   function cleanDBonPurge() {
+      if (static::canView()) {
+         $content = $this->getLink();
+      } else {
+         $content = $this->getName();
+      }
 
-      $compdev = new Computer_Device();
-      $compdev->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      if ($options['canedit']) {
+         $field_name  = 'quantity_'.$this->getType().'_'.$this->getID();
+         $content .= "&nbsp;<img title='"._sx('button', 'Add')."' alt='" . _sx('button', 'Add')."'
+                      onClick=\"Ext.get('$field_name').setDisplayed('block')\"
+                      class='pointer' src='".$CFG_GLPI["root_doc"] . "/pics/add_dropdown.png'>";
+         $content .= "<span id='$field_name' style='display:none'><br>";
+         $content .= __('Add')."&nbsp;";
+
+         $content  = array($content,
+                           array('function'   => 'Dropdown::showInteger',
+                                 'parameters' => array($field_name, 0, 0, 10)),
+                           "</span>");
+      }
+
+      switch ($item->getType()) {
+         case 'Computer':
+            $cell = $row->addCell($row->getHeaderByName('common', 'device'),
+                                  $content, $father, $this);
+            break;
+         default:
+            $cell = $father;
+            break;
+      }
+
+      return $cell;
+
    }
 
 

@@ -55,12 +55,12 @@ class Consumable extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('consumable', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('consumable', 'r');
    }
 

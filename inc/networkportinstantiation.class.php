@@ -50,8 +50,8 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortInstantiation extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype              = 'NetworkPort';
-   public $items_id              = 'networkports_id';
+   static public $itemtype       = 'NetworkPort';
+   static public $items_id       = 'networkports_id';
    public $dohistory             = true;
    public $mustBeAttached        = true;
    public $inheritEntityFromItem = true;
@@ -61,7 +61,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    public $canHaveVirtualPort    = true;
    public $haveMAC               = true;
 
-   function getIndexName() {
+   static function getIndexName() {
       return 'networkports_id';
    }
 
@@ -389,7 +389,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                $query         .= ", $SQL_field AS $form_field";
             }
             $query .= " FROM `glpi_devicenetworkcards` AS device,
-                             `glpi_computers_devicenetworkcards` AS link
+                             `glpi_items_devicenetworkcards` AS link
                         WHERE link.`computers_id` = ".$lastItem->getID()."
                               AND device.`id` = link.`devicenetworkcards_id`";
             // TODO : add checking the type of network card !
@@ -431,9 +431,9 @@ class NetworkPortInstantiation extends CommonDBChild {
 </script>\n";
 
             if (count($deviceNames) > 0) {
-               $options = array('value'     => $this->fields['computers_devicenetworkcards_id'],
+               $options = array('value'     => $this->fields['items_devicenetworkcards_id'],
                                 'on_change' => 'updateForm(this.options[this.selectedIndex].value)');
-               Dropdown::showFromArray('computers_devicenetworkcards_id', $deviceNames, $options);
+               Dropdown::showFromArray('items_devicenetworkcards_id', $deviceNames, $options);
             } else {
                 _e('No network card available');
             }

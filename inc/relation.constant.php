@@ -79,19 +79,7 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_computers' => 'computermodels_id'),
 
                   "glpi_computers"
-                        => array('_glpi_computers_devicecases'         => 'computers_id',
-                                 '_glpi_computers_devicecontrols'      => 'computers_id',
-                                 '_glpi_computers_devicedrives'        => 'computers_id',
-                                 '_glpi_computers_devicegraphiccards'  => 'computers_id',
-                                 '_glpi_computers_deviceharddrives'    => 'computers_id',
-                                 '_glpi_computers_devicememories'      => 'computers_id',
-                                 '_glpi_computers_devicemotherboards'  => 'computers_id',
-                                 '_glpi_computers_devicenetworkcards'  => 'computers_id',
-                                 '_glpi_computers_devicepcis'          => 'computers_id',
-                                 '_glpi_computers_devicepowersupplies' => 'computers_id',
-                                 '_glpi_computers_deviceprocessors'    => 'computers_id',
-                                 '_glpi_computers_devicesoundcards'    => 'computers_id',
-                                 'glpi_computers_items'                => 'computers_id',
+                        => array('glpi_computers_items'                => 'computers_id',
                                  'glpi_computers_softwarelicenses'     => 'computers_id',
                                  'glpi_computers_softwareversions'     => 'computers_id',
                                  'glpi_computerdisks'                  => 'computers_id',
@@ -120,46 +108,46 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_contracts' => 'contracttypes_id'),
 
                   "glpi_devicecases"
-                        => array('glpi_computers_devicecases' => 'devicecases_id'),
+                        => array('glpi_items_devicecases' => 'devicecases_id'),
 
                   "glpi_devicecasetypes"
                         => array('glpi_devicecases' => 'devicecasetypes_id'),
 
                   "glpi_devicecontrols"
-                        => array('glpi_computers_devicecontrols' => 'devicecontrols_id'),
+                        => array('glpi_items_devicecontrols' => 'devicecontrols_id'),
 
                   "glpi_devicedrives"
-                        => array('glpi_computers_devicedrives' => 'devicedrives_id'),
+                        => array('glpi_items_devicedrives' => 'devicedrives_id'),
 
                   "glpi_devicegraphiccards"
-                        => array('glpi_computers_devicegraphiccards' => 'devicegraphiccards_id'),
+                        => array('glpi_items_devicegraphiccards' => 'devicegraphiccards_id'),
 
                   "glpi_deviceharddrives"
-                        => array('glpi_computers_deviceharddrives' => 'deviceharddrives_id'),
+                        => array('glpi_items_deviceharddrives' => 'deviceharddrives_id'),
 
                   "glpi_devicememories"
-                        => array('glpi_computers_devicememories' => 'devicememories_id'),
+                        => array('glpi_items_devicememories' => 'devicememories_id'),
 
                   "glpi_devicememorytypes"
                         => array('glpi_devicememories' => 'devicememorytypes_id'),
 
                   "glpi_devicemotherboards"
-                        => array('glpi_computers_devicemotherboards' => 'devicemotherboards_id'),
+                        => array('glpi_items_devicemotherboards' => 'devicemotherboards_id'),
 
                   "glpi_devicenetworkcards"
-                        => array('glpi_computers_devicenetworkcards' => 'devicenetworkcards_id'),
+                        => array('glpi_items_devicenetworkcards' => 'devicenetworkcards_id'),
 
                   "glpi_devicepcis"
-                        => array('glpi_computers_devicepcis' => 'devicepcis_id'),
+                        => array('glpi_items_devicepcis' => 'devicepcis_id'),
 
                   "glpi_devicepowersupplies"
-                        => array('glpi_computers_devicepowersupplies' => 'devicepowersupplies_id'),
+                        => array('glpi_items_devicepowersupplies' => 'devicepowersupplies_id'),
 
                   "glpi_deviceprocessors"
-                        => array('glpi_computers_deviceprocessors' => 'deviceprocessors_id'),
+                        => array('glpi_items_deviceprocessors' => 'deviceprocessors_id'),
 
                   "glpi_devicesoundcards"
-                        => array('glpi_computers_devicesoundcards' => 'devicesoundcards_id'),
+                        => array('glpi_items_devicesoundcards' => 'devicesoundcards_id'),
 
                   "glpi_documentcategories"
                         => array('glpi_configs'             => 'documentcategories_id_forticket',

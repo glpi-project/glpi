@@ -37,8 +37,8 @@ class NotificationTarget extends CommonDBChild {
 
    var $prefix                      = '';
    // From CommonDBChild
-   public $itemtype                 = 'Notification';
-   public $items_id                 = 'notifications_id';
+   static public $itemtype          = 'Notification';
+   static public $items_id          = 'notifications_id';
    public $table                    = 'glpi_notificationtargets';
 
    var $notification_targets        = array();

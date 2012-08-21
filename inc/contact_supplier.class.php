@@ -39,11 +39,11 @@ if (!defined('GLPI_ROOT')) {
 class Contact_Supplier extends CommonDBRelation{
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Contact';
-   public $items_id_1 = 'contacts_id';
+   static public $itemtype_1 = 'Contact';
+   static public $items_id_1 = 'contacts_id';
 
-   public $itemtype_2 = 'Supplier';
-   public $items_id_2 = 'suppliers_id';
+   static public $itemtype_2 = 'Supplier';
+   static public $items_id_2 = 'suppliers_id';
 
 
    static function getTypeName($nb=0) {

@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')) {
 include_once (GLPI_ROOT."/config/based_config.php");
 include_once (GLPI_ROOT."/config/define.php");
 
+if (!isset($_SESSION['glpi_table_of'])) {
+   $_SESSION['glpi_table_of'] = array();
+}
 
 /**
  * Is the script launch in Command line ?

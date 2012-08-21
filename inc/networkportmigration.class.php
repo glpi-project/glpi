@@ -42,30 +42,30 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortMigration extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'itemtype';
-   public $items_id  = 'items_id';
+   static public $itemtype  = 'itemtype';
+   static public $items_id  = 'items_id';
 
 
    static function getTypeName($nb=0) {
       return __('Network port migration');
    }
 
-   function canCreate() {
+   static function canCreate() {
       return false;
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
       return Session::haveRight('networking','w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('networking','r');
    }
 
 
-  function canDelete() {
+  static function canDelete() {
       return true;
    }
 
@@ -327,7 +327,7 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['transform_to'] = __('Transform this network port to');

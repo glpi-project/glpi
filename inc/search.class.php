@@ -900,8 +900,7 @@ class Search {
             $isadmin = ($item && $item->canUpdate());
             if (!$isadmin
                 && in_array($itemtype, $CFG_GLPI["infocom_types"])) {
-               $infoc   = new Infocom();
-               $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
+               $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
             }
             $showmassiveactions = false;
             if ($itemtype != 'AllAssets') {
@@ -2320,28 +2319,28 @@ class Search {
             return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
                         AS ".$NAME."_".$num.", $ADDITONALFIELDS";
 
-         case "glpi_computers_deviceharddrives.specificity" :
+         case "glpi_items_deviceharddrives.capacity" :
             if ($itemtype != 'DeviceHardDrive') {
-               return " SUM(`glpi_computers_deviceharddrives`.`specificity`)
-                        / COUNT(`glpi_computers_deviceharddrives`.`id`)
-                        * COUNT(DISTINCT `glpi_computers_deviceharddrives`.`id`)
+               return " SUM(`glpi_items_deviceharddrives`.`capacity`)
+                        / COUNT(`glpi_items_deviceharddrives`.`id`)
+                        * COUNT(DISTINCT `glpi_items_deviceharddrives`.`id`)
                               AS ".$NAME."_".$num.", $ADDITONALFIELDS";
             }
             break;
 
-         case "glpi_computers_devicememories.specificity" :
+         case "glpi_items_devicememories.size" :
             if ($itemtype != 'DeviceMemory') {
-               return " SUM(`glpi_computers_devicememories`.`specificity`)
-                        / COUNT(`glpi_computers_devicememories`.`id`)
-                        * COUNT(DISTINCT `glpi_computers_devicememories`.`id`)
+               return " SUM(`glpi_items_devicememories`.`size`)
+                        / COUNT(`glpi_items_devicememories`.`id`)
+                        * COUNT(DISTINCT `glpi_items_devicememories`.`id`)
                               AS ".$NAME."_".$num.", $ADDITONALFIELDS";
             }
             break;
 
-         case "glpi_computers_deviceprocessors.specificity" :
+         case "glpi_items_deviceprocessors.frequency" :
             if ($itemtype != 'DeviceProcessor') {
-               return " SUM(`glpi_computers_deviceprocessors`.`specificity`)
-                        / COUNT(`glpi_computers_deviceprocessors`.`id`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+               return " SUM(`glpi_items_deviceprocessors`.`frequency`)
+                        / COUNT(`glpi_items_deviceprocessors`.`id`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
             }
             break;
 
@@ -2371,7 +2370,7 @@ class Search {
             $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
                          AS ".$NAME."_$num, ";
             if ($itemtype == 'Computer') {
-               $port .= " GROUP_CONCAT(`glpi_computers_devicenetworkcards`.`specificity`
+               $port .= " GROUP_CONCAT(`glpi_items_devicenetworkcards`.`mac`
                                        SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
             }
             return $port.$ADDITONALFIELDS;
@@ -2834,7 +2833,7 @@ class Search {
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
-               return "$link (".self::makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",
+               return "$link (".self::makeTextCriteria("`glpi_items_devicenetworkcards`.`mac`",
                                                        $val, $nott,'').
                               self::makeTextCriteria("`$table`.`$field`", $val ,$nott, 'OR').")";
             }

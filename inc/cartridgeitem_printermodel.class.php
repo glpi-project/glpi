@@ -41,12 +41,12 @@ if (!defined('GLPI_ROOT')) {
 class CartridgeItem_PrinterModel extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'CartridgeItem';
-   public $items_id_1 = 'cartridgeitems_id';
+   static public $itemtype_1 = 'CartridgeItem';
+   static public $items_id_1 = 'cartridgeitems_id';
 
-   public $itemtype_2 = 'PrinterModel';
-   public $items_id_2 = 'printermodels_id';
+   static public $itemtype_2 = 'PrinterModel';
+   static public $items_id_2 = 'printermodels_id';
 
-   var $checks_only_for_itemtype1 = true;
+   static public $checks_only_for_itemtype1 = true;
 }
 ?>

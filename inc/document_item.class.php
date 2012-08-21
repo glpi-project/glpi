@@ -41,11 +41,11 @@ class Document_Item extends CommonDBRelation{
 
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Document';
-   public $items_id_1 = 'documents_id';
+   static public $itemtype_1 = 'Document';
+   static public $items_id_1 = 'documents_id';
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   static public $itemtype_2 = 'itemtype';
+   static public $items_id_2 = 'items_id';
 
 
    function prepareInputForAdd($input) {

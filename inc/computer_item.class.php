@@ -40,11 +40,11 @@ if (!defined('GLPI_ROOT')) {
 class Computer_Item extends CommonDBRelation{
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Computer';
-   public $items_id_1 = 'computers_id';
+   static public $itemtype_1 = 'Computer';
+   static public $items_id_1 = 'computers_id';
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   static public $itemtype_2 = 'itemtype';
+   static public $items_id_2 = 'items_id';
 
 
    /**

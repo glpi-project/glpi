@@ -51,12 +51,12 @@ class SLA extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('sla', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('sla', 'r');
    }
 

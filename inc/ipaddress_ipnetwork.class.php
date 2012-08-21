@@ -41,11 +41,11 @@ if (!defined('GLPI_ROOT')) {
 class IPAddress_IPNetwork extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'IPAddress';
-   public $items_id_1 = 'ipaddresses_id';
+   static public $itemtype_1 = 'IPAddress';
+   static public $items_id_1 = 'ipaddresses_id';
 
-   public $itemtype_2 = 'IPNetwork';
-   public $items_id_2 = 'ipnetworks_id';
+   static public $itemtype_2 = 'IPNetwork';
+   static public $items_id_2 = 'ipnetworks_id';
 
 
    /**

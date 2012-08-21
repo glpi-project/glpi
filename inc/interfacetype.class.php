@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class InterfaceType (Interface is a reserved keyword)
-/// @TODO study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class InterfaceType extends CommonDropdown {
 
    static function getTypeName($nb=0) {

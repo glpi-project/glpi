@@ -74,17 +74,17 @@ class CronTask extends CommonDBTM{
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('config', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('config', 'r');
    }
 
 
-   function canDelete() {
+   static function canDelete() {
       return false;
    }
 
@@ -1139,7 +1139,7 @@ class CronTask extends CommonDBTM{
    }
    
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

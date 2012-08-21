@@ -373,7 +373,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $entity_assign = $this->isEntityAssign();
 
       // Minimal form for quick input.
-      if ($this->canCreate()) {
+      if (static::canCreate()) {
          $link = $this->getFormURL();
          echo "<div class='firstbloc'>";
          echo "<form action='".$link."' method='post'>";
@@ -467,7 +467,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

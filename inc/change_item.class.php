@@ -41,11 +41,11 @@ class Change_Item extends CommonDBRelation{
 
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Change';
-   public $items_id_1 = 'changes_id';
+   static public $itemtype_1 = 'Change';
+   static public $items_id_1 = 'changes_id';
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   static public $itemtype_2 = 'itemtype';
+   static public $items_id_2 = 'items_id';
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();

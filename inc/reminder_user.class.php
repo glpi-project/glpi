@@ -41,10 +41,10 @@ if (!defined('GLPI_ROOT')) {
 class Reminder_User extends CommonDBRelation {
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Reminder';
-   public $items_id_1 = 'reminders_id';
-   public $itemtype_2 = 'User';
-   public $items_id_2 = 'users_id';
+   static public $itemtype_1 = 'Reminder';
+   static public $items_id_1 = 'reminders_id';
+   static public $itemtype_2 = 'User';
+   static public $items_id_2 = 'users_id';
 
 
    /**

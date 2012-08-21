@@ -121,12 +121,12 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('entity', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('entity', 'r');
    }
 

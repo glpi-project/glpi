@@ -61,10 +61,9 @@ class Knowbase extends CommonGLPI {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType() == __CLASS__) {
-         $ki = new KnowbaseItem();
          $tabs[1] = _x('button', 'Search');
          $tabs[2] = _x('button', 'Browse');
-         if ($ki->canCreate()) {
+         if (KnowbaseItem::canCreate()) {
             $tabs[3] = _x('button', 'Manage');
          }
 

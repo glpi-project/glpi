@@ -44,21 +44,18 @@ class RuleRight extends Rule {
    public $specific_parameters = true;
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      // Temproray hack for this class
-      $this->forceTable('glpi_rules');
+   // Temproray hack for this class
+   static function getTable() {
+      return 'glpi_rules';
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('rule_ldap', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('rule_ldap', 'r');
    }
 

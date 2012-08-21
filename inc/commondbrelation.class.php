@@ -32,20 +32,140 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Common DataBase Relation Table Manager Class
-abstract class CommonDBRelation extends CommonDBTM {
+abstract class CommonDBRelation extends CommonDBConnexity {
 
    // Mapping between DB fields
-   var $itemtype_1; // Type ref or field name (must start with itemtype)
-   var $items_id_1; // Field name
-   var $itemtype_2; // Type ref or field name (must start with itemtype)
-   var $items_id_2; // Field name
+   static public $itemtype_1; // Type ref or field name (must start with itemtype)
+   static public $items_id_1; // Field name
+   static public $checkItem_1_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   var $check_entities            = true;
-   var $checks_only_for_itemtype1 = false;
-   var $logs_only_for_itemtype1   = false;
+   static public $itemtype_2; // Type ref or field name (must start with itemtype)
+   static public $items_id_2; // Field name
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+
+   // TODO : clean $logs_only_for_itemtype1 and $checks_only_for_itemtype1 !
+   static public $logs_for_itemtype_1 = true;
+   static public $logs_for_itemtype_2 = true;
+
+   static public $log_history_1_add     = Log::HISTORY_ADD_RELATION;
+   static public $log_history_1_update  = Log::HISTORY_UPDATE_RELATION;
+   static public $log_history_1_delete  = Log::HISTORY_DEL_RELATION;
+
+   static public $log_history_2_add     = Log::HISTORY_ADD_RELATION;
+   static public $log_history_2_update  = Log::HISTORY_UPDATE_RELATION;
+   static public $log_history_2_delete  = Log::HISTORY_DEL_RELATION;
 
 
-   /**
+   protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+      $conditions = array();
+      $fields = array('`'.static::getIndexName().'`');
+
+      // Check item 1 type
+      $condition_id_1 = "`".static::$items_id_1."` = '$items_id'";
+      $fields[] = "`".static::$items_id_1."` as items_id_1";
+      if (preg_match('/^itemtype/', static::$itemtype_1)) {
+         $fields[] = "`".static::$itemtype_1."` AS itemtype_1";
+         $condition_1 = "($condition_id_1 AND `".static::$itemtype_1."` = '$itemtype')";
+      } else {
+         $fields[] = "'".static::$itemtype_1."' AS itemtype_1";
+         if (($itemtype ==  static::$itemtype_1)
+             || is_subclass_of($itemtype,  static::$itemtype_1)) {
+            $condition_1 = $condition_id_1;
+         }
+      }
+      if (isset($condition_1)) {
+         $conditions[] = $condition_1;
+         $fields[] = "IF($condition_1, 1, 0) AS is_1";
+      } else {
+         $fields[] = "0 AS is_1";
+      }
+
+
+      // Check item 2 type
+      $condition_id_2 = "`".static::$items_id_2."` = 'items_id'";
+      $fields[] = "`".static::$items_id_2."` as items_id_2";
+      if (preg_match('/^itemtype/', static::$itemtype_2)) {
+         $fields[] = "`".static::$itemtype_2."` AS itemtype_2";
+         $condition_2 = "($condition_id_2 AND `".static::$itemtype_2."` = '$itemtype')";
+      } else {
+         $fields[] = "'".static::$itemtype_2."' AS itemtype_2";
+         if (($itemtype ==  static::$itemtype_2)
+             || is_subclass_of($itemtype,  static::$itemtype_2)) {
+            $condition_2 = $condition_id_2;
+         }
+      }
+      if (isset($condition_2)) {
+         $conditions[] = $condition_2;
+         $fields[] = "IF($condition_2, 2, 0) AS is_2";
+      } else {
+         $fields[] = "0 AS is_2";
+      }
+
+      if (count($conditions) != 0) {
+         return "SELECT ".implode(', ', $fields)."
+                 FROM `".static::getTable()."`
+                 WHERE ".implode(' OR ', $conditions)."";
+      }
+      return '';
+   }
+
+
+   static function getOpposite(CommonDBTM $item, &$relations_id = NULL) {
+      global $DB;
+
+      if ($item->getID() < 0) {
+         return false;
+      }
+
+      $query = self::getSQLRequestToSearchForItem($item->getType(), $item->getID());
+
+      if (!empty($query)) {
+         $result = $DB->query($query);
+         if ($DB->numrows($result) == 1) {
+            $line = $DB->fetch_assoc($result);
+            if ($line['is_1'] == $line['is_2']) {
+               return false;
+            }
+            if ($line['is_1'] == 0) {
+               $opposites_id = $line['items_id_1'];
+               $oppositetype = $line['itemtype_1'];
+            }
+            if ($line['is_2'] == 0) {
+               $opposites_id = $line['items_id_2'];
+               $oppositetype = $line['itemtype_2'];
+            }
+            if ((isset($oppositetype)) && (isset($opposites_id))) {
+               $opposite = getItemForItemtype($oppositetype);
+               if ($opposite !== false) {
+                  if ($opposite->getFromDB($opposites_id)) {
+                     if (!is_null($relations_id)) {
+                        $relations_id = $line[static::getIndexName()];
+                     }
+                     return $opposite;
+                  }
+                  unset($opposite);
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+
+   function getOnePeer($number) {
+      if ($number = 0) {
+         $itemtype = static::$itemtype_1;
+         $items_id = static::$items_id_1;
+      } else if ($number = 1) {
+         $itemtype = static::$itemtype_2;
+         $items_id = static::$items_id_2;
+      } else {
+         return false;
+      }
+      return $this->getConnexityItem($itemtype, $items_id);
+   }
+
+  /**
     * Get link object between 2 items
     *
     * @since version 0.84
@@ -55,42 +175,32 @@ abstract class CommonDBRelation extends CommonDBTM {
     *
     * @return boolean founded ?
    **/
-   function getFromDBForItems($item1, $item2) {
-      global $DB;
+   static function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2) {
+
+      // Check items ID
+      if (($item1->getID() < 0) || ($item2->getID() < 0)) {
+         return false;
+      }
+
+      $wheres = array();
+      $wheres[] = "`".static::$items_id_1."` = '".$item1->getID()."'";
+      $wheres[] = "`".static::$items_id_2."` = '".$item2->getID()."'";
 
       // Check item 1 type
-      $type1             = $this->itemtype_1;
-      $itemtype_foritem1 = false;
-      if (preg_match('/^itemtype/',$this->itemtype_1)) {
-         $type1             = $item1->getType();
-         $itemtype_foritem1 = true;
-      }
-      if (!is_a($item1,$type1)) {
+      if (preg_match('/^itemtype/', static::$itemtype_1)) {
+         $wheres[] = "`".static::$itemtype_1."` = '".$item1->getType()."'";
+      } else if (!is_a($item1, static::$itemtype_1)) {
          return false;
       }
 
-      // Check item 1 ID
-      if ($item1->getID() < 0) {
+      // Check item 1 type
+      if (preg_match('/^itemtype/', static::$itemtype_2)) {
+         $wheres[] = "`".static::$itemtype_2."` = '".$item2->getType()."'";
+      } else if (!is_a($item2, static::$itemtype_2)) {
          return false;
       }
 
-      // Check item 2 type
-      $type2             = $this->itemtype_2;
-      $itemtype_foritem2 = false;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2             = $item2->getType();
-         $itemtype_foritem2 = true;
-      }
-      if (!is_a($item2, $type2)) {
-         return false;
-      }
-      // Check item 2 ID
-      if ($item2->getID() < 0) {
-         return false;
-      }
-
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`".$this->items_id_1."` = '".$item1->getID()."'
-                                       AND `".$this->getTable()."`.`".$this->items_id_2."` = '".$item2->getID()."'");
+      return $this->getFromDBByQuery("WHERE ".implode(' AND ', $wheres));
    }
 
 
@@ -109,17 +219,16 @@ abstract class CommonDBRelation extends CommonDBTM {
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'number';
-      
 
-      $tab[3]['table']         = getTableForItemType($this->itemtype_1);
-      $tab[3]['field']         = $this->items_id_1;
-      $tab[3]['name']          = call_user_func(array($this->itemtype_1, 'getTypeName'));
+      $tab[3]['table']         = getTableForItemType(static::$itemtype_1);
+      $tab[3]['field']         = static::$items_id_1;
+      $tab[3]['name']          = call_user_func(array(static::$itemtype_1, 'getTypeName'));
       $tab[3]['datatype']      = 'text';
       $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']         = getTableForItemType($this->itemtype_2);
-      $tab[4]['field']         = $this->items_id_2;
-      $tab[4]['name']          = call_user_func(array($this->itemtype_2, 'getTypeName'));
+      $tab[4]['table']         = getTableForItemType(static::$itemtype_2);
+      $tab[4]['field']         = static::$items_id_2;
+      $tab[4]['name']          = call_user_func(array(static::$itemtype_2, 'getTypeName'));
       $tab[4]['datatype']      = 'text';
       $tab[4]['massiveaction'] = false;
 
@@ -141,188 +250,68 @@ abstract class CommonDBRelation extends CommonDBTM {
    }
 
 
-   function canUpdate() {
-      /// TODO tmeporary solution to work on massive actions
-      // Must can read first Item of the relation
-      $type1 = $this->itemtype_1;
-      if (!preg_match('/^itemtype/',$this->itemtype_1)) {
-         // TODO : where does $input comes from ?
-//          $type1 = $input[$this->itemtype_1];
-         if (!($item1 = getItemForItemtype($type1))) {
-            return false;
-         }
-         // Can create a relation with a dropdown/device (use it) without read right
-         if (!($item1 instanceof CommonDropdown)
-            && !$item1->canView()) {
-            return false;
-         }
-      }
-      // Must can read second Item of the relation
-      $type2 = $this->itemtype_2;
-      if (!preg_match('/^itemtype/',$this->itemtype_2)) {
-//          $type2 = $input[$this->itemtype_2];
-         if (!($item2 = getItemForItemtype($type2))) {
-            return false;
-         }
-         if (!$this->checks_only_for_itemtype1
-            && !($item2 instanceof CommonDropdown)) {
-            if (!$item2->canView()) {
-               return false;
-            }
-         }
+   static function canRelation($method) {
+
+      if (!static::canConnexity($method, static::$checkItem_1_Rights,
+                                static::$itemtype_1, static::$items_id_1)) {
+         return false;
       }
 
-      // can write one item is enough
-      if (($type1 != 'itemtype' && $item1->canUpdate())
-          || ($this->checks_only_for_itemtype1
-              || ($type2 != 'itemtype' && $item2->canUpdate()))) {
-         return true;
-      }
-   }
-   
-   function canView() {
-      /// TODO tmeporary solution to work on massive actions
-      // Must can read first Item of the relation
-      $type1 = $this->itemtype_1;
-      if (!preg_match('/^itemtype/',$this->itemtype_1)) {
-         // TODO : where does $input comes from ?
-//          $type1 = $input[$this->itemtype_1];
-         if (!($item1 = getItemForItemtype($type1))) {
-            return false;
-         }
-         // Can create a relation with a dropdown/device (use it) without read right
-         if (!($item1 instanceof CommonDropdown)
-            && !$item1->canView()) {
-            return false;
-         }
+      if (!static::canConnexity($method, static::$checkItem_2_Rights,
+                                static::$itemtype_2, static::$items_id_2)) {
+         return false;
       }
 
-      // Must can read second Item of the relation
-      $type2 = $this->itemtype_2;
-      if (!preg_match('/^itemtype/',$this->itemtype_2)) {
-//          $type2 = $input[$this->itemtype_2];
-         if (!($item2 = getItemForItemtype($type2))) {
-            return false;
-         }
-      }
-
-
-      if (!$this->checks_only_for_itemtype1
-          && !($item2 instanceof CommonDropdown)) {
-         if (!$item2->canView()) {
-            return false;
-         }
-      }
       return true;
    }
-   /**
-    * Check right on an item
-    *
-    * @param $ID            ID of the item (-1 if new item)
-    * @param $right         Right to check : r / w / recursive
-    * @param &$input  array of input data (used for adding item) (default NULL)
-    *
-    * @return boolean
-   **/
-   function can($ID, $right, array &$input=NULL) {
 
-      if ($ID > 0) {
-         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
-            // Item not found : no right
-            if (!$this->getFromDB($ID)) {
-               return false;
-            }
-         }
-         $input = &$this->fields;
-      }
-      // Must can read first Item of the relation
-      $type1 = $this->itemtype_1;
-      if (preg_match('/^itemtype/',$this->itemtype_1)) {
-         $type1 = $input[$this->itemtype_1];
-      }
-      if (!($item1 = getItemForItemtype($type1))) {
+
+   function canRelationItem($method, $methodNotItem) {
+
+      if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
+                                   static::$itemtype_1, static::$items_id_1)) {
          return false;
       }
 
-      // Can create a relation with a dropdown/device (use it) without read right
-      if (!($item1 instanceof CommonDropdown)
-          && !$item1->can($input[$this->items_id_1],'r')) {
+      if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
+                                   static::$itemtype_2, static::$items_id_2)) {
          return false;
       }
 
+      return true;
+   }
 
-      // Must can read second Item of the relation
-      $type2 = $this->itemtype_2;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $input[$this->itemtype_2];
-      }
 
-      if (!($item2 = getItemForItemtype($type2))) {
-         return false;
-      }
+   static function canCreate() {
+      return static::canRelation('canCreate');
+   }
 
-      if (!$this->checks_only_for_itemtype1
-          && !($item2 instanceof CommonDropdown)) {
-         if (!$item2->can($input[$this->items_id_2],'r')) {
-            return false;
-         }
-      } else {
-         if ($this->mustRelation2Exists($input)
-             && !$item2->getFromDB($input[$this->items_id_2])) {
-            return false;
-         }
-      }
+   static function canView() {
+      return static::canRelation('canView');
+   }
 
-      // Read right checked on both item
-      if ($right == 'r') {
-         return true;
-      }
+   static function canUpdate() {
+      return static::canRelation('canUpdate');
+   }
 
-      // Check entity compatibility / no check for delete just check write access
-      // No check if checking only itemtype1
-      if (!$this->checks_only_for_itemtype1
-          && $this->check_entities
-          && ($right != 'd')) {
+   static function canDelete() {
+      return static::canRelation('canDelete');
+   }
 
-         if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
+   function canCreateItem() {
+      return $this->canRelationItem('canCreateItem', 'canCreate');
+   }
 
-            // get items if needed : need to have entity set
-            if (!isset($item1->fields['id'])) {
-               $item1->getFromDB($input[$this->items_id_1]);
-            }
+   function canViewItem() {
+      return $this->canRelationItem('canViewItem', 'canView');
+   }
 
-            if (!isset($item2->fields['id'])) {
-               $item2->getFromDB($input[$this->items_id_2]);
-            }
+   function canUpdateItem() {
+      return $this->canRelationItem('canUpdateItem', 'canUpdate');
+   }
 
-            if ($item1->getEntityID() == $item2->getEntityID()) {
-               $checkentity = true;
-
-            } else if ($item1->isRecursive()
-                       && in_array($item1->getEntityID(), getAncestorsOf("glpi_entities",
-                                                                         $item2->getEntityID()))) {
-               $checkentity = true;
-
-            } else if ($item2->isRecursive()
-                       && in_array($item2->getEntityID(), getAncestorsOf("glpi_entities",
-                                                                         $item1->getEntityID()))) {
-               $checkentity = true;
-
-            } else {
-               // $checkentity is false => return
-               return false;
-            }
-         }
-      }
-
-      // can write one item is enough
-      if ($item1->can($input[$this->items_id_1],'w')
-          || ($this->checks_only_for_itemtype1
-              || $item2->can($input[$this->items_id_2],'w'))) {
-         return true;
-      }
-
-      return false;
+   function canDeleteItem() {
+      return $this->canRelationItem('canDeleteItem', 'canDelete');
    }
 
 
@@ -333,154 +322,230 @@ abstract class CommonDBRelation extends CommonDBTM {
    **/
    function post_addItem() {
 
-      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
-         return false;
+      $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
+      $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
+
+      if ((!isset($this->input['_no_history']) || (!$this->input['_no_history'])) &&
+          ($item1 !== false) && ($item2 !== false)) {
+
+         if ($item1->dohistory && static::$logs_for_itemtype_1) {
+            $changes[0] = '0';
+            $changes[1] = "";
+            $changes[2] = addslashes($item2->getNameID(false, true));
+            Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
+                         static::$log_history_1_add);
+         }
+
+         if ($item2->dohistory && static::$logs_for_itemtype_2) {
+            $changes[0] = '0';
+            $changes[1] = "";
+            $changes[2] = addslashes($item1->getNameID(false, true));
+            Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
+                         static::$log_history_2_add);
+         }
       }
 
-      $type1 = $this->itemtype_1;
-      if (preg_match('/^itemtype/',$this->itemtype_1)) {
-         $type1 = $this->fields[$this->itemtype_1];
-      }
-
-      if (!($item1 = getItemForItemtype($type1))) {
-         return false;
-      }
-
-      if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
-         return false;
-      }
-
-      $type2 = $this->itemtype_2;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $this->fields[$this->itemtype_2];
-      }
-
-      if (!($item2 = getItemForItemtype($type2))) {
-         return false;
-      }
-
-      if (!$item2->getFromDB($this->fields[$this->items_id_2])) {
-         return false;
-      }
-
-      if ($item1->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($item2->getNameID(false, true));
-         Log::history($item1->fields["id"], get_class($item1), $changes, get_class($item2),
-                      Log::HISTORY_ADD_RELATION);
-      }
-
-      if (!$this->logs_only_for_itemtype1 && $item2->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($item1->getNameID(false, true));
-         Log::history($item2->fields["id"], get_class($item2), $changes, get_class($item1),
-                      Log::HISTORY_ADD_RELATION);
-      }
    }
 
 
-   /**
+    /**
+    * Actions done after the UPDATE of the item in the database
+    *
+    * @since version 0.84
+    *
+    * @param $history store changes history ? (default 1)
+    *
+    * @return nothing
+   **/
+   function post_updateItem($history=1) {
+
+      $items_1 = $this->getItemsForLog(static::$itemtype_1, static::$items_id_1);
+      $items_2 = $this->getItemsForLog(static::$itemtype_2, static::$items_id_2);
+
+      $new1 = $items_1['new'];
+      if (isset($items_1['previous'])) {
+         $previous1 = $items_1['previous'];
+      } else {
+         $previous1 = $items_1['new'];
+      }
+
+      $new2 = $items_2['new'];
+      if (isset($items_2['previous'])) {
+         $previous2 = $items_2['previous'];
+      } else {
+         $previous2 = $items_2['new'];
+      }
+
+      if ((!isset($this->input['_no_history']) || (!$this->input['_no_history']))) {
+
+         $oldvalues = $this->oldvalues;
+         unset($oldvalues[static::$itemtype_1]);
+         unset($oldvalues[static::$items_id_1]);
+         unset($oldvalues[static::$itemtype_2]);
+         unset($oldvalues[static::$items_id_2]);
+         if (count($oldvalues) > 0) {
+            foreach ($oldvalues as $field => $value) {
+               $changes[0] = 0;
+               $changes[1] = addslashes($value);
+               $changes[2] = addslashes($this->fields[$field]);
+
+               if ($new1 && $new1->dohistory && static::$logs_for_itemtype_1) {
+                  Log::history($new1->getID(), $new1->getType(), $changes,
+                               get_called_class().'#'.$field, static::$log_history_1_update);
+               }
+               if ($new2 && $new2->dohistory && static::$logs_for_itemtype_2) {
+                  Log::history($new2->getID(), $new2->getType(), $changes,
+                               get_called_class().'#'.$field, static::$log_history_2_update);
+               }
+
+            }
+         }
+
+         if (isset($items_1['previous']) || isset($items_2['previous'])) {
+
+            if ($previous2 && $previous1 && $previous1->dohistory && static::$logs_for_itemtype_1) {
+               $changes[0] = '0';
+               $changes[1] = addslashes($previous2->getNameID(false, true));
+               $changes[2] = "";
+               Log::history($previous1->getID(), $previous1->getType(), $changes,
+                            $previous2->getType(), static::$log_history_1_delete);
+            }
+
+            if ($previous1 && $previous2 && $previous2->dohistory && static::$logs_for_itemtype_2) {
+               $changes[0] = '0';
+               $changes[1] = addslashes($previous1->getNameID(false, true));
+               $changes[2] = "";
+               Log::history($previous2->getID(), $previous2->getType(), $changes,
+                            $previous1->getType(), static::$log_history_2_delete);
+            }
+
+            if ($new2 && $new1 && $new1->dohistory && static::$logs_for_itemtype_1) {
+               $changes[0] = '0';
+               $changes[1] = "";
+               $changes[2] = addslashes($new2->getNameID(false, true));
+               Log::history($new1->getID(), $new1->getType(), $changes,
+                            $new2->getType(), static::$log_history_1_add);
+            }
+
+            if ($new1 && $new2 && $new2->dohistory && static::$logs_for_itemtype_2) {
+               $changes[0] = '0';
+               $changes[1] = "";
+               $changes[2] = addslashes($new1->getNameID(false, true));
+               Log::history($new2->getID(), $new2->getType(), $changes,
+                            $new1->getType(), static::$log_history_2_add);
+            }
+         }
+      }
+  }
+
+  /**
     * Actions done after the DELETE of the item in the database
+    *
+    * @since version 0.84
     *
     *@return nothing
    **/
    function post_deleteFromDB() {
 
-      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
-         return false;
+      $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
+      $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
+
+      if ((!isset($this->input['_no_history']) || (!$this->input['_no_history'])) &&
+          ($item1 !== false) && ($item2 !== false)) {
+
+         if ($item1->dohistory && static::$logs_for_itemtype_1) {
+            $changes[0] = '0';
+            $changes[1] = addslashes($item2->getNameID(false, true));
+            $changes[2] = "";
+            Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
+                         static::$log_history_1_delete);
+         }
+
+         if ($item2->dohistory && static::$logs_for_itemtype_2) {
+            $changes[0] = '0';
+            $changes[1] = addslashes($item1->getNameID(false, true));
+            $changes[2] = "";
+            Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
+                         static::$log_history_2_delete);
+         }
       }
 
-      $type1 = $this->itemtype_1;
-      if (preg_match('/^itemtype/',$this->itemtype_1)) {
-         $type1 = $this->fields[$this->itemtype_1];
+   }
+
+
+  /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base                  HTMLTableBase object
+    * @param $super                 HTMLTableSuperHeader object (default NULL)
+    * @param $father                HTMLTableHeader object (default NULL)
+    * @param $options      array
+   **/
+   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
+                                      HTMLTableSuperHeader $super=NULL,
+                                      HTMLTableHeader $father=NULL, array $options=array()) {
+
+      if (isset($options[get_called_class().'_side'])) {
+         $side = $options[get_called_class().'_side'];
+      }else {
+         $side = 0;
       }
-
-      if (!($item1 = getItemForItemtype($type1))) {
-         return false;
+      $oppositetype = '';
+      if (($side ==1) || ($itemtype == static::$itemtype_1)) {
+         $oppositetype = static::$itemtype_2;
       }
-
-      if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
-         return false;
+      if (($side ==2) || ($itemtype == static::$itemtype_2)) {
+         $oppositetype = static::$itemtype_1;
       }
-
-
-      $type2 = $this->itemtype_2;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $this->fields[$this->itemtype_2];
-      }
-
-      if (!($item2 = getItemForItemtype($type2))) {
-         return false;
-      }
-
-      if (!$item2->getFromDB($this->fields[$this->items_id_2])) {
-         return false;
-      }
-
-      if ($item1->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($item2->getNameID(false, true));
-         $changes[2] = "";
-         Log::history($item1->fields["id"], get_class($item1), $changes, get_class($item2),
-                      Log::HISTORY_DEL_RELATION);
-      }
-
-      if (!$this->logs_only_for_itemtype1
-          && $item2->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($item1->getNameID(false, true));
-         $changes[2] = "";
-         Log::history($item2->fields["id"], get_class($item2), $changes, get_class($item1),
-                      Log::HISTORY_DEL_RELATION);
+      if ((class_exists($oppositetype))
+          && (method_exists($oppositetype, 'getHTMLTableHeader'))) {
+         $oppositetype::getHTMLTableHeader(get_called_class(), $base, $super, $father, $options);
       }
    }
 
 
    /**
-    * Clean the Relation Table when item of the relation is deleted
-    * To be call from the cleanDBonPurge of each Item class
+    * @since version 0.84
     *
-    * @param $itemtype  type of the item
-    * @param $item_id   id of the item
+    * @param $row                HTMLTableRow object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTableCell object (default NULL)
+    * @param $options   array
    **/
-   function cleanDBonItemDelete ($itemtype, $item_id) {
-      global $DB;
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                            HTMLTableCell $father=NULL, array $options=array()) {
+      global $DB, $CFG_GLPI;
 
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`";
-
-      if ($itemtype == $this->itemtype_1) {
-         $where = " WHERE `".$this->items_id_1."` = '$item_id'";
-
-      } else if (preg_match('/^itemtype/',$this->itemtype_1)) {
-         $where = " WHERE (`".$this->itemtype_1."` = '$itemtype'
-                           AND `".$this->items_id_1."` = '$item_id')";
-
-      } else {
-         $where = '';
+      if (empty($item)) {
+         if (empty($father)) {
+            return;
+         }
+         $item = $father->getItem();
       }
 
-      if ($itemtype == $this->itemtype_2) {
-         $where .= (empty($where) ? " WHERE " : " OR ")."`".$this->items_id_2."` = '$item_id'";
+      $query = self::getSQLRequestToSearchForItem($item->getType(), $item->getID());
+      if (!empty($query)) {
 
-      } else if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $where .= (empty($where) ? " WHERE " : " OR ")."(`".$this->itemtype_2."` = '$itemtype'
-                                                          AND `".$this->items_id_2."` = '$item_id')";
-      }
+         $relation = new static();
+         foreach ($DB->request($query) as $line) {
 
-      if (empty($where)) {
-         return false;
-      }
-
-      $result = $DB->query($query.$where);
-      while ($data = $DB->fetch_assoc($result)) {
-         $data['_no_history'] = true; // Parent is deleted
-         $data['_no_notif']   = true; // Parent is deleted
-         $this->delete($data);
+            if ($line['is_1'] != $line['is_2']) {
+               if ($line['is_1'] == 0) {
+                  $options['items_id'] = $line['items_id_1'];
+                  $oppositetype = $line['itemtype_1'];
+               } else {
+                  $options['items_id'] = $line['items_id_2'];
+                  $oppositetype = $line['itemtype_2'];
+               }
+               if ((class_exists($oppositetype))
+                   && (method_exists($oppositetype, 'getHTMLTableCellsForItem'))
+                   && ($relation->getFromDB($line[static::getIndexName()]))) {
+                  $oppositetype::getHTMLTableCellsForItem($row, $relation, $father, $options);
+               }
+            }
+         }
       }
    }
-
 }
 ?>

@@ -45,12 +45,12 @@ class Budget extends CommonDropdown{
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('budget', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('budget', 'r');
    }
 

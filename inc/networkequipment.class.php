@@ -55,12 +55,12 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('networking', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('networking', 'r');
    }
 
@@ -347,7 +347,7 @@ class NetworkEquipment extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if (Session::haveRight('transfer','r')

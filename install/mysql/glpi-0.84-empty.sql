@@ -498,6 +498,22 @@ CREATE TABLE `glpi_changetasks` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_commondbconnexities
+
+DROP TABLE IF EXISTS `glpi_commondbconnexities`;
+CREATE TABLE `glpi_commondbconnexities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `connexitytype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `connexities_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`connexitytype`,`connexities_id`),
+  KEY `item` (`itemtype`, `items_id`),
+  KEY `connexity` (`connexitytype`,`connexities_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_computerdisks
 
 DROP TABLE IF EXISTS `glpi_computerdisks`;

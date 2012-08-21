@@ -49,15 +49,13 @@ class CommonDBTM extends CommonGLPI {
    var $no_form_page = false;
 
    /// Set true to desactivate auto compute table name
-   var $notable = false;
+   static protected $notable = false;
 
    ///Additional fiedls for dictionnary processing
    var $additional_fields_for_dictionnary = array();
 
    /// Forward entity datas to linked items
    protected $forward_entity_to = array();
-   /// Table name cache : set dynamically calling getTable
-   protected $table = "";
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
@@ -83,14 +81,17 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return string
    **/
-   function getTable() {
+   static function getTable() {
 
-      if (empty($this->table)
-          && !$this->notable) {
-         $this->table = getTableForItemType($this->getType());
+      if (static::$notable) {
+         return '';
       }
 
-      return $this->table;
+      if (empty($_SESSION['glpi_table_of'][get_called_class()])) {
+         $_SESSION['glpi_table_of'][get_called_class()] = getTableForItemType(get_called_class());
+      }
+
+      return $_SESSION['glpi_table_of'][get_called_class()];
    }
 
 
@@ -101,8 +102,8 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function forceTable($table) {
-      $this->table = $table;
+   static function forceTable($table) {
+      $_SESSION['glpi_table_of'][get_called_class()] = $table;
    }
 
 
@@ -132,7 +133,8 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`".$this->getIndexName()."` = '".Toolbox::cleanInteger($ID)."'");
+      return $this->getFromDBByQuery("WHERE `" . $this->getTable() . "`.`" . $this->getIndexName() .
+                                     "` = '" . Toolbox::cleanInteger($ID) . "'");
    }
 
    /**
@@ -175,8 +177,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getID() {
 
-      if (isset($this->fields[$this->getIndexName()])) {
-         return $this->fields[$this->getIndexName()];
+      if (isset($this->fields[static::getIndexName()])) {
+         return $this->fields[static::getIndexName()];
       }
       return -1;
    }
@@ -237,7 +239,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return name of the index field
    **/
-   function getIndexName() {
+   static function getIndexName() {
       return "id";
    }
 
@@ -941,7 +943,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if (!$this->getFromDB($input[$this->getIndexName()])) {
+      if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }
 
@@ -1178,7 +1180,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if (!$this->getFromDB($input[$this->getIndexName()])) {
+      if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }
 
@@ -1353,7 +1355,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function restore(array $input, $history=1) {
 
-      if (!$this->getFromDB($input[$this->getIndexName()])) {
+      if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }
 
@@ -1456,7 +1458,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return booleen
    **/
-   function canCreate() {
+   static function canCreate() {
       return false;
    }
 
@@ -1470,8 +1472,8 @@ class CommonDBTM extends CommonGLPI {
     * @return booleen
     * @see canCreate
    **/
-   function canDelete() {
-      return $this->canCreate();
+   static function canDelete() {
+      return static::canCreate();
    }
 
 
@@ -1484,8 +1486,8 @@ class CommonDBTM extends CommonGLPI {
     * @return booleen
     * @see canCreate
    **/
-   function canUpdate() {
-      return $this->canCreate();
+   static function canUpdate() {
+      return static::canCreate();
    }
 
 
@@ -1563,7 +1565,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return booleen
    **/
-   function canView() {
+   static function canView() {
       return false;
    }
 
@@ -2105,7 +2107,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Clean ID :
       $ID = Toolbox::cleanInteger($ID);
-   
+
       // Create process
       if ($this->isNewID($ID)) {
          if (!isset($this->fields['id'])) {
@@ -2127,7 +2129,7 @@ class CommonDBTM extends CommonGLPI {
              && ($this->fields['users_id'] === Session::getLoginUserID())) {
             return true;
          }
-         return ($this->canCreate() && $this->canCreateItem());
+         return (static::canCreate() && $this->canCreateItem());
 
       }
       // else : Get item if not already loaded
@@ -2145,7 +2147,7 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return ($this->canView() && $this->canViewItem());
+            return (static::canView() && $this->canViewItem());
 
          case 'w' :
             // Personnal item
@@ -2153,7 +2155,7 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return ($this->canUpdate() && $this->canUpdateItem());
+            return (static::canUpdate() && $this->canUpdateItem());
 
          case 'd' :
             // Personnal item
@@ -2161,12 +2163,12 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return ($this->canDelete() && $this->canDeleteItem());
+            return (static::canDelete() && $this->canDeleteItem());
 
          case 'recursive' :
             if ($this->isEntityAssign()
                 && $this->maybeRecursive()) {
-               if ($this->canCreate()
+               if (static::canCreate()
                    && Session::haveAccessToEntity($this->getEntityID())) {
                   // Can make recursive if recursive access to entity
                   return Session::haveRecursiveAccessToEntity($this->getEntityID());
@@ -2246,16 +2248,16 @@ class CommonDBTM extends CommonGLPI {
 
       switch ($right) {
          case 'r' :
-            return $this->canView();
+            return static::canView();
 
          case 'w' :
-            return $this->canUpdate();
+            return static::canUpdate();
 
          case 'c' :
-            return $this->canCreate();
+            return static::canCreate();
 
          case 'd' :
-            return $this->canDelete();
+            return static::canDelete();
       }
 
       return false;
@@ -2689,12 +2691,11 @@ class CommonDBTM extends CommonGLPI {
             $show_all       = true;
             $show_infocoms  = true;
 
-            $ic = new Infocom();
             if (in_array($input["itemtype"], $CFG_GLPI["infocom_types"])
-               && (!$this->canUpdate() || !$ic->canUpdate())) {
+                && (!static::canUpdate() || !Infocom::canUpdate())) {
 
                $show_all      = false;
-               $show_infocoms = $ic->canUpdate();
+               $show_infocoms = Infocom::canUpdate();
             }
             $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
 
@@ -3133,7 +3134,7 @@ class CommonDBTM extends CommonGLPI {
       if (!is_null($checkitem)) {
          $isadmin = $checkitem->canUpdate();
       } else {
-         $isadmin = $this->canUpdate();
+         $isadmin = static::canUpdate();
       }
 
       $itemtype = $this->getType();
@@ -3147,18 +3148,16 @@ class CommonDBTM extends CommonGLPI {
          }
 
       } else {
-         $infocom = new Infocom();
-
          if ($isadmin
                   || (in_array($itemtype, $CFG_GLPI["infocom_types"])
-                     && $infocom->canUpdate())) {
+                      && Infocom::canUpdate())) {
 
             //TRANS: select action 'update' (before doing it)
             $actions['update'] = _x('button', 'Update');
          }
 
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])
-               && $infocom->canCreate()) {
+               && Infocom::canCreate()) {
             $actions['activate_infocoms'] = __('Enable the financial and administrative information');
          }
          // No delete for entities and tracking of not have right
@@ -3419,7 +3418,6 @@ class CommonDBTM extends CommonGLPI {
             }
          }
       }
-
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
          //TRANS: %s is the list of the failed fields
@@ -3701,7 +3699,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (!$this->isField('notepad')
-          || !isset($this->fields[$this->getIndexName()])) {
+          || !isset($this->fields[static::getIndexName()])) {
          return false;
       }
 
@@ -3726,9 +3724,9 @@ class CommonDBTM extends CommonGLPI {
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
       // for all objects without id as primary key
-      if ($this->getIndexName() != 'id') {
-         echo "<input type='hidden' name='".$this->getIndexName()."' value='".
-                $this->fields[$this->getIndexName()]."'>";
+      if (static::getIndexName() != 'id') {
+         echo "<input type='hidden' name='".static::getIndexName()."' value='".
+                $this->fields[static::getIndexName()]."'>";
       }
 
       if ($canedit) {

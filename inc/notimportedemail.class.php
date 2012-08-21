@@ -51,12 +51,12 @@ class NotImportedEmail extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('config', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('config', 'w');
    }
 
@@ -66,7 +66,7 @@ class NotImportedEmail extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
@@ -99,7 +99,7 @@ class NotImportedEmail extends CommonDBTM {
       switch ($input['action']) {
          case 'delete_email' :
          case 'import_email' :
-            if (!$this->canCreate()) {
+            if (!static::canCreate()) {
                $res['noright']++;
             } else {
                $emails_ids = array();

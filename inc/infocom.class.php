@@ -42,8 +42,8 @@ if (!defined('GLPI_ROOT')) {
 class Infocom extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype               = 'itemtype';
-   public $items_id               = 'items_id';
+   static public $itemtype        = 'itemtype';
+   static public $items_id        = 'items_id';
    public $dohistory              = true;
    public $auto_message_on_action = false; // Link in message can't work'
 
@@ -62,12 +62,12 @@ class Infocom extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('infocom', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('infocom', 'r');
    }
 

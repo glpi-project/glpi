@@ -40,8 +40,8 @@ class TicketValidation  extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // From CommonDBChild
-   public $itemtype = 'Ticket';
-   public $items_id = 'tickets_id';
+   static public $itemtype = 'Ticket';
+   static public $items_id = 'tickets_id';
 
    function getForbiddenStandardMassiveAction() {
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -54,26 +54,26 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('create_validation', 1);
    }
 
 
-   function canView() {
+   static function canView() {
 
       return (Session::haveRight('create_validation', 1)
               || Session::haveRight('validate_ticket', 1));
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
 
       return (Session::haveRight('validate_ticket', 1)
               || Session::haveRight('create_validation', 1));
    }
 
 
-   function canDelete() {
+   static function canDelete() {
       return Session::haveRight('create_validation', 1);
    }
 
@@ -689,7 +689,7 @@ class TicketValidation  extends CommonDBChild {
       }
       // No update validation is answer set
       $validation_admin = (($this->fields["users_id"] == Session::getLoginUserID())
-                          && $this->canCreate()
+                          && static::canCreate()
                           && ($this->fields['status'] == 'waiting'));
       $validator        = ($this->fields["users_id_validate"] == Session::getLoginUserID());
 

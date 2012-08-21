@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Report {
 
-   var $notable = false;
+   static protected $notable = false;
 
 
    static function getTypeName($nb=0) {

@@ -52,13 +52,13 @@ class Reminder extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return (Session::haveRight('reminder_public', 'w')
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
-   function canView() {
+   static function canView() {
       return (Session::haveRight('reminder_public', 'r')
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
@@ -949,8 +949,6 @@ class Reminder extends CommonDBTM {
    static function showListForCentral($personal=true) {
       global $DB, $CFG_GLPI;
 
-      $reminder = new self();
-
       $users_id = Session::getLoginUserID();
       $today    = date('Y-m-d');
       $now      = date('Y-m-d H:i:s');
@@ -1012,7 +1010,7 @@ class Reminder extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr><th><div class='relative'><span>$titre</span>";
 
-      if ($reminder->canCreate()) {
+      if (self::canCreate()) {
          echo "<span class='reminder_right'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"". __s('Add')."\">".

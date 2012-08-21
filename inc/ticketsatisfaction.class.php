@@ -50,7 +50,7 @@ class TicketSatisfaction extends CommonDBTM {
    /**
     * for use showFormHeader
    **/
-   function getIndexName() {
+   static function getIndexName() {
       return 'tickets_id';
    }
 
@@ -60,7 +60,7 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
       return (Session::haveRight('create_ticket', 1));
    }
 

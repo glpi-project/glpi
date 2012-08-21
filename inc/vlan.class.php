@@ -91,5 +91,69 @@ class Vlan extends CommonDropdown {
       $result = $DB->query($query);
    }
 
+   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
+                                      HTMLTableSuperHeader $super=NULL,
+                                      HTMLTableHeader $father=NULL, array $options=array()) {
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      if ($itemtype == 'NetworkPort_Vlan') {
+         $base->addHeader($column_name, self::getTypeName(), $super, $father);
+      }
+   }
+
+
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                            HTMLTableCell $father=NULL, array $options=array()) {
+      global $DB, $CFG_GLPI;
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      if (empty($item)) {
+         if (empty($father)) {
+            return;
+         }
+         $item = $father->getItem();
+      }
+
+      $canedit = (isset($options['canedit']) && $options['canedit']);
+
+      if ($item->getType() == 'NetworkPort_Vlan') {
+         if (isset($item->fields["tagged"]) && ($item->fields["tagged"] == 1)) {
+            $tagged_msg = __('Tagged');
+         } else {
+            $tagged_msg = __('Untagged');
+         }
+
+         $vlan = new self();
+         if ($vlan->getFromDB($options['items_id'])) {
+            $content = sprintf(__('%1$s - %2$s '), $vlan->getName(), $tagged_msg);
+            $content .= Html::showToolTip(sprintf(__('%1$s: %2$s'),
+                                                  __('ID TAG'), $vlan->fields['tag'])."<br>".
+                                          sprintf(__('%1$s: %2$s'),
+                                                  __('Comments'), $vlan->fields['comment']),
+                                          array('display' => false));
+
+            if ($canedit) {
+               $content .= " <a href='" . $CFG_GLPI["root_doc"] .
+                  "/front/networkport.form.php?unassign_vlan=" . "unassigned&amp;id=" .
+                  $vlan->getID() . "'>";
+               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
+                  __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
+            }
+
+            $this_cell = $row->addCell($row->getHeaderByName($column_name), $content, $father);
+         }
+      }
+   }
+
 }
 ?>

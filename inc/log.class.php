@@ -56,6 +56,7 @@ class Log extends CommonDBTM {
    const HISTORY_UPDATE_SUBITEM     = 18;
    const HISTORY_DELETE_SUBITEM     = 19;
    const HISTORY_CREATE_ITEM        = 20;
+   const HISTORY_UPDATE_RELATION    = 21;
 
    // Plugin must use value starting from
    const HISTORY_PLUGIN             = 1000;
@@ -368,13 +369,15 @@ class Log extends CommonDBTM {
                case self::HISTORY_UPDATE_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   $change = '';
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field']  = $item->getTypeName(1);
-                     $specif_fields = $item->getSpecifityLabel();
-                     $tmp['change'] = $specif_fields['specificity']." : ";
-                  }
+                  $linktype_field = explode('#', $data["itemtype_link"]);
+                  $linktype       = $linktype_field[0];
+                  $field          = $linktype_field[1];
+                  $devicetype     = $linktype::getDeviceType();
+                  $tmp['field']   = $devicetype.':';
+                  $specif_fields  = $linktype::getSpecificities();
+                  $tmp['field']  .= $specif_fields[$field]['short name'];
                   //TRANS: %1$s is the old_value, %2$s is the new_value
-                  $tmp['change'] .= sprintf(__('Change the component %1$s by %2$s'),
+                  $tmp['change']  = sprintf(__('Change the component %1$s by %2$s'),
                                             $data[ "old_value"], $data[ "new_value"]);
                   break;
 

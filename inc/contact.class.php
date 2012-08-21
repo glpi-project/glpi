@@ -50,11 +50,11 @@ class Contact extends CommonDBTM{
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('contact_enterprise', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('contact_enterprise', 'r');
    }
 
@@ -259,7 +259,7 @@ class Contact extends CommonDBTM{
    }
    
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

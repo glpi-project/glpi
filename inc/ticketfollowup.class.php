@@ -54,7 +54,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
 
       return (Session::haveRight('global_add_followups', 1)
               || Session::haveRight('add_followups', 1)
@@ -62,7 +62,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function canView() {
+   static function canView() {
 
       return (Session::haveRight('observe_ticket', 1)
               || Session::haveRight('show_full_ticket', 1)
@@ -70,7 +70,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function canDelete() {
+   static function canDelete() {
       return (Session::haveRight('delete_followups', 1));
    }
 

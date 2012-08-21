@@ -44,11 +44,6 @@ class DeviceHardDrive extends CommonDevice {
    }
 
 
-   static function getSpecifityLabel() {
-      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Capacity'), __('Mio')));
-   }
-
-
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
@@ -98,38 +93,6 @@ class DeviceHardDrive extends CommonDevice {
 
 
    /**
-    * return the display data for a specific device
-    *
-    * @return array
-   **/
-   function getFormData() {
-
-      $data['label'] = $data['value'] = array();
-
-      if (!empty($this->fields["rpm"])) {
-         $data['label'][] = __('Rpm');
-         $data['value'][] = $this->fields["rpm"];
-      }
-
-      if ($this->fields["interfacetypes_id"]) {
-         $data['label'][] = __('Interface');
-         $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
-                                                      $this->fields["interfacetypes_id"]);
-      }
-
-      if (!empty($this->fields["cache"])) {
-         $data['label'][] = __('Cache');
-         $data['value'][] = $this->fields["cache"];
-      }
-      // Specificity
-      $data['label'][] = __('Capacity');
-      $data['size']    = 10;
-
-      return $data;
-   }
-
-
-   /**
     * @since version 0.84
     *
     * @param $itemtype
@@ -142,17 +105,17 @@ class DeviceHardDrive extends CommonDevice {
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
 
-      $column_name = __CLASS__;
+      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
+      if ($column == $father) {
+         return $father;
       }
 
       switch ($itemtype) {
-         case 'Computer_Device' :
+         case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('rpm', __('Rpm'), $super, $father);
-            $base->addHeader('cache', __('Cache'), $super, $father);
+            $base->addHeader('deviceharddriver_rpm', __('Rpm'), $super, $father);
+            $base->addHeader('deviceharddriver_cache', __('Cache'), $super, $father);
             InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
@@ -160,33 +123,31 @@ class DeviceHardDrive extends CommonDevice {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see inc/CommonDevice::getHTMLTableCell()
-   **/
-   function getHTMLTableCell($item_type, HTMLTableRow $row, HTMLTableCell $father=NULL,
-                             array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
+                                    HTMLTableCell $father=NULL, array $options=array()) {
 
-      switch ($item_type) {
-         case 'Computer_Device' :
+      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+      if ($column == $father) {
+         return $father;
+      }
+
+      switch ($item->getType()) {
+         case 'Computer' :
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["rpm"]) {
-               $row->addCell($row->getHeaderByName('specificities', 'rpm'), $this->fields["rpm"]);
+               $row->addCell($row->getHeaderByName('deviceharddriver_rpm'), $this->fields["rpm"]);
             }
 
             if ($this->fields["cache"]) {
-               $row->addCell($row->getHeaderByName('specificities', 'cache'),
+               $row->addCell($row->getHeaderByName('deviceharddriver_cache'),
                              $this->fields["cache"]);
             }
 
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
-
             break;
       }
-
    }
-
 
 }
 ?>

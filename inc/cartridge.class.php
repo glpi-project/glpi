@@ -56,12 +56,12 @@ class Cartridge extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('cartridge', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('cartridge', 'r');
    }
 

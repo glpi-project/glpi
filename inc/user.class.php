@@ -53,22 +53,22 @@ class User extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('user', 'w');
    }
 
 
-   function canUpdate() {
+   static function canUpdate() {
       return Session::haveRight('user', 'w');
    }
 
 
-   function canDelete() {
+   static function canDelete() {
       return Session::haveRight('user', 'w');
    }
 
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('user', 'r');
    }
 
@@ -1406,7 +1406,7 @@ class User extends CommonDBTM {
       $buttons = array();
       $title   = self::getTypeName(2);
 
-      if ($this->canCreate()) {
+      if (static::canCreate()) {
          $buttons["user.form.php"] = __('Add user...');
          $title                    = "";
 
@@ -2001,7 +2001,7 @@ class User extends CommonDBTM {
    }
 
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $this->canUpdate();
+      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_user_group']  = __('Associate to a group');
