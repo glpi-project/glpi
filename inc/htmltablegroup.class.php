@@ -180,8 +180,9 @@ class HTMLTableGroup extends HTMLTableBase {
    **/
    function display($totalNumberOfColumn, array $params) {
 
-      $p['display_super_for_each_group'] = true;
-      $p['display_title_for_each_group'] = true;
+      $p['display_header_for_each_group'] = true;
+      $p['display_super_for_each_group']  = true;
+      $p['display_title_for_each_group']  = true;
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
@@ -209,9 +210,11 @@ class HTMLTableGroup extends HTMLTableBase {
             } else {
                $with_content = false;
             }
-            echo "\t\t";
-            $header->displayTableHeader($with_content);
-            echo "\n";
+            if ($p['display_header_for_each_group']) {
+               echo "\t\t";
+               $header->displayTableHeader($with_content);
+               echo "\n";
+            }
          }
          echo "\t</tr></tbody>\n";
 
