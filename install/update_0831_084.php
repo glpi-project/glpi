@@ -1983,7 +1983,7 @@ function update0831to084() {
 
 
    migrateComputerDevice('DeviceProcessor', 'frequency', 'integer',
-                         array('serial'    => 'integer'));
+                         array('serial'    => 'string'));
 
    migrateComputerDevice('DeviceMemory', 'size', 'integer',
                          array('serial' => 'string'));
