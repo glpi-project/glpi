@@ -43,6 +43,10 @@ if (!isset($_SESSION['glpi_table_of'])) {
    $_SESSION['glpi_table_of'] = array();
 }
 
+if (!isset($_SESSION['glpi_foreign_key_field_of'])) {
+   $_SESSION['glpi_foreign_key_field_of'] = array();
+}
+
 /**
  * Is the script launch in Command line ?
  *

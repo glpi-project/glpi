@@ -106,13 +106,14 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   function getForeignKeyField() {
+   static function getForeignKeyField() {
 
-      if (empty($this->fkfield)) {
-         $this->fkfield = getForeignKeyFieldForTable($this->getTable());
+      if (empty($_SESSION['glpi_foreign_key_field_of'][get_called_class()])) {
+         $_SESSION['glpi_foreign_key_field_of'][get_called_class()] =
+            getForeignKeyFieldForTable(static::getTable());
       }
 
-      return $this->fkfield;
+      return $_SESSION['glpi_foreign_key_field_of'][get_called_class()];
    }
 
 
