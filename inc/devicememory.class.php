@@ -47,7 +47,7 @@ class DeviceMemory extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'specif_default',
+                         array(array('name'  => 'size_default',
                                      'label' => __('Size by default'),
                                      'type'  => 'text',
                                      'unit'  => __('Mio')),
@@ -66,7 +66,7 @@ class DeviceMemory extends CommonDevice {
       $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'specif_default';
+      $tab[11]['field']    = 'size_default';
       $tab[11]['name']     = __('Size by default');
       $tab[11]['datatype'] = 'string';
 

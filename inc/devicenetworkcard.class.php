@@ -47,7 +47,7 @@ class DeviceNetworkCard extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'specif_default',
+                         array(array('name'  => 'mac_default',
                                      'label' => __('MAC address by default'),
                                      'type'  => 'text'),
                                array('name'  => 'bandwidth',
@@ -61,7 +61,7 @@ class DeviceNetworkCard extends CommonDevice {
       $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'specif_default';
+      $tab[11]['field']    = 'mac_default';
       $tab[11]['name']     = __('MAC address by default');
       $tab[11]['datatype'] = 'string';
 

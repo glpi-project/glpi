@@ -47,7 +47,7 @@ class DeviceProcessor extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'specif_default',
+                         array(array('name'  => 'frequency_default',
                                      'label' => __('Frequency by default'),
                                      'type'  => 'text',
                                      'unit'  => __('MHz')),
@@ -63,7 +63,7 @@ class DeviceProcessor extends CommonDevice {
       $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'specif_default';
+      $tab[11]['field']    = 'frequency_default';
       $tab[11]['name']     = __('Frequency by default');
       $tab[11]['datatype'] = 'string';
 

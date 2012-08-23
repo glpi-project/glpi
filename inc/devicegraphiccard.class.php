@@ -47,7 +47,7 @@ class DeviceGraphicCard extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'specif_default',
+                         array(array('name'  => 'memory_default',
                                      'label' => __('Memory by default'),
                                      'type'  => 'text',
                                      'unit'  => __('Mio')),
@@ -62,7 +62,7 @@ class DeviceGraphicCard extends CommonDevice {
       $tab                 = parent::getSearchOptions();
 
       $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'specif_default';
+      $tab[12]['field']    = 'memory_default';
       $tab[12]['name']     = __('Memory by default');
       $tab[12]['datatype'] = 'string';
 
