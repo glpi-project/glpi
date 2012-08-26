@@ -224,7 +224,7 @@ class Item_Devices extends CommonDBRelation {
       //TRANS : %1$s is the type of the device
       //        %2$s is the type of the item
       //        %3$s is the name of the item (used for headings of a list),
-      $options['itemtype_title'] = sprintf(__('%1$s of %2$s : %3$s'), $device_type::getTypeName(1),
+      $options['itemtype_title'] = sprintf(__('%1$s of %2$s: %3$s'), $device_type::getTypeName(2),
                                            $item->getTypeName(1), $item->getName());
 
       $device_type::getHTMLTableHeader($item->getType(), $table_group, $common_column, NULL,
