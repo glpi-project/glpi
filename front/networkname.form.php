@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
       NetworkName::unaffectAddressByID($_POST['id']);
       Event::log($nn->getID(), $nn->getType(), 5, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s dissociates a network name to an item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s dissociates a network name from an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -919,7 +919,7 @@ class Computer extends CommonDBTM {
 
       $tab[36]['table']          = 'glpi_items_deviceprocessors';
       $tab[36]['field']          = 'frequency';
-      $tab[36]['name']           = __('Processeur frequency');
+      $tab[36]['name']           = __('Processor frequency');
       $tab[36]['unit']           = __('MHz');
       $tab[36]['forcegroupby']   = true;
       $tab[36]['usehaving']      = true;

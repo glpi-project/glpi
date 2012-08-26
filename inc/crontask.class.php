@@ -1409,7 +1409,7 @@ class CronTask extends CommonDBTM{
          case 'logs' :
             return array('description' => __('Clean old logs'),
                          'parameter'
-                           => __('How long system logs are keep in database (in days, 0 for infinite)'));
+                           => __('System logs retention period (in days, 0 for infinite)'));
 
          case 'optimize' :
             return array('description' => __('Database optimization'));

@@ -160,7 +160,7 @@ if (isset($_POST["add"])) {
    $npv->unassignVlanbyID($_GET['id']);
    Event::log(0, "networkport", 5, "inventory",
                //TRANS: %s is the user login
-               sprintf(__('%s dissociates a VLAN on a network port'), $_SESSION["glpiname"]));
+               sprintf(__('%s dissociates a VLAN from a network port'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
