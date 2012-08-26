@@ -583,7 +583,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default file size limit imported by the mail receiver')."</td><td>";
+      echo "<td>".__('Default file size limit imported by the mails receiver')."</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";

@@ -276,13 +276,13 @@ class Stat {
             $nb_opened = array_sum($opened);
             $export_data['opened'][$value[$i]['link']] = $nb_opened;
 
-            //le nombre d'intervention resolues - the number of resolved intervention
+            //le nombre d'intervention resolues - the number of solved intervention
             $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
                                                     $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
-            //le nombre d'intervention resolues - the number of resolved intervention
+            //le nombre d'intervention resolues - the number of solved late intervention
             $late      = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2,
                                                   $type, $value[$i]["id"], $value2);
             $nb_late   = array_sum($late);
@@ -503,7 +503,7 @@ class Stat {
             $nb_opened = array_sum($opened);
             echo Search::showItem($output_type, $nb_opened, $item_num, $row_num);
 
-            //le nombre d'intervention resolues - the number of resolved intervention
+            //le nombre d'intervention resolues - the number of solved intervention
             $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
                                                     $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
@@ -515,7 +515,7 @@ class Stat {
             }
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
 
-            //le nombre d'intervention resolues - the number of resolved intervention
+            //le nombre d'intervention resolues - the number of solved intervention
             $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1,
                                                          $date2, $type, $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);

@@ -45,7 +45,7 @@ class RuleMailCollectorCollection extends RuleCollection {
 
 
    function getTitle() {
-      return __('Rules for assigning a ticket created through a mail receiver');
+      return __('Rules for assigning a ticket created through a mails receiver');
    }
 
 

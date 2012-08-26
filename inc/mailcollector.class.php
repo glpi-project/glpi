@@ -257,7 +257,7 @@ class MailCollector  extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td width='200px'> ". __('Maximum size of each file imported by the mail receiver').
+      echo "<td width='200px'> ". __('Maximum size of each file imported by the mails receiver').
            "</td><td>";
       self::showMaxFilesize('filesize_max', $this->fields["filesize_max"]);
       echo "</td></tr>";
@@ -327,7 +327,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'filesize_max';
-      $tab[5]['name']            = __('Maximum size of each file imported by the mail receiver');
+      $tab[5]['name']            = __('Maximum size of each file imported by the mails receiver');
       $tab[5]['datatype']        = 'integer';
 
       $tab[16]['table']          = $this->getTable();
@@ -1353,7 +1353,7 @@ class MailCollector  extends CommonDBTM {
    **/
    static function cronInfo($name) {
 
-      return array('description' => __('Retrieve email (Mail receivers)'),
+      return array('description' => __('Retrieve email (Mails receivers)'),
                    'parameter'   => __('Number of emails to retrieve'));
    }
 

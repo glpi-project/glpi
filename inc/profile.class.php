@@ -1189,7 +1189,7 @@ class Profile extends CommonDBTM {
       self::dropdownRight("rule_ocs",
                           array('value'   => $this->fields["rule_ocs"]));
       echo "</td>";
-      echo "<td>".__('Rules for assigning a ticket created through a mail receiver')."</td><td>";
+      echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td><td>";
       self::dropdownRight("rule_mailcollector",
                           array('value'   => $this->fields["rule_mailcollector"]));
       echo "</td></tr>\n";
@@ -1567,7 +1567,7 @@ class Profile extends CommonDBTM {
 
       $tab[105]['table']         = $this->getTable();
       $tab[105]['field']         = 'rule_mailcollector';
-      $tab[105]['name']          = __('Rules for assigning a ticket created through a mail receiver');
+      $tab[105]['name']          = __('Rules for assigning a ticket created through a mails receiver');
       $tab[105]['datatype']      = 'right';
 
       $tab[49]['table']          = $this->getTable();

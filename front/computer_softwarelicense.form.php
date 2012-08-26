@@ -74,7 +74,7 @@ if (isset($_REQUEST["add"])) {
    }
    Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s dissociates computers to a license'), $_SESSION["glpiname"]));
+              sprintf(__('%s dissociates computers from a license'), $_SESSION["glpiname"]));
 
    Html::back();
 }

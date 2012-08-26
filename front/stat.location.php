@@ -193,8 +193,8 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[Html::clean($key)] = $val;
       }
 
-      Stat::showGraph(array(__('Number resolved late') => $cleandata),
-                      array('title'     => __('Number resolved late'),
+      Stat::showGraph(array(__('Number solved late') => $cleandata),
+                      array('title'     => __('Number solved late'),
                             'showtotal' => 1,
                             'unit'      => __('Tickets'),
                             'type'      => 'pie'));
