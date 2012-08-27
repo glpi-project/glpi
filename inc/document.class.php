@@ -1068,7 +1068,7 @@ class Document extends CommonDBTM {
                                  $CFG_GLPI["document_types"], false, true);
          echo "</td>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='adddocumentitem' value='". _sx('Button', 'Add')."'
+         echo "<input type='submit' name='adddocumentitem' value='". _sx('button', 'Add')."'
                 class='submit'>";
          echo "</td></tr>";
          echo "</table>";
@@ -1631,7 +1631,7 @@ class Document extends CommonDBTM {
             echo "(".self::getMaxUploadSize().")&nbsp;";
             echo "</td>";
             echo "<td colspan='2' class='center'>";
-            echo "<input type='submit' name='add' value=\""._sx('Button', 'Add a new file')."\"
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"
                    class='submit'>";
             echo "</td></tr>";
 
@@ -1647,7 +1647,7 @@ class Document extends CommonDBTM {
                                     'used'   => $used));
                echo "</td><td colspan='2' class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
-                      _sx('Button', 'Associate an existing document')."\" class='submit'>";
+                      _sx('button', 'Associate an existing document')."\" class='submit'>";
                echo "</td>";
                echo "</tr>";
             }

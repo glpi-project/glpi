@@ -484,7 +484,7 @@ class TicketFollowup  extends CommonDBTM {
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
 
       echo "<input type='hidden' name='is_private' value='".$_SESSION['glpifollowup_private']."'>";
-      echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
+      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
    }
 
 

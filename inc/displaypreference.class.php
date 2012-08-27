@@ -245,7 +245,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
-         echo "<input type='submit' name='activate' value=\""._sx('Button', 'Post')."\" class='submit'>";
+         echo "<input type='submit' name='activate' value=\""._sx('button', 'Post')."\" class='submit'>";
          echo "</span>";
          Html::closeForm();
          echo "</th></tr></table>\n";
@@ -281,7 +281,7 @@ class DisplayPreference extends CommonDBTM {
             echo "</optgroup>\n";
          }
          echo "</select><span class='small_space'>";
-         echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</span>";
          Html::closeForm();
          echo "</td></tr>\n";
@@ -435,7 +435,7 @@ class DisplayPreference extends CommonDBTM {
          }
 
          echo "</select><span class='small_space'>";
-         echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</span>";
          Html::closeForm();
          echo "</td></tr>";

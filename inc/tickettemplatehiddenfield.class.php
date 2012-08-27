@@ -220,7 +220,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             Dropdown::showFromArray('num', $fields, array('used'=> $used));
             echo "</td><td class='center'>";
-            echo "&nbsp;<input type='submit' name='add' value=\""._sx('Button', 'Add').
+            echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
                            "\" class='submit'>";
             echo "</td></tr>";
 

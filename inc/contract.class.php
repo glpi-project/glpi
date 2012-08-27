@@ -951,7 +951,7 @@ class Contract extends CommonDBTM {
                                      'entity'       => $this->fields["entities_id"],
                                      'entity_sons'  => $this->fields["is_recursive"]));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value=\""._sx('Button', 'Add')."\"
+            echo "<input type='submit' name='addcontractsupplier' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
@@ -1120,7 +1120,7 @@ class Contract extends CommonDBTM {
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                    $CFG_GLPI["contract_types"], false, true);
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value=\""._sx('Button', 'Add')."\"
+            echo "<input type='submit' name='additem' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
             echo "</td><td>&nbsp;</td></tr>";
          }
@@ -1296,7 +1296,7 @@ class Contract extends CommonDBTM {
             self::dropdown(array('entity' => $item->getEntityID(),
                                  'used'   => $contracts));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value=\""._sx('Button', 'Add')."\"
+            echo "<input type='submit' name='additem' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
