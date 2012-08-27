@@ -815,7 +815,7 @@ class Dropdown {
          echo "</optgroup>";
       }
       echo "</select>&nbsp;";
-      echo "<input type='submit' name='add' value=\""._sx('Button', 'Search')."\" class='submit' ";
+      echo "<input type='submit' name='add' value=\""._sx('button', 'Search')."\" class='submit' ";
       echo "onClick='document.location=document.getElementById(\"menu_nav\").value;'";
       echo ">&nbsp;</td></tr>";
       echo "</table><br>";
