@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-26 12:14+0200\n"
+"POT-Creation-Date: 2012-08-27 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -375,6 +375,35 @@ msgid_plural "Emails"
 msgstr[0] ""
 msgstr[1] ""
 
+#: ajax/dropdownMassiveActionAddActor.php:49 inc/commondbtm.class.php:1804
+#: inc/commondbtm.class.php:2649 inc/commondbtm.class.php:2653
+#: inc/commondbtm.class.php:2673 inc/commondevice.class.php:187
+#: inc/commonitiltask.class.php:1108 inc/computer_device.class.php:305
+#: inc/computer_device.class.php:306 inc/computer_device.class.php:375
+#: inc/contact.class.php:512 inc/contact_supplier.class.php:104
+#: inc/contact_supplier.class.php:110 inc/contract.class.php:954
+#: inc/contract.class.php:1123 inc/contract.class.php:1299
+#: inc/displaypreference.class.php:284 inc/displaypreference.class.php:438
+#: inc/document.class.php:704 inc/document.class.php:1071
+#: inc/group_user.class.php:170 inc/group_user.class.php:308
+#: inc/group_user.class.php:541 inc/group_user.class.php:547
+#: inc/item_devices.class.php:188 inc/item_problem.class.php:230
+#: inc/knowbaseitem.class.php:613 inc/link_itemtype.class.php:99
+#: inc/netpoint.class.php:362 inc/netpoint.class.php:380
+#: inc/networkport.class.php:543 inc/problem_ticket.class.php:223
+#: inc/profile_user.class.php:130 inc/profile_user.class.php:278
+#: inc/reservation.class.php:692 inc/reservationitem.class.php:334
+#: inc/rule.class.php:586 inc/rule.class.php:633 inc/rule.class.php:2013
+#: inc/ruleright.class.php:103 inc/slalevel.class.php:122
+#: inc/supplier.class.php:485 inc/supplier.class.php:748
+#: inc/ticket.class.php:4275 inc/ticketfollowup.class.php:487
+#: inc/tickettemplatehiddenfield.class.php:223
+#: inc/tickettemplatemandatoryfield.class.php:221
+#: inc/ticketvalidation.class.php:547 inc/user.class.php:2049
+msgctxt "button"
+msgid "Add"
+msgstr ""
+
 #. TRANS: %1$s is address, %2$s is netmask
 #: ajax/dropdownShowIPNetwork.php:57
 #, php-format
@@ -663,6 +692,11 @@ msgstr ""
 
 #: config/config.php:180 install/install.php:177 install/install.php:187
 msgid "Try again"
+msgstr ""
+
+#: config/config.php:188 inc/plugin.class.php:465
+msgctxt "button"
+msgid "Upgrade"
 msgstr ""
 
 #: config/config.php:194
@@ -1614,6 +1648,14 @@ msgstr[1] ""
 
 #: front/find_num.php:77
 msgid "Search the ID of your hardware"
+msgstr ""
+
+#: front/find_num.php:86 inc/authldap.class.php:2620
+#: inc/dropdown.class.php:818 inc/knowbase.class.php:64
+#: inc/knowbaseitem.class.php:869 inc/planning.class.php:416
+#: inc/search.class.php:1849
+msgctxt "button"
+msgid "Search"
 msgstr ""
 
 #: front/find_num.php:94 inc/commondbtm.class.php:2529
@@ -3566,6 +3608,12 @@ msgstr ""
 msgid "Test of connection to LDAP directory"
 msgstr ""
 
+#: inc/authldap.class.php:559 inc/authmail.class.php:225
+#: inc/rule.class.php:1833 inc/rulecollection.class.php:737
+msgctxt "button"
+msgid "Test"
+msgstr ""
+
 #: inc/authldap.class.php:576
 msgid "Binding to the LDAP directory"
 msgstr ""
@@ -3707,7 +3755,8 @@ msgctxt "button"
 msgid "Synchronize"
 msgstr ""
 
-#: inc/authldap.class.php:1128 inc/notimportedemail.class.php:74
+#: inc/authldap.class.php:1128 inc/authldap.class.php:1547
+#: inc/notimportedemail.class.php:74 inc/notimportedemail.class.php:84
 msgctxt "button"
 msgid "Import"
 msgstr ""
@@ -3775,6 +3824,13 @@ msgstr ""
 msgid "LDAP directory choice"
 msgstr ""
 
+#: inc/authldap.class.php:1815 inc/displaypreference.class.php:248
+#: inc/knowbaseitem.class.php:919 inc/knowbaseitem.class.php:968
+#: inc/ruledictionnarysoftwarecollection.class.php:114
+msgctxt "button"
+msgid "Post"
+msgstr ""
+
 #: inc/authldap.class.php:1820
 msgid "No LDAP directory defined in GLPI"
 msgstr ""
@@ -3793,6 +3849,11 @@ msgstr ""
 
 #: inc/authldap.class.php:2491
 msgid "Simple mode"
+msgstr ""
+
+#: inc/authldap.class.php:2515
+msgctxt "button"
+msgid "To change"
 msgstr ""
 
 #: inc/authldap.class.php:2537 inc/entity.class.php:788
@@ -3954,6 +4015,13 @@ msgstr ""
 msgid "Default view"
 msgstr ""
 
+#. TRANS: select action 'update' (before doing it)
+#: inc/bookmark.class.php:587 inc/commondbtm.class.php:3156
+#: inc/supplier.class.php:368 inc/ticket.class.php:3956
+msgctxt "button"
+msgid "Update"
+msgstr ""
+
 #: inc/bookmark.class.php:612
 msgid "You have not recorded any bookmarks yet"
 msgstr ""
@@ -4106,7 +4174,7 @@ msgid_plural "Calendars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/calendar.class.php:81
+#: inc/calendar.class.php:81 inc/calendar.class.php:93
 msgctxt "button"
 msgid "Duplicate"
 msgstr ""
@@ -4301,6 +4369,33 @@ msgstr[1] ""
 
 #: inc/cartridge.class.php:742
 msgid "End of life"
+msgstr ""
+
+#. TRANS : means update / actualize
+#: inc/cartridge.class.php:760 inc/cartridge.class.php:787
+#: inc/commondbtm.class.php:1807 inc/commondbtm.class.php:1817
+#: inc/commondbtm.class.php:1842 inc/commondbtm.class.php:3733
+#: inc/commonitilactor.class.php:217 inc/computer_device.class.php:385
+#: inc/config.class.php:302 inc/config.class.php:435 inc/config.class.php:477
+#: inc/config.class.php:547 inc/config.class.php:686 inc/config.class.php:909
+#: inc/config.class.php:1150 inc/entity.class.php:1000
+#: inc/entity.class.php:1087 inc/entity.class.php:1219
+#: inc/entity.class.php:1521 inc/entity.class.php:1816
+#: inc/infocom.class.php:1103 inc/item_devices.class.php:197
+#: inc/knowbaseitem.class.php:610 inc/networkportmigration.class.php:344
+#: inc/planningrecall.class.php:299 inc/profile.class.php:751
+#: inc/profile.class.php:971 inc/profile.class.php:1091
+#: inc/profile.class.php:1236 inc/profile.class.php:1340
+#: inc/reservation.class.php:704 inc/reservationitem.class.php:250
+#: inc/ticket.class.php:4254 inc/ticket.class.php:4269 inc/user.class.php:1918
+msgctxt "button"
+msgid "Save"
+msgstr ""
+
+#: inc/cartridge.class.php:766 inc/computer.class.php:678
+#: inc/computer_softwareversion.class.php:562 inc/plugin.class.php:467
+msgctxt "button"
+msgid "Install"
 msgstr ""
 
 #. TRANS: %d is a number of months
@@ -4780,8 +4875,30 @@ msgstr ""
 msgid "Item successfully restored"
 msgstr ""
 
+#: inc/commondbtm.class.php:1823 inc/commondbtm.class.php:3147
+#: inc/ticket.class.php:4251
+msgctxt "button"
+msgid "Restore"
+msgstr ""
+
+#: inc/commondbtm.class.php:1826 inc/commondbtm.class.php:1831
+#: inc/commondbtm.class.php:3146 inc/commondbtm.class.php:3168
+#: inc/infocom.class.php:1107 inc/reservation.class.php:698
+#: inc/search.class.php:1203 inc/ticket.class.php:4259
+msgctxt "button"
+msgid "Purge"
+msgstr ""
+
 #: inc/commondbtm.class.php:1833 inc/ticket.class.php:4260
 msgid "Confirm the final deletion?"
+msgstr ""
+
+#: inc/commondbtm.class.php:1835 inc/commondbtm.class.php:2662
+#: inc/commondbtm.class.php:2666 inc/commondbtm.class.php:2679
+#: inc/commondbtm.class.php:3166 inc/document.class.php:711
+#: inc/ticket.class.php:3670 inc/ticket.class.php:4263
+msgctxt "button"
+msgid "Delete"
 msgstr ""
 
 #. TRANS: %s is the template name
@@ -4836,30 +4953,8 @@ msgstr ""
 msgid "%1$s (%2$d) %3$s"
 msgstr ""
 
-#: inc/commondbtm.class.php:3146 inc/commondbtm.class.php:3168
-#: inc/search.class.php:1203
-msgctxt "button"
-msgid "Purge"
-msgstr ""
-
-#: inc/commondbtm.class.php:3147
-msgctxt "button"
-msgid "Restore"
-msgstr ""
-
-#. TRANS: select action 'update' (before doing it)
-#: inc/commondbtm.class.php:3156
-msgctxt "button"
-msgid "Update"
-msgstr ""
-
 #: inc/commondbtm.class.php:3161 inc/infocom.class.php:892
 msgid "Enable the financial and administrative information"
-msgstr ""
-
-#: inc/commondbtm.class.php:3166
-msgctxt "button"
-msgid "Delete"
 msgstr ""
 
 #: inc/commondbtm.class.php:3175
@@ -4941,6 +5036,11 @@ msgstr ""
 msgid "Transfer and merge"
 msgstr ""
 
+#: inc/commondropdown.class.php:331
+msgctxt "button"
+msgid "Merge"
+msgstr ""
+
 #: inc/commondropdown.class.php:512
 msgid "You can't delete that item, because it has sub-items"
 msgstr ""
@@ -4953,8 +5053,23 @@ msgstr ""
 msgid "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr ""
 
+#: inc/commondropdown.class.php:530
+msgctxt "button"
+msgid "Confirm"
+msgstr ""
+
+#: inc/commondropdown.class.php:533 inc/commondropdown.class.php:562
+msgctxt "button"
+msgid "Cancel"
+msgstr ""
+
 #: inc/commondropdown.class.php:539
 msgid "You can also replace all uses of this dropdown by another."
+msgstr ""
+
+#: inc/commondropdown.class.php:560
+msgctxt "button"
+msgid "Replace"
 msgstr ""
 
 #: inc/commonglpi.class.php:56 inc/rule.class.php:1512
@@ -5396,7 +5511,11 @@ msgstr ""
 msgid "Sons of %s"
 msgstr ""
 
-#: inc/commontreedropdown.class.php:474 inc/networkport.class.php:974
+#: inc/commontreedropdown.class.php:474 inc/commontreedropdown.class.php:486
+#: inc/computer_softwarelicense.class.php:374
+#: inc/computer_softwareversion.class.php:447 inc/networkport.class.php:974
+#: inc/profile_user.class.php:457 inc/profile_user.class.php:541
+#: inc/rule.class.php:172
 msgctxt "button"
 msgid "Move"
 msgstr ""
@@ -5494,16 +5613,12 @@ msgstr ""
 msgid "Created on %s"
 msgstr ""
 
-#: inc/computer.class.php:677 inc/monitor.class.php:362
-#: inc/peripheral.class.php:319 inc/phone.class.php:347
-#: inc/printer.class.php:473
+#: inc/computer.class.php:677 inc/computer_item.class.php:540
+#: inc/computer_item.class.php:623 inc/computer_item.class.php:647
+#: inc/monitor.class.php:362 inc/peripheral.class.php:319
+#: inc/phone.class.php:347 inc/printer.class.php:473
 msgctxt "button"
 msgid "Connect"
-msgstr ""
-
-#: inc/computer.class.php:678 inc/plugin.class.php:467
-msgctxt "button"
-msgid "Install"
 msgstr ""
 
 #: inc/computer.class.php:696 inc/computer_softwareversion.class.php:690
@@ -6481,12 +6596,22 @@ msgid_plural "Used"
 msgstr[0] ""
 msgstr[1] ""
 
+#: inc/consumable.class.php:322
+msgctxt "button"
+msgid "Add consumables"
+msgstr ""
+
 #: inc/consumable.class.php:364
 msgid "Used consumables"
 msgstr ""
 
 #: inc/consumable.class.php:371
 msgid "Given to"
+msgstr ""
+
+#: inc/consumable.class.php:382
+msgctxt "button"
+msgid "Give"
 msgstr ""
 
 #: inc/consumable.class.php:523
@@ -7498,6 +7623,16 @@ msgstr[1] ""
 
 #: inc/document.class.php:1508
 msgid "Web link"
+msgstr ""
+
+#: inc/document.class.php:1634
+msgctxt "button"
+msgid "Add a new file"
+msgstr ""
+
+#: inc/document.class.php:1650
+msgctxt "button"
+msgid "Associate an existing document"
 msgstr ""
 
 #: inc/documenttype.class.php:45 inc/documenttype.class.php:81
@@ -8924,11 +9059,6 @@ msgstr ""
 msgid "Request"
 msgstr ""
 
-#: inc/knowbase.class.php:64
-msgctxt "button"
-msgid "Search"
-msgstr ""
-
 #: inc/knowbase.class.php:65
 msgctxt "button"
 msgid "Browse"
@@ -8977,6 +9107,11 @@ msgstr[1] ""
 #: inc/knowbaseitem.class.php:599 inc/knowbaseitem.class.php:704
 #: inc/knowbaseitem.class.php:705
 msgid "Put this item in the FAQ"
+msgstr ""
+
+#: inc/knowbaseitem.class.php:617
+msgctxt "button"
+msgid "Blank"
 msgstr ""
 
 #: inc/knowbaseitem.class.php:685
@@ -9216,6 +9351,11 @@ msgstr ""
 msgid "Maximum size of each file imported by the mails receiver"
 msgstr ""
 
+#: inc/mailcollector.class.php:290
+msgctxt "button"
+msgid "Get email tickets now"
+msgstr ""
+
 #: inc/mailcollector.class.php:416
 #, php-format
 msgid "Email %s not found. Impossible import."
@@ -9441,6 +9581,11 @@ msgstr ""
 
 #: inc/networkname.class.php:730
 msgid "Not associated one"
+msgstr ""
+
+#: inc/networkname.class.php:734 inc/networkport_vlan.class.php:235
+msgctxt "button"
+msgid "Associate"
 msgstr ""
 
 #: inc/networkportaggregate.class.php:47
@@ -10466,6 +10611,11 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
+#: inc/planning.class.php:334
+msgctxt "button"
+msgid "Show"
+msgstr ""
+
 #: inc/planning.class.php:343
 msgid "Download the planning in Ical format"
 msgstr ""
@@ -10572,19 +10722,20 @@ msgstr ""
 msgid "Web"
 msgstr ""
 
+#: inc/plugin.class.php:439
+msgctxt "button"
+msgid "Disable"
+msgstr ""
+
+#: inc/plugin.class.php:443 inc/plugin.class.php:490 inc/plugin.class.php:518
+#: inc/plugin.class.php:541
+msgctxt "button"
+msgid "Uninstall"
+msgstr ""
+
 #: inc/plugin.class.php:446 inc/plugin.class.php:483 inc/plugin.class.php:496
 #: inc/plugin.class.php:512 inc/plugin.class.php:520 inc/plugin.class.php:543
 msgid "Non-existent function"
-msgstr ""
-
-#: inc/plugin.class.php:465
-msgctxt "button"
-msgid "Upgrade"
-msgstr ""
-
-#: inc/plugin.class.php:490 inc/plugin.class.php:518 inc/plugin.class.php:541
-msgctxt "button"
-msgid "Uninstall"
 msgstr ""
 
 #: inc/plugin.class.php:532
@@ -12184,6 +12335,11 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:411
 msgid "Send licenses alert failed"
+msgstr ""
+
+#: inc/softwarelicense.class.php:545 inc/softwarelicense.class.php:678
+msgctxt "button"
+msgid "Add a license"
 msgstr ""
 
 #: inc/softwareversion.class.php:307 inc/softwareversion.class.php:318
