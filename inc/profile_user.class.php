@@ -33,16 +33,28 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Profile_User class
-class Profile_User extends CommonDBTM {
+class Profile_User extends CommonDBRelation {
 
    // From CommonDBTM
    var $auto_message_on_action = false;
+   
+   // From CommonDBRelation
+   static public $itemtype_1 = 'User';
+   static public $items_id_1 = 'users_id';
+   
+   static public $itemtype_2 = 'Profile';
+   static public $items_id_2 = 'profiles_id';
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
+   // Specific log system
+   static public $logs_for_itemtype_1 = true;
+   static public $logs_for_itemtype_2 = false;
+
+//    function getForbiddenStandardMassiveAction() {
+//       $forbidden = parent::getForbiddenStandardMassiveAction();
+//       $forbidden[] = 'update';
+//       return $forbidden;
+//    }
 
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
@@ -69,8 +81,6 @@ class Profile_User extends CommonDBTM {
              && Session::haveAccessToEntity($this->fields['entities_id']);
    }
 
-
-   /****/
    function prepareInputForAdd($input) {
 
       if (!isset($input['profiles_id'])
@@ -396,18 +406,12 @@ class Profile_User extends CommonDBTM {
 
       $ID      = $prof->fields['id'];
       $canedit = Session::haveRight("user", "w");
-
+      $rand = mt_rand();
       if (!$prof->can($ID,'r')) {
          return false;
       }
 
-      echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
 
-      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
-                                          __('D=Dynamic, R=Recursive'))."</th></tr>";
-      echo "</table>\n";
 
       $query = "SELECT `glpi_users`.*,
                        `glpi_profiles_users`.`entities_id` AS entity,
@@ -425,6 +429,22 @@ class Profile_User extends CommonDBTM {
                                                  $_SESSION['glpiactiveentities'], true)."
                 ORDER BY `glpi_entities`.`completename`";
 
+      $result = $DB->query($query);
+      $nb = $DB->numrows($result);
+
+      echo "<div class='spaced'>";
+
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('num_displayed' => $nb);
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
+      echo "<table class='tab_cadre_fixe'><tr>";
+      echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
+
+      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
+                                          __('D=Dynamic, R=Recursive'))."</th></tr>";
+      echo "</table>\n";      
       echo "<table class='tab_cadre_fixe'>";
 
       $i              = 0;
@@ -432,127 +452,116 @@ class Profile_User extends CommonDBTM {
       $rand           = mt_rand(); // Just to avoid IDE warning
       $canedit_entity = false;
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 0) {
-            $temp = -1;
+      if ($nb) {
+         $temp = -1;
 
-            while ($data = $DB->fetch_assoc($result)) {
-               if ($data["entity"] != $temp) {
+         while ($data = $DB->fetch_assoc($result)) {
+            if ($data["entity"] != $temp) {
 
-                  while (($i%$nb_per_line) != 0) {
-                     if ($canedit_entity) {
-                        echo "<td width='10'>&nbsp;</td>";
-                     }
-                     echo "<td class='tab_bg_1'>&nbsp;</td>\n";
-                     $i++;
-                  }
-
-                  if ($i != 0) {
-                     echo "</table>";
-
-                     if ($canedit_entity) {
-                        Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
-                        Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
-                        echo "&nbsp;<input type='submit' name='moveentity' value='".
-                              _sx('button','Move')."' class='submit'>&nbsp;";
-                        Html::closeArrowMassives(array('delete' => __('Delete')));
-                     }
-                     echo "</div>";
-                     Html::closeForm();
-                     echo "</td></tr>\n";
-                  }
-
-                  // New entity
-                  $i              = 0;
-                  $temp           = $data["entity"];
-                  $canedit_entity = $canedit && in_array($temp, $_SESSION['glpiactiveentities']);
-                  $rand           = mt_rand();
-                  echo "<tr class='tab_bg_2'>";
-                  echo "<td>";
-                  echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
-                         GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-                  echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;";
-                  echo "<span class='b'>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
-                        "</span>";
-                  echo "</a></td></tr>\n";
-
-                  echo "<tr class='tab_bg_2'><td>";
-                  echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand.
-                         "_$temp' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-                  echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
-                  echo "<table class='tab_cadre_fixe'>\n";
-               }
-
-               if (($i%$nb_per_line) == 0) {
-                  if ($i != 0) {
-                     echo "</tr>\n";
-                  }
-                  echo "<tr class='tab_bg_1'>\n";
-                  $i = 0;
-               }
-
-               if ($canedit_entity) {
-                  echo "<td width='10'>";
-                  $sel = "";
-
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-
-                  echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
-                  echo "</td>";
-               }
-
-               $username = formatUserName($data["id"], $data["name"], $data["realname"],
-                                          $data["firstname"], 1);
-
-               if ($data["is_dynamic"] || $data["is_recursive"]) {
-                  $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
-                  if ($data["is_dynamic"]) {
-                     $username = sprintf(__('%1$s%2$s'), $username, __('D'));
-                  }
-                  if ($data["is_dynamic"] && $data["is_recursive"]) {
-                     $username = sprintf(__('%1$s%2$s'), $username, ", ");
-                  }
-                  if ($data["is_recursive"]) {
-                     $username = sprintf(__('%1$s%2$s'), $username, __('R'));
-                  }
-                  $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
-               }
-               echo "<td class='tab_bg_1'>". $username."</td>\n";
-               $i++;
-            }
-
-            if (($i%$nb_per_line) != 0) {
                while (($i%$nb_per_line) != 0) {
                   if ($canedit_entity) {
                      echo "<td width='10'>&nbsp;</td>";
                   }
-                  echo "<td class='tab_bg_1'>".Dropdown::EMPTY_VALUE."</td>";
+                  echo "<td class='tab_bg_1'>&nbsp;</td>\n";
                   $i++;
                }
-            }
 
-            if ($i != 0) {
-               echo "</table>\n";
-               if ($canedit_entity) {
-                  Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
-                  Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
-                  echo "&nbsp;<input type='submit' name='moveentity' value='"._sx('button','Move').
-                               "' class='submit'>&nbsp;";
-                  Html::closeArrowMassives(array('delete' => __('Delete')));
+               if ($i != 0) {
+                  echo "</table>";
+                  echo "</div>";
+                  echo "</td></tr>\n";
                }
-               echo "</div>";
-               Html::closeForm();
+
+               // New entity
+               $i              = 0;
+               $temp           = $data["entity"];
+               $canedit_entity = $canedit && in_array($temp, $_SESSION['glpiactiveentities']);
+               $rand           = mt_rand();
+               echo "<tr class='tab_bg_2'>";
+               echo "<td>";
+               echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
+                        GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
+               echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;";
+               echo "<span class='b'>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
+                     "</span>";
+               echo "</a>";
+               
                echo "</td></tr>\n";
+
+               echo "<tr class='tab_bg_2'><td>";
+               echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
+               echo Html::checkAllAsCheckbox("entity$temp$rand").__('All');;
+               
+               echo "<table class='tab_cadre_fixe'>\n";
             }
 
-         } else {
-            echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>".__('No user found').
-                 "</td></tr>\n";
+            if (($i%$nb_per_line) == 0) {
+               if ($i != 0) {
+                  echo "</tr>\n";
+               }
+               echo "<tr class='tab_bg_1'>\n";
+               $i = 0;
+            }
+
+            if ($canedit_entity) {
+               echo "<td width='10'>";
+               $sel = "";
+
+               if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
+                  $sel = "checked";
+               }
+
+               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+               echo "</td>";
+            }
+
+            $username = formatUserName($data["id"], $data["name"], $data["realname"],
+                                       $data["firstname"], 1);
+
+            if ($data["is_dynamic"] || $data["is_recursive"]) {
+               $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
+               if ($data["is_dynamic"]) {
+                  $username = sprintf(__('%1$s%2$s'), $username, __('D'));
+               }
+               if ($data["is_dynamic"] && $data["is_recursive"]) {
+                  $username = sprintf(__('%1$s%2$s'), $username, ", ");
+               }
+               if ($data["is_recursive"]) {
+                  $username = sprintf(__('%1$s%2$s'), $username, __('R'));
+               }
+               $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
+            }
+            echo "<td class='tab_bg_1'>". $username."</td>\n";
+            $i++;
          }
+
+         if (($i%$nb_per_line) != 0) {
+            while (($i%$nb_per_line) != 0) {
+               if ($canedit_entity) {
+                  echo "<td width='10'>&nbsp;</td>";
+               }
+               echo "<td class='tab_bg_1'>&nbsp;</td>";
+               $i++;
+            }
+         }
+
+         if ($i != 0) {
+            echo "</table>";
+            echo "</div>";
+            echo "</td></tr>\n";
+         }
+
+      } else {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>".__('No user found').
+               "</td></tr>\n";
       }
-      echo "</table></div>\n";
+      echo "</table>";
+      if ($canedit && $nb) {
+         $paramsma['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
+      }      
+      echo "</div>\n";
    }
 
 
@@ -753,7 +762,7 @@ class Profile_User extends CommonDBTM {
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
+      $tab[80]['massiveaction']  = true;
       $tab[80]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();

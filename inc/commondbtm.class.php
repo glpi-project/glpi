@@ -2939,6 +2939,7 @@ class CommonDBTM extends CommonGLPI {
                   }
 
                } else { /// Not infocoms
+
                   $link_entity_type = array();
                   /// Specific entity item
                   $itemtable = getTableForItemType($input["itemtype"]);
@@ -2946,7 +2947,8 @@ class CommonDBTM extends CommonGLPI {
                   $itemtype2 = getItemTypeForTable($searchopt[$input["id_field"]]["table"]);
                   if ($item2 = getItemForItemtype($itemtype2)) {
 
-                     if (($searchopt[$input["id_field"]]["table"] != $itemtable)
+                     if ($input["id_field"] != 80 // No entities_id fields
+                        && ($searchopt[$input["id_field"]]["table"] != $itemtable)
                         && $item2->isEntityAssign()
                         && $this->isEntityAssign()) {
                         if ($item2->getFromDB($input[$input["field"]])) {
@@ -2965,6 +2967,7 @@ class CommonDBTM extends CommonGLPI {
                         }
                      }
                   }
+
                   foreach ($input["item"] as $key => $val) {
                      if ($val == 1) {
                         if ($this->can($key,'w')

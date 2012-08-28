@@ -3073,7 +3073,7 @@ class Html {
          $width= '80%';
       }
 
-      $identifier = md5($url).mt_rand();
+      $identifier = md5($url.$itemtype);
       $max        = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
