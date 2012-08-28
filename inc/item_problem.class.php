@@ -46,8 +46,14 @@ class Item_Problem extends CommonDBRelation{
 
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    /**
     * @see inc/CommonDBTM::prepareInputForAdd()
    **/
@@ -114,25 +120,42 @@ class Item_Problem extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>";
-      if ($DB->numrows($result) == 0) {
-         _e('No associated item');
-      } else {
-         echo _n('Associated item', 'Associated items', $DB->numrows($result));
-      }
-      echo "</th></tr>";
-      if ($canedit) {
-         echo "</table></div>";
 
-         echo "<form method='post' name='itemproblem_form$rand' id='itemproblem_form$rand' action=\"".
-                $CFG_GLPI["root_doc"]."/front/item_problem.form.php\">";
-         echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='problemitem_form$rand' id='problemitem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
          echo "<table class='tab_cadre_fixe'>";
-         // massive action checkbox
-         echo "<tr><th>&nbsp;</th>";
-      } else {
-         echo "<tr>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td class='right'>";
+         $types = array();
+         foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
+            $types[] = $key;
+         }
+         Dropdown::showAllItems("items_id", 0, 0,
+                                ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
+                                $types);
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='hidden' name='problems_id' value='$instID'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $number) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array();
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      if ($canedit && $number) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Entity')."</th>";
@@ -217,29 +240,13 @@ class Item_Problem extends CommonDBRelation{
              (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) :"&nbsp;");
       echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
-         $types = array();
-         foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
-            $types[] = $key;
-         }
-         Dropdown::showAllItems("items_id", 0, 0,
-                                ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
-                                $types);
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
-         echo "</td><td>&nbsp;</td></tr>";
-         echo "</table>";
-
-         Html::openArrowMassives("itemproblem_form$rand", true);
-         echo "<input type='hidden' name='problems_id' value='$instID'>";
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-
-      } else {
-         echo "</table>";
+      echo "</table>";
+      if ($canedit && $number) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
       }
       echo "</div>";
-      Html::closeForm();
    }
 
 
