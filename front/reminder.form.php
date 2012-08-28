@@ -104,40 +104,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 }  else if (isset($_POST["deletevisibility"])) {
-   if (isset($_POST["group"]) && count($_POST["group"])) {
-      $item = new Group_Reminder();
-      foreach ($_POST["group"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
-   if (isset($_POST["user"]) && count($_POST["user"])) {
-      $item = new Reminder_User();
-      foreach ($_POST["user"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
 
-   if (isset($_POST["entity"]) && count($_POST["entity"])) {
-      $item = new Entity_Reminder();
-      foreach ($_POST["entity"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
-
-   if (isset($_POST["profile"]) && count($_POST["profile"])) {
-      $item = new Profile_Reminder();
-      foreach ($_POST["profile"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
    Event::log($_POST["reminders_id"], "reminder", 4, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
