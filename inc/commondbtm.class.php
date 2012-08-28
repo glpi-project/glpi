@@ -2850,6 +2850,7 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "purge" :
+
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   if ($this->can($key,'d')){

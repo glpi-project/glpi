@@ -4335,7 +4335,10 @@ class Html {
       $fields[$btname] = $btname;
       $javascriptArray = array();
       foreach ($fields as $name => $value) {
-         $javascriptArray[] = "$name:'".urlencode($value)."'";
+         /// TODO : trouble :  urlencode not available for array / do not pass array fields...
+         if (!is_array($value)) {
+            $javascriptArray[] = "$name:'".urlencode($value)."'";
+         }
       }
 
       $link = "<a ";

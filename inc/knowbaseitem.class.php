@@ -213,6 +213,40 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($input['action']) {
+
+         case "deletevisibility":
+
+            foreach ($input['item'] as $type => $items) {
+               if (in_array($type, array('KnowbaseItem_Profile', 'KnowbaseItem_User', 'Entity_KnowbaseItem', 'Group_KnowbaseItem'))) {
+                  $item = new $type();
+                  foreach ($items as $key => $val) {
+                     if ($item->can($key,'w')) {
+                        if ($item->delete(array('id' => $key))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            }
+
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    /**
     * @since version 0.83
    **/
@@ -1475,38 +1509,53 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div class='center'>";
 
       $rand = mt_rand();
-
+      $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
+      
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<form name='knowbaseitemvisibility_form$rand' id='knowbaseitemvisibility_form$rand' ";
          echo " method='post' action='".Toolbox::getItemTypeFormURL('KnowbaseItem')."'>";
          echo "<input type='hidden' name='knowbaseitems_id' value='$ID'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td width='100px'>";
+
+         $types = array('Entity', 'Group', 'Profile', 'User');
+
+         $addrand = Dropdown::showItemTypes('_type', $types);
+         $params  = array('type'  => '__VALUE__',
+                        'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
+
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php",
+                                       $params);
+
+         echo "</td>";
+         echo "<td><span id='visibility$rand'></span>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
 
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</th></tr>";
-      echo "<tr class='tab_bg_2'><td width='100px'>";
 
-      $types = array('Entity', 'Group', 'Profile', 'User');
+      echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('num_displayed' => $nb,
+                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
 
-      $addrand = Dropdown::showItemTypes('_type', $types);
-      $params  = array('type'  => '__VALUE__',
-                       'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
-
-      Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/visibility.php",
-                                    $params);
-
-      echo "</td>";
-      echo "<td><span id='visibility$rand'></span>";
-      echo "</td></tr>";
-      echo "</table></div>";
-
-
+         if ($this->fields['users_id'] != Session::getLoginUserID()) {
+            $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+         }
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      if ($canedit) {
-         echo "<th>&nbsp;</th>";
+      if ($canedit && $nb) {
+         echo "<th width='10'>";
+         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
       echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
@@ -1523,7 +1572,7 @@ class KnowbaseItem extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1544,7 +1593,7 @@ class KnowbaseItem extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1579,7 +1628,7 @@ class KnowbaseItem extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1609,7 +1658,7 @@ class KnowbaseItem extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
@@ -1633,18 +1682,10 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_1'><td colspan='3'></td></tr>";
-      }
       echo "</table>";
-      if ($canedit) {
-         Html::openArrowMassives("knowbaseitemvisibility_form$rand", true);
-         $confirm = array();
-         if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $confirm = array('deletevisibility'
-                              => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'));
-         }
-         Html::closeArrowMassives(array('deletevisibility' => __('Delete')), $confirm);
+      if ($canedit && $nb) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
 
