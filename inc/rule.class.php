@@ -549,7 +549,6 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         //echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
@@ -652,7 +651,8 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showCriteriasList($rules_id, $options=array()) {
-
+   
+      $rand = mt_rand();
       $p['readonly'] = false;
 
       if (is_array($options) && count($options)) {
@@ -678,39 +678,41 @@ class Rule extends CommonDBTM {
 
       echo "<div class='spaced'>";
 
-      if ($canedit) {
-         echo "<form name='criteriasform' id='criteriasform' method='post' action='".
-                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
+      $nb = sizeof($this->criterias);
+      
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
+         $paramsma = array('num_displayed' => $nb,
+                           'check_itemtype' => get_class($this),
+                           'check_items_id' => $rules_id);
+         Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
       }
+
       echo "<table $style>";
-      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2).
+      echo "<tr><th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2).
            "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      if ($canedit) {
-         echo "<td>&nbsp;</td>";
+      if ($canedit && $nb) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand)."</th>";
       }
-      echo "<td class='center b'>"._n('Criterion', 'Criteria', 1)."</td>\n";
-      echo "<td class='center b'>".__('Condition')."</td>\n";
-      echo "<td class='center b'>".__('Reason')."</td>\n";
+      echo "<th class='center b'>"._n('Criterion', 'Criteria', 1)."</th>\n";
+      echo "<th class='center b'>".__('Condition')."</th>\n";
+      echo "<th class='center b'>".__('Reason')."</th>\n";
       echo "</tr>\n";
 
-      $maxsize = sizeof($this->criterias);
 
       foreach ($this->criterias as $criteria) {
          $this->showMinimalCriteriaForm($criteria->fields, $canedit);
       }
       echo "</table>\n";
 
-      if ($canedit
-          && ($maxsize > 0)) {
-         Html::openArrowMassives("criteriasform", true);
-         echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
-         Html::closeArrowMassives(array('delete_criteria' => __('Delete')));
-      }
-      if ($canedit) {
+      if ($canedit && $nb) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
+
       echo "</div>\n";
    }
 
