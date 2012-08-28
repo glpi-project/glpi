@@ -3027,6 +3027,7 @@ class Html {
     *    - is_deleted : boolean is massive actions for deleted items ?
     *    - extraparams : string extra URL parameters to pass to massive actions (default empty)
     *    - specific_actions : array of specific actions (do not use standard one)
+    *    - confirm : string of confirm message before massive action
     *
     * @return nothing
    **/
@@ -3044,6 +3045,7 @@ class Html {
       $p['width']          = 800;
       $p['height']         = 400;
       $p['specific_actions'] = array();
+      $p['confirm']          = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3111,9 +3113,14 @@ class Html {
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                 ($p['ontop']?'-top':'').".png' alt=''></td>";
          echo "<td width='100%' class='left'>";
-         echo "<a class='vsubmit' onclick='massiveaction_window$identifier.show();' ".
-               "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">".
-               _n('Action', 'Actions',2)."</a>";
+         echo "<a class='vsubmit' ";
+         if (isset($p['confirm']) && strlen($p['confirm'])) {
+            echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.show();");
+         }  else {
+            echo "onclick='massiveaction_window$identifier.show();'";
+         }
+         echo "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">";
+         echo _n('Action', 'Actions',2)."</a>";
          echo "</td>";
 
          echo "</tr></table>";

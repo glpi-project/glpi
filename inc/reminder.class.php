@@ -120,6 +120,40 @@ class Reminder extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
+   
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+                   
+      switch ($input['action']) {
+      
+         case "deletevisibility":
+
+            foreach ($input['item'] as $type => $items) {
+               if (in_array($type, array('Group_Reminder', 'Reminder_User', 'Entity_Reminder', 'Profile_Reminder'))) {
+                  $item = new $type();
+                  foreach ($items as $key => $val) {
+                     if ($item->can($key,'w')) {
+                        if ($item->delete(array('id' => $key))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            }
+
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
 
    /**
     * @since version 0.83
@@ -1079,35 +1113,47 @@ class Reminder extends CommonDBTM {
 
       $rand = mt_rand();
 
+      $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
+      
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<form name='remindervisibility_form$rand' id='remindervisibility_form$rand' ";
          echo " method='post' action='".Toolbox::getItemTypeFormURL('Reminder')."'>";
          echo "<input type='hidden' name='reminders_id' value='$ID'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
+         echo "<tr><td class='tab_bg_2' width='100px'>";
+
+         $types = array('Entity', 'Group', 'Profile', 'User');
+
+         $addrand = Dropdown::showItemTypes('_type', $types);
+         $params  = array('type'  => '__VALUE__',
+                        'right' => 'reminder_public');
+
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
+
+         echo "</td>";
+         echo "<td><span id='visibility$rand'></span>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
-
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
-      echo "<tr><td class='tab_bg_2' width='100px'>";
-
-      $types = array('Entity', 'Group', 'Profile', 'User');
-
-      $addrand = Dropdown::showItemTypes('_type', $types);
-      $params  = array('type'  => '__VALUE__',
-                       'right' => 'reminder_public');
-
-      Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
-
-      echo "</td>";
-      echo "<td><span id='visibility$rand'></span>";
-      echo "</td></tr>";
-      echo "</table></div>";
-
+      echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('num_displayed' => $nb,
+                           'confirm'       => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'),
+                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }      
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       if ($canedit) {
-         echo "<th>&nbsp;</th>";
+         echo "<th width='10'>";
+         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
       echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
@@ -1124,7 +1170,7 @@ class Reminder extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1145,7 +1191,7 @@ class Reminder extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1180,7 +1226,7 @@ class Reminder extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1208,7 +1254,7 @@ class Reminder extends CommonDBTM {
                   if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
-                  echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
@@ -1236,15 +1282,9 @@ class Reminder extends CommonDBTM {
          echo "</td></tr>";
       }
       echo "</table>";
-      if ($canedit) {
-         Html::openArrowMassives("remindervisibility_form$rand", true);
-         $confirm = array();
-         if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $confirm = array('deletevisibility'
-                              => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'));
-         }
-
-         Html::closeArrowMassives(array('deletevisibility' => __('Delete')), $confirm);
+      if ($canedit && $nb) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
 
