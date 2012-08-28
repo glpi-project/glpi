@@ -2027,6 +2027,7 @@ class Rule extends CommonDBTM {
    **/
    function showAndAddRuleForm($item) {
 
+      $rand = mt_rand();
       $canedit = Session::haveRight(static::$right, "w");
 
       if ($canedit
@@ -2039,10 +2040,10 @@ class Rule extends CommonDBTM {
                     'value' => $item->getField('id'));
 
       $rules = $this->getRulesForCriteria($crit);
-
+      $nb = count($rules);
       echo "<div class='spaced'>";
 
-      if (empty($rules)) {
+      if (!$nb) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>" . __('No item found') . "</th>";
          echo "</tr>\n";
@@ -2050,15 +2051,18 @@ class Rule extends CommonDBTM {
 
       } else {
          if ($canedit) {
-            $formname = $item->getType()."_".$this->getType()."_form";
-            echo "\n<form name='$formname' id='$formname' method='post' ".
-                     "action='".Toolbox::getItemTypeFormURL(get_class($this))."'>";
-                     echo Toolbox::getItemTypeFormURL(get_class($this));
+            Html::openMassiveActionsForm('mass'.get_called_class().$rand);
+            $paramsma = array('num_displayed' => $nb,
+                              'specific_actions' => array('update' => _x('button', 'Update'),
+                                                          'purge'  => _x('button', 'Purge'),));
+            Html::showMassiveActions(get_called_class(), $paramsma);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
 
          if ($canedit) {
-            echo "<th></th>";
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.get_called_class().$rand);
+            echo "</th>";
          }
          echo "<th>" . $this->getTitle() . "</th>";
          echo "<th>" . __('Description') . "</th>";
@@ -2093,9 +2097,8 @@ class Rule extends CommonDBTM {
          echo "</table>\n";
 
          if ($canedit) {
-            Html::openArrowMassives($formname, true);
-            echo "<input type='hidden' name='action' value='delete'>";
-            Html::closeArrowMassives(array('massiveaction' => __('Delete')));
+            $paramsma['ontop'] = false;
+            Html::showMassiveActions(get_called_class(), $paramsma);
             Html::closeForm();
          }
       }

@@ -512,7 +512,7 @@ class Group_User extends CommonDBRelation{
          }
          echo "</table>";
          if ($canedit) {
-            $paramsma['ontop'] =false;
+            $paramsma['ontop'] = false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }
