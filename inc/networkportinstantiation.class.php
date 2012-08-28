@@ -389,7 +389,8 @@ class NetworkPortInstantiation extends CommonDBChild {
             }
             $query .= " FROM `glpi_devicenetworkcards` AS device,
                              `glpi_items_devicenetworkcards` AS link
-                        WHERE link.`computers_id` = ".$lastItem->getID()."
+                        WHERE link.`items_id` = '".$lastItem->getID()."'
+                              AND link.`itemtype` = '".$lastItem->getType()."'
                               AND device.`id` = link.`devicenetworkcards_id`";
             // TODO : add checking the type of network card !
 
