@@ -286,9 +286,10 @@ class DBmysql {
     * @return number of rows
    **/
    function numrows($result) {
-      if (!$result instanceof mysqli_result) {
-         throw new Exception('Invalid SQL result !');
-      }
+   // MoYo : think that must not block display
+//       if (!$result instanceof mysqli_result) {
+//          throw new Exception('Invalid SQL result !');
+//       }
       return $result->num_rows;
    }
 
@@ -332,10 +333,10 @@ class DBmysql {
     * @return result associative array
    **/
    function fetch_assoc($result) {
-
-      if (!$result instanceof mysqli_result) {
-         throw new Exception('Invalid result');
-      }
+   // MoYo : think that must not block display
+//       if (!$result instanceof mysqli_result) {
+//          throw new Exception('Invalid result');
+//       }
       return (Toolbox::get_magic_quotes_runtime()
                   ? Toolbox::stripslashes_deep($result->fetch_assoc())
                   : $result->fetch_assoc());
