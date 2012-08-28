@@ -69,24 +69,6 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["changegroup"])
-           && isset($_POST["groups_id"])
-           && isset($_POST["field"])) {
-   if (isset($_POST['item'])
-       && (($_POST["field"] == 'groups_id') || ($_POST["field"] == 'groups_id_tech'))) {
-      foreach ($_POST['item'] as $type => $ids) {
-         if ($item = getItemForItemtype($type)) {
-            foreach ($ids as $id => $val) {
-               if ($val && $item->can($id,'w')) {
-                  $item->update(array('id'            => $id,
-                                      $_POST["field"] => $_POST["groups_id"]));
-               }
-            }
-         }
-      }
-   }
-   Html::back();
-
 } else if (isset($_GET['popup'])) {
    Html::popHeader(Group::getTypeName(2),$_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
