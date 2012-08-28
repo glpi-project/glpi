@@ -1144,13 +1144,16 @@ class Reminder extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed' => $nb,
-                           'confirm'       => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'),
                            'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
+                           
+         if ($this->fields['users_id'] != Session::getLoginUserID()) {
+            $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+         }
          Html::showMassiveActions(__CLASS__, $paramsma);
       }      
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      if ($canedit) {
+      if ($canedit && $nb) {
          echo "<th width='10'>";
          echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
@@ -1277,10 +1280,6 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      if ($canedit) {
-         echo "<tr><td colspan='3'>";
-         echo "</td></tr>";
-      }
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;

@@ -103,14 +103,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-}  else if (isset($_POST["deletevisibility"])) {
-
-   Event::log($_POST["reminders_id"], "reminder", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
-   Html::back();
-
-} else {
+}  else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpHeader(Reminder::getTypeName(2),'',$_SESSION["glpiname"]);
    } else {

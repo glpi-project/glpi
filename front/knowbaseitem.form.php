@@ -163,47 +163,6 @@ if ($_GET["id"] == "new") {
    }
    Html::back();
 
-}  else if (isset($_POST["deletevisibility"])) {
-   if (isset($_POST["group"]) && count($_POST["group"])) {
-      $item = new Group_KnowbaseItem();
-      foreach ($_POST["group"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
-
-   if (isset($_POST["user"]) && count($_POST["user"])) {
-      $item = new KnowbaseItem_User();
-      foreach ($_POST["user"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
-
-   if (isset($_POST["entity"]) && count($_POST["entity"])) {
-      $item = new Entity_KnowbaseItem();
-      foreach ($_POST["entity"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
-
-   if (isset($_POST["profile"]) && count($_POST["profile"])) {
-      $item = new KnowbaseItem_Profile();
-      foreach ($_POST["profile"] as $key => $val) {
-         if ($item->can($key,'w')) {
-            $item->delete(array('id' => $key));
-         }
-      }
-   }
-   Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
-   Html::back();
-
 } else if (empty($_GET["id"])) {
    // No id or no tickets id to create from solution
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
