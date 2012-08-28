@@ -454,6 +454,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      //TRANS: Number of the alternate username
       echo "<td>".__('Alternate username number')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this,'contact_num');
