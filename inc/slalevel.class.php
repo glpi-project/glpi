@@ -44,7 +44,7 @@ class SlaLevel extends RuleTicket {
    // No criteria
    protected $rulecriteriaclass = 'SlaLevelCriteria';
 
-   public $right='sla';
+   static public $right='sla';
 
    /**
     * Constructor
@@ -236,7 +236,7 @@ class SlaLevel extends RuleTicket {
    **/
    function showForm($ID, $options=array()) {
 
-      $canedit = $this->can($this->right,"w");
+      $canedit = $this->can(static::$right,"w");
 
       $this->initForm($ID, $options);
       $this->showTabs($options);
