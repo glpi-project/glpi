@@ -240,7 +240,7 @@ class RuleAction extends CommonDBChild {
       $input["action_type"]   = $action;
       $input["field"]         = $field;
       $input["value"]         = $value;
-      $input[static::items_id] = $ruleid;
+      $input[static::$items_id] = $ruleid;
       $this->add($input);
    }
 
