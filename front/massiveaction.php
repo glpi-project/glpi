@@ -63,11 +63,18 @@ if (isset($_POST['check_itemtype'])) {
    }
 }
 
-// Right check
 $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
-if (!isset($actions[$_POST['action']])) {
-   Html::displayRightError();
-   exit();
+if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
+   if (!isset($actions[$_POST['action']])) {
+      Html::displayRightError();
+      exit();
+   }
+} else {
+   // No standard massive action for specific one
+   if (isset($actions[$_POST['action']])) {
+      Html::displayRightError();
+      exit();
+   }
 }
 
 Html::header(__('Bulk modification'), $_SERVER['PHP_SELF']);

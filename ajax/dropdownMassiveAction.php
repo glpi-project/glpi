@@ -38,6 +38,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
+
 if (isset($_POST["action"]) && $_POST["action"] != '-1'
     && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
     if (!isset($_POST['is_deleted'])) {
@@ -61,12 +62,23 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
       }
       echo "<input type='hidden' name='check_itemtype' value='".$_POST["check_itemtype"]."'>";
    }
+   
    $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
-
-   if (!isset($actions[$_POST['action']])) {
-      Html::displayRightError();
-      exit();
+   if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
+      echo "<input type='hidden' name='specific_action' value='0'>";
+      if (!isset($actions[$_POST['action']])) {
+         Html::displayRightError();
+         exit();
+      }
+   } else {
+      // No standard massive action for specific one
+      if (isset($actions[$_POST['action']])) {
+         Html::displayRightError();
+         exit();
+      }
+      echo "<input type='hidden' name='specific_action' value='1'>";
    }
+
 
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";

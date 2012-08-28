@@ -458,9 +458,6 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
-         }
-         if ($canedit) {
             $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']));
             Html::showMassiveActions(__CLASS__, $paramsma);
          }

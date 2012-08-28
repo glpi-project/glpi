@@ -96,19 +96,6 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["mergesoftware"])) {
-   Html::popHeader(Software::getTypeName(2));
-
-   if (isset($_POST["id"])
-       && isset($_POST["item"])
-       && is_array($_POST["item"])
-       && count($_POST["item"])) {
-
-      $soft->check($_POST["id"],'w');
-      $soft->merge($_POST["item"]);
-   }
-   Html::back();
-
 } else {
    Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
    $soft->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));

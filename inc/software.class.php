@@ -328,6 +328,26 @@ class Software extends CommonDBTM {
                    'ko'      => 0,
                    'noright' => 0);
       switch ($input['action']) {
+         case "mergesoftware":
+            if (isset($input["id"])
+               && isset($input["item"])
+               && is_array($input["item"])
+               && count($input["item"])) {
+
+               if ($this->can($_POST["id"],'w')) {
+                  if ($this->merge($_POST["item"])) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+            
          case "compute_software_category" :
             $softcatrule = new RuleSoftwareCategoryCollection();
             foreach ($input["item"] as $key => $val) {
@@ -844,11 +864,15 @@ class Software extends CommonDBTM {
               ORDER BY `entity`";
       $req = $DB->request($sql);
 
-      if ($req->numrows()) {
+      if ($nb = $req->numrows()) {
          $link = Toolbox::getItemTypeFormURL('Software');
-         echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand'
-                action='".$link."'>";
-         echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('num_displayed' => $nb, 'specific_actions' => array('mergesoftware' => __('Merge')) );
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         echo "<table class='tab_cadre_fixehov'>";
+         echo "<tr><th width='10'>";
+         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);;
+         echo "</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Entity')."</th>";
          echo "<th>"._n('Installation', 'Installations', 2)."</th>";
@@ -863,11 +887,9 @@ class Software extends CommonDBTM {
             echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
          }
          echo "</table>\n";
-
-         Html::openArrowMassives("mergesoftware_form$rand", true);
          echo "<input type='hidden' name='id' value='$ID'>";
-         Html::closeArrowMassives(array('mergesoftware' => __('Merge')));
-
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
 
       } else {
