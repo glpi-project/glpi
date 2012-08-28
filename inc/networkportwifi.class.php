@@ -48,7 +48,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    function getNetworkCardInterestingFields() {
-      return array('link.`specificity`' => 'mac');
+      return array('link.`mac`' => 'mac');
   }
 
 
