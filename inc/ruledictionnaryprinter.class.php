@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleDictionnaryPrinter extends RuleCached {
 
    // From Rule
-   public $right    = 'rule_dictionnary_printer';
+   static public $right    = 'rule_dictionnary_printer';
    public $can_sort = true;
 
 

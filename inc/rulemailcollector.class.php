@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleMailCollector extends Rule {
 
    // From Rule
-   public $right    = 'rule_mailcollector';
+   static public $right    = 'rule_mailcollector';
    public $orderby  = "name";
    public $can_sort = true;
 

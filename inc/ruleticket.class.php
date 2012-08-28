@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicket extends Rule {
 
    // From Rule
-   public $right    = 'entity_rule_ticket';
+   static public $right    = 'entity_rule_ticket';
    public $can_sort = true;
 
 

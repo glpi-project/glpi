@@ -38,7 +38,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    static public $itemtype; // Class name or field name (start with itemtype) for link to Parent
    static public $items_id; // Field name
 
-   static public $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $checkParentRights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
    // Make an history of the changes -
    // if true, will write a event in the history of parent for add/delete
@@ -72,7 +72,38 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
       return '';
   }
+  
+   static function canCreate() {
+      return static::canChild('canCreate');
+   }
 
+   static function canView() {
+      return static::canChild('canView');
+   }
+
+   static function canUpdate() {
+      return static::canChild('canUpdate');
+   }
+
+   static function canDelete() {
+      return static::canChild('canDelete');
+   }
+
+   function canCreateItem() {
+      return $this->canChildItem('canCreateItem', 'canCreate', true);
+   }
+
+   function canViewItem() {
+      return $this->canChildItem('canViewItem', 'canView', false);
+   }
+
+   function canUpdateItem() {
+      return $this->canChildItem('canUpdateItem', 'canUpdate', true);
+   }
+
+   function canDeleteItem() {
+      return $this->canChildItem('canDeleteItem', 'canDelete', false);
+   }
 
    static function canChild($method) {
       return static::canConnexity($method, static::$checkParentRights,
@@ -218,7 +249,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Is the object recursive
     *
-    * @return boolean
+    * @return booleanDONT_CHECK_ITEM_RIGHTS
    **/
    function isRecursive () {
 

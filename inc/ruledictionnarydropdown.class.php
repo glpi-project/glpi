@@ -35,7 +35,7 @@
 class RuleDictionnaryDropdown extends RuleCached {
 
    // From Rule
-   public $right      = 'rule_dictionnary_dropdown';
+   static public $right      = 'rule_dictionnary_dropdown';
    public $can_sort   = true;
    public $show_cache = false;
 

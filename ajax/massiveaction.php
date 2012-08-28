@@ -64,13 +64,18 @@ if (isset($_POST['itemtype'])) {
 
    $rand    = mt_rand();
    $params['specific_action'] = 0;
+   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
    if (isset($_POST['specific_actions']) && is_array($_POST['specific_actions'])
          && count($_POST['specific_actions'])) {
-      $actions = Toolbox::stripslashes_deep($_POST['specific_actions']);
-      $params['specific_action'] = 1;
-   } else {
-      $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
+      $specific_actions = Toolbox::stripslashes_deep($_POST['specific_actions']);
+
+      // If specific actions is used to limit display
+      if (count($specific_actions) != count(array_intersect_key($actions,$specific_actions))) {
+         $params['specific_action'] = 1;
+      }
+      $actions = $specific_actions;
    }
+   
    if (count($actions)) {
       _e('Action');
       echo "&nbsp;";
