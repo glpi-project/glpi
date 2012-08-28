@@ -47,25 +47,9 @@ $documentitem = new Document_Item();
 if (isset($_POST["add"])) {
    $doc->check(-1,'w',$_POST);
 
-   if (isset($_POST['itemtype'])
-       && isset($_POST['items_id'])  // From item
-       && isset($_FILES['filename']['tmp_name'])
-       && $doc->getFromDBbyContent($_POST["entities_id"], $_FILES['filename']['tmp_name'])) {
-
-      $documentitem->add(array('documents_id' => $doc->fields['id'],
-                               'itemtype'     => $_POST['itemtype'],
-                               'items_id'     => $_POST['items_id']));
-   } else {
-      $newID = $doc->add($_POST);
-      $name = "";
-      if (isset($_POST["name"])) {
-         $name = $_POST["name"];
-      } else if (isset($_FILES['filename']) && isset($_FILES['filename']['name'])) {
-         $name = $_FILES['filename']['name'];
-      }
-      Event::log($newID, "documents", 4, "document",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+   if ($newID = $doc->add($_POST)) {
+      Event::log($newID, "documents", 4, "login",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
 
    Html::back();

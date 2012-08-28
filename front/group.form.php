@@ -69,15 +69,6 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["adduser"])) {
-   $groupuser->check(-1,'w',$_POST);
-   if ($groupuser->add($_POST)) {
-      Event::log($_POST["groups_id"], "groups", 4, "setup",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else if (isset($_POST["changegroup"])
            && isset($_POST["groups_id"])
            && isset($_POST["field"])) {
