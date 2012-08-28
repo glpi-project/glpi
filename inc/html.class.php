@@ -2894,7 +2894,6 @@ class Html {
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
     * @param $ontop              display on top of the list (false by default)
     * @param $onright            display on right of the list (false by default)
-    * \deprecated
    **/
    static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
@@ -2935,7 +2934,6 @@ class Html {
     *
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
-    * \deprecated
    **/
    static function closeArrowMassives($actions, $confirm=array()) {
 
@@ -3028,6 +3026,7 @@ class Html {
     *    - check_items_id : integer ID of the alternate item used to check right / optional (default empty)
     *    - is_deleted : boolean is massive actions for deleted items ?
     *    - extraparams : string extra URL parameters to pass to massive actions (default empty)
+    *    - specific_actions : array of specific actions (do not use standard one)
     *
     * @return nothing
    **/
@@ -3044,6 +3043,7 @@ class Html {
       $p['extraparams']    = array();
       $p['width']          = 800;
       $p['height']         = 400;
+      $p['specific_actions'] = array();
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3060,6 +3060,9 @@ class Html {
       }
       if (!empty($p['check_items_id'])) {
          $p['extraparams']['check_items_id'] = $p['check_items_id'];
+      }
+      if (is_array($p['specific_actions']) && count($p['specific_actions'])) {
+         $p['extraparams']['specific_actions'] = $p['specific_actions'];
       }
 
       if ($p['fixed']) {

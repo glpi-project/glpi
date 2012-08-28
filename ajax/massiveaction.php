@@ -63,8 +63,14 @@ if (isset($_POST['itemtype'])) {
    }
 
    $rand    = mt_rand();
-   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
-
+   $params['specific_action'] = 0;
+   if (isset($_POST['specific_actions']) && is_array($_POST['specific_actions'])
+         && count($_POST['specific_actions'])) {
+      $actions = Toolbox::stripslashes_deep($_POST['specific_actions']);
+      $params['specific_action'] = 1;
+   } else {
+      $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
+   }
    if (count($actions)) {
       _e('Action');
       echo "&nbsp;";

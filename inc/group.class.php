@@ -628,7 +628,8 @@ class Group extends CommonTreeDropdown {
          echo "<form name='group_form' id='group_form_$field$rand' method='post' action='".
                 $this->getFormURL()."'>";
 
-         echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th width='10'>".Html::getCheckAllAsCheckbox("group_form_$field$rand")."</th>";
          echo "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
             echo "<th>".sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
