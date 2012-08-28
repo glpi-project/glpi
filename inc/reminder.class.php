@@ -778,14 +778,24 @@ class Reminder extends CommonDBTM {
       $joinstoadd = '';
 
       // See public reminder ?
-      if (Session::haveRight("reminder_public","r")) {
+      if ($who===Session::getLoginUserID() && Session::haveRight("reminder_public","r")) {
          $readpub    = self::addVisibilityRestrict();
-         $joinstoadd = self::addVisibilityJoins();
+         $joinstoadd = self::addVisibilityJoins(true);
       }
 
       // See my private reminder ?
-      if (($who_group == "mine") || ($who === Session::getLoginUserID())) {
+      if (($who_group === "mine") || ($who === Session::getLoginUserID())) {
          $readpriv = "(`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."')";
+      } else {
+         if ($who > 0) {
+            $readpriv = "`glpi_reminders`.`users_id` = '$who'";
+         }
+         if ($who_group > 0) {
+            $readpriv .= "OR `glpi_groups_reminders`.`groups_id` = '$who_group'";
+         }
+         if (!empty($readpriv)) {
+            $readpriv = '('.$readpriv.')';
+         }
       }
 
       if (!empty($readpub)
@@ -798,7 +808,7 @@ class Reminder extends CommonDBTM {
       }
 
       if ($ASSIGN) {
-         $query2 = "SELECT `glpi_reminders`.*
+         $query2 = "SELECT DISTINCT `glpi_reminders`.*
                     FROM `glpi_reminders`
                     $joinstoadd
                     WHERE `glpi_reminders`.`is_planned` = '1'
