@@ -46,43 +46,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            if ($right->can($key,'w')) {
-               $right->delete(array('id' => $key));
-            }
-         }
-      }
-      if (isset($_POST["entities_id"])) {
-         // From entity tab
-         Event::log($_POST["entities_id"], "entity", 4, "setup",
-                     //TRANS: %s is the user login
-                     sprintf(__('%s deletes a user from an entity'), $_SESSION["glpiname"]));
-      } else if (isset($_POST["users_id"])) {
-         Event::log($_POST["users_id"], "users", 4, "setup",
-                     //TRANS: %s is the user login
-                     sprintf(__('%s deletes an entity from a user'), $_SESSION["glpiname"]));
-      }
-   }
-   Html::back();
-
-} else if (isset($_POST["moveentity"])) {
-   if (isset($_POST['entities_id']) && ($_POST['entities_id'] >= 0)) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            if ($right->can($key,'w')) {
-               $right->update(array('id'          => $key,
-                                    'entities_id' => $_POST['entities_id']));
-            }
-         }
-      }
-   }
-   Html::back();
 }
-
 
 Html::displayErrorAndDie("lost");
 ?>
