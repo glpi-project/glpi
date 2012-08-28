@@ -285,7 +285,7 @@ class Group_User extends CommonDBRelation{
 
       if ($nb) {
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
-                action='".$CFG_GLPI['root_doc']."/front/group.form.php'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
 
          echo "<div class='firstbloc'>";
@@ -305,7 +305,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='adduser' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div>";
          Html::closeForm();

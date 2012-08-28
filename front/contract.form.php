@@ -98,30 +98,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["additem"])) {
-   $contractitem->check(-1,'w',$_POST);
-
-   if ($contractitem->add($_POST)) {
-      Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_POST["deleteitem"])) {
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($contractitem->can($key,'w')) {
-            $contractitem->delete(array('id' => $key));
-         }
-      }
-   }
-   Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
-   Html::back();
-
-} else if (isset($_GET["deleteitem"])) {
+}  else if (isset($_GET["deleteitem"])) {
    $contractitem->check($_GET["id"], 'w');
 
    if ($contractitem->delete($_GET)) {
