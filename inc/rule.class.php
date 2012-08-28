@@ -52,7 +52,7 @@ class Rule extends CommonDBTM {
    ///Criterias affected to this rule
    var $criterias = array();
    /// Right needed to use this rule
-   var $right     = 'config';
+   static public $right     = 'config';
    /// Rules can be sorted ?
    var $can_sort  = false;
    /// field used to order rules
@@ -105,12 +105,12 @@ class Rule extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight($this->right, 'w');
+      return Session::haveRight(static::$right, 'w');
    }
 
 
    static function canView() {
-      return Session::haveRight($this->right, 'r');
+      return Session::haveRight(static::$right, 'r');
    }
 
 
@@ -231,7 +231,6 @@ class Rule extends CommonDBTM {
       $tab[4]['field']           = 'description';
       $tab[4]['name']            = __('Description');
       $tab[4]['datatype']        = 'text';
-      $tab[4]['massiveaction']   = false;
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'match';
@@ -325,7 +324,7 @@ class Rule extends CommonDBTM {
          $this->checkGlobal('w');
       }
 
-      $canedit = $this->can($this->right, "w");
+      $canedit = $this->can(static::$right, "w");
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -488,7 +487,8 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showActionsList($rules_id, $options=array()) {
-
+   
+      $rand = mt_rand();
       $p['readonly'] = false;
 
       if (is_array($options) && count($options)) {
@@ -516,38 +516,41 @@ class Rule extends CommonDBTM {
          Html::closeForm();
       }
 
-      if ($canedit) {
-         echo "<form name='actionsform' id='actionsform' method='post' action='".
-                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
-      }
+      $nb = count($this->actions);
+
       echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
+         $paramsma = array('num_displayed' => $nb,
+                           'check_itemtype' => get_class($this),
+                           'check_items_id' => $rules_id);
+         Html::showMassiveActions($this->ruleactionclass, $paramsma);
+      }
+
       echo "<table $style>";
-      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . _n('Action','Actions',2) . "</th></tr>";
+      echo "<tr>";
+      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions',2) . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
 
-      if ($canedit) {
-         echo "<td>&nbsp;</td>";
+      if ($canedit && $nb) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
       }
 
-      echo "<td class='center b'>"._n('Field', 'Fields', 2)."</td>";
-      echo "<td class='center b'>".__('Action type')."</td>";
-      echo "<td class='center b'>".__('Value')."</td>";
+      echo "<th class='center b'>"._n('Field', 'Fields', 2)."</th>";
+      echo "<th class='center b'>".__('Action type')."</th>";
+      echo "<th class='center b'>".__('Value')."</th>";
       echo "</tr>\n";
 
-      $nb = count($this->actions);
 
       foreach ($this->actions as $action) {
          $this->showMinimalActionForm($action->fields, $canedit);
       }
       echo "</table>\n";
 
-      if ($canedit
-          && ($nb > 0)) {
-         Html::openArrowMassives("actionsform", true);
-         echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
-         Html::closeArrowMassives(array('delete_action' => __('Delete')));
-      }
-      if ($canedit) {
+      if ($canedit && $nb) {
+         $paramsma['ontop'] =false;
+         //echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -1204,7 +1207,7 @@ class Rule extends CommonDBTM {
    function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
       global $CFG_GLPI;
 
-      $canedit = Session::haveRight($this->right, "w") && !$display_entities;
+      $canedit = Session::haveRight(static::$right, "w") && !$display_entities;
       echo "<tr class='tab_bg_1'>";
 
       if ($canedit) {
@@ -2022,7 +2025,7 @@ class Rule extends CommonDBTM {
    **/
    function showAndAddRuleForm($item) {
 
-      $canedit = Session::haveRight($this->right, "w");
+      $canedit = Session::haveRight(static::$right, "w");
 
       if ($canedit
           && ($item->getType()=='Entity')) {
@@ -2047,7 +2050,8 @@ class Rule extends CommonDBTM {
          if ($canedit) {
             $formname = $item->getType()."_".$this->getType()."_form";
             echo "\n<form name='$formname' id='$formname' method='post' ".
-                     "action='".Toolbox::getItemTypeSearchURL(get_class($this))."'>";
+                     "action='".Toolbox::getItemTypeFormURL(get_class($this))."'>";
+                     echo Toolbox::getItemTypeFormURL(get_class($this));
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
 

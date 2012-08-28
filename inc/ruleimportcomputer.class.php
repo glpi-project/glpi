@@ -45,7 +45,7 @@ class RuleImportComputer extends Rule {
 
 
    // From Rule
-   public $right    = 'rule_ocs';
+   static public $right    = 'rule_ocs';
    public $can_sort = true;
 
 

@@ -46,7 +46,7 @@ class RuleDictionnarySoftware extends RuleCached {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    // From Rule
-   public $right    = 'rule_dictionnary_software';
+   static public $right    = 'rule_dictionnary_software';
    public $can_sort = true;
 
 
