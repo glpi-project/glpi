@@ -1785,50 +1785,60 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
       echo "<select name='server_type'>";
       echo "<option value=''>&nbsp;</option>\n";
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo "<option value='/imap' ".(strstr($value,"/imap") ?" selected ":"").">".__('IMAP').
            "</option>\n";
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo "<option value='/pop' ".(strstr($value,"/pop") ? " selected " : "").">".__('POP').
            "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_ssl'>";
       echo "<option value=''>&nbsp;</option>\n";
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo "<option value='/ssl' " .(strstr($value,"/ssl") ? " selected " : "").">".__('SSL').
            "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_tls'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/tls' ".(strstr($value,"/tls") ? " selected " : "").">".__('TLS').
-           "</option>\n";
-      echo "<option value='/notls' ".(strstr($value,"/notls")?" selected ":"").">".__('NO-TLS').
-           "</option>\n";
+      echo "<option value='/tls' ".(strstr($value,"/tls") ? " selected " : "").">";
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo __('TLS')."</option>\n";
+      echo "<option value='/notls' ".(strstr($value,"/notls")?" selected ":"").">";
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo __('NO-TLS')."</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_cert'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/novalidate-cert' ".(strstr($value,"/novalidate-cert")?" selected ":"").
-             ">".__('NO-VALIDATE-CERT')."</option>\n";
-      echo "<option value='/validate-cert' " .(strstr($value,"/validate-cert")?" selected ":"") .
-             ">".__('VALIDATE-CERT')."</option>\n";
+      echo "<option value='/novalidate-cert' ".(strstr($value,"/novalidate-cert")?" selected ":"");
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo ">".__('NO-VALIDATE-CERT')."</option>\n";
+      echo "<option value='/validate-cert' " .(strstr($value,"/validate-cert")?" selected ":"");
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo ">".__('VALIDATE-CERT')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_rsh'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/norsh' ".(strstr($value,"/norsh")?" selected ":"").
-             ">".__('NORSH')."</option>\n";
+      echo "<option value='/norsh' ".(strstr($value,"/norsh")?" selected ":"");
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo ">".__('NORSH')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_secure'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/secure' ".(strstr($value,"/secure")?" selected ":"").
-             ">".__('SECURE')."</option>\n";
+      echo "<option value='/secure' ".(strstr($value,"/secure")?" selected ":"");
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo ">".__('SECURE')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_debug'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/debug' ".(strstr($value,"/debug")?" selected ":"").
-             ">".__('DEBUG')."</option>\n";
+      echo "<option value='/debug' ".(strstr($value,"/debug")?" selected ":"");
+      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      echo ">".__('DEBUG')."</option>\n";
       echo "</select>\n";
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
