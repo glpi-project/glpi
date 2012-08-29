@@ -2,10 +2,10 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-echo getSingular('criteria')."\n";
-echo getPlural('criterias')."\n";
+#echo getSingular('criteria')."\n";
+#echo getPlural('criterias')."\n";
 
-echo getItemTypeForTable('glpi_devicecases');
+#echo getItemTypeForTable('glpi_devicecases');
 
 $result = $DB->list_tables();
 $i      = 0;
