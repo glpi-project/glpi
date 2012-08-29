@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: commondbconnexity.class.php 19060 2012-07-27 07:53:55Z webmyster $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.

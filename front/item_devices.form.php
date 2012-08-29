@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: item_devices.form.php 18957 2012-07-19 21:22:34Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
