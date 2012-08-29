@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: item_deviceboard.class.php 19068 2012-08-01 07:57:38Z webmyster $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
