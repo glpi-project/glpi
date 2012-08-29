@@ -11,14 +11,14 @@ $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
 
 foreach($dirs as $dir) {
    if ($handle = opendir($dir)) {
-      echo "Check dir $handle\n";
-      echo "Files :\n";
+      echo "Check dir $dir\n";
+#      echo "Files :\n";
 
       /* Ceci est la façon correcte de traverser un dossier. */
       while (false !== ($file = readdir($handle))) {
          if ($file != "." && $file != ".." && preg_match('/\.php$/',$file)) {
-            echo "$file\n";
-            system("php -l ".$dir.'/'.$file);
+#            echo "$file\n";
+            system("php -l ".$dir.'/'.$file." | grep -i parse");
          }
       }
 
