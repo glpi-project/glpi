@@ -663,7 +663,7 @@ class Group extends CommonTreeDropdown {
       if ($type) {
          $types = array($type);
       }
-      $start  = (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
+      $start  = (isset($_POST['start']) ? $_POST['start'] : 0);
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
       $nbcan  = 0;
 

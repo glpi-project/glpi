@@ -41,16 +41,16 @@ $ticket_user = new Ticket_User();
 
 Session ::checkLoginUser();
 
-if (isset($_REQUEST["update"])) {
-   $ticket_user->check($_REQUEST["id"], 'w');
+if (isset($_POST["update"])) {
+   $ticket_user->check($_POST["id"], 'w');
 
-   $ticket_user->update($_REQUEST);
+   $ticket_user->update($_POST);
    echo "<script type='text/javascript' >\n";
    echo "window.opener.location.reload();";
    echo "window.close()";
    echo "</script>";
 
-} else if (isset($_REQUEST["id"])) {
-   $ticket_user->showUserNotificationForm($_REQUEST["id"]);
+} else if (isset($_GET["id"])) {
+   $ticket_user->showUserNotificationForm($_GET["id"]);
 }
 ?>

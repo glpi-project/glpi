@@ -438,7 +438,7 @@ class Group_User extends CommonDBRelation{
       }
       echo "</td></tr></table>";
       $number = count($used);
-      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      $start  = (isset($_POST['start']) ? intval($_POST['start']) : 0);
       if ($start >= $number) {
          $start = 0;
       }

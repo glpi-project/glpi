@@ -42,7 +42,7 @@ $inst = new Computer_SoftwareVersion();
 // From Computer - Software tab (add form)
 if (isset($_POST["add"])) {
    if (isset($_POST["computers_id"]) && $_POST["computers_id"]
-       && isset($_POST["softwareversions_id"]) && $_REQUEST["softwareversions_id"]) {
+       && isset($_POST["softwareversions_id"]) && $_POST["softwareversions_id"]) {
 
       $inst->add(array('computers_id'        => $_POST["computers_id"],
                        'softwareversions_id' => $_POST["softwareversions_id"]));

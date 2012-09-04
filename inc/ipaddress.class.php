@@ -224,14 +224,14 @@ class IPAddress extends CommonDBChild {
 
       if ($item->getType() == 'IPNetwork') {
 
-         if (isset($_REQUEST["start"])) {
-            $start = $_REQUEST["start"];
+         if (isset($_POST["start"])) {
+            $start = $_POST["start"];
          } else {
             $start = 0;
          }
 
-         if (!empty($_REQUEST["order"])) {
-            $table_options['order'] = $_REQUEST["order"];
+         if (!empty($_POST["order"])) {
+            $table_options['order'] = $_POST["order"];
          } else {
             $table_options['order'] = 'ip';
          }
