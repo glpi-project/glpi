@@ -3116,7 +3116,7 @@ class Html {
                 ($p['ontop']?'-top':'').".png' alt=''></td>";
          echo "<td width='100%' class='left'>";
          echo "<a class='vsubmit' ";
-         if (isset($p['confirm']) && strlen($p['confirm'])) {
+         if (is_array($p['confirm'] || strlen($p['confirm']))) {
             echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.show();");
          }  else {
             echo "onclick='massiveaction_window$identifier.show();'";
@@ -4325,11 +4325,12 @@ class Html {
     * @param $btlabel  String   button label
     * @param $fields   Array    field name => field  value
     * @param $btimage  String   button image uri (optional)
-    * @param $btoption String   optionnal button option
+    * @param $btoption String   optional button option
+    * @param $confirm  String   optional confirm message
     *
     * @since version 0.84
    **/
-   static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='') {
+   static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='', $confirm = '') {
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }
@@ -4354,7 +4355,15 @@ class Html {
          $link .= $btoption.' ';
       }
       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
-      $link .= " onclick=\"submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});\">";
+      $action = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";
+
+      if (is_array($confirm) || strlen($confirm)) {
+         $link .= self::addConfirmationOnAction($confirm, $action);
+      }  else {
+         $link .= " onclick=\"$action\" ";;
+      }
+
+      $link .= '>';
       if (empty($btimage)) {
          $link .= $btlabel;
       } else {
@@ -4395,12 +4404,13 @@ class Html {
     * @param $btlabel  String   button label
     * @param $fields   Array    field name => field  value
     * @param $btimage  String   button image uri (optional)
-    * @param $btoption String   optionnal button option
+    * @param $btoption String   optional button option
+    * @param $confirm  String   optional confirm message
     *
     * @since version 0.83.3
    **/
-   static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='') {
-      echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption);
+   static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='', $confirm='') {
+      echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption, $confirm);
    }
 
    /**

@@ -134,8 +134,10 @@ class Search {
 
       $limitsearchopt = self::getCleanedOptions($itemtype);
 
+      $blacklist_tables = array();
       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
          $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
+         $blacklist_tables[] = getTableForItemType($itemtype);
       } else {
          $itemtable = getTableForItemType($itemtype);
       }
@@ -230,10 +232,12 @@ class Search {
       $searchopt[$itemtype] = &self::getOptions($itemtype);
       // Add all table for toview items
       foreach ($toview as $key => $val) {
-         $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
-                                    $searchopt[$itemtype][$val]["table"],
-                                    $searchopt[$itemtype][$val]["linkfield"], 0, 0,
-                                    $searchopt[$itemtype][$val]["joinparams"]);
+         if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
+            $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
+                                       $searchopt[$itemtype][$val]["table"],
+                                       $searchopt[$itemtype][$val]["linkfield"], 0, 0,
+                                       $searchopt[$itemtype][$val]["joinparams"]);
+         }
       }
 
       // Search all case :
@@ -241,10 +245,12 @@ class Search {
          foreach ($searchopt[$itemtype] as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
-               $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
-                                          $searchopt[$itemtype][$key]["table"],
-                                          $searchopt[$itemtype][$key]["linkfield"], 0, 0,
-                                          $searchopt[$itemtype][$key]["joinparams"]);
+               if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
+                  $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
+                                             $searchopt[$itemtype][$key]["table"],
+                                             $searchopt[$itemtype][$key]["linkfield"], 0, 0,
+                                             $searchopt[$itemtype][$key]["joinparams"]);
+               }
             }
          }
       }
@@ -949,7 +955,7 @@ class Search {
             $header_num = 1;
 
             if (($output_type == self::HTML_OUTPUT)
-                && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
+                && $showmassiveactions) { // HTML display - massive modif
                echo self::showHeaderItem($output_type,
                                          Html::getCheckAllAsCheckbox('massform'.$itemtype),
                                          $header_num, "", 0,
@@ -1009,10 +1015,6 @@ class Search {
             }
             if (($itemtype == 'ReservationItem')
                 && ($output_type == self::HTML_OUTPUT)) {
-               if (Session::haveRight("reservation_central", "w")) {
-                  echo self::showHeaderItem($output_type, __('Available'), $header_num);
-                  echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
-               }
                echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
             }
             // End Line for column headers
@@ -1034,6 +1036,12 @@ class Search {
 
             // Num of the row (1=header_line)
             $row_num = 1;
+
+            $massiveaction_field = 'id';
+            if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+               $massiveaction_field = 'refID';
+            }
+            
             // Display Loop
             while (($i < $numrows) && ($i < $end_display)) {
                // Column num
@@ -1049,29 +1057,28 @@ class Search {
                Session::addToNavigateListItems($itemtype, $data["id"]);
 
                if (($output_type == self::HTML_OUTPUT)
-                   && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
+                   && $showmassiveactions) { // HTML display - massive modif
                   $tmpcheck = "";
-                  if ($showmassiveactions) {
-                     if (($itemtype == 'Entity')
-                         && !in_array($data["id"], $_SESSION["glpiactiveentities"])) {
+                  if (($itemtype == 'Entity')
+                        && !in_array($data["id"], $_SESSION["glpiactiveentities"])) {
 
-                        $tmpcheck = "&nbsp;";
+                     $tmpcheck = "&nbsp;";
 
-                     } else if ($item->maybeRecursive()
-                                && !in_array($data["entities_id"], $_SESSION["glpiactiveentities"])) {
-                        $tmpcheck = "&nbsp;";
+                  } else if ($item->maybeRecursive()
+                              && !in_array($data["entities_id"], $_SESSION["glpiactiveentities"])) {
+                     $tmpcheck = "&nbsp;";
 
-                     } else {
-                        $sel = "";
-                        if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                           $sel = "checked";
-                        }
-                        if (isset($_SESSION['glpimassiveactionselected'][$data["id"]])) {
-                           $sel = "checked";
-                        }
-                        $tmpcheck = "<input type='checkbox' name='item[".$data["id"]."]' value='1'
-                                      $sel>";
+                  } else {
+                     $sel = "";
+                     if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
+                        $sel = "checked";
                      }
+                     if (isset($_SESSION['glpimassiveactionselected'][$data[$massiveaction_field]])) {
+                        $sel = "checked";
+                     }
+                     
+                     $tmpcheck = "<input type='checkbox' name='item[".$data[$massiveaction_field]."]' value='1'
+                                    $sel>";
                   }
                   echo self::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
                }
@@ -1183,46 +1190,6 @@ class Search {
                }
                if (($itemtype == 'ReservationItem')
                    && ($output_type == self::HTML_OUTPUT)) {
-                  if (Session::haveRight("reservation_central","w")) {
-                     if (!Session::haveAccessToEntity($data["ENTITY"])) {
-                        echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
-                        echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
-                     } else {
-                        if ($p['is_deleted']) {
-                           echo self::showItem($output_type,
-                                               "<a href=\"".Toolbox::getItemTypeFormURL($itemtype).
-                                                "?id=".$data["refID"]."&amp;restore=restore\" title=\"".
-                                                __s('Restore')."\">".__('Restore')."</a>",
-                                               $item_num, $row_num, "class='center'");
-
-                           echo self::showItem($output_type,
-                                               "<a href='".Toolbox::getItemTypeFormURL($itemtype).
-                                                "?id=".$data["refID"]."&amp;purge=purge' ".
-                                                Html::addConfirmationOnAction(array(__('Are you sure you want to purge this item?'),
-                                                                                    __('That will remove all the reservations.'))).
-                                                ">"._x('button', 'Purge')."</a>",
-                                               $item_num, $row_num, "class='center'");
-                        } else {
-                           echo self::showItem($output_type,
-                                               "<a href=\"".Toolbox::getItemTypeFormURL($itemtype).
-                                                "?id=".$data["refID"]."&amp;is_active=".
-                                                ($data["ACTIVE"]?0:1)."&amp;update=update\" title=\"".
-                                                ($data["ACTIVE"]?__s('Disable'):__s('Enable'))."\">".
-                                                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
-                                                  ($data["ACTIVE"]?"moins":"plus").".png\" alt=''
-                                                  title=''></a>",
-                                               $item_num, $row_num, "class='center'");
-
-                           echo self::showItem($output_type,
-                                               "<a href='".Toolbox::getItemTypeFormURL($itemtype).
-                                                "?id=".$data["refID"]."&amp;delete=delete' title=\"".
-                                                __s('Put in dustbin')."\">".
-                                                "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'>".
-                                                "</a>",
-                                               $item_num, $row_num, "class='center'");
-                        }
-                     }
-                  }
                   if ($data["ACTIVE"]) {
                      echo self::showItem($output_type,
                                          "<a href='reservation.php?reservationitems_id=".
