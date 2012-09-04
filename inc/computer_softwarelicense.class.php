@@ -45,6 +45,37 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static public $items_id_2 = 'softwarelicenses_id';
 
 
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+   **/
+   function getSearchOptions() {
+
+      $tab                       = array();
+      $tab['common']             = __('Characteristics');
+
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
+
+      $tab[4]['table']           = 'glpi_softwarelicenses';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = _n('License', 'Licenses', 1);
+      $tab[4]['datatype']        = 'dropdown';
+
+      $tab[5]['table']           = 'glpi_computers';
+      $tab[5]['field']           = 'name';
+      $tab[5]['name']            = _n('Computer', 'Computers', 1);
+      $tab[5]['massiveaction']   = false;
+      $tab[5]['datatype']        = 'dropdown';
+
+      return $tab;
+   }
+   
    /**
     * Get number of installed licenses of a license
     *
@@ -279,6 +310,17 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       if ($result = $DB->query($query)) {
          if ($data = $DB->fetch_assoc($result)) {
 
+            if ($canedit) {
+               $rand = mt_rand();
+               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit']);
+               // Options to update license
+               $paramsma['extraparams']['options']['used'] = array($searchID);
+               $paramsma['extraparams']['options']['condition'] = "`glpi_softwarelicenses`.`softwares_id` =".
+                                                       " '".$license->fields['softwares_id']."'";
+
+               Html::showMassiveActions(__CLASS__, $paramsma);
+            }
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
@@ -294,7 +336,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post'
                       action='".$CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php'>";
                echo "<table class='tab_cadre_fixehov'><tr>";
-               echo "<th>&nbsp;</th>";
+               echo "<th width='10'>";
+               Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+               echo "</th>";
             } else {
                echo "<table class='tab_cadre_fixehov'><tr>";
             }
@@ -363,19 +407,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             } while ($data=$DB->fetch_assoc($result));
 
             echo "</table>\n";
-
-            if ($canedit) {
-               Html::openArrowMassives("softinstall".$rand."",true);
-               SoftwareLicense::dropdown(array('condition' => "`glpi_softwarelicenses`.`softwares_id`
-                                                               = '".$license->fields['softwares_id']."'",
-                                               'used'      => array($searchID)));
-
-               echo "&nbsp;<input type='submit' name='move' value=\"".
-                     _sx('button','Move')."\" class='submit'>&nbsp;";
-               Html::closeArrowMassives(array('delete' => __('Delete')));
-
-               Html::closeForm();
-            }
+         if ($canedit) {
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::closeForm();
+         }
 
          } else { // Not found
             _e('No item found');
