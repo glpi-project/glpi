@@ -1023,7 +1023,7 @@ class KnowbaseItem extends CommonDBTM {
       $where = "";
       $order = "";
       $score = "";
-      $join  = self::addVisibilityJoins();
+      $join  = self::addVisibilityJoins(true);
 
       switch ($type) {
          case 'myunpublished' :

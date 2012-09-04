@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkRight("import_externalauth_users", 'w');
 
+// Need REQUEST to manage initial walues and posted ones
 AuthLdap::manageValuesInSession($_REQUEST);
 
 if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
@@ -56,7 +57,6 @@ if (isset($_GET['order'])) {
 }
 
 if ($_SESSION['ldap_import']['action'] == 'show') {
-   $_REQUEST['target'] = $_SERVER['PHP_SELF'];
 
    $authldap = new AuthLDAP();
    $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);

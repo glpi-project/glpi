@@ -65,13 +65,13 @@ if (isset($_GET["id"])) {
 
 } else {
    // Manage forcetab : non standard system (file name <> class name)
-   if (isset($_REQUEST['forcetab'])) {
-      Session::setActiveTab('Knowbase', $_REQUEST['forcetab']);
-      unset($_REQUEST['forcetab']);
+   if (isset($_GET['forcetab'])) {
+      Session::setActiveTab('Knowbase', $_GET['forcetab']);
+      unset($_GET['forcetab']);
    }
 
    $kb = new Knowbase();
-   $kb->show(Toolbox::addslashes_deep($_REQUEST));
+   $kb->show(Toolbox::addslashes_deep($_GET));
 }
 
 Html::helpFooter();

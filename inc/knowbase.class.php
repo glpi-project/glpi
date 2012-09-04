@@ -98,28 +98,27 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase search view
    **/
    static function showSearchView() {
-
       // Search a solution
-      if (!isset($_REQUEST["contains"])
-          && isset($_REQUEST["itemtype"])
-          && isset($_REQUEST["items_id"])) {
+      if (!isset($_POST["contains"])
+          && isset($_POST["itemtype"])
+          && isset($_POST["items_id"])) {
 
-         if ($item = getItemForItemtype($_REQUEST["itemtype"])) {
-            if ($item->getFromDB($_REQUEST["items_id"])) {
-               $_REQUEST["contains"] = addslashes($item->getField('name'));
+         if ($item = getItemForItemtype($_POST["itemtype"])) {
+            if ($item->getFromDB($_POST["items_id"])) {
+               $_POST["contains"] = addslashes($item->getField('name'));
             }
          }
       }
 
-      if (isset($_REQUEST["contains"])) {
-         $_SESSION['kbcontains'] = $_REQUEST["contains"];
+      if (isset($_POST["contains"])) {
+         $_SESSION['kbcontains'] = $_POST["contains"];
       } else if (isset($_SESSION['kbcontains'])) {
-         $_REQUEST['contains'] = $_SESSION["kbcontains"];
+         $_POST['contains'] = $_SESSION["kbcontains"];
       }
       $ki = new KnowbaseItem();
-      $ki->searchForm($_REQUEST);
+      $ki->searchForm($_POST);
 
-      if (!isset($_REQUEST['contains']) || empty($_REQUEST['contains'])) {
+      if (!isset($_POST['contains']) || empty($_POST['contains'])) {
          echo "<div><table class='center-h' width='950px'><tr><td class='center top'>";
          KnowbaseItem::showRecentPopular("recent");
          echo "</td><td class='center top'>";
@@ -129,7 +128,7 @@ class Knowbase extends CommonGLPI {
          echo "</td></tr>";
          echo "</table></div>";
       } else {
-         KnowbaseItem::showList($_REQUEST, 'search');
+         KnowbaseItem::showList($_POST, 'search');
       }
    }
 
@@ -138,20 +137,19 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase browse view
    **/
    static function showBrowseView() {
-
-      if (isset($_REQUEST["knowbaseitemcategories_id"])) {
-         $_SESSION['kbknowbaseitemcategories_id'] = $_REQUEST["knowbaseitemcategories_id"];
+      if (isset($_POST["knowbaseitemcategories_id"])) {
+         $_SESSION['kbknowbaseitemcategories_id'] = $_POST["knowbaseitemcategories_id"];
       } else if (isset($_SESSION['kbknowbaseitemcategories_id'])) {
-         $_REQUEST["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
+         $_POST["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
       }
 
       $ki = new KnowbaseItem();
-      $ki->showBrowseForm($_REQUEST);
-      if (!isset($_REQUEST["itemtype"])
-         || !isset($_REQUEST["items_id"])) {
-         KnowbaseItemCategory::showFirstLevel($_REQUEST);
+      $ki->showBrowseForm($_POST);
+      if (!isset($_POST["itemtype"])
+         || !isset($_POST["items_id"])) {
+         KnowbaseItemCategory::showFirstLevel($_POST);
       }
-      KnowbaseItem::showList($_REQUEST, 'browse');
+      KnowbaseItem::showList($_POST, 'browse');
    }
 
 
@@ -160,17 +158,17 @@ class Knowbase extends CommonGLPI {
    **/
    static function showManageView() {
 
-      if (isset($_REQUEST["unpublished"])) {
-         $_SESSION['kbunpublished'] = $_REQUEST["unpublished"];
+      if (isset($_POST["unpublished"])) {
+         $_SESSION['kbunpublished'] = $_POST["unpublished"];
       } else if (isset($_SESSION['kbunpublished'])) {
-         $_REQUEST["unpublished"] = $_SESSION['kbunpublished'];
+         $_POST["unpublished"] = $_SESSION['kbunpublished'];
       }
-      if (!isset($_REQUEST["unpublished"])) {
-         $_REQUEST["unpublished"] = 'myunpublished';
+      if (!isset($_POST["unpublished"])) {
+         $_POST["unpublished"] = 'myunpublished';
       }
       $ki = new KnowbaseItem();
-      $ki->showManageForm($_REQUEST);
-      KnowbaseItem::showList($_REQUEST, $_REQUEST["unpublished"]);
+      $ki->showManageForm($_POST);
+      KnowbaseItem::showList($_POST, $_POST["unpublished"]);
    }
 }
 ?>
