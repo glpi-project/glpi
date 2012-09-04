@@ -966,12 +966,12 @@ class CronTask extends CommonDBTM{
    function showHistory() {
       global $DB, $CFG_GLPI;
 
-      if (isset($_REQUEST["crontasklogs_id"]) && $_REQUEST["crontasklogs_id"]) {
-         return $this->showHistoryDetail($_REQUEST["crontasklogs_id"]);
+      if (isset($_POST["crontasklogs_id"]) && $_POST["crontasklogs_id"]) {
+         return $this->showHistoryDetail($_POST["crontasklogs_id"]);
       }
 
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
+      if (isset($_POST["start"])) {
+         $start = $_POST["start"];
       } else {
          $start = 0;
       }

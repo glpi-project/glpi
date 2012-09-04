@@ -388,7 +388,7 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-    * Update $_SESSION to set the display options of NetworkPort. If the _REQUEST variable is not
+    * Update $_SESSION to set the display options of NetworkPort. If the $_GET variable is not
     * defined, then, set it to default value.
     *
     * Is called by the popup to get the links to update and by the showForItem to set initial
@@ -427,8 +427,8 @@ class NetworkPort extends CommonDBChild {
 
       foreach ($options as $option_group_name => $option_group) {
          foreach ($option_group as $option_name => $attributs) {
-            if (isset($_REQUEST['display_'.$option_name])) {
-               $display_options[$option_name] = ($_REQUEST['display_'.$option_name] == 'true');
+            if (isset($_GET['display_'.$option_name])) {
+               $display_options[$option_name] = ($_GET['display_'.$option_name] == 'true');
             } else if (!isset($display_options[$option_name])) {
                $display_options[$option_name] = $attributs['default'];
             }
@@ -455,14 +455,14 @@ class NetworkPort extends CommonDBChild {
 
    static function showDislayOptions($itemtype) {
 
-      if (isset($_REQUEST['reset'])) {
-         $_SESSION['glpi_NetworkPort_display_options'][$itemtype] = array();
+      if (isset($_GET['reset'])) {
+         $_GET['glpi_NetworkPort_display_options'][$itemtype] = array();
       }
 
       $link_options = "itemtype=$itemtype&amp;popup=networkport_display_options&amp;update_origin";
       $options = self::updateAndGetDisplayOptions($itemtype, true, $link_options);
 
-      if (isset($_REQUEST['update_origin'])) {
+      if (isset($_GET['update_origin'])) {
          Ajax::refreshPopupTab();
       }
 

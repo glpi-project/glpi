@@ -265,21 +265,22 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       $canedit         = Session::haveRight("software", "w");
       $canshowcomputer = Session::haveRight("computer", "r");
 
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
+      
+      if (isset($_POST["start"])) {
+         $start = $_POST["start"];
       } else {
          $start = 0;
       }
 
-      if (isset($_REQUEST["order"]) && ($_REQUEST["order"] == "DESC")) {
+      if (isset($_POST["order"]) && ($_POST["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
 
-      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
          // manage several param like location,compname : order first
-         $tmp  = explode(",",$_REQUEST["sort"]);
+         $tmp  = explode(",",$_POST["sort"]);
          $sort = "`".implode("` $order,`",$tmp)."`";
       } else {
          $sort = "`entity` $order, `compname`";

@@ -63,7 +63,7 @@ if (empty($_GET["name"])) {
    $_GET["name"] = "";
 }
 
-if (isset($_REQUEST['getvcard'])) {
+if (isset($_GET['getvcard'])) {
    if (empty($_GET["id"])) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/user.php");
    }
@@ -151,7 +151,7 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else {
-   if (!isset($_REQUEST["ext_auth"])) {
+   if (!isset($_GET["ext_auth"])) {
       Session::checkRight("user", "r");
       Html::header(User::getTypeName(2), '', "admin", "user");
       $user->showForm($_GET["id"]);

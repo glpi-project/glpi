@@ -348,13 +348,13 @@ class NetworkAlias extends FQDNLabel {
       $item->check($item->getID(), 'r');
       $canedit = $item->can($item->getID(), 'w');
 
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
+      if (isset($_POST["start"])) {
+         $start = $_POST["start"];
       } else {
          $start = 0;
       }
-      if (!empty($_REQUEST["order"])) {
-         $order = $_REQUEST["order"];
+      if (!empty($_POST["order"])) {
+         $order = $_POST["order"];
       } else {
          $order = "alias";
       }
