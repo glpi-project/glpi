@@ -1918,7 +1918,7 @@ abstract class CommonITILObject extends CommonDBTM {
                Html::showSimpleForm($this->getFormURL(), 'delete_group', __('Delete'),
                                     array('id'=>$d['id'],
                                           $this->getForeignKeyField() => $this->fields['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");            
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo '<br>';
          }

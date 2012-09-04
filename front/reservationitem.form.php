@@ -39,7 +39,6 @@ Session::checkCentralAccess();
 Session::checkRight("reservation_central", "w");
 
 $ri = new ReservationItem();
-
 if (isset($_POST["add"])) {
    $ri->check(-1, 'w', $_POST);
    if ($newID = $ri->add($_POST)) {

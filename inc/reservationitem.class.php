@@ -50,7 +50,7 @@ class ReservationItem extends CommonDBChild {
    }
 
    static function canCreate() {
-      return $this->canUpdate();
+      return static::canUpdate();
    }
 
    static function canView() {
@@ -62,7 +62,7 @@ class ReservationItem extends CommonDBChild {
    }
 
    static function canDelete() {
-      return $this->canUpdate();
+      return static::canUpdate();
    }
 
    // From CommonDBTM
@@ -134,12 +134,18 @@ class ReservationItem extends CommonDBChild {
       $tab[2]['massiveaction']   = false;
       $tab[2]['datatype']        = 'number';
 
-      $tab += Location::getSearchOptionsToAdd();
+      $loc = Location::getSearchOptionsToAdd();
+      // Force massive actions to false
+      foreach ($loc as $key => $val) {
+         $tab[$key] = $val;
+         $tab[$key]['massiveaction'] = false;
+      }
 
       $tab[16]['table']          = 'reservation_types';
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
+      $tab[16]['massiveaction']   = false;
 
       $tab[70]['table']          = 'glpi_users';
       $tab[70]['field']          = 'name';
@@ -206,42 +212,41 @@ class ReservationItem extends CommonDBChild {
 
       $ri = new self();
 
-      echo "<div><form method='post' name=form action='".
-                  Toolbox::getItemTypeFormURL('ReservationItem')."'>";
+      echo "<div>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>".__('Reserve an item')."</th></tr>";
+      echo "<tr><th colspan='2'>".__('Reserve an item')."</th></tr>";
       echo "<tr class='tab_bg_1'>";
       if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
          echo "<td class='center'>";
          //Switch reservation state
-         echo "<input type='hidden' name='id' value='".$ri->fields['id']."'>";
+
          if ($ri->fields["is_active"]) {
-            echo "<input type='hidden' name='is_active' value='0'>";
-            echo "<input type='submit' name='update' value=\"".__s('Make unavailable')."\"
-                   class='submit'>";
+            Html::showSimpleForm(static::getFormURL(), 'update', __('Make unavailable'),
+                              array('id' => $ri->fields['id'],
+                                    'is_active' => 0));
          } else {
-            echo "<input type='hidden' name='is_active' value='1'>";
-            echo "<input type='submit' name='update' value=\"".__s('Make available')."\"
-                   class='submit'>";
+            Html::showSimpleForm(static::getFormURL(), 'update', __('Make available'),
+                              array('id' => $ri->fields['id'],
+                                    'is_active' => 1));
          }
-         echo "<span class='small_space'>";
-         echo "<input type='submit' name='delete' value=\"".__s('Prohibit reservations')."\"
-               class='submit' ".
-               Html::addConfirmationOnAction(array(__('Are you sure you want to return this non-reservable item?'),
-                                                   __('That will remove all the reservations in progress.'))).">";
-         echo "</span></td>";
+
+         echo '</td><td>';
+         Html::showSimpleForm(static::getFormURL(), 'purge', __('Prohibit reservations'),
+                              array('id' => $ri->fields['id']),'','',
+                              array(__('Are you sure you want to return this non-reservable item?'),
+                                    __('That will remove all the reservations in progress.')));
+
+         echo "</td>";
       } else {
          echo "<td class='center'>";
-         echo "<input type='hidden' name='items_id' value='".$item->getID()."'>";
-         echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-         echo "<input type='hidden' name='entities_id' value='".$item->getEntityID()."'>";
-         echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
-         echo "<input type='submit' name='add' value=\"".__s('Authorize reservations')."\"
-                class='submit'>";
+               Html::showSimpleForm(static::getFormURL(), 'add', __('Authorize reservations'),
+                                    array('items_id'     => $item->getID(),
+                                          'itemtype'     => $item->getType(),
+                                          'entities_id'  => $item->getEntityID(),
+                                          'is_recursive' => $item->isRecursive(),));
          echo "</td>";
       }
       echo "</tr></table>";
-      Html::closeForm();
       echo "</div>";
    }
 
