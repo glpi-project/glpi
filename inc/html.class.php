@@ -4062,7 +4062,7 @@ class Html {
 
       // Print it
       echo "<div><table class='tab_cadre_pager'>";
-      if ($title) {
+      if (!empty($title)) {
          echo "<tr><th colspan='6'>$title</th></tr>";
       }
       echo "<tr>\n";
