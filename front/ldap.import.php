@@ -71,49 +71,6 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
       echo "<br />";
       AuthLdap::searchUser($authldap);
    }
-
-} else {
-   if (isset($_SESSION["ldap_process"])) {
-      if ($count = count($_SESSION["ldap_process"])) {
-         $percent = min(100,round(100*($_SESSION["ldap_process_count"]-$count)/
-                                  $_SESSION["ldap_process_count"], 0));
-
-         Html::displayProgressBar(400, $percent);
-         $key = array_pop($_SESSION["ldap_process"]);
-         AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                  'value'  => $key),
-                                            $_SESSION['ldap_import']["mode"],
-                                            $_SESSION['ldap_import']["authldaps_id"],
-                                            true);
-         Html::redirect($_SERVER['PHP_SELF']);
-
-      } else {
-         unset($_SESSION["ldap_process"]);
-         Html::displayProgressBar(400, 100);
-
-         echo "<div class='center b'>".__('Successful importation')."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
-         unset($_SESSION["authldaps_id"]);
-         unset($_SESSION["mode"]);
-         unset($_SESSION["interface"]);
-         $_SESSION['ldap_import']['action'] = 'show';
-         Ajax::refreshDropdownPopupInMainWindow();
-      }
-
-   } else {
-      if (count($_POST['toprocess']) > 0) {
-         $_SESSION["ldap_process_count"] = 0;
-         $_SESSION["authldaps_id"] = $_SESSION['ldap_import']['authldaps_id'];
-
-         foreach ($_POST['toprocess'] as $key => $val) {
-            if ($val == "on") {
-               $_SESSION["ldap_process"][] = $key;
-               $_SESSION["ldap_process_count"]++;
-            }
-         }
-      }
-      Html::redirect($_SERVER['PHP_SELF']);
-   }
 }
 
 if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
