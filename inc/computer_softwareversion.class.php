@@ -72,7 +72,68 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return $input;
    }
 
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "move_version" :
+            if (isset($input['options'])) {
+               $input['options'] = unserialize(stripslashes($input['options']));
+               if (isset($input['options']['move'])) {
+                     $options = array('softwares_id' => $input['options']['move']['softwares_id']);
+                     if (isset($input['options']['move']['used'])) {
+                        $options['used'] = $input['options']['move']['used'];
+                     }
+                     SoftwareVersion::dropdown($options);
+                     echo "<br><br><input type='submit' name='massiveaction' value=\"".
+                           _sx('button','Move')."\" class='submit'>&nbsp;";
+                  return true;
+               }
+            }
+            return false;
+            break;
 
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+
+      }
+      return false;
+   }
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+
+         case "move_version" :
+            if (isset($input['softwareversions_id'])){
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     $params = array();
+                     //Get software name and manufacturer
+                     if ($this->can($key,'w')) {
+                        //Process rules
+                        if ($this->update(array('id' => $key,
+                                             'softwareversions_id' => $input['softwareversions_id']))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    /**
     * @param $computers_id
    **/
@@ -328,17 +389,30 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt=''
                           title=''>";
 
-            if ($canedit) {
-               echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post'
-                      action='".$CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
-               echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-               echo "<table class='tab_cadre_fixehov'><tr>";
-               echo "<th>&nbsp;</th>";
 
-            } else {
-               echo "<table class='tab_cadre_fixehov'><tr>";
+            if ($canedit) {
+               $rand = mt_rand();
+               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
+                                 'specific_actions' => array('move_version' => __('Move'),
+                                                             'purge' => _x('button', 'Purge')));
+               // Options to update version
+               $paramsma['extraparams']['options']['move']['softwares_id'] = $softwares_id;
+               if ($crit=='softwares_id') {
+                  $paramsma['extraparams']['options']['move']['used'] = array();
+               } else {
+                  $paramsma['extraparams']['options']['move']['used'] = array($searchID);
+               }
+
+               Html::showMassiveActions(__CLASS__, $paramsma);
             }
 
+            echo "<table class='tab_cadre_fixehov'><tr>";
+           if ($canedit) {
+               echo "<th width='10'>";
+               Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+               echo "</th>";
+            }
             if ($crit == "softwares_id") {
                echo "<th>".($sort=="`vername`"?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=vername&amp;order=".
@@ -438,17 +512,21 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             } while ($data = $DB->fetch_assoc($result));
 
             echo "</table>\n";
-
             if ($canedit) {
-               Html::openArrowMassives("softinstall".$rand."",true);
-               SoftwareVersion::dropdown(array('name'         => 'versionID',
-                                               'softwares_id' => $softwares_id));
-               echo "&nbsp;<input type='submit' name='moveinstalls' value='".
-                     _sx('button', 'Move')."' class='submit'>&nbsp;";
-               Html::closeArrowMassives(array('deleteinstalls' => __('Delete')));
-
+               $paramsma['ontop'] =false;
+               Html::showMassiveActions(__CLASS__, $paramsma);
                Html::closeForm();
             }
+//             if ($canedit) {
+//                Html::openArrowMassives("softinstall".$rand."",true);
+//                SoftwareVersion::dropdown(array('name'         => 'versionID',
+//                                                'softwares_id' => $softwares_id));
+//                echo "&nbsp;<input type='submit' name='moveinstalls' value='".
+//                      _sx('button', 'Move')."' class='submit'>&nbsp;";
+//                Html::closeArrowMassives(array('deleteinstalls' => __('Delete')));
+// 
+//                Html::closeForm();
+//             }
 
          } else { // Not found
             _e('No item found');

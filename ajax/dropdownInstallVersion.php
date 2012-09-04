@@ -47,12 +47,25 @@ if ($_POST['softwares_id'] > 0) {
       $_POST['value'] = 0;
    }
 
+   $where = '';
+   if (isset($_POST['used'])) {
+
+      if (is_array($_POST['used'])) {
+         $used = $_POST['used'];
+      } else {
+         $used = unserialize(stripslashes($_POST['used']));
+      }
+
+      if (count($used)) {
+         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$used)."')";
+      }
+   }
    // Make a select box
    $query = "SELECT DISTINCT `glpi_softwareversions`.*,
                              `glpi_states`.`name` AS sname
              FROM `glpi_softwareversions`
              LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
-             WHERE `glpi_softwareversions`.`softwares_id` = '".$_POST['softwares_id']."'
+             WHERE `glpi_softwareversions`.`softwares_id` = '".$_POST['softwares_id']."' $where
              ORDER BY `name`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);

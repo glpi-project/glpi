@@ -213,6 +213,7 @@ class SoftwareVersion extends CommonDBChild {
     *    - name : string / name of the select (default is softwareversions_id)
     *    - softwares_id : integer / ID of the software
     *    - value : integer / value of the selected version
+    *    - used : array / already used items
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -223,6 +224,7 @@ class SoftwareVersion extends CommonDBChild {
       $p['softwares_id'] = 0;
       $p['value']        = 0;
       $p['name']         = 'softwareversions_id';
+      $p['used']         = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -233,10 +235,12 @@ class SoftwareVersion extends CommonDBChild {
       $rand   = mt_rand();
       $params = array('softwares_id' => $p['softwares_id'],
                       'myname'       => $p['name'],
-                      'value'        => $p['value']);
+                      'value'        => $p['value'],
+                      'used'         => $p['used']);
 
       $default = "<select name='".$p['name']."'><option value='0'>".Dropdown::EMPTY_VALUE."</option>
                   </select>";
+
       Ajax::dropdown(false,"/ajax/dropdownInstallVersion.php", $params, $default, $rand);
 
       return $rand;

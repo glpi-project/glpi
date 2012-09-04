@@ -396,17 +396,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
+            echo "<table class='tab_cadre_fixehov'><tr>";
             if ($canedit) {
-               echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post'
-                      action='".$CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php'>";
-               echo "<table class='tab_cadre_fixehov'><tr>";
                echo "<th width='10'>";
                Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
                echo "</th>";
-            } else {
-               echo "<table class='tab_cadre_fixehov'><tr>";
             }
-
             echo "<th>".($sort=="`compname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=compname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
@@ -471,11 +466,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             } while ($data=$DB->fetch_assoc($result));
 
             echo "</table>\n";
-         if ($canedit) {
-            $paramsma['ontop'] =false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
-            Html::closeForm();
-         }
+            if ($canedit) {
+               $paramsma['ontop'] =false;
+               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::closeForm();
+            }
 
          } else { // Not found
             _e('No item found');
