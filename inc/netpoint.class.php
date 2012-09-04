@@ -286,7 +286,42 @@ class Netpoint extends CommonDropdown {
       }
       $number = countElementsInTable('glpi_netpoints', "`locations_id`='$ID'");
 
-      echo "<br><div class='center'>";
+      if ($canedit) {
+         echo "<div class='first-bloc'>";
+         // Minimal form for quick input.
+         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
+         echo "<br><table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>"._n('Network outlet', 'Network outlets', 1)."</td>";
+         echo "<td>".__('Name')."</td><td>";
+         Html::autocompletionTextField($item, "name", array('value' => ''));
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table>\n";
+         Html::closeForm();
+
+         // Minimal form for massive input.
+         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>"._n('Network outlet', 'Network outlets', 2)."</td>";
+         echo "<td>".__('Name')."</td><td>";
+         echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
+         Dropdown::showInteger('_from', 0, 0, 400);
+         echo "&nbsp;-->&nbsp;";
+         Dropdown::showInteger('_to', 0, 0, 400);
+         echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
+         echo "<input type='hidden' name='_method' value='AddMulti'></td>";
+         echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table>\n";
+         Html::closeForm();
+         echo "</div>";
+      }
+      
+      echo "<div class='spaced'>";
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
@@ -294,17 +329,23 @@ class Netpoint extends CommonDropdown {
          echo "<th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
-         Html::printAjaxPager(printf(__('Network outlets for %s'), $item->getTreeLink()),
+         Html::printAjaxPager(sprintf(__('Network outlets for %s'), $item->getTreeLink()),
                               $start, $number);
 
          if ($canedit) {
-            echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action='".
-                   $CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
+                              'specific_actions' => array('purge' => _x('button', 'Purge')));
+            Html::showMassiveActions(__CLASS__, $paramsma);
          }
+
          echo "<table class='tab_cadre_fixe'><tr>";
 
          if ($canedit) {
-            echo "<th width='10'>&nbsp;</th>";
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
          }
 
          echo "<th>".__('Name')."</th>"; // Name
@@ -338,50 +379,15 @@ class Netpoint extends CommonDropdown {
          echo "</table>\n";
 
          if ($canedit) {
-            Html::openArrowMassives("massiveaction_form", true);
-            echo "<input type='hidden' name='itemtype' value='Netpoint'>";
-            echo "<input type='hidden' name='action' value='delete'>";
-            Html::closeArrowMassives(array('massiveaction' => __('Delete')));
-
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }
-         Html::printAjaxPager(printf(__('Network outlets for %s'), $item->getTreeLink()),
+         Html::printAjaxPager(sprintf(__('Network outlets for %s'), $item->getTreeLink()),
                               $start, $number);
          
       }
 
-      if ($canedit) {
-         // Minimal form for quick input.
-         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
-         echo "<br><table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>".__('New item')."</td>";
-         echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($item, "name", array('value' => ''));
-         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
-         Html::closeForm();
-
-         // Minimal form for massive input.
-         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>".__('New item')."</td>";
-         echo "<td>".__('Name')."</td><td>";
-         echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
-         Dropdown::showInteger('_from', 0, 0, 400);
-         echo "&nbsp;-->&nbsp;";
-         Dropdown::showInteger('_to', 0, 0, 400);
-         echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
-         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
-         Html::closeForm();
-      }
       echo "</div>\n";
    }
 
