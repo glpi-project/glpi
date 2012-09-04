@@ -3020,18 +3020,21 @@ class Ticket extends CommonITILObject {
                                                                       '', Ticket::INCIDENT_TYPE),
                               '_right'              => "id");
 
+      // Get default values from posted values on reload form
       if (!$ticket_template) {
-         $options = $_REQUEST;
+         if (isset($_POST)) {
+            $values = $_POST;
+         }
       }
 
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
-         if (!isset($options[$name])) {
+         if (!isset($values[$name])) {
             if (isset($saved[$name])) {
-               $options[$name] = $saved[$name];
+               $values[$name] = $saved[$name];
             } else {
-               $options[$name] = $value;
+               $values[$name] = $value;
             }
          }
       }
@@ -3048,17 +3051,17 @@ class Ticket extends CommonITILObject {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>".__('This ticket concerns me')." ";
 
-         $rand   = Dropdown::showYesNo("nodelegate", $options['nodelegate']);
+         $rand   = Dropdown::showYesNo("nodelegate", $values['nodelegate']);
 
          $params = array ('nodelegate' => '__VALUE__',
                           'rand'       => $rand,
                           'right'      => "delegate",
                           '_users_id_requester'
-                                       => $options['_users_id_requester'],
+                                       => $values['_users_id_requester'],
                           '_users_id_requester_notif'
-                                       => $options['_users_id_requester_notif'],
+                                       => $values['_users_id_requester_notif'],
                           'use_notification'
-                                       => $options['_users_id_requester_notif']['use_notification'],
+                                       => $values['_users_id_requester_notif']['use_notification'],
                           'entity_restrict'
                                        => $_SESSION["glpiactive_entity"]);
 
@@ -3066,7 +3069,7 @@ class Ticket extends CommonITILObject {
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
                                        $params);
 
-         if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
+         if ($CFG_GLPI['use_check_pref'] && $values['nodelegate']) {
             echo "</th><th>".__('Check your personnal information');
          }
 
@@ -3075,15 +3078,15 @@ class Ticket extends CommonITILObject {
          echo "<div id='show_result$rand'>";
 
          $self = new self();
-         if ($options["_users_id_requester"] == 0) {
-            $options['_users_id_requester'] = Session::getLoginUserID();
+         if ($values["_users_id_requester"] == 0) {
+            $values['_users_id_requester'] = Session::getLoginUserID();
          } else {
-            $options['_right'] = "delegate";
+            $values['_right'] = "delegate";
          }
 
-         $self->showActorAddFormOnCreate(self::REQUESTER, $options);
+         $self->showActorAddFormOnCreate(self::REQUESTER, $values);
          echo "</div>";
-         if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
+         if ($CFG_GLPI['use_check_pref'] && $values['nodelegate']) {
             echo "</td><td class='center'>";
             User::showPersonalInformation(Session::getLoginUserID());
          }
@@ -3117,11 +3120,11 @@ class Ticket extends CommonITILObject {
       }
 
       $field = '';
-      if ($options['type']
-          && $options['itilcategories_id']) {
+      if ($values['type']
+          && $values['itilcategories_id']) {
          $categ = new ITILCategory();
-         if ($categ->getFromDB($options['itilcategories_id'])) {
-            switch ($options['type']) {
+         if ($categ->getFromDB($values['itilcategories_id'])) {
+            switch ($values['type']) {
                case self::INCIDENT_TYPE :
                   $field = 'tickettemplates_id_incident';
                   break;
@@ -3144,11 +3147,11 @@ class Ticket extends CommonITILObject {
       }
 
       // Predefined fields from template : reset them
-      if (isset($options['_predefined_fields'])) {
-         $options['_predefined_fields']
-                        = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
+      if (isset($values['_predefined_fields'])) {
+         $values['_predefined_fields']
+                        = unserialize(rawurldecode(stripslashes($values['_predefined_fields'])));
       } else {
-         $options['_predefined_fields'] = array();
+         $values['_predefined_fields'] = array();
       }
 
       // Store predefined fields to be able not to take into account on change template
@@ -3156,16 +3159,16 @@ class Ticket extends CommonITILObject {
 
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
+            if (isset($values[$predeffield]) && isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
                // Set if ticket template change
-               if (($options[$predeffield] == $default_values[$predeffield])
-                   || (isset($options['_predefined_fields'][$field])
-                       && ($options[$predeffield] == $options['_predefined_fields'][$field]))
-                   || (isset($options['_tickettemplates_id'])
-                       && ($options['_tickettemplates_id'] != $tt->getID()))) {
-                  $options[$predeffield]           = $predefvalue;
+               if (($values[$predeffield] == $default_values[$predeffield])
+                   || (isset($values['_predefined_fields'][$field])
+                       && ($values[$predeffield] == $values['_predefined_fields'][$field]))
+                   || (isset($values['_tickettemplates_id'])
+                       && ($values['_tickettemplates_id'] != $tt->getID()))) {
+                  $values[$predeffield]           = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             } else { // Not defined options set as hidden field
@@ -3174,10 +3177,10 @@ class Ticket extends CommonITILObject {
          }
 
       } else { // No template load : reset predefined values
-         if (count($options['_predefined_fields'])) {
-            foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-               if ($options[$predeffield] == $predefvalue) {
-                  $options[$predeffield] = $default_values[$predeffield];
+         if (count($values['_predefined_fields'])) {
+            foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
+               if ($values[$predeffield] == $predefvalue) {
+                  $values[$predeffield] = $default_values[$predeffield];
                }
             }
          }
@@ -3186,16 +3189,16 @@ class Ticket extends CommonITILObject {
       if (($CFG_GLPI['urgency_mask'] == (1<<3))
           || $tt->isHiddenField('urgency')) {
          // Dont show dropdown if only 1 value enabled or field is hidden
-         echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";
+         echo "<input type='hidden' name='urgency' value='".$values['urgency']."'>";
       }
 
       // Display predefined fields if hidden
       if ($tt->isHiddenField('itemtype')) {
-         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
-         echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
+         echo "<input type='hidden' name='itemtype' value='".$values['itemtype']."'>";
+         echo "<input type='hidden' name='items_id' value='".$values['items_id']."'>";
       }
       if ($tt->isHiddenField('locations_id')) {
-         echo "<input type='hidden' name='locations_id' value='".$options['locations_id']."'>";
+         echo "<input type='hidden' name='locations_id' value='".$values['locations_id']."'>";
       }
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -3209,7 +3212,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s%2$s'), __('Type'), $tt->getMandatoryMark('type'))."</td>";
       echo "<td>";
-      self::dropdownType('type', array('value'     => $options['type'],
+      self::dropdownType('type', array('value'     => $values['type'],
                                        'on_change' => 'submit()'));
       echo "</td></tr>";
 
@@ -3219,7 +3222,7 @@ class Ticket extends CommonITILObject {
       echo "<td>";
 
       $condition = "`is_helpdeskvisible`='1'";
-      switch ($options['type']) {
+      switch ($values['type']) {
          case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
             break;
@@ -3227,11 +3230,11 @@ class Ticket extends CommonITILObject {
          default: // self::INCIDENT_TYPE :
             $condition .= " AND `is_incident`='1'";
       }
-      $opt = array('value'     => $options['itilcategories_id'],
+      $opt = array('value'     => $values['itilcategories_id'],
                    'condition' => $condition,
                    'on_change' => 'submit()');
 
-      if ($options['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
+      if ($values['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
          $opt['display_emptychoice'] = false;
       }
 
@@ -3245,7 +3248,7 @@ class Ticket extends CommonITILObject {
             echo "<td>".sprintf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency')).
                  "</td>";
             echo "<td>";
-            self::dropdownUrgency(array('value' => $options["urgency"]));
+            self::dropdownUrgency(array('value' => $values["urgency"]));
             echo "</td></tr>";
          }
       }
@@ -3255,12 +3258,12 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Inform me about the actions taken')."</td>";
          echo "<td>";
-         if ($options["_users_id_requester"] == 0) {
-            $options['_users_id_requester'] = Session::getLoginUserID();
+         if ($values["_users_id_requester"] == 0) {
+            $values['_users_id_requester'] = Session::getLoginUserID();
          }
-         $_POST['value']            = $options['_users_id_requester'];
+         $_POST['value']            = $values['_users_id_requester'];
          $_POST['field']            = '_users_id_requester_notif';
-         $_POST['use_notification'] = $options['_users_id_requester_notif']['use_notification'];
+         $_POST['use_notification'] = $values['_users_id_requester_notif']['use_notification'];
          include (GLPI_ROOT."/ajax/uemailUpdate.php");
 
          echo "</td></tr>";
@@ -3272,10 +3275,10 @@ class Ticket extends CommonITILObject {
             echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
                                 $tt->getMandatoryMark('itemtype'))."</td>";
             echo "<td>";
-            self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"],
-                                    $options['itemtype'], $options['items_id']);
-            self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
-                                     $options['_users_id_requester'],
+            self::dropdownMyDevices($values['_users_id_requester'], $_SESSION["glpiactive_entity"],
+                                    $values['itemtype'], $values['items_id']);
+            self::dropdownAllDevices("itemtype", $values['itemtype'], $values['items_id'], 0,
+                                     $values['_users_id_requester'],
                                      $_SESSION["glpiactive_entity"]);
             echo "<span id='item_ticket_selection_information'></span>";
 
@@ -3287,7 +3290,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'><td>";
          printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
          echo "</td><td>";
-         Location::dropdown(array('value'  => $options["locations_id"]));
+         Location::dropdown(array('value'  => $values["locations_id"]));
          echo "</td></tr>";
       }
 
@@ -3296,7 +3299,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."</td>";
          echo "<td><input type='text' maxlength='250' size='80' name='name'
-                    value=\"".$options['name']."\"></td></tr>";
+                    value=\"".$values['name']."\"></td></tr>";
       }
 
       if (!$tt->isHiddenField('content')
@@ -3304,7 +3307,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content')).
               "</td>";
-         echo "<td><textarea name='content' cols='80' rows='14'>".$options['content']."</textarea>";
+         echo "<td><textarea name='content' cols='80' rows='14'>".$values['content']."</textarea>";
          echo "</td></tr>";
       }
 
@@ -3409,8 +3412,11 @@ class Ticket extends CommonITILObject {
 
       $default_values = self::getDefaultValues();
 
+      // Get default values from posted values on reload form
       if (!isset($options['template_preview'])) {
-         $values = $_REQUEST;
+         if (isset($_POST)) {
+            $values = $_POST;
+         }
       }
 
       // Restore saved value or override with page parameter
