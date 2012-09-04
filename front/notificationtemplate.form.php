@@ -63,19 +63,6 @@ if (isset($_POST["add"])) {
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $notificationtemplate->redirectToList();
 
-} else if (isset($_POST["delete_languages"])) {
-   $notificationtemplate->check(-1,'d');
-   $language = new NotificationTemplateTranslation();
-   if (isset($_POST['languages'])) {
-      foreach ($_POST['languages'] as $key =>$val) {
-         if ($val=='on') {
-            $input['id'] = $key;
-            $language->delete($input);
-         }
-      }
-   }
-   Html::back();
-
 } else if (isset($_POST["update"])) {
    $notificationtemplate->check($_POST["id"],'w');
 
