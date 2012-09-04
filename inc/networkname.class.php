@@ -581,13 +581,13 @@ class NetworkName extends FQDNLabel {
             if ($canedit) {
 
                $content .= "<br>";
-               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __s('Dissociate'),
+               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __('Dissociate'),
                                                array('remove_address' => 'unaffect',
                                                      'id'             => $address->getID()),
                                                $CFG_GLPI["root_doc"] . "/pics/sub_dropdown.png");
 
                $content .= "&nbsp;";
-               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __s('Purge'),
+               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __('Purge'),
                                                array('remove_address' => 'purge',
                                                      'id'             => $address->getID()),
                                                $CFG_GLPI["root_doc"] . "/pics/delete.png");

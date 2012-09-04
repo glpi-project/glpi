@@ -46,9 +46,10 @@ $user = new User();
 // Manage lost password
 Html::simpleHeader(__('Forgotten password?'));
 
+// REQUEST needed : GET on first access / POST on submit form
 if (isset($_REQUEST['password_forget_token'])) {
 
-   if (isset($_REQUEST['email'])) {
+   if (isset($_POST['email'])) {
       $user->updateForgottenPassword($_REQUEST);
    } else {
       User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
@@ -56,8 +57,8 @@ if (isset($_REQUEST['password_forget_token'])) {
 
 } else {
 
-   if (isset($_REQUEST['email'])) {
-      $user->forgetPassword($_REQUEST['email']);
+   if (isset($_POST['email'])) {
+      $user->forgetPassword($_POST['email']);
    } else {
       User::showPasswordForgetRequestForm();
    }
