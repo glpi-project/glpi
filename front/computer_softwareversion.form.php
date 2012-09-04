@@ -39,82 +39,20 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("software", "w");
 $inst = new Computer_SoftwareVersion();
 
-// From Computer - Software tab (add form or from not installed license)
-if (isset($_REQUEST["install"])) {
-   if (isset($_REQUEST["computers_id"]) && $_REQUEST["computers_id"]
-       && isset($_REQUEST["softwareversions_id"]) && $_REQUEST["softwareversions_id"]) {
+// From Computer - Software tab (add form)
+if (isset($_POST["add"])) {
+   if (isset($_POST["computers_id"]) && $_POST["computers_id"]
+       && isset($_POST["softwareversions_id"]) && $_REQUEST["softwareversions_id"]) {
 
-      $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
-                       'softwareversions_id' => $_REQUEST["softwareversions_id"]));
+      $inst->add(array('computers_id'        => $_POST["computers_id"],
+                       'softwareversions_id' => $_POST["softwareversions_id"]));
 
-      Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
+      Event::log($_POST["computers_id"], "computers", 5, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s installs software'), $_SESSION["glpiname"]));
    }
    Html::back();
 
-// From Computer - Software tab (installed software)
-} else if (isset($_GET["uninstall"])) {
-   $inst->delete(array('id' => $_GET["id"]));
-
-   Event::log($_GET["computers_id"], "computers", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s uninstalls software'), $_SESSION["glpiname"]));
-   Html::back();
-
-// From Computer - Software tab  (installed software)
-} else if (isset($_POST["massuninstall"])) {
-   foreach ($_POST as $key => $val) {
-      if (preg_match("/softversion_([0-9]+)/",$key,$ereg)) {
-         $inst->delete(array('id' => $ereg[1]));
-      }
-   }
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s uninstalls several software'), $_SESSION["glpiname"]));
-   Html::back();
-
-} else if (isset($_POST["massinstall"])
-           && isset($_POST["computers_id"])) {
-   foreach ($_POST as $key => $val) {
-      if (preg_match("/softversion_([0-9]+)/",$key,$ereg)) {
-         if ($ereg[1] > 0) {
-            $inst->add(array('computers_id'        => $_POST["computers_id"],
-                             'softwareversions_id' => $ereg[1]));
-         }
-      }
-   }
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s installs several software'), $_SESSION["glpiname"]));
-   Html::back();
-
-// From installation list on Software form
-} else if (isset($_POST["deleteinstalls"])) {
-   foreach ($_POST["item"] as $key => $val) {
-      if ($val == 1) {
-         $inst->delete(array('id' => $key));
-         Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s uninstalls software on several computers'),
-                            $_SESSION["glpiname"]));
-      }
-   }
-   Html::back();
-
-} else if (isset($_POST["moveinstalls"])) {
-   foreach ($_POST["item"] as $key => $val) {
-      if (($val == 1)
-          && ($_POST['versionID'] > 0)) {
-
-         $inst->upgrade($key, $_POST['versionID']);
-         Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s changes the version of installed software'),
-                            $_SESSION["glpiname"]));
-      }
-   }
-   Html::back();
 }
 Html::displayErrorAndDie('Lost');
 ?>
