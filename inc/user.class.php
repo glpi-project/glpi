@@ -85,17 +85,12 @@ class User extends CommonDBTM {
 
 
    function canCreateItem() {
-
-      // Form loading (yes this seems uggly..., <=1 because of [PHPSESSID])
-      if (count($_REQUEST) <= 1) {
-         // New user : no entity defined
-         return true;
-      }
+   
       // Will be created from form, with selected entity/profile
-      if (isset($_POST['_profiles_id']) && ($_POST['_profiles_id'] > 0)
-          && Profile::currentUserHaveMoreRightThan(array($_POST['_profiles_id']))
-          && isset($_POST['_entities_id'])
-          && Session::haveAccessToEntity($_POST['_entities_id'])) {
+      if (isset($this->input['_profiles_id']) && ($this->input['_profiles_id'] > 0)
+          && Profile::currentUserHaveMoreRightThan(array($this->input['_profiles_id']))
+          && isset($this->input['_entities_id'])
+          && Session::haveAccessToEntity($this->input['_entities_id'])) {
          return true;
       }
       // Will be created with default value

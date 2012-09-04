@@ -2122,6 +2122,8 @@ class CommonDBTM extends CommonGLPI {
                   $this->fields[$key] = $val;
                }
             }
+            // Store to be available for others functions
+            $this->input = $input;
          }
 
          if ($this->isPrivate()

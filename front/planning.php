@@ -35,21 +35,21 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_REQUEST["uID"])) {
+if (!isset($_GET["uID"])) {
    if (($uid = Session::getLoginUserID())
        && !Session::haveRight("show_all_planning","1")) {
-      $_REQUEST["uID"] = $uid;
+      $_GET["uID"] = $uid;
    } else {
-      $_REQUEST["uID"] = 0;
+      $_GET["uID"] = 0;
    }
 }
 
-if (!isset($_REQUEST["gID"])) {
-   $_REQUEST["gID"] = 0;
+if (!isset($_GET["gID"])) {
+   $_GET["gID"] = 0;
 }
 
-if (!isset($_REQUEST["limititemtype"])) {
-   $_REQUEST["limititemtype"] = "";
+if (!isset($_GET["limititemtype"])) {
+   $_GET["limititemtype"] = "";
 }
 
 // Normal call via $_GET
@@ -67,13 +67,13 @@ if (isset($_GET['checkavailability'])) {
    Planning::checkAvailability($_GET['users_id'], $_GET['begin'], $_GET['end']);
    Html::popFooter();
 
-} else if (isset($_REQUEST['genical'])) {
-   if (isset($_REQUEST['token'])) {
+} else if (isset($_GET['genical'])) {
+   if (isset($_GET['token'])) {
       // Check user token
       /// TODO : complex : check if the request is valid : rights on uID / gID ?
       $user = new User();
-      if ($user->getFromDBByToken($_REQUEST['token'])) {
-         Planning::generateIcal($_REQUEST["uID"], $_REQUEST["gID"], $_REQUEST["itemtype"]);
+      if ($user->getFromDBByToken($_GET['token'])) {
+         Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["itemtype"]);
       }
    }
 } else {
@@ -82,15 +82,15 @@ if (isset($_GET['checkavailability'])) {
    Session::checkSeveralRightsOr(array('show_all_planning' => '1',
                                        'show_planning'     => '1'));
 
-   if (!isset($_REQUEST["date"]) || empty($_REQUEST["date"])) {
-      $_REQUEST["date"] = strftime("%Y-%m-%d");
+   if (!isset($_GET["date"]) || empty($_GET["date"])) {
+      $_GET["date"] = strftime("%Y-%m-%d");
    }
-   if (!isset($_REQUEST["type"])) {
-      $_REQUEST["type"] = "week";
+   if (!isset($_GET["type"])) {
+      $_GET["type"] = "week";
    }
 
    $planning = new Planning();
-   $planning->show($_REQUEST);
+   $planning->show($_GET);
 
    Html::footer();
 }

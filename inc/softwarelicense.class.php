@@ -498,22 +498,21 @@ class SoftwareLicense extends CommonDBTM {
       if (!$software->can($softwares_id,"r")) {
          return false;
       }
-
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
+      if (isset($_POST["start"])) {
+         $start = $_POST["start"];
       } else {
          $start = 0;
       }
 
 
-      if (isset($_REQUEST["order"]) && ($_REQUEST["order"] == "DESC")) {
+      if (isset($_POST["order"]) && ($_POST["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
 
-      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
-         $sort = "`".$_REQUEST["sort"]."`";
+      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
+         $sort = "`".$_POST["sort"]."`";
       } else {
          $sort = "`entity` $order, `name`";
       }
