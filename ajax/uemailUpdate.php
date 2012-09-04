@@ -42,12 +42,12 @@ if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
 
 Session::checkLoginUser();
 
-if ((isset($_REQUEST['field']) && ($_REQUEST["value"] > 0))
-    || (isset($_REQUEST['allow_email']) && $_REQUEST['allow_email'])) {
+if ((isset($_POST['field']) && ($_POST["value"] > 0))
+    || (isset($_POST['allow_email']) && $_POST['allow_email'])) {
    $user          = new User();
    $default_email = "";
    $emails        = array();
-   if ($user->getFromDB($_REQUEST["value"])) {
+   if ($user->getFromDB($_POST["value"])) {
       $default_email = $user->getDefaultEmail();
       $emails        = $user->getAllEmails();
    }
@@ -55,16 +55,16 @@ if ((isset($_REQUEST['field']) && ($_REQUEST["value"] > 0))
    echo __('Email followup').'&nbsp;';
 
    $default_notif = true;
-   if (isset($_REQUEST['use_notification'])) {
-      $default_notif = $_REQUEST['use_notification'];
+   if (isset($_POST['use_notification'])) {
+      $default_notif = $_POST['use_notification'];
    }
 
-   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])
+   if (isset($_POST['alternative_email']) && !empty($_POST['alternative_email'])
        && empty($default_email)) {
-      $default_email = $_REQUEST['alternative_email'];
+      $default_email = $_POST['alternative_email'];
    }
 
-   $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', $default_notif);
+   $rand = Dropdown::showYesNo($_POST['field'].'[use_notification]', $default_notif);
 
    $email_string = '';
    // Only one email
@@ -73,12 +73,12 @@ if ((isset($_REQUEST['field']) && ($_REQUEST["value"] > 0))
        && NotificationMail::isUserAddressValid($default_email)) {
       $email_string =  $default_email;
       // Clean alternative email
-      echo "<input type='hidden' size='25' name='".$_REQUEST['field']."[alternative_email]'
+      echo "<input type='hidden' size='25' name='".$_POST['field']."[alternative_email]'
              value=''>";
 
    } else if (count($emails) > 1) {
       // Several emails : select in the list
-      $email_string = "<select name='".$_REQUEST['field']."[alternative_email]' value=''>";
+      $email_string = "<select name='".$_POST['field']."[alternative_email]' value=''>";
       $email_string .= "<option value='' selected>$default_email</option>";
       foreach ($emails as $new_email) {
          if ($new_email != $default_email) {
@@ -87,7 +87,7 @@ if ((isset($_REQUEST['field']) && ($_REQUEST["value"] > 0))
       }
       $email_string .= "</select>";
    } else {
-      $email_string = "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
+      $email_string = "<input type='text' size='25' name='".$_POST['field']."[alternative_email]'
             value='$default_email'>";
    }
 

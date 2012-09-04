@@ -52,18 +52,19 @@ if (!isset($_REQUEST["limititemtype"])) {
    $_REQUEST["limititemtype"] = "";
 }
 
-if (isset($_REQUEST['checkavailability'])) {
+// Normal call via $_GET
+if (isset($_GET['checkavailability'])) {
    Html::popHeader(__('Availability'));
-   if (!isset($_REQUEST["begin"])) {
-      $_REQUEST["begin"] = "";
+   if (!isset($_GET["begin"])) {
+      $_GET["begin"] = "";
    }
-   if (!isset($_REQUEST["end"])) {
-      $_REQUEST["end"] = "";
+   if (!isset($_GET["end"])) {
+      $_GET["end"] = "";
    }
-   if (!isset($_REQUEST["users_id"])) {
-      $_REQUEST["users_id"] = "";
+   if (!isset($_GET["users_id"])) {
+      $_GET["users_id"] = "";
    }
-   Planning::checkAvailability($_REQUEST['users_id'], $_REQUEST['begin'], $_REQUEST['end']);
+   Planning::checkAvailability($_GET['users_id'], $_GET['begin'], $_GET['end']);
    Html::popFooter();
 
 } else if (isset($_REQUEST['genical'])) {

@@ -1799,8 +1799,8 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'><td colspan='4'>";
 
-      $_REQUEST = array('inquest_config' => $entity->fields['inquest_config'],
-                        'entities_id'    => $ID);
+      $_POST = array('inquest_config' => $entity->fields['inquest_config'],
+                     'entities_id'    => $ID);
       $params   = array('inquest_config' => '__VALUE__',
                         'entities_id'    => $ID);
       echo "<div id='inquestconfig'>";

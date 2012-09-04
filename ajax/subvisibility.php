@@ -43,10 +43,10 @@ if (strpos($_SERVER['PHP_SELF'],"subvisibility.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
-    && isset($_REQUEST['items_id']) && ($_REQUEST['items_id'] > 0)) {
+if (isset($_POST['type']) && !empty($_POST['type'])
+    && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
 
-   switch ($_REQUEST['type']) {
+   switch ($_POST['type']) {
       case 'Group' :
       case 'Profile' :
          $params = array('value' => $_SESSION['glpiactive_entity']);

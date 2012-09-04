@@ -3258,9 +3258,9 @@ class Ticket extends CommonITILObject {
          if ($options["_users_id_requester"] == 0) {
             $options['_users_id_requester'] = Session::getLoginUserID();
          }
-         $_REQUEST['value']            = $options['_users_id_requester'];
-         $_REQUEST['field']            = '_users_id_requester_notif';
-         $_REQUEST['use_notification'] = $options['_users_id_requester_notif']['use_notification'];
+         $_POST['value']            = $options['_users_id_requester'];
+         $_POST['field']            = '_users_id_requester_notif';
+         $_POST['use_notification'] = $options['_users_id_requester_notif']['use_notification'];
          include (GLPI_ROOT."/ajax/uemailUpdate.php");
 
          echo "</td></tr>";

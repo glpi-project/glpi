@@ -96,11 +96,6 @@ echo "</td><td class='left'>";
 
 echo "<span id='Search2Span".$_POST["itemtype"].$_POST["num"]."'>\n";
 
-$_POST['itemtype']   = $_POST["itemtype"];
-$_POST['num']        = $_POST["num"];
-$_POST['field']      = $_POST["field"];
-$_POST['searchtype'] = $_POST["searchtype2"];
-$_POST['value']      = $_POST["value"];
 $_POST['meta']       = 1;
 
 include (GLPI_ROOT."/ajax/searchoption.php");

@@ -43,25 +43,25 @@ if (strpos($_SERVER['PHP_SELF'],"ticketiteminformation.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST["my_items"]) && !empty($_REQUEST["my_items"])) {
-   $splitter = explode("_",$_REQUEST["my_items"]);
+if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
+   $splitter = explode("_",$_POST["my_items"]);
    if (count($splitter) == 2) {
-      $_REQUEST["itemtype"] = $splitter[0];
-      $_REQUEST["items_id"] = $splitter[1];
+      $_POST["itemtype"] = $splitter[0];
+      $_POST["items_id"] = $splitter[1];
    }
 }
 
-if (isset($_REQUEST['itemtype'])
-    && isset($_REQUEST['items_id']) && ($_REQUEST['items_id'] > 0)) {
+if (isset($_POST['itemtype'])
+    && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
    // Security
-   if (!class_exists($_REQUEST['itemtype']) ) {
+   if (!class_exists($_POST['itemtype']) ) {
       exit();
    }
 
    $days   = 3;
    $ticket = new Ticket();
-   $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem($_REQUEST['itemtype'],
-                                                              $_REQUEST['items_id'], $days);
+   $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem($_POST['itemtype'],
+                                                              $_POST['items_id'], $days);
 
    $nb = count($data);
    printf(_n('%s ticket in progress or recently solved on this item.',

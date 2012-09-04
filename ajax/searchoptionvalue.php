@@ -46,23 +46,21 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-/// TODO use standard getValueToSelect : need to have specific cases to have specific display passing options
-if (isset($_REQUEST['searchtype'])) {
-   $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));
-
-   $_REQUEST['value'] = rawurldecode(stripslashes($_REQUEST['value']));
+if (isset($_POST['searchtype'])) {
+   $searchopt         = unserialize(stripslashes($_POST['searchopt']));
+   $_POST['value'] = rawurldecode($_POST['value']);
 
    $addmeta = "";
-   if (isset($_REQUEST['meta']) && $_REQUEST['meta']) {
+   if (isset($_POST['meta']) && $_POST['meta']) {
       $addmeta = '2';
    }
 
-   $inputname = 'contains'.$addmeta.'['.$_REQUEST['num'].']';
+   $inputname = 'contains'.$addmeta.'['.$_POST['num'].']';
    $display   = false;
-   $item = getItemForItemtype($_REQUEST['itemtype']);
-   $options['value'] = $_REQUEST['value'];
+   $item = getItemForItemtype($_POST['itemtype']);
+   $options['value'] = $_POST['value'];
 
-   switch ($_REQUEST['searchtype']) {
+   switch ($_POST['searchtype']) {
       case "equals" :
       case "notequals" :
       case "morethan" :
@@ -115,7 +113,7 @@ if (isset($_REQUEST['searchtype'])) {
                      break;
                }
             }
-            $out = $item->getValueToSelect($searchopt, $inputname, $_REQUEST['value'], $options);
+            $out = $item->getValueToSelect($searchopt, $inputname, $_POST['value'], $options);
             if (strlen($out)) {
                echo $out;
                $display = true;
@@ -128,9 +126,9 @@ if (isset($_REQUEST['searchtype'])) {
                $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
                if (function_exists($function)) {
                   $params = array('name'           => $inputname,
-                                  'searchtype'     => $_REQUEST['searchtype'],
+                                  'searchtype'     => $_POST['searchtype'],
                                   'searchoption'   => $searchopt,
-                                  'value'          => $_REQUEST['value']);
+                                  'value'          => $_POST['value']);
                   $display = $function($params);
                }
             }
@@ -142,7 +140,7 @@ if (isset($_REQUEST['searchtype'])) {
    // Default case : text field
    if (!$display) {
         echo "<input type='text' size='13' name='$inputname' value=\"".
-               Html::cleanInputText($_REQUEST['value'])."\">";
+               Html::cleanInputText($_POST['value'])."\">";
    }
 }
 ?>

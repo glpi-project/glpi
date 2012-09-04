@@ -42,7 +42,7 @@ Session::setPath();
 Session::start();
 
 // Manage tabs
-if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-   Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
+if (isset($_GET['glpi_tab']) && isset($_GET['itemtype'])) {
+   Session::setActiveTab($_GET['itemtype'], $_GET['glpi_tab']);
 }
 ?>

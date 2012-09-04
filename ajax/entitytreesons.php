@@ -42,7 +42,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['node'])) {
+if (isset($_POST['node'])) {
 
    if ($_SESSION['glpiactiveprofile']['interface']=='helpdesk') {
       $target = "helpdesk.public.php";
@@ -56,7 +56,7 @@ if (isset($_REQUEST['node'])) {
    $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
    // Root node
-   if ($_REQUEST['node'] == -1) {
+   if ($_POST['node'] == -1) {
       $pos = 0;
 
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
@@ -95,7 +95,7 @@ if (isset($_REQUEST['node'])) {
    } else { // standard node
       $query = "SELECT *
                 FROM `glpi_entities`
-                WHERE `entities_id` = '".$_REQUEST['node']."'
+                WHERE `entities_id` = '".$_POST['node']."'
                 ORDER BY `name`";
 
       if ($result=$DB->query($query)) {

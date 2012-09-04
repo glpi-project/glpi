@@ -42,33 +42,33 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST["table"])
-    && isset($_REQUEST["value"])) {
+if (isset($_POST["table"])
+    && isset($_POST["value"])) {
    // Security
-   if (!TableExists($_REQUEST['table']) ) {
+   if (!TableExists($_POST['table']) ) {
       exit();
    }
 
-   switch ($_REQUEST["table"]) {
+   switch ($_POST["table"]) {
       case "glpi_users" :
-         if ($_REQUEST['value'] == 0) {
+         if ($_POST['value'] == 0) {
             $tmpname['link']    = $CFG_GLPI['root_doc']."/front/user.php";
             $tmpname['comment'] = "";
          } else {
-            $tmpname = getUserName($_REQUEST["value"],2);
+            $tmpname = getUserName($_POST["value"],2);
          }
          echo $tmpname["comment"];
 
-         if (isset($_REQUEST['withlink'])) {
+         if (isset($_POST['withlink'])) {
             echo "<script type='text/javascript' >\n";
-            echo "Ext.get('".$_REQUEST['withlink']."').dom.href='".$tmpname['link']."';";
+            echo "Ext.get('".$_POST['withlink']."').dom.href='".$tmpname['link']."';";
             echo "</script>\n";
          }
          break;
 
       default :
-         if ($_REQUEST["value"]>0) {
-            $tmpname = Dropdown::getDropdownName($_REQUEST["table"], $_REQUEST["value"], 1);
+         if ($_POST["value"]>0) {
+            $tmpname = Dropdown::getDropdownName($_POST["table"], $_POST["value"], 1);
             echo $tmpname["comment"];
          }
    }

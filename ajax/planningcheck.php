@@ -42,10 +42,10 @@ if (strpos($_SERVER['PHP_SELF'],"planningcheck.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['users_id']) && ($_REQUEST['users_id'] > 0)) {
+if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
    echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"].
          "/front/planning.php?checkavailability=checkavailability&amp;users_id=".
-         $_REQUEST['users_id']."','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\"
+         $_POST['users_id']."','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\"
          style='cursor:pointer'>
          <img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\"
          alt=\"".__s('Availability')."\" title=\"".__s('Availability')."\">
