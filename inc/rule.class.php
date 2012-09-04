@@ -160,12 +160,12 @@ class Rule extends CommonDBTM {
             echo "<option value='before'>".__('Before')."</option>";
             echo "</select>&nbsp;";
 
-            if (isset($_POST['entity_restrict'])) {
-               $condition = $_POST['entity_restrict'];
+            if (isset($input['entity_restrict'])) {
+               $condition = $input['entity_restrict'];
             } else {
                $condition = "";
             }
-            Rule::dropdown(array('sub_type'        => $_POST['itemtype'],
+            Rule::dropdown(array('sub_type'        => $input['itemtype'],
                                  'name'            => "ranking",
                                  'entity_restrict' => $condition));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".

@@ -66,6 +66,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = _n('License', 'Licenses', 1);
       $tab[4]['datatype']        = 'dropdown';
+      $tab[4]['massiveaction']   = false;
 
       $tab[5]['table']           = 'glpi_computers';
       $tab[5]['field']           = 'name';
@@ -76,6 +77,67 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       return $tab;
    }
    
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "move_license" :
+            if (isset($input['options'])) {
+               $input['options'] = unserialize(stripslashes($input['options']));
+               if (isset($input['options']['move'])) {
+
+                     SoftwareLicense::dropdown(array('condition' => "`glpi_softwarelicenses`.`softwares_id`
+                                                                     = '".$input['options']['move']['softwares_id']."'",
+                                                   'used'      => $input['options']['move']['used']));
+                     echo "<br><br><input type='submit' name='massiveaction' value=\"".
+                           _sx('button','Move')."\" class='submit'>&nbsp;";
+                  return true;
+               }
+            }
+            return false;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+
+      }
+      return false;
+   }
+
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+
+         case "move_license" :
+            if (isset($input['softwarelicenses_id'])){
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     $params = array();
+                     //Get software name and manufacturer
+                     if ($this->can($key,'w')) {
+                        //Process rules
+                        if ($this->update(array('id' => $key,
+                                             'softwarelicenses_id' => $input['softwarelicenses_id']))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }   
    /**
     * Get number of installed licenses of a license
     *
@@ -313,14 +375,16 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit']);
+               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
+                                 'specific_actions' => array('move_license' => __('Move'),
+                                                             'purge' => _x('button', 'Purge')));
                // Options to update license
-               $paramsma['extraparams']['options']['used'] = array($searchID);
-               $paramsma['extraparams']['options']['condition'] = "`glpi_softwarelicenses`.`softwares_id` =".
-                                                       " '".$license->fields['softwares_id']."'";
+               $paramsma['extraparams']['options']['move']['used'] = array($searchID);
+               $paramsma['extraparams']['options']['move']['softwares_id'] = $license->fields['softwares_id'];
 
                Html::showMassiveActions(__CLASS__, $paramsma);
             }
+            
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
