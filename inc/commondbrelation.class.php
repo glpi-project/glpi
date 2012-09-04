@@ -262,7 +262,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                 static::$itemtype_2, static::$items_id_2)) {
          return false;
       }
-
       return true;
    }
 

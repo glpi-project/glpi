@@ -88,32 +88,32 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
-} else if (isset($_REQUEST['delete_user'])) {
+} else if (isset($_POST['delete_user'])) {
    $change_user = new Change_User();
-   $change_user->check($_REQUEST['id'], 'd');
-   $change_user->delete($_REQUEST);
+   $change_user->check($_POST['id'], 'd');
+   $change_user->delete($_POST);
 
-   Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
+   Event::log($_POST['changes_id'], "change", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
 
-} else if (isset($_REQUEST['delete_group'])) {
+} else if (isset($_POST['delete_group'])) {
    $change_group = new Change_Group();
-   $change_group->check($_REQUEST['id'], 'd');
-   $change_group->delete($_REQUEST);
+   $change_group->check($_POST['id'], 'd');
+   $change_group->delete($_POST);
 
-   Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
+   Event::log($_POST['changes_id'], "change", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
 
-} else if (isset($_REQUEST['delete_supplier'])) {
+} else if (isset($_POST['delete_supplier'])) {
    $change_supplier = new Change_Supplier();
-   $change_supplier->check($_REQUEST['id'], 'd');
-   $change_supplier->delete($_REQUEST);
+   $change_supplier->check($_POST['id'], 'd');
+   $change_supplier->delete($_POST);
 
-   Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
+   Event::log($_POST['changes_id'], "change", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
 
 } else {
    Html::header(Change::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "change");
