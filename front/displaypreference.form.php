@@ -63,6 +63,7 @@ if (isset($_POST["activate"])) {
 
 } 
 
+// Datas may come from GET or POST : use REQUEST
 if ((strpos($_SERVER['PHP_SELF'],"popup")
     && $_REQUEST["itemtype"])) {
    $setupdisplay->showTabs(array('displaytype' => $_REQUEST['itemtype']));

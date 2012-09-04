@@ -1914,11 +1914,11 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $group->getLink($showgrouplink);
             }
             if ($canedit) {
-               echo "&nbsp;<a href='".$this->getFormURL()."?delete_group=delete_group&amp;id=".
-                     $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-                     "' title=\"".__s('Delete')."\">
-                     <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                      alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
+               echo "&nbsp;";
+               Html::showSimpleForm($this->getFormURL(), 'delete_group', __s('Delete'),
+                                    array('id'=>$d['id'],
+                                          $this->getForeignKeyField() => $this->fields['id']),
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png");            
             }
             echo '<br>';
          }
@@ -1954,11 +1954,11 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $supplier->getLink($showsupplierlink);
             }
             if ($canedit) {
-               echo "&nbsp;<a href='".$this->getFormURL()."?delete_supplier=delete_supplier&amp;id=".
-                            $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-                            "' title=\"".__s('Delete')."\">
-                            <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                             alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
+               echo "&nbsp;";
+               Html::showSimpleForm($this->getFormURL(), 'delete_supplier', __s('Delete'),
+                                    array('id'=>$d['id'],
+                                          $this->getForeignKeyField() => $this->fields['id']),
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo '<br>';
          }
@@ -2422,11 +2422,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                     array('id'=>$d['id'],
                                           $this->getForeignKeyField() => $this->fields['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
-//                "<a href='".$this->getFormURL()."?delete_user=delete_user&amp;id=".
-//                      $d['id']. "&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-//                      "' title=\"".__s('Delete')."\">
-//                      <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-//                       alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
             }
             echo "<br>";
 

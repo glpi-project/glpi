@@ -39,10 +39,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("software", "w");
 $csl = new Computer_SoftwareLicense();
 
-if (isset($_REQUEST["add"])) {
-   if ($_REQUEST['softwarelicenses_id'] > 0 ) {
-      $csl->add($_REQUEST);
-      Event::log($_REQUEST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
+if (isset($_POST["add"])) {
+   if ($_POST['softwarelicenses_id'] > 0 ) {
+      $csl->add($_POST);
+      Event::log($_POST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s associates a computer and a license'), $_SESSION["glpiname"]));
 

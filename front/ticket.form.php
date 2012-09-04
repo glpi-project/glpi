@@ -42,7 +42,7 @@ $track = new Ticket();
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
-print_r($_POST);
+
 if (isset($_POST["add"])) {
    $track->check(-1,'w',$_POST);
 
@@ -133,33 +133,33 @@ if (isset($_POST["add"])) {
               sprintf(__('%s deletes link between tickets'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
-} else if (isset($_REQUEST['delete_user'])) {
+} else if (isset($_POST['delete_user'])) {
    $ticket_user = new Ticket_User();
-   $ticket_user->check($_REQUEST['id'], 'd');
-   $ticket_user->delete($_REQUEST);
+   $ticket_user->check($_POST['id'], 'd');
+   $ticket_user->delete($_POST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 
-} else if (isset($_REQUEST['delete_group'])) {
+} else if (isset($_POST['delete_group'])) {
    $group_ticket = new Group_Ticket();
-   $group_ticket->check($_REQUEST['id'], 'd');
-   $group_ticket->delete($_REQUEST);
+   $group_ticket->check($_POST['id'], 'd');
+   $group_ticket->delete($_POST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 
-} else if (isset($_REQUEST['delete_supplier'])) {
+} else if (isset($_POST['delete_supplier'])) {
    $supplier_ticket = new Supplier_Ticket();
-   $supplier_ticket->check($_REQUEST['id'], 'd');
-   $supplier_ticket->delete($_REQUEST);
+   $supplier_ticket->check($_POST['id'], 'd');
+   $supplier_ticket->delete($_POST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 
 } else if (isset($_REQUEST['addme_observer'])) {
    $ticket_user = new Ticket_User();

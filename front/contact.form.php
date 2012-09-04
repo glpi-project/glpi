@@ -45,7 +45,7 @@ if (empty($_GET["id"])) {
 $contact         = new Contact();
 $contactsupplier = new Contact_Supplier();
 
-if (isset($_REQUEST['getvcard'])) {
+if (isset($_GET['getvcard'])) {
    if ($_GET["id"] < 0) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/contact.php");
    }
