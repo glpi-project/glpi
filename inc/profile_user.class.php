@@ -266,8 +266,6 @@ class Profile_User extends CommonDBRelation {
       $rand        = mt_rand();
 
       if ($canedit) {
-         echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
-         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          $headerspan = $nb_per_line*2;
       } else {
          $headerspan = $nb_per_line;
@@ -275,6 +273,8 @@ class Profile_User extends CommonDBRelation {
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
+         echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
          echo "<tr><td class='tab_bg_2 center'>".__('User')."&nbsp;";
@@ -287,13 +287,10 @@ class Profile_User extends CommonDBRelation {
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
-         echo "</table></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
-
-      echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
-                                                    __('D=Dynamic, R=Recursive'))."</th></tr>";
 
       $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
                 FROM `glpi_profiles_users`
@@ -304,7 +301,23 @@ class Profile_User extends CommonDBRelation {
                      AND `glpi_users`.`is_deleted` = '0'";
 
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
+      $nb = $DB->numrows($result);
+      
+      echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('specific_actions' => array('purge' => _x('button', 'Purge')));
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+
+      echo "<th colspan='$headerspan'>".
+            sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
+                                       __('D=Dynamic, R=Recursive'))."</th></tr>";
+
+
+      if ($nb) {
 
          Session::initNavigateListItems('User',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
@@ -312,10 +325,19 @@ class Profile_User extends CommonDBRelation {
                                                 $entity->getName()));
 
          while ($data = $DB->fetch_assoc($result)) {
-            echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s: %2$s'), __('Profile'),
+            echo "<tr>";
+            $reduce_header = 0;
+            if ($canedit && $nb) {
+               echo "<th width='10'>";
+               echo Html::checkAllAsCheckbox("profile".$data['id']."_$rand");
+               echo "</th>";
+               $reduce_header++;
+            }
+            echo "<th colspan='".($headerspan-$reduce_header)."'>".sprintf(__('%1$s: %2$s'), __('Profile'),
                                                           $data["name"]);
             echo "</th></tr>";
-
+            echo "<tbody id='profile".$data['id']."_$rand'>";
+            
             $query = "SELECT `glpi_users`.*,
                              `glpi_profiles_users`.`id` AS linkID,
                              `glpi_profiles_users`.`is_recursive`,
@@ -378,17 +400,16 @@ class Profile_User extends CommonDBRelation {
                   $i++;
                }
                echo "</tr>";
-
+               echo "</tbody>";
             } else {
                echo "<tr colspan='$headerspan'>".__('Item not found')."</tr>";
             }
          }
       }
       echo "</table>";
-
-      if ($canedit) {
-         Html::openArrowMassives("entityuser_form$rand", true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+      if ($canedit && $nb) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
       echo "</div>";
