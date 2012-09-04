@@ -2244,10 +2244,11 @@ class AuthLDAP extends CommonDBTM {
       $user_dn  = $auth->connection_ldap($ldap_method, $login, $password);
       error_reporting($oldlevel);
 
-      $auth->auth_succeded            = true;
+      $auth->auth_succeded            = false;
       $auth->extauth                  = 1;
 
       if ($user_dn) {
+         $auth->auth_succeded            = true;
          //There's already an existing user in DB with the same DN but its login field has changed
          if ($auth->user->getFromDBbyDn($user_dn)) {
             //Change user login
