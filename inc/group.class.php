@@ -728,15 +728,6 @@ class Group extends CommonTreeDropdown {
       Html::showMassiveActions(__CLASS__, $paramsma);
       Html::closeForm();
          
-//       if ($nbcan) {
-//          Html::openArrowMassives("group_form_$field$rand", true);
-//          echo __('Group')."&nbsp;";
-//          self::dropdown(array('entity'    => $this->fields["entities_id"],
-//                               'used'      => array($this->fields["id"]),
-//                               'condition' => ($tech ? '`is_assign`' : '`is_itemgroup`')));
-//          echo "&nbsp;";
-//          Html::closeArrowMassives(array('changegroup' => __('Move')));
-//       }
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
       }

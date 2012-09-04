@@ -60,8 +60,42 @@ class DisplayPreference extends CommonDBTM {
 
       return $input;
    }
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
 
+         case "delete_for_user" :
+            if (isset($input['users_id'])){
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     //Get software name and manufacturer
+                     if ($input['users_id'] == Session::getLoginUserID()) {
+                        //Process rules
+                        if ($this->deleteByCriteria(array('users_id' => $input['users_id'],
+                                                          'itemtype' => $key))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
 
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+
+   
    /**
     * Get display preference for a user for an itemtype
     *
@@ -548,13 +582,23 @@ class DisplayPreference extends CommonDBTM {
 
       $req = $DB->request($query);
       if ($req->numrows() > 0) {
-         echo "<form name='formprefs' id='formprefs' action='$url' method='post'>";
+         $rand = mt_rand();
+         echo "<div class='spaced'>";
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('width'=>400, 'height' => 200,
+                  'specific_actions' => array('delete_for_user' => _x('button', 'Delete')));
+
+         Html::showMassiveActions(__CLASS__, $paramsma);
          echo "<input type='hidden' name='users_id' value='$users_id'>";
          echo "<table class='tab_cadre_fixe'>";
-
+         echo "<tr>";
+         echo "<th width='10'>";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+         echo "<th colspan='2'>".__('Type')."</th></tr>";
          foreach ($req as $data) {
             echo "<tr class='tab_bg_1'><td width='10'>";
-            echo "<input  type='checkbox' name='itemtype[".$data["itemtype"]."]' value='1'></td>";
+            echo "<input  type='checkbox' name='item[".$data["itemtype"]."]' value='1'></td>";
             if ($item = getItemForItemtype($data["itemtype"])) {
                $name = $item->getTypeName(1);
             } else {
@@ -564,9 +608,10 @@ class DisplayPreference extends CommonDBTM {
             echo "</tr>";
          }
          echo "</table>";
-         Html::openArrowMassives('formprefs', true);
-         Html::closeArrowMassives(array('delete_for_user' => __('Delete')));
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
+         echo "</div>";
 
       } else {
          echo "<table class='tab_cadre_fixe'>";
