@@ -68,11 +68,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
-   $problem->check($_REQUEST["id"], 'd');
+} else if (isset($_POST["purge"])) {
+   $problem->check($_POST["id"], 'd');
 
-   $problem->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "problem", 4, "maintain",
+   $problem->delete($_POST,1);
+   Event::log($_POST["id"], "problem", 4, "maintain",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $problem->redirectToList();

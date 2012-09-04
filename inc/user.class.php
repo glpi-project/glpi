@@ -3266,7 +3266,7 @@ class User extends CommonDBTM {
       }
 
       echo "<br>";
-      Html::displayBackLink();
+      echo "<a href='".$CFG_GLPI['root_doc']."'>".__('Back')."</a>";
       echo "</div>";
    }
 

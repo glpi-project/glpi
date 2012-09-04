@@ -65,11 +65,11 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"]) || isset($_POST['remove_alias'])) {
-   $alias->check($_REQUEST["id"],'d');
-   $alias->delete($_REQUEST, 1);
+   $alias->check($_POST["id"],'d');
+   $alias->delete($_POST, 1);
    Ajax::refreshPopupMainWindow();
 
-   Event::log($_REQUEST["id"], $alias->getType(), 4, "setup",
+   Event::log($_POST["id"], $alias->getType(), 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    if (isset($_POST['remove_alias'])) {

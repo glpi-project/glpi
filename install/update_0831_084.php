@@ -2012,6 +2012,7 @@ function update0831to084() {
    $DB->query($query);
 
 
+   $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

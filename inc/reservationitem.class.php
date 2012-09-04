@@ -37,12 +37,33 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Reservation item class
-class ReservationItem extends CommonDBTM {
+class ReservationItem extends CommonDBChild {
 
+   /// From CommonDBChild
+   static public $itemtype = 'itemtype'; 
+   static public $items_id = 'items_id'; 
+
+   static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+   
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
    }
 
+   static function canCreate() {
+      return $this->canUpdate();
+   }
+
+   static function canView() {
+      return true;
+   }
+
+   static function canUpdate() {
+      return Session::haveRight("reservation_central", "w");
+   }
+
+   static function canDelete() {
+      return $this->canUpdate();
+   }
 
    // From CommonDBTM
    /**
@@ -93,6 +114,11 @@ class ReservationItem extends CommonDBTM {
       $tab[4]['name']            = __('Comments');
       $tab[4]['datatype']        = 'text';
 
+      $tab[5]['table']          = $this->getTable();
+      $tab[5]['field']          = 'is_active';
+      $tab[5]['name']           = __('Active');
+      $tab[5]['datatype']       = 'bool';
+
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = 'reservation_types';
@@ -120,11 +146,13 @@ class ReservationItem extends CommonDBTM {
       $tab[70]['name']           = __('User');
       $tab[70]['datatype']       = 'dropdown';
       $tab[70]['right']          = 'all';
+      $tab[70]['massiveaction']   = false;
 
       $tab[71]['table']          = 'glpi_groups';
       $tab[71]['field']          = 'completename';
       $tab[71]['name']           = __('Group');
       $tab[71]['datatype']       = 'dropdown';
+      $tab[71]['massiveaction']   = false;
 
       $tab[19]['table']          = 'reservation_types';
       $tab[19]['field']          = 'date_mod';
@@ -136,6 +164,7 @@ class ReservationItem extends CommonDBTM {
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
       $tab[23]['datatype']       = 'dropdown';
+      $tab[23]['massiveaction']   = false;
 
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
@@ -143,12 +172,14 @@ class ReservationItem extends CommonDBTM {
       $tab[24]['name']           = __('Technician in charge of the hardware');
       $tab[24]['datatype']       = 'dropdown';
       $tab[24]['right']          = 'interface';
+      $tab[24]['massiveaction']   = false;
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
       $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['massiveaction']   = false;
 
       return $tab;
    }
@@ -271,7 +302,8 @@ class ReservationItem extends CommonDBTM {
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
 
-      echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
+      // GET method passed to form creation
+      echo "<div class='center'><form name='form' method='GET' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
       echo "<tr><th colspan='".($showentity?"5":"4")."'>".self::getTypeName(1)."</th></tr>\n";
 
@@ -335,7 +367,7 @@ class ReservationItem extends CommonDBTM {
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";
-      Html::closeForm();
+      echo "</form>";// No CSRF token needed
       echo "</div>\n";
    }
 

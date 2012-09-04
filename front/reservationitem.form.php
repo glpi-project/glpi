@@ -40,45 +40,46 @@ Session::checkRight("reservation_central", "w");
 
 $ri = new ReservationItem();
 
-if (isset($_REQUEST["add"])) {
-   if ($newID = $ri->add($_REQUEST)) {
+if (isset($_POST["add"])) {
+   $ri->check(-1, 'w', $_POST);
+   if ($newID = $ri->add($_POST)) {
       Event::log($newID, "reservationitem", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s (%3$d)'), $_SESSION["glpiname"],
-                         $_REQUEST["itemtype"], $_REQUEST["items_id"]));
+                         $_POST["itemtype"], $_POST["items_id"]));
    }
    Html::back();
 
-} else if (isset($_REQUEST["delete"])) {
-   $ri->delete($_REQUEST);
+} else if (isset($_POST["delete"])) {
+   $ri->check($_POST["id"], 'd');
+   $ri->delete($_POST);
 
-   Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
+   Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_REQUEST["purge"])) {
-   $ri->delete($_REQUEST, 1);
+} else if (isset($_POST["purge"])) {
+   $ri->check($_POST["id"], 'd');
+   $ri->delete($_POST, 1);
 
-   Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
+   Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_REQUEST["restore"])) {
-   $ri->restore($_REQUEST);
+} else if (isset($_POST["restore"])) {
+   $ri->check($_POST["id"], 'd');
+   $ri->restore($_POST);
 
-   Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
+   Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s retores an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_REQUEST["update"])) {
-   // from reservation form
-   if (isset($_POST["id"])) {
-      $_REQUEST = $_POST;
-   } // else from object from
-   $ri->update($_REQUEST);
-   Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
+} else if (isset($_POST["update"])) {
+   $ri->check($_POST["id"], 'w');
+   $ri->update($_POST);
+   Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
