@@ -43,13 +43,13 @@ if (strpos($_SERVER['PHP_SELF'],"ticketassigninformation.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
+if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
    $options2['field'][0]      = 5; // users_id assign
    $options2['searchtype'][0] = 'equals';
-   $options2['contains'][0]   = $_REQUEST['users_id_assign'];
+   $options2['contains'][0]   = $_POST['users_id_assign'];
    $options2['link'][0]       = 'AND';
 
    $options2['field'][1]      = 12; // status
@@ -64,15 +64,15 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
    //TRANS: %d is number of objects for the user
    echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
    printf(__('%1$s: %2$s'), __('Processing'),
-          $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']));
+          $ticket->countActiveObjectsForTech($_POST['users_id_assign']));
    echo ")</a>";
 
-} else if (isset($_REQUEST['groups_id_assign']) && ($_REQUEST['groups_id_assign'] > 0)) {
+} else if (isset($_POST['groups_id_assign']) && ($_POST['groups_id_assign'] > 0)) {
    $ticket = new Ticket();
 
    $options2['field'][0]      = 8; // groups_id assign
    $options2['searchtype'][0] = 'equals';
-   $options2['contains'][0]   = $_REQUEST['groups_id_assign'];
+   $options2['contains'][0]   = $_POST['groups_id_assign'];
    $options2['link'][0]       = 'AND';
 
    $options2['field'][1]      = 12; // status
@@ -86,7 +86,7 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
 
    echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
    printf(__('%1$s: %2$s'), __('Processing'),
-          $ticket->countActiveObjectsForTechGroup($_REQUEST['groups_id_assign']));
+          $ticket->countActiveObjectsForTechGroup($_POST['groups_id_assign']));
    echo ")</a>";
 }
 ?>

@@ -395,7 +395,8 @@ class Planning extends CommonGLPI {
       $realbegin = $begin." ".$CFG_GLPI["planning_begin"];
       $realend   = $end." ".$CFG_GLPI["planning_end"];
 
-      echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
+      // Use get method to check availability
+      echo "<div class='center'><form method='GET' name='form' action='planning.php'>\n";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".__('Availability')."</th>";
       echo "<th colspan='3'>".getUserName($who)."</th></tr>";
@@ -448,9 +449,8 @@ class Planning extends CommonGLPI {
 
       for ($i=$begin_hour ; $i<$end_hour ; $i++) {
          $from = ($i<10?'0':'').$i;
-         $to   = ((($i+1) < 10)?'0':'').($i+1);
-         echo "<th width='$colsize%' colspan='4'>".sprintf(__('From %1$s to %2$s'), $from, $to).
-              "<th>";
+//          $to   = ((($i+1) < 10)?'0':'').($i+1);
+         echo "<th width='$colsize%' colspan='4'>".$from.":00</th>";
          $colnumber += 4;
       }
       echo "</tr>";

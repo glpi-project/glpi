@@ -43,14 +43,14 @@ if (strpos($_SERVER['PHP_SELF'],"visibility.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
-    && isset($_REQUEST['right'])) {
+if (isset($_POST['type']) && !empty($_POST['type'])
+    && isset($_POST['right'])) {
    $display = false;
    $rand    = mt_rand();
 
-   switch ($_REQUEST['type']) {
+   switch ($_POST['type']) {
       case 'User' :
-         User::dropdown(array('right' => $_REQUEST['right']));
+         User::dropdown(array('right' => $_POST['right']));
          $display = true;
          break;
 
@@ -61,7 +61,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
                                      'to_update'  => "subvisibility$rand",
                                      'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
                                      'moreparams' => array('items_id' => '__VALUE__',
-                                                           'type'     => $_REQUEST['type']));
+                                                           'type'     => $_POST['type']));
 
          Group::dropdown($params);
 
@@ -83,13 +83,13 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
 
       case 'Profile' :
          $params             = array('rand'      => $rand,
-                                     'condition' => "`".$_REQUEST['right']."` IN ('r','w')");
+                                     'condition' => "`".$_POST['right']."` IN ('r','w')");
          $params['toupdate'] = array('value_fieldname'
                                                   => 'value',
                                      'to_update'  => "subvisibility$rand",
                                      'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
                                      'moreparams' => array('items_id' => '__VALUE__',
-                                                           'type'     => $_REQUEST['type']));
+                                                           'type'     => $_POST['type']));
 
          Profile::dropdown($params);
 

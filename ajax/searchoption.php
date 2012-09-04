@@ -89,14 +89,9 @@ if (isset($_POST["itemtype"])
    }
    echo "</td><td>";
    echo "<span id='span$dropdownname'>\n";
-
-   $_REQUEST['searchtype'] = $_POST["searchtype"];
-   $_REQUEST['field']      = $_POST["field"];
-   $_REQUEST['itemtype']   = $_POST["itemtype"];
-   $_REQUEST['num']        = $_POST["num"];
-   $_REQUEST['value']      = stripslashes($_POST['value']);
-   $_REQUEST['meta']       = $_POST['meta'];
-   $_REQUEST['searchopt']  = serialize($searchopt);
+   
+   $_POST['value']      = stripslashes($_POST['value']);
+   $_POST['searchopt']  = serialize($searchopt);
 
    include(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";
@@ -106,7 +101,7 @@ if (isset($_POST["itemtype"])
                          'field'      => $_POST["field"],
                          'itemtype'   => $_POST["itemtype"],
                          'num'        => $_POST["num"],
-                         'value'      => rawurlencode(stripslashes($_POST['value'])),
+                         'value'      => rawurlencode($_POST['value']),
                          'searchopt'  => $searchopt,
                          'meta'       => $_POST['meta']);
 

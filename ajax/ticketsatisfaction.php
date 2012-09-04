@@ -44,20 +44,20 @@ if (strpos($_SERVER['PHP_SELF'],"ticketsatisfaction.php")) {
 
 $entity = new Entity();
 
-if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
-   if ($entity->getFromDB($_REQUEST['entities_id'])) {
+if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
+   if ($entity->getFromDB($_POST['entities_id'])) {
       $inquest_config = $entity->getfield('inquest_config');
       $inquest_delay  = $entity->getfield('inquest_delay');
       $inquest_rate   = $entity->getfield('inquest_rate');
       $max_closedate  = $entity->getfield('max_closedate');
    } else {
-      $inquest_config = $_REQUEST['inquest_config'];
+      $inquest_config = $_POST['inquest_config'];
       $inquest_delay  = -1;
       $inquest_rate   = -1;
       $max_closedate  = '';
    }
 
-   if ($_REQUEST['inquest_config']>0 ) {
+   if ($_POST['inquest_config']>0 ) {
       echo "<table class='tab_cadre_fixe' width='50%'>";
       echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after')."</td>";
       echo "<td>";
@@ -79,7 +79,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
          echo "<td colspan='1'>" . Html::convDateTime($max_closedate)."</td></tr>";
       }
 
-      if ($_REQUEST['inquest_config'] == 2) {
+      if ($_POST['inquest_config'] == 2) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Valid tags')."</td><td>".
                "[TICKET_ID] [TICKET_NAME] [TICKET_CREATEDATE] [TICKET_SOLVEDATE] ".
