@@ -2745,12 +2745,10 @@ abstract class CommonITILObject extends CommonDBTM {
                  && !$this->isUser(self::OBSERVER, Session::getLoginUserID())
                  && !$this->isUser(self::REQUESTER, Session::getLoginUserID())) {
          echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"].
-               "/front/ticket.form.php?addme_observer=addme_observer".
-               "&amp;tickets_id=".$this->fields['id']."' title=\"".
-               __s('Associate myself with this ticket')."\">".
-               __('Associate myself with this ticket')."</a>";
+         Html::showSimpleForm($this->getFormURL(), 'addme_observer', __('Associate myself with this ticket'),
+                           array('tickets_id' => $this->fields['id']));
       }
+
       echo "</th>";
 
       echo "<th width='29%'>";

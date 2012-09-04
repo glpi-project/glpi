@@ -39,39 +39,39 @@ Html::header(__('Statistics'), '', "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
-if (!$item = getItemForItemtype($_REQUEST['itemtype'])) {
+if (!$item = getItemForItemtype($_GET['itemtype'])) {
    exit;
 }
 
-if (empty($_REQUEST["type"])) {
-   $_REQUEST["type"] = "user";
+if (empty($_GET["type"])) {
+   $_GET["type"] = "user";
 }
 
-if (empty($_REQUEST["showgraph"])) {
-   $_REQUEST["showgraph"] = 0;
+if (empty($_GET["showgraph"])) {
+   $_GET["showgraph"] = 0;
 }
 
-if (empty($_REQUEST["value2"])) {
-   $_REQUEST["value2"] = 0;
+if (empty($_GET["value2"])) {
+   $_GET["value2"] = 0;
 }
 
-if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
+if (empty($_GET["date1"]) && empty($_GET["date2"])) {
    $year              = date("Y")-1;
-   $_REQUEST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
-   $_REQUEST["date2"] = date("Y-m-d");
+   $_GET["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $_GET["date2"] = date("Y-m-d");
 }
 
-if (!empty($_REQUEST["date1"])
-    && !empty($_REQUEST["date2"])
-    && (strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0)) {
+if (!empty($_GET["date1"])
+    && !empty($_GET["date2"])
+    && (strcmp($_GET["date2"],$_GET["date1"]) < 0)) {
 
-   $tmp               = $_REQUEST["date1"];
-   $_REQUEST["date1"] = $_REQUEST["date2"];
-   $_REQUEST["date2"] = $tmp;
+   $tmp               = $_GET["date1"];
+   $_GET["date1"] = $_GET["date2"];
+   $_GET["date2"] = $tmp;
 }
 
-if (!isset($_REQUEST["start"])) {
-   $_REQUEST["start"] = 0;
+if (!isset($_GET["start"])) {
+   $_GET["start"] = 0;
 }
 
 Stat::title();
@@ -90,7 +90,7 @@ $caract    = array('itilcategories_id'   => array('title' => __('Category')),
                    'priority'            => array('title' => __('Priority')),
                    'solutiontypes_id'    => array('title' => __('Solution type')));
 
-if ($_REQUEST['itemtype'] == 'Ticket') {
+if ($_GET['itemtype'] == 'Ticket') {
    $caract['type']            = array('title' => __('Type'));
    $caract['requesttypes_id'] = array('title' => __('Request source'));
    $caract['locations_id']    = array('title' => __('Location'));
@@ -115,7 +115,7 @@ $INSELECT = "";
 foreach ($items as $label => $tab) {
    $INSELECT .= "<optgroup label=\"$label\">";
    foreach ($tab as $key => $val) {
-      $INSELECT .= "<option value='$key' ".($key==$_REQUEST["type"]?"selected":"").">".$val['title'].
+      $INSELECT .= "<option value='$key' ".($key==$_GET["type"]?"selected":"").">".$val['title'].
                    "</option>";
    }
    $INSELECT .= "</optgroup>";
@@ -126,45 +126,46 @@ echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td rowspan='2' class='center'>";
 echo "<select name='type'>".$INSELECT."</select></td>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateFormItem("date1", $_REQUEST["date1"]);
+Html::showDateFormItem("date1", $_GET["date1"]);
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"". $_REQUEST["itemtype"] ."\">";
+echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
 echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2", $_REQUEST["date2"]);
+Html::showDateFormItem("date2", $_GET["date2"]);
 echo "</td><td class='center'>";
-echo "<input type='hidden' name='value2' value='".$_REQUEST["value2"]."'>";
-Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
+echo "<input type='hidden' name='value2' value='".$_GET["value2"]."'>";
+Dropdown::showYesNo('showgraph', $_GET['showgraph']);
 echo "</td></tr>";
 echo "</table>";
-Html::closeForm();
+// form using GET method : CRSF not needed
+echo "</form>";
 echo "</div>";
 
-$val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                         $_REQUEST["type"], $_REQUEST["value2"]);
-$params = array('type'   => $_REQUEST["type"],
-                'date1'  => $_REQUEST["date1"],
-                'date2'  => $_REQUEST["date2"],
-                'value2' => $_REQUEST["value2"],
-                'start'  => $_REQUEST["start"]);
+$val    = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                         $_GET["type"], $_GET["value2"]);
+$params = array('type'   => $_GET["type"],
+                'date1'  => $_GET["date1"],
+                'date2'  => $_GET["date2"],
+                'value2' => $_GET["value2"],
+                'start'  => $_GET["start"]);
 
-Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
-                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
-                     "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"].
-                     "&amp;itemtype=".$_REQUEST["itemtype"]."&amp;value2=".$_REQUEST['value2'],
+Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
+                 "date1=".$_GET["date1"]."&amp;date2=".$_GET["date2"].
+                     "&amp;type=".$_GET["type"]."&amp;showgraph=".$_GET["showgraph"].
+                     "&amp;itemtype=".$_GET["itemtype"]."&amp;value2=".$_GET['value2'],
                  'Stat', $params);
 
-if (!$_REQUEST['showgraph']) {
-   Stat::show($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],
-              $_REQUEST['start'], $val, $_REQUEST['value2']);
+if (!$_GET['showgraph']) {
+   Stat::show($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"],
+              $_GET['start'], $val, $_GET['value2']);
 
 } else {
-   $data = Stat::getDatas($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"],
-                          $_REQUEST["date2"], $_REQUEST['start'], $val, $_REQUEST['value2']);
+   $data = Stat::getDatas($_GET["itemtype"], $_GET["type"], $_GET["date1"],
+                          $_GET["date2"], $_GET['start'], $val, $_GET['value2']);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {
@@ -216,7 +217,7 @@ if (!$_REQUEST['showgraph']) {
                             'type'      => 'pie'));
    }
 
-   if ($_REQUEST['itemtype'] == 'Ticket') {
+   if ($_GET['itemtype'] == 'Ticket') {
       if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
          foreach ($data['opensatisfaction'] as $key => $val) {
             $newkey             = Html::clean($key);
