@@ -3612,7 +3612,7 @@ class CommonDBTM extends CommonGLPI {
                      $where .= " AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
                   }
 
-                  if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
+                  if (countElementsInTable($this->getTable(),"1 $where $where_global") > 0) {
                      if ($p['unicity_error_message']
                          || $p['add_event_on_duplicate']) {
                         $message = array();
