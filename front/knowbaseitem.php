@@ -45,25 +45,25 @@ if (isset($_GET["id"])) {
 Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
 
 // Search a solution
-if (!isset($_REQUEST["contains"])
-    && isset($_REQUEST["item_itemtype"])
-    && isset($_REQUEST["item_items_id"])) {
+if (!isset($_GET["contains"])
+    && isset($_GET["item_itemtype"])
+    && isset($_GET["item_items_id"])) {
 
-   if ($item = getItemForItemtype($_REQUEST["item_itemtype"])) {
-      if ($item->getFromDB($_REQUEST["item_items_id"])) {
-         $_REQUEST["contains"] = addslashes($item->getField('name'));
+   if ($item = getItemForItemtype($_GET["item_itemtype"])) {
+      if ($item->getFromDB($_GET["item_items_id"])) {
+         $_GET["contains"] = addslashes($item->getField('name'));
       }
    }
 }
 
 // Manage forcetab : non standard system (file name <> class name)
-if (isset($_REQUEST['forcetab'])) {
-   Session::setActiveTab('Knowbase', $_REQUEST['forcetab']);
-   unset($_REQUEST['forcetab']);
+if (isset($_GET['forcetab'])) {
+   Session::setActiveTab('Knowbase', $_GET['forcetab']);
+   unset($_GET['forcetab']);
 }
 
 $kb = new Knowbase();
-$kb->show(Toolbox::addslashes_deep($_REQUEST));
+$kb->show(Toolbox::addslashes_deep($_GET));
 
 
 Html::footer();
