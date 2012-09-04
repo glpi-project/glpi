@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
 // Disconnect a computer from a printer/monitor/phone/peripheral
 } else if (isset($_GET["disconnect"])) {
    $conn = new Computer_Item();
-   $conn->check($_GET["id"], 'w');
+   $conn->check($_GET["id"], 'd');
    $conn->delete($_GET);
    $computer->check($_GET['computers_id'], 'w');
    Event::log($_GET["computers_id"], "computers", 5, "inventory",

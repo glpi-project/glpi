@@ -58,7 +58,7 @@ if (isset($_POST["add_several"])) {
    Html::back();
 
 } else if (isset($_GET["delete"])) {
-   $constype->check($_GET["consumableitems_id"],'w');
+   $con->check($_GET["id"],'d');
 
    if ($con->delete($_GET)) {
       Event::log($_GET["consumableitems_id"], "consumables", 4, "inventory",
@@ -86,7 +86,7 @@ if (isset($_POST["add_several"])) {
    Html::back();
 
 } else if (isset($_GET["restore"])) {
-   $constype->check($_GET["consumableitems_id"],'w');
+   $con->check($_GET["id"],'w');
 
    if ($con->restore($_GET)) {
       Event::log($_GET["consumableitems_id"], "consumables", 5, "inventory",

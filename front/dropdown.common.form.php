@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $dropdown->check($_POST["id"],'w');
+   $dropdown->check($_POST["id"],'d');
    if ($dropdown->isUsed()
        && empty($_POST["forcedelete"])) {
       Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["replace"])) {
-   $dropdown->check($_POST["id"],'w');
+   $dropdown->check($_POST["id"],'d');
    $dropdown->delete($_POST, 1);
    $dropdown->refreshParentInfos();
 

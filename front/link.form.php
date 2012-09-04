@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
-   $link->check($_GET["id"],'w');
+   $link->check($_GET["id"],'d');
    $link->delete($_POST);
    Event::log($_GET["id"], "links", 4, "setup",
               //TRANS: %s is the user login

@@ -84,7 +84,7 @@ if (isset($_POST["update_cart_use"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["cartridgeitems_id"],'w');
+   $cartype->check($_POST["cartridgeitems_id"],'d');
 
    if ($cart->delete($_POST)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
@@ -94,7 +94,7 @@ if (isset($_POST["update_cart_use"])) {
    Html::back();
 
 } else if (isset($_POST["restore"])) {
-   $cartype->check($_POST["cartridgeitems_id"],'w');
+   $cartype->check($_POST["cartridgeitems_id"],'d');
 
    if ($cart->restore($_POST)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 5, "inventory",

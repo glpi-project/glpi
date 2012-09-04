@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $constype->check($_POST["id"],'w');
+   $constype->check($_POST["id"],'d');
 
    if ($constype->delete($_POST)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",
@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $constype->check($_POST["id"],'w');
+   $constype->check($_POST["id"],'d');
 
    if ($constype->restore($_POST)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $constype->check($_POST["id"],'w');
+   $constype->check($_POST["id"],'d');
 
    if ($constype->delete($_POST,1)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",

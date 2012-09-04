@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
 } else if (isset($_POST["delete"])) {
-   $sla->check($_GET["id"], 'w');
+   $sla->check($_GET["id"], 'd');
    $sla->delete($_POST);
 
    Event::log($_GET["id"], "slas", 4, "setup",

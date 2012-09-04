@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["id"],'w');
+   $cartype->check($_POST["id"],'d');
 
    if ($cartype->delete($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $cartype->check($_POST["id"],'w');
+   $cartype->check($_POST["id"],'d');
 
    if ($cartype->restore($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $cartype->check($_POST["id"],'w');
+   $cartype->check($_POST["id"],'d');
 
    if ($cartype->delete($_POST,1)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET["deletetype"])) {
    /// TODO create specific form page
    $cipm = new CartridgeItem_PrinterModel();
-   $cipm->check(-1,'w', $_POST);
+   $cipm->check($_GET['id'],'d');
    if ($cipm->delete($_GET)) {
       Event::log($_GET["cartridgeitems_id"], "cartridges", 4, "inventory",
                  //TRANS: %s is the user login

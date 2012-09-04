@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"], 'w');
+   $disk->check($_POST["id"], 'd');
 
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",

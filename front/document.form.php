@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $doc->check($_POST["id"],'w');
+   $doc->check($_POST["id"],'d');
 
    if ($doc->delete($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $doc->check($_POST["id"],'w');
+   $doc->check($_POST["id"],'d');
 
    if ($doc->restore($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $doc->check($_POST["id"],'w');
+   $doc->check($_POST["id"],'d');
 
    if ($doc->delete($_POST,1)) {
       Event::log($_POST["id"], "documents", 4, "document",
@@ -103,25 +103,11 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["deletedocumentitem"])) {
-
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($documentitem->can($key, 'w')) {
-            $documentitem->delete(array('id' => $key));
-         }
-      }
-   }
-   Event::log($_POST["documents_id"], "documents", 4, "document",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
-   Html::back();
-
 } else if (isset($_GET["deletedocumentitem"])
            && isset($_GET["documents_id"])
            && isset($_GET["id"])) {
 
-   $documentitem->check($_GET["id"],'w');
+   $documentitem->check($_GET["id"],'d');
    if ($documentitem->delete(array('id' => $_GET["id"]))) {
       Event::log($_GET["documents_id"], "documents", 4, "document",
                  //TRANS: %s is the user login

@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
 }
 else if (isset($_GET["delete"])) {
-   $link->check($_GET["links_id"],'w');
+   $link->check($_GET["links_id"],'d');
 
    $link_itemtype->delete($_GET);
    Event::log($_GET["links_id"], "links", 4, "setup",

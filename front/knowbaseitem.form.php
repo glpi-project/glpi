@@ -105,7 +105,7 @@ if ($_GET["id"] == "new") {
 } else if (isset($_GET["id"])
            && (strcmp($_GET["delete"],"yes") == 0)) {
    // effacer un item dans la base de connaissances
-   $kb->check($_GET["id"],'w');
+   $kb->check($_GET["id"],'d');
 
    $kb->delete($_GET);
    Event::log($_GET["id"], "knowbaseitem", 5, "tools",

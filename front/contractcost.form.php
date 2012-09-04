@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $cost->check($_POST["id"],'w');
+   $cost->check($_POST["id"],'d');
 
    if ($cost->delete($_POST)) {
       Event::log($cost->fields['contracts_id'], "contracts", 4, "financial",

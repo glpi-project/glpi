@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    $bookmark->load($_GET["id"]);
 
 } else if (isset($_POST["delete"])) {
-   $bookmark->check($_POST["id"], 'w');
+   $bookmark->check($_POST["id"], 'd');
 
    $bookmark->delete($_POST);
    $_GET["action"] = "load";

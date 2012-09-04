@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $problem->check($_POST["id"], 'w');
+   $problem->check($_POST["id"], 'd');
 
    $problem->delete($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",
@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    $problem->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $problem->check($_POST["id"], 'w');
+   $problem->check($_POST["id"], 'd');
 
    $problem->restore($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",
@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
    $problem->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
-   $problem->check($_REQUEST["id"], 'w');
+   $problem->check($_REQUEST["id"], 'd');
 
    $problem->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "problem", 4, "maintain",
@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_user'])) {
    $problem_user = new Problem_User();
-   $problem_user->check($_REQUEST['id'], 'w');
+   $problem_user->check($_REQUEST['id'], 'd');
    $problem_user->delete($_REQUEST);
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_group'])) {
    $group_problem = new Group_Problem();
-   $group_problem->check($_REQUEST['id'], 'w');
+   $group_problem->check($_REQUEST['id'], 'd');
    $group_problem->delete($_REQUEST);
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_supplier'])) {
    $problem_supplier = new Problem_Supplier();
-   $problem_supplier->check($_REQUEST['id'], 'w');
+   $problem_supplier->check($_REQUEST['id'], 'd');
    $problem_supplier->delete($_REQUEST);
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",

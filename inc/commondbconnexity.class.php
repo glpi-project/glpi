@@ -208,7 +208,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             return false;
          }
       }
-      return parent::$methodItem();
+      return true;
    }
 
 

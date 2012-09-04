@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $change->check($_POST["id"], 'w');
+   $change->check($_POST["id"], 'd');
 
    $change->delete($_POST);
    Event::log($_POST["id"], "change", 4, "maintain",
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $change->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $change->check($_POST["id"], 'w');
+   $change->check($_POST["id"], 'd');
 
    $change->restore($_POST);
    Event::log($_POST["id"], "change", 4, "maintain",
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $change->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $change->check($_POST["id"], 'w');
+   $change->check($_POST["id"], 'd');
    $change->delete($_POST,1);
 
    Event::log($_POST["id"], "change", 4, "maintain",
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_user'])) {
    $change_user = new Change_User();
-   $change_user->check($_REQUEST['id'], 'w');
+   $change_user->check($_REQUEST['id'], 'd');
    $change_user->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_group'])) {
    $change_group = new Change_Group();
-   $change_group->check($_REQUEST['id'], 'w');
+   $change_group->check($_REQUEST['id'], 'd');
    $change_group->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
@@ -108,7 +108,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_supplier'])) {
    $change_supplier = new Change_Supplier();
-   $change_supplier->check($_REQUEST['id'], 'w');
+   $change_supplier->check($_REQUEST['id'], 'd');
    $change_supplier->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4, "maintain",

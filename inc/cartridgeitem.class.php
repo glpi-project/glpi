@@ -540,7 +540,7 @@ class CartridgeItem extends CommonDBTM {
          echo "<td class='center'>$type</td>";
          echo "<td class='tab_bg_2 center b'>";
          echo "<a href='".$CFG_GLPI['root_doc'].
-                "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
+                "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;cartridgeitems_id=$instID'>";
          echo __('Delete')."</a></td></tr>";
          $used[$pmid] = $pmid;
          $i++;
