@@ -61,7 +61,7 @@ if (isset($_POST['itemtype'])) {
    foreach ($_POST as $key => $val) {
       $params[$key] = $val;
    }
-
+   
    $rand    = mt_rand();
    $params['specific_action'] = 0;
    $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);

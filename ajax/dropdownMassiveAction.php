@@ -71,12 +71,11 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
          exit();
       }
    } else {
-      // No standard massive action for specific one
-      if (isset($actions[$_POST['action']])) {
-         Html::displayRightError();
-         exit();
+      if (!isset($actions[$_POST['action']])) {
+         echo "<input type='hidden' name='specific_action' value='1'>";
+      } else {
+         echo "<input type='hidden' name='specific_action' value='0'>";
       }
-      echo "<input type='hidden' name='specific_action' value='1'>";
    }
 
 

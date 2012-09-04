@@ -49,34 +49,6 @@ if (isset($_REQUEST["add"])) {
    }
    Html::back();
 
-// From association list
-} else if (isset($_REQUEST["move"])) {
-   if ($_REQUEST['softwarelicenses_id'] > 0 ) {
-      foreach ($_REQUEST["item"] as $key => $val) {
-         if ($val == 1) {
-            $csl->upgrade($key, $_REQUEST['softwarelicenses_id']);
-            Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
-                       //TRANS: %s is the user login
-                       sprintf(__('%s changes of license for several computers'),
-                               $_SESSION["glpiname"]));
-
-         }
-      }
-   }
-   Html::back();
-
-// From association list
-} else if (isset($_REQUEST["delete"])) {
-   foreach ($_REQUEST["item"] as $key => $val) {
-      if ($val == 1) {
-         $csl->delete(array('id' => $key));
-      }
-   }
-   Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s dissociates computers from a license'), $_SESSION["glpiname"]));
-
-   Html::back();
 }
 Html::displayErrorAndDie('Lost');
 ?>
