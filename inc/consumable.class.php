@@ -434,14 +434,14 @@ class Consumable extends CommonDBTM {
                } else {
                   echo "<a href='".
                          $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
-                         $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
+                         $data["id"]."&amp;consumableitems_id=$tID'>".__('Back to stock')."</a>";
                }
                echo "</td>";
 
                echo "<td class='center'>";
                echo "<a href='".
                      $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;tID=$tID'><img title=\"".__s('Delete')."\" alt=\"".
+                     $data["id"]."&amp;consumableitems_id=$tID'><img title=\"".__s('Delete')."\" alt=\"".
                      __s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
                echo "</td>";
             }

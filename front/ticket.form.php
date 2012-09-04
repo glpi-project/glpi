@@ -42,7 +42,7 @@ $track = new Ticket();
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
-
+print_r($_POST);
 if (isset($_POST["add"])) {
    $track->check(-1,'w',$_POST);
 
@@ -124,7 +124,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_link'])) {
    $ticket_ticket = new Ticket_Ticket();
-   $ticket_ticket->check($_REQUEST['id'],'w');
+   $ticket_ticket->check($_REQUEST['id'],'d');
 
    $ticket_ticket->delete($_REQUEST);
 
@@ -135,7 +135,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_user'])) {
    $ticket_user = new Ticket_User();
-   $ticket_user->check($_REQUEST['id'], 'w');
+   $ticket_user->check($_REQUEST['id'], 'd');
    $ticket_user->delete($_REQUEST);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
@@ -145,7 +145,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_group'])) {
    $group_ticket = new Group_Ticket();
-   $group_ticket->check($_REQUEST['id'], 'w');
+   $group_ticket->check($_REQUEST['id'], 'd');
    $group_ticket->delete($_REQUEST);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
@@ -154,7 +154,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_REQUEST['delete_supplier'])) {
    $supplier_ticket = new Supplier_Ticket();
-   $supplier_ticket->check($_REQUEST['id'], 'w');
+   $supplier_ticket->check($_REQUEST['id'], 'd');
    $supplier_ticket->delete($_REQUEST);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",

@@ -46,7 +46,7 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $ic->check($_POST["id"],'w');
+   $ic->check($_POST["id"],'d');
 
    $ic->delete($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",

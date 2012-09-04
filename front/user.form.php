@@ -81,7 +81,7 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $user->check($_POST['id'], 'w');
+   $user->check($_POST['id'], 'd');
    $user->delete($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -89,7 +89,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $user->check($_POST['id'], 'w');
+   $user->check($_POST['id'], 'd');
    $user->restore($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -97,7 +97,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $user->check($_POST['id'], 'w');
+   $user->check($_POST['id'], 'd');
    $user->delete($_POST, 1);
    Event::log($_POST["id"], "users", 4, "setup",
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

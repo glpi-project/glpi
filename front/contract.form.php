@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $contract->check($_POST['id'],'w');
+   $contract->check($_POST['id'],'d');
 
    if ($contract->delete($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $contract->check($_POST['id'],'w');
+   $contract->check($_POST['id'],'d');
 
    if ($contract->restore($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $contract->check($_POST['id'],'w');
+   $contract->check($_POST['id'],'d');
 
    if ($contract->delete($_POST,1)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 }  else if (isset($_GET["deleteitem"])) {
-   $contractitem->check($_GET["id"], 'w');
+   $contractitem->check($_GET["id"], 'd');
 
    if ($contractitem->delete($_GET)) {
       Event::log($_GET["contracts_id"], "contracts", 4, "financial",
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET["deletecontractsupplier"])) {
-   $contractsupplier->check($_GET['id'],'w');
+   $contractsupplier->check($_GET['id'],'d');
 
    if ($contractsupplier->delete($_GET)) {
       Event::log($_GET["contracts_id"], "contracts", 4, "financial",

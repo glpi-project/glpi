@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $transfer->check($_POST["id"],'w');
+   $transfer->check($_POST["id"],'d');
 
    $transfer->delete($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",

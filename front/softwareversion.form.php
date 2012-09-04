@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $version->check($_POST['id'],'w');
+   $version->check($_POST['id'],'d');
 
    $version->delete($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",

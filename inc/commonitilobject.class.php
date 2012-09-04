@@ -2417,11 +2417,16 @@ abstract class CommonITILObject extends CommonDBTM {
             }
 
             if ($canedit) {
-               echo "&nbsp;<a href='".$this->getFormURL()."?delete_user=delete_user&amp;id=".
-                     $d['id']. "&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-                     "' title=\"".__s('Delete')."\">
-                     <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                      alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
+               echo "&nbsp;";
+               Html::showSimpleForm($this->getFormURL(), 'delete_user', __s('Delete'),
+                                    array('id'=>$d['id'],
+                                          $this->getForeignKeyField() => $this->fields['id']),
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+//                "<a href='".$this->getFormURL()."?delete_user=delete_user&amp;id=".
+//                      $d['id']. "&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
+//                      "' title=\"".__s('Delete')."\">
+//                      <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+//                       alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
             }
             echo "<br>";
 

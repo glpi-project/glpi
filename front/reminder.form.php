@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $remind->check($_POST["id"],'w');
+   $remind->check($_POST["id"],'d');
 
    $remind->delete($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools",

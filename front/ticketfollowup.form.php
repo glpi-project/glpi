@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
 } else if (isset($_POST["delete"])) {
-   $fup->check($_POST['id'], 'w');
+   $fup->check($_POST['id'], 'd');
    $fup->delete($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",

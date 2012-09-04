@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $ent->check($_POST["id"],'w');
+   $ent->check($_POST["id"],'d');
    $ent->delete($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $ent->check($_POST["id"],'w');
+   $ent->check($_POST["id"],'d');
    $ent->restore($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $ent->check($_POST["id"],'w');
+   $ent->check($_POST["id"],'d');
    $ent->delete($_POST,1);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login

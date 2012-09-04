@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $mailgate->check($_POST['id'],'w');
+   $mailgate->check($_POST['id'],'d');
    $mailgate->delete($_POST);
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",

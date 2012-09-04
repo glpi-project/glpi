@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $group->check($_POST["id"],'w');
+   $group->check($_POST["id"],'d');
    $group->delete($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login

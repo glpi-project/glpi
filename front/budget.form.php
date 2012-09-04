@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $budget->check($_POST["id"],'w');
+   $budget->check($_POST["id"],'d');
 
    if ($budget->delete($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $budget->check($_POST["id"],'w');
+   $budget->check($_POST["id"],'d');
 
    if ($budget->restore($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $budget->check($_POST["id"],'w');
+   $budget->check($_POST["id"],'d');
 
    if ($budget->delete($_POST,1)) {
       Event::log($_POST["id"], "budget", 4, "financial",

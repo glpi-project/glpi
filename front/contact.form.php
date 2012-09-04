@@ -62,7 +62,7 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $contact->check($_POST["id"],'w');
+   $contact->check($_POST["id"],'d');
 
    if ($contact->delete($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
@@ -72,7 +72,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $contact->check($_POST["id"],'w');
+   $contact->check($_POST["id"],'d');
 
    if ($contact->restore($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
@@ -82,7 +82,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $contact->check($_POST["id"],'w');
+   $contact->check($_POST["id"],'d');
 
    if ($contact->delete($_POST,1)) {
       Event::log($_POST["id"], "contacts", 4, "financial",

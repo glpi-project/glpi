@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
 } else if (isset($_POST["delete"])) {
-   $prof->check($_POST['id'],'w');
+   $prof->check($_POST['id'],'d');
 
    $prof->delete($_POST);
    $prof->redirectToList();
