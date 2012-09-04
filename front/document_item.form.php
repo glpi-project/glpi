@@ -39,7 +39,7 @@ if (isset($_POST["add"])) {
    if ($document_item->add($_POST)) {
       Event::log($_POST["documents_id"], "documents", 4, "document",
                  //TRANS: %s is the user login
-                 sprintf(__('%s adds a link to an item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
