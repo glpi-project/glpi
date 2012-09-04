@@ -37,6 +37,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype  = 'NotificationTemplate';
    static public $items_id  = 'notificationtemplates_id';
+   
    public $dohistory = true;
 
 
@@ -44,7 +45,12 @@ class NotificationTemplateTranslation extends CommonDBChild {
       return _n('Template translation', 'Template translations', $nb);
    }
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    /**
     * @see inc/CommonDBTM::getName()
    **/
@@ -87,20 +93,17 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if (!Session::haveRight("config", "w")) {
          return false;
       }
-
-      if (empty($ID)) {
-          if ($this->getEmpty()) {
-             $notificationtemplates_id = $options['notificationtemplates_id'];
-          }
-
-       } else {
-          if ($this->getFromDB($ID)) {
-             $notificationtemplates_id = $this->getField('notificationtemplates_id');
-          }
-       }
-
-      $canedit  = Session::haveRight("config", "w");
-
+      $notificationtemplates_id = -1;
+      if (isset($options['notificationtemplates_id'])) {
+         $notificationtemplates_id = $options['notificationtemplates_id'];
+      }
+      
+      if ($ID < 0) {
+         // Create item
+         $this->fields['notificationtemplates_id'] = $notificationtemplates_id;
+      }
+      
+      $this->initForm($ID, $options);      
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
 
@@ -156,7 +159,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<input type='hidden' name='notificationtemplates_id' value='".
              $template->getField('id')."'>";
       echo "</td></tr>";
-
       $this->showFormButtons($options);
       $this->addDivForTabs();
       return true;
@@ -186,17 +188,33 @@ class NotificationTemplateTranslation extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'),
                                              $template->getTypeName(1), $template->getName()));
 
+      if ($canedit) {
+         $rand = mt_rand();
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array();
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
+         
       echo "<form name='form_language' id='form_language' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th></th><th>".__('Language')."</th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      if ($canedit) {
+         echo "<th width='10'>";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".__('Language')."</th></tr>";
 
       foreach ($DB->request('glpi_notificationtemplatetranslations',
                             array('notificationtemplates_id' => $nID)) as $data) {
 
          if ($this->getFromDB($data['id'])) {
             Session::addToNavigateListItems('NotificationTemplateTranslation',$data['id']);
-            echo "<tr class='tab_bg_1'><td class='center'>";
-            echo "<input type='checkbox' name=\"languages[" . $data['id'] . "]\"></td>";
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td class='center'>";
+               echo "<input type='checkbox' name=\"item[".$data['id']."]\" value='1'></td>";
+            }
             echo "<td class='center'>";
             echo "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
                   "?id=".$data['id']."&notificationtemplates_id=".$nID."'>";
@@ -214,10 +232,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</table>";
 
       if ($canedit) {
-         Html::openArrowMassives("form_language", true);
-         Html::closeArrowMassives(array("delete_languages" => __('Delete')));
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
       }
-      Html::closeForm();
+      echo "</div>";
    }
 
 

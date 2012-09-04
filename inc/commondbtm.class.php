@@ -1770,7 +1770,7 @@ class CommonDBTM extends CommonGLPI {
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
       } else {
-        $ID = 1;
+         $ID = 1;
       }
 
       $params['colspan']      = 2;
@@ -1784,7 +1784,6 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $val;
          }
       }
-
       if (!$params['canedit']
           || (!$this->can($ID,'w') && !$this->can($ID,'d'))) {
          echo "</table></div>";

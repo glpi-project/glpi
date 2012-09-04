@@ -46,9 +46,8 @@ $language = new NotificationTemplateTranslation();
 if (isset($_POST["add"])) {
    $language->check(-1,'w',$_POST);
    $newID = $language->add($_POST);
-
    Event::log($newID, "notificationtemplatetranslations", 4, "notification",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["language"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
