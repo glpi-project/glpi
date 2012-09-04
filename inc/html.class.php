@@ -3759,8 +3759,9 @@ class Html {
          echo "<li>";
 
          Ajax::createModalWindow('entity_window',
-                                 $CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target",
-                                 array('title' => __('Select the desired entity')));
+                                 $CFG_GLPI['root_doc']."/ajax/entitytree.php",
+                                 array('title' => __('Select the desired entity'),
+                                       'extraparams' => array('target' => $target)));
 
          echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
