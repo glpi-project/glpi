@@ -39,7 +39,7 @@ Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
-if (!$item = getItemForItemtype($_REQUEST['itemtype'])) {
+if (!$item = getItemForItemtype($_GET['itemtype'])) {
    exit;
 }
 
@@ -75,8 +75,8 @@ switch($_GET["type"]) {
    case "technicien" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
                          $item->getAssignName($_GET["id"], 'User', 1));
       break;
@@ -84,8 +84,8 @@ switch($_GET["type"]) {
    case "technicien_followup" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
                          $item->getAssignName($_GET["id"], 'User', 1));
       break;
@@ -93,8 +93,8 @@ switch($_GET["type"]) {
    case "suppliers_id_assign" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Supplier'),
                          $item->getAssignName($_GET["id"], 'Supplier', 1));
       break;
@@ -102,43 +102,43 @@ switch($_GET["type"]) {
    case "user" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
    case "users_id_recipient" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
    case "itilcategories_tree" :
-      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
+      $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
       $cond   = "(`id` = '$parent' OR `itilcategories_id` = '$parent')";
       // nobreak;
 
    case "itilcategories_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"], $parent );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"], $parent );
       $title   = sprintf(__('%1$s: %2$s'), __('Category'),
                          Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
       break;
 
    case 'locations_tree' :
-      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
+      $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
       $cond   = "(`id` = '$parent' OR `locations_id` = '$parent')";
       // nobreak;
 
    case 'locations_id' :
       $val1    = $_GET['id'];
       $val2    = '';
-      $values  = Stat::getItems($_REQUEST['itemtype'], $_REQUEST['date1'], $_REQUEST['date2'],
-                                $_REQUEST['type'], $parent );
+      $values  = Stat::getItems($_GET['itemtype'], $_GET['date1'], $_GET['date2'],
+                                $_GET['type'], $parent );
       $title   = sprintf(__('%1$s: %2$s'), __('Location'),
                          Dropdown::getDropdownName('glpi_locations', $_GET['id']));
       break;
@@ -146,14 +146,14 @@ switch($_GET["type"]) {
    case "type" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Type'), Ticket::getTicketTypeName($_GET["id"]));
       break;
 
    case 'group_tree' :
    case 'groups_tree_assign' :
-      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
+      $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
       $cond   = " (`id` = '$parent' OR `groups_id` = '$parent')
                    AND ".(($_GET["type"] == 'group_tree') ? '`is_requester`' : '`is_assign`');
       // nobreak;
@@ -161,8 +161,8 @@ switch($_GET["type"]) {
    case "group" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"], $parent );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"], $parent );
       $title   = sprintf(__('%1$s: %2$s'), __('Group'),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
@@ -170,8 +170,8 @@ switch($_GET["type"]) {
    case "groups_id_assign" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Group'),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
@@ -179,32 +179,32 @@ switch($_GET["type"]) {
    case "priority" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($_GET["id"]));
       break;
 
    case "urgency" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($_GET["id"]));
       break;
 
    case "impact" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"]));
       break;
 
    case "usertitles_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Title'),
                          Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
@@ -212,8 +212,8 @@ switch($_GET["type"]) {
    case "solutiontypes_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Solution type'),
                          Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
       break;
@@ -221,8 +221,8 @@ switch($_GET["type"]) {
    case "usercategories_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Category'),
                          Dropdown::getDropdownName("glpi_usercategories", $_GET["id"]));
       break;
@@ -230,8 +230,8 @@ switch($_GET["type"]) {
    case "requesttypes_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                $_REQUEST["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                $_GET["type"] );
       $title   = sprintf(__('%1$s: %2$s'), __('Request source'),
                          Dropdown::getDropdownName("glpi_requesttypes", $_GET["id"]));
       break;
@@ -241,8 +241,8 @@ switch($_GET["type"]) {
       $val2 = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
          $device_table = $item->getTable();
-         $values       = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"],
-                                        $_REQUEST["date2"], $_REQUEST["champ"] );
+         $values       = Stat::getItems($_GET["itemtype"], $_GET["date1"],
+                                        $_GET["date2"], $_GET["champ"] );
 
          $query  = "SELECT `designation`
                     FROM `".$device_table."`
@@ -259,8 +259,8 @@ switch($_GET["type"]) {
       $val2  = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
          $table  = $item->getTable();
-         $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                                  $_REQUEST["champ"] );
+         $values = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                  $_GET["champ"] );
          $title  = sprintf(__('%1$s: %2$s'),
                            $item->getTypeName(), Dropdown::getDropdownName($table, $_GET["id"]));
       }
@@ -314,7 +314,7 @@ echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"".$_REQUEST['itemtype']."\">";
+echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
 echo "<input type='submit' class='submit' value=\"".__s('Display report')."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
@@ -325,27 +325,27 @@ echo "</table></div>";
 
 
 $show_all = false;
-if (!isset($_REQUEST['graph']) || (count($_REQUEST['graph']) == 0)) {
+if (!isset($_GET['graph']) || (count($_GET['graph']) == 0)) {
    $show_all = true;
 }
 
 
 ///////// Stats nombre intervention
 // Total des interventions
-$values['total']  = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_total",
-                                               $_REQUEST["date1"], $_REQUEST["date2"],
+$values['total']  = Stat::constructEntryValues($_GET['itemtype'], "inter_total",
+                                               $_GET["date1"], $_GET["date2"],
                                                $_GET["type"], $val1, $val2);
 // Total des interventions résolues
-$values['solved'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved",
-                                               $_REQUEST["date1"], $_REQUEST["date2"],
+$values['solved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_solved",
+                                               $_GET["date1"], $_GET["date2"],
                                                $_GET["type"], $val1, $val2);
 // Total des interventions closes
-$values['closed'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_closed",
-                                               $_REQUEST["date1"], $_REQUEST["date2"],
+$values['closed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_closed",
+                                               $_GET["date1"], $_GET["date2"],
                                                $_GET["type"], $val1, $val2);
 // Total des interventions closes
-$values['late']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved_late",
-                                               $_REQUEST["date1"], $_REQUEST["date2"],
+$values['late']   = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_late",
+                                               $_GET["date1"], $_GET["date2"],
                                                $_GET["type"], $val1, $val2);
 
 $available = array('total'  => __('Opened'),
@@ -356,13 +356,13 @@ echo "<div class='center'>";
 
 foreach ($available as $key => $name) {
    echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-          ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+          ($show_all||isset($_GET['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
 }
 echo "</div>";
 
 $toprint = array();
 foreach ($available as $key => $name) {
-   if ($show_all || isset($_REQUEST['graph'][$key])) {
+   if ($show_all || isset($_GET['graph'][$key])) {
       $toprint[$name] = $values[$key];
    }
 }
@@ -372,24 +372,24 @@ Stat::showGraph($toprint, array('title'     => __('Number of tickets'),
                                 'unit'      => __('Tickets')));
 
 //Temps moyen de resolution d'intervention
-$values2['avgsolved'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgsolvedtime",
-                                                   $_REQUEST["date1"], $_REQUEST["date2"],
+$values2['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
+                                                   $_GET["date1"], $_GET["date2"],
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values2['avgsolved'] as $key => $val) {
    $values2['avgsolved'][$key] /= HOUR_TIMESTAMP;
 }
 //Temps moyen de cloture d'intervention
-$values2['avgclosed'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgclosedtime",
-                                                   $_REQUEST["date1"], $_REQUEST["date2"],
+$values2['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
+                                                   $_GET["date1"], $_GET["date2"],
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values2['avgclosed'] as $key => $val) {
    $values2['avgclosed'][$key] /= HOUR_TIMESTAMP;
 }
 //Temps moyen d'intervention reel
-$values2['avgactiontime'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgactiontime",
-                                                       $_REQUEST["date1"], $_REQUEST["date2"],
+$values2['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
+                                                       $_GET["date1"], $_GET["date2"],
                                                        $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values2['avgactiontime'] as $key => $val) {
@@ -402,12 +402,12 @@ $available = array('avgclosed'     => __('Closure'),
                    'avgactiontime' => __('Real duration'));
 
 
-if ($_REQUEST['itemtype'] == 'Ticket') {
+if ($_GET['itemtype'] == 'Ticket') {
    $available['avgtaketime'] = __('Take into account');
    //Temps moyen de prise en compte de l'intervention
-   $values2['avgtaketime'] = Stat::constructEntryValues($_REQUEST['itemtype'],
-                                                        "inter_avgtakeaccount", $_REQUEST["date1"],
-                                                        $_REQUEST["date2"], $_GET["type"], $val1,
+   $values2['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'],
+                                                        "inter_avgtakeaccount", $_GET["date1"],
+                                                        $_GET["date2"], $_GET["type"], $val1,
                                                         $val2);
    // Pass to hour values
    foreach ($values2['avgtaketime'] as $key => $val) {
@@ -420,19 +420,19 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 echo "<div class='center'>";
 
 $show_all2 = false;
-if (!isset($_REQUEST['graph2']) || (count($_REQUEST['graph2']) == 0)) {
+if (!isset($_GET['graph2']) || (count($_GET['graph2']) == 0)) {
    $show_all2 = true;
 }
 
 foreach ($available as $key => $name) {
    echo "<input type='checkbox' onchange='submit()' name='graph2[$key]' ".
-          ($show_all2||isset($_REQUEST['graph2'][$key])?"checked":"")."> ".$name."&nbsp;";
+          ($show_all2||isset($_GET['graph2'][$key])?"checked":"")."> ".$name."&nbsp;";
 }
 echo "</div>";
 
 $toprint = array();
 foreach ($available as $key => $name) {
-   if ($show_all2 || isset($_REQUEST['graph2'][$key])) {
+   if ($show_all2 || isset($_GET['graph2'][$key])) {
       $toprint[$name] = $values2[$key];
    }
 }
@@ -443,16 +443,16 @@ Stat::showGraph($toprint, array('title'     => __('Average time'),
                                 'datatype'  => 'average'));
 
 
-if ($_REQUEST['itemtype'] == 'Ticket') {
+if ($_GET['itemtype'] == 'Ticket') {
    ///////// Satisfaction
-   $values['opensatisfaction']   = Stat::constructEntryValues($_REQUEST['itemtype'],
+   $values['opensatisfaction']   = Stat::constructEntryValues($_GET['itemtype'],
                                                               "inter_opensatisfaction",
-                                                              $_REQUEST["date1"], $_REQUEST["date2"],
+                                                              $_GET["date1"], $_GET["date2"],
                                                               $_GET["type"], $val1, $val2);
 
-   $values['answersatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],
+   $values['answersatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
                                                               "inter_answersatisfaction",
-                                                              $_REQUEST["date1"], $_REQUEST["date2"],
+                                                              $_GET["date1"], $_GET["date2"],
                                                               $_GET["type"], $val1, $val2);
 
 
@@ -462,13 +462,13 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 
    foreach ($available as $key => $name) {
       echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-            ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+            ($show_all||isset($_GET['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
    echo "</div>";
 
    $toprint = array();
    foreach ($available as $key => $name) {
-      if ($show_all || isset($_REQUEST['graph'][$key])) {
+      if ($show_all || isset($_GET['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }
@@ -477,9 +477,9 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
                                  'showtotal' => 1,
                                  'unit'      => __('Tickets')));
 
-   $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],
+   $values['avgsatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
                                                            "inter_avgsatisfaction",
-                                                           $_REQUEST["date1"], $_REQUEST["date2"],
+                                                           $_GET["date1"], $_GET["date2"],
                                                            $_GET["type"], $val1, $val2);
 
    $available = array('avgsatisfaction' => __('Satisfaction'));
@@ -487,13 +487,13 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 
    foreach ($available as $key => $name) {
       echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-            ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+            ($show_all||isset($_GET['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
    echo "</div>";
 
    $toprint = array();
    foreach ($available as $key => $name) {
-      if ($show_all || isset($_REQUEST['graph'][$key])) {
+      if ($show_all || isset($_GET['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }
@@ -501,6 +501,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
    Stat::showGraph($toprint, array('title' => __('Satisfaction')));
 
 }
-Html::closeForm();
+// form using GET method : CRSF not needed
+echo "</form>";
 Html::footer();
 ?>

@@ -126,11 +126,10 @@ class Ticket_Ticket extends CommonDBRelation {
                              ".png' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
-                  $icons .=  " <a href='".$CFG_GLPI["root_doc"].
-                               "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID".
-                               "&amp;tickets_id=$ID' title=\"".__s('Prohibit reservations')."\">
-                               <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                                alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
+                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'delete', __('Delete'),
+                                                         array('id' => $linkID,
+                                                               'tickets_id' => $ID),
+                                                         $CFG_GLPI["root_doc"]."/pics/delete.png");
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
                                $ticket->getLink());

@@ -32,25 +32,23 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '..');
-   include (GLPI_ROOT . "/inc/includes.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+
+$ticket_ticket = new Ticket_Ticket();
+
+Session ::checkCentralAccess();
+
+if (isset($_POST['delete'])) {
+   $ticket_ticket->check($_POST['id'],'d');
+
+   $ticket_ticket->delete($_POST);
+
+   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes link between tickets'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
+
 }
-
-$ticket_user = new Ticket_User();
-
-Session ::checkLoginUser();
-
-if (isset($_REQUEST["update"])) {
-   $ticket_user->check($_REQUEST["id"], 'w');
-
-   $ticket_user->update($_REQUEST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.opener.location.reload();";
-   echo "window.close()";
-   echo "</script>";
-
-} else if (isset($_REQUEST["id"])) {
-   $ticket_user->showUserNotificationForm($_REQUEST["id"]);
-}
+Html::displayErrorAndDie("lost");
 ?>
