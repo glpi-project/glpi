@@ -207,7 +207,9 @@ class AuthLDAP extends CommonDBTM {
       switch ($input['action']) {
          case "import" :
          case "sync" :
-            if (isset($_GET['multiple_actions']) && isset($_SESSION["glpi_massiveaction"])) {
+            if (!Session::haveRight("import_externalauth_users", 'w')) {
+               $res['nbnoright']++;
+            } else if (isset($_GET['multiple_actions']) && isset($_SESSION["glpi_massiveaction"])) {
 
                if ($count = count($input["item"])) {
                   $i = $input["ldap_process_count"]-$count+1;
