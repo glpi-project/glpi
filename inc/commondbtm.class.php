@@ -3680,14 +3680,18 @@ class CommonDBTM extends CommonGLPI {
    function deleteByCriteria($crit=array(), $force=0) {
       global $DB;
 
+      $ok = false;
       if (is_array($crit) && (count($crit) > 0)) {
          $crit['FIELDS'] = 'id';
-
+         $ok = true;
          foreach ($DB->request($this->getTable(), $crit) as $row) {
-            $this->delete($row, $force);
+            if (!$this->delete($row, $force)) {
+               $ok = false;
+            }
          }
 
       }
+      return $ok;
    }
 
 

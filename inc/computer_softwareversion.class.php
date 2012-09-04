@@ -98,6 +98,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       return false;
    }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

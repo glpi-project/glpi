@@ -61,14 +61,7 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"]) || isset($_POST["down_x"])) {
    $setupdisplay->orderItem($_POST,'down');
 
-} else if (isset($_POST['delete_for_user'])) {
-   foreach ($_POST['itemtype'] as $itemtype => $val) {
-      $crit = array('users_id' => $_POST['users_id'],
-                    'itemtype' => $itemtype);
-      $setupdisplay->deleteByCriteria($crit);
-   }
-   Html::back();
-}
+} 
 
 if ((strpos($_SERVER['PHP_SELF'],"popup")
     && $_REQUEST["itemtype"])) {

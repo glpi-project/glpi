@@ -113,7 +113,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if (isset($input['softwarelicenses_id'])){
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     $params = array();
                      //Get software name and manufacturer
                      if ($this->can($key,'w')) {
                         //Process rules
