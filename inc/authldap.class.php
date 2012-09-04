@@ -199,6 +199,71 @@ class AuthLDAP extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+   function doSpecificMassiveActions($input = array()) {
+      global $CFG_GLPI;
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "import" :
+         case "sync" :
+            if (isset($_GET['multiple_actions']) && isset($_SESSION["glpi_massiveaction"])) {
+
+               if ($count = count($input["item"])) {
+                  $i = $input["ldap_process_count"]-$count+1;
+                  Html::createProgressBar();
+                  Html::changeProgressBarPosition($i, $input["ldap_process_count"], "$i / ".$input["ldap_process_count"]);
+                  $key = key($input["item"]);
+                  array_pop($input["item"]);
+                  if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                               'value'  => $key),
+                                                   $input["mode"],
+                                                   $input["authldaps_id"],
+                                                   true)) {
+                     $input['res']['ok']++;
+                  }  else {
+                     $input['res']['ko']++;
+                  }
+                  if (count($input["item"])) {
+                     // more to do -> redirect
+                     $_SESSION['glpi_massiveaction']['POST'] = $input;
+                     Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
+                  } else { // Nothing to do redirect
+                     Html::changeProgressBarPosition(100, 100, __('Successful importation'));
+                     $res = $input['res'];
+                     $_SESSION['ldap_import']['action'] = 'show';
+                  }
+
+               }
+            } else {
+               if (count($input['item']) > 0) {
+                  $input["ldap_process_count"] = 0;
+                  $input["authldaps_id"] = $_SESSION['ldap_import']['authldaps_id'];
+                  $input["mode"] = $_SESSION['ldap_import']['mode'];
+                  $input['res']  = array('ok'      => 0,
+                                         'ko'      => 0,
+                                         'noright' => 0);
+                  foreach ($input['item'] as $key => $val) {
+                     if ($val) {
+                        $input["ldap_process_count"]++;
+                     }
+                  }
+                  $_SESSION['glpi_massiveaction']['POST'] = $input;
+                  Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
+               } else {
+                  $res['ko'] ++;
+               }
+            }
+            $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.import.php";
+            
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    /**
     * Print the auth ldap form
     *
@@ -1096,13 +1161,14 @@ class AuthLDAP extends CommonDBTM {
       foreach ($_SESSION['ldap_import'] as $option => $value) {
          $values[$option] = $value;
       }
+      
+      $rand = mt_rand();
       $results       = array();
       $limitexceeded = false;
       $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
 
       if (is_array($ldap_users)) {
          $numrows     = count($ldap_users);
-         $action      = "toprocess";
 
          if ($numrows > 0) {
             self::displaySizeLimitWarning($limitexceeded);
@@ -1116,21 +1182,31 @@ class AuthLDAP extends CommonDBTM {
                array_splice($ldap_users, 0, $values['start']);
             }
 
-            echo "<form method='post' id='ldap_form' name='ldap_form' action='".
-                   $_SERVER['PHP_SELF']."'>";
+
+//             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
+//                    $_SERVER['PHP_SELF']."'>";
 
 
-            $form_action = "process_ok";
+            $form_action = '';
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {
                $textbutton = _x('button','Synchronize');
+               $form_action = 'sync';
             } else {
                $textbutton = _x('button','Import');
+               $form_action = 'import';
             }
 
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $paramsma = array('num_displayed'   => count($ldap_users),
+                              'specific_actions' => array($form_action => $textbutton));
+            Html::showMassiveActions(__CLASS__, $paramsma);
+
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
-                                                              :__('Synchronize'))."</th>";
+            echo "<tr>";
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
             $num = 0;
             echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', 2), $num,
                                         $_SERVER['PHP_SELF'].
@@ -1161,7 +1237,7 @@ class AuthLDAP extends CommonDBTM {
 
                echo "<tr class='tab_bg_2 center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
-               echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\"></td>";
+               echo "<td><input type='checkbox' name=\"item[" . $user . "]\" value='1'></td>";
                echo "<td>" . $link . "</td>";
 
                if ($stamp != '') {
@@ -1186,9 +1262,13 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "</table>";
 
-            Html::openArrowMassives("ldap_form", true);
-            Html::closeArrowMassives(array($form_action => $textbutton));
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
+            
+//             Html::openArrowMassives("ldap_form", true);
+//             Html::closeArrowMassives(array($form_action => $textbutton));
+//             Html::closeForm();
 
             Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
          } else {
@@ -1691,7 +1771,6 @@ class AuthLDAP extends CommonDBTM {
                        ? $config_ldap->fields['condition'] : "(objectclass=*)");
          }
       }
-
       $cookie = '';
       $count  = 0;
       do {
