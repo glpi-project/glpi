@@ -36,12 +36,14 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Session::checkCentralAccess();
+Session::checkCentralAccess(); 
 
 if (isset($_POST["add"])) {
-   $link_type = 'Item_'.$_POST['devicetype'];
-   $link = new $link_type();
-   $link->addDevices(1, $_POST['itemtype'], $_POST['items_id'], $_POST['devices_id']);
+   if (isset($_POST['devicetype'])) {
+      if ($link = getItemForItemtype('Item_'.$_POST['devicetype'])) {
+         $link->addDevices(1, $_POST['itemtype'], $_POST['items_id'], $_POST['devices_id']);
+      }
+   }
    Html::back();
 } else if (isset($_POST["updateall"])) {
    Item_Devices::updateAll($_POST, false);
