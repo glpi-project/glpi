@@ -1387,8 +1387,9 @@ class Search {
                }
             }
 
-
-            echo $headers_line_bottom;
+            if ($output_type == self::HTML_OUTPUT) {
+               echo $headers_line_bottom;
+            }
             // Display footer
             echo self::showFooter($output_type, $title);
 
