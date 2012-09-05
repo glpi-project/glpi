@@ -94,12 +94,13 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
                         array('itemtype' => $_POST["itemtype"],
                               'action'   => $_POST["action"]));
 
-   } else if ($plug=isPluginItemType($_POST["itemtype"])) {
+//    } else if ($plug=isPluginItemType($_POST["itemtype"])) {
       // non-normalized name
       // hook from the plugin defining the type
-      Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
-                        $_POST["action"]);
+//       Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
+//                         $_POST["action"]);
    } else {
+//       print_r($_POST);
       $item->showMassiveActionsParameters($_POST);
    }
 }
