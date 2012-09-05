@@ -1405,10 +1405,9 @@ class Toolbox {
 
       $content = "";
       $taburl  = parse_url($url);
-
       // Connection directe
       if (empty($CFG_GLPI["proxy_name"])) {
-         if ($fp .= @fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
+         if ($fp = @fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
                             $errno, $errstr, 1)) {
 
             if (isset($taburl["path"]) && ($taburl["path"] != '/')) {

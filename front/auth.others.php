@@ -45,10 +45,6 @@ if (isset($_POST["update"])) {
    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
-if (!isset($_GET["id"])) {
-   $_GET["id"]="";
-}
-
 Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'],"config","extauth","others");
 
 Auth::showOtherAuthList();

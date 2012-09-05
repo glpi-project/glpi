@@ -34,9 +34,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_GET["synthese"])) {
-   $_GET["synthese"] = "no";
-}
+
 Session::checkCentralAccess();
 
 Html::header(__('Global'), $_SERVER['PHP_SELF'], "inventory", "state");
