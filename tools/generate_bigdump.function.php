@@ -2293,7 +2293,20 @@ function generate_entity($ID_entity) {
    $FIRST["peripherals"] = getMaxItem("glpi_peripherals")+1;
    $c       = new Computer();
    $mon     = new Monitor();
-   $cdev    = new Computer_Device();
+   
+   $cdevmb    = new Item_DeviceMotherBoard();
+   $cdevproc  = new Item_DeviceProcessor();
+   $cdevmem   = new Item_DeviceMemory();
+   $cdevhd    = new Item_DeviceHardDrive();
+   $cdevnc    = new Item_DeviceNetworkCard();
+   $cdevdr    = new Item_DeviceDrive();
+   $cdevcon   = new Item_DeviceControl();
+   $cdevgc    = new Item_DeviceGraphicCard();
+   $cdevsc    = new Item_DeviceSoundCard();
+   $cdevpci   = new Item_DevicePci();
+   $cdevcase  = new Item_DeviceCase();
+   $cdevps    = new Item_DevicePowerSupply();
+
    $cdisk   = new ComputerDisk();
    $np      = new Netpoint();
    $ci      = new Computer_Item();
@@ -2356,59 +2369,60 @@ function generate_entity($ID_entity) {
       addInfocoms('Computer', $compID, $ID_entity);
 
       // ADD DEVICE
-      $cdev->add(array('itemtype'              => 'DeviceMotherBoard',
-                       'computers_id'          => $compID,
-                       'devicemotherboards_id' => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array('itemtype'              => 'DeviceProcessor',
-                       'computers_id'          => $compID,
+      $cdevmb->add(array('itemtype'              => 'Computer',
+                         'items_id'              => $compID,
+                         'devicemotherboards_id' => mt_rand(1,$MAX['device'])));
+
+      $cdevproc->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'deviceprocessors_id'   => mt_rand(1,$MAX['device']),
                        'specificity'           => (1000+200*mt_rand(0,10))));
 
-      $cdev->add(array('itemtype'              => 'DeviceMemory',
-                       'computers_id'          => $compID,
+      $cdevmem->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'devicememories_id'     => mt_rand(1,$MAX['device']),
                        'specificity'           => (1024*mt_rand(0,6))));
 
-      $cdev->add(array('itemtype'              => 'DeviceHardDrive',
-                       'computers_id'          => $compID,
+      $cdevhd->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'deviceharddrives_id'   => mt_rand(1,$MAX['device']),
                        'specificity'           => (51200*mt_rand(0,10))));
 
-      $cdev->add(array('itemtype'              => 'DeviceNetworkCard',
-                       'computers_id'          => $compID,
+      $cdevnc->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'devicenetworkcards_id' => mt_rand(1,$MAX['device']),
                        'specificity'           => getNextMAC()));
 
-      $cdev->add(array('itemtype'              => 'DeviceDrive',
-                       'computers_id'          => $compID,
+      $cdevdr->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'devicedrives_id'       => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array('itemtype'              => 'DeviceControl',
-                       'computers_id'          => $compID,
+      $cdevcon->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'devicecontrols_id'     => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array('itemtype'              => 'DeviceGraphicCard',
-                       'computers_id'          => $compID,
+      $cdevgc->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'devicegraphiccards_id' => mt_rand(1,$MAX['device']),
                        'specificity'           => (256*mt_rand(0,8))));
 
-      $cdev->add(array('itemtype'              => 'DeviceSoundCard',
-                       'computers_id'          => $compID,
+      $cdevsc->add(array('itemtype'              => 'Computer',
+                       'items_id'          => $compID,
                        'devicesoundcards_id'   => mt_rand(1,$MAX['device'])));
 
       if (mt_rand(0,100)<20) {
-         $cdev->add(array('itemtype'         => 'DevicePci',
-                          'computers_id'     => $compID,
+         $cdevpci->add(array('itemtype'         => 'Computer',
+                          'items_id'     => $compID,
                           'devicepcis_id'    => mt_rand(1,$MAX['device'])));
       }
 
-      $cdev->add(array('itemtype'         => 'DeviceCase',
-                       'computers_id'     => $compID,
+      $cdevcase->add(array('itemtype'         => 'Computer',
+                       'items_id'     => $compID,
                        'devicecases_id'   => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array('itemtype'                 => 'DevicePowerSupply',
-                       'computers_id'             => $compID,
+      $cdevps->add(array('itemtype'                 => 'Computer',
+                       'items_id'             => $compID,
                        'devicepowersupplies_id'   => mt_rand(1,$MAX['device'])));
 
       // insert disk
