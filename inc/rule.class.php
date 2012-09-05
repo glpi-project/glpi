@@ -549,7 +549,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($this->ruleactionclass, $paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -709,7 +709,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
          Html::closeForm();
       }
 
