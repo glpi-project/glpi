@@ -618,12 +618,12 @@ if (count($files)) {
            echo "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__('Replace the current database with the backup file %s?'), $file);
-           echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
+           echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
                                           "window.location='".$CFG_GLPI["root_doc"].
                                           "/front/backup.php?file=$file&amp;donotcheckversion=1'").
                 ">".__('Restore')."</a>&nbsp;</td>";
 
-           echo "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
+           echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
            "</td></tr>";
    }
 }
