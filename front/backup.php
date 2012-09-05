@@ -552,7 +552,7 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
 }
 
 if (isset($_POST["delfile"])) {
-   if (isset($_POST['file']) && ($_POST["file"] != ""))
+   if (isset($_POST['file']) && ($_POST["file"] != "")) {
       $filename = $_POST["file"];
       if (is_file($path."/".$_POST["file"])) {
          unlink($path."/".$_POST["file"]);
