@@ -1,4 +1,4 @@
-#GLPI Dump database on 2012-06-12 12:06
+#GLPI Dump database on 2012-09-05 19:43
 
 ### Dump table glpi_alerts
 
@@ -498,22 +498,6 @@ CREATE TABLE `glpi_changetasks` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_commondbconnexities
-
-DROP TABLE IF EXISTS `glpi_commondbconnexities`;
-CREATE TABLE `glpi_commondbconnexities` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `items_id` int(11) NOT NULL DEFAULT '0',
-  `connexitytype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `connexities_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`connexitytype`,`connexities_id`),
-  KEY `item` (`itemtype`, `items_id`),
-  KEY `connexity` (`connexitytype`,`connexities_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_computerdisks
 
 DROP TABLE IF EXISTS `glpi_computerdisks`;
@@ -610,172 +594,6 @@ CREATE TABLE `glpi_computers` (
   KEY `is_deleted` (`is_deleted`),
   KEY `is_ocs_import` (`is_ocs_import`),
   KEY `groups_id_tech` (`groups_id_tech`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicecases
-
-DROP TABLE IF EXISTS `glpi_computers_devicecases`;
-CREATE TABLE `glpi_computers_devicecases` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicecases_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicecases_id` (`devicecases_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicecontrols
-
-DROP TABLE IF EXISTS `glpi_computers_devicecontrols`;
-CREATE TABLE `glpi_computers_devicecontrols` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicecontrols_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicecontrols_id` (`devicecontrols_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicedrives
-
-DROP TABLE IF EXISTS `glpi_computers_devicedrives`;
-CREATE TABLE `glpi_computers_devicedrives` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicedrives_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicedrives_id` (`devicedrives_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicegraphiccards
-
-DROP TABLE IF EXISTS `glpi_computers_devicegraphiccards`;
-CREATE TABLE `glpi_computers_devicegraphiccards` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicegraphiccards_id` int(11) NOT NULL DEFAULT '0',
-  `specificity` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicegraphiccards_id` (`devicegraphiccards_id`),
-  KEY `specificity` (`specificity`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_deviceharddrives
-
-DROP TABLE IF EXISTS `glpi_computers_deviceharddrives`;
-CREATE TABLE `glpi_computers_deviceharddrives` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `deviceharddrives_id` int(11) NOT NULL DEFAULT '0',
-  `specificity` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `deviceharddrives_id` (`deviceharddrives_id`),
-  KEY `specificity` (`specificity`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicememories
-
-DROP TABLE IF EXISTS `glpi_computers_devicememories`;
-CREATE TABLE `glpi_computers_devicememories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicememories_id` int(11) NOT NULL DEFAULT '0',
-  `specificity` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicememories_id` (`devicememories_id`),
-  KEY `specificity` (`specificity`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicemotherboards
-
-DROP TABLE IF EXISTS `glpi_computers_devicemotherboards`;
-CREATE TABLE `glpi_computers_devicemotherboards` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicemotherboards_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicemotherboards_id` (`devicemotherboards_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicenetworkcards
-
-DROP TABLE IF EXISTS `glpi_computers_devicenetworkcards`;
-CREATE TABLE `glpi_computers_devicenetworkcards` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-  `specificity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicenetworkcards_id` (`devicenetworkcards_id`),
-  KEY `specificity` (`specificity`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicepcis
-
-DROP TABLE IF EXISTS `glpi_computers_devicepcis`;
-CREATE TABLE `glpi_computers_devicepcis` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicepcis_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicepcis_id` (`devicepcis_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicepowersupplies
-
-DROP TABLE IF EXISTS `glpi_computers_devicepowersupplies`;
-CREATE TABLE `glpi_computers_devicepowersupplies` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicepowersupplies_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicepowersupplies_id` (`devicepowersupplies_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_deviceprocessors
-
-DROP TABLE IF EXISTS `glpi_computers_deviceprocessors`;
-CREATE TABLE `glpi_computers_deviceprocessors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `deviceprocessors_id` int(11) NOT NULL DEFAULT '0',
-  `specificity` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `deviceprocessors_id` (`deviceprocessors_id`),
-  KEY `specificity` (`specificity`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computers_devicesoundcards
-
-DROP TABLE IF EXISTS `glpi_computers_devicesoundcards`;
-CREATE TABLE `glpi_computers_devicesoundcards` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `computers_id` int(11) NOT NULL DEFAULT '0',
-  `devicesoundcards_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `devicesoundcards_id` (`devicesoundcards_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1237,8 +1055,8 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','15','0','2012-06-12 12:06:05','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','15','1','2012-06-12 12:06:05','2','0.0143969','0','Action terminée, rien à faire');
+INSERT INTO `glpi_crontasklogs` VALUES ('1','15','0','2012-09-05 19:42:44','0','0','0','Mode d\'exécution : GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('2','15','1','2012-09-05 19:42:44','2','0.0178008','0','Action terminée, rien à faire');
 
 ### Dump table glpi_crontasks
 
@@ -1276,7 +1094,7 @@ INSERT INTO `glpi_crontasks` VALUES ('11','CronTask','checkupdate','604800',NULL
 INSERT INTO `glpi_crontasks` VALUES ('12','CronTask','session','86400',NULL,'1','1','3','0','24','30','2011-08-30 08:22:27',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('13','CronTask','graph','3600',NULL,'1','1','3','0','24','30','2011-12-06 09:48:42',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('14','ReservationItem','reservation','3600',NULL,'1','1','3','0','24','30','2012-04-05 20:31:57',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30','2012-06-12 12:06:05',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30','2012-09-05 19:42:44',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -1356,7 +1174,7 @@ CREATE TABLE `glpi_devicegraphiccards` (
   `interfacetypes_id` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-  `specif_default` int(11) NOT NULL,
+  `memory_default` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
@@ -1375,7 +1193,7 @@ CREATE TABLE `glpi_deviceharddrives` (
   `cache` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-  `specif_default` int(11) NOT NULL,
+  `capacity_default` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
@@ -1392,7 +1210,7 @@ CREATE TABLE `glpi_devicememories` (
   `frequence` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-  `specif_default` int(11) NOT NULL,
+  `size_default` int(11) NOT NULL DEFAULT '0',
   `devicememorytypes_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
@@ -1441,7 +1259,7 @@ CREATE TABLE `glpi_devicenetworkcards` (
   `bandwidth` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-  `specif_default` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `mac_default` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`)
@@ -1487,7 +1305,7 @@ CREATE TABLE `glpi_deviceprocessors` (
   `frequence` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-  `specif_default` int(11) NOT NULL,
+  `frequency_default` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`)
@@ -1617,7 +1435,7 @@ INSERT INTO `glpi_displaypreferences` VALUES ('120','ReservationItem','3','2','0
 INSERT INTO `glpi_displaypreferences` VALUES ('125','Budget','3','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('122','Software','72','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('123','Software','163','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('124','Budget','2','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('124','Budget','5','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('126','Budget','4','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('127','Budget','19','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('128','Crontask','8','1','0');
@@ -1715,6 +1533,7 @@ INSERT INTO `glpi_displaypreferences` VALUES ('219','NetworkName','12','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('220','NetworkName','13','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('221','Blacklist','12','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('222','Blacklist','11','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('223','ReservationItem','5','3','0');
 
 ### Dump table glpi_documentcategories
 
@@ -2003,7 +1822,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2012-06-12 12:06:08','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2012-09-05 19:42:46','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
 
 ### Dump table glpi_fieldblacklists
 
@@ -2305,6 +2124,7 @@ CREATE TABLE `glpi_ipaddresses` (
   `binary_2` int(10) unsigned NOT NULL DEFAULT '0',
   `binary_3` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
   KEY `textual` (`name`),
   KEY `binary` (`binary_0`,`binary_1`,`binary_2`,`binary_3`),
   KEY `item` (`itemtype`,`items_id`)
@@ -2362,6 +2182,187 @@ CREATE TABLE `glpi_ipnetworks` (
   KEY `netmask` (`netmask_0`,`netmask_1`,`netmask_2`,`netmask_3`),
   KEY `gateway` (`gateway_0`,`gateway_1`,`gateway_2`,`gateway_3`),
   KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicecases
+
+DROP TABLE IF EXISTS `glpi_items_devicecases`;
+CREATE TABLE `glpi_items_devicecases` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicecases_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicecases_id` (`devicecases_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicecontrols
+
+DROP TABLE IF EXISTS `glpi_items_devicecontrols`;
+CREATE TABLE `glpi_items_devicecontrols` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicecontrols_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicecontrols_id` (`devicecontrols_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicedrives
+
+DROP TABLE IF EXISTS `glpi_items_devicedrives`;
+CREATE TABLE `glpi_items_devicedrives` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicedrives_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicedrives_id` (`devicedrives_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicegraphiccards
+
+DROP TABLE IF EXISTS `glpi_items_devicegraphiccards`;
+CREATE TABLE `glpi_items_devicegraphiccards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicegraphiccards_id` int(11) NOT NULL DEFAULT '0',
+  `memory` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicegraphiccards_id` (`devicegraphiccards_id`),
+  KEY `specificity` (`memory`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_deviceharddrives
+
+DROP TABLE IF EXISTS `glpi_items_deviceharddrives`;
+CREATE TABLE `glpi_items_deviceharddrives` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deviceharddrives_id` int(11) NOT NULL DEFAULT '0',
+  `capacity` int(11) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `deviceharddrives_id` (`deviceharddrives_id`),
+  KEY `specificity` (`capacity`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicememories
+
+DROP TABLE IF EXISTS `glpi_items_devicememories`;
+CREATE TABLE `glpi_items_devicememories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicememories_id` int(11) NOT NULL DEFAULT '0',
+  `size` int(11) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicememories_id` (`devicememories_id`),
+  KEY `specificity` (`size`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicemotherboards
+
+DROP TABLE IF EXISTS `glpi_items_devicemotherboards`;
+CREATE TABLE `glpi_items_devicemotherboards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicemotherboards_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicemotherboards_id` (`devicemotherboards_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicenetworkcards
+
+DROP TABLE IF EXISTS `glpi_items_devicenetworkcards`;
+CREATE TABLE `glpi_items_devicenetworkcards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicenetworkcards_id` (`devicenetworkcards_id`),
+  KEY `specificity` (`mac`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicepcis
+
+DROP TABLE IF EXISTS `glpi_items_devicepcis`;
+CREATE TABLE `glpi_items_devicepcis` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicepcis_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicepcis_id` (`devicepcis_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicepowersupplies
+
+DROP TABLE IF EXISTS `glpi_items_devicepowersupplies`;
+CREATE TABLE `glpi_items_devicepowersupplies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicepowersupplies_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicepowersupplies_id` (`devicepowersupplies_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_deviceprocessors
+
+DROP TABLE IF EXISTS `glpi_items_deviceprocessors`;
+CREATE TABLE `glpi_items_deviceprocessors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deviceprocessors_id` int(11) NOT NULL DEFAULT '0',
+  `frequency` int(11) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `deviceprocessors_id` (`deviceprocessors_id`),
+  KEY `specificity` (`frequency`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicesoundcards
+
+DROP TABLE IF EXISTS `glpi_items_devicesoundcards`;
+CREATE TABLE `glpi_items_devicesoundcards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicesoundcards_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicesoundcards_id` (`devicesoundcards_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2875,13 +2876,13 @@ DROP TABLE IF EXISTS `glpi_networkportethernets`;
 CREATE TABLE `glpi_networkportethernets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `networkports_id` int(11) NOT NULL DEFAULT '0',
-  `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+  `items_devicenetworkcards_id` int(11) NOT NULL,
   `netpoints_id` int(11) NOT NULL DEFAULT '0',
   `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT '' COMMENT 'T, LX, SX',
   `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `networkports_id` (`networkports_id`),
-  KEY `card` (`computers_devicenetworkcards_id`),
+  KEY `card` (`items_devicenetworkcards_id`),
   KEY `netpoint` (`netpoints_id`),
   KEY `type` (`type`),
   KEY `speed` (`speed`)
@@ -2955,14 +2956,14 @@ DROP TABLE IF EXISTS `glpi_networkportwifis`;
 CREATE TABLE `glpi_networkportwifis` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `networkports_id` int(11) NOT NULL DEFAULT '0',
-  `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+  `items_devicenetworkcards_id` int(11) NOT NULL,
   `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
   `networkportwifis_id` int(11) NOT NULL DEFAULT '0' COMMENT 'only usefull in case of Managed node',
   `version` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
   `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
   PRIMARY KEY (`id`),
   UNIQUE KEY `networkports_id` (`networkports_id`),
-  KEY `card` (`computers_devicenetworkcards_id`),
+  KEY `card` (`items_devicenetworkcards_id`),
   KEY `essid` (`wifinetworks_id`),
   KEY `version` (`version`),
   KEY `mode` (`mode`)
@@ -3042,11 +3043,11 @@ INSERT INTO `glpi_notifications` VALUES ('33','Update Task','0','Problem','updat
 INSERT INTO `glpi_notifications` VALUES ('34','Delete Task','0','Problem','delete_task','mail','17','','1','1','2011-12-06 09:48:33');
 INSERT INTO `glpi_notifications` VALUES ('35','Close Problem','0','Problem','closed','mail','17','','1','1','2011-12-06 09:48:33');
 INSERT INTO `glpi_notifications` VALUES ('36','Delete Problem','0','Problem','delete','mail','17','','1','1','2011-12-06 09:48:33');
-INSERT INTO `glpi_notifications` VALUES ('37','Ticket Validation Answer','0','Ticket','validation_answer','mail','7','','1','1','2012-06-12 12:06:01');
-INSERT INTO `glpi_notifications` VALUES ('38','Contract End Periodicity','0','Contract','periodicity','mail','12','','1','1','2012-06-12 12:06:01');
-INSERT INTO `glpi_notifications` VALUES ('39','Contract Notice Periodicity','0','Contract','periodicitynotice','mail','12','','1','1','2012-06-12 12:06:01');
-INSERT INTO `glpi_notifications` VALUES ('40','Planning recall','0','PlanningRecall','planningrecall','mail','18','','1','1','2012-06-12 12:06:01');
-INSERT INTO `glpi_notifications` VALUES ('41','Delete Ticket','0','Ticket','delete','mail','4','','1','1','2012-06-12 12:06:02');
+INSERT INTO `glpi_notifications` VALUES ('37','Ticket Validation Answer','0','Ticket','validation_answer','mail','7','','1','1','2012-09-05 19:42:39');
+INSERT INTO `glpi_notifications` VALUES ('38','Contract End Periodicity','0','Contract','periodicity','mail','12','','1','1','2012-09-05 19:42:39');
+INSERT INTO `glpi_notifications` VALUES ('39','Contract Notice Periodicity','0','Contract','periodicitynotice','mail','12','','1','1','2012-09-05 19:42:39');
+INSERT INTO `glpi_notifications` VALUES ('40','Planning recall','0','PlanningRecall','planningrecall','mail','18','','1','1','2012-09-05 19:42:39');
+INSERT INTO `glpi_notifications` VALUES ('41','Delete Ticket','0','Ticket','delete','mail','4','','1','1','2012-09-05 19:42:40');
 
 ### Dump table glpi_notificationtargets
 
@@ -3170,7 +3171,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('14','Ticket Satisfaction','Tic
 INSERT INTO `glpi_notificationtemplates` VALUES ('15','Item not unique','FieldUnicity','2011-03-04 11:35:16',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('16','Crontask','Crontask','2011-03-04 11:35:16',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('17','Problems','Problem','2011-12-06 09:48:33',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('18','Planning recall','PlanningRecall','2012-06-12 12:06:01',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('18','Planning recall','PlanningRecall','2012-09-05 19:42:39',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -4341,8 +4342,8 @@ INSERT INTO `glpi_ruleactions` VALUES ('2','2','assign','entities_id','0');
 INSERT INTO `glpi_ruleactions` VALUES ('3','3','assign','entities_id','0');
 INSERT INTO `glpi_ruleactions` VALUES ('4','4','assign','_refuse_email_no_response','1');
 INSERT INTO `glpi_ruleactions` VALUES ('5','5','assign','_refuse_email_no_response','1');
-INSERT INTO `glpi_ruleactions` VALUES ('6','6', 'fromitem', 'locations_id', '1');
-INSERT INTO `glpi_ruleactions` VALUES ('7','7', 'fromuser', 'locations_id', '1');
+INSERT INTO `glpi_ruleactions` VALUES ('6','6','fromitem','locations_id','1');
+INSERT INTO `glpi_ruleactions` VALUES ('7','7','fromuser','locations_id','1');
 
 ### Dump table glpi_rulecachecomputermodels
 
@@ -4635,10 +4636,10 @@ INSERT INTO `glpi_rulecriterias` VALUES ('5','3','subject','6','/.*/');
 INSERT INTO `glpi_rulecriterias` VALUES ('6','4','x-auto-response-suppress','6','/\\S+/');
 INSERT INTO `glpi_rulecriterias` VALUES ('7','5','auto-submitted','6','/\\S+/');
 INSERT INTO `glpi_rulecriterias` VALUES ('8','5','auto-submitted','1','no');
-INSERT INTO `glpi_rulecriterias` VALUES ('9', '6', 'locations_id', 9, '1');
-INSERT INTO `glpi_rulecriterias` VALUES ('10', '6', 'items_locations', 8, '1');
-INSERT INTO `glpi_rulecriterias` VALUES ('11', '7', 'locations_id', 9, '1');
-INSERT INTO `glpi_rulecriterias` VALUES ('12', '7', 'users_locations', 8, '1');
+INSERT INTO `glpi_rulecriterias` VALUES ('9','6','locations_id','9','1');
+INSERT INTO `glpi_rulecriterias` VALUES ('10','6','items_locations','8','1');
+INSERT INTO `glpi_rulecriterias` VALUES ('11','7','locations_id','9','1');
+INSERT INTO `glpi_rulecriterias` VALUES ('12','7','users_locations','8','1');
 
 ### Dump table glpi_rulerightparameters
 
@@ -4693,8 +4694,8 @@ INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL
 INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0');
 INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1');
 INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1');
-INSERT INTO `glpi_rules` VALUES ('6', 0, 'RuleTicket', 1, 'Ticket location from item', NULL, 'AND', 0, 'Automatically generated by GLPI 0.84', NULL, 1);
-INSERT INTO `glpi_rules` VALUES ('7', 0, 'RuleTicket', 2, 'Ticket location from user', NULL, 'AND', 0, 'Automatically generated by GLPI 0.84', NULL, 1);
+INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item',NULL,'AND','0','Généré automatiquement par GLPI 0.84',NULL,'1');
+INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user',NULL,'AND','0','Généré automatiquement par GLPI 0.84',NULL,'1');
 
 ### Dump table glpi_slalevelactions
 
@@ -5494,7 +5495,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2012-06-12 12:06:08','2010-05-06 09:31:04',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2012-09-05 19:42:46','2010-05-06 09:31:04',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
@@ -5555,9 +5556,9 @@ CREATE TABLE `glpi_vlans` (
   `comment` text COLLATE utf8_unicode_ci,
   `tag` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `tag` (`tag`),
-  KEY `name` (`name`)
+  KEY `tag` (`tag`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -5577,3 +5578,4 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `essid` (`essid`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
