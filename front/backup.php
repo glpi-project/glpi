@@ -35,7 +35,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_GET['action']) && ($_GET['action'] == 'check_version')) {
+if (isset($_POST['check_version'])) {
    Session::checkRight("check_update", "r");
    Toolbox::checkNewVersionAvailable(0, true);
    Html::back();
@@ -563,8 +563,7 @@ if (isset($_GET["delfile"]) && ($_GET["delfile"] != "")) {
 if (Session::haveRight("check_update","r")) {
    echo "<div class='center spaced'><table class='tab_glpi'>";
    echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
-   echo "<a href='backup.php?action=check_version' class='vsubmit'>".
-         __('Check if a new version is available')."</a>";
+   Html::showSimpleForm($_SERVER['PHP_SELF'], 'check_version', __('Check if a new version is available'));
    echo "</td></tr></table></div>";
 }
 

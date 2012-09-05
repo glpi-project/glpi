@@ -67,7 +67,6 @@ class Ajax {
             }
          }
       }
-
       echo "<script type='text/javascript'>";
       echo "var $name=new Ext.Window({
          layout:'fit',
