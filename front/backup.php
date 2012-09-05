@@ -551,12 +551,14 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
    }
 }
 
-if (isset($_GET["delfile"]) && ($_GET["delfile"] != "")) {
-   $filename = $_GET["delfile"];
-   if (is_file($path."/".$_GET["delfile"])) {
-      unlink($path."/".$_GET["delfile"]);
-      // TRANS: %s is a file name
-      echo "<div class ='center spaced'>".sprintf(__('%s deleted'), $filename)."</div>";
+if (isset($_POST["delfile"])) {
+   if (isset($_POST['file']) && ($_POST["file"] != ""))
+      $filename = $_POST["file"];
+      if (is_file($path."/".$_POST["file"])) {
+         unlink($path."/".$_POST["file"]);
+         // TRANS: %s is a file name
+         echo "<div class ='center spaced'>".sprintf(__('%s deleted'), $filename)."</div>";
+      }
    }
 }
 
@@ -610,10 +612,9 @@ if (count($files)) {
            "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__('Delete the file %s?'), $file);
-           echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
-                     "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?delfile=$file'").
-                ">".__('Delete')."</a>&nbsp;</td>";
-
+           Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', __('Delete'), array('file' => $file),'','',$string);
+           
+           echo "</td>";
            echo "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__('Replace the current database with the backup file %s?'), $file);
