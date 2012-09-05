@@ -951,12 +951,18 @@ class Search {
             echo self::showHeader($output_type, $end_display-$begin_display+1, $nbcols);
 
             // New Line for Header Items Line
+            $headers_line        = '';
+            $headers_line_top    = '';
+            $headers_line_bottom = '';
             echo self::showNewLine($output_type);
             $header_num = 1;
-
             if (($output_type == self::HTML_OUTPUT)
                 && $showmassiveactions) { // HTML display - massive modif
-               echo self::showHeaderItem($output_type,
+               $headers_line_top .= self::showHeaderItem($output_type,
+                                         Html::getCheckAllAsCheckbox('massform'.$itemtype),
+                                         $header_num, "", 0,
+                                         $p['order']);
+               $headers_line_bottom .= self::showHeaderItem($output_type,
                                          Html::getCheckAllAsCheckbox('massform'.$itemtype),
                                          $header_num, "", 0,
                                          $p['order']);
@@ -972,7 +978,7 @@ class Search {
                              (($p['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$p['start'].
                              $globallinkto;
                }
-               echo self::showHeaderItem($output_type, $searchopt[$itemtype][$val]["name"],
+               $headers_line .= self::showHeaderItem($output_type, $searchopt[$itemtype][$val]["name"],
                                          $header_num, $linkto,$p['sort']==$val, $p['order']);
             }
 
@@ -992,7 +998,7 @@ class Search {
                            }
                         }
 
-                        echo self::showHeaderItem($output_type,
+                        $headers_line .= self::showHeaderItem($output_type,
                                                   sprintf(__('%1$s - %2$s'),
                                                           $metanames[$p['itemtype2'][$i]],
                                                           $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"]),
@@ -1005,20 +1011,25 @@ class Search {
 
             // Add specific column Header
             if ($itemtype == 'CartridgeItem') {
-               echo self::showHeaderItem($output_type, _n('Cartridge','Cartridges',2), $header_num);
+               $headers_line .= self::showHeaderItem($output_type, _n('Cartridge','Cartridges',2), $header_num);
             }
             if ($itemtype == 'ConsumableItem') {
-               echo self::showHeaderItem($output_type, _n('Consumable','Consumables',2), $header_num);
+               $headers_line .= self::showHeaderItem($output_type, _n('Consumable','Consumables',2), $header_num);
             }
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
-               echo self::showHeaderItem($output_type, __('Item type'), $header_num);
+               $headers_line .= self::showHeaderItem($output_type, __('Item type'), $header_num);
             }
             if (($itemtype == 'ReservationItem')
                 && ($output_type == self::HTML_OUTPUT)) {
-               echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
+               $headers_line .= self::showHeaderItem($output_type, "&nbsp;", $header_num);
             }
             // End Line for column headers
-            echo self::showEndLine($output_type);
+            $headers_line .= self::showEndLine($output_type);
+
+            $headers_line_top    .= $headers_line;
+            $headers_line_bottom .= $headers_line;
+            
+            echo $headers_line_top;
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
@@ -1376,6 +1387,8 @@ class Search {
                }
             }
 
+
+            echo $headers_line_bottom;
             // Display footer
             echo self::showFooter($output_type, $title);
 
