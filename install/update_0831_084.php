@@ -2001,16 +2001,10 @@ function update0831to084() {
    migrateComputerDevice('DeviceCase');
    migrateComputerDevice('DevicePowerSupply');
 
-
-   $query = "ALTER TABLE `glpi_networkportethernets`
-             CHANGE `computers_devicenetworkcards_id`
-                    `items_devicenetworkcards_id` int(11) NOT NULL";
-   $DB->query($query);
-   $query = "ALTER TABLE `glpi_networkportwifis`
-             CHANGE `computers_devicenetworkcards_id`
-                    `items_devicenetworkcards_id` int(11) NOT NULL";
-   $DB->query($query);
-
+   $migration->changeField('glpi_networkportethernets', 'computers_devicenetworkcards_id',
+                     'items_devicenetworkcards_id', 'integer', array('value' => 0));
+   $migration->changeField('glpi_networkportwifis', 'computers_devicenetworkcards_id',
+                     'items_devicenetworkcards_id', 'integer', array('value' => 0));
 
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 
