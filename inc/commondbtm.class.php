@@ -3133,7 +3133,7 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of massive actions
    **/
    function getAllMassiveActions($is_deleted=0, $checkitem=NULL) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
 
       if (!is_null($checkitem)) {
