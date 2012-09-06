@@ -430,7 +430,10 @@ class Ticket extends CommonITILObject {
             $ong[2] = $LANG['jobresolution'][2];
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
-               $ong[3] = $LANG['satisfaction'][0];
+               $satisfaction = new TicketSatisfaction();
+               if ($satisfaction->getFromDB($item->getID())) {
+                  $ong[3] = $LANG['satisfaction'][0];
+               }
             }
             if (Session::haveRight('observe_ticket','1')) {
                $ong[4] = $LANG['Menu'][13];
