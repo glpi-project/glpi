@@ -447,7 +447,10 @@ class Ticket extends CommonITILObject {
             $ong[2] = _n('Solution', 'Solutions', 1);
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
-               $ong[3] = __('Satisfaction');
+               $satisfaction = new TicketSatisfaction();
+               if ($satisfaction->getFromDB($item->getID())) {
+                  $ong[3] = __('Satisfaction');
+               }
             }
             if (Session::haveRight('observe_ticket','1')) {
                $ong[4] = __('Statistics');
@@ -4842,7 +4845,7 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $output_type     (default 'Search::HTML_OUTPUT')
-    * @param $mass_id id of the form to check all 
+    * @param $mass_id id of the form to check all
     */
    static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
 
@@ -4853,7 +4856,7 @@ class Ticket extends CommonITILObject {
 
       $items                           = array();
 
-      
+
       $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Status')]             = "glpi_tickets.status";
       $items[__('Date')]               = "glpi_tickets.date";
@@ -5136,7 +5139,7 @@ class Ticket extends CommonITILObject {
                                   value='1' $sel>";
          }
          echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
-         
+
          // First column
          $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          if ($output_type == Search::HTML_OUTPUT) {
