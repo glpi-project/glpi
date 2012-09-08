@@ -71,8 +71,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
                  WHERE $condition";
       }
       return '';
-  }
-  
+   }
+
    static function canCreate() {
       return static::canChild('canCreate');
    }
@@ -445,11 +445,19 @@ abstract class CommonDBChild extends CommonDBConnexity {
       global $CFG_GLPI;
 
       $items_id = $item->getID();
-      if (!$item->can($items_id,'r')) {
-         return false;
-      }
 
-      $canedit     = $item->can($items_id,"w");
+      if ($item->isNewItem()) {
+         if (!$item->canCreate()) {
+            return false;
+         }
+         $canedit     = $item->canUpdate();
+      } else {
+         if (!$item->can($items_id,'r')) {
+            return false;
+         }
+
+         $canedit     = $item->can($items_id,"w");
+      }
 
       $lower_name  = strtolower(get_called_class());
       $nb_item_var = 'nb'.$lower_name.'s';
@@ -491,10 +499,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $items_id = $item->getID();
 
-      if (!$item->can($items_id,'r')) {
-         return false;
+      if ($item->isNewItem()) {
+         if (!$item->canCreate()) {
+            return false;
+         }
+         $canedit     = $item->canUpdate();
+      } else {
+         if (!$item->can($items_id,'r')) {
+            return false;
+         }
+
+         $canedit     = $item->can($items_id,"w");
       }
-      $canedit    = $item->can($items_id,"w");
 
       $lower_name = strtolower($this->getType());
       $div_id     = $lower_name."add$items_id";

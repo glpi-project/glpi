@@ -50,7 +50,7 @@ class NetworkName extends FQDNLabel {
    public $dohistory             = true;
 
    static protected $forward_entity_to = array('IPAddress');
-   
+
    static public $canDeleteOnItemClean = false;
 
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
