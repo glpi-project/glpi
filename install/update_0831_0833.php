@@ -43,7 +43,7 @@ function update0831to0833() {
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   $migration->displayTitle($LANG['install'][4]." -> 0.83.3");
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.83.3'));
    $migration->setVersion('0.83.3');
 
    $backup_tables = false;
@@ -63,7 +63,8 @@ function update0831to0833() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
    }
 
-   $migration->displayMessage($LANG['update'][141] . ' - Compute entities informations on document links'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      __('Compute entities informations on document links'))); // Updating schema
 
    $entities    = getAllDatasFromTable('glpi_entities');
    $entities[0] = "Root";
@@ -76,9 +77,7 @@ function update0831to0833() {
                                           FROM `glpi_documents`
                                           WHERE `entities_id` = $entID
                                                 AND `is_recursive` = 0)";
-      $DB->query($query3)
-      or die("0.83 update entities_id and is_recursive=0 in glpi_documents_items ".
-               $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query3, "0.83 update entities_id and is_recursive=0 in glpi_documents_items");
 
       // Recursive ones
       $query3 = "UPDATE `glpi_documents_items`
@@ -87,13 +86,11 @@ function update0831to0833() {
                                           FROM `glpi_documents`
                                           WHERE `entities_id` = $entID
                                                 AND `is_recursive` = 1)";
-      $DB->query($query3)
-      or die("0.83 update entities_id and is_recursive=1 in glpi_documents_items ".
-               $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query3, "0.83 update entities_id and is_recursive=1 in glpi_documents_items");
    }
-   
+
    // ************ Keep it at the end **************
-   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
+   $migration->displayMessage(sprintf(__('Migration of glpi_displaypreferences')));
 
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

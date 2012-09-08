@@ -4304,7 +4304,6 @@ class Html {
     * @return String
     **/
    static function makeTitle ($string, $num, $tot) {
-      global $LANG;
 
       if (($num > 0) && ($num < $tot)) {
          // TRANS %1$d %2$d are numbers (displayed, total)
