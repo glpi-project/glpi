@@ -53,7 +53,7 @@ class NetworkPort extends CommonDBChild {
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
    static protected $forward_entity_to = array('NetworkName');
-   
+
    static function canCreate() {
       return (Session::haveRight('networking','w')
               && parent::canChild('canCreate'));
