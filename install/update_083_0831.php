@@ -38,12 +38,12 @@
  * @return bool for success (will die for most error)
 **/
 function update083to0831() {
-   global $DB, $LANG, $migration;
+   global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   $migration->displayTitle($LANG['install'][4]." -> 0.83.1");
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.83.1'));
    $migration->setVersion('0.83.1');
 
    $backup_tables = false;
@@ -66,7 +66,7 @@ function update083to0831() {
    $migration->addField('glpi_configs', 'allow_search_view',   'integer', array('value' => 2));
    $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
    $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
-   
+
    $migration->addKey('glpi_tickets', 'name');
 
    $migration->addField("glpi_profiles", "knowbase_admin", "char",
@@ -78,7 +78,7 @@ function update083to0831() {
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
 
    // ************ Keep it at the end **************
-   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
+   $migration->displayMessage(sprintf(__('Migration of glpi_displaypreferences')));
 
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
