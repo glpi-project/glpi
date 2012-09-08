@@ -2072,7 +2072,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return boolean
    **/
-   function isNewID($ID) {
+   static function isNewID($ID) {
       return (empty($ID) || ($ID <= 0));
    }
 

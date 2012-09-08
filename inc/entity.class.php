@@ -157,7 +157,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @see inc/CommonDBTM::isNewID()
    **/
-   function isNewID($ID) {
+   static function isNewID($ID) {
       return (($ID < 0) || !strlen($ID));
    }
 
