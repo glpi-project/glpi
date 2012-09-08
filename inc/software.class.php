@@ -314,7 +314,7 @@ class Software extends CommonDBTM {
                                     "sub_type='RuleDictionnarySoftware'") > 0)) {
          $actions['replay_dictionnary'] = __('Replay the dictionary rules');
       }
-      
+
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {
@@ -322,7 +322,7 @@ class Software extends CommonDBTM {
       }
       return $actions;
    }
-   
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -347,7 +347,7 @@ class Software extends CommonDBTM {
                $res['ko']++;
             }
             break;
-            
+
          case "compute_software_category" :
             $softcatrule = new RuleSoftwareCategoryCollection();
             foreach ($input["item"] as $key => $val) {
@@ -400,7 +400,7 @@ class Software extends CommonDBTM {
       }
       return $res;
    }
-   
+
    function getSearchOptions() {
 
       // Only use for History (not by search Engine)
@@ -681,12 +681,12 @@ class Software extends CommonDBTM {
    /**
     * Create a new software
     *
-    * @param name                   the software's name (need to be addslashes)
-    * @param manufacturer           the software's manufacturer (need to be addslashes)
-    * @param entity                 the entity in which the software must be added
-    * @param comment                (default '')
-    * @param is_recursive  boolean  must the software be recursive (false by default)
-    * @param is_helpdesk_visible    show in helpdesk, default : from config (false by default)
+    * @param name                          the software's name (need to be addslashes)
+    * @param manufacturer                  the software's manufacturer (need to be addslashes)
+    * @param entity                        the entity in which the software must be added
+    * @param comment                       (default '')
+    * @param is_recursive         boolean  must the software be recursive (false by default)
+    * @param is_helpdesk_visible           show in helpdesk, default : from config (false by default)
     *
     * @return the software's ID
    **/
@@ -740,12 +740,12 @@ class Software extends CommonDBTM {
    /**
     * Add a software. If already exist in trash restore it
     *
-    * @param name                   the software's name
-    * @param manufacturer           the software's manufacturer
-    * @param entity                 the entity in which the software must be added
-    * @param comment                comment (default '')
-    * @param is_recursive  boolean  must the software be recursive (false by default)
-    * @param is_helpdesk_visible    show in helpdesk, default = config value (false by default)
+    * @param name                            the software's name
+    * @param manufacturer                    the software's manufacturer
+    * @param entity                          the entity in which the software must be added
+    * @param comment                         comment (default '')
+    * @param is_recursive           boolean  must the software be recursive (false by default)
+    * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='',
                                   $is_recursive=false, $is_helpdesk_visible=NULL) {
@@ -870,7 +870,7 @@ class Software extends CommonDBTM {
          $paramsma = array('num_displayed'    => $nb,
                            'specific_actions' => array('mergesoftware' => __('Merge')) );
          Html::showMassiveActions(__CLASS__, $paramsma);
-         
+
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th width='10'>";
          echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);

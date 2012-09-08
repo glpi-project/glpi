@@ -150,13 +150,13 @@ class RuleTicket extends Rule {
                   break;
 
                case 'fromuser' :
-                  if ($action->fields['field']=='locations_id') {
+                  if ($action->fields['field'] == 'locations_id') {
                      $output['locations_id'] = $output['users_locations'];
                   }
                   break;
 
                case 'fromitem' :
-                  if ($action->fields['field']=='locations_id') {
+                  if ($action->fields['field'] == 'locations_id') {
                      $output['locations_id'] = $output['items_locations'];
                   }
                   break;
@@ -428,10 +428,10 @@ class RuleTicket extends Rule {
       $actions['users_id_validate_assign_supervisor']['force_actions']
                                           = array('add_validation');
 
-      $actions['locations_id']['name']           = __('Location');
-      $actions['locations_id']['type']           = 'dropdown';
-      $actions['locations_id']['table']          = 'glpi_locations';
-      $actions['locations_id']['force_actions']  = array('assign', 'fromuser', 'fromitem');
+      $actions['locations_id']['name']                = __('Location');
+      $actions['locations_id']['type']                = 'dropdown';
+      $actions['locations_id']['table']               = 'glpi_locations';
+      $actions['locations_id']['force_actions']       = array('assign', 'fromuser', 'fromitem');
 
       return $actions;
    }

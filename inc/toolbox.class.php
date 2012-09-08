@@ -332,10 +332,12 @@ class Toolbox {
       return $value;
    }
 
+
    /**
     *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
     *
     * @since version 0.83.3
+    *
     * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
     *
     * @return unclean item
@@ -357,6 +359,7 @@ class Toolbox {
 
       return $value;
    }
+
 
    /**
     * Log in 'php-errors' all args
@@ -1970,7 +1973,7 @@ class Toolbox {
    static function cleanInteger($integer) {
       return preg_replace("/[^0-9-]/", "", $integer);
    }
-   
+
    /**
     * Clean integer value (strip all chars not - and spaces )
     *
@@ -1980,6 +1983,6 @@ class Toolbox {
    **/
    static function cleanDecimal($integer) {
       return preg_replace("/[^0-9\.-]/", "", $integer);
-   }   
+   }
 }
 ?>

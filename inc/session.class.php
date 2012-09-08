@@ -1015,18 +1015,22 @@ class Session {
       return true;
    }
 
+
+
    /**
-   * Get new CSRF token
-   * @since version 0.83.3
-   * @return      string  new generated token
-   */
+    * Get new CSRF token
+    *
+    * @since version 0.83.3
+    *
+    * @return      string  new generated token
+   **/
    static public function getNewCSRFToken() {
       global $CURRENTCSRFTOKEN;
 
       if (empty($CURRENTCSRFTOKEN)) {
          $CURRENTCSRFTOKEN = md5(uniqid(rand(), TRUE));
       }
-      
+
       if (!isset($_SESSION['glpicsrftokens'])) {
          $_SESSION['glpicsrftokens'] = array();
       }
@@ -1034,12 +1038,16 @@ class Session {
       return $CURRENTCSRFTOKEN;
    }
 
+
    /**
-   * Clean expires CSRF tokens
-   * @since version 0.83.3
-   * @return      nothing
-   */
+    * Clean expires CSRF tokens
+    *
+    * @since version 0.83.3
+    *
+    * @return      nothing
+   **/
    static public function cleanCSRFTokens() {
+
       $now = time();
       if (isset($_SESSION['glpicsrftokens']) && is_array($_SESSION['glpicsrftokens'])) {
          if (count($_SESSION['glpicsrftokens'])) {
@@ -1050,32 +1058,40 @@ class Session {
             }
             $overflow = count($_SESSION['glpicsrftokens']) - GLPI_CSRF_MAX_TOKENS;
             if ($overflow > 0) {
-               $_SESSION['glpicsrftokens'] = array_slice($_SESSION['glpicsrftokens'], $overflow + 1, null, true);
-            }            
+               $_SESSION['glpicsrftokens'] = array_slice($_SESSION['glpicsrftokens'], $overflow + 1,
+                                                         null, true);
+            }
          }
       }
    }
+
+
    /**
-   * Validate that the page has a CSRF token in the POST data
-   * and that the token is legit/not expired.  If the token is valid
-   * it will be removed from the list of valid tokens.
-   *
-   * @param $data array $_POST datas
-   * @return boolean Valid csrf token.
-   */
+    * Validate that the page has a CSRF token in the POST data
+    * and that the token is legit/not expired.  If the token is valid
+    * it will be removed from the list of valid tokens.
+    *
+    * @since version 0.83.3
+    *
+    * @param $data array $_POST datas
+    *
+    * @return boolean Valid csrf token.
+   **/
    static public function validateCSRF($data) {
+
       if (!isset($data['_glpi_csrf_token'])) {
          Session::cleanCSRFTokens();
          return false;
       }
       $requestToken = $data['_glpi_csrf_token'];
-      if (isset($_SESSION['glpicsrftokens'][$requestToken]) && $_SESSION['glpicsrftokens'][$requestToken] >= time()) {
+      if (isset($_SESSION['glpicsrftokens'][$requestToken])
+          && ($_SESSION['glpicsrftokens'][$requestToken] >= time())) {
          unset($_SESSION['glpicsrftokens'][$requestToken]);
          Session::cleanCSRFTokens();
          return true;
       }
       Session::cleanCSRFTokens();
       return false;
-   }   
+   }
 }
 ?>

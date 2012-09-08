@@ -141,15 +141,18 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : Check HTTP_REFERRER : need to be in GLPI.
-if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
-   && isset($_POST) && is_array($_POST) && count($_POST)) {
+if (!defined('DO_NOT_CHECK_HTTP_REFERER')
+    && !isCommandLine()
+    && isset($_POST) && is_array($_POST) && count($_POST)) {
    if (!isset($_SERVER['HTTP_REFERER'])
-       || !is_array($url=parse_url($_SERVER['HTTP_REFERER']))
+       || !is_array($url = parse_url($_SERVER['HTTP_REFERER']))
        || !isset($url['host'])
        || (($url['host'] != $_SERVER['SERVER_NAME'])
-            && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER']) || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))
+           && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
+               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))
        || !isset($url['path'])
-       || (!empty($CFG_GLPI['root_doc']) && strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
+       || (!empty($CFG_GLPI['root_doc'])
+           && strpos($url['path'], $CFG_GLPI['root_doc']) !== 0)) {
       Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."), true);
    }
 }
