@@ -4422,15 +4422,17 @@ class Html {
     * @param $btname   String   button name
     * @param $btlabel  String   button label
     * @param $fields   Array    field name => field  value
-    * @param $btimage  String   button image uri (optional)
-    * @param $btoption String   optional button option
-    * @param $confirm  String   optional confirm message
+    * @param $btimage  String   button image uri (optional) (default '')
+    * @param $btoption String   optional button option (default '')
+    * @param $confirm  String   optional confirm message (default '')
     *
     * @since version 0.83.3
    **/
-   static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='', $confirm='') {
+   static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
+                                  $btoption='', $confirm='') {
       echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption, $confirm);
    }
+
 
    /**
     * Create a close form part including CSRF token

@@ -39,7 +39,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 
-if (isset($_POST["action"]) && $_POST["action"] != '-1'
+if (isset($_POST["action"]) && ($_POST["action"] != '-1')
     && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
     if (!isset($_POST['is_deleted'])) {
       $_POST['is_deleted'] = 0;
@@ -49,7 +49,7 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
       exit();
    }
    $checkitem = NULL;
- 
+
    if (isset($_POST['check_itemtype'])) {
       if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
          exit();
@@ -62,7 +62,7 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
       }
       echo "<input type='hidden' name='check_itemtype' value='".$_POST["check_itemtype"]."'>";
    }
-   
+
    $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
    if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
       echo "<input type='hidden' name='specific_action' value='0'>";
@@ -77,7 +77,6 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
          echo "<input type='hidden' name='specific_action' value='0'>";
       }
    }
-
 
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
@@ -100,7 +99,6 @@ if (isset($_POST["action"]) && $_POST["action"] != '-1'
 //       Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
 //                         $_POST["action"]);
    } else {
-//       print_r($_POST);
       $item->showMassiveActionsParameters($_POST);
    }
 }
