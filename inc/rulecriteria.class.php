@@ -44,11 +44,13 @@ class RuleCriteria extends CommonDBChild {
 
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    /**
     * @param $rule_type (default 'Rule)
    **/

@@ -46,13 +46,15 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    static public $itemtype  = 'TicketTemplate';
    static public $items_id  = 'tickettemplates_id';
    public $dohistory = true;
-   
+
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Predefined field', 'Predefined fields', $nb);
@@ -276,7 +278,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             Html::closeForm();
             echo "</div>";
          }
-         
+
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);

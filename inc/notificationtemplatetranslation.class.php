@@ -37,7 +37,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype  = 'NotificationTemplate';
    static public $items_id  = 'notificationtemplates_id';
-   
+
    public $dohistory = true;
 
 
@@ -45,12 +45,15 @@ class NotificationTemplateTranslation extends CommonDBChild {
       return _n('Template translation', 'Template translations', $nb);
    }
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    /**
     * @see inc/CommonDBTM::getName()
    **/
@@ -97,13 +100,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if (isset($options['notificationtemplates_id'])) {
          $notificationtemplates_id = $options['notificationtemplates_id'];
       }
-      
+
       if ($ID < 0) {
          // Create item
          $this->fields['notificationtemplates_id'] = $notificationtemplates_id;
       }
-      
-      $this->initForm($ID, $options);      
+
+      $this->initForm($ID, $options);
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
 
@@ -194,7 +197,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          $paramsma = array();
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
-         
+
       echo "<form name='form_language' id='form_language' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";

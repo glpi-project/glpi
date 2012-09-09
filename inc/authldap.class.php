@@ -1900,7 +1900,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<form action='$target' method=\"post\">";
       echo "<div class='center'>";
-      echo "<p >" . __('Please choose LDAP directory to import users from') . "</p>";
+      echo "<p>" . __('Please choose LDAP directory to import users from') . "</p>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><th colspan='2'>" . __('LDAP directory choice') . "</th></tr>";
 

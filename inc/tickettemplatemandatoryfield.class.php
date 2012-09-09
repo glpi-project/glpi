@@ -52,12 +52,15 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    /**
     * @see inc/CommonDBTM::getName()
     *
@@ -234,7 +237,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = array('num_displayed'  => $numrows);
             Html::showMassiveActions(__CLASS__, $massiveactionparams);
-         }         
+         }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>";
          echo self::getTypeName($DB->numrows($result));
@@ -243,7 +246,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<tr>";
             if ($canedit) {
                echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-            }            
+            }
             echo "<th>".__('Name')."</th>";
             echo "</tr>";
 

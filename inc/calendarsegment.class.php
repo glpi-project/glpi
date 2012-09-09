@@ -46,12 +46,15 @@ class CalendarSegment extends CommonDBChild {
    static public $itemtype = 'Calendar';
    static public $items_id = 'calendars_id';
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Time range','Time ranges',$nb);
    }
@@ -345,7 +348,7 @@ class CalendarSegment extends CommonDBChild {
          echo "<th width='10'>";
          Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
-      }      
+      }
       echo "<th>".__('Day')."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
@@ -363,7 +366,7 @@ class CalendarSegment extends CommonDBChild {
                echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
                echo "</td>";
             }
-            
+
             echo "<td>";
             echo $daysofweek[$data['day']];
             echo "</td>";

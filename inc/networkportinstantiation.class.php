@@ -531,7 +531,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * (Ethernet or Wifi). This method Allows us to select which one to select.
     *
     * @param $recursiveItems
-    * @param $multiple        NetworkPortAlias are based on one NetworkPort wherever
+    * @param $origin          NetworkPortAlias are based on one NetworkPort wherever
     *                         NetworkPortAggregate are based on several NetworkPort.
    **/
    function showNetworkPortSelector($recursiveItems, $origin) {
@@ -544,30 +544,27 @@ class NetworkPortInstantiation extends CommonDBChild {
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       echo "<td>" . __('Origin port') . "</td><td>\n";
-      $links_id = array();
-
+      $links_id      = array();
       $netport_types = array('NetworkPortEthernet', 'NetworkPortWifi');
       $selectOptions = array();
-
       $possible_ports = array();
+
       switch ($origin) {
+         case 'NetworkPortAlias' :
+            $possible_ports[-1]         = Dropdown::EMPTY_VALUE;
+            $field_name                 = 'networkports_id_alias';
+            $selectOptions['multiple']  = false;
+            $selectOptions['on_change'] = 'updateForm(this.options[this.selectedIndex].value)';
+            $netport_types[]            = 'NetworkPortAggregate';
+            break;
 
-      case 'NetworkPortAlias':
-         $possible_ports[-1]           = Dropdown::EMPTY_VALUE;
-         $field_name                 = 'networkports_id_alias';
-         $selectOptions['multiple']  = false;
-         $selectOptions['on_change'] = 'updateForm(this.options[this.selectedIndex].value)';
-         $netport_types[]            = 'NetworkPortAggregate';
-         break;
-
-      case 'NetworkPortAggregate':
-         $field_name                       = 'networkports_id_list';
-         $selectOptions['multiple']        = true;
-         $selectOptions['size']            = 4;
-         $selectOptions['mark_unmark_all'] = true;
-         $netport_types[]                  = 'NetworkPortAlias';
-         break;
-
+            case 'NetworkPortAggregate' :
+               $field_name                       = 'networkports_id_list';
+               $selectOptions['multiple']        = true;
+               $selectOptions['size']            = 4;
+               $selectOptions['mark_unmark_all'] = true;
+               $netport_types[]                  = 'NetworkPortAlias';
+               break;
       }
 
       if (isset($this->fields[$field_name])) {
@@ -590,9 +587,8 @@ class NetworkPortInstantiation extends CommonDBChild {
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
-            $array_element_name                  = call_user_func(array($netport_type,
-                                                                        'getTypeName'),
-                                                                  $DB->numrows($result));
+            $array_element_name = call_user_func(array($netport_type, 'getTypeName'),
+                                                 $DB->numrows($result));
             $possible_ports[$array_element_name] = array();
 
             while ($portEntry = $DB->fetch_assoc($result)) {
@@ -618,11 +614,9 @@ class NetworkPortInstantiation extends CommonDBChild {
          field.value = device_mac_addresses[devID];
    }
 </script>\n";
-
       }
 
       Dropdown::showFromArray($field_name, $possible_ports, $selectOptions);
-
       echo "</td>\n";
    }
 

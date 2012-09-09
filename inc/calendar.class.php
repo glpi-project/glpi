@@ -44,11 +44,14 @@ class Calendar extends CommonDropdown {
 
    static protected $forward_entity_to = array('CalendarSegment');
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'merge';
       return $forbidden;
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Calendar','Calendars',$nb);

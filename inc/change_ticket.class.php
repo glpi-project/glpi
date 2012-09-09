@@ -46,11 +46,14 @@ class Change_Ticket extends CommonDBRelation{
    static public $items_id_2 = 'tickets_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
-   }   
+   }
+
 
    static function getTypeName($nb=0) {
       return _n('Link Ticket/Change','Links Ticket/Change',$nb);
@@ -125,7 +128,7 @@ class Change_Ticket extends CommonDBRelation{
          Html::closeForm();
          echo "</div>";
       }
-      
+
 
       echo "<div class='spaced'>";
 
@@ -242,7 +245,7 @@ class Change_Ticket extends CommonDBRelation{
          echo "</div>";
       }
 
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);

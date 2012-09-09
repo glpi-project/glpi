@@ -42,10 +42,12 @@ class AuthLdapReplicate extends CommonDBTM {
    }
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    function prepareInputForAdd($input) {
 

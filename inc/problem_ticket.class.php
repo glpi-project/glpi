@@ -48,11 +48,13 @@ class Problem_Ticket extends CommonDBRelation{
 
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);
    }
@@ -181,7 +183,7 @@ class Problem_Ticket extends CommonDBRelation{
       $rand = mt_rand();
 //       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
 //              action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-// 
+//
 //       echo "<div class='center'><table class='tab_cadre_fixehov'>";
 //       echo "<tr><th colspan='9'>";
 //       printf(__('%1$s - %2$s'), _n('Problem', 'Problems', 2),
@@ -239,7 +241,7 @@ class Problem_Ticket extends CommonDBRelation{
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='11'>".Problem::getTypeName($numrows)."</th>";
-      echo "</tr>";      
+      echo "</tr>";
       if ($numrows) {
          Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Problem',
