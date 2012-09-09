@@ -43,11 +43,13 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'move_under';
       return $forbidden;
    }
-   
+
+
    /**
     * Method that must be overloaded. This method provides the ancestor of the current item
     * according to $this->input

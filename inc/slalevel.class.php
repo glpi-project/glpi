@@ -56,13 +56,16 @@ class SlaLevel extends RuleTicket {
    static function getTable() {
       return 'glpi_slalevels';
    }
-   
+
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Escalation level', 'Escalation levels', $nb);
    }
@@ -125,21 +128,21 @@ class SlaLevel extends RuleTicket {
 
          echo "</table></div>";
       }
-      
+
       $query = "SELECT *
                   FROM `glpi_slalevels`
                   WHERE `slas_id` = '$ID'
                   ORDER BY `execution_time`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
-      
+
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $numrows) {
@@ -193,7 +196,7 @@ class SlaLevel extends RuleTicket {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
          Html::closeForm();
-      }      
+      }
       echo "</div>";
    }
 
@@ -319,7 +322,7 @@ class SlaLevel extends RuleTicket {
             }
          }
       }
-               
+
       for ($i=1 ; $i<24 ; $i++) {
          if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
             $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour','+ %d hours',$i), $i);

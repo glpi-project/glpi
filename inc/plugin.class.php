@@ -532,7 +532,7 @@ class Plugin extends CommonDBTM {
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   $disabled = '';
                   if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
-                        || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
+                      || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                      _e('Not CSRF compliant');
                   } else if (function_exists($function) && $function()) {
                      echo "<a $disabled class='vsubmit' href='".$this->getSearchURL().
@@ -644,7 +644,7 @@ class Plugin extends CommonDBTM {
          self::load($this->fields['directory'],true);
          // No activation if not CSRF compliant
          if (!isset($PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']])
-            || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
+             || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
             return false;
          }
 

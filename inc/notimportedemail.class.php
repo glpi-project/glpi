@@ -42,8 +42,10 @@ class NotImportedEmail extends CommonDBTM {
    const USER_UNKNOWN  = 1;
    const FAILED_INSERT = 2;
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'delete';
       $forbidden[] = 'purge';
       $forbidden[] = 'restore';

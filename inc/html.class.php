@@ -2955,53 +2955,68 @@ class Html {
    }
 
 
-
-
    /**
     * Display "check All as" checkbox
     *
+    * @since version 0.84
+    *
     * @param $container_id string html of the container of checkboxes link to this check all checkbox
+    *
     * @return nothing / display item
    **/
    static function checkAllAsCheckbox($container_id) {
       echo Html::getCheckAllAsCheckbox($container_id);
    }
 
+
    /**
     * Get "check All as" checkbox
     *
+    * @since version 0.84
+    *
     * @param $container_id string html of the container of checkboxes link to this check all checkbox
+    *
     * @return Get checkbox string
    **/
    static function getCheckAllAsCheckbox($container_id) {
+
       $rand = mt_rand();
       $out = "<input title='".__('Check all as')."' type='checkbox' name='_checkall_$rand' ".
-                  "id='checkall_$rand' ".
-                  "onclick= \"if ( checkAsCheckboxes('checkall_$rand',
-                                                   '$container_id'))
+               "id='checkall_$rand' ".
+               "onclick= \"if ( checkAsCheckboxes('checkall_$rand',
+                                                 '$container_id'))
                                              {return true;}\">";
 
       return $out;
    }
 
+
    /**
     * Display open form for massive action
     *
-    * @param $name given name/id to the form
+    * @since version 0.84
+    *
+    * @param $name given name/id to the form   (default '')
+    *
     * @return nothing / display item
    **/
    static function openMassiveActionsForm($name='') {
       echo Html::getOpenMassiveActionsForm($name);
    }
 
+
    /**
     * Get open form for massive action string
     *
-    * @param $name given name/id to the form
+    * @since version 0.84
+    *
+    * @param $name given name/id to the form   (default '')
+    *
     * @return open form string
    **/
    static function getOpenMassiveActionsForm($name='') {
       global $CFG_GLPI;
+
       if (empty($name)) {
          $name = 'massaction_'.mt_rand();
       }
@@ -4324,23 +4339,25 @@ class Html {
     * @param $btname   String   button name
     * @param $btlabel  String   button label
     * @param $fields   Array    field name => field  value
-    * @param $btimage  String   button image uri (optional)
-    * @param $btoption String   optional button option
-    * @param $confirm  String   optional confirm message
+    * @param $btimage  String   button image uri (optional)   (default '')
+    * @param $btoption String   optional button option        (default '')
+    * @param $confirm  String   optional confirm message      (default '')
     *
     * @since version 0.84
    **/
-   static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='', $confirm = '') {
+   static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
+                                 $btoption='', $confirm = '') {
+
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }
       $fields['_glpi_simple_form'] = 1;
-      $fields[$btname] = $btname;
-      $javascriptArray = array();
+      $fields[$btname]             = $btname;
+      $javascriptArray             = array();
       foreach ($fields as $name => $value) {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
-            $javascriptArray[] = "$name:'".urlencode($value)."'";
+            $javascriptArray[] = sprintf(__('%1$s: %2$s'), $name, urlencode($value));
          }
       }
 
@@ -4355,7 +4372,7 @@ class Html {
          $link .= $btoption.' ';
       }
       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
-      $action = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";
+      $action  = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";
 
       if (is_array($confirm) || strlen($confirm)) {
          $link .= self::addConfirmationOnAction($confirm, $action);
@@ -4396,6 +4413,8 @@ class Html {
 //
 //       $SIMPLE_FORMS .= Html::closeForm(false);
    }
+
+
    /**
     * create a minimal form for simple action
     *
@@ -4423,6 +4442,7 @@ class Html {
     * @return String
    **/
    static function closeForm ($display=true) {
+
       $out = '';
       if (GLPI_USE_CSRF_CHECK) {
          $out .= "<input type='hidden' name='_glpi_csrf_token' value='".Session::getNewCSRFToken()."'>";
@@ -4432,9 +4452,8 @@ class Html {
       if ($display) {
          echo $out;
          return true;
-      } else  {
-         return $out;
       }
+      return $out;
    }
 
 }

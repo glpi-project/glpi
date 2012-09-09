@@ -47,11 +47,14 @@ class Document_Item extends CommonDBRelation{
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -399,6 +402,6 @@ class Document_Item extends CommonDBRelation{
 
    }
 
-   
+
 }
 ?>

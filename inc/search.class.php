@@ -960,12 +960,10 @@ class Search {
                 && $showmassiveactions) { // HTML display - massive modif
                $headers_line_top .= self::showHeaderItem($output_type,
                                          Html::getCheckAllAsCheckbox('massform'.$itemtype),
-                                         $header_num, "", 0,
-                                         $p['order']);
+                                         $header_num, "", 0, $p['order']);
                $headers_line_bottom .= self::showHeaderItem($output_type,
                                          Html::getCheckAllAsCheckbox('massform'.$itemtype),
-                                         $header_num, "", 0,
-                                         $p['order']);
+                                         $header_num, "", 0, $p['order']);
             }
 
             // Display column Headers for toview items
@@ -1028,7 +1026,7 @@ class Search {
 
             $headers_line_top    .= $headers_line;
             $headers_line_bottom .= $headers_line;
-            
+
             echo $headers_line_top;
 
             // if real search seek to begin of items to display (because of complete search)
@@ -1052,7 +1050,7 @@ class Search {
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                $massiveaction_field = 'refID';
             }
-            
+
             // Display Loop
             while (($i < $numrows) && ($i < $end_display)) {
                // Column num
@@ -1087,7 +1085,7 @@ class Search {
                      if (isset($_SESSION['glpimassiveactionselected'][$data[$massiveaction_field]])) {
                         $sel = "checked";
                      }
-                     
+
                      $tmpcheck = "<input type='checkbox' name='item[".$data[$massiveaction_field]."]' value='1'
                                     $sel>";
                   }

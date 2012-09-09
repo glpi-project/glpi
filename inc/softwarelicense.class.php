@@ -583,9 +583,12 @@ class SoftwareLicense extends CommonDBTM {
          if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed' => $num_displayed,
-                                            'extraparams' => array('options' =>
-                                                array('condition' => "`glpi_softwareversions`.`softwares_id` = $softwares_id")));
+               $massiveactionparams = array('num_displayed'
+                                              => $num_displayed,
+                                            'extraparams'
+                                              => array('options'
+                                                        => array('condition'
+                                                                 => "`glpi_softwareversions`.`softwares_id` = $softwares_id")));
 
                Html::showMassiveActions(__CLASS__, $massiveactionparams);
             }

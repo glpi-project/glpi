@@ -319,10 +319,17 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       return static::canRelation('canCreate');
    }
 
+   /**
+    * @since version 0.84
+   **/
    static function canView() {
       return static::canRelation('canView');
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    static function canUpdate() {
       return static::canRelation('canUpdate');
    }

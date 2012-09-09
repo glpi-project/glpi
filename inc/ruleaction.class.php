@@ -42,13 +42,14 @@ class RuleAction extends CommonDBChild {
    public $dohistory = true;
 
 
-
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    /**
     * @param $rule_type
    **/
@@ -191,8 +192,8 @@ class RuleAction extends CommonDBChild {
             if (isset($values['rules_id'])
               && !empty($values['rules_id'])
               && $generic_rule->getFromDB($values['rules_id'])) {
-               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) { 
-                  /// TODO review it : need to pass display param and others... 
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  /// TODO review it : need to pass display param and others...
                   return $this->displayActionSelectPattern($values);
                }
             }

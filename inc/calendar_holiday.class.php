@@ -46,12 +46,15 @@ class Calendar_Holiday extends CommonDBRelation {
    static public $itemtype_2 = 'Holiday';
    static public $items_id_2 = 'holidays_id';
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    function canCreateItem() {
 
       $calendar = new Calendar();
@@ -105,8 +108,8 @@ class Calendar_Holiday extends CommonDBRelation {
             $used[$data['id']] = $data['id'];
          }
       }
-      
-      
+
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
@@ -127,7 +130,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
 
       }
-      
+
       echo "<div class='spaced'>";
 
       if ($canedit && $numrows) {

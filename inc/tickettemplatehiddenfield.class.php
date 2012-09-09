@@ -47,11 +47,14 @@ class TicketTemplateHiddenField extends CommonDBChild {
    static public $items_id  = 'tickettemplates_id';
    public $dohistory = true;
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
-   }      
+   }
+
 
    static function getTypeName($nb=0) {
       return _n('Hidden field', 'Hidden fields', $nb);
@@ -197,7 +200,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
                 FROM `glpi_tickettemplatehiddenfields`
                 WHERE (`tickettemplates_id` = '$ID')";
       if ($result = $DB->query($query)) {
-      
+
          $hiddenfields = array();
          $used = array();
          if ($numrows = $DB->numrows($result)) {

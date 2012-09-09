@@ -46,12 +46,15 @@ class Contract_Item extends CommonDBRelation{
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-      
+
+
    /**
     * Check right on an contract - overloaded to check max_links_allowed
     *
@@ -124,7 +127,7 @@ class Contract_Item extends CommonDBRelation{
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
    function getSearchOptions() {
 
       $tab                     = array();
@@ -310,13 +313,13 @@ class Contract_Item extends CommonDBRelation{
 
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
-      
+
             if ($nb > $_SESSION['glpilist_limit']) {
                $link = "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
                      rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
                      rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
                      "&amp;start=0". "'>" . __('Device list')."</a>";
-                     
+
                $data[$itemtype] = array('longlist' => true,
                                         'name' => sprintf(__('%1$s: %2$s'), $item->getTypeName($nb), $nb),
                                         'link' => $link);
@@ -328,7 +331,7 @@ class Contract_Item extends CommonDBRelation{
             $totalnb += $nb;
          }
       }
-      
+
       if ($canedit
          && (($contract->fields['max_links_allowed'] == 0)
             || ($contract->fields['max_links_allowed'] > $totalnb))) {
@@ -351,7 +354,7 @@ class Contract_Item extends CommonDBRelation{
          Html::closeForm();
          echo "</div>";
       }
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $totalnb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -363,7 +366,7 @@ class Contract_Item extends CommonDBRelation{
 
       if ($canedit && $totalnb) {
          echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-      }      
+      }
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
@@ -374,7 +377,7 @@ class Contract_Item extends CommonDBRelation{
 
       $totalnb = 0;
       foreach ($data as $itemtype => $datas) {
-            
+
          if (isset($datas['longlist'])) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -443,6 +446,6 @@ class Contract_Item extends CommonDBRelation{
       }
       echo "</div>";
    }
-   
+
 }
 ?>

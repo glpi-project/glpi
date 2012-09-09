@@ -46,11 +46,14 @@ class Change_Problem extends CommonDBRelation{
    static public $items_id_2 = 'problems_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
+
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Link Problem/Change','Links Problem/Change',$nb);
@@ -132,7 +135,7 @@ class Change_Problem extends CommonDBRelation{
          $massiveactionparams = array('num_displayed'  => $numrows);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
-      
+
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $numrows) {
@@ -161,7 +164,7 @@ class Change_Problem extends CommonDBRelation{
                echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
                echo "</td>";
-            } 
+            }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             if ($showentities) {
@@ -208,7 +211,7 @@ class Change_Problem extends CommonDBRelation{
                 WHERE `glpi_changes_problems`.`changes_id` = '$ID'
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
-      
+
       $problems = array();
       $used = array();
       if ($numrows = $DB->numrows($result)) {
@@ -270,7 +273,7 @@ class Change_Problem extends CommonDBRelation{
                echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
                echo "</td>";
-            } 
+            }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Problem')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             if ($showentities) {

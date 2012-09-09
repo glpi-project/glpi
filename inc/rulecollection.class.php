@@ -363,14 +363,15 @@ class RuleCollection extends CommonDBTM {
       $p['inherited'] = true;
       $p['childrens'] = false;
       $p['active']    = false;
-      $rand = mt_rand();
+      $rand           = mt_rand();
 
       foreach (array('inherited','childrens') as $param) {
-         if (isset($options[$param]) && $this->isRuleRecursive()) {
+         if (isset($options[$param])
+             && $this->isRuleRecursive()) {
             $p[$param] = $options[$param];
          }
       }
-      $rule = $this->getRuleClass();
+      $rule             = $this->getRuleClass();
       $display_entities = ($this->isRuleRecursive()
                            && ($p['inherited'] || $p['childrens']));
 
@@ -394,7 +395,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams = array('num_displayed' => min($p['limit'], $nb),
-                                      'extraparams'=> array('entity_restrict'=>$this->entity));
+                                      'extraparams'   => array('entity_restrict' => $this->entity));
 
          Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
       }
@@ -668,7 +669,7 @@ class RuleCollection extends CommonDBTM {
       $output["_no_rule_matches"] = true;
       //Store rule type being processed (for plugins)
       $params['rule_itemtype']    = $this->getRuleClassName();
-      
+
       if (count($this->RuleList->list)) {
          foreach ($this->RuleList->list as $rule) {
             //If the rule is active, process it
@@ -683,7 +684,7 @@ class RuleCollection extends CommonDBTM {
                   return Toolbox::addslashes_deep($output);
                }
             }
-  
+
             if ($this->use_output_rule_process_as_next_input) {
                $output = $this->prepareInputDataForProcessWithPlugins($output, $params);
                $input  = $output;
@@ -829,7 +830,7 @@ class RuleCollection extends CommonDBTM {
                                                    $this->getRuleClassName());
       return array_merge($this->prepareInputDataForProcess($input, $params), $plugin_result);
    }
-   
+
    /**
     * Prepare input datas for the rules collection
     *
