@@ -44,7 +44,8 @@ foreach($dirs as $dir) {
 
       /* Ceci est la façon correcte de traverser un dossier. */
       while (false !== ($file = readdir($handle))) {
-         if ($file != "." && $file != ".." && preg_match('/\.php$/',$file)) {
+         if (($file != ".") && ($file != "..")
+             && preg_match('/\.php$/',$file)) {
             checkFormsInFile($dir.'/'.$file);
          }
       }
@@ -53,31 +54,33 @@ foreach($dirs as $dir) {
    }
 }
 
+
 function checkFormsInFile($file) {
-   $inform=false;
+
+   $inform =false;
    $handle = fopen($file, "r");
-   $i=0;
-   while(!feof($handle)) {
+   $i      = 0;
+   while (!feof($handle)) {
       $line = fgets($handle);
       $i++;
 //       echo $i.$line;
-      if (stripos($line, '<form ')!==FALSE ||
-         stripos($line, 'Html::openMassiveActionsForm(')!==FALSE ||
-         stripos($line, 'showFormHeader(')!==FALSE) {
+      if ((stripos($line, '<form ') !== FALSE)
+          || (stripos($line, 'Html::openMassiveActionsForm(') !== FALSE)
+          || (stripos($line, 'showFormHeader(') !== FALSE)) {
          $lastopen = $i;
          if ($inform) {
             echo "$file line $i : open form in form\n";
          }
          $inform = true;
       }
-      if (stripos($line, 'Html::closeForm(')!==FALSE
-       || stripos($line, 'showFormButtons(')!==FALSE) {
+      if ((stripos($line, 'Html::closeForm(') !== FALSE)
+          || (stripos($line, 'showFormButtons(') !== FALSE)) {
          if (!$inform) {
             echo "$file line $i : close not opened form\n";
          }
          $inform = false;
       }
-      
+
    }
 
    if ($inform) {
