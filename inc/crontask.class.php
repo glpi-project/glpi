@@ -53,13 +53,15 @@ class CronTask extends CommonDBTM{
 
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'delete';
       $forbidden[] = 'purge';
       $forbidden[] = 'restore';
-      return $forbidden;   
+      return $forbidden;
    }
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Automatic action', 'Automatic actions', $nb);
    }
@@ -1115,7 +1117,7 @@ class CronTask extends CommonDBTM{
             $tab[self::MODE_INTERNAL] = self::getModeName(self::MODE_INTERNAL);
             $tab[self::MODE_EXTERNAL] = self::getModeName(self::MODE_EXTERNAL);
             return Dropdown::showFromArray($name, $tab, $options);
-            
+
          case 'state' :
             return CronTask::dropdownState($name, $values[$field], false);
       }
@@ -1137,8 +1139,13 @@ class CronTask extends CommonDBTM{
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -1148,16 +1155,22 @@ class CronTask extends CommonDBTM{
       return $actions;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case 'reset' :
             if (Session::haveRight('config', 'w')) {
                foreach ($input["item"] as $key => $val) {
                   if (($val == 1)
-                     && $this->getFromDB($key)) {
+                      && $this->getFromDB($key)) {
                      if ($this->resetDate()) {
                         $res['ok']++;
                      } else {
@@ -1171,12 +1184,14 @@ class CronTask extends CommonDBTM{
                $res['noright']++;
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab                     = array();

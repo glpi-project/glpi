@@ -184,48 +184,63 @@ class Supplier extends CommonDBTM {
 
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_contact_supplier'] = _x('button', 'Add a contact');
       }
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "add_contact_supplier" :
             $contactsupplier = new Contact_Supplier();
             return $contactsupplier->showSpecificMassiveActionsParameters($input);
-         break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;         
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "add_contact_supplier" :
             $contactsupplier = new Contact_Supplier();
             return $contactsupplier->doSpecificMassiveActions($input);
-            break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return false;
    }
+
 
    function getSearchOptions() {
 

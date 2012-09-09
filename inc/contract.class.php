@@ -443,12 +443,17 @@ class Contract extends CommonDBTM {
       $tab[138]['massiveaction'] = false;
       $tab[138]['joinparams']    = $joinparams;
       $tab[138]['datatype']      = 'specific';
-      
+
 
       return $tab;
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
@@ -456,14 +461,24 @@ class Contract extends CommonDBTM {
          $actions['remove_contract_item'] = _x('button', 'Remove an item');
       }
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;
    }
-   
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -473,14 +488,22 @@ class Contract extends CommonDBTM {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownAlert($options);
-            
+
          case 'renewal' :
             $options['name']  = $name;
             return self::dropdownContractRenewal($name, $values[$field], false);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -489,15 +512,14 @@ class Contract extends CommonDBTM {
       switch ($field) {
          case 'alert' :
             return self::getAlertName($values[$field]);
-            break;
-            
+
          case 'renewal' :
             return self::getContractRenewalName($values[$field]);
-            break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
+
    function getSearchOptions() {
 
       $tab                       = array();
@@ -537,7 +559,7 @@ class Contract extends CommonDBTM {
       $tab[6]['datatype']        = 'number';
       $tab[6]['max']             = 120;
       $tab[6]['unit']            = 'month';
-      
+
 
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'end_date';
@@ -570,7 +592,7 @@ class Contract extends CommonDBTM {
                                          2 => sprintf(_n('%d month', '%d months', 2), 2),
                                          3 => sprintf(_n('%d month', '%d months', 3), 3),
                                          6 => sprintf(_n('%d month', '%d months', 6), 6));
-      $tab[21]['unit']           = 'month';      
+      $tab[21]['unit']           = 'month';
 
       $tab[22]['table']          = $this->getTable();
       $tab[22]['field']          = 'billing';
@@ -585,7 +607,7 @@ class Contract extends CommonDBTM {
                                         2 => sprintf(_n('%d month', '%d months', 2), 2),
                                         3 => sprintf(_n('%d month', '%d months', 3), 3),
                                         6 => sprintf(_n('%d month', '%d months', 6), 6));
-      $tab[22]['unit']          = 'month';      
+      $tab[22]['unit']          = 'month';
 
       $tab[10]['table']          = $this->getTable();
       $tab[10]['field']          = 'accounting_number';

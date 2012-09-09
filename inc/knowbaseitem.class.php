@@ -213,17 +213,20 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
-   function doSpecificMassiveActions($input = array()) {
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
 
       switch ($input['action']) {
-
          case "deletevisibility":
-
             foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('KnowbaseItem_Profile', 'KnowbaseItem_User', 'Entity_KnowbaseItem', 'Group_KnowbaseItem'))) {
+               if (in_array($type, array('Entity_KnowbaseItem', 'Group_KnowbaseItem',
+                                         'KnowbaseItem_Profile', 'KnowbaseItem_User'))) {
                   $item = new $type();
                   foreach ($items as $key => $val) {
                      if ($item->can($key,'w')) {
@@ -246,7 +249,8 @@ class KnowbaseItem extends CommonDBTM {
       }
       return $res;
    }
-   
+
+
    /**
     * @since version 0.83
    **/
@@ -1510,7 +1514,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $rand = mt_rand();
       $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
-      
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='knowbaseitemvisibility_form$rand' id='knowbaseitemvisibility_form$rand' ";

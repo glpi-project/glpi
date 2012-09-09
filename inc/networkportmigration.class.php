@@ -326,7 +326,12 @@ class NetworkPortMigration extends CommonDBChild {
       $this->addDivForTabs();
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
@@ -334,7 +339,13 @@ class NetworkPortMigration extends CommonDBChild {
       }
       return $actions;
    }
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "transform_to" :
             Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
@@ -343,26 +354,31 @@ class NetworkPortMigration extends CommonDBChild {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Save')."'>";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
       }
       return false;
    }
-   
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "transform_to" :
             if (isset($input["transform_to"]) && !empty($input["transform_to"])) {
                $networkport = new NetworkPort();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($networkport->can($key,'w') && $this->can($key,'d')) {
+                     if ($networkport->can($key,'w')
+                         && $this->can($key,'d')) {
                         if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
                            $instantiation             = $networkport->getInstantiation();
                            $input2                    = $item->fields;
@@ -386,12 +402,14 @@ class NetworkPortMigration extends CommonDBChild {
                $res['ko']++;
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
-   
+
+
    function getSearchOptions() {
       global $CFG_GLPI;
 

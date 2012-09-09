@@ -65,7 +65,12 @@ class NotImportedEmail extends CommonDBTM {
       return _n('Refused email', 'Refused emails', $nb);
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -75,27 +80,37 @@ class NotImportedEmail extends CommonDBTM {
       }
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "import_email" :
             Entity::dropdown();
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Import')."'>";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
 
       }
       return false;
-   }   
-   function doSpecificMassiveActions($input = array()) {
+   }
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case 'delete_email' :
          case 'import_email' :
@@ -114,17 +129,20 @@ class NotImportedEmail extends CommonDBTM {
                      $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
                   }
                   else {
-                     $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $input['entities_id']);
+                     $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1,
+                                                                 $input['entities_id']);
                   }
                }
                $res['ok']++;
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
+
 
    function getSearchOptions() {
 

@@ -290,18 +290,21 @@ class Plugin extends CommonDBTM {
       }
    }
 
+
    /**
     * Check if all plugins are CSRF compliant
+    *
     * @since version 0.83.3
    **/
    static function isAllPluginsCSRFCompliant() {
       global $PLUGIN_HOOKS;
 
-      if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])
-         && count($_SESSION['glpi_plugins'])) {
+      if (isset($_SESSION['glpi_plugins'])
+          && is_array($_SESSION['glpi_plugins'])
+          && count($_SESSION['glpi_plugins'])) {
          foreach ($_SESSION['glpi_plugins'] as $plug) {
             if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug])
-               || !$PLUGIN_HOOKS['csrf_compliant'][$plug]) {
+                || !$PLUGIN_HOOKS['csrf_compliant'][$plug]) {
                return false;
             }
          }
@@ -309,7 +312,8 @@ class Plugin extends CommonDBTM {
 
       return true;
    }
-   
+
+
    /**
     * List availabled plugins
    **/
@@ -323,7 +327,7 @@ class Plugin extends CommonDBTM {
       $i                 = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
       echo "<tr><th colspan='9'>".__('Plugins list')."</th></tr>\n";
-      
+
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".__('License')."</th>";
@@ -424,7 +428,7 @@ class Plugin extends CommonDBTM {
             // CSRF
             echo "<td>";
             if (isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
-               && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
+                && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                _e('Yes');
             } else {
                echo "<span class='red b'>";
@@ -567,7 +571,7 @@ class Plugin extends CommonDBTM {
       echo "<a href='http://plugins.glpi-project.org'  class='vsubmit' target='_blank'>".
             __('See the catalog of plugins')."</a></p>";
       echo "</div>";
-      
+
       $PLUGIN_HOOKS = $PLUGIN_HOOKS_SAVE;
    }
 
@@ -643,7 +647,7 @@ class Plugin extends CommonDBTM {
             || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
             return false;
          }
-         
+
          $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
             if (!$function()) {

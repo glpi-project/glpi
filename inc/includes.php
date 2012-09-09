@@ -159,8 +159,8 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER')
 
 // Security : check CSRF token
 if (GLPI_USE_CSRF_CHECK
-   && isset($_POST) && is_array($_POST) && count($_POST)
-   && Plugin::isAllPluginsCSRFCompliant()) {
+    && isset($_POST) && is_array($_POST) && count($_POST)
+    && Plugin::isAllPluginsCSRFCompliant()) {
    // No ajax pages
    if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/plugins/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'])) {
       if (!Session::validateCSRF($_POST)) {

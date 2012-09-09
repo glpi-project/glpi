@@ -46,8 +46,9 @@ if (isset($_GET['multiple_actions'])) {
    }
 }
 
-if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST["itemtype"]))
-   || !isset($_POST['is_deleted'])) {
+if (!isset($_POST["itemtype"])
+    || !($item = getItemForItemtype($_POST["itemtype"]))
+    || !isset($_POST['is_deleted'])) {
    exit();
 }
 

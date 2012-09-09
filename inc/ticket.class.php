@@ -70,7 +70,9 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
+
    function getForbiddenStandardMassiveAction() {
+
       $forbidden = parent::getForbiddenStandardMassiveAction();
 
       if (!Session::haveRight('update_ticket', 1)) {
@@ -84,6 +86,7 @@ class Ticket extends CommonITILObject {
 
       return $forbidden;
    }
+
 
    /**
     * Name of the type
@@ -131,7 +134,7 @@ class Ticket extends CommonITILObject {
    static function canView() {
 
       if (isset($_SESSION['glpiactiveprofile']['interface'])
-         && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
       }
       return (Session::haveRight("show_all_ticket","1")
@@ -1686,13 +1689,16 @@ class Ticket extends CommonITILObject {
    }
 
 
-
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if (TicketFollowup::canCreate()
-            && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
+          && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
          $actions['add_followup'] = __('Add a new followup');
       }
 
@@ -1716,13 +1722,16 @@ class Ticket extends CommonITILObject {
       return $actions;
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
 
       switch ($input['action']) {
          case "add_followup" :
             TicketFollowup::showFormMassiveAction();
             return true;
-            break;
 
          case "link_ticket" :
             $rand = Ticket_Ticket::dropdownLinks('link');
@@ -1731,31 +1740,35 @@ class Ticket extends CommonITILObject {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            __s('Post')."'>";
             return true;
-            break;
 
          case "submit_validation" :
             TicketValidation::showFormMassiveAction();
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "link_ticket" :
-            if (isset($input['link']) && isset($input['tickets_id_1'])) {
+            if (isset($input['link'])
+                && isset($input['tickets_id_1'])) {
                if ($this->getFromDB($input['tickets_id_1'])) {
                   foreach ($input["item"] as $key => $val) {
                      if ($val == 1) {
-                        $input2 = array();
+                        $input2                          = array();
                         $input2['id']                    = $input['tickets_id_1'];
                         $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
                         $input2['_link']['link']         = $input['link'];
@@ -1774,13 +1787,14 @@ class Ticket extends CommonITILObject {
                }
             }
             break;
+
          case "submit_validation" :
             $valid = new TicketValidation();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   $input2 = array('tickets_id'         => $key,
-                                 'users_id_validate'  => $input['users_id_validate'],
-                                 'comment_submission' => $input['comment_submission']);
+                                  'users_id_validate'  => $input['users_id_validate'],
+                                  'comment_submission' => $input['comment_submission']);
                   if ($valid->can(-1,'w',$input2)) {
                      if ($valid->add($input2)) {
                         $res['ok']++;
@@ -1799,9 +1813,9 @@ class Ticket extends CommonITILObject {
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   $input2 = array('tickets_id'      => $key,
-                                 'is_private'      => $input['is_private'],
-                                 'requesttypes_id' => $input['requesttypes_id'],
-                                 'content'         => $input['content']);
+                                  'is_private'      => $input['is_private'],
+                                  'requesttypes_id' => $input['requesttypes_id'],
+                                  'content'         => $input['content']);
                   if ($fup->can(-1,'w',$input2)) {
                      if ($fup->add($input2)) {
                         $res['ok']++;
@@ -1814,11 +1828,13 @@ class Ticket extends CommonITILObject {
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
+
 
    function getSearchOptions() {
 

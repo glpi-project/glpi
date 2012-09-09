@@ -57,16 +57,17 @@ if (isset($_POST['itemtype'])) {
    }
    echo "<div width='90%' class='center'><br>";
 
-   $params = array('action'     => '__VALUE__');
+   $params = array('action' => '__VALUE__');
    foreach ($_POST as $key => $val) {
       $params[$key] = $val;
    }
-   
+
    $rand    = mt_rand();
    $params['specific_action'] = 0;
    $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
-   if (isset($_POST['specific_actions']) && is_array($_POST['specific_actions'])
-         && count($_POST['specific_actions'])) {
+   if (isset($_POST['specific_actions'])
+       && is_array($_POST['specific_actions'])
+       && count($_POST['specific_actions'])) {
       $specific_actions = Toolbox::stripslashes_deep($_POST['specific_actions']);
 
       // If specific actions is used to limit display
@@ -75,7 +76,7 @@ if (isset($_POST['itemtype'])) {
       }
       $actions = $specific_actions;
    }
-   
+
    if (count($actions)) {
       _e('Action');
       echo "&nbsp;";

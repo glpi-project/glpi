@@ -311,38 +311,53 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if ($isadmin &&  $this->maybeRecursive()
-            && (count($_SESSION['glpiactiveentities']) > 1)) {
+      if ($isadmin
+          &&  $this->maybeRecursive()
+          && (count($_SESSION['glpiactiveentities']) > 1)) {
          $actions['merge'] = __('Transfer and merge');
       }
 
       return $actions;
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case 'merge' :
             echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Merge')."'>\n";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case 'merge' :
             $fk = $this->getForeignKeyField();
@@ -395,6 +410,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       return $res;
    }
+
 
    /**
     * Get search function for the class

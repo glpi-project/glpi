@@ -251,28 +251,28 @@ class Computer_Item extends CommonDBRelation{
 //                } else {
 //                   $ocsservers_id = OcsServer::getByMachineID($this->fields['computers_id']);
 //                }
-// 
+//
 //                if ($ocsservers_id > 0) {
 //                   //Get OCS configuration
 //                   $ocs_config = OcsServer::getConfig($ocsservers_id);
-// 
+//
 //                   //Get the management mode for this device
 //                   $mode    = OcsServer::getDevicesManagementMode($ocs_config,
 //                                                                  $this->fields['itemtype']);
 //                   $decoConf= $ocs_config["deconnection_behavior"];
-// 
+//
 //                   //Change status if :
 //                   // 1 : the management mode IS NOT global
 //                   // 2 : a deconnection's status have been defined
 //                   // 3 : unique with serial
 //                   if (($mode >= 2)
 //                       && (strlen($decoConf) > 0)) {
-// 
+//
 //                      //Delete periph from glpi
 //                      if ($decoConf == "delete") {
 //                         $tmp["id"] = $this->fields['items_id'];
 //                         $device->delete($tmp, 1);
-// 
+//
 //                      //Put periph in trash
 //                      } else if ($decoConf == "trash") {
 //                         $tmp["id"] = $this->fields['items_id'];
@@ -284,14 +284,19 @@ class Computer_Item extends CommonDBRelation{
          }
       }
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "connect" :
-            if ($input['itemtype']=='Computer') {
+            if ($input['itemtype'] == 'Computer') {
                Dropdown::showAllItems("items_id", 0, 0, $_SESSION["glpiactive_entity"],
-                                    array('Monitor', 'Peripheral', 'Phone',  'Printer'),
-                                    true, true, 'item_itemtype');
+                                      array('Monitor', 'Peripheral', 'Phone',  'Printer'),
+                                      true, true, 'item_itemtype');
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               __s('Connect')."'>";
             } else {
@@ -300,26 +305,29 @@ class Computer_Item extends CommonDBRelation{
                               __s('Connect')."'>";
             }
             return true;
-            break;
+
          case "disconnect" :
             echo "<input type='submit' name='massiveaction' class='submit' value='".
-                  __s('Disconnect')."'>";
+                   __s('Disconnect')."'>";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
 
       }
       return false;
    }
 
-   
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "connect" :
             foreach ($input["item"] as $key => $val) {
@@ -328,7 +336,7 @@ class Computer_Item extends CommonDBRelation{
                      $input2 = array('computers_id' => $input["computers_id"],
                                     'itemtype'      => $input["itemtype"],
                                     'items_id'      => $key);
-                  } else if (isset($input["items_id"])){
+                  } else if (isset($input["items_id"])) {
                      $input2 = array('computers_id' => $key,
                                     'itemtype'      => $input["item_itemtype"],
                                     'items_id'      => $input["items_id"]);
@@ -347,7 +355,7 @@ class Computer_Item extends CommonDBRelation{
                }
             }
            break;
-           
+
          case "disconnect" :
             if (!($item = getItemForItemtype($input["itemtype"]))) {
                return false;
@@ -366,11 +374,13 @@ class Computer_Item extends CommonDBRelation{
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
-   }   
+   }
+
 
    /**
    * Disconnect an item to its computer
@@ -826,7 +836,8 @@ class Computer_Item extends CommonDBRelation{
                           'items_id'     => $data["items_id"]));
       }
    }
-   
+
+
    /**
     * Duplicate connected items to item from an item template to its clone
     *
@@ -842,15 +853,15 @@ class Computer_Item extends CommonDBRelation{
       $query  = "SELECT *
                  FROM `glpi_computers_items`
                  WHERE `itemtype` = '$itemtype'
-                     AND `items_id` = '".$oldid."';";
+                       AND `items_id` = '".$oldid."'";
       $result = $DB->query($query);
 
       foreach ($DB->request($query) as $data) {
-         $conn = new Computer_Item();
+         $conn = new self();
          $conn->add(array('computers_id' => $data["computers_id"],
                           'itemtype'     => $data["itemtype"],
                           'items_id'     => $newid));
       }
-   }   
+   }
 }
 ?>

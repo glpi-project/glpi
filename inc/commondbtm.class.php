@@ -2629,22 +2629,25 @@ class CommonDBTM extends CommonGLPI {
       return $tab;
    }
 
+
    /**
     * Display options add action button for massive actions
     *
-    * This must not be overloaded in Class
-    * @param $input array of input datas
     * @since version 0.84
+    *
+    * This must not be overloaded in Class
+    *
+    * @param $input array of input datas
+    *
     * @return nothing display
    **/
-   function showMassiveActionsParameters($input = array()) {
+   function showMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
 
       switch ($input['action']) {
          case "add_contract_item" :
-            if ($input['itemtype']=='Contract') {
-
-                  Dropdown::showAllItems("items_id", 0, 0, 1,
+            if ($input['itemtype'] == 'Contract') {
+               Dropdown::showAllItems("items_id", 0, 0, 1,
                                        $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               _sx('button', 'Add')."'>";
@@ -2693,8 +2696,8 @@ class CommonDBTM extends CommonGLPI {
             $show_infocoms  = true;
 
             if (in_array($input["itemtype"], $CFG_GLPI["infocom_types"])
-                && (!static::canUpdate() || !Infocom::canUpdate())) {
-
+                && (!static::canUpdate()
+                    || !Infocom::canUpdate())) {
                $show_all      = false;
                $show_infocoms = Infocom::canUpdate();
             }
@@ -2706,7 +2709,7 @@ class CommonDBTM extends CommonGLPI {
             foreach ($searchopt as $key => $val) {
                if (!is_array($val)) {
                   if (!empty($newgroup)
-                     && ($items_in_group > 0)) {
+                      && ($items_in_group > 0)) {
                      echo $newgroup;
                      $first_group = false;
                   }
@@ -2719,11 +2722,11 @@ class CommonDBTM extends CommonGLPI {
 
                } else {
                   // No id and no entities_id massive action and no first item
-                  if ($val["field"]!='id'
-                     && ($key != 1)
+                  if (($val["field"] != 'id')
+                      && ($key != 1)
                      // Permit entities_id is explicitly activate
-                     && (($val["linkfield"] != 'entities_id')
-                        || (isset($val['massiveaction']) && $val['massiveaction']))) {
+                      && (($val["linkfield"] != 'entities_id')
+                          || (isset($val['massiveaction']) && $val['massiveaction']))) {
 
                      if (!isset($val['massiveaction']) || $val['massiveaction']) {
 
@@ -2733,9 +2736,10 @@ class CommonDBTM extends CommonGLPI {
 
                         } else {
                            // Do not show infocom items
-                           if (($show_infocoms && Search::isInfocomOption($input["itemtype"],$key))
-                              || (!$show_infocoms && !Search::isInfocomOption($input["itemtype"],
-                                                                              $key))) {
+                           if (($show_infocoms
+                                && Search::isInfocomOption($input["itemtype"], $key))
+                               || (!$show_infocoms
+                                   && !Search::isInfocomOption($input["itemtype"], $key))) {
 
                               $newgroup .= "<option value='$key'>".$val["name"]."</option>";
                               $items_in_group++;
@@ -2747,7 +2751,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
             if (!empty($newgroup)
-               && ($items_in_group > 0)) {
+                && ($items_in_group > 0)) {
                echo $newgroup;
             }
             if (!$first_group) {
@@ -2773,7 +2777,8 @@ class CommonDBTM extends CommonGLPI {
 
          default :
             if (!$this->showSpecificMassiveActionsParameters($input)) {
-               echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
+               echo "<input type='submit' name='massiveaction' class='submit' value='".
+                      __s('Post')."'>\n";
             }
       }
 
@@ -2790,8 +2795,7 @@ class CommonDBTM extends CommonGLPI {
     * @since version 0.84
     * @return boolean if parameters displayed ?
    **/
-   function showSpecificMassiveActionsParameters($input = array()) {
-
+   function showSpecificMassiveActionsParameters($input=array()) {
       return false;
    }
 
@@ -2799,26 +2803,30 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Do the standard massive actions
     *
+    * @since version 0.84
+    *
     * This must not be overloaded in Class
     * @param $input array of input datas
-    * @since version 0.84
+    *
     * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
    **/
-   function doMassiveActions($input = array()) {
+   function doMassiveActions($input=array()) {
       global $CFG_GLPI;
-      if (!isset($input["item"]) || count($input["item"]) == 0) {
+
+      if (!isset($input["item"]) || (count($input["item"]) == 0)) {
          return false;
       }
 
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case 'add_document' :
          case 'remove_document' :
             $doc = new Document;
             return $doc->doSpecificMassiveActions($input);
-            break;
+
          case "add_transfer_list" :
             if (!isset($_SESSION['glpitransfer_list'])) {
                $_SESSION['glpitransfer_list'] = array();
@@ -2834,6 +2842,7 @@ class CommonDBTM extends CommonGLPI {
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
             break;
+
          case "delete" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
@@ -2851,7 +2860,6 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "purge" :
-
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   if ($this->can($key,'d')){
@@ -2888,7 +2896,7 @@ class CommonDBTM extends CommonGLPI {
             if (isset($searchopt[$input["id_field"]])) {
                /// Infocoms case
                if (!isPluginItemType($input["itemtype"])
-                  && Search::isInfocomOption($input["itemtype"],$input["id_field"])) {
+                  && Search::isInfocomOption($input["itemtype"], $input["id_field"])) {
 
                   $ic = new Infocom();
                   $link_entity_type = -1;
@@ -2902,11 +2910,11 @@ class CommonDBTM extends CommonGLPI {
                   foreach ($input["item"] as $key => $val) {
                      if ($val == 1) {
                         if ($this->getFromDB($key)) {
-                           if ($link_entity_type < 0
-                              || ($link_entity_type == $this->getEntityID())
-                              || ($ent->fields["is_recursive"]
-                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",
-                                             $this->getEntityID())))) {
+                           if (($link_entity_type < 0)
+                               || ($link_entity_type == $this->getEntityID())
+                               || ($ent->fields["is_recursive"]
+                                   && in_array($link_entity_type, getAncestorsOf("glpi_entities",
+                                               $this->getEntityID())))) {
                               $input2["items_id"] = $key;
                               $input2["itemtype"] = $input["itemtype"];
 
@@ -2921,8 +2929,9 @@ class CommonDBTM extends CommonGLPI {
                                  }
                                  $id = $ic->fields["id"];
                                  unset($ic->fields);
-                                 if ($ic->update(array('id'            => $id,
-                                                      $input["field"] => $input[$input["field"]]))) {
+                                 if ($ic->update(array('id'   => $id,
+                                                       $input["field"]
+                                                              => $input[$input["field"]]))) {
                                     $res['ok']++;
                                  } else {
                                     $res['ko']++;
@@ -2948,17 +2957,16 @@ class CommonDBTM extends CommonGLPI {
                   $itemtype2 = getItemTypeForTable($searchopt[$input["id_field"]]["table"]);
                   if ($item2 = getItemForItemtype($itemtype2)) {
 
-                     if ($input["id_field"] != 80 // No entities_id fields
-                        && ($searchopt[$input["id_field"]]["table"] != $itemtable)
-                        && $item2->isEntityAssign()
-                        && $this->isEntityAssign()) {
+                     if (($input["id_field"] != 80) // No entities_id fields
+                         && ($searchopt[$input["id_field"]]["table"] != $itemtable)
+                         && $item2->isEntityAssign()
+                         && $this->isEntityAssign()) {
                         if ($item2->getFromDB($input[$input["field"]])) {
                            if (isset($item2->fields["entities_id"])
-                              && ($item2->fields["entities_id"] >= 0)) {
+                               && ($item2->fields["entities_id"] >= 0)) {
 
                               if (isset($item2->fields["is_recursive"])
-                                 && $item2->fields["is_recursive"]) {
-
+                                  && $item2->fields["is_recursive"]) {
                                  $link_entity_type = getSonsOf("glpi_entities",
                                                                $item2->fields["entities_id"]);
                               } else {
@@ -2972,12 +2980,13 @@ class CommonDBTM extends CommonGLPI {
                   foreach ($input["item"] as $key => $val) {
                      if ($val == 1) {
                         if ($this->can($key,'w')
-                           && $this->canMassiveAction($input['action'], $input['field'],
-                                                      $input[$input["field"]])) {
+                            && $this->canMassiveAction($input['action'], $input['field'],
+                                                       $input[$input["field"]])) {
                            if ((count($link_entity_type) == 0)
-                              || in_array($this->fields["entities_id"],$link_entity_type)) {
-                              if ($this->update(array('id'            => $key,
-                                                      $input["field"] => $input[$input["field"]]))) {
+                              || in_array($this->fields["entities_id"], $link_entity_type)) {
+                              if ($this->update(array('id'   => $key,
+                                                      $input["field"]
+                                                             => $input[$input["field"]]))) {
                                  $res['ok']++;
                               } else {
                                  $res['ko']++;
@@ -3110,15 +3119,18 @@ class CommonDBTM extends CommonGLPI {
       return $res;
    }
 
+
    /**
     * Do the specific massive actions
     *
+    * @since version 0.84
+    *
     * This may be overloaded in Class
     * @param $input array of input datas
-    * @since version 0.84
+    *
     * @return an array of results (nbok, nbko, nbnoright counts)
    **/
-   function doSpecificMassiveActions($input = array()) {
+   function doSpecificMassiveActions($input=array()) {
       return false;
    }
 
@@ -3126,15 +3138,16 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the standard massive actions
     *
-    * This must not be overloaded in Class
-    * @param $is_deleted massive action for deleted items ?
-    * @param $checkitem link item to check right
     * @since version 0.84
+    *
+    * This must not be overloaded in Class
+    * @param $is_deleted massive action for deleted items ?   (default 0)
+    * @param $checkitem link item to check right              (default NULL)
+    *
     * @return an array of massive actions
    **/
    function getAllMassiveActions($is_deleted=0, $checkitem=NULL) {
       global $CFG_GLPI, $PLUGIN_HOOKS;
-
 
       if (!is_null($checkitem)) {
          $isadmin = $checkitem->canUpdate();
@@ -3143,8 +3156,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $itemtype = $this->getType();
-
-      $actions = array();
+      $actions  = array();
 
       if ($is_deleted) {
          if ($isadmin) {
@@ -3154,15 +3166,15 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($isadmin
-                  || (in_array($itemtype, $CFG_GLPI["infocom_types"])
-                      && Infocom::canUpdate())) {
+             || (in_array($itemtype, $CFG_GLPI["infocom_types"])
+                 && Infocom::canUpdate())) {
 
             //TRANS: select action 'update' (before doing it)
             $actions['update'] = _x('button', 'Update');
          }
 
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])
-               && Infocom::canCreate()) {
+             && Infocom::canCreate()) {
             $actions['activate_infocoms'] = __('Enable the financial and administrative information');
          }
          // No delete for entities and tracking of not have right
@@ -3213,27 +3225,37 @@ class CommonDBTM extends CommonGLPI {
       }
       return $actions;
    }
+
+
    /**
     * Get the standard massive actions which are forbidden
     *
-    * This should be overloaded in Class
     * @since version 0.84
+    *
+    * This should be overloaded in Class
+    *
     * @return an array of massive actions
    **/
    function getForbiddenStandardMassiveAction() {
       return array();
    }
+
+
    /**
     * Get the specific massive actions
     *
-    * This should be overloaded in Class
-    * @param $checkitem link item to check right
     * @since version 0.84
+    *
+    * This should be overloaded in Class
+    *
+    * @param $checkitem link item to check right   (default NULL)
+    *
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
       return array();
    }
+
 
    /**
     * Print out an HTML "<select>" for a dropdown
@@ -3255,7 +3277,6 @@ class CommonDBTM extends CommonGLPI {
     * @return nothing display the dropdown
    **/
    static function dropdown($options=array()) {
-
       return Dropdown::show(get_called_class(), $options);
    }
 
@@ -4335,7 +4356,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $itemtype    itemtype to check
     *
-    * @return boolean 
+    * @return boolean
    **/
    static function isEntityForwardTo($itemtype) {
       if (in_array($itemtype, static::$forward_entity_to)) {
@@ -4348,6 +4369,6 @@ class CommonDBTM extends CommonGLPI {
       }
       return false;
    }
-   
+
 }
 ?>

@@ -46,7 +46,7 @@ class Group_User extends CommonDBRelation{
    static $itemtype_2 = 'Group';
    static $items_id_2 = 'groups_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-   
+
    static public $logs_for_itemtype_1 = false;
 
 
@@ -527,7 +527,11 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "add_user_group" :
          case "add_supervisor_group" :
@@ -548,16 +552,21 @@ class Group_User extends CommonDBRelation{
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
 
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "add_user_group" :
          case "add_supervisor_group" :
@@ -570,18 +579,18 @@ class Group_User extends CommonDBRelation{
                                      'users_id'  => $input['users_id']);
                   } else if (isset($input['groups_id'])) { // Add groups to users
                      $input2 = array('groups_id' => $input["groups_id"],
-                                     'users_id'  => $key);
+                     'users_id'  => $key);
                   } else {
                      return false;
                   }
                   $updateifnotfound = false;
                   if ($input["action"] == 'add_supervisor_group') {
                      $input2['is_manager'] = 1;
-                     $updateifnotfound = true;
+                     $updateifnotfound     = true;
                   }
                   if ($input["action"] == 'add_delegatee_group') {
                      $input2['is_userdelegate'] = 1;
-                     $updateifnotfound = true;
+                     $updateifnotfound          = true;
                   }
                   $group = new Group();
                   $user  = new user();
@@ -622,6 +631,7 @@ class Group_User extends CommonDBRelation{
       }
       return $res;
    }
+
 
    /**
     * Get search function for the class

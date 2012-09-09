@@ -63,14 +63,17 @@ class Profile extends CommonDBTM {
                                          'show_group_ticket', 'ticket_status');
 
 
-   
+
    var $dohistory = true;
 
+
    function getForbiddenStandardMassiveAction() {
+
       $forbidden = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Profile', 'Profiles', $nb);
@@ -546,7 +549,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "<td>";
-      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(), 
+      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(),
                               array('value' => $this->fields["helpdesk_hardware"]));
       echo "</td>\n";
       echo "<td>".__('Associable items to a ticket')."</td>";
@@ -655,7 +658,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td>";
       self::dropdownRight("consumable",
                           array('value'   => $this->fields["consumable"]));
-      
+
       echo "</td>";
       echo "<td>"._n('Phone', 'Phones', 2)."</td><td>";
       self::dropdownRight("phone",
@@ -810,7 +813,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Ticket cost', 'Ticket costs', 2)."</td><td>";
       self::dropdownRight("ticketcost",
                           array('value'   => $this->fields["ticketcost"]));
-      
+
       echo "</td>";
       echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td>";
       self::dropdownRight("tickettemplate",
@@ -890,7 +893,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "\n<td>";
-      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(), 
+      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(),
                               array('value' => $this->fields["helpdesk_hardware"]));
 
       echo "</td>\n";
@@ -1126,7 +1129,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('User', 'Users', 2)."</td><td>";
       self::dropdownRight("user",
                           array('value'   => $this->fields["user"]));
-      
+
       echo "</td>";
       echo "<td>"._n('Group', 'Groups', 2)."</td><td>";
       self::dropdownRight("group",
@@ -1273,7 +1276,7 @@ class Profile extends CommonDBTM {
       self::dropdownRight("config",
                           array('value'   => $this->fields["config"],
                                 'noread'  => true));
-      
+
       echo "</td>";
       echo "<td>".__('Search result default display')."</td><td>";
       self::dropdownRight("search_config_global",
@@ -1539,7 +1542,7 @@ class Profile extends CommonDBTM {
       $tab[47]['name']           = __('General setup');
       $tab[47]['datatype']       = 'right';
       $tab[47]['noread']         = true;
-      
+
       $tab[52]['table']          = $this->getTable();
       $tab[52]['field']          = 'search_config';
       $tab[52]['name']           = __('Search result user display');
@@ -1626,7 +1629,7 @@ class Profile extends CommonDBTM {
       $tab[104]['name']          = __('Add users from an external source');
       $tab[104]['datatype']      = 'right';
       $tab[104]['noread']        = true;
-      
+
       $tab[58]['table']          = $this->getTable();
       $tab[58]['field']          = 'group';
       $tab[58]['name']           = _n('Group', 'Groups', 2);
@@ -1981,7 +1984,7 @@ class Profile extends CommonDBTM {
       $param['noread']  = false;
       $param['nowrite'] = false;
       $param['rand']    = mt_rand();
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $param[$key] = $val;
@@ -2002,7 +2005,7 @@ class Profile extends CommonDBTM {
                                                  'rand'    => $param['rand'],
                                                  'display' => $param['display']));
    }
-   
+
    /**
     * Dropdown profiles which have rights under the active one
     *
@@ -2148,7 +2151,7 @@ class Profile extends CommonDBTM {
 
       $p['multiple'] = true;
       $p['size']     = 3;
-      return Dropdown::showFromArray($p['name'], $values, $p); 
+      return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
 }
