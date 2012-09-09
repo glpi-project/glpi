@@ -204,18 +204,24 @@ class ConsumableItem extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab = array();
@@ -280,7 +286,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[90]['name']           = __('Notes');
       $tab[90]['massiveaction']  = false;
       $tab[90]['datatype']       = 'text';
-      
+
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';

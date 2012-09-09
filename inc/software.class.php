@@ -300,39 +300,46 @@ class Software extends CommonDBTM {
       $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin
-            && (countElementsInTable("glpi_rules",
-                                    "sub_type='RuleSoftwareCategory'") > 0)) {
+          && (countElementsInTable("glpi_rules", "sub_type='RuleSoftwareCategory'") > 0)) {
          $actions['compute_software_category'] = __('Recalculate the category');
       }
 
       if (Session::haveRight("rule_dictionnary_software","w")
-            && (countElementsInTable("glpi_rules",
-                                    "sub_type='RuleDictionnarySoftware'") > 0)) {
+           && (countElementsInTable("glpi_rules", "sub_type='RuleDictionnarySoftware'") > 0)) {
          $actions['replay_dictionnary'] = __('Replay the dictionary rules');
       }
 
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "mergesoftware":
             if (isset($input["id"])
-               && isset($input["item"])
-               && is_array($input["item"])
-               && count($input["item"])) {
+                && isset($input["item"]) && is_array($input["item"]) && count($input["item"])) {
 
                if ($this->can($_POST["id"],'w')) {
                   if ($this->merge($_POST["item"])) {
@@ -361,9 +368,11 @@ class Software extends CommonDBTM {
                      $output = array();
                      $output = $softcatrule->processAllRules(null, $output, $params);
                      //Process rules
-                     if (isset($output['id']) && isset($output['softwarecategories_id'])
-                           && $this->update(array('id' => $output['id'],
-                                            'softwarecategories_id' => $output['softwarecategories_id']))) {
+                     if (isset($output['id'])
+                         && isset($output['softwarecategories_id'])
+                         && $this->update(array('id'       => $output['id'],
+                                                'softwarecategories_id'
+                                                           => $output['softwarecategories_id']))) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
@@ -400,6 +409,7 @@ class Software extends CommonDBTM {
       }
       return $res;
    }
+
 
    function getSearchOptions() {
 

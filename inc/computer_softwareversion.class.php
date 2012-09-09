@@ -72,13 +72,18 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return $input;
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "move_version" :
             if (isset($input['options'])) {
                $input['options'] = unserialize(stripslashes($input['options']));
                if (isset($input['options']['move'])) {
-                     $options = array('softwares_id' => $input['options']['move']['softwares_id']);
+                  $options = array('softwares_id' => $input['options']['move']['softwares_id']);
                      if (isset($input['options']['move']['used'])) {
                         $options['used'] = $input['options']['move']['used'];
                      }
@@ -89,22 +94,25 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                }
             }
             return false;
-            break;
-            
+
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
 
       }
       return false;
    }
-   
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
-      switch ($input['action']) {
 
+      switch ($input['action']) {
          case "move_version" :
             if (isset($input['softwareversions_id'])){
                foreach ($input["item"] as $key => $val) {
@@ -113,7 +121,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      if ($this->can($key,'w')) {
                         //Process rules
                         if ($this->update(array('id' => $key,
-                                             'softwareversions_id' => $input['softwareversions_id']))) {
+                                                'softwareversions_id'
+                                                     => $input['softwareversions_id']))) {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
@@ -127,7 +136,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $res['ko']++;
             }
             break;
-            
+
          case "install_licenses" :
             if (isset($input['computers_id'])){
                foreach ($input["item"] as $key => $val) {
@@ -152,12 +161,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             break;
 
-         default :  
+         default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
-   
+
+
    /**
     * @param $computers_id
    **/

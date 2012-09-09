@@ -60,12 +60,18 @@ class DisplayPreference extends CommonDBTM {
 
       return $input;
    }
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
-      switch ($input['action']) {
 
+      switch ($input['action']) {
          case "delete_for_user" :
             if (isset($input['users_id'])){
                foreach ($input["item"] as $key => $val) {
@@ -95,7 +101,7 @@ class DisplayPreference extends CommonDBTM {
       return $res;
    }
 
-   
+
    /**
     * Get display preference for a user for an itemtype
     *

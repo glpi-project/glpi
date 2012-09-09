@@ -987,7 +987,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater if interactive user
-      if (!Session::isCron() && $last_updater = Session::getLoginUserID(true)) {
+      if (!Session::isCron() && ($last_updater = Session::getLoginUserID(true))) {
          $input['users_id_lastupdater'] = $last_updater;
       }
 
@@ -1427,7 +1427,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-   
+
       $id = "select_".$p['name'].mt_rand();
       $output = "<select id='$id' name='".$p['name']."'>";
       if ($p['showtype'] == 'search') {
@@ -1523,7 +1523,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-      
+
       $id = "select_".$p['name'].mt_rand();
       $output = "<select id='$id' name='".$p['name']."'>";
 
@@ -2027,23 +2027,27 @@ abstract class CommonITILObject extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
+
       switch ($input['action']) {
          case "add_task" :
             $tasktype = $input['itemtype']."Task";
             if ($ttype = getItemForItemtype($tasktype)) {
                $ttype->showFormMassiveAction();
                return true;
-
             }
             break;
-            
+
          case "add_actor" :
             $types            = array(0                           => Dropdown::EMPTY_VALUE,
-                                    CommonITILObject::REQUESTER => __('Requester'),
-                                    CommonITILObject::OBSERVER  => __('Watcher'),
-                                    CommonITILObject::ASSIGN    => __('Assigned to'));
+                                      CommonITILObject::REQUESTER => __('Requester'),
+                                      CommonITILObject::OBSERVER  => __('Watcher'),
+                                      CommonITILObject::ASSIGN    => __('Assigned to'));
             $rand             = Dropdown::showFromArray('actortype', $types);
 
             $paramsmassaction = array('actortype' => '__VALUE__');
@@ -2054,19 +2058,23 @@ abstract class CommonITILObject extends CommonDBTM {
                                           $paramsmassaction);
             echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
             return true;
-            break;
-            
+
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "add_actor" :
             $item = new $input['itemtype']();
@@ -2094,6 +2102,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
             break;
+
          case "add_task" :
             $taskitemtype = $_POST['itemtype'].'Task';
             if (!($task = getItemForItemtype($taskitemtype))) {
@@ -2104,8 +2113,8 @@ abstract class CommonITILObject extends CommonDBTM {
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   $input2 = array($field              => $key,
-                                 'taskcategories_id' => $input['taskcategories_id'],
-                                 'content'           => $input['content']);
+                                  'taskcategories_id' => $input['taskcategories_id'],
+                                  'content'           => $input['content']);
                   if ($task->can(-1,'w',$input2)) {
                      if ($task->add($input2)) {
                         $res['ok']++;
@@ -2118,12 +2127,13 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
-   
+
 
    function getSearchOptionsStats() {
 
@@ -3753,9 +3763,9 @@ abstract class CommonITILObject extends CommonDBTM {
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", 
+         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", 
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .= " ORDER BY `requesttypes_id`";
@@ -3765,7 +3775,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["requesttypes_id"];
-            $tmp['link'] = Dropdown::getDropdownName('glpi_requesttypes', 
+            $tmp['link'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                      $line["requesttypes_id"]);
             $tab[]       = $tmp;
          }
@@ -3837,9 +3847,9 @@ abstract class CommonITILObject extends CommonDBTM {
                 getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1)||!empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", 
+         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", 
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
@@ -3850,7 +3860,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["users_id"];
-            $tmp['link'] = formatUserName($line["users_id"], $line["name"], 
+            $tmp['link'] = formatUserName($line["users_id"], $line["name"],
                                           $line["realname"],
                                           $line["firstname"], 1);
             $tab[] = $tmp;
@@ -3889,9 +3899,9 @@ abstract class CommonITILObject extends CommonDBTM {
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", 
+         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", 
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .="     AND `glpi_profiles`.`own_ticket` = 1
@@ -3905,7 +3915,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["users_id"];
-            $tmp['link'] = formatUserName($line["users_id"], $line["name"], 
+            $tmp['link'] = formatUserName($line["users_id"], $line["name"],
                                           $line["realname"],
                                           $line["firstname"], 1);
             $tab[] = $tmp;
@@ -3931,7 +3941,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
-                FROM `".$this->getTable()."` 
+                FROM `".$this->getTable()."`
                 LEFT JOIN `$linktable`
                   ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
                       AND `$linktable`.`type` = '".self::ASSIGN."')
@@ -3941,9 +3951,9 @@ abstract class CommonITILObject extends CommonDBTM {
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", 
+         $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", 
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .= " ORDER BY name";

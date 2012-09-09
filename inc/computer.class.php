@@ -670,7 +670,12 @@ class Computer extends CommonDBTM {
               WHERE `computers_id` = '" . $this->fields['id']."'";
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -680,15 +685,19 @@ class Computer extends CommonDBTM {
       }
 
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
-      
+
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "install" :
             Software::dropdownSoftwareToInstall("softwareversions_id",
@@ -696,30 +705,32 @@ class Computer extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            __s('Install')."'>";
             return true;
-            break;
 
          case "connect" :
             $ci = new Computer_Item();
             return $ci->showSpecificMassiveActionsParameters($input);
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
       }
       return false;
    }
-   
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "connect" :
             $ci = new Computer_Item();
             return $ci->doSpecificMassiveActions($input);
-            break;
-            
+
          case "install" :
             if (isset($input['softwareversions_id']) && ($input['softwareversions_id'] > 0)) {
                $inst = new Computer_SoftwareVersion();
@@ -742,11 +753,13 @@ class Computer extends CommonDBTM {
                $res['ko']++;
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
+
 
    function getSearchOptions() {
       global $CFG_GLPI;

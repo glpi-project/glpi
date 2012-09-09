@@ -136,23 +136,33 @@ class Rule extends CommonDBTM {
    function getCollectionClassName() {
       return $this->getType().'Collection';
    }
-   
+
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      
       $collectiontype = $this->getCollectionClassName();
       if ($collection = getItemForItemtype($collectiontype)) {
-         if ($isadmin && $collection->orderby=="ranking") {
+         if ($isadmin
+             && ($collection->orderby == "ranking")) {
             $actions['move_rule'] = __('Move');
          }
       }
 
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "move_rule" :
             echo "<select name='move_type'>";
@@ -171,20 +181,24 @@ class Rule extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
 
       }
       return false;
    }
-   
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "move_rule" :
             $collectionname = $input['itemtype'].'Collection';
@@ -205,12 +219,14 @@ class Rule extends CommonDBTM {
                $res['noright']++;
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab                       = array();
@@ -263,6 +279,14 @@ class Rule extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * @param  $field
+    * @param  $values
+    * @param  $options   array
+    *
+    * @return string
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -273,8 +297,10 @@ class Rule extends CommonDBTM {
             switch ($values[$field]) {
                case self::AND_MATCHING :
                   return __('and');
+
                case self::OR_MATCHING :
                   return __('or');
+
                default :
                   return NOT_AVAILABLE;
             }
@@ -283,16 +309,23 @@ class Rule extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    * @param  $field
+    * @param  $name              (default '')
+    * @param  $values            (default '')
+    * @param  $options   array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
       global $DB;
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = false;
       switch ($field) {
          case 'match' :
-            if (isset($values['itemtype'])
-              && !empty($values['itemtype'])) {
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                $options['value'] = $values[$field];
                $options['name']  = $name;
                $rule = new static();
@@ -303,6 +336,7 @@ class Rule extends CommonDBTM {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    /**
     * Show the rule
@@ -487,7 +521,7 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showActionsList($rules_id, $options=array()) {
-   
+
       $rand = mt_rand();
       $p['readonly'] = false;
 
@@ -575,10 +609,10 @@ class Rule extends CommonDBTM {
          $rand = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
          $params = array('field'    => '__VALUE__',
                          'sub_type' => $this->getType());
-   
+
          Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
                                        $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
-   
+
 
          echo "</td><td class='left' width='30%'><span id='action_span'>\n";
          echo "</span></td>\n";
@@ -651,7 +685,7 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showCriteriasList($rules_id, $options=array()) {
-   
+
       $rand = mt_rand();
       $p['readonly'] = false;
 
@@ -679,7 +713,7 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
 
       $nb = sizeof($this->criterias);
-      
+
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
          $paramsma = array('num_displayed' => $nb,
@@ -717,7 +751,7 @@ class Rule extends CommonDBTM {
    }
 
 
-   
+
    /**
     * Display the dropdown of the criterias for the rule
     *
@@ -1108,7 +1142,7 @@ class Rule extends CommonDBTM {
       }
       return $input;
    }
-   
+
    /**
     *
     * Execute plugins actions if needed
@@ -1129,7 +1163,7 @@ class Rule extends CommonDBTM {
       }
       return $output;
    }
-   
+
    /**
     * Execute the actions as defined in the rule
     *
@@ -1166,7 +1200,7 @@ class Rule extends CommonDBTM {
                   }
                   $output[$action->fields["field"]] = $res;
                   break;
-                  
+
                default:
                   //plugins actions
                   $ouput = self::executePluginsActions($action, $output, $params);
@@ -1907,7 +1941,7 @@ class Rule extends CommonDBTM {
    function getAllCriteria() {
       return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(), $this->getType());
    }
-   
+
    function getCriterias() {
       return array();
    }

@@ -120,18 +120,21 @@ class Reminder extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
-                   
-      switch ($input['action']) {
-      
-         case "deletevisibility":
 
+      switch ($input['action']) {
+         case "deletevisibility":
             foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('Group_Reminder', 'Reminder_User', 'Entity_Reminder', 'Profile_Reminder'))) {
+               if (in_array($type, array('Entity_Reminder', 'Group_Reminder', 'Profile_Reminder',
+                                         'Reminder_User'))) {
                   $item = new $type();
                   foreach ($items as $key => $val) {
                      if ($item->can($key,'w')) {
@@ -154,6 +157,7 @@ class Reminder extends CommonDBTM {
       }
       return $res;
    }
+
 
    /**
     * @since version 0.83
@@ -1114,7 +1118,7 @@ class Reminder extends CommonDBTM {
       $rand = mt_rand();
 
       $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
-      
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='remindervisibility_form$rand' id='remindervisibility_form$rand' ";
@@ -1145,12 +1149,12 @@ class Reminder extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed' => $nb,
                            'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
-                           
+
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
          Html::showMassiveActions(__CLASS__, $paramsma);
-      }      
+      }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       if ($canedit && $nb) {

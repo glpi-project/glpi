@@ -466,50 +466,65 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "</table></div>\n";
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
          $actions['move_under'] = _x('button', 'Move');
-      } 
+      }
 
       return $actions;
    }
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case 'move_under' :
             _e('As child of');
             Dropdown::show($input['itemtype'], array('name'     => 'parent',
-                                                   'comments' => 0));
+                                                     'comments' => 0));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
       }
       return false;
-   }   
+   }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case 'move_under' :
             if (isset($input['parent'])) {
-               $fk = $this->getForeignKeyField();
+               $fk     = $this->getForeignKeyField();
                $parent = new $input["itemtype"]();
                if ($parent->getFromDB($input['parent'])) {
                   foreach ($input["item"] as $key => $val) {
                      if (($val == 1)
-                        && $this->can($key,'w')) {
+                         && $this->can($key,'w')) {
                         // Check if parent is not a child of the original one
                         if (!in_array($parent->getID(), getSonsOf($this->getTable(),
-                                    $this->getID()))) {
+                                      $this->getID()))) {
                            if ($this->update(array('id' => $key,
                                                    $fk  => $input['parent']))) {
                               $res['ok']++;
@@ -532,7 +547,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
       return $res;
    }
-   
+
+
    /**
     * Get search function for the class
     *

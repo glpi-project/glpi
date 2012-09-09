@@ -54,13 +54,16 @@ class NetworkPort extends CommonDBChild {
 
    static protected $forward_entity_to = array('NetworkName');
 
+
    static function canCreate() {
+
       return (Session::haveRight('networking','w')
               && parent::canChild('canCreate'));
    }
 
 
    static function canView() {
+
       return (Session::haveRight('networking','r')
               && parent::canChild('canView'));
    }
@@ -77,10 +80,12 @@ class NetworkPort extends CommonDBChild {
 
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    /**
     * \brief get the list of available network port type.
@@ -95,9 +100,11 @@ class NetworkPort extends CommonDBChild {
       return $CFG_GLPI['networkport_instantiations'];
    }
 
+
    static function getNetworkPortInstantiationsWithNames() {
+
       $types = self::getNetworkPortInstantiations();
-      $tab = array();
+      $tab   = array();
       foreach ($types as $itemtype) {
          $tab[$itemtype] = call_user_func(array($itemtype, 'getTypeName'));
       }
@@ -965,7 +972,11 @@ class NetworkPort extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
@@ -976,38 +987,42 @@ class NetworkPort extends CommonDBChild {
       return $actions;
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "assign_vlan" :
          Vlan::dropdown();
          echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
          echo "&nbsp;<input type='submit' name='assign_vlan' class='submit' value='".
-               __s('Associate')."'>";
+                      __s('Associate')."'>";
             return true;
-            break;
 
          case "unassign_vlan" :
             Vlan::dropdown();
             echo "&nbsp;<input type='submit' name='unassign_vlan' class='submit' value='".
-                  __s('Dissociate')."'>";
+                         __s('Dissociate')."'>";
             return true;
-            break;
 
          case "move_port" :
             Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
             echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
       }
       return false;
    }
 
 
-   function doSpecificMassiveActions($input = array()) {
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
@@ -1019,7 +1034,8 @@ class NetworkPort extends CommonDBChild {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($this->can($key,'w')) {
-                        if ($networkportvlan->assignVlan($key, $input["vlans_id"], (isset($input['tagged']) ? '1' : '0'))) {
+                        if ($networkportvlan->assignVlan($key, $input["vlans_id"],
+                                                         (isset($input['tagged']) ? '1' : '0'))) {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
@@ -1033,6 +1049,7 @@ class NetworkPort extends CommonDBChild {
                $res['ko']++;
             }
             break;
+
          case "unassign_vlan" :
             if (!empty($input["vlans_id"])) {
                $networkportvlan = new NetworkPort_Vlan();
@@ -1060,8 +1077,8 @@ class NetworkPort extends CommonDBChild {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($this->getFromDB($key)) {
-                        $input2 = array();
-                        $input2['id'] = $key;
+                        $input2             = array();
+                        $input2['id']       = $key;
                         $input2['items_id'] = $input["items_id"];
                         $input2['itemtype'] = 'NetworkEquipment';
                         if ($this->can($input2['id'],'w')) {
@@ -1087,7 +1104,9 @@ class NetworkPort extends CommonDBChild {
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
-   }   
+   }
+
+
    function getSearchOptions() {
 
       $tab                     = array();

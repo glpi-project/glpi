@@ -61,10 +61,15 @@ class Contact_Supplier extends CommonDBRelation{
    }
 
 
-   function doSpecificMassiveActions($input = array()) {
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "add_contact_supplier" :
             $contactsupplier = new Contact_Supplier();
@@ -73,8 +78,8 @@ class Contact_Supplier extends CommonDBRelation{
                   $input = array('suppliers_id' => $key,
                                  'contacts_id'  => $input['contacts_id']);
                } else if (isset($input['suppliers_id'])) {
-                $input = array('suppliers_id' => $input['suppliers_id'],
-                               'contacts_id'  => $key);
+                  $input = array('suppliers_id' => $input['suppliers_id'],
+                                 'contacts_id'  => $key);
                } else {
                   return false;
                }
@@ -89,13 +94,19 @@ class Contact_Supplier extends CommonDBRelation{
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
 
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "add_contact_supplier" :
             if ($input['itemtype'] == 'Supplier') {
@@ -114,11 +125,11 @@ class Contact_Supplier extends CommonDBRelation{
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
       }
       return false;
    }
-   
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate && Session::haveRight("contact_enterprise","r")) {

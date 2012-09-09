@@ -169,6 +169,13 @@ class AuthLDAP extends CommonDBTM {
       }
       return $input;
    }
+
+
+   /**
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -182,46 +189,61 @@ class AuthLDAP extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    *
+    * @param  $field
+    * @param  $name              (default '')
+    * @param  $values            (default('')
+    * @param  $options   array
+    */
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = false;
       switch ($field) {
-
          case 'group_search_type' :
             $options['value'] = $values[$field];
             $options['name']  = $name;
             return self::dropdownGroupSearchType($options);
-
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
       global $CFG_GLPI;
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "import" :
          case "sync" :
             if (!Session::haveRight("import_externalauth_users", 'w')) {
                $res['nbnoright']++;
-            } else if (isset($_GET['multiple_actions']) && isset($_SESSION["glpi_massiveaction"])) {
+            } else if (isset($_GET['multiple_actions'])
+                       && isset($_SESSION["glpi_massiveaction"])) {
 
                if ($count = count($input["item"])) {
                   $i = $input["ldap_process_count"]-$count+1;
                   Html::createProgressBar();
-                  Html::changeProgressBarPosition($i, $input["ldap_process_count"], "$i / ".$input["ldap_process_count"]);
+                  Html::changeProgressBarPosition($i, $input["ldap_process_count"],
+                                                  sprintf(__('%1$s/%2$s',
+                                                             $i, $input["ldap_process_count"])));
                   $key = key($input["item"]);
                   array_pop($input["item"]);
                   if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                                'value'  => $key),
-                                                   $input["mode"],
-                                                   $input["authldaps_id"],
-                                                   true)) {
+                                                         $input["mode"],
+                                                         $input["authldaps_id"],
+                                                         true)) {
                      $input['res']['ok']++;
                   }  else {
                      $input['res']['ko']++;
@@ -239,12 +261,12 @@ class AuthLDAP extends CommonDBTM {
                }
             } else {
                if (count($input['item']) > 0) {
-                  $input["ldap_process_count"] = 0;
-                  $input["authldaps_id"] = $_SESSION['ldap_import']['authldaps_id'];
-                  $input["mode"] = $_SESSION['ldap_import']['mode'];
-                  $input['res']  = array('ok'      => 0,
-                                         'ko'      => 0,
-                                         'noright' => 0);
+                  $input["ldap_process_count"]  = 0;
+                  $input["authldaps_id"]        = $_SESSION['ldap_import']['authldaps_id'];
+                  $input["mode"]                = $_SESSION['ldap_import']['mode'];
+                  $input['res']                 = array('ok'      => 0,
+                                                        'ko'      => 0,
+                                                        'noright' => 0);
                   foreach ($input['item'] as $key => $val) {
                      if ($val) {
                         $input["ldap_process_count"]++;
@@ -257,7 +279,7 @@ class AuthLDAP extends CommonDBTM {
                }
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.import.php";
-            
+
             break;
 
          default :
@@ -265,7 +287,8 @@ class AuthLDAP extends CommonDBTM {
       }
       return $res;
    }
-   
+
+
    /**
     * Print the auth ldap form
     *
@@ -564,7 +587,7 @@ class AuthLDAP extends CommonDBTM {
       }
       return NOT_AVAILABLE;
    }
-   
+
    function showFormGroupsConfig() {
 
       $ID = $this->getField('id');
@@ -902,10 +925,10 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'group_search_type';
-      $tab[24]['datatype']      = 'specific'; 
+      $tab[24]['datatype']      = 'specific';
       $tab[24]['name']          = __('Search type');
       $tab[24]['massiveaction'] = false;
-      
+
 
       $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'is_active';
@@ -1163,7 +1186,7 @@ class AuthLDAP extends CommonDBTM {
       foreach ($_SESSION['ldap_import'] as $option => $value) {
          $values[$option] = $value;
       }
-      
+
       $rand = mt_rand();
       $results       = array();
       $limitexceeded = false;
@@ -1267,7 +1290,7 @@ class AuthLDAP extends CommonDBTM {
             $paramsma['ontop'] =false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
-            
+
 //             Html::openArrowMassives("ldap_form", true);
 //             Html::closeArrowMassives(array($form_action => $textbutton));
 //             Html::closeForm();

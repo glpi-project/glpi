@@ -466,7 +466,12 @@ class Printer  extends CommonDBTM {
                     AND `items_id` = '" . $this->fields['id']."'";
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
@@ -474,44 +479,54 @@ class Printer  extends CommonDBTM {
          $actions['disconnect'] = _x('button', 'Disconnect');
       }
       if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && $isadmin) {
+          && Session::isMultiEntitiesMode()
+          && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
-      }      
+      }
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "connect" :
          case "disconnect" :
             $ci = new Computer_Item();
             return $ci->showSpecificMassiveActionsParameters($input);
-         break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;         
       }
       return false;
    }
-   
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "connect" :
          case "disconnect" :
             $ci = new Computer_Item();
             return $ci->doSpecificMassiveActions($input);
-            break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab                       = array();

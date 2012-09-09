@@ -52,7 +52,7 @@ class Entity extends CommonTreeDropdown {
 
    const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
    const AUTO_ASSIGN_CATEGORY_HARDWARE = 2;
-   
+
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
    private static $field_right = array('entity'
@@ -95,13 +95,15 @@ class Entity extends CommonTreeDropdown {
 
 
    function getForbiddenStandardMassiveAction() {
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'delete';
       $forbidden[] = 'purge';
       $forbidden[] = 'restore';
       $forbidden[] = 'merge';
       return $forbidden;
    }
+
 
    /**
     * @since version 0.84
@@ -414,7 +416,7 @@ class Entity extends CommonTreeDropdown {
 
    function getSearchOptions() {
       /// TODO lots of specific values may be passed to standard ones.
-      
+
       $tab                     = array();
       $tab['common']           = __('Characteristics');
 
@@ -2121,7 +2123,7 @@ class Entity extends CommonTreeDropdown {
                case 0 :
               return __('Never');
              }
-         
+
            return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
 
          case 'auto_assign_mode' :
@@ -2192,7 +2194,7 @@ class Entity extends CommonTreeDropdown {
                return __('Inheritance of the parent entity');
             }
             return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
-            
+
          case 'calendars_id' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
@@ -2201,7 +2203,7 @@ class Entity extends CommonTreeDropdown {
                case 0 :
                   return __('24/7');
             }
-            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);            
+            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
 
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -2219,20 +2221,20 @@ class Entity extends CommonTreeDropdown {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return Alert::dropdownYesNo($options);
-            
+
          case 'cartridges_alert_repeat' :
          case 'consumables_alert_repeat' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return Alert::dropdown($options);
-            
+
          case 'send_contracts_alert_before_delay' :
          case 'send_infocoms_alert_before_delay' :
          case 'send_licenses_alert_before_delay' :
             $options['unit']  = 'day';
             $options['never_string'] = __('No');
             return Alert::dropdownIntegerNever($name, $values[$field], $options);
-            
+
          case 'use_reservations_alert' :
             $options['unit']  = 'hour';
             return Alert::dropdownIntegerNever($name, $values[$field], $options);
@@ -2240,18 +2242,18 @@ class Entity extends CommonTreeDropdown {
          case 'notclosed_delay' :
             $options['unit']  = 'hour';
             return Alert::dropdownIntegerNever($name, $values[$field], $options);
-            
+
          case 'auto_assign_mode' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
-         
+
             return self::dropdownAutoAssignMode($options);
-            
+
          case 'tickettype' :
             $options['value'] = $values[$field];
             $options['toadd'] = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
             return Ticket::dropdownType($name, $options);
-            
+
          case 'autofill_buy_date' :
          case 'autofill_order_date' :
          case 'autofill_delivery_date' :
@@ -2280,7 +2282,7 @@ class Entity extends CommonTreeDropdown {
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, $tab, $options);
 
-      
+
          case 'autofill_warranty_date' :
             $tab = array(0                           => __('No autofill'),
                          Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
@@ -2291,7 +2293,7 @@ class Entity extends CommonTreeDropdown {
             return Dropdown::showFromArray($name, $tab, $options);
 
          case 'inquest_config' :
-         
+
             $typeinquest = array(self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                                  1                    => __('Internal survey'),
                                  2                    => __('External survey'));
@@ -2303,7 +2305,7 @@ class Entity extends CommonTreeDropdown {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return Contract::dropdownAlert($options);
-            
+
          case 'default_infocom_alert' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
@@ -2317,6 +2319,6 @@ class Entity extends CommonTreeDropdown {
 
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }   
+   }
 }
 ?>

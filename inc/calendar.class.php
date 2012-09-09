@@ -49,7 +49,7 @@ class Calendar extends CommonDropdown {
       $forbidden[] = 'merge';
       return $forbidden;
    }
-   
+
    static function getTypeName($nb=0) {
       return _n('Calendar','Calendars',$nb);
    }
@@ -73,7 +73,13 @@ class Calendar extends CommonDropdown {
 
       return $ong;
    }
+
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -82,8 +88,13 @@ class Calendar extends CommonDropdown {
       }
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
       switch ($input['action']) {
          case "duplicate" :
             if ($item->isEntityAssign()) {
@@ -92,19 +103,23 @@ class Calendar extends CommonDropdown {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Duplicate')."'>";
             return true;
-            break;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
       }
       return false;
    }
 
-   function doSpecificMassiveActions($input = array()) {
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "duplicate" : // For calendar duplicate in another entity
             if (method_exists($this,'duplicate')) {
@@ -116,7 +131,7 @@ class Calendar extends CommonDropdown {
                   if ($val == 1) {
                      if ($this->getFromDB($key)) {
                         if (!$this->isEntityAssign()
-                           || ($input['entities_id'] != $this->getEntityID())) {
+                            || ($input['entities_id'] != $this->getEntityID())) {
                            if ($this->can(-1,'w',$options)) {
                               if ($this->duplicate($options)) {
                                  $res['ok']++;
@@ -142,6 +157,8 @@ class Calendar extends CommonDropdown {
       }
       return $res;
    }
+
+
    /** Clone a calendar to another entity : name is updated
     *
     * @param $options array of new values to set

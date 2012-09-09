@@ -85,7 +85,7 @@ class User extends CommonDBTM {
 
 
    function canCreateItem() {
-   
+
       // Will be created from form, with selected entity/profile
       if (isset($this->input['_profiles_id']) && ($this->input['_profiles_id'] > 0)
           && Profile::currentUserHaveMoreRightThan(array($this->input['_profiles_id']))
@@ -356,8 +356,8 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyEmail($email) {
-      return $this->getFromDBByQuery("LEFT JOIN `glpi_useremails` 
-                  ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`) 
+      return $this->getFromDBByQuery("LEFT JOIN `glpi_useremails`
+                  ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
                   WHERE `glpi_useremails`.`email` = '$email'");
    }
 
@@ -1995,7 +1995,12 @@ class User extends CommonDBTM {
       }
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getSpecificMassiveActions()
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
@@ -2004,16 +2009,19 @@ class User extends CommonDBTM {
       }
 
       if (Session::haveRight("user_authtype","w")) {
-         $actions['change_authtype'] = _x('button', 'Change the authentication method');
-         $actions['force_user_ldap_update']
-                                       = __('Force synchronization');
+         $actions['change_authtype']        = _x('button', 'Change the authentication method');
+         $actions['force_user_ldap_update'] = __('Force synchronization');
       }
       return $actions;
    }
-   
-   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
-      
+
       switch ($input['action']) {
          case "change_authtype" :
             $rand             = Auth::dropdown(array('name' => 'authtype'));
@@ -2023,17 +2031,14 @@ class User extends CommonDBTM {
                                           $CFG_GLPI["root_doc"].
                                              "/ajax/dropdownMassiveActionAuthMethods.php",
                                           $paramsmassaction);
-            echo "<span id='show_massiveaction_field'>";
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           __s('Post')."'></span>\n";
-            return true;
-            break;
-            
+            echo "<span id='show_massiveaction_field'><br><br>";
+            echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
+            echo "</span>\n";
+
          case "add_user_group" :
             $gu = new Group_User();
             return $gu->showSpecificMassiveActionsParameters($input);
-            break;
-         
+
          case "add_userprofile" :
             Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
             echo ".&nbsp;"._n('Profile', 'Profiles', 1)."&nbsp;";
@@ -2043,25 +2048,29 @@ class User extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Add')."'>";
             return true;
-            break;
+
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;
 
       }
       return false;
    }
-   
-   function doSpecificMassiveActions($input = array()) {
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
+
       switch ($input['action']) {
          case "add_user_group" :
             $gu = new Group_User();
             return $gu->doSpecificMassiveActions($input);
-            break;
-            
+
          case "force_user_ldap_update" :
             if (Session::haveRight("user", "w")) {
                $ids = array();
@@ -2069,9 +2078,11 @@ class User extends CommonDBTM {
                   if ($val == 1) {
                      if ($this->getFromDB($key)) {
                         if (($this->fields["authtype"] == Auth::LDAP)
-                           || ($this->fields["authtype"] == Auth::EXTERNAL)) {
-                           if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                        'value'  => $this->fields["name"]),
+                            || ($this->fields["authtype"] == Auth::EXTERNAL)) {
+                           if (AuthLdap::ldapImportUserByServerId(array('method'
+                                                                           => AuthLDAP::IDENTIFIER_LOGIN,
+                                                                        'value'
+                                                                           => $this->fields["name"]),
                                                                         1, $this->fields["auths_id"])) {
                               $res['ok']++;
                            } else {
@@ -2087,9 +2098,10 @@ class User extends CommonDBTM {
                $res['noright']++;
             }
             break;
-            
+
          case "change_authtype" :
-            if (!isset($input["authtype"]) || !isset($input["auths_id"])) {
+            if (!isset($input["authtype"])
+                || !isset($input["auths_id"])) {
                return false;
             }
             if (Session::haveRight("user_authtype","w")) {
@@ -2111,11 +2123,9 @@ class User extends CommonDBTM {
 
          case "add_userprofile" :
             $right = new Profile_User();
-            if (isset($input['profiles_id'])
-               && ($input['profiles_id'] > 0)
-               && isset($input['entities_id'])
-               && ($input['entities_id'] >= 0)) {
-               $input2 = array();
+            if (isset($input['profiles_id']) && ($input['profiles_id'] > 0)
+                && isset($input['entities_id']) && ($input['entities_id'] >= 0)) {
+               $input2                 = array();
                $input2['entities_id']  = $input['entities_id'];
                $input2['profiles_id']  = $input['profiles_id'];
                $input2['is_recursive'] = $input['is_recursive'];
@@ -2135,11 +2145,14 @@ class User extends CommonDBTM {
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
+
+
    function getSearchOptions() {
 
       // forcegroup by on name set force group by for all items
@@ -2629,7 +2642,7 @@ class User extends CommonDBTM {
          }
       }
 
-      
+
       // Make a select box with all glpi users
       $use_ajax = false;
 
