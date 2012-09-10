@@ -101,9 +101,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
          $notificationtemplates_id = $options['notificationtemplates_id'];
       }
 
-      if ($ID < 0) {
-         // Create item
-         $this->fields['notificationtemplates_id'] = $notificationtemplates_id;
+      if ($this->getFromDB($ID)) {
+         $notificationtemplates_id = $this->getField('notificationtemplates_id');
       }
 
       $this->initForm($ID, $options);
