@@ -260,12 +260,7 @@ class Cartridge extends CommonDBTM {
       $total = self::getTotalNumber($tID);
       $out   = "";
       if ($total != 0) {
-         $unused     = self::getUnusedNumber($tID);   function getForbiddenStandardMassiveAction() {
-
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
+         $unused     = self::getUnusedNumber($tID);
          $used       = self::getUsedNumber($tID);
          $old        = self::getOldNumber($tID);
          $highlight  = "";
