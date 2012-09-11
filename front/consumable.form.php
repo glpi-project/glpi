@@ -37,10 +37,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("consumable", "r");
 
-if (!isset($_GET["cartridgeitems_id"])) {
-   $_GET["cartridgeitems_id"] = "";
-}
-
 $con      = new Consumable();
 $constype = new ConsumableItem();
 
