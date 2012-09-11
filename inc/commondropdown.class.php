@@ -185,10 +185,14 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'dropdownValue' :
+               $params = array('value'  => $this->fields[$field['name']],
+                               'name'   => $field['name'],
+                               'entity' => $this->getEntityID());
+               if (isset($field['condition'])) {
+                  $params['condition'] = $field['condition'];
+               }
                Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField($field['name'])),
-                              array('value'  => $this->fields[$field['name']],
-                                    'name'   => $field['name'],
-                                    'entity' => $this->getEntityID()));
+                              $params);
                break;
 
             case 'text' :

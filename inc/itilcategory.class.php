@@ -67,6 +67,7 @@ class ITILCategory extends CommonTreeDropdown {
                    array('name'  => 'groups_id',
                          'label' => $LANG['common'][109],
                          'type'  => 'dropdownValue',
+                         'condition' => '`is_assign`',
                          'list'  => true),
                    array('name'  => 'knowbaseitemcategories_id',
                          'label' => $LANG['title'][5],
