@@ -666,7 +666,7 @@ class Printer  extends CommonDBTM {
       $tab[24]['linkfield']      = 'users_id_tech';
       $tab[24]['name']           = __('Technician in charge of the hardware');
       $tab[24]['datatype']       = 'dropdown';
-      $tab[24]['right']          = 'interface';
+      $tab[24]['right']          = 'own_ticket';
 
       $tab[49]['table']          = 'glpi_groups';
       $tab[49]['field']          = 'completename';
