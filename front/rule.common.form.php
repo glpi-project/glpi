@@ -46,6 +46,8 @@ $rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
 if (isset($_POST["delete_criteria"])) {
+/// TODO create specific form
+
    $rulecollection->checkGlobal('w');
 
    if (count($_POST["item"])) {

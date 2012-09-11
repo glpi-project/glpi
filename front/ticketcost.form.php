@@ -37,13 +37,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
 
-if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
-}
-if (!isset($_GET["tickets_id"])) {
-   $_GET["tickets_id"] = "";
-}
-
 $cost = new TicketCost();
 if (isset($_POST["add"])) {
    $cost->check(-1,'w',$_POST);

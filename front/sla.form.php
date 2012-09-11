@@ -53,19 +53,19 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
 } else if (isset($_POST["delete"])) {
-   $sla->check($_GET["id"], 'd');
+   $sla->check($_POST["id"], 'd');
    $sla->delete($_POST);
 
-   Event::log($_GET["id"], "slas", 4, "setup",
+   Event::log($_POST["id"], "slas", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $sla->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $sla->check($_GET["id"], 'w');
+   $sla->check($_POST["id"], 'w');
    $sla->update($_POST);
 
-   Event::log($_GET["id"], "slas", 4, "setup",
+   Event::log($_POST["id"], "slas", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
