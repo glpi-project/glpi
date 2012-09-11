@@ -445,9 +445,9 @@ class CronTask extends CommonDBTM{
          _e('Never');
       } else {
          echo Html::convDateTime($this->fields['lastrun']);
-         echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetdate=1'>";
-         echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".__s('Blank')."\" title=\"".
-                __s('Blank')."\"></a>";
+         echo "&nbsp;";
+         Html::showSimpleForm(static::getFormURL(), 'resetdate',
+                                    __('Blank'), array('id' => $ID), GLPI_ROOT."/pics/reset.png");
       }
       echo "</td></tr>";
 
@@ -506,13 +506,13 @@ class CronTask extends CommonDBTM{
       }
 
       if ($launch) {
-         echo " - <a href='".GLPI_ROOT."/front/crontask.php?execute=".$this->fields["name"]."'>".
-                   __('Execute')."</a>";
+         echo "&nbsp;";
+         Html::showSimpleForm(static::getFormURL(), array('execute' => $this->fields['name']),
+                                    __('Execute'));
       }
       if ($tmpstate == self::STATE_RUNNING) {
-         echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetstate=1'>";
-         echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".__s('Blank')."\" title=\"".
-                __s('Blank')."\"></a>";
+         Html::showSimpleForm(static::getFormURL(), 'resetstate',
+                                    __('Blank'), array('id' => $ID), GLPI_ROOT."/pics/reset.png");
       }
       echo "</td></tr>";
 

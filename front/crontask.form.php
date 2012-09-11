@@ -39,23 +39,36 @@ Session::checkRight("config", "w");
 
 $crontask = new CronTask();
 
-if (isset($_POST["update"])) {
+if (isset($_POST['execute'])) {
+   if (is_numeric($_POST['execute'])) {
+      // Execute button from list.
+      $name = CronTask::launch(CronTask::MODE_INTERNAL, intval($_POST['execute']));
+   } else {
+      // Execute button from Task form (force)
+      $name = CronTask::launch(-CronTask::MODE_INTERNAL, 1, $_POST['execute']);
+   }
+   if ($name) {
+      //TRANS: %s is a task name
+      Session::addMessageAfterRedirect(sprintf(__('Task %s executed'), $name));
+   }
+   Html::back();
+} else if (isset($_POST["update"])) {
    Session::checkRight('config', 'w');
    $crontask->update($_POST);
    Html::back();
 
-} else if (isset($_GET['resetdate'])
-           && isset($_GET["id"])) {
+} else if (isset($_POST['resetdate'])
+           && isset($_POST["id"])) {
    Session::checkRight('config', 'w');
-   if ($crontask->getFromDB($_GET["id"])) {
+   if ($crontask->getFromDB($_POST["id"])) {
        $crontask->resetDate();
    }
    Html::back();
 
-} else if (isset($_GET['resetstate'])
-           && isset($_GET["id"])) {
+} else if (isset($_POST['resetstate'])
+           && isset($_POST["id"])) {
    Session::checkRight('config', 'w');
-   if ($crontask->getFromDB($_GET["id"])) {
+   if ($crontask->getFromDB($_POST["id"])) {
        $crontask->resetState();
    }
    Html::back();
@@ -68,4 +81,5 @@ if (isset($_POST["update"])) {
    $crontask->showForm($_GET["id"]);
    Html::footer();
 }
+Html::displayErrorAndDie('Lost');
 ?>
