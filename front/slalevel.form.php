@@ -70,6 +70,7 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add_action"])) {
+/// TODO create specific form
    $item->check($_POST['slalevels_id'], 'w');
 
    $action = new SlaLevelAction();
@@ -122,10 +123,11 @@ if (isset($_POST["update"])) {
                        'date_mod' => $_SESSION['glpi_currenttime']));
    Html::back();
 
-} else {//print computer information
+} else if (isset($_GET["id"]) && $_GET["id"]>0){//print computer information
    Html::header(SlaLevel::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
    $item->showForm($_GET["id"]);
    Html::footer();
 }
+Html::displayErrorAndDie('Lost');
 ?>
