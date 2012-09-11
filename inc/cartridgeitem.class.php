@@ -484,22 +484,18 @@ class CartridgeItem extends CommonDBTM {
                       AND `glpi_cartridgeitems`.`entities_id` ='".$printer->fields["entities_id"]."'
                 GROUP BY tID
                 ORDER BY `name`, `ref`";
-
+      $datas = array();
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            echo "<select name='cartridgeitems_id' size=1>";
             while ($data= $DB->fetch_assoc($result)) {
                $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
                $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
                $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
-
-               echo "<option value='".$data["tID"]."'>".$text."</option>";
+               $datas[$data["tID"]] = $text;
             }
-            echo "</select>";
-            return true;
          }
       }
-      return false;
+      return Dropdown::showFromArray('cartridgeitems_id', $datas);
    }
 
 
