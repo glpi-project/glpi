@@ -41,14 +41,6 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-if (!isset($_GET["sort"])) {
-   $_GET["sort"] = "";
-}
-
-if (!isset($_GET["order"])) {
-   $_GET["order"] = "";
-}
-
 if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
@@ -102,28 +94,6 @@ if (isset($_POST["add"])) {
    Html::back();
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
-} else if (isset($_GET["disconnect"])) {
-   $conn = new Computer_Item();
-   $conn->check($_GET["id"], 'd');
-   $conn->delete($_GET);
-   $computer->check($_GET['computers_id'], 'w');
-   Event::log($_GET["computers_id"], "computers", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s disconnects an item'), $_SESSION["glpiname"]));
-   Html::back();
-
-// Connect a computer to a printer/monitor/phone/peripheral
-} else if (isset($_POST["connect"])) {
-   if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
-      $conn = new Computer_Item();
-      $conn->check(-1, 'w', $_POST);
-      $conn->add($_POST);
-      Event::log($_POST["computers_id"], "computers", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else {//print computer information
    Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
    //show computer form to add

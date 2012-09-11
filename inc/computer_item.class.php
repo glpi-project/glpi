@@ -425,7 +425,6 @@ class Computer_Item extends CommonDBRelation{
    static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      $target  = $comp->getFormURL();
       $ID      = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
 
@@ -508,10 +507,10 @@ class Computer_Item extends CommonDBRelation{
                   if ($canedit
                       && (empty($withtemplate) || ($withtemplate != 2))) {
                      echo "<td class='center b'>";
-                     echo "<a href=\"".$CFG_GLPI["root_doc"].
-                            "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
-                            "disconnect=1&amp;withtemplate=".$withtemplate."\">";
-                     echo __('Disconnect')."</a></td>";
+                     Html::showSimpleForm(static::getFormURL(), 'disconnect', __('Disconnect'),
+                           array('computers_id' => $ID,
+                                 'id' => $connID));
+                     echo "</td>";
                   }
                   echo "</tr>";
                }
@@ -539,7 +538,7 @@ class Computer_Item extends CommonDBRelation{
             }
             if ($canedit) {
                if (empty($withtemplate) || ($withtemplate != 2)) {
-                  echo "<form method='post' action=\"$target\">";
+                  echo "<form method='post' action=\"".static::getFormURL()."\">";
                   echo "<input type='hidden' name='computers_id' value='$ID'>";
                   echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
                   if (!empty($withtemplate)) {
@@ -578,7 +577,6 @@ class Computer_Item extends CommonDBRelation{
       global $DB;
 
       $comp   = new Computer();
-      $target = $comp->getFormURL();
       $ID     = $item->getField('id');
 
       if (!$item->can($ID,"r")) {
@@ -599,6 +597,30 @@ class Computer_Item extends CommonDBRelation{
       }
 
       echo "<div class='spaced'><table width='50%' class='tab_cadre_fixe'>";
+      if ($global
+          || (count($compids) > 0)) {
+         echo "</td></tr>";
+         echo "<tr><td class='tab_bg_1'>&nbsp;</td>";
+         echo "<td class='tab_bg_2' class='center'>";
+         if ($canedit) {
+            echo "<form method='post' action=\"".static::getFormURL()."\">";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
+            if ($item->isRecursive()) {
+               self::dropdownConnect('Computer', $item->getType(), "computers_id",
+                                     getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
+            } else {
+               self::dropdownConnect('Computer', $item->getType(), "computers_id",
+                                     $item->getEntityID(), 0, $used);
+            }
+            echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
+                   class='submit'>";
+            Html::closeForm();
+         } else {
+            echo "&nbsp;";
+         }
+      }
+      
       echo "<tr><th colspan='2'>".__('Direct connections')."</th></tr>";
 
       if (count($compids) > 0) {
@@ -608,8 +630,9 @@ class Computer_Item extends CommonDBRelation{
             printf(__('%1$s: %2$s'), __('Computer'), $comp->getLink());
             echo "</td><td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
             if ($canedit) {
-               echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
-                      __('Disconnect')."</a>";
+               Html::showSimpleForm(static::getFormURL(), 'disconnect', __('Disconnect'),
+                     array('computers_id' => $compid,
+                           'id' => $key));
             } else {
                echo "&nbsp;";
             }
@@ -617,50 +640,9 @@ class Computer_Item extends CommonDBRelation{
          }
 
       } else {
-         echo "<tr><td class='tab_bg_1 b'><i>".__('Not connected')."</i></td>";
-         echo "<td class='tab_bg_2' class='center'>";
-         if ($canedit) {
-            echo "<form method='post' action=\"$target\">";
-            echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-            if ($item->isRecursive()) {
-               self::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                     getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
-            } else {
-               self::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                     $item->getEntityID(), 0, $used);
-            }
-            echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
-                   class='submit'>";
-            Html::closeForm();
-         } else {
-            echo "&nbsp;";
-         }
+         echo "<tr><td class='tab_bg_1 b'><i>".__('Not connected')."</i>";
       }
 
-      if ($global
-          && (count($compids) > 0)) {
-         echo "</td></tr>";
-         echo "<tr><td class='tab_bg_1'>&nbsp;</td>";
-         echo "<td class='tab_bg_2' class='center'>";
-         if ($canedit) {
-            echo "<form method='post' action=\"$target\">";
-            echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-            if ($item->isRecursive()) {
-               self::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                     getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
-            } else {
-               self::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                     $item->getEntityID(), 0, $used);
-            }
-            echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
-                   class='submit'>";
-            Html::closeForm();
-         } else {
-            echo "&nbsp;";
-         }
-      }
       echo "</td></tr>";
       echo "</table></div>";
    }
