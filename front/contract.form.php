@@ -98,36 +98,6 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-}  else if (isset($_GET["deleteitem"])) {
-   $contractitem->check($_GET["id"], 'd');
-
-   if ($contractitem->delete($_GET)) {
-      Event::log($_GET["contracts_id"], "contracts", 4, "financial",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_POST["addcontractsupplier"])) {
-   $contractsupplier->check(-1,'w',$POST);
-
-   if ($contractsupplier->add($_POST)) {
-      Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_GET["deletecontractsupplier"])) {
-   $contractsupplier->check($_GET['id'],'d');
-
-   if ($contractsupplier->delete($_GET)) {
-      Event::log($_GET["contracts_id"], "contracts", 4, "financial",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes a link with a supplier'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else {
    Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contract");
    $contract->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
