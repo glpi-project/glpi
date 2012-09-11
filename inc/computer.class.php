@@ -1104,72 +1104,73 @@ class Computer extends CommonDBTM {
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab['virtualmachine']        = _n('Virtual machine', 'Virtual machines', 2);
+      $tab['virtualmachine']     = _n('Virtual machine', 'Virtual machines', 2);
 
-      $tab[160]['table']            = 'glpi_computervirtualmachines';
-      $tab[160]['field']            = 'name';
-      $tab[160]['name']             = __('Virtual machine');
-      $tab[160]['forcegroupby']     = true;
-      $tab[160]['massiveaction']    = false;
-      $tab[160]['datatype']         = 'dropdown';
-      $tab[160]['joinparams']       = array('jointype' => 'child');
+      $tab[160]['table']         = 'glpi_computervirtualmachines';
+      $tab[160]['field']         = 'name';
+      $tab[160]['name']          = __('Virtual machine');
+      $tab[160]['forcegroupby']  = true;
+      $tab[160]['massiveaction'] = false;
+      $tab[160]['datatype']      = 'dropdown';
+      $tab[160]['joinparams']    = array('jointype' => 'child');
 
-      $tab[161]['table']            = 'glpi_virtualmachinestates';
-      $tab[161]['field']            = 'name';
-      $tab[161]['name']             = __('State of the virtual machine');
-      $tab[161]['forcegroupby']     = true;
-      $tab[161]['massiveaction']    = false;
-      $tab[161]['datatype']         = 'dropdown';
-      $tab[161]['joinparams']       = array('beforejoin'
-                                             => array('table'      => 'glpi_computervirtualmachines',
-                                                      'joinparams' => array('jointype' => 'child')));
+      $tab[161]['table']         = 'glpi_virtualmachinestates';
+      $tab[161]['field']         = 'name';
+      $tab[161]['name']          = __('State of the virtual machine');
+      $tab[161]['forcegroupby']  = true;
+      $tab[161]['massiveaction'] = false;
+      $tab[161]['datatype']      = 'dropdown';
+      $tab[161]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_computervirtualmachines',
+                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab[162]['table']            = 'glpi_virtualmachinetypes';
-      $tab[162]['field']            = 'name';
-      $tab[162]['name']             = __('Virtualization model');
-      $tab[162]['forcegroupby']     = true;
-      $tab[162]['massiveaction']    = false;
-      $tab[162]['datatype']         = 'dropdown';
-      $tab[162]['joinparams']       = array('beforejoin'
-                                             => array('table'      => 'glpi_computervirtualmachines',
-                                                      'joinparams' => array('jointype' => 'child')));
+      $tab[162]['table']         = 'glpi_virtualmachinetypes';
+      $tab[162]['field']         = 'name';
+      $tab[162]['name']          = __('Virtualization model');
+      $tab[162]['forcegroupby']  = true;
+      $tab[162]['massiveaction'] = false;
+      $tab[162]['datatype']      = 'dropdown';
+      $tab[162]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_computervirtualmachines',
+                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab[163]['table']            = 'glpi_virtualmachinetypes';
-      $tab[163]['field']            = 'name';
-      $tab[163]['name']             = __('Virtualization system');
-      $tab[163]['datatype']         = 'dropdown';
-      $tab[163]['forcegroupby']     = true;
-      $tab[163]['massiveaction']    = false;
-      $tab[163]['joinparams']       = array('beforejoin'
-                                             => array('table'      => 'glpi_computervirtualmachines',
-                                                      'joinparams' => array('jointype' => 'child')));
+      $tab[163]['table']         = 'glpi_virtualmachinetypes';
+      $tab[163]['field']         = 'name';
+      $tab[163]['name']          = __('Virtualization system');
+      $tab[163]['datatype']      = 'dropdown';
+      $tab[163]['forcegroupby']  = true;
+      $tab[163]['massiveaction'] = false;
+      $tab[163]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_computervirtualmachines',
+                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab[164]['table']            = 'glpi_computervirtualmachines';
-      $tab[164]['field']            = 'vcpu';
-      $tab[164]['name']             = __('Virtual machine processor number');
-      $tab[164]['datatype']         = 'number';
-      $tab[164]['forcegroupby']     = true;
-      $tab[164]['massiveaction']    = false;
-      $tab[164]['joinparams']       = array('jointype' => 'child');
+      $tab[164]['table']         = 'glpi_computervirtualmachines';
+      $tab[164]['field']         = 'vcpu';
+      $tab[164]['name']          = __('Virtual machine processor number');
+      $tab[164]['datatype']      = 'number';
+      $tab[164]['forcegroupby']  = true;
+      $tab[164]['massiveaction'] = false;
+      $tab[164]['joinparams']    = array('jointype' => 'child');
 
-      $tab[165]['table']            = 'glpi_computervirtualmachines';
-      $tab[165]['field']            = 'ram';
-      $tab[165]['name']             = __('Memory of virtual machines');
-      $tab[165]['datatype']         = 'number';
-      $tab[165]['unit']             = __('Mio');
-      $tab[165]['forcegroupby']     = true;
-      $tab[165]['massiveaction']    = false;
-      $tab[165]['joinparams']       = array('jointype' => 'child');
+      $tab[165]['table']         = 'glpi_computervirtualmachines';
+      $tab[165]['field']         = 'ram';
+      $tab[165]['name']          = __('Memory of virtual machines');
+      $tab[165]['datatype']      = 'number';
+      $tab[165]['unit']          = __('Mio');
+      $tab[165]['forcegroupby']  = true;
+      $tab[165]['massiveaction'] = false;
+      $tab[165]['joinparams']    = array('jointype' => 'child');
 
-      $tab[166]['table']            = 'glpi_computervirtualmachines';
-      $tab[166]['field']            = 'uuid';
-      $tab[166]['name']             = __('Virtual machine UUID');
-      $tab[165]['datatype']         = 'string';
-      $tab[166]['forcegroupby']     = true;
-      $tab[166]['massiveaction']    = false;
-      $tab[166]['joinparams']       = array('jointype' => 'child');
+      $tab[166]['table']         = 'glpi_computervirtualmachines';
+      $tab[166]['field']         = 'uuid';
+      $tab[166]['name']          = __('Virtual machine UUID');
+      $tab[165]['datatype']      = 'string';
+      $tab[166]['forcegroupby']  = true;
+      $tab[166]['massiveaction'] = false;
+      $tab[166]['joinparams']    = array('jointype' => 'child');
 
       return $tab;
    }
+
 }
 ?>

@@ -174,7 +174,7 @@ class Infocom extends CommonDBChild {
          case "sink_type" :
             return self::dropdownAmortType($name, $values[$field], false);
             break;
-            
+
          case "alert" :
             $options['name']  = $name;
             $options['value'] = $values[$field];
@@ -183,7 +183,7 @@ class Infocom extends CommonDBChild {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
    /**
     * Retrieve an item from the database for a device
     *
@@ -518,7 +518,7 @@ class Infocom extends CommonDBChild {
       $p['value']   = 0;
       $p['display'] = true;
       $p['inherit_parent'] = false;
-      
+
       if (count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
@@ -1014,7 +1014,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Amortization duration')."</td><td>";
             if ($withtemplate == 2) {
-               echo sprintf(_n('%d year', '%d years', $ic->fields["sink_time"]), $ic->fields["sink_time"]);
+               printf(_n('%d year', '%d years'), $ic->fields["sink_time"], $ic->fields["sink_time"]);
             } else {
                Dropdown::showNumber("sink_time", array('value' => $ic->fields["sink_time"],
                                                        'max'   => 15,
@@ -1313,7 +1313,7 @@ class Infocom extends CommonDBChild {
       $tab[56]['joinparams']     = $joinparams;
       $tab[56]['datatype']       = 'number';
       $tab[56]['max']            = 15;
-      $tab[56]['unit']           = 'year';      
+      $tab[56]['unit']           = 'year';
 
       $tab[57]['table']          = 'glpi_infocoms';
       $tab[57]['field']          = 'sink_type';
@@ -1490,7 +1490,7 @@ class Infocom extends CommonDBChild {
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
       $tab[80]['datatype']       = 'dropdown';
-      
+
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';

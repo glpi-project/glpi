@@ -164,15 +164,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $oppositePort = NetworkPort_NetworkPort::getOpposite($netport);
       if ($oppositePort !== false) {
 
-         $opposite_options = $options;
+         $opposite_options            = $options;
          $opposite_options['canedit'] = false;
-
-         $display_options = $options['display_options'];
+         $display_options             = $options['display_options'];
 
          if ($display_options['ethernet_opposite']) {
-
-            $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
-                                  __('Local network port'));
+            $cell          = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                           __('Local network port'));
 
             $opposite_cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                            $connect_cell_value);
@@ -187,10 +185,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             }
 
          } else {
-
             $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                   $connect_cell_value);
-
           }
 
       } else {
@@ -199,7 +195,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       $this->getEthernetInstantiationHTMLTable($netport, $row, $cell, $options);
-
       return $cell;
 
    }
@@ -209,9 +204,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * Display a connection of a networking port
     *
     * @param $netport      to be displayed
-    * @param $edit         boolean permit to edit ?
+    * @param $edit         boolean permit to edit ? (false by default)
    **/
-   static function showConnection($netport, $edit= false) {
+   static function showConnection($netport, $edit=false) {
+
       $ID      = $netport->fields["id"];
       if (empty($ID)) {
          return false;
@@ -222,13 +218,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       if (!$device1->can($device1->getID(), 'r')) {
          return false;
       }
-      $canedit = $device1->can($device1->fields["id"], 'w');
-
+      $canedit      = $device1->can($device1->fields["id"], 'w');
       $relations_id = 0;
       $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
       if ($oppositePort !== false) {
-
          $device2 = $oppositePort->getItem();
 
          if ($device2->can($device2->fields["id"], 'r')) {
@@ -249,11 +243,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             if ($canedit
                 || $device2->can($device2->fields["id"], 'w')) {
                echo " <span class='b'>";
-
                echo "<a href=\"".$oppositePort->getFormURL()."?disconnect=".
-                  "disconnect&amp;id=$relations_id\">". __('Disconnect').
-                  "</a>";
-
+                      "disconnect&amp;id=$relations_id\">". __('Disconnect')."</a>";
                echo "</span>";
             }
 
@@ -274,9 +265,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          if ($canedit) {
             if (!$device1->isTemplate()) {
                if ($edit) {
-                  self::dropdownConnect($ID, array('name'        => 'NetworkPortConnect_networkports_id_2',
-                                                   'entity'      => $device1->fields["entities_id"],
-                                                   'entity_sons' => $device1->isRecursive()));
+                  self::dropdownConnect($ID,
+                                        array('name'        => 'NetworkPortConnect_networkports_id_2',
+                                              'entity'      => $device1->fields["entities_id"],
+                                              'entity_sons' => $device1->isRecursive()));
                } else {
                   echo "<a href=\"".$netport->getFormURL()."?id=$ID\">". __('Connect')."</a>";
                }

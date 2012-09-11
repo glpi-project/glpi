@@ -839,7 +839,8 @@ function update0831to084() {
 
             // TODO : we may remove the informations attached to the NetworkPorts
             foreach ($both as $aggregated_networkports_id) {
-               $query = "DELETE FROM `glpi_networknames`
+               $query = "DELETE
+                         FROM `glpi_networknames`
                          WHERE `itemtype` = 'NetworkPort'
                                AND `items_id` = '$aggregated_networkports_id'";
                $DB->query($query);

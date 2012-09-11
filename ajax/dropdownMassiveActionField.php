@@ -65,7 +65,7 @@ if (isset($_POST["itemtype"])
    if (!isset($search[$_POST["id_field"]])) {
       exit();
    }
-   
+
    $search            = $search[$_POST["id_field"]];
 
    $FIELDNAME_PRINTED = false;
@@ -85,7 +85,8 @@ if (isset($_POST["itemtype"])
 
    $fieldname = '';
 
-   if (empty($search["linkfield"]) || $search['table'] == 'glpi_infocoms') {
+   if (empty($search["linkfield"])
+       ||($search['table'] == 'glpi_infocoms')) {
       $fieldname = $search["field"];
    } else {
       $fieldname = $search["linkfield"];

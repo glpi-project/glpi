@@ -463,8 +463,8 @@ class NetworkPortMigration extends CommonDBChild {
     * @param $options   array
    **/
    static function getInstantiationHTMLTableHeaders(HTMLTableGroup $group,
-                                                     HTMLTableSuperHeader $super,
-                                                     array $options=array()) {
+                                                    HTMLTableSuperHeader $super,
+                                                    array $options=array()) {
       return NULL;
    }
 
