@@ -4396,10 +4396,12 @@ class Html {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }
       $fields['_glpi_simple_form'] = 1;
+      $button = $btname;
       if (!is_array($btname)) {
-         $btname[$btname] = $btname;
+         $button = array();
+         $button[$btname] = $btname;
       }
-      $fields          = array_merge($btname, $fields);
+      $fields          = array_merge($button, $fields);
       $javascriptArray = array();
       foreach ($fields as $name => $value) {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
