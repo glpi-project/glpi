@@ -220,7 +220,7 @@ class Contract_Item extends CommonDBRelation{
 
          default :
             if (in_array($item->getType(), $CFG_GLPI["contract_types"])) {
-               Contract::showAssociated($item, $withtemplate);
+               self::showForItem($item, $withtemplate);
             }
       }
       return true;
@@ -257,6 +257,151 @@ class Contract_Item extends CommonDBRelation{
       }
    }
 
+      /**
+    * Print an HTML array of contract associated to an object
+    *
+    * @param $item            CommonDBTM object wanted
+    * @param $withtemplate     not used (to be deleted) (default '')
+    *
+    * @return Nothing (display)
+   **/
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
+      global $DB, $CFG_GLPI;
+
+      $itemtype = $item->getType();
+      $ID       = $item->fields['id'];
+
+      if (!Session::haveRight("contract","r") || !$item->can($ID,"r")) {
+         return false;
+      }
+
+      $canedit = $item->can($ID,"w");
+      $rand = mt_rand();
+
+      $query = "SELECT `glpi_contracts_items`.*
+                FROM `glpi_contracts_items`,
+                     `glpi_contracts`
+                LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id`=`glpi_entities`.`id`)
+                WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
+                      AND `glpi_contracts_items`.`items_id` = '$ID'
+                      AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
+                      getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                ORDER BY `glpi_contracts`.`name`";
+
+      $result = $DB->query($query);
+
+      $contracts = array();
+      $used = array();
+      if ($number = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $contracts[$data['id']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+
+      if ($canedit && ($withtemplate != 2)) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='contractitem_form$rand' id='contractitem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<input type='hidden' name='items_id' value='$ID'>";
+         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a contract')."</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td class='right'>";
+         Contract::dropdown(array('entity' => $item->getEntityID(),
+                              'used'   => $used));
+
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+      echo "<div class='spaced'>";
+      if ($withtemplate!=2) {
+         if ($canedit && $number) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = array('num_displayed' => $number);
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         }
+      }
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr>";
+      if ($canedit && $number && ($withtemplate != 2)) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Entity')."</th>";
+      echo "<th>"._x('phone', 'Number')."</th>";
+      echo "<th>".__('Contract type')."</th>";
+      echo "<th>".__('Supplier')."</th>";
+      echo "<th>".__('Start date')."</th>";
+      echo "<th>".__('Initial contract period')."</th>";
+      echo "</tr>";
+
+      if ($number > 0) {
+         Session::initNavigateListItems(__CLASS__,
+                              //TRANS : %1$s is the itemtype name,
+                              //         %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
+         foreach ($contracts as $data) {
+            $cID         = $data["contracts_id"];
+            Session::addToNavigateListItems(__CLASS__,$cID);
+            $contracts[] = $cID;
+            $assocID     = $data["id"];
+            $con         = new Contract();
+            $con->getFromDB($cID);
+            echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
+            if ($canedit && ($withtemplate != 2)) {
+               echo "<td width='10'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               echo "</td>";
+            }
+            echo "<td class='center b'>";
+            $name = $con->fields["name"];
+            if ($_SESSION["glpiis_ids_visible"]
+               || empty($con->fields["name"])) {
+               $name = " (".$con->fields["id"].")";
+            }
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$name;
+            echo "</a></td>";
+            echo "<td class='center'>";
+            echo Dropdown::getDropdownName("glpi_entities", $con->fields["entities_id"])."</td>";
+            echo "<td class='center'>".$con->fields["num"]."</td>";
+            echo "<td class='center'>";
+            echo Dropdown::getDropdownName("glpi_contracttypes", $con->fields["contracttypes_id"]).
+               "</td>";
+            echo "<td class='center'>".$con->getSuppliersNames()."</td>";
+            echo "<td class='center'>".Html::convDate($con->fields["begin_date"])."</td>";
+
+            echo "<td class='center'>".$con->fields["duration"]." "._n('month', 'months',
+                                                                     $con->fields["duration"]);
+            if (($con->fields["begin_date"] != '')
+               && !empty($con->fields["begin_date"])) {
+               echo " -> ".Infocom::getWarrantyExpir($con->fields["begin_date"],
+                                                   $con->fields["duration"]);
+            }
+            echo "</td>";
+
+            echo "</tr>";
+         }
+      }
+
+      echo "</table>";
+      if ($canedit && $number && ($withtemplate != 2)) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
+      }
+      echo "</div>";
+   }
 
    /**
     * Print the HTML array for Items linked to current contract
@@ -404,7 +549,7 @@ class Contract_Item extends CommonDBRelation{
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+                  Html::showMassiveActionCheckBox(__CLASS__, $objdata["IDD"]);
                   echo "</td>";
                }
                if ($prem) {
