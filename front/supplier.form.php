@@ -41,15 +41,7 @@ Session::checkRight("contact_enterprise", "r");
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
 }
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
-}
-if (!isset($_GET["sort"])) {
-   $_GET["sort"] = "";
-}
-if (!isset($_GET["order"])) {
-   $_GET["order"] = "";
-}
+
 
 $ent = new Supplier();
 

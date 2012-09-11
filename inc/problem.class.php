@@ -1499,15 +1499,7 @@ class Problem extends CommonITILObject {
          if (($candelete || $canupdate)
              && ($output_type == Search::HTML_OUTPUT)) {
 
-            $sel = "";
-            if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-               $sel = "checked";
-            }
-            if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
-               $sel = "checked";
-            }
-            $check_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
-                                  value='1' $sel>";
+            $check_col = Html::getMassiveActionCheckBox(__CLASS__, $id_for_massaction);
          }
          echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
 

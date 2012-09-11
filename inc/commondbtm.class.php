@@ -2103,7 +2103,6 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function can($ID, $right, array &$input=NULL) {
-
       // Clean ID :
       $ID = Toolbox::cleanInteger($ID);
 
@@ -2140,7 +2139,6 @@ class CommonDBTM extends CommonGLPI {
             return false;
          }
       }
-
       switch ($right) {
          case 'r' :
             // Personnal item

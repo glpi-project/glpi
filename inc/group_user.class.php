@@ -217,11 +217,7 @@ class Group_User extends CommonDBRelation{
 
             if ($canedit) {
                echo "<td width='10'>";
-               $sel = "";
-               if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                  $sel = "checked";
-               }
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
             if ($_SESSION["glpiis_ids_visible"]) {
@@ -486,7 +482,7 @@ class Group_User extends CommonDBRelation{
             echo "\n<tr class='tab_bg_".($user->isDeleted() ? '1_2' : '1')."'>";
             if ($canedit) {
                echo "<td width='10'>";
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
             echo "<td>".$user->getLink();

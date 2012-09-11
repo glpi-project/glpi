@@ -404,7 +404,8 @@ class Contract_Item extends CommonDBRelation{
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td width='10'>";
-                  echo "<input type='checkbox' name='item[".$objdata["IDD"]."]' value='1'></td>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+                  echo "</td>";
                }
                if ($prem) {
                   $item = new $itemtype();

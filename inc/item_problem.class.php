@@ -212,12 +212,9 @@ class Item_Problem extends CommonDBRelation{
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
                   echo "<td width='10'>";
-                  echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel></td>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+                  echo "</td>";
                }
                if ($prem) {
                   $name = $item->getTypeName($nb);

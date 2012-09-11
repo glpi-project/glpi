@@ -1078,16 +1078,7 @@ class Search {
                      $tmpcheck = "&nbsp;";
 
                   } else {
-                     $sel = "";
-                     if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                        $sel = "checked";
-                     }
-                     if (isset($_SESSION['glpimassiveactionselected'][$data[$massiveaction_field]])) {
-                        $sel = "checked";
-                     }
-
-                     $tmpcheck = "<input type='checkbox' name='item[".$data[$massiveaction_field]."]' value='1'
-                                    $sel>";
+                     $tmpcheck = Html::getMassiveActionCheckBox($itemtype, $data[$massiveaction_field]);
                   }
                   echo self::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
                }
@@ -1412,8 +1403,6 @@ class Search {
       } else {
          echo $DBread->error();
       }
-      // Clean selection
-      $_SESSION['glpimassiveactionselected'] = array();
    }
 
    /**

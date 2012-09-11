@@ -162,7 +162,7 @@ class Change_Problem extends CommonDBRelation{
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
@@ -271,7 +271,7 @@ class Change_Problem extends CommonDBRelation{
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Problem')."?id=".$data['id']."'>".

@@ -508,7 +508,7 @@ class Cartridge extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
             echo "<td>".$data['id'].'</td>';

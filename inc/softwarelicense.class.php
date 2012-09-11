@@ -642,7 +642,7 @@ class SoftwareLicense extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
 
                if ($license->can($data['id'], "w")) {
-                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+                  echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }

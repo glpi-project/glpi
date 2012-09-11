@@ -2990,7 +2990,40 @@ class Html {
       return $out;
    }
 
+   /**
+    * Get the massive action checkbox
+    *
+    * @since version 0.84
+    *
+    * @param $itemtype Massive action itemtype
+    * @param $id ID of the item
+    *
+    * @return get checkbox
+   **/
+   static function getMassiveActionCheckBox($itemtype, $id) {
 
+
+      $sel = "";
+      if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
+         $sel = "checked";
+      }
+      return "<input type='checkbox' name='item[".$id."]' value='1' $sel>";
+   }
+
+   /**
+    * Show the massive action checkbox
+    *
+    * @since version 0.84
+    *
+    * @param $itemtype Massive action itemtype
+    * @param $id ID of the item
+    *
+    * @return show checkbox
+   **/
+   static function showMassiveActionCheckBox($itemtype, $id) {
+      echo Html::getMassiveActionCheckBox($itemtype, $id);
+   }
+   
    /**
     * Display open form for massive action
     *
@@ -3004,7 +3037,7 @@ class Html {
       echo Html::getOpenMassiveActionsForm($name);
    }
 
-
+   
    /**
     * Get open form for massive action string
     *
@@ -3126,7 +3159,7 @@ class Html {
                                           'extraparams' => $p['extraparams'],
                                           'width'       => $p['width'],
                                           'height'      => $p['height'],));
-         }
+         } 
          echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                 ($p['ontop']?'-top':'').".png' alt=''></td>";
@@ -3142,6 +3175,11 @@ class Html {
          echo "</td>";
 
          echo "</tr></table>";
+         if (!$p['ontop']
+             || (isset($p['forcecreate']) && $p['forcecreate'])) {
+            // Clean selection
+            $_SESSION['glpimassiveactionselected'][$itemtype] = array();
+         }
       }
    }
 

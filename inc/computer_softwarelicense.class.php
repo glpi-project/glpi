@@ -449,7 +449,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
-                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+                  echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
                }
 
                $compname = $data['compname'];
