@@ -430,7 +430,7 @@ class Contact_Supplier extends CommonDBRelation{
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             if ($canedit) {
-               echo "<td>".Html::showMassiveActionCheckBox(__CLASS__, $data["ID_ent"]);."</td>";
+               echo "<td>".Html::showMassiveActionCheckBox(__CLASS__, $data["ID_ent"])."</td>";
             }
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
