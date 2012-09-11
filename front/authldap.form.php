@@ -111,7 +111,7 @@ if (isset($_POST["update"])) {
 }
 
 Html::header(AuthLDAP::getTypeName(1), $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
-$config_ldap->showForm($_GET["id"]);
+$config_ldap->showForm($_GET["id"], $_GET);
 
 Html::footer();
 ?>

@@ -1248,13 +1248,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit) {
          echo "<td width='10'>";
-         $sel = "";
-
-         if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-            $sel = "checked";
-         }
-
-         echo "<input type='checkbox' name='item[" . $this->fields["id"] . "]' value='1' $sel>";
+         Html::showMassiveActionCheckBox(__CLASS__, $this->fields["id"]);
          echo "</td>";
 
       } else {
@@ -1350,11 +1344,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
-         $sel = "";
-         if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-            $sel = "checked";
-         }
-         echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
+         Html::showMassiveActionCheckBox($this->ruleactionclass, $field["id"]);
          echo "</td>";
       }
       echo $this->getMinimalActionText($fields);
@@ -1460,11 +1450,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
-         $sel = "";
-         if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-            $sel = "checked";
-         }
-         echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
+         Html::showMassiveActionCheckBox($this->rulecriteriaclass, $field["id"]);
          echo "</td>";
       }
 
@@ -2115,7 +2101,7 @@ class Rule extends CommonDBTM {
 
             if ($canedit) {
                echo "<td width='10'>";
-               echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $rule->fields["id"]);
                echo "</td>";
                echo "<td><a href='".Toolbox::getItemTypeFormURL(get_class($this))."?id=" .
                       $rule->fields["id"] . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";

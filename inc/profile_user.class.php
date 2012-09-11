@@ -180,7 +180,7 @@ class Profile_User extends CommonDBRelation {
             if ($canedit) {
                echo "<td width='10'>";
                if (in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
-                  echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                } else {
                   echo "&nbsp;";
                }
@@ -362,7 +362,7 @@ class Profile_User extends CommonDBRelation {
                   }
                   if ($canedit) {
                      echo "<td width='10'>";
-                     echo "<input type='checkbox' name='item[".$data2["linkID"]."]' value='1'>";
+                     Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                      echo "</td>";
                   }
 
@@ -520,13 +520,7 @@ class Profile_User extends CommonDBRelation {
 
             if ($canedit_entity) {
                echo "<td width='10'>";
-               $sel = "";
-
-               if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                  $sel = "checked";
-               }
-
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
 

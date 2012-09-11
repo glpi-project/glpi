@@ -1173,11 +1173,7 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]' value='1' >";
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1194,11 +1190,7 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1229,11 +1221,7 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1257,11 +1245,7 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";

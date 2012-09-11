@@ -367,12 +367,7 @@ class Document_Item extends CommonDBRelation{
 
                      if ($canedit) {
                         echo "<td width='10'>";
-                        $sel = "";
-
-                        if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                           $sel = "checked";
-                        }
-                        echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
+                        Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
                         echo "</td>";
                      }
                      echo "<td class='center'>".$item->getTypeName(1)."</td>";

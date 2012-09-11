@@ -1572,11 +1572,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1593,11 +1589,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1628,11 +1620,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1658,11 +1646,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]' value='1' $sel>";
+                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]' value='1'>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";

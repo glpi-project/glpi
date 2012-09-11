@@ -492,7 +492,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
-                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+                  echo "</td>";
                }
 
                if ($crit == "softwares_id") {
@@ -891,7 +893,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
-         echo "<td><input type='checkbox' name='item[".$data['id']."]' value='1'></td>";
+         echo "<td>";
+         Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+         echo "</td>";
       }
       echo "<td class='center b'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
@@ -978,7 +982,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td>";
          if ((empty($withtemplate) || ($withtemplate != 2))
              && ($ID > 0)) {
-            echo "<input type='checkbox' name='item[$ID]' value='1'>";
+            Html::showMassiveActionCheckBox(__CLASS__, $ID);
          }
          echo "</td>";
       }

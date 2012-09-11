@@ -97,17 +97,15 @@ if (isset($_POST["action"])
     && count($_POST["item"])) {
 
    /// Save selection
-   if (!isset($_SESSION['glpimassiveactionselected'])
-       || count($_SESSION['glpimassiveactionselected']) == 0) {
-
-      $_SESSION['glpimassiveactionselected'] = array();
+   if (!isset($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]])
+       || count($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]]) == 0) {
+      $_SESSION['glpimassiveactionselected'][$_POST["itemtype"]] = array();
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
-            $_SESSION['glpimassiveactionselected'][$key] = $key;
+            $_SESSION['glpimassiveactionselected'][$_POST["itemtype"]][$key] = $key;
          }
       }
    }
-
    if (isset($_SERVER['HTTP_REFERER'])) {
       $REDIRECT = $_SERVER['HTTP_REFERER'];
    } else { /// Security : not used if no problem

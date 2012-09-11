@@ -167,8 +167,8 @@ class Calendar_Holiday extends CommonDBRelation {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td>";
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            echo "</td>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";

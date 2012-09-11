@@ -570,11 +570,7 @@ class Bookmark extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                echo "<td width='10px'>";
                if ($canedit) {
-                  $sel = "";
-                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[".$this->fields["id"]."]'". $sel.">";
+                  Html::showMassiveActionCheckBox(__CLASS__, $this->fields["id"]);
                } else {
                   echo "&nbsp;";
                }

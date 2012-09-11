@@ -363,7 +363,7 @@ class CalendarSegment extends CommonDBChild {
 
             if ($canedit) {
                echo "<td>";
-               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
 

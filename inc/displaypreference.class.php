@@ -604,7 +604,8 @@ class DisplayPreference extends CommonDBTM {
          echo "<th colspan='2'>".__('Type')."</th></tr>";
          foreach ($req as $data) {
             echo "<tr class='tab_bg_1'><td width='10'>";
-            echo "<input  type='checkbox' name='item[".$data["itemtype"]."]' value='1'></td>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["itemtype"]);
+            echo "</td>";
             if ($item = getItemForItemtype($data["itemtype"])) {
                $name = $item->getTypeName(1);
             } else {

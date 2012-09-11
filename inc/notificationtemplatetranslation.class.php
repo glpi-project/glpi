@@ -215,7 +215,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td class='center'>";
-               echo "<input type='checkbox' name=\"item[".$data['id']."]\" value='1'></td>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               echo "</td>";
             }
             echo "<td class='center'>";
             echo "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').

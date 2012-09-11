@@ -308,8 +308,8 @@ class AuthLDAP extends CommonDBTM {
          if ($this->getEmpty()) {
             $spotted = true;
          }
-         if (isset($_GET['preconfig'])) {
-            $this->preconfig($_GET['preconfig']);
+         if (isset($options['preconfig'])) {
+            $this->preconfig($options['preconfig']);
          }
       } else {
          if ($this->getFromDB($ID)) {
@@ -521,11 +521,7 @@ class AuthLDAP extends CommonDBTM {
 
          while ($ldap_replicate = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
-               $sel = "checked";
-            }
-            $sel ="";
-            echo "<input type='checkbox' name='item[" .$ldap_replicate["id"]. "]' value='1' $sel>";
+            Html::showMassiveActionCheckBox('AuthLdapReplicate', $ldap_replicate["id"]);
             echo "</td>";
             echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
             echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $ldap_replicate["host"],

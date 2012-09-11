@@ -163,7 +163,9 @@ class Change_Ticket extends CommonDBRelation{
             Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
-               echo "<td><input type='checkbox' name='item[".$data["linkID"]."]' value='1'></td>";
+               echo "<td>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
@@ -275,7 +277,7 @@ class Change_Ticket extends CommonDBRelation{
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
