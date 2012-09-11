@@ -37,13 +37,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("cartridge", "r");
 
-if (!isset($_GET["cartridgeitems_id"])) {
-   $_GET["cartridgeitems_id"] = "";
-}
-if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
-}
-
 $cart    = new Cartridge();
 $cartype = new CartridgeItem();
 if (isset($_POST["update_cart_use"])) {
