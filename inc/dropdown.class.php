@@ -98,7 +98,6 @@ class Dropdown {
             $params[$key] = $val;
          }
       }
-
       $output = '';
 
       $name         = $params['emptylabel'];

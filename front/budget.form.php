@@ -98,13 +98,11 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   /// TODO To manage using dropdown.common.form
    if (isset($_GET['popup'])) {
       Html::popHeader(Budget::getTypeName(1),$_SERVER['PHP_SELF']);
       if (isset($_GET["rand"])) {
          $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
       }
-
    } else {
       Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "financial", "budget");
    }

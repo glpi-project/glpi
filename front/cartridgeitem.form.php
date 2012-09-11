@@ -92,28 +92,6 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["addtype"])) {
-   /// TODO create specific form page
-   $cipm = new CartridgeItem_PrinterModel();
-   $cipm->check(-1,'w', $_POST);
-   if ($cipm->add($_POST)) {
-      Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s associates a type'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_GET["deletetype"])) {
-   /// TODO create specific form page
-   $cipm = new CartridgeItem_PrinterModel();
-   $cipm->check($_GET['id'],'d');
-   if ($cipm->delete($_GET)) {
-      Event::log($_GET["cartridgeitems_id"], "cartridges", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes a type'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else {
    Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
    $cartype->showForm($_GET["id"]);
