@@ -4357,6 +4357,7 @@ class Html {
       foreach ($fields as $name => $value) {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
+            // Javascript no gettext
             $javascriptArray[] = "$name: '".urlencode($value)."'";
          }
       }
