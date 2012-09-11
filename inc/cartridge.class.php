@@ -665,9 +665,26 @@ class Cartridge extends CommonDBTM {
       $number = $DB->numrows($result);
       $i      = 0;
 
+
+      if ($canedit && !$old) {
+         echo "<div class='firstbloc'>";
+         echo "<form method='post' action=\"".static::getFormURL()."\">";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><td class='center tab_bg_2'>";
+         echo "<input type='hidden' name='printers_id' value='$instID'>\n";
+         CartridgeItem::dropdownForPrinter($printer);
+         
+         echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
+                           class='submit'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+      
       $pages = $printer->fields['init_pages_counter'];
       if ($canedit) {
-         echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+         echo "<form method='postdropdownForPrinter' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
       }
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if ($old == 0) {
@@ -779,10 +796,7 @@ class Cartridge extends CommonDBTM {
             }
             echo "</td><td  colspan='3' class='tab_bg_2 center'>";
 
-            if (CartridgeItem::dropdownForPrinter($printer)) {
-               echo "&nbsp;<input type='submit' name='install' value=\""._sx('button','Install')."\"
-                           class='submit'>";
-            }
+
             echo "</td></tr>";
          }
       } else { // Print average
