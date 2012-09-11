@@ -1344,7 +1344,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
-         Html::showMassiveActionCheckBox($this->ruleactionclass, $field["id"]);
+         Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
          echo "</td>";
       }
       echo $this->getMinimalActionText($fields);
@@ -1450,7 +1450,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
-         Html::showMassiveActionCheckBox($this->rulecriteriaclass, $field["id"]);
+         Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
          echo "</td>";
       }
 
