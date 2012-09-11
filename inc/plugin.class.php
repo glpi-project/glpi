@@ -439,12 +439,14 @@ class Plugin extends CommonDBTM {
 
             switch ($plug['state']) {
                case self::ACTIVATED :
-                  echo "<td><a class='vsubmit' href='".$this->getSearchURL().
-                             "?id=$ID&amp;action=unactivate'>". _sx('button','Disable')."</a></td>";
+                  echo "<td>";
+                  Html::showSimpleForm(static::getFormURL(), array('action' => 'unactivate'),
+                           _x('button','Disable'), array('id' => $ID));
+                  echo "</td>";
                   echo "<td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=uninstall'>". _sx('button','Uninstall')."</a>";
+                     Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
+                              _x('button','Uninstall'), array('id' => $ID));
                   } else {
                      //TRANS: %s is the list of missing functions
                      echo sprintf(__('%1$s: %2$s'), __('Non-existent function'),
@@ -471,8 +473,8 @@ class Plugin extends CommonDBTM {
                         $msg = _x('button', 'Install');
                      }
                      if ($do_install) {
-                        echo "<a class='vsubmit' href='".$this->getSearchURL().
-                               "?id=$ID&amp;action=install'>".$msg."</a>";
+                        Html::showSimpleForm(static::getFormURL(), array('action' => 'install'),
+                                    $msg, array('id' => $ID));
                      }
                   } else {
 
@@ -490,8 +492,8 @@ class Plugin extends CommonDBTM {
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      if (function_exists("plugin_".$plug['directory']."_check_config")) {
-                        echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                               _x('button', 'Uninstall')."</a>";
+                        Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
+                                    _x('button','Uninstall'), array('id' => $ID));
                      } else {
                         // This is an incompatible plugin (0.71), uninstall fonction could crash
                         echo "&nbsp;";
@@ -518,8 +520,8 @@ class Plugin extends CommonDBTM {
                   }
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=uninstall'>". _x('button','Uninstall')."</a>";
+                     Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
+                                 _x('button','Uninstall'), array('id' => $ID));
                   } else {
                      printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -530,19 +532,18 @@ class Plugin extends CommonDBTM {
                case self::NOTACTIVATED :
                   echo "<td>";
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                  $disabled = '';
                   if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
                       || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                      _e('Not CSRF compliant');
                   } else if (function_exists($function) && $function()) {
-                     echo "<a $disabled class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=activate'>". _x('button','Enable')."</a>";
+                     Html::showSimpleForm(static::getFormURL(), array('action' => 'activate'),
+                                 _x('button','Enable'), array('id' => $ID));
                   }
                   // Else : reason displayed by the plugin
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=uninstall'>". _x('button','Uninstall')."</a>";
+                     Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
+                                 _x('button','Uninstall'), array('id' => $ID));
                   } else {
                      printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -553,8 +554,8 @@ class Plugin extends CommonDBTM {
                case self::TOBECLEANED :
                default :
                   echo "<td colspan='2'>";
-                  echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
-                         _x('button','Clean')."</a>";
+                  Html::showSimpleForm(static::getFormURL(), array('action' => 'clean'),
+                              _x('button','Clean'), array('id' => $ID));
                   echo "</td>";
                   break;
             }
