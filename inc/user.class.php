@@ -2034,6 +2034,7 @@ class User extends CommonDBTM {
             echo "<span id='show_massiveaction_field'><br><br>";
             echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
             echo "</span>\n";
+            return true;
 
          case "add_user_group" :
             $gu = new Group_User();

@@ -465,10 +465,10 @@ class Cartridge extends CommonDBTM {
          }
          echo "<table class='tab_cadre_fixe'>";
          if (!$show_old) {
-            echo "<tr><th colspan='".($canedit?'6':'5')."'>".self::getCount($tID,-1)."</th>";
+            echo "<tr><th colspan='".($canedit?'7':'6')."'>".self::getCount($tID,-1)."</th>";
             echo "</tr>";
          } else { // Old
-            echo "<tr><th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th>";
+            echo "<tr><th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges')."</th>";
             echo "</tr>";
          }
          $i = 0;
@@ -478,6 +478,7 @@ class Cartridge extends CommonDBTM {
             Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
          }
+         echo "<th>".__('ID')."</th>";
          echo "<th>".__('State')."</th>";
          echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
          echo "<th>".__('Used on')."</th>";
@@ -510,6 +511,7 @@ class Cartridge extends CommonDBTM {
                echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
                echo "</td>";
             }
+            echo "<td>".$data['id'].'</td>';
             echo "<td class='center'>".self::getStatus($data["date_use"], $data["date_out"]);
             echo "</td><td class='center'>".$date_in."</td>";
             echo "<td class='center'>".$date_use."</td>";

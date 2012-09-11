@@ -49,7 +49,13 @@ class Consumable extends CommonDBTM {
 
    var $no_form_page            = false;
 
+   function getForbiddenStandardMassiveAction() {
 
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Consumable', 'Consumables', $nb);
    }
@@ -142,7 +148,73 @@ class Consumable extends CommonDBTM {
       return false;
    }
 
+   /**
+    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+      global $CFG_GLPI;
 
+      switch ($input['action']) {
+         case "give" :
+            if (isset($input["entities_id"])) {
+               Dropdown::showAllItems("give_items_id", 0, 0,$input["entities_id"],
+                                       $CFG_GLPI["consumables_types"], false, false, 'give_itemtype');
+               echo "<br><br><input type='submit' class='submit' name='massiveaction' value='".
+                     _sx('button', 'Give')."'>";
+               return true;
+            }
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+
+      }
+      return false;
+   }
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+//             print_r($input);exit();
+      switch ($input['action']) {
+         case "give" :
+            if (($input["give_items_id"] > 0)
+               && !empty($input['give_itemtype'])) {
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->can($key,'w')){
+                        if ($this->out($key, $input['give_itemtype'],$input["give_items_id"])) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+               if ($item = getItemForItemtype($input['give_itemtype'])) {
+                  $item->getFromDB($input["give_items_id"]);
+                  Event::log($input["consumableitems_id"], "consumables", 5, "inventory",
+                           //TRANS: %s is the user login
+                           sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    /**
     * count how many consumable for the consumable item $tID
     *
@@ -314,11 +386,11 @@ class Consumable extends CommonDBTM {
 
       if ($ID > 0) {
          echo "<div class='firstbloc'>";
-         echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.form.php\">";
+         echo "<form method='post' action=\"".static::getFormURL()."\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='consumableitems_id' value='$ID'>\n";
-         Dropdown::showInteger('to_add',1,1,100);
+         Dropdown::showInteger('to_add', 1, 1, 100);
          echo " <input type='submit' name='add_several' value=\""._sx('button','Add consumables')."\"
                 class='submit'>";
          echo "</td></tr>";
@@ -345,50 +417,7 @@ class Consumable extends CommonDBTM {
          return false;
       }
       $canedit = $consitem->can($tID,'w');
-
-      $query = "SELECT COUNT(*)
-                FROM `glpi_consumables`
-                WHERE (`consumableitems_id` = '$tID')";
-
-      if ($result = $DB->query($query)) {
-         if (!$show_old && $canedit) {
-            echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
-            echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
-         }
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         if (!$show_old) {
-            echo "<tr><th colspan=".($canedit?'6':'4').">";
-            echo self::getCount($tID, -1);
-            echo "</th></tr>";
-         } else { // Old
-            echo "<tr><th colspan='".($canedit?'8':'6')."'>".__('Used consumables')."</th></tr>";
-         }
-         $i = 0;
-         echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
-         echo "<th>".__('Add date')."</th>";
-         if ($show_old) {
-            echo "<th>".__('Use date')."</th>";
-            echo "<th>".__('Given to')."</th>";
-         }
-         echo "<th width='200px'>".__('Financial and administrative information')."</th>";
-
-         if ($canedit) {
-            if (!$show_old
-                && ($DB->result($result,0,0) != 0)) {
-               echo "<th>";
-               Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
-                                      $CFG_GLPI["consumables_types"]);
-               echo "&nbsp;<input type='submit' class='submit' name='give' value='".
-                            _sx('button', 'Give')."'>";
-               echo "</th><th>"._n('Action', 'Actions',2)."</th>";
-            } else {
-               echo "<th colspan='2'>"._n('Action', 'Actions',2)."</th>";
-            }
-         }
-         echo "</tr>";
-
-      }
-
+      $rand = mt_rand();
       $where = "";
       if (!$show_old) { // NEW
          $where = " AND `date_out` IS NULL
@@ -403,6 +432,53 @@ class Consumable extends CommonDBTM {
                 FROM `glpi_consumables`
                 WHERE `consumableitems_id` = '$tID'
                       $where";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+                      
+      if ($canedit && $number) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $actions = array('delete' => _x('button', 'Delete'),
+                           'activate_infocoms' => __('Enable the financial and administrative information'));
+         if ($show_old) {
+            $actions['restore'] = __('Back to stock');
+         } else {
+            $actions['give'] = _x('button', 'Give');
+         }
+         $paramsma = array('num_displayed' => $number,
+                           'specific_actions' => $actions,
+                           'extraparams' => array('entities_id' => $consitem->getEntityID()));
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
+      }
+         
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      if (!$show_old) {
+         echo "<tr><th colspan=".($canedit?'5':'4').">";
+         echo self::getCount($tID, -1);
+         echo "</th></tr>";
+      } else { // Old
+         echo "<tr><th colspan='".($canedit?'7':'6')."'>".__('Used consumables')."</th></tr>";
+      }
+
+      if ($number) {
+         $i = 0;
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>".__('ID')."</th>";
+         echo "<th>".__('State')."</th>";
+         echo "<th>".__('Add date')."</th>";
+         if ($show_old) {
+            echo "<th>".__('Use date')."</th>";
+            echo "<th>".__('Given to')."</th>";
+         }
+         echo "<th width='200px'>".__('Financial and administrative information')."</th>";
+         echo "</tr>";
+
+      }
 
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
@@ -410,7 +486,13 @@ class Consumable extends CommonDBTM {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
 
-            echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td width='10'>";
+               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+               echo "</td>";
+            }
+            echo "<td class='center'>".$data["id"]."</td>";
             echo "<td class='center'>".self::getStatus($data["id"])."</td>";
             echo "<td class='center'>".$date_in."</td>";
             if ($show_old) {
@@ -426,32 +508,16 @@ class Consumable extends CommonDBTM {
             echo "<td class='center'>";
             Infocom::showDisplayLink('Consumable', $data["id"],1);
             echo "</td>";
-
-            if ($canedit) {
-               echo "<td class='center'>";
-               if (!$show_old) {
-                  echo "<input type='checkbox' name='out[".$data["id"]."]'>";
-               } else {
-                  echo "<a href='".
-                         $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
-                         $data["id"]."&amp;consumableitems_id=$tID'>".__('Back to stock')."</a>";
-               }
-               echo "</td>";
-
-               echo "<td class='center'>";
-               echo "<a href='".
-                     $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;consumableitems_id=$tID'><img title=\"".__s('Delete')."\" alt=\"".
-                     __s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
-               echo "</td>";
-            }
             echo "</tr>";
          }
       }
-      echo "</table></div>";
-      if (!$show_old && $canedit) {
+      echo "</table>";
+      if ($canedit && $number) {
+         $paramsma['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
+      echo "</div>";
    }
 
 
