@@ -177,10 +177,10 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "&nbsp;:</td><td>";
          switch ($field['type']) {
             case 'UserDropdown' :
-               array('name'   => $field['name'],
-                     'value'  => $this->fields[$field['name']],
-                     'right'  => 'interface',
-                     'entity' => $this->fields["entities_id"]);
+               $params = array('name'   => $field['name'],
+                               'value'  => $this->fields[$field['name']],
+                               'right'  => 'interface',
+                               'entity' => $this->fields["entities_id"]);
                if (isset($field['right'])) {
                   $params['right'] = $field['right'];
                }
