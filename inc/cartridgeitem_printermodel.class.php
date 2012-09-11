@@ -184,7 +184,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
                echo "</td>";
-            }            
+            }
             echo "<td class='center'>".$data['type']."</td>";
             echo "</tr>";
          }
