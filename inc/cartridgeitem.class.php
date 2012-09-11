@@ -119,7 +119,7 @@ class CartridgeItem extends CommonDBTM {
 
       $ong = array();
       $this->addStandardTab('Cartridge', $ong, $options);
-      $this->addStandardTab('PrinterModel', $ong, $options);
+      $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Document',$ong, $options);
       $this->addStandardTab('Link',$ong, $options);
@@ -500,67 +500,6 @@ class CartridgeItem extends CommonDBTM {
          }
       }
       return false;
-   }
-
-
-   /**
-    * Show the printer types that are compatible with a cartridge type
-    *
-    * @return nothing (display)
-   **/
-   function showCompatiblePrinters() {
-      global $DB, $CFG_GLPI;
-
-      $instID = $this->getField('id');
-      if (!$this->can($instID, 'r')) {
-         return false;
-      }
-
-      $query = "SELECT `glpi_cartridgeitems_printermodels`.`id`,
-                       `glpi_printermodels`.`name` AS `type`,
-                       `glpi_printermodels`.`id` AS `pmid`
-                FROM `glpi_cartridgeitems_printermodels`,
-                     `glpi_printermodels`
-                WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id`
-                           = `glpi_printermodels`.`id`
-                      AND `glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = '$instID'
-                ORDER BY `glpi_printermodels`.`name`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      $i      = 0;
-
-      echo "<div class='spaced'>";
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='3'>".__('Models of compatible printers')."</th></tr>";
-      echo "<tr><th>".__('ID')."</th><th>".__('Model')."</th><th>&nbsp;</th></tr>";
-
-      $used = array();
-      while ($i < $number) {
-         $ID   = $DB->result($result, $i, "id");
-         $type = $DB->result($result, $i, "type");
-         $pmid = $DB->result($result, $i, "pmid");
-         echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
-         echo "<td class='center'>$type</td>";
-         echo "<td class='tab_bg_2 center b'>";
-         echo "<a href='".$CFG_GLPI['root_doc'].
-                "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;cartridgeitems_id=$instID'>";
-         echo __('Delete')."</a></td></tr>";
-         $used[$pmid] = $pmid;
-         $i++;
-      }
-      if (Session::haveRight("cartridge", "w")) {
-         echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
-         echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
-         PrinterModel::dropdown(array('used' => $used));
-         echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='addtype' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr>";
-      }
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
    }
 
 

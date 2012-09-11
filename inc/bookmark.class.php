@@ -593,12 +593,12 @@ class Bookmark extends CommonDBTM {
                echo "<td class='center'>";
                if ($this->fields['type'] == self::SEARCH) {
                   if (is_null($this->fields['IS_DEFAULT'])) {
-                     echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;
-                            mark_default=1&amp;id=".$this->fields["id"]."\">".__('No').
+                     echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
+                            "mark_default=1&amp;id=".$this->fields["id"]."\">".__('No').
                           "</a>";
                   } else {
-                     echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;
-                            mark_default=0&amp;id=".$this->fields["id"]."\">".__('Yes').
+                     echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
+                            "mark_default=0&amp;id=".$this->fields["id"]."\">".__('Yes').
                           "</a>";
                   }
                }
