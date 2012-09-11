@@ -50,12 +50,6 @@ class Profile_User extends CommonDBRelation {
    static public $logs_for_itemtype_1 = true;
    static public $logs_for_itemtype_2 = false;
 
-//    function getForbiddenStandardMassiveAction() {
-//       $forbidden = parent::getForbiddenStandardMassiveAction();
-//       $forbidden[] = 'update';
-//       return $forbidden;
-//    }
-
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
