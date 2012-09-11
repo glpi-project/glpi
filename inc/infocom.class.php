@@ -892,7 +892,7 @@ class Infocom extends CommonDBChild {
                                      'add', __('Enable the financial and administrative information'),
                                      array('itemtype' => $item->getType(),
                                            'items_id' => $dev_ID));
-               echo "</a></td></tr></table></div>";
+               echo "</td></tr></table></div>";
             }
 
          } else { // getFromDBforDevice

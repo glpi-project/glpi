@@ -4357,7 +4357,7 @@ class Html {
       foreach ($fields as $name => $value) {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
-            $javascriptArray[] = sprintf(__('%1$s: %2$s'), $name, urlencode($value));
+            $javascriptArray[] = "$name: '".urlencode($value)."'";
          }
       }
 
