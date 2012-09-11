@@ -2680,6 +2680,7 @@ class CommonDBTM extends CommonGLPI {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Delete')."'>";
             break;
+
          case "update" :
             // Specific options for update fields
             if (isset($input['options'])) {
@@ -4013,13 +4014,13 @@ class CommonDBTM extends CommonGLPI {
     * @since version 0.83
     *
     * @param $field     String         name of the field
-    * @param $name      string         name of the select (if empty use linkfield)
-    * @param $values    String/Array   with the value to select or a Single value
+    * @param $name      string         name of the select (if empty use linkfield) (default '')
+    * @param $values    String/Array   with the value to select or a Single value (default '')
     * @param $options   Array          of options
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
       return '';
    }
 
@@ -4033,7 +4034,9 @@ class CommonDBTM extends CommonGLPI {
     *                                                             or field name
     *                                                             or search option array
     * @param $name                        string               name of the select (if empty use linkfield)
+    *                                                          (default '')
     * @param $values                                           mixed default value to display
+    *                                                          (default '')
     * @param $options                     array                of possible options:
     * Parameters which could be used in options array :
     *    - comments : boolean / is the comments displayed near the value (default false)
@@ -4041,7 +4044,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return return the string to display
    **/
-   function getValueToSelect($field_id_or_search_options, $name='', $values = '', $options=array()) {
+   function getValueToSelect($field_id_or_search_options, $name='', $values='', $options=array()) {
       global $CFG_GLPI;
 
       $param['comments'] = false;
@@ -4079,7 +4082,6 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if (empty($name)) {
-            echo "iii-----";
             $name = $searchoptions['linkfield'];
          }
          // If not set : set to specific
@@ -4126,19 +4128,16 @@ class CommonDBTM extends CommonGLPI {
                   if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
                      $options['maybefuture'] = true;
                   }
-
                   return Html::showGenericDateTimeSearch($name, $value, $options);
-               } else {
-                  $copytooption = array('min', 'max', 'maybeempty', 'showyear');
-
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-                  $options['value'] = $value;
-                  return Html::showDateField($name, $options);
                }
+               $copytooption = array('min', 'max', 'maybeempty', 'showyear');
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+               $options['value'] = $value;
+               return Html::showDateField($name, $options);
 
             case "datetime" :
                if (isset($options['relative_dates']) && $options['relative_dates']) {
@@ -4148,23 +4147,20 @@ class CommonDBTM extends CommonGLPI {
                   $options['with_time'] = true;
 
                   return Html::showGenericDateTimeSearch($name, $value, $options);
-               } else {
-                  $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
-                                       'maybeempty', 'timestep');
-
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
-                     }
-                  }
-                  $options['value'] = $value;
-                  return Html::showDateTimeField($name, $options);
                }
-               break;
+               $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
+                                     'maybeempty', 'timestep');
+               foreach ($copytooption as $key) {
+                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                     $options[$key] = $searchoptions[$key];
+                  }
+               }
+               $options['value'] = $value;
+               return Html::showDateTimeField($name, $options);
 
             case "timestamp" :
-               $copytooption = array('min', 'max', 'step', 'toadd', 'emptylabel',
-                                       'addfirstminutes', 'inhours');
+               $copytooption = array('addfirstminutes', 'emptylabel', 'inhours',  'max', 'min',
+                                     'step', 'toadd');
                foreach ($copytooption as $key) {
                   if (isset($searchoptions[$key]) && !isset($options[$key])) {
                      $options[$key] = $searchoptions[$key];
@@ -4178,8 +4174,9 @@ class CommonDBTM extends CommonGLPI {
                if ($searchoptions['table'] == $this->getTable()) {
                   break;
                }
+
             case "dropdown" :
-               $copytooption = array('condition', 'right', 'displaywith', 'emptylabel', 'toadd');
+               $copytooption = array('condition', 'displaywith', 'emptylabel', 'right', 'toadd');
                $options['name']  = $name;
                $options['value'] = $value;
                foreach ($copytooption as $key) {
@@ -4193,12 +4190,11 @@ class CommonDBTM extends CommonGLPI {
                if ($searchoptions['table'] == 'glpi_users') {
                   return User::dropdown($options);
                }
-
                return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
                            $options);
 
             case "right" :
-               $copytooption = array('nonone', 'noread', 'nowrite');
+               $copytooption     = array('nonone', 'noread', 'nowrite');
                $options['value'] = $value;
                foreach ($copytooption as $key) {
                   if (isset($searchoptions[$key]) && !isset($options[$key])) {
@@ -4211,21 +4207,18 @@ class CommonDBTM extends CommonGLPI {
                if (isset($searchoptions['itemtype_list'])) {
                   $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']];
                }
-               $copytooption = array('types');
+               $copytooption     = array('types');
                $options['value'] = $value;
                foreach ($copytooption as $key) {
                   if (isset($searchoptions[$key]) && !isset($options[$key])) {
                      $options[$key] = $searchoptions[$key];
                   }
                }
-
                if (isset($options['types'])) {
                   return Dropdown::showItemTypes($name, $options['types'],
                                                    $options);
-               } else {
-                  return false;
                }
-               break;
+               return false;
 
             case "language" :
                $copytooption = array('emptylabel', 'display_emptychoice');
@@ -4241,7 +4234,8 @@ class CommonDBTM extends CommonGLPI {
          // Get specific display if available
          $itemtype = getItemTypeForTable($searchoptions['table']);
          if ($item = getItemForItemtype($itemtype)) {
-            $specific = $item->getSpecificValueToSelect($searchoptions['field'], $name, $values, $options);
+            $specific = $item->getSpecificValueToSelect($searchoptions['field'], $name,
+                                                        $values, $options);
             if (strlen($specific)) {
                return $specific;
             }

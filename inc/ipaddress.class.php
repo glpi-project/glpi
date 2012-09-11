@@ -601,7 +601,6 @@ class IPAddress extends CommonDBChild {
       // Minimum IPv6 address is "::". So, we check that there is at least 3 singletons in the array
       // And no more than 8 singletons
       if ((count($singletons) >= 3) && (count($singletons) <= 8)) {
-
          $empty_count = 0;
          foreach ($singletons as $singleton) {
             $singleton = trim($singleton);
@@ -666,6 +665,7 @@ class IPAddress extends CommonDBChild {
             }
             $singletons = array('');
             break;
+
          default:
             return false;
          }

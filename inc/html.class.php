@@ -3023,7 +3023,7 @@ class Html {
    static function showMassiveActionCheckBox($itemtype, $id) {
       echo Html::getMassiveActionCheckBox($itemtype, $id);
    }
-   
+
    /**
     * Display open form for massive action
     *
@@ -3037,7 +3037,7 @@ class Html {
       echo Html::getOpenMassiveActionsForm($name);
    }
 
-   
+
    /**
     * Get open form for massive action string
     *
@@ -3066,37 +3066,37 @@ class Html {
     * @param $itemtype  string itemtype for massive actions
     * @param $options   array    of parameters
     * may contains :
-    *    - num_displayed : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
-    *    - ontop : boolean true if displayed on top (default true)
-    *    - fixed : boolean true if used with fixed table display (default true)
-    *    - forcecreate : boolean force creation of modal window (default = false).
+    *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
+    *    - ontop           : boolean true if displayed on top (default true)
+    *    - fixed           : boolean true if used with fixed table display (default true)
+    *    - forcecreate     : boolean force creation of modal window (default = false).
     *            Modal is automatically created when displayed the ontop item.
     *            If only a bottom one is displayed use it
-    *    - check_itemtype : string alternate itemtype to check right if different from main itemtype (default empty)
-    *    - check_items_id : integer ID of the alternate item used to check right / optional (default empty)
-    *    - is_deleted : boolean is massive actions for deleted items ?
-    *    - extraparams : string extra URL parameters to pass to massive actions (default empty)
+    *    - check_itemtype   : string alternate itemtype to check right if different from main itemtype (default empty)
+    *    - check_items_id   : integer ID of the alternate item used to check right / optional (default empty)
+    *    - is_deleted       : boolean is massive actions for deleted items ?
+    *    - extraparams      : string extra URL parameters to pass to massive actions (default empty)
     *    - specific_actions : array of specific actions (do not use standard one)
-    *    - confirm : string of confirm message before massive action
+    *    - confirm          : string of confirm message before massive action
     *
     * @return nothing
    **/
    static function showMassiveActions($itemtype, $options=array()) {
       global $CFG_GLPI;
 
-      $p['ontop']          = true;
-      $p['num_displayed']  = -1;
-      $p['fixed']          = true;
-      $p['forcecreate']    = false;
-      $p['check_itemtype'] = '';
-      $p['check_items_id'] = '';
-      $p['is_deleted']     = false;
-      $p['extraparams']    = array();
-      $p['width']          = 800;
-      $p['height']         = 400;
-      $p['specific_actions'] = array();
-      $p['confirm']          = '';
-      $p['rand']          = '';
+      $p['ontop']             = true;
+      $p['num_displayed']     = -1;
+      $p['fixed']             = true;
+      $p['forcecreate']       = false;
+      $p['check_itemtype']    = '';
+      $p['check_items_id']    = '';
+      $p['is_deleted']        = false;
+      $p['extraparams']       = array();
+      $p['width']             = 800;
+      $p['height']            = 400;
+      $p['specific_actions']  = array();
+      $p['confirm']           = '';
+      $p['rand']              = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3154,12 +3154,12 @@ class Html {
 
             Ajax::createModalWindow('massiveaction_window'.$identifier,
                                     $url,
-                                    array('title'       => _n('Action', 'Actions',2),
+                                    array('title'       => _n('Action', 'Actions', 2),
                                           'container'   => 'massiveactioncontent'.$identifier,
                                           'extraparams' => $p['extraparams'],
                                           'width'       => $p['width'],
                                           'height'      => $p['height'],));
-         } 
+         }
          echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                 ($p['ontop']?'-top':'').".png' alt=''></td>";
@@ -3814,7 +3814,7 @@ class Html {
 
          Ajax::createModalWindow('entity_window',
                                  $CFG_GLPI['root_doc']."/ajax/entitytree.php",
-                                 array('title' => __('Select the desired entity'),
+                                 array('title'       => __('Select the desired entity'),
                                        'extraparams' => array('target' => $target)));
 
          echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
@@ -3950,13 +3950,13 @@ class Html {
     * @param $item            item object used for create dropdown
     * @param $field           field to search for autocompletion
     * @param $options   array of possible options:
-    *    - name : string / name of the select (default is field parameter)
-    *    - value : integer / preselected value (default value of the item object)
-    *    - size : integer / size of the text field
-    *    - entity : integer / restrict to a defined entity (default entity of the object if define)
-    *              set to -1 not to take into account
-    *    - user : integer / restrict to a defined user (default -1 : no restriction)
-    *    - option : string / options to add to text field
+    *    - name    : string / name of the select (default is field parameter)
+    *    - value   : integer / preselected value (default value of the item object)
+    *    - size    : integer / size of the text field
+    *    - entity  : integer / restrict to a defined entity (default entity of the object if define)
+    *                set to -1 not to take into account
+    *    - user    : integer / restrict to a defined user (default -1 : no restriction)
+    *    - option  : string / options to add to text field
     *    - display : boolean / if false get string
     *
     * @return nothing (print out an HTML div)
@@ -3987,10 +3987,11 @@ class Html {
       $output = '';
       if ($CFG_GLPI["use_ajax"]
           && $CFG_GLPI["use_ajax_autocompletion"]) {
-         $rand = mt_rand();
-         $name = "field_".$params['name'].$rand;
+         $rand    = mt_rand();
+         $name    = "field_".$params['name'].$rand;
          $output .=  "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
-               "' value=\"".self::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+                       "' value=\"".self::cleanInputText($params['value']).
+                       "\" size='".$params['size']."'>\n";
          $output .= "<script type='text/javascript' >\n";
 
          $output .= "var text$name = new Ext.data.Store({

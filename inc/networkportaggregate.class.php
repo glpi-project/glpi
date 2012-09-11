@@ -120,9 +120,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
                     $this->getInstantiationNetworkPortHTMLTable());
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-
       return NULL;
-
    }
+
 }
 ?>

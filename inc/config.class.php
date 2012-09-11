@@ -1473,8 +1473,7 @@ class Config extends CommonDBTM {
                             GLPI_TMP_DIR
                                     => __('Checking write permissions for temporary files'),
                             GLPI_UPLOAD_DIR
-                                    => __('Checking write permissions for upload files'),
-                                    );
+                                    => __('Checking write permissions for upload files'));
       $error = 0;
       foreach ($dir_to_check as $dir => $message) {
          if (!$fordebug) {

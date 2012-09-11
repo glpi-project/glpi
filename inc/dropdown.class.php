@@ -41,26 +41,28 @@ class Dropdown {
     *
     * @param $itemtype        itemtype used for create dropdown
     * @param $options   array of possible options:
-    *    - name : string / name of the select (default is depending itemtype)
-    *    - value : integer / preselected value (default -1)
-    *    - comments : boolean / is the comments displayed near the dropdown (default true)
-    *    - toadd : array / array of specific values to add at the begining
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - entity_sons : boolean / if entity restrict specified auto select its sons
-    *                   only available if entity is a single value not an array (default false)
-    *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update,
-    *                   url (see Ajax::updateItemOnSelectEvent for information)
-    *                   and may have moreparams)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - on_change : string / value to transmit to "onChange"
-    *    - rand : integer / already computed rand value
-    *    - condition : string / aditional SQL condition to limit display
-    *    - displaywith : array / array of field to display with request
-    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
+    *    - name                : string / name of the select (default is depending itemtype)
+    *    - value               : integer / preselected value (default -1)
+    *    - comments            : boolean / is the comments displayed near the dropdown (default true)
+    *    - toadd               : array / array of specific values to add at the begining
+    *    - entity              : integer or array / restrict to a defined entity or array of entities
+    *                                               (default -1 : no restriction)
+    *    - entity_sons         : boolean / if entity restrict specified auto select its sons
+    *                                      only available if entity is a single value not an array
+    *                                      (default false)
+    *    - toupdate            : array / Update a specific item on select change on dropdown
+    *                                    (need value_fieldname, to_update,
+    *                                     url (see Ajax::updateItemOnSelectEvent for information)
+    *                                     and may have moreparams)
+    *    - used                : array / Already used items ID: not to display in dropdown
+    *                                    (default empty)
+    *    - on_change           : string / value to transmit to "onChange"
+    *    - rand                : integer / already computed rand value
+    *    - condition           : string / aditional SQL condition to limit display
+    *    - displaywith         : array / array of field to display with request
+    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
-    *    - display    : boolean / display or get string (default true)
+    *    - display             : boolean / display or get string (default true)
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -1059,9 +1061,9 @@ class Dropdown {
                                 $onlyglobal=false, $checkright=false, $itemtypename = 'itemtype') {
       global $CFG_GLPI;
 
-      $options = array();
+      $options               = array();
       $options['checkright'] = $checkright;
-      $options['name'] = $itemtypename;
+      $options['name']       = $itemtypename;
 
       $rand = self::showItemType($types, $options);
       if ($rand) {
@@ -1094,6 +1096,8 @@ class Dropdown {
    /**
     * Dropdown numbers
     *
+    * @since version 0.84
+    *
     * @param $myname          select name
     * @param $options   array of additionnal options :
     *     - value           default value (defaul 0)
@@ -1104,7 +1108,6 @@ class Dropdown {
     *     - toadd     array of values to add at the beginning
     *     - unit : string unit to used
     *     - display : boolean if false get string
-    * \since version 0.84
    **/
    static function showNumber($myname, $options=array()) {
 
@@ -1123,9 +1126,6 @@ class Dropdown {
          }
       }
 
-
-
-// $value, $min=0, $max=100, $step=1, $toadd=array(),
       $out = "<select name='$myname' id='$myname".$params['rand']."'>\n";
 
       if (count($params['toadd'])) {
@@ -1146,10 +1146,11 @@ class Dropdown {
       if ($params['display']) {
          echo $out;
          return $params['rand'];
-      } else {
-         return $out;
       }
+      return $out;
    }
+
+
    /**
     * Get value with unit / Automatic management of standar unit (year, month, %, ...)
     *
@@ -1221,6 +1222,7 @@ class Dropdown {
       return self::showNumber($myname,$opt);
 
    }
+
 
    /**
     * Dropdown integers
@@ -1533,9 +1535,8 @@ class Dropdown {
       if ($param['display']) {
          echo $output;
          return $param['rand'];
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
@@ -1575,7 +1576,7 @@ class Dropdown {
                               array('id' => $ID),'','',
                               array(__('Do you really want to use unitary management for this item?'),
                                  __('Duplicate the element as many times as there are connections')));
-                                    
+
             echo "&nbsp;";
 
             echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').
