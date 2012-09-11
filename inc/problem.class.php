@@ -1265,7 +1265,7 @@ class Problem extends CommonITILObject {
       $params = array('maxlength' => 250,
                       'size'      => 110,
                       'name'      => 'name',
-                      'data'      => rawurlencode($this->fields["name"]));
+                      'data'      => serialize($this->fields["name"]));
       Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
       echo "}";
       echo "</script>\n";
@@ -1294,7 +1294,7 @@ class Problem extends CommonITILObject {
       $params = array('rows'  => 6,
                       'cols'  => 110,
                       'name'  => 'content',
-                      'data'  => rawurlencode($this->fields["content"]));
+                      'data'  => serialize($this->fields["content"]));
       Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
       echo "}";
       echo "</script>\n";
