@@ -3063,6 +3063,7 @@ class Html {
       $p['height']         = 400;
       $p['specific_actions'] = array();
       $p['confirm']          = '';
+      $p['rand']          = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3090,7 +3091,7 @@ class Html {
          $width= '80%';
       }
 
-      $identifier = md5($url.$itemtype.serialize($p['extraparams']));
+      $identifier = md5($url.$itemtype.serialize($p['extraparams']).$p['rand']);
       $max        = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin

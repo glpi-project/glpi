@@ -50,7 +50,13 @@ class Cartridge extends CommonDBTM {
 
    var $no_form_page = false;
 
+   function getForbiddenStandardMassiveAction() {
 
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
    }
@@ -99,7 +105,6 @@ class Cartridge extends CommonDBTM {
       }
    }
 
-
    /**
     * @see inc/CommonDBTM::restore()
     */
@@ -111,7 +116,6 @@ class Cartridge extends CommonDBTM {
                     `date_use` = NULL,
                     `printers_id` = '0'
                 WHERE `id`='".$input["id"]."'";
-
       if ($result = $DB->query($query)
           && ($DB->affected_rows() > 0)) {
          return true;
@@ -256,7 +260,12 @@ class Cartridge extends CommonDBTM {
       $total = self::getTotalNumber($tID);
       $out   = "";
       if ($total != 0) {
-         $unused     = self::getUnusedNumber($tID);
+         $unused     = self::getUnusedNumber($tID);   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
          $used       = self::getUsedNumber($tID);
          $old        = self::getOldNumber($tID);
          $highlight  = "";
@@ -413,17 +422,68 @@ class Cartridge extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $total  = $DB->result($result, 0, "count");
+         
+         if (!$show_old) { // NEW
+            $where = " AND `glpi_cartridges`.`date_out` IS NULL";
+         } else { //OLD
+            $where = " AND `glpi_cartridges`.`date_out` IS NOT NULL";
+         }
 
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         $stock_time       = 0;
+         $use_time         = 0;
+         $pages_printed    = 0;
+         $nb_pages_printed = 0;
+         $ORDER = " `glpi_cartridges`.`date_use` ASC,
+                  `glpi_cartridges`.`date_out` DESC,
+                  `glpi_cartridges`.`date_in`";
+
          if (!$show_old) {
-            echo "<tr><th colspan='".($canedit?'8':'6')."'>".self::getCount($tID,-1)."</th>";
+            $ORDER = " `glpi_cartridges`.`date_out` ASC,
+                     `glpi_cartridges`.`date_use` ASC,
+                     `glpi_cartridges`.`date_in`";
+         }
+         $query = "SELECT `glpi_cartridges`.*,
+                        `glpi_printers`.`id` AS printID,
+                        `glpi_printers`.`name` AS printname,
+                        `glpi_printers`.`init_pages_counter`
+                  FROM `glpi_cartridges`
+                  LEFT JOIN `glpi_printers`
+                        ON (`glpi_cartridges`.`printers_id` = `glpi_printers`.`id`)
+                  WHERE `glpi_cartridges`.`cartridgeitems_id` = '$tID'
+                        $where
+                  ORDER BY $ORDER";
+
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+         
+         echo "<div class='spaced'>";
+         if ($canedit) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $actions = array('delete' => _x('button', 'Delete'),
+                             'activate_infocoms' => __('Enable the financial and administrative information'),
+                             'restore' => __('Back to stock'));
+            $paramsma = array('num_displayed' => $number,
+                              'specific_actions' => $actions,
+                              'rand' => $rand);
+            Html::showMassiveActions(__CLASS__, $paramsma);
+         }
+         echo "<table class='tab_cadre_fixe'>";
+         if (!$show_old) {
+            echo "<tr><th colspan='".($canedit?'6':'5')."'>".self::getCount($tID,-1)."</th>";
             echo "</tr>";
          } else { // Old
-            echo "<tr><th colspan='".($canedit?'10':'8')."'>".__('Worn cartridges')."</th>";
+            echo "<tr><th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th>";
             echo "</tr>";
          }
          $i = 0;
-         echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>".__('State')."</th>";
          echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
          echo "<th>".__('Used on')."</th>";
 
@@ -434,47 +494,14 @@ class Cartridge extends CommonDBTM {
          }
 
          echo "<th width='18%'>".__('Financial and administrative information')."</th>";
-         if ($canedit) {
-            echo "<th colspan='2'>"._n('Action','Actions',2)."</th>";
-         }
-
          echo "</tr>";
       }
 
-      if (!$show_old) { // NEW
-         $where = " AND `glpi_cartridges`.`date_out` IS NULL";
-      } else { //OLD
-         $where = " AND `glpi_cartridges`.`date_out` IS NOT NULL";
-      }
 
-      $stock_time       = 0;
-      $use_time         = 0;
-      $pages_printed    = 0;
-      $nb_pages_printed = 0;
-      $ORDER = " `glpi_cartridges`.`date_use` ASC,
-                `glpi_cartridges`.`date_out` DESC,
-                `glpi_cartridges`.`date_in`";
-
-      if (!$show_old) {
-         $ORDER = " `glpi_cartridges`.`date_out` ASC,
-                   `glpi_cartridges`.`date_use` ASC,
-                   `glpi_cartridges`.`date_in`";
-      }
-      $query = "SELECT `glpi_cartridges`.*,
-                       `glpi_printers`.`id` AS printID,
-                       `glpi_printers`.`name` AS printname,
-                       `glpi_printers`.`init_pages_counter`
-                FROM `glpi_cartridges`
-                LEFT JOIN `glpi_printers`
-                     ON (`glpi_cartridges`.`printers_id` = `glpi_printers`.`id`)
-                WHERE `glpi_cartridges`.`cartridgeitems_id` = '$tID'
-                      $where
-                ORDER BY $ORDER";
 
       $pages = array();
 
-      if ($result = $DB->query($query)) {
-         $number = $DB->numrows($result);
+      if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_use = Html::convDate($data["date_use"]);
@@ -482,7 +509,12 @@ class Cartridge extends CommonDBTM {
             $printer  = $data["printers_id"];
             $page     = $data["pages"];
 
-            echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td width='10'>";
+               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+               echo "</td>";
+            }
             echo "<td class='center'>".self::getStatus($data["date_use"], $data["date_out"]);
             echo "</td><td class='center'>".$date_in."</td>";
             echo "<td class='center'>".$date_use."</td>";
@@ -535,27 +567,6 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             Infocom::showDisplayLink('Cartridge',$data["id"],1);
             echo "</td>";
-
-            if ($canedit) {
-               echo "<td class='center'>";
-               if (!is_null($date_use)) {
-                  Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                        'restore', __('Back to stock'),
-                                        array('cartridgeitems_id' => $tID,
-                                              'id'                => $data['id']));
-               } else {
-                  echo "&nbsp;";
-               }
-               echo "</td>";
-            }
-            if ($canedit) {
-               echo "<td class='center'>";
-               Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                     'delete', __('Delete'),
-                                     array('cartridgeitems_id' => $tID,
-                                           'id'                => $data['id']), $CFG_GLPI['root_doc']."/pics/delete.png");
-              echo "</td>";
-            }
             echo "</tr>";
          }
          if ($show_old
@@ -574,7 +585,13 @@ class Cartridge extends CommonDBTM {
             echo "<td colspan='".($canedit?'3':'1')."'>&nbsp;</td></tr>";
          }
       }
-      echo "</table></div>\n\n";
+      echo "</table>";
+      if ($canedit) {
+         $paramsma['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
+      }
+      echo "</div>\n\n";
    }
 
 
@@ -594,7 +611,7 @@ class Cartridge extends CommonDBTM {
       }
       if ($ID > 0) {
          echo "<div class='firstbloc'>";
-         echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+         echo "<form method='post' action=\"".static::getFormURL()."\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2'>";
          echo "<input type='hidden' name='cartridgeitems_id' value='$ID'>\n";
