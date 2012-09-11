@@ -4085,10 +4085,11 @@ class Html {
     * @param $title     displayed above
     * @param $start     from witch item we start
     * @param $numrows   total items
+    * @param $additional_info             Additional information to display (default '')
     *
     * @return nothing (print a pager)
    **/
-   static function printAjaxPager($title, $start, $numrows) {
+   static function printAjaxPager($title, $start, $numrows, $additional_info = '') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -4137,7 +4138,11 @@ class Html {
       echo "<td width='50%' class='tab_bg_2'>";
       self::printPagerForm();
       echo "</td>";
-
+      if (!empty($additional_info)) {
+         echo "<td class='tab_bg_2'>";
+         echo $additional_info;
+         echo "</td>";
+      }
       // Print the "where am I?"
       echo "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
