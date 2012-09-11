@@ -3261,7 +3261,7 @@ class Transfer extends CommonDBTM {
                               echo '<br>';
                            }
                            $entID = $data['entID'];
-                           echo "<span class='b spaced'>".$data['locname']."</span>";
+                           echo "<span class='b spaced'>".$data['locname']."</span><br>";
                         }
                         echo ($data['name'] ? $data['name'] : "(".$data['id'].")")."<br>";
                      }
@@ -3280,9 +3280,9 @@ class Transfer extends CommonDBTM {
                                           $CFG_GLPI["root_doc"]."/ajax/transfers.php", $params);
          }
 
-         echo "<div class='center' id='transfer_form'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/transfer.action.php?clear=1'>".
-                __('To empty the list of elements to be transferred')."</a>";
+         echo "<div class='center' id='transfer_form'><br>";
+            Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",
+                                'clear', __('To empty the list of elements to be transferred'));
          echo "</div>";
          echo '</td></tr>';
          echo '</table>';

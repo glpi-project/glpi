@@ -679,12 +679,14 @@ class TicketValidation  extends CommonDBChild {
     **/
    function showForm($ID, $options=array()) {
 
-      $this->check($ID,'w');
 
       if ($ID > 0) {
+         $this->check($ID,'w');
          $tickets_id = $this->fields["tickets_id"];
       } else {
          $tickets_id = $options['parent']->fields["id"];
+         $param = array('tickets_id' => $tickets_id);
+         $this->check(-1,'w', $param);
       }
       $ticket = new Ticket();
       if (!$ticket->getFromDB($tickets_id)) {
