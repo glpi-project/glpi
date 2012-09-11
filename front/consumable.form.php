@@ -57,44 +57,6 @@ if (isset($_POST["add_several"])) {
 
    Html::back();
 
-} else if (isset($_GET["delete"])) {
-   $con->check($_GET["id"],'d');
-
-   if ($con->delete($_GET)) {
-      Event::log($_GET["consumableitems_id"], "consumables", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes a consumable'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_POST["give"])) {
-   $constype->check($_POST["consumableitems_id"],'w');
-
-   if (($_POST["items_id"] > 0)
-       && !empty($_POST['itemtype'])) {
-      if (isset($_POST["out"])) {
-         foreach ($_POST["out"] as $key => $val) {
-            $con->out($key,$_POST['itemtype'],$_POST["items_id"]);
-         }
-      }
-      $item = new $_POST['itemtype']();
-      $item->getFromDB($_POST["items_id"]);
-      Event::log($_POST["consumableitems_id"], "consumables", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_GET["restore"])) {
-   $con->check($_GET["id"],'w');
-
-   if ($con->restore($_GET)) {
-      Event::log($_GET["consumableitems_id"], "consumables", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s restores a consumable'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else {
    Html::back();
 }
