@@ -40,12 +40,6 @@ Session::checkRight("phone", "r");
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["sort"])) {
-   $_GET["sort"] = "";
-}
-if (!isset($_GET["order"])) {
-   $_GET["order"] = "";
-}
 if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
@@ -96,15 +90,15 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_GET["unglobalize"])) {
-   $phone->check($_GET["id"],'w');
+} else if (isset($_POST["unglobalize"])) {
+   $phone->check($_POST["id"],'w');
 
    Computer_Item::unglobalizeItem($phone);
-   Event::log($_GET["id"], "phones", 4, "inventory",
+   Event::log($_POST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_POST["id"]);
 
 } else {
    Html::header(Phone::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'phone');
