@@ -2747,7 +2747,6 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
-      echo "<input type='hidden' name='ext_auth' value='1'>\n";
       echo "<input type='submit' name='add_ext_auth_ldap' value=\"".__s('Import from directories')."\"
              class='submit'>\n";
       echo "</td></tr>";
