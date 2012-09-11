@@ -66,6 +66,7 @@ class ITILCategory extends CommonTreeDropdown {
                    array('name'  => 'groups_id',
                          'label' => __('Group in charge of the hardware'),
                          'type'  => 'dropdownValue',
+                         'condition' => '`is_assign`',
                          'list'  => true),
                    array('name'  => 'knowbaseitemcategories_id',
                          'label' => __('Knowledge base'),
