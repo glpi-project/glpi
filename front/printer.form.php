@@ -40,12 +40,6 @@ Session::checkRight("printer", "r");
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["sort"])) {
-   $_GET["sort"] = "";
-}
-if (!isset($_GET["order"])) {
-   $_GET["order"] = "";
-}
 if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
@@ -96,14 +90,14 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_GET["unglobalize"])) {
-   $print->check($_GET["id"],'w');
+} else if (isset($_POST["unglobalize"])) {
+   $print->check($_POST["id"],'w');
 
    Computer_Item::unglobalizeItem($print);
-   Event::log($_GET["id"], "printers", 4, "inventory",
+   Event::log($_POST["id"], "printers", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["id"]);
 
 } else {
    Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory","printer");
