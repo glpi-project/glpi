@@ -5577,7 +5577,6 @@ class Ticket extends CommonITILObject {
       }
       // Recherche des entités
       $tot = 0;
-
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
          $query = "SELECT `glpi_tickets`.*
                    FROM `glpi_tickets`
