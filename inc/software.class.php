@@ -222,7 +222,7 @@ class Software extends CommonDBTM {
       echo "<td>" . __('Technician in charge of the hardware') . "</td><td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'interface',
+                           'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>" . __('Associable to a ticket') . "</td><td>";

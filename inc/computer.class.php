@@ -431,7 +431,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'interface',
+                           'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
