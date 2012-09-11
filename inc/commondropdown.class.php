@@ -198,10 +198,14 @@ abstract class CommonDropdown extends CommonDBTM {
          }
          switch ($field['type']) {
             case 'UserDropdown' :
-               User::dropdown(array('name'   => $field['name'],
-                                    'value'  => $this->fields[$field['name']],
-                                    'right'  => 'interface',
-                                    'entity' => $this->fields["entities_id"]));
+               $param = array('name'   => $field['name'],
+                              'value'  => $this->fields[$field['name']],
+                              'right'  => 'interface',
+                              'entity' => $this->fields["entities_id"]);
+               if (isset($field['right'])) {
+                  $params['right'] = $field['right'];
+               }
+               User::dropdown($param);
 
                break;
 

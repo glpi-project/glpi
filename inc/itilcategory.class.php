@@ -62,6 +62,7 @@ class ITILCategory extends CommonTreeDropdown {
                    array('name'      => 'users_id',
                          'label'     => __('Technician in charge of the hardware'),
                          'type'      => 'UserDropdown',
+                         'right'     => 'own_ticket',
                          'list'      => true),
                    array('name'      => 'groups_id',
                          'label'     => __('Group in charge of the hardware'),
