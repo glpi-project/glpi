@@ -114,18 +114,18 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             Dropdown::showLanguages("language", array('display_none' => true,
                                                       'emptylabel'   => $LANG['setup'][46]));
             break;
-            
+
          case "glpi_crontasks.mode" :
             $options = array();
             $options[CronTask::MODE_INTERNAL] = CronTask::getModeName(CronTask::MODE_INTERNAL);
             $options[CronTask::MODE_EXTERNAL] = CronTask::getModeName(CronTask::MODE_EXTERNAL);
             Dropdown::showFromArray('mode', $options);
             break;
-         
+
          case "glpi_crontasks.state" :
             CronTask::dropdownState('state');
             break;
-            
+
          default :
             // Specific plugin Type case
             $plugdisplay = false;
@@ -269,7 +269,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                case "users_id_tech" :
                   User::dropdown(array('name'   => $search["linkfield"],
                                        'value'  => 0,
-                                       'right'  => 'interface',
+                                       'right'  => 'own_ticket',
                                        'entity' => $_SESSION["glpiactive_entity"]));
                   break;
 

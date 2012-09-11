@@ -92,7 +92,7 @@ class Computer extends CommonDBTM {
       $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
       $this->addStandardTab('RegistryKey', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Item_Problem', $ong, $options);      
+      $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
@@ -535,7 +535,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'interface',
+                           'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
@@ -599,12 +599,12 @@ class Computer extends CommonDBTM {
                                     'condition' => '`is_itemgroup`'));
 
       echo "</td>";
-      
+
       // Get OCS Datas :
       $dataocs = array();
       $rowspan = 10;
       $ocs_show = false;
-      
+
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
           && Session::haveRight("view_ocsng","r")) {
@@ -617,14 +617,14 @@ class Computer extends CommonDBTM {
          if ($DB->numrows($result)==1) {
             $dataocs = $DB->fetch_array($result);
          }
-      }      
-      
+      }
+
       if (count($dataocs)) {
          $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
          $ocs_show = true;
-         $rowspan -=4;    
+         $rowspan -=4;
       }
-      
+
       echo "<td rowspan='$rowspan'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -678,7 +678,7 @@ class Computer extends CommonDBTM {
          }
          echo "</th>";
       }
-         
+
 
       echo "</tr>\n";
 
@@ -701,9 +701,9 @@ class Computer extends CommonDBTM {
          } else {
             echo OcsServer::getServerNameByID($ID);
          }
-         
+
          echo "</td></tr>";
-         
+
          if ($dataocs["ocs_agent_version"] != NULL) {
             echo "<tr><td>".$LANG['ocsng'][49]."&nbsp;:</td><td>".$dataocs["ocs_agent_version"].'</td></tr>';
          }
@@ -712,11 +712,11 @@ class Computer extends CommonDBTM {
             echo "<td>";
             Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
             echo "</td></tr>";
-         }     
-         
+         }
+
          echo "</table>";
          echo "</td>";
-      } 
+      }
 
       echo "</tr>\n";
 
@@ -725,7 +725,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
       echo "</td>";
-      
+
       echo "</tr>";
 
 
@@ -735,9 +735,9 @@ class Computer extends CommonDBTM {
          echo "<span class='small_space'>(".$LANG['common'][13]."&nbsp;: ".
                $this->fields['template_name'].")</span>";
       }
-      
-    
-      
+
+
+
       echo "</td></tr>\n";
 
 

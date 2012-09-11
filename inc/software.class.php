@@ -280,7 +280,7 @@ class Software extends CommonDBTM {
       echo "<td>" . $LANG['common'][10] . "&nbsp;:</td><td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'interface',
+                           'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
