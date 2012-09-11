@@ -54,10 +54,12 @@ if (isset($_POST['transfer'])) {
       Html::footer();
       exit();
    }
-} else if (isset($_GET['clear'])) {
+} else if (isset($_POST['clear'])) {
    unset($_SESSION['glpitransfer_list']);
+   echo "<div class='center'>";
    echo "<span class='b'>".__('Operation successful')."<br>";
    echo "<a href='central.php'>".__('Back')."</span></a>";
+   echo "</div>";
    Html::footer();
    exit();
 }

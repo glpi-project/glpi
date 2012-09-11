@@ -39,17 +39,6 @@ if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
-}
-
-if (!isset($_GET["sort"])) {
-   $_GET["sort"]="";
-}
-if (!isset($_GET["order"])) {
-   $_GET["order"] = "";
-}
-
 $user      = new User();
 $groupuser = new Group_User();
 
