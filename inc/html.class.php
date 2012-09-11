@@ -4380,7 +4380,7 @@ class Html {
     * create a minimal form for simple action
     *
     * @param $action   String   URL to call on submit
-    * @param $btname   String   button name
+    * @param $btname   String   button name (maybe if name <> value)
     * @param $btlabel  String   button label
     * @param $fields   Array    field name => field  value
     * @param $btimage  String   button image uri (optional)   (default '')
@@ -4396,8 +4396,11 @@ class Html {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }
       $fields['_glpi_simple_form'] = 1;
-      $fields[$btname]             = $btname;
-      $javascriptArray             = array();
+      if (!is_array($btname)) {
+         $btname[$btname] = $btname;
+      }
+      $fields          = array_merge($btname, $fields);
+      $javascriptArray = array();
       foreach ($fields as $name => $value) {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
