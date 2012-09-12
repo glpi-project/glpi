@@ -52,7 +52,8 @@ if (isset($_POST["update"])) {
 
 } else if (isset($_GET["id"])) {
    $ticket_user->showUserNotificationForm($_GET["id"]);
+} else {
+   Html::displayErrorAndDie('Lost');
 }
-Html::displayErrorAndDie('Lost');
 
 ?>

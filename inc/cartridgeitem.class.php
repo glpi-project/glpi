@@ -495,7 +495,11 @@ class CartridgeItem extends CommonDBTM {
             }
          }
       }
-      return Dropdown::showFromArray('cartridgeitems_id', $datas);
+      if (count($datas)) {
+         return Dropdown::showFromArray('cartridgeitems_id', $datas);
+      } else {
+         return false;
+      }
    }
 
 

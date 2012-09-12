@@ -667,12 +667,17 @@ class Cartridge extends CommonDBTM {
          echo "<div class='firstbloc'>";
          echo "<form method='post' action=\"".static::getFormURL()."\">";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><td class='center tab_bg_2'>";
+         echo "<tr><td class='center tab_bg_2' width='50%'>";
          echo "<input type='hidden' name='printers_id' value='$instID'>\n";
-         CartridgeItem::dropdownForPrinter($printer);
+         $installok = false;
+         if (CartridgeItem::dropdownForPrinter($printer)) {
+            $installok = false;
+         } else {
+            _e('No cartridge available');
+         }
          
          echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
-                           class='submit'>";
+                           ".($installok?'':'disabled')." class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
