@@ -100,8 +100,7 @@ class Dropdown {
             $params[$key] = $val;
          }
       }
-      $output = '';
-
+      $output       = '';
       $name         = $params['emptylabel'];
       $comment      = "";
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
@@ -194,7 +193,8 @@ class Dropdown {
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";
-      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand'], false);
+      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
+                                $params['rand'], false);
 
       // Display comment
       if ($params['comments']) {
@@ -216,10 +216,10 @@ class Dropdown {
              && !isset($_GET['popup'])) {
 
                $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
-                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                     onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
-                     $params['rand']."' ,'glpipopup', 'height=400, ".
-                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                            "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                            onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
+                            $params['rand']."' ,'glpipopup', 'height=400, ".
+                            "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
          // Display specific Links
          if ($itemtype == "Supplier") {
@@ -401,7 +401,7 @@ class Dropdown {
     *    - value      : integer / preselected value (default '')
     *    - used       : array / Already used items ID: not to display in dropdown (default empty)
     *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
-    *    - display : boolean if false get string
+    *    - display    : boolean if false get string
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -440,7 +440,7 @@ class Dropdown {
     *
     * @param $name                  name of the select box
     * @param $itemtype_ref  string   itemtype reference where to search in itemtype field
-    * @param $options       array    options :
+    * @param $options       array    of possible options:
     *        - may be value (default value) / field (used field to search itemtype)
     *
     * @return nothing (print out an HTML select box)
@@ -1482,7 +1482,7 @@ class Dropdown {
       } else {
 
          $field_id = "dropdown_".$name.$param['rand'];
-         $output .= "<select name='$field_name' id='$field_id'";
+         $output  .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";

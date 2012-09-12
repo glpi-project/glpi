@@ -2606,7 +2606,7 @@ class User extends CommonDBTM {
     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
     *    - ldap_import
     *    - on_change    : string / value to transmit to "onChange"
-    *    - display    : boolean / display or get string (default true)
+    *    - display      : boolean / display or get string (default true)
     *
     * @return rand value if displayed / string if not
    **/
@@ -2691,7 +2691,8 @@ class User extends CommonDBTM {
          }
       }
 
-      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand'], false);
+      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default,
+                                $p['rand'], false);
 
       // Display comment
       if ($p['comments']) {
@@ -2701,10 +2702,10 @@ class User extends CommonDBTM {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
          $output .= Html::showToolTip($user["comment"],
-                           array('contentid' => "comment_".$p['name'].$p['rand'],
-                                 'display'   => false,
-                                 'link'      => $user["link"],
-                                 'linkid'    => "comment_link_".$p["name"].$p['rand']));
+                                      array('contentid' => "comment_".$p['name'].$p['rand'],
+                                            'display'   => false,
+                                            'link'      => $user["link"],
+                                            'linkid'    => "comment_link_".$p["name"].$p['rand']));
       }
 
       if (Session::haveRight('import_externalauth_users','w')
@@ -2712,11 +2713,11 @@ class User extends CommonDBTM {
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
          $output .= "<img alt='' title=\"".__s('Import a user')."\" src='".$CFG_GLPI["root_doc"].
-               "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
-               "/front/popup.php?popup=add_ldapuser&amp;rand=".$p['rand']."&amp;entity=".
-               $_SESSION['glpiactive_entity']."' ,'glpipopup', 'height=400, ".
-               "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                      onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
+                      "/front/popup.php?popup=add_ldapuser&amp;rand=".$p['rand']."&amp;entity=".
+                      $_SESSION['glpiactive_entity']."' ,'glpipopup', 'height=400, ".
+                      "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
 
       if ($p['display']) {

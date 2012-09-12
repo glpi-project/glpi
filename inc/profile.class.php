@@ -574,9 +574,8 @@ class Profile extends CommonDBTM {
           && ($this->fields["faq"] == 'w')) {
          $this->fields["faq"] = 'r';
       }
-      self::dropdownRight("faq",
-                          array('value'   => $this->fields["faq"],
-                                'nowrite' => true));
+      self::dropdownRight("faq", array('value'   => $this->fields["faq"],
+                                       'nowrite' => true));
       echo "</td>";
       echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
       Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
@@ -584,9 +583,8 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
-      self::dropdownRight("reminder_public",
-                          array('value'   => $this->fields["reminder_public"],
-                                'nowrite' => true));
+      self::dropdownRight("reminder_public", array('value'   => $this->fields["reminder_public"],
+                                                   'nowrite' => true));
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</td></tr>\n";
@@ -628,51 +626,41 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Computer', 'Computers', 2)."</td><td>";
-      self::dropdownRight("computer",
-                          array('value'   => $this->fields["computer"]));
+      self::dropdownRight("computer", array('value' => $this->fields["computer"]));
       echo "</td>";
       echo "<td>"._n('Monitor', 'Monitors', 2)."</td><td>";
-      self::dropdownRight("monitor",
-                          array('value'   => $this->fields["monitor"]));
+      self::dropdownRight("monitor", array('value' => $this->fields["monitor"]));
       echo "</td>";
       echo "<td>"._n('Software', 'Software', 2)."</td><td>";
-      self::dropdownRight("software",
-                          array('value'   => $this->fields["software"]));
+      self::dropdownRight("software", array('value' => $this->fields["software"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Network', 'Networks', 2)."</td><td>";
-      self::dropdownRight("networking",
-                          array('value'   => $this->fields["networking"]));
+      self::dropdownRight("networking", array('value' => $this->fields["networking"]));
       echo "</td>";
       echo "<td>"._n('Printer', 'Printers', 2)."</td><td>";
-      self::dropdownRight("printer",
-                          array('value'   => $this->fields["printer"]));
+      self::dropdownRight("printer", array('value' => $this->fields["printer"]));
       echo "</td>";
       echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td>";
-      self::dropdownRight("cartridge",
-                          array('value'   => $this->fields["cartridge"]));
+      self::dropdownRight("cartridge", array('value' => $this->fields["cartridge"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td>";
-      self::dropdownRight("consumable",
-                          array('value'   => $this->fields["consumable"]));
+      self::dropdownRight("consumable",  array('value' => $this->fields["consumable"]));
 
       echo "</td>";
       echo "<td>"._n('Phone', 'Phones', 2)."</td><td>";
-      self::dropdownRight("phone",
-                          array('value'   => $this->fields["phone"]));
+      self::dropdownRight("phone", array('value' => $this->fields["phone"]));
       echo "</td>";
       echo "<td>"._n('Device', 'Devices', 2)."</td><td>";
-      self::dropdownRight("peripheral",
-                          array('value'   => $this->fields["peripheral"]));
+      self::dropdownRight("peripheral", array('value' => $this->fields["peripheral"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Internet')."</td><td>";
-      self::dropdownRight("internet",
-                          array('value'   => $this->fields["internet"]));
+      self::dropdownRight("internet", array('value' => $this->fields["internet"]));
       echo "</td>\n";
       echo "<td colspan='4'>&nbsp;</td></tr>";
 
@@ -682,24 +670,20 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2)."</td><td>";
       self::dropdownRight("contact_enterprise",
-                          array('value'   => $this->fields["contact_enterprise"]));
+                          array('value' => $this->fields["contact_enterprise"]));
       echo "</td>";
       echo "<td>"._n('Document', 'Documents', 2)."</td><td>";
-      self::dropdownRight("document",
-                          array('value'   => $this->fields["document"]));
+      self::dropdownRight("document", array('value' => $this->fields["document"]));
       echo "</td>";
       echo "<td>"._n('Contract', 'Contracts', 2)."</td><td>";
-      self::dropdownRight("contract",
-                          array('value'   => $this->fields["contract"]));
+      self::dropdownRight("contract", array('value' => $this->fields["contract"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".__('Financial and administratives information')."</td><td>";
-      self::dropdownRight("infocom",
-                          array('value'   => $this->fields["infocom"]));
+      self::dropdownRight("infocom", array('value' => $this->fields["infocom"]));
       echo "</td>";
       echo "<td>".__('Budget')."</td><td colspan='3'>";
-      self::dropdownRight("budget",
-                          array('value'   => $this->fields["budget"]));
+      self::dropdownRight("budget", array('value' => $this->fields["budget"]));
       echo "</td></tr>\n";
 
       // Outils / Tools
@@ -707,27 +691,22 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Item notes')."</td><td>";
-      self::dropdownRight("notes",
-                          array('value'   => $this->fields["notes"]));
+      self::dropdownRight("notes", array('value' => $this->fields["notes"]));
       echo "</td>";
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
-      self::dropdownRight("reminder_public",
-                          array('value'   => $this->fields["reminder_public"]));
+      self::dropdownRight("reminder_public", array('value' => $this->fields["reminder_public"]));
       echo "</td>";
       echo "<td>"._n('Public bookmark', 'Public bookmarks', 2)."</td><td>";
-      self::dropdownRight("bookmark_public",
-                          array('value'   => $this->fields["bookmark_public"]));
+      self::dropdownRight("bookmark_public", array('value' => $this->fields["bookmark_public"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('FAQ')."</td><td>";
-      self::dropdownRight("faq",
-                          array('value'   => $this->fields["faq"]));
+      self::dropdownRight("faq", array('value' => $this->fields["faq"]));
       echo "</td>";
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
-      self::dropdownRight("reports",
-                          array('value'   => $this->fields["reports"],
-                                'nowrite' => true));
+      self::dropdownRight("reports", array('value'   => $this->fields["reports"],
+                                           'nowrite' => true));
       echo "</td>";
       echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
       Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
@@ -735,15 +714,14 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Knowledge base')."</td><td>";
-      self::dropdownRight("knowbase",
-                          array('value'   => $this->fields["knowbase"]));
+      self::dropdownRight("knowbase", array('value' => $this->fields["knowbase"]));
       echo "</td>";
       echo "<td>".__('Knowledge base administration')."</td><td>";
       Dropdown::showYesNo("knowbase_admin", $this->fields["knowbase_admin"]);
       echo "</td>";
       echo "<td>".__('Administration of reservations')."</td><td colspan='3'>";
       self::dropdownRight("reservation_central",
-                          array('value'   => $this->fields["reservation_central"]));
+                          array('value' => $this->fields["reservation_central"]));
       echo "</td></tr>\n";
 
       if ($canedit
@@ -1127,43 +1105,35 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('User', 'Users', 2)."</td><td>";
-      self::dropdownRight("user",
-                          array('value'   => $this->fields["user"]));
+      self::dropdownRight("user", array('value' => $this->fields["user"]));
 
       echo "</td>";
       echo "<td>"._n('Group', 'Groups', 2)."</td><td>";
-      self::dropdownRight("group",
-                          array('value'   => $this->fields["group"]));
+      self::dropdownRight("group", array('value' => $this->fields["group"]));
       echo "</td>";
       echo "<td>".__('Method for user authentication and synchronization')."</td><td>";
-      self::dropdownRight("user_authtype",
-                          array('value'   => $this->fields["user_authtype"]));
+      self::dropdownRight("user_authtype", array('value' => $this->fields["user_authtype"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Entity', 'Entities', 2)."</td><td>";
-      self::dropdownRight("entity",
-                          array('value'   => $this->fields["entity"]));
+      self::dropdownRight("entity", array('value' => $this->fields["entity"]));
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
-      self::dropdownRight("transfer",
-                          array('value'   => $this->fields["transfer"]));
+      self::dropdownRight("transfer", array('value' => $this->fields["transfer"]));
       echo "</td>";
       echo "<td>".self::getTypeName(2)."</td><td>";
-      self::dropdownRight("profile",
-                          array('value'   => $this->fields["profile"]));
+      self::dropdownRight("profile", array('value' => $this->fields["profile"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Maintenance')."</td><td>";
-      self::dropdownRight("backup",
-                          array('value'   => $this->fields["backup"],
-                                'noread'  => true));
+      self::dropdownRight("backup", array('value'   => $this->fields["backup"],
+                                          'noread'  => true));
       echo "</td>";
       echo "<td>"._n('Log', 'Logs', 2)."</td><td>";
-      self::dropdownRight("logs",
-                          array('value'   => $this->fields["logs"],
-                                'nowrite' => true));
+      self::dropdownRight("logs", array('value'   => $this->fields["logs"],
+                                        'nowrite' => true));
       echo "</td>";
 
       echo "<td class='tab_bg_2'>".__('Add users from an external source')."</td>";
@@ -1175,8 +1145,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('SLA')."</td><td>";
-      self::dropdownRight("sla",
-                          array('value'   => $this->fields["sla"]));
+      self::dropdownRight("sla", array('value' => $this->fields["sla"]));
       echo "</td>";
       echo "<td colspan='4'>&nbsp;";
       echo "</td></tr>\n";
@@ -1185,32 +1154,29 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Authorizations assignment rules')."</td><td>";
-      self::dropdownRight("rule_ldap",
-                          array('value'   => $this->fields["rule_ldap"]));
+      self::dropdownRight("rule_ldap", array('value' => $this->fields["rule_ldap"]));
       echo "</td>";
       echo "<td>".__('Rules for assigning a computer to an entity')."</td><td>";
-      self::dropdownRight("rule_ocs",
-                          array('value'   => $this->fields["rule_ocs"]));
+      self::dropdownRight("rule_ocs", array('value' => $this->fields["rule_ocs"]));
       echo "</td>";
       echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td><td>";
       self::dropdownRight("rule_mailcollector",
-                          array('value'   => $this->fields["rule_mailcollector"]));
+                          array('value' => $this->fields["rule_mailcollector"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Rules for assigning a category to a software')."</td><td>";
       self::dropdownRight("rule_softwarecategories",
-                          array('value'   => $this->fields["rule_softwarecategories"]));
+                          array('value' => $this->fields["rule_softwarecategories"]));
       echo "</td>";
       echo "<td>".__('Business rules for tickets')."</td><td>";
-      self::dropdownRight("rule_ticket",
-                          array('value'   => $this->fields["rule_ticket"],
-                                'nowrite' => true));
+      self::dropdownRight("rule_ticket", array('value'   => $this->fields["rule_ticket"],
+                                               'nowrite' => true));
       echo "</td>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
       echo "<td class='tab_bg_1'>";
       self::dropdownRight("entity_rule_ticket",
-                          array('value'   => $this->fields["entity_rule_ticket"]));
+                          array('value' => $this->fields["entity_rule_ticket"]));
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";
@@ -1218,16 +1184,16 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Dropdowns dictionary')."</td><td>";
       self::dropdownRight("rule_dictionnary_dropdown",
-                          array('value'   => $this->fields["rule_dictionnary_dropdown"]));
+                          array('value' => $this->fields["rule_dictionnary_dropdown"]));
       echo"</td>";
       //TRANS: software in plural
       echo "<td>".__('Software dictionary')."</td><td>";
       self::dropdownRight("rule_dictionnary_software",
-                          array('value'   => $this->fields["rule_dictionnary_software"]));
+                          array('value' => $this->fields["rule_dictionnary_software"]));
       echo "</td>";
       echo "<td>".__('Printers dictionnary')."</td><td>";
       self::dropdownRight("rule_dictionnary_printer",
-                          array('value'   => $this->fields["rule_dictionnary_printer"]));
+                          array('value' => $this->fields["rule_dictionnary_printer"]));
       echo "</td></tr>";
 
 
@@ -1273,9 +1239,8 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('General setup')."</td><td>";
-      self::dropdownRight("config",
-                          array('value'   => $this->fields["config"],
-                                'noread'  => true));
+      self::dropdownRight("config", array('value'   => $this->fields["config"],
+                                          'noread'  => true));
 
       echo "</td>";
       echo "<td>".__('Search result default display')."</td><td>";
@@ -1285,54 +1250,44 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td class='tab_bg_2'>".__('Search result user display')."</td>";
       echo "<td class='tab_bg_2'>";
-      self::dropdownRight("search_config",
-                          array('value'   => $this->fields["search_config"],
-                                'noread'  => true));
+      self::dropdownRight("search_config", array('value'   => $this->fields["search_config"],
+                                                 'noread'  => true));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Component', 'Components', 2)."</td><td>";
-      self::dropdownRight("device",
-                          array('value'   => $this->fields["device"],
-                                'noread'  => true));
+      self::dropdownRight("device", array('value'   => $this->fields["device"],
+                                          'noread'  => true));
       echo "</td>";
       echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
-      self::dropdownRight("dropdown",
-                          array('value'   => $this->fields["dropdown"]));
+      self::dropdownRight("dropdown", array('value' => $this->fields["dropdown"]));
       echo "</td>";
       echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
       echo "<td class='tab_bg_2'>";
-      self::dropdownRight("entity_dropdown",
-                          array('value'   => $this->fields["entity_dropdown"]));
+      self::dropdownRight("entity_dropdown", array('value' => $this->fields["entity_dropdown"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Document type')."</td><td>";
-      self::dropdownRight("typedoc",
-                          array('value'   => $this->fields["typedoc"]));
+      self::dropdownRight("typedoc", array('value' => $this->fields["typedoc"]));
       echo "</td>";
       echo "<td>"._n('External link', 'External links',2)."</td><td>";
-      self::dropdownRight("link",
-                          array('value'   => $this->fields["link"]));
+      self::dropdownRight("link", array('value' => $this->fields["link"]));
       echo "</td>";
       echo "<td>".__('Check for upgrade')."</td><td>";
-      self::dropdownRight("check_update",
-                          array('value'   => $this->fields["check_update"],
-                                'nowrite' => true));
+      self::dropdownRight("check_update", array('value'   => $this->fields["check_update"],
+                                                'nowrite' => true));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
-      self::dropdownRight("notification",
-                          array('value'   => $this->fields["notification"]));
+      self::dropdownRight("notification", array('value' => $this->fields["notification"]));
       echo "</td>";
       echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
-      self::dropdownRight("calendar",
-                          array('value'   => $this->fields["calendar"]));
+      self::dropdownRight("calendar", array('value' => $this->fields["calendar"]));
       echo "</td>\n";
       echo "<td>".__('Assistance')."</td><td>";
-      self::dropdownRight("entity_helpdesk",
-                          array('value'   => $this->fields["entity_helpdesk"]));
+      self::dropdownRight("entity_helpdesk", array('value' => $this->fields["entity_helpdesk"]));
       echo "</td></tr>\n";
 
       if ($canedit
@@ -1942,7 +1897,6 @@ class Profile extends CommonDBTM {
    }
 
 
-
    /**
     * Make a select box for a None Read Write choice
     *
@@ -1956,28 +1910,32 @@ class Profile extends CommonDBTM {
     * \deprecated use dropdownRight instead
    **/
    static function dropdownNoneReadWrite($name, $value, $none=1, $read=1, $write=1) {
+
       return self::dropdownRight($name, array('value'     => $value,
-                                       'nonone'  => !$none,
-                                       'noread'  => !$read,
-                                       'nowrite' => !$write));
+                                              'nonone'  => !$none,
+                                              'noread'  => !$read,
+                                              'nowrite' => !$write));
    }
+
 
    /**
     * Make a select box for a None Read Write choice
     *
-    * @param $name      select name
-    * @param $options array of options
-    *       - value     preselected value.
-    *       - nonone      hide none choice ? (default false)
-    *       - noread      hide read choice ? (default false)
-    *       - nowrite     hide write choice ? (default false)
-    *       - display   display or get string (default true)
-    *       - rand      specific rand (default is generated one)
+    * @since version 0.84
+    *
+    * @param $name          select name
+    * @param $options array of possible options:
+    *       - value   : preselected value.
+    *       - nonone  : hide none choice ? (default false)
+    *       - noread  : hide read choice ? (default false)
+    *       - nowrite : hide write choice ? (default false)
+    *       - display : display or get string (default true)
+    *       - rand    : specific rand (default is generated one)
     *
     * @return nothing (print out an HTML select box)
-    * \since version 0.84
    **/
-   static function dropdownRight($name, $options = array()) {
+   static function dropdownRight($name, $options=array()) {
+
       $param['value']   = '';
       $param['display'] = true;
       $param['nonone']  = false;
@@ -2000,11 +1958,12 @@ class Profile extends CommonDBTM {
       if (!$param['nowrite']) {
          $values['w'] = __('Write');
       }
-      return Dropdown::showFromArray($name,$values,
-                                           array('value'   => $param['value'],
-                                                 'rand'    => $param['rand'],
-                                                 'display' => $param['display']));
+      return Dropdown::showFromArray($name, $values,
+                                     array('value'   => $param['value'],
+                                           'rand'    => $param['rand'],
+                                           'display' => $param['display']));
    }
+
 
    /**
     * Dropdown profiles which have rights under the active one

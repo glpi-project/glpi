@@ -235,8 +235,8 @@ class AuthLDAP extends CommonDBTM {
                   $i = $input["ldap_process_count"]-$count+1;
                   Html::createProgressBar();
                   Html::changeProgressBarPosition($i, $input["ldap_process_count"],
-                                                  sprintf(__('%1$s/%2$s',
-                                                             $i, $input["ldap_process_count"])));
+                                                  sprintf(__('%1$s/%2$s'),
+                                                             $i, $input["ldap_process_count"]));
                   $key = key($input["item"]);
                   array_pop($input["item"]);
                   if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
