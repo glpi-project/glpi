@@ -3207,24 +3207,27 @@ class Html {
                                                  'max'         => $maxDate,
                                                  'showyear' => $displayYear));
    }
+
+
    /**
     * Display Date form with calendar
     *
+    * @since version 0.84
+    *
     * @param $name      name of the element
-    * @param $options  array of options may be
-    *      - value        default value to display (default '')
-    *      - maybeempty   may be empty ? (true by default)
-    *      - canedit     could not modify element (true by default)
-    *      - min      minimum allowed date (default '')
-    *      - max      maximum allowed date (default '')
-    *      - showyear  should we set/diplay the year? (true by default)
-    *      - display boolean display of return string (default true)
-    *      - rand specific rand value (default generated one)
+    * @param $options  array of possible options:
+    *      - value      : default value to display (default '')
+    *      - maybeempty : may be empty ? (true by default)
+    *      - canedit    :  could not modify element (true by default)
+    *      - min        :  minimum allowed date (default '')
+    *      - max        : maximum allowed date (default '')
+    *      - showyear   : should we set/diplay the year? (true by default)
+    *      - display    : boolean display of return string (default true)
+    *      - rand       : specific rand value (default generated one)
     *
     * @return rand value used if displayes else string
-    * \since version 0.84
    **/
-   static function showDateField($name, $options = array()) {
+   static function showDateField($name, $options=array()) {
       global $CFG_GLPI;
 
       $p['value']      = '';
@@ -3302,8 +3305,7 @@ class Html {
    /**
     * Display DateTime form with calendar
     *
-    * @param $name      name of the element
-    * @param $options  array of options may be
+    * @param $element      name of the element
     * @param $value        default value to display (default '')
     * @param $time_step    step for time in minute (-1 use default config) (default -1)
     * @param $maybeempty   may be empty ? (true by default)
@@ -3319,6 +3321,7 @@ class Html {
    static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
                                         $can_edit=true, $minDate='', $maxDate='', $minTime='',
                                         $maxTime='') {
+
       return self::showDateTimeField($element, array('value'      => $value,
                                                      'timestep'   => $time_step,
                                                      'maybeempty' => $maybeempty,
@@ -3329,24 +3332,26 @@ class Html {
                                                      'maxtime'    => $maxTime));
    }
 
+
    /**
     * Display DateTime form with calendar
     *
-    * @param $name      name of the element
-    * @param $options  array of options may be
-    *   - value        default value to display (default '')
-    *   - timestep    step for time in minute (-1 use default config) (default -1)
-    *   - maybeempty   may be empty ? (true by default)
-    *   - canedit     could not modify element (true by default)
-    *   - mindate      minimum allowed date (default '')
-    *   - maxdate      maximum allowed date (default '')
-    *   - mintime      minimum allowed time (default '')
-    *   - maxtime      maximum allowed time (default '')
-    *   - display      boolean display or get string (default true)
-    *   - rand         specific random value (default generated one)
+    * @since version 0.84
+    *
+    * @param $name            name of the element
+    * @param $options  array  of possible options:
+    *   - value      : default value to display (default '')
+    *   - timestep   : step for time in minute (-1 use default config) (default -1)
+    *   - maybeempty : may be empty ? (true by default)
+    *   - canedit    : could not modify element (true by default)
+    *   - mindate    : minimum allowed date (default '')
+    *   - maxdate    : maximum allowed date (default '')
+    *   - mintime    : minimum allowed time (default '')
+    *   - maxtime    : maximum allowed time (default '')
+    *   - display    : boolean display or get string (default true)
+    *   - rand       : specific random value (default generated one)
     *
     * @return rand value used if displayes else string
-    * \since version 0.84
    **/
    static function showDateTimeField($name, $options = array()){
       global $CFG_GLPI;
@@ -3477,9 +3482,8 @@ class Html {
       if ($p['display']) {
          echo $output;
          return $p['rand'];
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
