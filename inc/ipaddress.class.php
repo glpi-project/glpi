@@ -52,9 +52,9 @@ class IPAddress extends CommonDBChild {
 
    // From CommonDBChild
    static public $itemtype       = 'itemtype';
-   static public $items_id       = 'items_id';
+   static public $items_id       = 'items_id'; 
+   static public $mustBeAttached = true;
    public $dohistory             = true;
-   public $mustBeAttached        = true;
 
    /// $version (integer) : version of the adresse. Should be 4 or 6, or empty if not valid address
    protected $version = '';
