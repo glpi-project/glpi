@@ -3243,6 +3243,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
 
          // set last updater if interactive user
+         //TODO why this variable because never use ?
          $lastupdater = Session::getLoginUserID(false);
 
          if (!Session::isCron()) {
