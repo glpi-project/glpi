@@ -46,7 +46,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    /// Drop the element if it is not attached to an item
    /// since version 0.84
-   public $mustBeAttached = false;
+   static public $mustBeAttached = false;
 
    protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
       $conditions = array();
@@ -112,8 +112,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    function canChildItem($methodItem, $methodNotItem) {
-      return static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
-                                      static::$itemtype, static::$items_id);
+      /* Warning : in case of free child (ie : not attached), canConnexityItem return false if
+       * it cannot load the item ... */
+      if (static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
+                                   static::$itemtype, static::$items_id, $item)) {
+         return true;
+      }
+      if ($item === false) {
+         return !static::$mustBeAttached;
+      }
+      return false;
    }
 
    /**
@@ -273,10 +281,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function prepareInputForAdd($input) {
 
-     $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       // Invalidate the element if it is not attached to an item although it must
-      if ($this->mustBeAttached
+      if (static::$mustBeAttached
           && !$item) {
          Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO,
                                           true);
@@ -303,7 +311,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       /// TODO : must we apply this filter for the update ?
       // Return invalidate the element if it must be attached but it won't
-      if ($this->mustBeAttached
+      if (static::$mustBeAttached
           && ($item === false)) {
          Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO,
                                           true);
