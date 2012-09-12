@@ -1386,6 +1386,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Compute Priority
     *
+    * @since version 0.84
+    *
     * @param $urgency   integer from 1 to 5
     * @param $impact    integer from 1 to 5
     *
@@ -1405,17 +1407,19 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object priority
     *
-    * @param $options array of options
-    *       - name      select name (default is urgency)
-    *       - value     default value (default 0)
-    *       - showtype list proposed : normal, search (default normal)
-    *       - wthmajor  boolean with major priority ?
-    *       - display   boolean if false get string
+    * @since  version 0.84 new proto
     *
-    * \since version 0.84 new proto
+    * @param $options array of options
+    *       - name     : select name (default is urgency)
+    *       - value    : default value (default 0)
+    *       - showtype : list proposed : normal, search (default normal)
+    *       - wthmajor : boolean with major priority ?
+    *       - display  : boolean if false get string
+    *
     * @return string id of the select
    **/
-   static function dropdownPriority(array $options = array()) {
+   static function dropdownPriority(array $options=array()) {
+
       $p['name']      = 'priority';
       $p['value']     = 0;
       $p['showtype']  = 'normal';
@@ -1428,44 +1432,47 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      $id = "select_".$p['name'].mt_rand();
+      $id     = "select_".$p['name'].mt_rand();
       $output = "<select id='$id' name='".$p['name']."'>";
       if ($p['showtype'] == 'search') {
-         $output .= "<option value='0' ".($p['value']==0?" selected ":"").">"._x('priority', 'All')."</option>";
-         $output .= "<option value='-5' ".($p['value']==-5?" selected ":"").">"._x('priority',
-                                                                        'At least very high').
-              "</option>";
-         $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('priority','At least high').
-              "</option>";
-         $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('priority',
-                                                                        'At least medium').
-              "</option>";
-         $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('priority','At least low').
-              "</option>";
-         $output .= "<option value='-1' ".($p['value']==-1?" selected ":"").">"._x('priority',
-                                                                        'At least very low').
-              "</option>";
+         $output .= "<option value='0' ".(($p['value'] == 0)?" selected ":"").">".
+                      _x('priority', 'All')."</option>";
+         $output .= "<option value='-5' ".(($p['value'] == -5)?" selected ":"").">".
+                     _x('priority', 'At least very high')."</option>";
+         $output .= "<option value='-4' ".(($p['value'] == -4)?" selected ":"").">".
+                     _x('priority', 'At least high')."</option>";
+         $output .= "<option value='-3' ".(($p['value'] == -3)?" selected ":"").">".
+                     _x('priority', 'At least medium')."</option>";
+         $output .= "<option value='-2' ".(($p['value'] == -2)?" selected ":"").">".
+                     _x('priority', 'At least low')."</option>";
+         $output .= "<option value='-1' ".(($p['value'] == -1)?" selected ":"").">".
+                     _x('priority', 'At least very low')."</option>";
       }
 
-      if ($p['showtype'] == 'search' || $p['withmajor']) {
-         $output .= "<option value='6' ".($p['value']==6?" selected ":"").">"._x('priority','Major')."</option>";
+      if (($p['showtype'] == 'search')
+          || $p['withmajor']) {
+         $output .= "<option value='6' ".(($p['value'] == 6)?" selected ":"").">".
+                     _x('priority', 'Major')."</option>";
       }
 
-      $output .= "<option value='5' ".($p['value']==5?" selected ":"").">"._x('priority','Very high').
-           "</option>";
-      $output .= "<option value='4' ".($p['value']==4?" selected ":"").">"._x('priority','High')."</option>";
-      $output .= "<option value='3' ".($p['value']==3?" selected ":"").">"._x('priority','Medium')."</option>";
-      $output .= "<option value='2' ".($p['value']==2?" selected ":"").">"._x('priority','Low')."</option>";
-      $output .= "<option value='1' ".($p['value']==1?" selected ":"").">"._x('priority','Very low')."</option>";
+      $output .= "<option value='5' ".(($p['value'] == 5)?" selected ":"").">".
+                  _x('priority', 'Very high')."</option>";
+      $output .= "<option value='4' ".(($p['value'] == 4)?" selected ":"").">".
+                  _x('priority', 'High')."</option>";
+      $output .= "<option value='3' ".(($p['value'] == 3)?" selected ":"").">".
+                  _x('priority', 'Medium')."</option>";
+      $output .= "<option value='2' ".(($p['value'] == 2)?" selected ":"").">".
+                  _x('priority', 'Low')."</option>";
+      $output .= "<option value='1' ".(($p['value' ]== 1)?" selected ":"").">".
+                  _x('priority', 'Very low')."</option>";
 
       $output .= "</select>";
 
       if ($p['display']) {
          echo $output;
          return $id;
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
@@ -1501,13 +1508,14 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Urgency
     *
-    * @param $options array of options
-    *       - name      select name (default is urgency)
-    *       - value     default value (default 0)
-    *       - showtype list proposed : normal, search (default normal)
-    *       - display   boolean if false get string
+    * @since version 0.84 new proto
     *
-    * \since version 0.84 new proto
+    * @param $options array of options
+    *       - name     : select name (default is urgency)
+    *       - value    : default value (default 0)
+    *       - showtype : list proposed : normal, search (default normal)
+    *       - display  : boolean if false get string
+    *
     * @return string id of the select
    **/
    static function dropdownUrgency(array $options = array()) {
@@ -1528,46 +1536,46 @@ abstract class CommonITILObject extends CommonDBTM {
       $output = "<select id='$id' name='".$p['name']."'>";
 
       if ($p['showtype'] == 'search') {
-         $output .= "<option value='0' ".($p['value']==0?" selected ":"").">"._x('urgency', 'All')."</option>";
-         $output .= "<option value='-5' ".($p['value']==-5?" selected ":"").">"._x('urgency',
-                                                                        'At least very high').
-              "</option>";
-         $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('urgency','At least high').
-              "</option>";
-         $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('urgency','At least medium').
-              "</option>";
-         $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('urgency','At least low').
-              "</option>";
-         $output .= "<option value='-1' ".($p['value']==-1?" selected ":"").">"._x('urgency',
-                                                                        'At least very low').
-              "</option>";
+         $output .= "<option value='0' ".(($p['value'] == 0)?" selected ":"").">".
+                     _x('urgency', 'All')."</option>";
+         $output .= "<option value='-5' ".(($p['value'] == -5)?" selected ":"").">".
+                     _x('urgency', 'At least very high')."</option>";
+         $output .= "<option value='-4' ".(($p['value'] == -4)?" selected ":"").">".
+                     _x('urgency','At least high')."</option>";
+         $output .= "<option value='-3' ".(($p['value'] == -3)?" selected ":"").">".
+                     _x('urgency','At least medium')."</option>";
+         $output .= "<option value='-2' ".(($p['value'] == -2)?" selected ":"").">".
+                     _x('urgency','At least low')."</option>";
+         $output .= "<option value='-1' ".(($p['value'] == -1)?" selected ":"").">".
+                     _x('urgency', 'At least very low')."</option>";
       }
 
       if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<5))) {
-            $output .= "<option value='5' ".($p['value']==5?" selected ":"").">"._x('urgency', 'Very high').
-                 "</option>";
+            $output .= "<option value='5' ".(($p['value'] == 5)?" selected ":"").">".
+                        _x('urgency', 'Very high')."</option>";
          }
 
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<4))) {
-            $output .= "<option value='4' ".($p['value']==4?" selected ":"").">"._x('urgency', 'High').
-                 "</option>";
+            $output .= "<option value='4' ".(($p['value'] == 4)?" selected ":"").">".
+                        _x('urgency', 'High')."</option>";
          }
 
-         $output .= "<option value='3' ".($p['value']==3?" selected ":"").">"._x('urgency', 'Medium').
-              "</option>";
+         $output .= "<option value='3' ".(($p['value'] == 3)?" selected ":"").">".
+                     _x('urgency', 'Medium')."</option>";
 
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<2))) {
-            $output .= "<option value='2' ".($p['value']==2?" selected ":"").">"._x('urgency', 'Low').
-                 "</option>";
+            $output .= "<option value='2' ".(($p['value'] == 2)?" selected ":"").">".
+                        _x('urgency', 'Low')."</option>";
          }
 
-         if ($p['showtype'] == 'search' || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
-            $output .= "<option value='1' ".($p['value']==1?" selected ":"").">"._x('urgency', 'Very low').
-                 "</option>";
+         if (($p['showtype'] == 'search')
+             || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
+            $output .= "<option value='1' ".(($p['value'] == 1)?" selected ":"").">".
+                        _x('urgency', 'Very low')."</option>";
          }
       }
 
@@ -1576,9 +1584,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($p['display']) {
          echo $output;
          return $id;
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
@@ -1611,13 +1618,15 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Impact
     *
-    * @param $options   array of options
-    *  - name      select name (default is impact)
-    *  - value     default value (default 0)
-    *  - showtype list proposed : normal, search (default normal)
-    *  - display   boolean if false get string
+    * @since version 0.84 new proto
     *
-    * \since version 0.84 new proto
+    * @param $options   array of options
+    *  - name     : select name (default is impact)
+    *  - value    : default value (default 0)
+    *  - showtype : list proposed : normal, search (default normal)
+    *  - display  : boolean if false get string
+    *
+    * \
     * @return string id of the select
    **/
    static function dropdownImpact(array $options = array()) {
@@ -1638,47 +1647,46 @@ abstract class CommonITILObject extends CommonDBTM {
       $output = "<select id='$id' name='".$p['name']."'>";
 
       if ($p['showtype'] == 'search') {
-         $output .= "<option value='0' ".($p['value']==0?" selected ":"").">"._x('impact', 'All')."</option>";
-         $output .= "<option value='-5' ".($p['value']==-5?" selected ":"").">"._x('impact',
-                                                                        'At least very high').
-              "</option>";
-         $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('impact','At least high').
-              "</option>";
-         $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('impact','At least medium').
-              "</option>";
-         $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('impact','At least low').
-              "</option>";
-         $output .= "<option value='-1' ".($p['value']==-1?" selected ":"").">"._x('impact',
-                                                                        'At least very low').
-              "</option>";
+         $output .= "<option value='0' ".(($p['value'] == 0)?" selected ":"").">".
+                     _x('impact', 'All')."</option>";
+         $output .= "<option value='-5' ".(($p['value'] == -5)?" selected ":"").">".
+                     _x('impact', 'At least very high')."</option>";
+         $output .= "<option value='-4' ".(($p['value'] == -4)?" selected ":"").">".
+                     _x('impact', 'At least high')."</option>";
+         $output .= "<option value='-3' ".(($p['value'] == -3)?" selected ":"").">".
+                     _x('impact', 'At least medium')."</option>";
+         $output .= "<option value='-2' ".(($p['value'] == -2)?" selected ":"").">".
+                     _x('impact', 'At least low')."</option>";
+         $output .= "<option value='-1' ".(($p['value'] == -1)?" selected ":"").">".
+                     _x('impact', 'At least very low')."</option>";
       }
 
       if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<5))) {
-            $output .= "<option value='5' ".($p['value']==5?" selected ":"").">"._x('impact', 'Very high').
-                 "</option>";
+            $output .= "<option value='5' ".(($p['value'] == 5)?" selected ":"").">".
+                        _x('impact', 'Very high')."</option>";
          }
 
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<4))) {
-            $output .= "<option value='4' ".($p['value']==4?" selected ":"").">"._x('impact', 'High').
-                 "</option>";
+            $output .= "<option value='4' ".(($p['value'] == 4)?" selected ":"").">".
+                        _x('impact', 'High')."</option>";
          }
 
-         $output .= "<option value='3' ".($p['value']==3?" selected ":"").">"._x('impact', 'Medium').
-              "</option>";
+         $output .= "<option value='3' ".(($p['value'] == 3)?" selected ":"").">".
+                     _x('impact', 'Medium')."</option>";
 
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<2))) {
-            $output .= "<option value='2' ".($p['value']==2?" selected ":"").">"._x('impact', 'Low').
-                 "</option>";
+            $output .= "<option value='2' ".(($p['value'] == 2)?" selected ":"").">".
+                        _x('impact', 'Low')."</option>";
          }
 
-         if ($p['showtype'] == 'search'
+         if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<1))) {
-            $output .= "<option value='1' ".($p['value']==1?" selected ":"").">"._x('impact', 'Very low').
-                 "</option>";
+            $output .= "<option value='1' ".(($p['value'] == 1)?" selected ":"").">".
+                        _x('impact', 'Very low')."</option>";
          }
       }
 
@@ -1687,9 +1695,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($p['display']) {
          echo $output;
          return $id;
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
@@ -1783,12 +1790,15 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * check is the user can change from / to a status
     *
+    * @since version 0.84
+    *
     * @param $old       string value of old/current status
     * @param $new       string value of target status
     *
     * @return boolean
    **/
    static function isAllowedStatus($old, $new) {
+
       if (isset($_SESSION['glpiactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new])
           && !$_SESSION['glpiactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new]) {
          return false;
@@ -1806,6 +1816,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object status allowed for a current status
     *
+    * @since version 0.84 new proto
+    *
     * @param $current   status
     *
     * @return an array
@@ -1819,7 +1831,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       foreach ($tab as $status => $label) {
          if (($status != $current)
-               && !self::isAllowedStatus($current, $status)) {
+             && !self::isAllowedStatus($current, $status)) {
             unset($tab[$status]);
          }
       }
@@ -1830,15 +1842,18 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of object status
     *
+    * @since version 0.84 new proto
+    *
     * @param $options   array of options
-    *  - name      select name (default is status)
-    *  - value     default value (default 'new')
-    *  - showtype list proposed : normal, search or allowed (default normal)
-    *  - display   boolean if false get string
-    * \since version 0.84 new proto
+    *  - name     : select name (default is status)
+    *  - value    : default value (default 'new')
+    *  - showtype : list proposed : normal, search or allowed (default normal)
+    *  - display  : boolean if false get string
+    *
     * @return nothing (display)
    **/
-   static function dropdownStatus(array $options = array()) {
+   static function dropdownStatus(array $options=array()) {
+
       $p['name']      = 'status';
       $p['value']     = 'new';
       $p['showtype']  = 'normal';
@@ -1854,9 +1869,11 @@ abstract class CommonITILObject extends CommonDBTM {
          case 'allowed' :
             $tab = static::getAllowedStatusArray($p['value']);
             break;
+
          case 'search' :
             $tab = static::getAllStatusArray(true);
             break;
+
          default :
             $tab = static::getAllStatusArray(false);
             break;
@@ -1864,7 +1881,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $output = "<select name='".$p['name']."'>";
       foreach ($tab as $key => $val) {
-         $output .=  "<option value='$key' ".($p['value']==$key?" selected ":"").">$val</option>";
+         $output .=  "<option value='$key' ".(($p['value'] == $key)?" selected ":"").">$val</option>";
       }
       $output .=  "</select>";
 
@@ -1879,9 +1896,12 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get ITIL object status Name
     *
+    * @since version 0.84
+    *
     * @param $value     status ID
    **/
    static function getStatus($value) {
+
       $tab  = static::getAllStatusArray(true);
       return (isset($tab[$value]) ? $tab[$value] : '');
    }
@@ -1997,7 +2017,18 @@ abstract class CommonITILObject extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -3201,7 +3232,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $ID                    integer  ID of the ITIL object
     * @param $no_stat_computation   boolean  do not cumpute take into account stat (false by default)
-    * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
+    * @param $users_id_lastupdater  integer  to force last_update id (default 0 = not used)
    **/
    function updateDateMod($ID, $no_stat_computation=false, $users_id_lastupdater=0) {
       global $DB;

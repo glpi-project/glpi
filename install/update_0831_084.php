@@ -70,12 +70,12 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
       $name     = substr($computerName, 0, $position);
       $domain   = substr($computerName, $position + 1);
       $query    = "SELECT `id`
-                      FROM `glpi_fqdns`
-                      WHERE `fqdn` = '$domain'";
+                   FROM `glpi_fqdns`
+                   WHERE `fqdn` = '$domain'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) == 1) {
-         $data     =$DB->fetch_assoc($result);
+         $data     = $DB->fetch_assoc($result);
          $domainID = $data['id'];
       }
 

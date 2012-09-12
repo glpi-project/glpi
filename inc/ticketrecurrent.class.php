@@ -203,6 +203,7 @@ class TicketRecurrent extends CommonDropdown {
     * @param $options   array
    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }

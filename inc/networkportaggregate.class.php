@@ -108,7 +108,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
     * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                       HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=NULL, array $options=array()) {
 
       if (isset($this->fields['networkports_id_list'])
           && is_string($this->fields['networkports_id_list'])) {

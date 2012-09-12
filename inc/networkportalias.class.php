@@ -118,13 +118,12 @@ class NetworkPortAlias extends NetworkPortInstantiation {
     * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                       HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=NULL, array $options=array()) {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Origin'),
                     $this->getInstantiationNetworkPortHTMLTable());
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-
       return NULL;
 
     }

@@ -1633,7 +1633,7 @@ class Rule extends CommonDBTM {
 
             case "dropdown_urgency" :
                Ticket::dropdownUrgency(array('name'  => $name,
-                                            'value' => $value));
+                                             'value' => $value));
                $display = true;
                break;
 

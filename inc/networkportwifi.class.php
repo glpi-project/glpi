@@ -68,7 +68,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
          echo "<tr class='tab_bg_1'>\n";
          echo "<td>" . __('Wifi mode') . "</td>";
          echo "<td>";
-         
+
          Dropdown::showFromArray('mode', WifiNetwork::getWifiCardModes(),
                                  array('value' => $this->fields['mode']));
 
@@ -114,7 +114,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                       HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=NULL, array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
@@ -127,7 +127,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-
       return NULL;
    }
 

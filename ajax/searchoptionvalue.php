@@ -70,8 +70,6 @@ if (isset($_POST['searchtype'])) {
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
-
-
                case "glpi_changes.status" :
                case "glpi_changes.impact" :
                case "glpi_changes.urgency" :
@@ -81,14 +79,14 @@ if (isset($_POST['searchtype'])) {
                case "glpi_tickets.status" :
                case "glpi_tickets.impact" :
                case "glpi_tickets.urgency" :
-                  $options['showtype']='search';
+                  $options['showtype'] = 'search';
                   break;
 
                case "glpi_changes.priority" :
                case "glpi_problems.priority" :
                case "glpi_tickets.priority" :
-                  $options['showtype']  ='search';
-                  $options['withmajor'] =true;
+                  $options['showtype']  = 'search';
+                  $options['withmajor'] = true;
                   break;
 
 
@@ -134,7 +132,7 @@ if (isset($_POST['searchtype'])) {
             }
 
         }
-        break; 
+        break;
    }
 
    // Default case : text field

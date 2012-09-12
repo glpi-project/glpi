@@ -463,7 +463,7 @@ class Change extends CommonITILObject {
       $tab[7]['field']          = 'completename';
       $tab[7]['name']           = __('Category');
       $tab[7]['datatype']       = 'dropdown';
-      
+
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -485,7 +485,7 @@ class Change extends CommonITILObject {
       $tab[64]['massiveaction'] = false;
       $tab[64]['datatype']      = 'dropdown';
       $tab[64]['right']         = 'all';
-      
+
 
       $tab += $this->getSearchOptionsActors();
 
@@ -526,7 +526,7 @@ class Change extends CommonITILObject {
       $tab[90]['name']          = __('Notes');
       $tab[90]['massiveaction'] = false;
       $tab[90]['datatype']      = 'text';
-      
+
 
 
       /// TODO define when task created
@@ -565,7 +565,7 @@ class Change extends CommonITILObject {
       $tab[23]['field']         = 'name';
       $tab[23]['name']          = __('Solution type');
       $tab[23]['datatype']      = 'dropdown';
-      
+
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'solution';
@@ -819,7 +819,7 @@ class Change extends CommonITILObject {
       echo "<tr>";
       echo "<th>".__('Status')."</th>";
       echo "<td>";
-      self::dropdownStatus(array('value' => $this->fields["status"], 
+      self::dropdownStatus(array('value'    => $this->fields["status"],
                                  'showtype' => 'allowed'));
       echo "</td>";
       echo "<th>".__('Urgency')."</th>";
