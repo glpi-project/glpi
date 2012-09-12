@@ -420,7 +420,7 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_status" :
-                     Ticket::dropdownStatus(array('name'=>"value"));
+                     Ticket::dropdownStatus(array('name' => "value"));
                      $display = true;
                      break;
 

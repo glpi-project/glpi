@@ -1212,7 +1212,7 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".__('Status')."</th>";
       echo "<td width='$colsize2%'>";
-      self::dropdownStatus(array('value' => $this->fields["status"],
+      self::dropdownStatus(array('value'    => $this->fields["status"],
                                  'showtype' => 'allowed'));
       echo "</td>";
       echo "<th width='$colsize1%'>".__('Urgency')."</th>";

@@ -93,9 +93,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    * @param $options    array
   **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                              HTMLTableSuperHeader $internet_super = NULL,
-                                              HTMLTableHeader $father=NULL,
-                                              array $options=array()) {
+                                             HTMLTableSuperHeader $internet_super = NULL,
+                                             HTMLTableHeader $father=NULL,
+                                             array $options=array()) {
 
       $display_options = &$options['display_options'];
 
@@ -112,9 +112,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $group->addHeader('Outlet', __('Network outlet'), $super, $header);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
-
       return $header;
-
   }
 
 
@@ -147,16 +145,16 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-
       Netpoint::getHTMLTableCellsForItem($row, $this, $father, $options);
 
    }
+
 
   /**
    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                       HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=NULL, array $options=array()) {
 
       $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
                                         'parameters' => array(clone $netport)));

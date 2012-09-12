@@ -3555,19 +3555,20 @@ class Html {
                       'withtime'      => $p['with_time'],
                       'specificvalue' => $specific_value);
 
-      $output .= Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, false);
+      $output .= Ajax::updateItemOnSelectEvent("genericdate$element$rand",
+                                               "displaygenericdate$element$rand",
+                                               $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+                                               $params, false);
       $params['value'] = $value;
       $output .= Ajax::updateItem("displaygenericdate$element$rand",
-                       $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, '',false);
+                                  $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, '', false);
       $output .= "</td></tr></table>";
 
       if ($p['display']) {
          echo $output;
          return $rand;
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 

@@ -593,8 +593,8 @@ class NetworkPort extends CommonDBChild {
 
       $table           = new HTMLTableMain();
       $number_port     = self::countForItem($item);
-      $table_options   = array('canedit'              => $canedit,
-                               'display_options'      => &$display_options);
+      $table_options   = array('canedit'         => $canedit,
+                               'display_options' => &$display_options);
 
       // Make table name and add the correct show/hide parameters
       $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
@@ -657,7 +657,7 @@ class NetworkPort extends CommonDBChild {
                                            __('Network ports waiting for manual migration'));
             if ($display_options['characteristics']) {
                NetworkPortMigration::getInstantiationHTMLTableHeaders($t_group, $c_instant,
-                                                                       $table_options);
+                                                                      $table_options);
             }
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));
@@ -768,7 +768,7 @@ class NetworkPort extends CommonDBChild {
                      $instantiation = $netport->getInstantiation();
                      if ($instantiation !== false) {
                         $instantiation->getInstantiationHTMLTable($netport, $t_row, NULL,
-                                                                   $table_options);
+                                                                  $table_options);
                         unset($instantiation);
                      }
                   } else if ($display_options['internet']) {

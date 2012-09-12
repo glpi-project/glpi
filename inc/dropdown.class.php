@@ -1154,43 +1154,42 @@ class Dropdown {
    /**
     * Get value with unit / Automatic management of standar unit (year, month, %, ...)
     *
-    * @param $value     number of item
-    * @param $unit      string of unit (maybe year, month, day, hour, % for standard management)
-    * \since version 0.84
+    * @since v ersion 0.84
+    *
+    * @param $value   integer   number of item
+    * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)
    **/
    static function getValueWithUnit($value, $unit){
+
       if (strlen($unit) == 0) {
          return $value;
       }
+
       switch ($unit) {
          case 'year' :
             //TRANS: %d is a number of years
             return sprintf(_n('%d year', '%d years', $value), $value);
-            break;
 
          case 'month' :
             //TRANS: %d is a number of months
             return sprintf(_n('%d month', '%d months', $value), $value);
-            break;
 
          case 'day' :
             //TRANS: %d is a number of days
             return sprintf(_n('%d day', '%d days', $value), $value);
-            break;
 
          case 'hour' :
             //TRANS: %d is a number of hours
             return sprintf(_n('%d hour', '%d hours', $value), $value);
-            break;
 
          case '%' :
             return sprintf(__('%d%%'), $value);
-            break;
 
          default :
             return sprintf(__('%1$s %2$s'), $value, $unit);
       }
    }
+
 
    /**
     * Dropdown integers

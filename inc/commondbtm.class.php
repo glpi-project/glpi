@@ -4145,7 +4145,6 @@ class CommonDBTM extends CommonGLPI {
                      $options['maybefuture'] = true;
                   }
                   $options['with_time'] = true;
-
                   return Html::showGenericDateTimeSearch($name, $value, $options);
                }
                $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',

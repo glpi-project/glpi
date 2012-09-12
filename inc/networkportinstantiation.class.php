@@ -191,8 +191,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                       HTMLTableCell $father=NULL, array $options=array()) {
-
+                                      HTMLTableCell $father=NULL, array $options=array()) {
       global $DB;
 
       $display_options = $options['display_options'];

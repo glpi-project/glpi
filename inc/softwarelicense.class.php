@@ -744,7 +744,7 @@ class SoftwareLicense extends CommonDBTM {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $count = self::countForSoftware($item->getID());
                   return self::createTabEntry(self::getTypeName(2),
-                                              ($count>=0?$count:'&infin;'));
+                                              (($count >= 0) ? $count : '&infin;'));
                }
                return self::getTypeName(2);
          }
