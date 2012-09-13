@@ -540,7 +540,8 @@ abstract class CommonDropdown extends CommonDBTM {
       $ID = $this->fields['id'];
 
       echo "<div class='center'><p class='red'>";
-      _e("Caution: you're about to remove a heading used for one or more items.")."</p>";
+      _e("Caution: you're about to remove a heading used for one or more items.");
+      echo "</p>";
 
       if (!$this->must_be_replace) {
          // Delete form (set to 0)
