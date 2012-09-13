@@ -64,7 +64,7 @@ function update0831to0833() {
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                      __('Compute entities informations on document links'))); // Updating schema
+                                      __('Compute entities information on document links'))); // Updating schema
 
    $entities    = getAllDatasFromTable('glpi_entities');
    $entities[0] = "Root";
