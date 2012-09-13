@@ -661,7 +661,7 @@ class RuleCollection extends CommonDBTM {
     * @return the output array updated by actions (addslashes datas)
    **/
    function processAllRules($input=array() ,$output=array(), $params=array(),
-                             $force_no_cache=false) {
+                            $force_no_cache=false) {
 
       // Get Collection datas
       $this->getCollectionDatas(1,1);
@@ -708,7 +708,7 @@ class RuleCollection extends CommonDBTM {
       $input = $this->prepareInputDataForTestProcess();
 
       if (count($input)) {
-         $rule = $this->getRuleClass();
+         $rule      = $this->getRuleClass();
          $criterias = $rule->getAllCriteria();
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
          echo "\n<div class='center'>";
@@ -816,8 +816,11 @@ class RuleCollection extends CommonDBTM {
       return $input;
    }
 
+
    /**
     * Prepare input datas for the rules collection, also using plugins values
+    *
+    * @since version 0.84
     *
     * @param $input  the input data used to check criterias
     * @param $params parameters
@@ -825,11 +828,15 @@ class RuleCollection extends CommonDBTM {
     * @return the updated input datas
    **/
    function prepareInputDataForProcessWithPlugins($input, $params) {
+
       $plugin_result = Rule::doHookAndMergeResults('ruleCollectionPrepareInputDataForProcess',
-                                                   array('input' => $input, 'params' => $params),
+                                                   array('input' => $input,
+                                                         'params' => $params),
                                                    $this->getRuleClassName());
+
       return array_merge($this->prepareInputDataForProcess($input, $params), $plugin_result);
    }
+
 
    /**
     * Prepare input datas for the rules collection

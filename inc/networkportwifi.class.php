@@ -163,6 +163,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       return $tab;
    }
 
+
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -175,7 +176,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
                return $tab[$values[$field]];
             }
             return NOT_AVAILABLE;
-            break;
 
          case 'version':
             $tab = WifiNetwork::getWifiCardVersion();
@@ -183,16 +183,14 @@ class NetworkPortWifi extends NetworkPortInstantiation {
                return $tab[$values[$field]];
             }
             return NOT_AVAILABLE;
-            break;
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
-
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
       global $DB;
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -201,29 +199,27 @@ class NetworkPortWifi extends NetworkPortInstantiation {
          case 'mode':
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, WifiNetwork::getWifiCardModes(), $options);
-            break;
 
          case 'version':
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, WifiNetwork::getWifiCardVersion(), $options);
-            break;
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
                                                          $itemtype) {
 
       $tab[157]['table']         = 'glpi_wifinetworks';
       $tab[157]['field']         = 'name';
-      $tab[157]['name']          = WifiNetwork::getTypeName();
+      $tab[157]['name']          = WifiNetwork::getTypeName(1);
       $tab[157]['forcegroupby']  = true;
       $tab[157]['massiveaction'] = false;
       $tab[157]['joinparams']    = array('jointype'   => 'standard',
-                                        'beforejoin'
-                                         => array('table'      => 'glpi_networkportwifis',
-                                                  'joinparams' => $joinparams));
+                                         'beforejoin' => array('table' => 'glpi_networkportwifis',
+                                                               'joinparams'
+                                                                       => $joinparams));
 
       $tab[158]['table']         = 'glpi_wifinetworks';
       $tab[158]['field']         = 'essid';
@@ -231,10 +227,10 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $tab[158]['forcegroupby']  = true;
       $tab[158]['massiveaction'] = false;
       $tab[158]['joinparams']    = array('jointype'   => 'standard',
-                                        'beforejoin'
-                                         => array('table'      => 'glpi_networkportwifis',
-                                                  'joinparams' => $joinparams));
-
+                                         'beforejoin' => array('table' => 'glpi_networkportwifis',
+                                                               'joinparams'
+                                                                       => $joinparams));
    }
+
 }
 ?>

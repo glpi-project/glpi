@@ -873,11 +873,12 @@ function update0831to084() {
    }
 
    $migration->addField('glpi_networkports_vlans', 'tagged', 'bool', array('value' => '0'));
-   $migration->addField('glpi_vlans', 'entities_id', 'integer',
-                        array('value' => '0', 'after' => 'id'));
+   $migration->addField('glpi_vlans', 'entities_id', 'integer', array('value' => '0',
+                                                                      'after' => 'id'));
    $migration->addKey('glpi_vlans', 'entities_id');
-   $migration->addField('glpi_vlans', 'is_recursive', 'bool',
-                        array('value' => '0', 'after' => 'entities_id', 'update' => '1'));
+   $migration->addField('glpi_vlans', 'is_recursive', 'bool', array('value' => '0',
+                                                                    'after' => 'entities_id',
+                                                                    'update' => '1'));
    $migration->addKey('glpi_vlans', 'tag');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'),

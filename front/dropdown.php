@@ -40,7 +40,7 @@ Session ::checkLoginUser();
 
 Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","dropdowns");
 
-echo "<div align='center'>";
+echo "<div class='center'>";
 
 $optgroup = Dropdown::getStandardDropdownItemTypes();
 Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', 2), $optgroup);

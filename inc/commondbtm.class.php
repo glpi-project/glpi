@@ -1628,7 +1628,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (isset($RELATION[$this->getTable()])) {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
-            if ($tablename[0]!='_') {
+            if ($tablename[0] != '_') {
 
                $itemtype = getItemTypeForTable($tablename);
                $item     = new $itemtype();
@@ -1639,14 +1639,16 @@ class CommonDBTM extends CommonGLPI {
                   if (is_array($field)) {
                      foreach ($field as $f) {
                         if (countElementsInTable($tablename,
-                                                "`$f`='$ID' AND entities_id NOT IN $entities") > 0) {
+                                                 "`$f`='$ID'
+                                                   AND entities_id NOT IN $entities") > 0) {
                            return false;
                         }
                      }
 
                   } else {
                      if (countElementsInTable($tablename,
-                                             "`$field`='$ID' AND entities_id NOT IN $entities") > 0) {
+                                              "`$field`='$ID'
+                                                AND entities_id NOT IN $entities") > 0) {
                         return false;
                      }
                   }
@@ -1655,13 +1657,13 @@ class CommonDBTM extends CommonGLPI {
                   foreach ($RELATION as $othertable => $rel) {
                      // Search for a N->N Relation with devices
                      if (($othertable == "_virtual_device")
-                        && isset($rel[$tablename])) {
+                         && isset($rel[$tablename])) {
                         $devfield  = $rel[$tablename][0]; // items_id...
                         $typefield = $rel[$tablename][1]; // itemtype...
 
                         $sql = "SELECT DISTINCT `$typefield` AS itemtype
-                              FROM `$tablename`
-                              WHERE `$field`='$ID'";
+                                FROM `$tablename`
+                                WHERE `$field`='$ID'";
                         $res = $DB->query($sql);
 
                         // Search linked device of each type
@@ -1673,11 +1675,13 @@ class CommonDBTM extends CommonGLPI {
 
                               if ($item->isEntityAssign()) {
                                  if (countElementsInTable(array($tablename, $itemtable),
-                                                         "`$tablename`.`$field`='$ID'
-                                                         AND `$tablename`.`$typefield`='$itemtype'
-                                                         AND `$tablename`.`$devfield`=`$itemtable`.id
-                                                         AND `$itemtable`.`entities_id`
-                                                               NOT IN $entities")>'0') {
+                                                          "`$tablename`.`$field`='$ID'
+                                                           AND `$tablename`.`$typefield`
+                                                                  ='$itemtype'
+                                                           AND `$tablename`.`$devfield`
+                                                                  =`$itemtable`.id
+                                                           AND `$itemtable`.`entities_id`
+                                                                  NOT IN $entities") > '0') {
                                     return false;
                                  }
                               }
@@ -1695,11 +1699,11 @@ class CommonDBTM extends CommonGLPI {
                            if (is_array($rel[$tablename])) {
                               foreach ($rel[$tablename] as $otherfield) {
                                  if (countElementsInTable(array($tablename, $othertable),
-                                                         "`$tablename`.`$field`='$ID'
-                                                         AND `$tablename`.`$otherfield`
-                                                                     =`$othertable`.id
-                                                         AND `$othertable`.`entities_id`
-                                                                     NOT IN $entities")>'0') {
+                                                          "`$tablename`.`$field`='$ID'
+                                                           AND `$tablename`.`$otherfield`
+                                                                  =`$othertable`.id
+                                                           AND `$othertable`.`entities_id`
+                                                                  NOT IN $entities") > '0') {
                                     return false;
                                  }
                               }
@@ -1707,10 +1711,11 @@ class CommonDBTM extends CommonGLPI {
                            } else {
                               $otherfield = $rel[$tablename];
                               if (countElementsInTable(array($tablename, $othertable),
-                                                      "`$tablename`.`$field`=$ID
-                                                      AND `$tablename`.`$otherfield`=`$othertable`.id
-                                                      AND `$othertable`.`entities_id`
-                                                                  NOT IN $entities")>'0') {
+                                                       "`$tablename`.`$field`=$ID
+                                                        AND `$tablename`.`$otherfield`
+                                                               =`$othertable`.id
+                                                        AND `$othertable`.`entities_id`
+                                                               NOT IN $entities") > '0') {
                                  return false;
                               }
                            }

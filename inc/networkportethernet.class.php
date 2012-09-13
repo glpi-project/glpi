@@ -98,8 +98,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                              array $options=array()) {
 
       $display_options = &$options['display_options'];
-
-      $header = $group->addHeader('Connected', __('Connected to'), $super);
+      $header          = $group->addHeader('Connected', __('Connected to'), $super);
 
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header,
                                             $options);
@@ -465,6 +464,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
                                                          $itemtype) {
 
@@ -475,10 +475,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $tab[22]['forcegroupby']  = true;
       $tab[22]['massiveaction'] = false;
       $tab[22]['joinparams']    = array('jointype'   => 'standard',
-                                        'beforejoin'
-                                         => array('table'      => 'glpi_networkportethernets',
-                                                  'joinparams' => $joinparams));
-
+                                        'beforejoin' => array('table' => 'glpi_networkportethernets',
+                                                              'joinparams'
+                                                                      => $joinparams));
    }
 
 }

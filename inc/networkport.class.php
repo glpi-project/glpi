@@ -401,31 +401,33 @@ class NetworkPort extends CommonDBChild {
     * Is called by the popup to get the links to update and by the showForItem to set initial
     * values, if neccesary
     *
-    * @param $itemtype     (string) the type of the item we wan't to set the display options
-    * @param $setLinks     (bool)   do we update the options to add the link ?
-    * @param $link_options (string) the fields to add to the link (for instance, itemtype and so on)
+    * @param $itemtype     string    the type of the item we wan't to set the display options
+    * @param $setLinks     boolean   do we update the options to add the link ?
+    * @param $link_options string    the fields to add to the link (for instance, itemtype and so on)
+    *                                (default '')
     *
     * @result all the options + the links if ($setLinks == true)
    **/
-   static function updateAndGetDisplayOptions($itemtype, $setLinks, $link_options = '') {
+   static function updateAndGetDisplayOptions($itemtype, $setLinks, $link_options='') {
 
       $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
 
-      $options[__('Global displays')]  =
-         array('characteristics' => array('name'    => __('characteristics'),
-                                          'default' => true),
-               'internet'        => array('name'    => __('internet information'),
-                                          'default' => true));
-      $options[__('Common options')] = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
-      $options[__('Internet information')] =
-         array('names'       => array('name'    => NetworkName::getTypeName(2),
-                                      'default' => false),
-               'aliases'     => array('name'    => NetworkAlias::getTypeName(2),
-                                      'default' => false),
-               'ipaddresses' => array('name'    => IPAddress::getTypeName(2),
-                                      'default' => true),
-               'ipnetworks'  => array('name'    => IPNetwork::getTypeName(2),
-                                      'default' => true));
+      $options[__('Global displays')]
+         =  array('characteristics' => array('name'    => __('characteristics'),
+                                             'default' => true),
+                  'internet'        => array('name'    => __('internet information'),
+                                             'default' => true));
+      $options[__('Common options')]
+         = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
+      $options[__('Internet information')]
+         = array('names'       => array('name'    => NetworkName::getTypeName(2),
+                                        'default' => false),
+                 'aliases'     => array('name'    => NetworkAlias::getTypeName(2),
+                                        'default' => false),
+                 'ipaddresses' => array('name'    => IPAddress::getTypeName(2),
+                                        'default' => true),
+                 'ipnetworks'  => array('name'    => IPNetwork::getTypeName(2),
+                                        'default' => true));
 
       foreach (self::getNetworkPortInstantiations() as $portType) {
          $portTypeName = $portType::getTypeName(0);
@@ -491,7 +493,6 @@ class NetworkPort extends CommonDBChild {
       }
 
       echo "</table>";
-
       echo "</div>";
    }
 
@@ -541,7 +542,7 @@ class NetworkPort extends CommonDBChild {
          echo "&nbsp;";
          Dropdown::showFromArray('instantiation_type',
                                  self::getNetworkPortInstantiationsWithNames(),
-                                 array('value'   => 'NetworkPortEthernet'));
+                                 array('value' => 'NetworkPortEthernet'));
          echo "</td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
          _e('Add several ports');
@@ -590,7 +591,6 @@ class NetworkPort extends CommonDBChild {
       // That is also usefull for the instantiations !
       $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
 
-
       $table           = new HTMLTableMain();
       $number_port     = self::countForItem($item);
       $table_options   = array('canedit'         => $canedit,
@@ -600,13 +600,15 @@ class NetworkPort extends CommonDBChild {
       $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
 
       // Add the link to the popup to display the options ...
-      $table_name .= " - <img alt=\"".__s('Network ports display options')."\" title=\"";
-      $table_name .= __s('Network ports display options')."\" src='";
-      $table_name .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-      $table_name .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
-      $table_name .= "/front/popup.php?popup=networkport_display_options&amp;";
-      $table_name .= "itemtype=$itemtype' ,'glpipopup', 'height=400, width=600, top=100,";
-      $table_name .= "left=100, scrollbars=yes'); w.focus();\">";
+      $table_namelink ="<img alt=\"".__s('Network ports display options')."\" title=\"";
+      $table_namelink .= __s('Network ports display options')."\" src='";
+      $table_namelink .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+      $table_namelink .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
+      $table_namelink .= "/front/popup.php?popup=networkport_display_options&amp;";
+      $table_namelink .= "itemtype=$itemtype' ,'glpipopup', 'height=400, width=600, top=100,";
+      $table_namelink .= "left=100, scrollbars=yes'); w.focus();\">";
+
+      $table_name = sprintf(__('%1$s - %2$s'), $table_name, $table_namelink);
 
       $table->setTitle($table_name);
 
@@ -927,8 +929,9 @@ class NetworkPort extends CommonDBChild {
       $joinparams                = array('jointype' => 'itemtype_item');
       if ($itemtype == 'Computer') {
          $joinparams['beforejoin'] = array('table'      => 'glpi_items_devicenetworkcards',
-                                           'joinparams' => array('jointype'          => 'itemtype_item',
-                                                                 'specific_itemtype' => 'Computer',
+                                           'joinparams' => array('jointype' => 'itemtype_item',
+                                                                 'specific_itemtype'
+                                                                            => 'Computer',
                                                                  'nolink'   => true));
       }
 
@@ -942,9 +945,8 @@ class NetworkPort extends CommonDBChild {
 
       $networkNameJoin = array('jointype'          => 'itemtype_item',
                                'specific_itemtype' => 'NetworkPort',
-                               'beforejoin'
-                               => array('table'      => 'glpi_networkports',
-                                        'joinparams' => $joinparams));
+                               'beforejoin'        => array('table'      => 'glpi_networkports',
+                                                            'joinparams' => $joinparams));
       NetworkName::getSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);
 
       $instantjoin = array('jointype'   => 'child',
