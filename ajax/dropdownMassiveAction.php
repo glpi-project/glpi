@@ -70,7 +70,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case 'move_under' :
          echo $LANG['setup'][75];
          Dropdown::show($_POST['itemtype'], array('name'     => 'parent',
-                                                  'comments' => 0));
+                                                  'comments' => 0,
+                                                  'entity'   => $_SESSION['glpiactive_entity']));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>\n";
          break;
