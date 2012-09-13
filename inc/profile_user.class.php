@@ -362,7 +362,7 @@ class Profile_User extends CommonDBRelation {
                   }
                   if ($canedit) {
                      echo "<td width='10'>";
-                     Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+                     Html::showMassiveActionCheckBox(__CLASS__, $data2["linkID"]);
                      echo "</td>";
                   }
 
