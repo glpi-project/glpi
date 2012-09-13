@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("device", "w");
 
 Html::header(_n('Component', 'Components', 2), $_SERVER['PHP_SELF'], "config", "device");
-echo "<div align='center'>";
+echo "<div class='center'>";
 
 $optgroup = Dropdown::getDeviceItemTypes();
 Dropdown::showItemTypeMenu(_n('Component', 'Components', 2), $optgroup);

@@ -204,8 +204,8 @@ class NetworkName extends FQDNLabel {
 
 
    /**
-    * @param $tab the array to fill
-    * @param $joinparams
+    * @param $tab          array   the array to fill
+    * @param $joinparams   array
     * @param $itemtype
    **/
    static function getSearchOptionsToAdd(array &$tab, array $joinparams, $itemtype) {
@@ -217,9 +217,9 @@ class NetworkName extends FQDNLabel {
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
                                         'specific_itemtype' => 'NetworkName',
-                                        'beforejoin'        =>
-                                        array('table'      => 'glpi_networknames',
-                                              'joinparams' => $joinparams));
+                                        'beforejoin'        => array('table' => 'glpi_networknames',
+                                                                     'joinparams'
+                                                                             => $joinparams));
 
       $tab[27]['table']         = 'glpi_networknames';
       $tab[27]['field']         = 'name';
@@ -233,10 +233,9 @@ class NetworkName extends FQDNLabel {
       $tab[28]['name']          = NetworkAlias::getTypeName(2);
       $tab[28]['forcegroupby']  = true;
       $tab[28]['massiveaction'] = false;
-      $tab[28]['joinparams']    = array('jointype'          => 'child',
-                                        'beforejoin'        =>
-                                        array('table'      => 'glpi_networknames',
-                                              'joinparams' => $joinparams));
+      $tab[28]['joinparams']    = array('jointype'   => 'child',
+                                        'beforejoin' => array('table'      => 'glpi_networknames',
+                                                              'joinparams' => $joinparams));
    }
 
 
@@ -511,22 +510,20 @@ class NetworkName extends FQDNLabel {
                      break;
 
                   case 'ip' :
-                     $JOINS = " LEFT JOIN `glpi_ipaddresses` ON (
-                                              `glpi_ipaddresses`.`items_id`
-                                              = `glpi_networknames`.`id`
-                                           AND `glpi_ipaddresses`.`itemtype`
-                                              = 'NetworkName')";
+                     $JOINS = " LEFT JOIN `glpi_ipaddresses`
+                                    ON (`glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`
+                                        AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')";
                      $ORDER = "ISNULL (`glpi_ipaddresses`.`id`),
                                `glpi_ipaddresses`.`binary_3`, `glpi_ipaddresses`.`binary_2`,
                                `glpi_ipaddresses`.`binary_1`, `glpi_ipaddresses`.`binary_0`";
                      break;
 
                   case 'alias' :
-                     $JOINS = " LEFT JOIN `glpi_networkaliases` ON (
-                                              `glpi_networkaliases`.`networknames_id`
-                                              = `glpi_networknames`.`id`)";
+                     $JOINS = " LEFT JOIN `glpi_networkaliases`
+                                    ON (`glpi_networkaliases`.`networknames_id`
+                                          = `glpi_networknames`.`id`)";
                      $ORDER = "ISNULL(`glpi_networkaliases`.`name`),
-                                         `glpi_networkaliases`.`name`";
+                               `glpi_networkaliases`.`name`";
                      break;
                }
             }
@@ -637,13 +634,13 @@ class NetworkName extends FQDNLabel {
             $table_options['order'] = 'name';
          }
 
-
          if ($item->getType() == 'FQDN') {
-
-            $table_options['column_links'] =
-                 array('NetworkName'  => 'javascript:reloadTab("order=name");',
-                       'NetworkAlias' => 'javascript:reloadTab("order=alias");',
-                       'IPAddress'    => 'javascript:reloadTab("order=ip");');
+            $table_options['column_links'] = array('NetworkName'
+                                                         => 'javascript:reloadTab("order=name");',
+                                                   'NetworkAlias'
+                                                         => 'javascript:reloadTab("order=alias");',
+                                                   'IPAddress'
+                                                         => 'javascript:reloadTab("order=ip");');
          }
 
          $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
@@ -656,11 +653,9 @@ class NetworkName extends FQDNLabel {
       }
 
       $table_options['canedit']  = $canedit;
-
       $table                     = new HTMLTableMain();
       $column                    = $table->addHeader('Internet', self::getTypeName(2));
       $t_group                   = $table->createGroup('Main', '');
-
       $address                   = new self();
 
       self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
@@ -673,7 +668,6 @@ class NetworkName extends FQDNLabel {
          case 'NetworkPort' :
          case 'FQDN' :
             break;
-
       }
 
       self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);

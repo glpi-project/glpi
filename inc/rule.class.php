@@ -1117,22 +1117,25 @@ class Rule extends CommonDBTM {
       return $input;
    }
 
+
    /**
-    *
     * Get all data needed to process rules (core + plugins)
+    *
     * @since 0.84
     * @param $input  the input data used to check criterias
     * @param $params parameters
     *
     * @return the updated input datas
-    */
+   **/
    function prepareAllInputDataForProcess($input, $params) {
       global $PLUGIN_HOOKS;
+
       $input = $this->prepareInputDataForProcess($input, $params);
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             $results = Plugin::doOneHook($plugin, "rulePrepareInputDataForProcess",
-                                         array('input' => $input, 'params' => $params));
+                                         array('input' => $input,
+                                               'params' => $params));
             if (is_array($results)) {
                foreach ($results as $result) {
                   $input[] = $result;
@@ -1142,6 +1145,7 @@ class Rule extends CommonDBTM {
       }
       return $input;
    }
+
 
    /**
     *
@@ -1924,38 +1928,55 @@ class Rule extends CommonDBTM {
       return $rand;
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function getAllCriteria() {
-      return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(), $this->getType());
+
+      return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(),
+                                         $this->getType());
    }
+
 
    function getCriterias() {
       return array();
    }
 
+
+   /**
+    * @since version 0.84
+   */
    function getAllActions() {
       return self::doHookAndMergeResults("getRuleActions", $this->getActions(), $this->getType());
    }
+
 
    function getActions() {
       return array();
    }
 
+
    /**
+    *  Execute a hook if necessary and merge results
     *
-    * Execute a hook if necessary and merge results
-    * @since 0.84
-    * @param $hook the hook to execute
-    * @param $params input parameters
+    *  @since version 0.84
+    *
+    * @param $hook            the hook to execute
+    * @param $params   array  input parameters
+    * @param $itemtype        (default '')
+    *
     * @return input parameters merged with hook parameters
-    */
-   static function doHookAndMergeResults($hook, $params = array(), $itemtype = '') {
+   **/
+   static function doHookAndMergeResults($hook, $params=array(), $itemtype='') {
       global $PLUGIN_HOOKS;
+
       //Agregate all plugins criteria for this rules engine
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             $results = Plugin::doOneHook($plugin, $hook, array('rule_itemtype' => $itemtype,
-                                                                'values'        => $params));
+                                                               'values'        => $params));
             if (is_array($results)) {
                foreach ($results as $id => $result) {
                   $toreturn[$id] = $result;
@@ -1965,6 +1986,7 @@ class Rule extends CommonDBTM {
       }
       return $toreturn;
    }
+
 
    /**
     * @param $sub_type

@@ -766,8 +766,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => $number,
-                              'specific_actions' => array('install_licenses' => _x('button', 'Install')));
+            $paramsma = array('num_displayed'    => $number,
+                              'specific_actions' => array('install_licenses' => _x('button',
+                                                                                   'Install')));
 
             Html::showMassiveActions(__CLASS__, $paramsma);
             echo "<input type='hidden' name='computers_id' value='$computers_id'>";

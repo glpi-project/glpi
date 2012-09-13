@@ -423,7 +423,7 @@ function showLocationUpdateForm() {
       echo "<h4>".__('New hierarchy')." : </h4>";
       display_new_locations();
       echo "<p>".__("This is the new hierarchy. If it's complete approve it.")."</p>";
-      echo "<div align='center'>";
+      echo "<div class='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
       echo "<input type='submit' class='submit' name='validate_location' value=\"".__s('Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
