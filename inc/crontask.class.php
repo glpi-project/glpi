@@ -223,7 +223,7 @@ class CronTask extends CommonDBTM{
       }
       $query = "UPDATE `".$this->getTable()."`
                 SET `state` = '".$this->fields['state']."',
-                    `lastrun` = NOW()
+                    `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
                 WHERE `id` = '".$this->fields['id']."'
                       AND `state` = '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
@@ -338,7 +338,7 @@ class CronTask extends CommonDBTM{
                               AND ('$hour' >= `hourmin`
                                    OR '$hour' < `hourmax`)))
                      AND (`lastrun` IS NULL
-                          OR unix_timestamp(`lastrun`) + `frequency` < unix_timestamp(now()))
+                          OR unix_timestamp(`lastrun`) + `frequency` <= unix_timestamp(now()))
                      $lock ";
       }
 
