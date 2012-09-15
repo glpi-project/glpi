@@ -1224,19 +1224,19 @@ class Contract extends CommonDBTM {
     *
     * Print a select named $name with contract renewal options and selected value $value
     *
-    * @param $name   string   HTML select name
-    * @param $value  integer  HTML select selected value (default = 0)
-    * @param $value  boolean  get or display string ?
+    * @param $name      string   HTML select name
+    * @param $value     integer  HTML select selected value (default = 0)
+    * @param $display   boolean  get or display string ? (true by default)
     *
     * @return Nothing (display)
    **/
-   static function dropdownContractRenewal($name, $value=0, $display = true) {
+   static function dropdownContractRenewal($name, $value=0, $display=true) {
 
       $tmp[0] = __('Never');
       $tmp[1] = __('Tacit');
       $tmp[2] = __('Express');
-      return Dropdown::showFromArray($name, $tmp, array('value' => $value,
-                                                 'display' => $display));
+      return Dropdown::showFromArray($name, $tmp, array('value'   => $value,
+                                                        'display' => $display));
    }
 
 
@@ -1285,9 +1285,10 @@ class Contract extends CommonDBTM {
     * @param $options array
    **/
    static function dropdownAlert(array $options) {
-      $p['name']    = 'alert';
-      $p['value']   = 0;
-      $p['display'] = true;
+
+      $p['name']           = 'alert';
+      $p['value']          = 0;
+      $p['display']        = true;
       $p['inherit_parent'] = false;
 
       if (count($options)) {

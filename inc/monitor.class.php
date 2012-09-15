@@ -442,7 +442,7 @@ class Monitor extends CommonDBTM {
       $tab[40]['table']          = 'glpi_monitormodels';
       $tab[40]['field']          = 'name';
       $tab[40]['name']           = __('Model');
-      $tab[40]['datatype']        = 'dropdown';
+      $tab[40]['datatype']       = 'dropdown';
 
       $tab[31]['table']          = 'glpi_states';
       $tab[31]['field']          = 'completename';

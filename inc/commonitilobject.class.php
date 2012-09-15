@@ -2205,12 +2205,13 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[4]['table']         = 'glpi_users';
       $tab[4]['field']         = 'name';
       $tab[4]['datatype']      = 'dropdown';
-      $tab[4]['right']          = 'all';
+      $tab[4]['right']         = 'all';
       $tab[4]['name']          = __('Requester');
       $tab[4]['forcegroupby']  = true;
       $tab[4]['massiveaction'] = false;
       $tab[4]['joinparams']    = array('beforejoin'
-                                       => array('table' => getTableForItemType($this->userlinkclass),
+                                       => array('table'
+                                                   => getTableForItemType($this->userlinkclass),
                                                 'joinparams'
                                                    => array('jointype'  => 'child',
                                                             'condition' => 'AND NEWTABLE.`type` ' .

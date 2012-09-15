@@ -379,8 +379,8 @@ class TicketValidation  extends CommonDBChild {
     * @param $name          select name
     * @param $options array of possible options:
     *      - value : default value (default waiting)
-    *      - all   : boolean display all (default false)
-    *      - global : for global validation (default false)
+    *      - all     : boolean display all (default false)
+    *      - global  : for global validation (default false)
     *      - display : boolean display or get string ? (default true)
     *
     * @return nothing (display)
@@ -409,9 +409,8 @@ class TicketValidation  extends CommonDBChild {
       if ($p['display']) {
          echo $output;
          return true;
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 

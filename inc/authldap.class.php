@@ -172,6 +172,8 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
+    * @since version 0.84
+    *
     * @param $field
     * @param $values
     * @param $options   array
@@ -184,14 +186,13 @@ class AuthLDAP extends CommonDBTM {
       switch ($field) {
          case 'group_search_type' :
             return self::getGroupSearchTypeName($values[$field]);
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
    /**
-    *
+    * @since version 0.84
     * @param  $field
     * @param  $name              (default '')
     * @param  $values            (default('')
@@ -540,10 +541,14 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
+
    /**
+    * @since version 0.84
+    *
     * @param $options array
    **/
    static function dropdownGroupSearchType(array $options) {
+
       $p['name']    = 'group_search_type';
       $p['value']   = 0;
       $p['display'] = true;
@@ -555,7 +560,6 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $tab = self::getGroupSearchTypeName();
-
       return Dropdown::showFromArray($p['name'], $tab, $p);
    }
 
@@ -583,6 +587,7 @@ class AuthLDAP extends CommonDBTM {
       }
       return NOT_AVAILABLE;
    }
+
 
    function showFormGroupsConfig() {
 

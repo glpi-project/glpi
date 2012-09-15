@@ -473,14 +473,15 @@ class Dropdown {
    /**
     * Make a select box for icons
     *
-    * @param $myname       the name of the HTML select
-    * @param $value        the preselected value we want
-    * @param $store_path   path where icons are stored
-    * @param $display      bool display of get string ?
+    * @param $myname                the name of the HTML select
+    * @param $value                 the preselected value we want
+    * @param $store_path            path where icons are stored
+    * @param $display      boolean  display of get string ? (true by default)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function dropdownIcons($myname, $value, $store_path, $display=true) {
+
       $output = '';
       if (is_dir($store_path)) {
          if ($dh = opendir($store_path)) {
@@ -868,9 +869,9 @@ class Dropdown {
     * Dropdown available languages
     *
     * @param $myname          select name
-    * @param $options   array of additionnal options :
+    * @param $options   array of additionnal options:
     *    - display_emptychoice : allow selection of no language
-    *    - emptylabel   : specific string to empty label if display_emptychoice is true
+    *    - emptylabel          : specific string to empty label if display_emptychoice is true
    **/
    static function showLanguages($myname, $options=array()) {
       global $CFG_GLPI;

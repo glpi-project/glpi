@@ -204,12 +204,12 @@ class FQDN extends CommonDropdown {
 
    function getSearchOptions() {
 
-      $tab              = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
-      $tab[11]['table'] = $this->getTable();
-      $tab[11]['field'] = 'fqdn';
-      $tab[11]['name']  = __('FQDN');
-      $tab[11]['datatype']  = 'string';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'fqdn';
+      $tab[11]['name']     = __('FQDN');
+      $tab[11]['datatype'] = 'string';
 
       return $tab;
    }

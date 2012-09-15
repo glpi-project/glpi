@@ -2157,205 +2157,205 @@ class User extends CommonDBTM {
    function getSearchOptions() {
 
       // forcegroup by on name set force group by for all items
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab                             = array();
+      $tab['common']                   = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Login');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['forcegroupby']    = true;
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']                 = $this->getTable();
+      $tab[1]['field']                 = 'name';
+      $tab[1]['name']                  = __('Login');
+      $tab[1]['datatype']              = 'itemlink';
+      $tab[1]['forcegroupby']          = true;
+      $tab[1]['massiveaction']         = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[2]['table']                 = $this->getTable();
+      $tab[2]['field']                 = 'id';
+      $tab[2]['name']                  = __('ID');
+      $tab[2]['massiveaction']         = false;
+      $tab[2]['datatype']              = 'number';
 
-      $tab[34]['table']          = $this->getTable();
-      $tab[34]['field']          = 'realname';
-      $tab[34]['name']           = __('Surname');
-      $tab[34]['datatype']       = 'string';
+      $tab[34]['table']                = $this->getTable();
+      $tab[34]['field']                = 'realname';
+      $tab[34]['name']                 = __('Surname');
+      $tab[34]['datatype']             = 'string';
 
-      $tab[9]['table']           = $this->getTable();
-      $tab[9]['field']           = 'firstname';
-      $tab[9]['name']            = __('First name');
-      $tab[9]['datatype']        = 'string';
+      $tab[9]['table']                 = $this->getTable();
+      $tab[9]['field']                 = 'firstname';
+      $tab[9]['name']                  = __('First name');
+      $tab[9]['datatype']              = 'string';
 
-      $tab[5]['table']           = 'glpi_useremails';
-      $tab[5]['field']           = 'email';
-      $tab[5]['name']            = _n('Email', 'Emails',2);
-      $tab[5]['datatype']        = 'email';
-      $tab[5]['joinparams']      = array('jointype'=>'child');
-      $tab[5]['forcegroupby']    = true;
-      $tab[5]['massiveaction']   = false;
+      $tab[5]['table']                 = 'glpi_useremails';
+      $tab[5]['field']                 = 'email';
+      $tab[5]['name']                  = _n('Email', 'Emails',2);
+      $tab[5]['datatype']              = 'email';
+      $tab[5]['joinparams']            = array('jointype'=>'child');
+      $tab[5]['forcegroupby']          = true;
+      $tab[5]['massiveaction']         = false;
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'is_active';
-      $tab[8]['name']            = __('Active');
-      $tab[8]['datatype']        = 'bool';
+      $tab[8]['table']                 = $this->getTable();
+      $tab[8]['field']                 = 'is_active';
+      $tab[8]['name']                  = __('Active');
+      $tab[8]['datatype']              = 'bool';
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'phone';
-      $tab[6]['name']            =  __('Phone');
-      $tab[6]['datatype']        = 'string';
+      $tab[6]['table']                 = $this->getTable();
+      $tab[6]['field']                 = 'phone';
+      $tab[6]['name']                  =  __('Phone');
+      $tab[6]['datatype']              = 'string';
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'phone2';
-      $tab[10]['name']           =  __('Phone 2');
-      $tab[10]['datatype']       = 'string';
+      $tab[10]['table']                = $this->getTable();
+      $tab[10]['field']                = 'phone2';
+      $tab[10]['name']                 =  __('Phone 2');
+      $tab[10]['datatype']             = 'string';
 
-      $tab[11]['table']          = $this->getTable();
-      $tab[11]['field']          = 'mobile';
-      $tab[11]['name']           = __('Mobile phone');
-      $tab[11]['datatype']       = 'string';
+      $tab[11]['table']                = $this->getTable();
+      $tab[11]['field']                = 'mobile';
+      $tab[11]['name']                 = __('Mobile phone');
+      $tab[11]['datatype']             = 'string';
 
-      $tab[13]['table']          = 'glpi_groups';
-      $tab[13]['field']          = 'completename';
-      $tab[13]['name']           = _n('Group','Groups',2);
-      $tab[13]['forcegroupby']   = true;
-      $tab[13]['datatype']       = 'itemlink';
-      $tab[13]['massiveaction']  = false;
-      $tab[13]['joinparams']     = array('beforejoin'=> array('table' => 'glpi_groups_users',
-                                                              'joinparams'
-                                                                      => array('jointype'=>'child')));
+      $tab[13]['table']                = 'glpi_groups';
+      $tab[13]['field']                = 'completename';
+      $tab[13]['name']                 = _n('Group','Groups',2);
+      $tab[13]['forcegroupby']         = true;
+      $tab[13]['datatype']             = 'itemlink';
+      $tab[13]['massiveaction']        = false;
+      $tab[13]['joinparams']           = array('beforejoin'
+                                                => array('table'      => 'glpi_groups_users',
+                                                         'joinparams' => array('jointype'=>'child')));
 
-      $tab[14]['table']          = $this->getTable();
-      $tab[14]['field']          = 'last_login';
-      $tab[14]['name']           = __('Last login');
-      $tab[14]['datatype']       = 'datetime';
-      $tab[14]['massiveaction']  = false;
+      $tab[14]['table']                = $this->getTable();
+      $tab[14]['field']                = 'last_login';
+      $tab[14]['name']                 = __('Last login');
+      $tab[14]['datatype']             = 'datetime';
+      $tab[14]['massiveaction']        = false;
 
-      $tab[15]['table']            = 'glpi_users';
-      $tab[15]['field']            = 'authtype';
-      $tab[15]['name']             = __('Authentication');
-      $tab[15]['massiveaction']    = false;
-      $tab[15]['datatype']         = 'specific';
-      $tab[15]['searchtype']       = 'equals';
-      $tab[15]['additionalfields'] = array('auths_id');
+      $tab[15]['table']                = 'glpi_users';
+      $tab[15]['field']                = 'authtype';
+      $tab[15]['name']                 = __('Authentication');
+      $tab[15]['massiveaction']        = false;
+      $tab[15]['datatype']             = 'specific';
+      $tab[15]['searchtype']           = 'equals';
+      $tab[15]['additionalfields']     = array('auths_id');
 
-      $tab[30]['table']          = 'glpi_authldaps';
-      $tab[30]['field']          = 'name';
-      $tab[30]['linkfield']      = 'auths_id';
-      $tab[30]['name']           = __('LDAP directory for authentication');
-      $tab[30]['massiveaction']  = false;
-      $tab[30]['joinparams']     = array('condition' => "AND REFTABLE.`authtype` = ".Auth::LDAP);
-      $tab[30]['datatype']       = 'dropdown';
+      $tab[30]['table']                = 'glpi_authldaps';
+      $tab[30]['field']                = 'name';
+      $tab[30]['linkfield']            = 'auths_id';
+      $tab[30]['name']                 = __('LDAP directory for authentication');
+      $tab[30]['massiveaction']        = false;
+      $tab[30]['joinparams']           = array('condition' => "AND REFTABLE.`authtype` = ".Auth::LDAP);
+      $tab[30]['datatype']             = 'dropdown';
 
-      $tab[31]['table']          = 'glpi_authmails';
-      $tab[31]['field']          = 'name';
-      $tab[31]['linkfield']      = 'auths_id';
-      $tab[31]['name']           = __('Email server for authentication');
-      $tab[31]['massiveaction']  = false;
-      $tab[31]['joinparams']     = array('condition' => "AND REFTABLE.`authtype` = ".Auth::MAIL);
-      $tab[31]['datatype']       = 'dropdown';
+      $tab[31]['table']                = 'glpi_authmails';
+      $tab[31]['field']                = 'name';
+      $tab[31]['linkfield']            = 'auths_id';
+      $tab[31]['name']                 = __('Email server for authentication');
+      $tab[31]['massiveaction']        = false;
+      $tab[31]['joinparams']           = array('condition' => "AND REFTABLE.`authtype` = ".Auth::MAIL);
+      $tab[31]['datatype']             = 'dropdown';
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']                = $this->getTable();
+      $tab[16]['field']                = 'comment';
+      $tab[16]['name']                 = __('Comments');
+      $tab[16]['datatype']             = 'text';
 
-      $tab[17]['table']          = $this->getTable();
-      $tab[17]['field']          = 'language';
-      $tab[17]['name']           = __('Language');
-      $tab[17]['datatype']       = 'language';
-      $tab[17]['display_emptychoice']   = true;
-      $tab[17]['emptylabel']     = __('Default value');
+      $tab[17]['table']                = $this->getTable();
+      $tab[17]['field']                = 'language';
+      $tab[17]['name']                 = __('Language');
+      $tab[17]['datatype']             = 'language';
+      $tab[17]['display_emptychoice']  = true;
+      $tab[17]['emptylabel']           = __('Default value');
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[19]['table']                = $this->getTable();
+      $tab[19]['field']                = 'date_mod';
+      $tab[19]['name']                 = __('Last update');
+      $tab[19]['datatype']             = 'datetime';
+      $tab[19]['massiveaction']        = false;
 
-      $tab[20]['table']          = 'glpi_profiles';
-      $tab[20]['field']          = 'name';
-      $tab[20]['name']           = sprintf(__('%1$s (%2$s)'), _n('Profile', 'Profiles', 2),
-                                           _n('Entity', 'Entities', 1));
-      $tab[20]['forcegroupby']   = true;
-      $tab[20]['massiveaction']  = false;
-      $tab[20]['datatype']       = 'dropdown';
-      $tab[20]['joinparams']     = array('beforejoin'
-                                         => array('table'      => 'glpi_profiles_users',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[20]['table']                = 'glpi_profiles';
+      $tab[20]['field']                = 'name';
+      $tab[20]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Profile', 'Profiles', 2),
+                                                 _n('Entity', 'Entities', 1));
+      $tab[20]['forcegroupby']         = true;
+      $tab[20]['massiveaction']        = false;
+      $tab[20]['datatype']             = 'dropdown';
+      $tab[20]['joinparams']           = array('beforejoin'
+                                               => array('table'      => 'glpi_profiles_users',
+                                                        'joinparams' => array('jointype' => 'child')));
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'user_dn';
-      $tab[21]['name']           = __('User DN');
-      $tab[21]['massiveaction']  = false;
-      $tab[21]['datatype']       = 'string';
+      $tab[21]['table']                = $this->getTable();
+      $tab[21]['field']                = 'user_dn';
+      $tab[21]['name']                 = __('User DN');
+      $tab[21]['massiveaction']        = false;
+      $tab[21]['datatype']             = 'string';
 
-      $tab[22]['table']          = $this->getTable();
-      $tab[22]['field']          = 'registration_number';
-      $tab[22]['name']           = __('Administrative number');
-      $tab[22]['datatype']       = 'string';
+      $tab[22]['table']                = $this->getTable();
+      $tab[22]['field']                = 'registration_number';
+      $tab[22]['name']                 = __('Administrative number');
+      $tab[22]['datatype']             = 'string';
 
-      $tab[23]['table']          = $this->getTable();
-      $tab[23]['field']          = 'date_sync';
-      $tab[23]['datatype']       = 'datetime';
-      $tab[23]['name']           = __('Last synchronization');
-      $tab[23]['massiveaction']  = false;
+      $tab[23]['table']                = $this->getTable();
+      $tab[23]['field']                = 'date_sync';
+      $tab[23]['datatype']             = 'datetime';
+      $tab[23]['name']                 = __('Last synchronization');
+      $tab[23]['massiveaction']        = false;
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['linkfield']      = 'entities_id';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = sprintf(__('%1$s (%2$s)'), _n('Entity', 'Entities', 2),
-                                           _n('Profile', 'Profiles', 1));
-      $tab[80]['forcegroupby']   = true;
-      $tab[80]['datatype']       = 'dropdown';
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['joinparams']     = array('beforejoin'
-                                         => array('table'      => 'glpi_profiles_users',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[80]['table']                = 'glpi_entities';
+      $tab[80]['linkfield']            = 'entities_id';
+      $tab[80]['field']                = 'completename';
+      $tab[80]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Entity', 'Entities', 2),
+                                                 _n('Profile', 'Profiles', 1));
+      $tab[80]['forcegroupby']         = true;
+      $tab[80]['datatype']             = 'dropdown';
+      $tab[80]['massiveaction']        = false;
+      $tab[80]['joinparams']           = array('beforejoin'
+                                               => array('table'      => 'glpi_profiles_users',
+                                                        'joinparams' => array('jointype' => 'child')));
 
+      $tab[81]['table']                = 'glpi_usertitles';
+      $tab[81]['field']                = 'name';
+      $tab[81]['name']                 = __('Title');
+      $tab[81]['datatype']             = 'dropdown';
 
-      $tab[81]['table']          = 'glpi_usertitles';
-      $tab[81]['field']          = 'name';
-      $tab[81]['name']           = __('Title');
-      $tab[81]['datatype']       = 'dropdown';
+      $tab[82]['table']                = 'glpi_usercategories';
+      $tab[82]['field']                = 'name';
+      $tab[82]['name']                 = __('Category');
+      $tab[82]['datatype']             = 'dropdown';
 
-      $tab[82]['table']          = 'glpi_usercategories';
-      $tab[82]['field']          = 'name';
-      $tab[82]['name']           = __('Category');
-      $tab[82]['datatype']       = 'dropdown';
+      $tab[79]['table']                = 'glpi_profiles';
+      $tab[79]['field']                = 'name';
+      $tab[79]['name']                 = __('Default profile');
+      $tab[79]['datatype']             = 'dropdown';
 
-      $tab[79]['table']          = 'glpi_profiles';
-      $tab[79]['field']          = 'name';
-      $tab[79]['name']           = __('Default profile');
-      $tab[79]['datatype']       = 'dropdown';
+      $tab[77]['table']                = 'glpi_entities';
+      $tab[77]['field']                = 'name';
+      $tab[77]['massiveaction']        = true;
+      $tab[77]['name']                 = __('Default entity');
+      $tab[77]['datatype']             = 'dropdown';
 
-      $tab[77]['table']          = 'glpi_entities';
-      $tab[77]['field']          = 'name';
-      $tab[77]['massiveaction']  = true;
-      $tab[77]['name']           = __('Default entity');
-      $tab[77]['datatype']       = 'dropdown';
+      $tab[60]['table']                = 'glpi_tickets';
+      $tab[60]['field']                = 'count';
+      $tab[60]['name']                 = __('Number of tickets as requester');
+      $tab[60]['forcegroupby']         = true;
+      $tab[60]['usehaving']            = true;
+      $tab[60]['datatype']             = 'number';
+      $tab[60]['massiveaction']        = false;
+      $tab[60]['joinparams']           = array('beforejoin'
+                                               => array('table'      => 'glpi_tickets_users',
+                                                        'joinparams' => array('jointype' => 'child')));
 
-      $tab[60]['table']          = 'glpi_tickets';
-      $tab[60]['field']          = 'count';
-      $tab[60]['name']           = __('Number of tickets as requester');
-      $tab[60]['forcegroupby']   = true;
-      $tab[60]['usehaving']      = true;
-      $tab[60]['datatype']       = 'number';
-      $tab[60]['massiveaction']  = false;
-      $tab[60]['joinparams']     = array('beforejoin'
-                                         => array('table'      => 'glpi_tickets_users',
-                                                  'joinparams' => array('jointype' => 'child')));
-
-      $tab[61]['table']          = 'glpi_tickets';
-      $tab[61]['field']          = 'count';
-      $tab[61]['name']           = __('Number of written tickets');
-      $tab[61]['forcegroupby']   = true;
-      $tab[61]['usehaving']      = true;
-      $tab[61]['datatype']       = 'number';
-      $tab[61]['massiveaction']  = false;
-      $tab[61]['joinparams']     = array('jointype'  => 'child',
-                                         'linkfield' => 'users_id_recipient');
+      $tab[61]['table']                = 'glpi_tickets';
+      $tab[61]['field']                = 'count';
+      $tab[61]['name']                 = __('Number of written tickets');
+      $tab[61]['forcegroupby']         = true;
+      $tab[61]['usehaving']            = true;
+      $tab[61]['datatype']             = 'number';
+      $tab[61]['massiveaction']        = false;
+      $tab[61]['joinparams']           = array('jointype'  => 'child',
+                                               'linkfield' => 'users_id_recipient');
 
       return $tab;
    }
+
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
@@ -2373,8 +2373,9 @@ class User extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
-      global $DB;
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -2383,12 +2384,11 @@ class User extends CommonDBTM {
          case 'authtype' :
             $options['name'] = $name;
             $options['value'] = $values[$field];
-
             return Auth::dropdown($options);
-            break;
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    /**
     * Get all groups where the current user have delegating

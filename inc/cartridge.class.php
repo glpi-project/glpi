@@ -56,7 +56,7 @@ class Cartridge extends CommonDBTM {
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
    }
@@ -417,7 +417,7 @@ class Cartridge extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $total  = $DB->result($result, 0, "count");
-         
+
          if (!$show_old) { // NEW
             $where = " AND `glpi_cartridges`.`date_out` IS NULL";
          } else { //OLD
@@ -450,7 +450,7 @@ class Cartridge extends CommonDBTM {
 
          $result = $DB->query($query);
          $number = $DB->numrows($result);
-         
+
          echo "<div class='spaced'>";
          if ($canedit) {
             $rand = mt_rand();
@@ -675,7 +675,7 @@ class Cartridge extends CommonDBTM {
          } else {
             _e('No cartridge available');
          }
-         
+
          echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
                            ".($installok?'':'disabled')." class='submit'>";
          echo "</td></tr>";
@@ -683,7 +683,7 @@ class Cartridge extends CommonDBTM {
          Html::closeForm();
          echo "</div>";
       }
-      
+
       $pages = $printer->fields['init_pages_counter'];
       if ($canedit) {
          echo "<form method='postdropdownForPrinter' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
@@ -775,12 +775,12 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             if (is_null($date_out)) {
                Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                     'uninstall', __('End of life'),
+                                    'uninstall', __('End of life'),
                                      array('cartridgeitems_id' => $data['tID'],
                                            'id'                => $data['id']));
             } else {
                Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                     $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
+                                    $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
                                      array('delete'            => 1,
                                            'cartridgeitems_id' => $data['tID'],
                                            'id'                => $data['id']));

@@ -629,9 +629,9 @@ class CronTask extends CommonDBTM{
    /**
     * Dropdown of state
     *
-    * @param $name   select name
-    * @param $value  default value (default 0)
-    * @param $display  display or get string
+    * @param $name     select name
+    * @param $value    default value (default 0)
+    * @param $display  display or get string (true by default)
     *
     * @return nothing (display)
    **/
@@ -640,7 +640,7 @@ class CronTask extends CommonDBTM{
       return Dropdown::showFromArray($name,
                                      array(self::STATE_DISABLE => __('Disabled'),
                                            self::STATE_WAITING => __('Scheduled')),
-                                     array('value' => $value,
+                                     array('value'   => $value,
                                            'display' => $display));
    }
 
@@ -1106,14 +1106,16 @@ class CronTask extends CommonDBTM{
       echo "</div>";
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = 0;
       switch ($field) {
          case 'mode':
-            $options['value'] = $values[$field];
+            $options['value']         = $values[$field];
             $tab[self::MODE_INTERNAL] = self::getModeName(self::MODE_INTERNAL);
             $tab[self::MODE_EXTERNAL] = self::getModeName(self::MODE_EXTERNAL);
             return Dropdown::showFromArray($name, $tab, $options);
@@ -1124,6 +1126,7 @@ class CronTask extends CommonDBTM{
 
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 

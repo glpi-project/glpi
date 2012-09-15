@@ -501,7 +501,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[20]['table']         = 'glpi_ipaddresses';
       $tab[20]['field']         = 'name';
       $tab[20]['name']          = __('IP');
-      $tab[20]['datatype']       = 'dropdown';
+      $tab[20]['datatype']      = 'dropdown';
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
