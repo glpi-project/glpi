@@ -1840,339 +1840,342 @@ class Ticket extends CommonITILObject {
 
    function getSearchOptions() {
 
-      $tab                       = array();
+      $tab                          = array();
 
-      $tab['common']             = __('Characteristics');
+      $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Title');
-      $tab[1]['searchtype']      = 'contains';
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['forcegroupby']    = true;
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               =  __('Title');
+      $tab[1]['searchtype']         = 'contains';
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['forcegroupby']       = true;
+      $tab[1]['massiveaction']      = false;
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'content';
-      $tab[21]['name']           = __('Description');
-      $tab[21]['massiveaction']  = false;
-      $tab[21]['datatype']       = 'text';
+      $tab[21]['table']             = $this->getTable();
+      $tab[21]['field']             = 'content';
+      $tab[21]['name']              = __('Description');
+      $tab[21]['massiveaction']     = false;
+      $tab[21]['datatype']          = 'text';
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'number';
 
-      $tab[12]['table']          = $this->getTable();
-      $tab[12]['field']          = 'status';
-      $tab[12]['name']           = __('Status');
-      $tab[12]['searchtype']     = 'equals';
-      $tab[12]['datatype']       = 'specific';
+      $tab[12]['table']             = $this->getTable();
+      $tab[12]['field']             = 'status';
+      $tab[12]['name']              = __('Status');
+      $tab[12]['searchtype']        = 'equals';
+      $tab[12]['datatype']          = 'specific';
 
-      $tab[14]['table']          = $this->getTable();
-      $tab[14]['field']          = 'type';
-      $tab[14]['name']           = __('Type');
-      $tab[14]['searchtype']     = 'equals';
-      $tab[14]['datatype']       = 'specific';
+      $tab[14]['table']             = $this->getTable();
+      $tab[14]['field']             = 'type';
+      $tab[14]['name']              = __('Type');
+      $tab[14]['searchtype']        = 'equals';
+      $tab[14]['datatype']          = 'specific';
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'urgency';
-      $tab[10]['name']           = __('Urgency');
-      $tab[10]['searchtype']     = 'equals';
-      $tab[10]['datatype']       = 'specific';
+      $tab[10]['table']             = $this->getTable();
+      $tab[10]['field']             = 'urgency';
+      $tab[10]['name']              = __('Urgency');
+      $tab[10]['searchtype']        = 'equals';
+      $tab[10]['datatype']          = 'specific';
 
-      $tab[11]['table']          = $this->getTable();
-      $tab[11]['field']          = 'impact';
-      $tab[11]['name']           = __('Impact');
-      $tab[11]['searchtype']     = 'equals';
-      $tab[11]['datatype']       = 'specific';
+      $tab[11]['table']             = $this->getTable();
+      $tab[11]['field']             = 'impact';
+      $tab[11]['name']              = __('Impact');
+      $tab[11]['searchtype']        = 'equals';
+      $tab[11]['datatype']          = 'specific';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'priority';
-      $tab[3]['name']            = __('Priority');
-      $tab[3]['searchtype']      = 'equals';
-      $tab[3]['datatype']       = 'specific';
+      $tab[3]['table']              = $this->getTable();
+      $tab[3]['field']              = 'priority';
+      $tab[3]['name']               = __('Priority');
+      $tab[3]['searchtype']         = 'equals';
+      $tab[3]['datatype']           = 'specific';
 
-      $tab[15]['table']          = $this->getTable();
-      $tab[15]['field']          = 'date';
-      $tab[15]['name']           = __('Opening date');
-      $tab[15]['datatype']       = 'datetime';
-      $tab[15]['massiveaction']  = false;
+      $tab[15]['table']             = $this->getTable();
+      $tab[15]['field']             = 'date';
+      $tab[15]['name']              = __('Opening date');
+      $tab[15]['datatype']          = 'datetime';
+      $tab[15]['massiveaction']     = false;
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'closedate';
-      $tab[16]['name']           = __('Closing date');
-      $tab[16]['datatype']       = 'datetime';
-      $tab[16]['massiveaction']  = false;
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'closedate';
+      $tab[16]['name']              = __('Closing date');
+      $tab[16]['datatype']          = 'datetime';
+      $tab[16]['massiveaction']     = false;
 
-      $tab[18]['table']          = $this->getTable();
-      $tab[18]['field']          = 'due_date';
-      $tab[18]['name']           = __('Due date');
-      $tab[18]['datatype']       = 'datetime';
-      $tab[18]['maybefuture']    = true;
-      $tab[18]['massiveaction']  = false;
+      $tab[18]['table']             = $this->getTable();
+      $tab[18]['field']             = 'due_date';
+      $tab[18]['name']              = __('Due date');
+      $tab[18]['datatype']          = 'datetime';
+      $tab[18]['maybefuture']       = true;
+      $tab[18]['massiveaction']     = false;
 
-      $tab[82]['table']          = $this->getTable();
-      $tab[82]['field']          = 'is_late';
-      $tab[82]['name']           = __('Late');
-      $tab[82]['datatype']       = 'bool';
-      $tab[82]['massiveaction']  = false;
+      $tab[82]['table']             = $this->getTable();
+      $tab[82]['field']             = 'is_late';
+      $tab[82]['name']              = __('Late');
+      $tab[82]['datatype']          = 'bool';
+      $tab[82]['massiveaction']     = false;
 
-      $tab[17]['table']          = $this->getTable();
-      $tab[17]['field']          = 'solvedate';
-      $tab[17]['name']           = __('Resolution date');
-      $tab[17]['datatype']       = 'datetime';
-      $tab[17]['massiveaction']  = false;
+      $tab[17]['table']             = $this->getTable();
+      $tab[17]['field']             = 'solvedate';
+      $tab[17]['name']              = __('Resolution date');
+      $tab[17]['datatype']          = 'datetime';
+      $tab[17]['massiveaction']     = false;
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[19]['table']             = $this->getTable();
+      $tab[19]['field']             = 'date_mod';
+      $tab[19]['name']              = __('Last update');
+      $tab[19]['datatype']          = 'datetime';
+      $tab[19]['massiveaction']     = false;
 
-      $tab[7]['table']           = 'glpi_itilcategories';
-      $tab[7]['field']           = 'completename';
-      $tab[7]['name']            = __('Category');
-      $tab[7]['datatype']        = 'dropdown';
+      $tab[7]['table']              = 'glpi_itilcategories';
+      $tab[7]['field']              = 'completename';
+      $tab[7]['name']               = __('Category');
+      $tab[7]['datatype']           = 'dropdown';
 
-      $tab[13]['table']          = $this->getTable();
-      $tab[13]['field']          = 'items_id';
-      $tab[13]['name']           = __('Associated element');
-      $tab[13]['datatype']       = 'specific';
-      $tab[13]['nosearch']       = true;
-      $tab[13]['nosort']         = true;
-      $tab[13]['massiveaction']  = false;
-      $tab[13]['additionalfields'] = array('itemtype');
+      $tab[13]['table']             = $this->getTable();
+      $tab[13]['field']             = 'items_id';
+      $tab[13]['name']              = __('Associated element');
+      $tab[13]['datatype']          = 'specific';
+      $tab[13]['nosearch']          = true;
+      $tab[13]['nosort']            = true;
+      $tab[13]['massiveaction']     = false;
+      $tab[13]['additionalfields']  = array('itemtype');
 
-      $tab[131]['table']         = $this->getTable();
-      $tab[131]['field']         = 'itemtype';
-      $tab[131]['name']          = __('Associated item type');
-      $tab[131]['datatype']      = 'itemtypename';
-      $tab[131]['itemtype_list'] = 'ticket_types';
-      $tab[131]['nosort']        = true;
-      $tab[131]['massiveaction'] = false;
+      $tab[131]['table']            = $this->getTable();
+      $tab[131]['field']            = 'itemtype';
+      $tab[131]['name']             = __('Associated item type');
+      $tab[131]['datatype']         = 'itemtypename';
+      $tab[131]['itemtype_list']    = 'ticket_types';
+      $tab[131]['nosort']           = true;
+      $tab[131]['massiveaction']    = false;
 
-      $tab[9]['table']           = 'glpi_requesttypes';
-      $tab[9]['field']           = 'name';
-      $tab[9]['name']            = __('Request source');
-      $tab[9]['datatype']        = 'dropdown';
+      $tab[9]['table']              = 'glpi_requesttypes';
+      $tab[9]['field']              = 'name';
+      $tab[9]['name']               = __('Request source');
+      $tab[9]['datatype']           = 'dropdown';
 
       // Can't use Location::getSearchOptionsToAdd because id conflicts
-      $tab[83]['table']          = 'glpi_locations';
-      $tab[83]['field']          = 'completename';
-      $tab[83]['name']           = __('Location');
-      $tab[83]['datatype']       = 'dropdown';
+      $tab[83]['table']             = 'glpi_locations';
+      $tab[83]['field']             = 'completename';
+      $tab[83]['name']              = __('Location');
+      $tab[83]['datatype']          = 'dropdown';
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['massiveaction']     = false;
+      $tab[80]['datatype']          = 'dropdown';
 
-      $tab[45]['table']          = $this->getTable();
-      $tab[45]['field']          = 'actiontime';
-      $tab[45]['name']           = __('Total duration');
-      $tab[45]['datatype']       = 'timestamp';
-      $tab[45]['massiveaction']  = false;
-      $tab[45]['nosearch']       = true;
+      $tab[45]['table']             = $this->getTable();
+      $tab[45]['field']             = 'actiontime';
+      $tab[45]['name']              = __('Total duration');
+      $tab[45]['datatype']          = 'timestamp';
+      $tab[45]['massiveaction']     = false;
+      $tab[45]['nosearch']          = true;
 
-      $tab[64]['table']          = 'glpi_users';
-      $tab[64]['field']          = 'name';
-      $tab[64]['linkfield']      = 'users_id_lastupdater';
-      $tab[64]['name']           = __('Last updater');
-      $tab[64]['massiveaction']  = false;
-      $tab[64]['datatype']       = 'dropdown';
-      $tab[64]['right']          = 'all';
+      $tab[64]['table']             = 'glpi_users';
+      $tab[64]['field']             = 'name';
+      $tab[64]['linkfield']         = 'users_id_lastupdater';
+      $tab[64]['name']              = __('Last updater');
+      $tab[64]['massiveaction']     = false;
+      $tab[64]['datatype']          = 'dropdown';
+      $tab[64]['right']             = 'all';
 
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['sla']                = __('SLA');
 
-      $tab[30]['table']          = 'glpi_slas';
-      $tab[30]['field']          = 'name';
-      $tab[30]['name']           = __('SLA');
-      $tab[30]['massiveaction']  = false;
-      $tab[30]['datatype']       = 'dropdown';
+      $tab['sla']                   = __('SLA');
 
-      $tab[32]['table']          = 'glpi_slalevels';
-      $tab[32]['field']          = 'name';
-      $tab[32]['name']           = __('Escalation level');
-      $tab[32]['massiveaction']  = false;
-      $tab[32]['datatype']       = 'dropdown';
+      $tab[30]['table']             = 'glpi_slas';
+      $tab[30]['field']             = 'name';
+      $tab[30]['name']              = __('SLA');
+      $tab[30]['massiveaction']     = false;
+      $tab[30]['datatype']          = 'dropdown';
 
-
-      $tab['validation']         = __('Approval');
-
-      $tab[52]['table']          = $this->getTable();
-      $tab[52]['field']          = 'global_validation';
-      $tab[52]['name']           = __('Approval');
-      $tab[52]['searchtype']     = 'equals';
-      $tab[52]['datatype']       = 'specific';
-
-      $tab[53]['table']          = 'glpi_ticketvalidations';
-      $tab[53]['field']          = 'comment_submission';
-      $tab[53]['name']           = sprintf(__('%1$s: %2$s'), __('Request'), __('Comments'));
-      $tab[53]['datatype']       = 'text';
-      $tab[53]['forcegroupby']   = true;
-      $tab[53]['massiveaction']  = false;
-      $tab[53]['joinparams']     = array('jointype' => 'child');
-
-      $tab[54]['table']          = 'glpi_ticketvalidations';
-      $tab[54]['field']          = 'comment_validation';
-      $tab[54]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Comments'));
-      $tab[54]['datatype']       = 'text';
-      $tab[54]['forcegroupby']   = true;
-      $tab[54]['massiveaction']  = false;
-      $tab[54]['joinparams']     = array('jointype' => 'child');
-
-      $tab[55]['table']          = 'glpi_ticketvalidations';
-      $tab[55]['field']          = 'status';
-      $tab[55]['datatype']       = 'specific';
-      $tab[55]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Status'));
-      $tab[55]['searchtype']     = 'equals';
-      $tab[55]['forcegroupby']   = true;
-      $tab[55]['massiveaction']  = false;
-      $tab[55]['joinparams']     = array('jointype' => 'child');
-
-      $tab[56]['table']          = 'glpi_ticketvalidations';
-      $tab[56]['field']          = 'submission_date';
-      $tab[56]['name']           = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
-      $tab[56]['datatype']       = 'datetime';
-      $tab[56]['forcegroupby']   = true;
-      $tab[56]['massiveaction']  = false;
-      $tab[56]['joinparams']     = array('jointype' => 'child');
-
-      $tab[57]['table']          = 'glpi_ticketvalidations';
-      $tab[57]['field']          = 'validation_date';
-      $tab[57]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Date'));
-      $tab[57]['datatype']       = 'datetime';
-      $tab[57]['forcegroupby']   = true;
-      $tab[57]['massiveaction']  = false;
-      $tab[57]['joinparams']     = array('jointype' => 'child');
-
-      $tab[58]['table']          = 'glpi_users';
-      $tab[58]['field']          = 'name';
-      $tab[58]['name']           = __('Requester');
-      $tab[58]['datatype']       = 'itemlink';
-      $tab[58]['right']          = 'all';
-      $tab[58]['forcegroupby']   = true;
-      $tab[58]['massiveaction']  = false;
-      $tab[58]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_ticketvalidations',
-                                                   'joinparams' => array('jointype' => 'child')));
-
-      $tab[59]['table']          = 'glpi_users';
-      $tab[59]['field']          = 'name';
-      $tab[59]['linkfield']      = 'users_id_validate';
-      $tab[59]['name']           = __('Approver');
-      $tab[59]['datatype']       = 'itemlink';
-      $tab[59]['right']          = 'validate_ticket';
-      $tab[59]['forcegroupby']   = true;
-      $tab[59]['massiveaction']  = false;
-      $tab[59]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_ticketvalidations',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[32]['table']             = 'glpi_slalevels';
+      $tab[32]['field']             = 'name';
+      $tab[32]['name']              = __('Escalation level');
+      $tab[32]['massiveaction']     = false;
+      $tab[32]['datatype']          = 'dropdown';
 
 
-      $tab['satisfaction']       = __('Satisfaction survey');
+      $tab['validation']            = __('Approval');
 
-      $tab[31]['table']          = 'glpi_ticketsatisfactions';
-      $tab[31]['field']          = 'type';
-      $tab[31]['name']           = __('Type');
-      $tab[31]['massiveaction']  = false;
-      $tab[31]['searchtype']     = 'equals';
-      $tab[31]['joinparams']     = array('jointype' => 'child');
-      $tab[31]['datatype']       = 'specific';
+      $tab[52]['table']             = $this->getTable();
+      $tab[52]['field']             = 'global_validation';
+      $tab[52]['name']              = __('Approval');
+      $tab[52]['searchtype']        = 'equals';
+      $tab[52]['datatype']          = 'specific';
 
-      $tab[60]['table']          = 'glpi_ticketsatisfactions';
-      $tab[60]['field']          = 'date_begin';
-      $tab[60]['name']           = __('Creation date');
-      $tab[60]['datatype']       = 'datetime';
-      $tab[60]['massiveaction']  = false;
-      $tab[60]['joinparams']     = array('jointype' => 'child');
+      $tab[53]['table']             = 'glpi_ticketvalidations';
+      $tab[53]['field']             = 'comment_submission';
+      $tab[53]['name']              = sprintf(__('%1$s: %2$s'), __('Request'), __('Comments'));
+      $tab[53]['datatype']          = 'text';
+      $tab[53]['forcegroupby']      = true;
+      $tab[53]['massiveaction']     = false;
+      $tab[53]['joinparams']        = array('jointype' => 'child');
 
-      $tab[61]['table']          = 'glpi_ticketsatisfactions';
-      $tab[61]['field']          = 'date_answered';
-      $tab[61]['name']           = __('Response date');
-      $tab[61]['datatype']       = 'datetime';
-      $tab[61]['massiveaction']  = false;
-      $tab[61]['joinparams']     = array('jointype' => 'child');
+      $tab[54]['table']             = 'glpi_ticketvalidations';
+      $tab[54]['field']             = 'comment_validation';
+      $tab[54]['name']              = sprintf(__('%1$s: %2$s'), __('Approval'), __('Comments'));
+      $tab[54]['datatype']          = 'text';
+      $tab[54]['forcegroupby']      = true;
+      $tab[54]['massiveaction']     = false;
+      $tab[54]['joinparams']        = array('jointype' => 'child');
 
-      $tab[62]['table']          = 'glpi_ticketsatisfactions';
-      $tab[62]['field']          = 'satisfaction';
-      $tab[62]['name']           = __('Satisfaction');
-      $tab[62]['datatype']       = 'number';
-      $tab[62]['massiveaction']  = false;
-      $tab[62]['joinparams']     = array('jointype' => 'child');
+      $tab[55]['table']             = 'glpi_ticketvalidations';
+      $tab[55]['field']             = 'status';
+      $tab[55]['datatype']          = 'specific';
+      $tab[55]['name']              = sprintf(__('%1$s: %2$s'), __('Approval'), __('Status'));
+      $tab[55]['searchtype']        = 'equals';
+      $tab[55]['forcegroupby']      = true;
+      $tab[55]['massiveaction']     = false;
+      $tab[55]['joinparams']        = array('jointype' => 'child');
 
-      $tab[63]['table']          = 'glpi_ticketsatisfactions';
-      $tab[63]['field']          = 'comment';
-      $tab[63]['name']           = __('Comments');
-      $tab[63]['datatype']       = 'text';
-      $tab[63]['massiveaction']  = false;
-      $tab[63]['joinparams']     = array('jointype' => 'child');
+      $tab[56]['table']             = 'glpi_ticketvalidations';
+      $tab[56]['field']             = 'submission_date';
+      $tab[56]['name']              = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
+      $tab[56]['datatype']          = 'datetime';
+      $tab[56]['forcegroupby']      = true;
+      $tab[56]['massiveaction']     = false;
+      $tab[56]['joinparams']        = array('jointype' => 'child');
+
+      $tab[57]['table']             = 'glpi_ticketvalidations';
+      $tab[57]['field']             = 'validation_date';
+      $tab[57]['name']              = sprintf(__('%1$s: %2$s'), __('Approval'), __('Date'));
+      $tab[57]['datatype']          = 'datetime';
+      $tab[57]['forcegroupby']      = true;
+      $tab[57]['massiveaction']     = false;
+      $tab[57]['joinparams']        = array('jointype' => 'child');
+
+      $tab[58]['table']             = 'glpi_users';
+      $tab[58]['field']             = 'name';
+      $tab[58]['name']              = __('Requester');
+      $tab[58]['datatype']          = 'itemlink';
+      $tab[58]['right']             = 'all';
+      $tab[58]['forcegroupby']      = true;
+      $tab[58]['massiveaction']     = false;
+      $tab[58]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_ticketvalidations',
+                                                      'joinparams' => array('jointype' => 'child')));
+
+      $tab[59]['table']             = 'glpi_users';
+      $tab[59]['field']             = 'name';
+      $tab[59]['linkfield']         = 'users_id_validate';
+      $tab[59]['name']              = __('Approver');
+      $tab[59]['datatype']          = 'itemlink';
+      $tab[59]['right']             = 'validate_ticket';
+      $tab[59]['forcegroupby']      = true;
+      $tab[59]['massiveaction']     = false;
+      $tab[59]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_ticketvalidations',
+                                                      'joinparams' => array('jointype' => 'child')));
 
 
-      $tab['followup']           = _n('Followup', 'Followups', 2);
+      $tab['satisfaction']          = __('Satisfaction survey');
 
-      $tab[25]['table']          = 'glpi_ticketfollowups';
-      $tab[25]['field']          = 'content';
-      $tab[25]['name']           = __('Description');
-      $tab[25]['forcegroupby']   = true;
-      $tab[25]['splititems']     = true;
-      $tab[25]['massiveaction']  = false;
-      $tab[25]['joinparams']     = array('jointype' => 'child');
-      $tab[25]['datatype']       = 'text';
+      $tab[31]['table']             = 'glpi_ticketsatisfactions';
+      $tab[31]['field']             = 'type';
+      $tab[31]['name']              = __('Type');
+      $tab[31]['massiveaction']     = false;
+      $tab[31]['searchtype']        = 'equals';
+      $tab[31]['joinparams']        = array('jointype' => 'child');
+      $tab[31]['datatype']          = 'specific';
 
-      $tab[27]['table']          = 'glpi_ticketfollowups';
-      $tab[27]['field']          = 'count';
-      $tab[27]['name']           = "Number of followups";
-      $tab[27]['forcegroupby']   = true;
-      $tab[27]['usehaving']      = true;
-      $tab[27]['datatype']       = 'number';
-      $tab[27]['massiveaction']  = false;
-      $tab[27]['joinparams']     = array('jointype' => 'child');
+      $tab[60]['table']             = 'glpi_ticketsatisfactions';
+      $tab[60]['field']             = 'date_begin';
+      $tab[60]['name']              = __('Creation date');
+      $tab[60]['datatype']          = 'datetime';
+      $tab[60]['massiveaction']     = false;
+      $tab[60]['joinparams']        = array('jointype' => 'child');
 
-      $tab[29]['table']          = 'glpi_requesttypes';
-      $tab[29]['field']          = 'name';
-      $tab[29]['name']           = __('Request source');
-      $tab[29]['datatype']       = 'dropdown';
-      $tab[29]['forcegroupby']   = true;
-      $tab[29]['massiveaction']  = false;
-      $tab[29]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_ticketfollowups',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[61]['table']             = 'glpi_ticketsatisfactions';
+      $tab[61]['field']             = 'date_answered';
+      $tab[61]['name']              = __('Response date');
+      $tab[61]['datatype']          = 'datetime';
+      $tab[61]['massiveaction']     = false;
+      $tab[61]['joinparams']        = array('jointype' => 'child');
 
-      $tab[91]['table']          = 'glpi_ticketfollowups';
-      $tab[91]['field']          = 'is_private';
-      $tab[91]['name']           = __('Private followup');
-      $tab[91]['datatype']       = 'bool';
-      $tab[91]['forcegroupby']   = true;
-      $tab[91]['splititems']     = true;
-      $tab[91]['massiveaction']  = false;
-      $tab[91]['joinparams']     = array('jointype' => 'child');
+      $tab[62]['table']             = 'glpi_ticketsatisfactions';
+      $tab[62]['field']             = 'satisfaction';
+      $tab[62]['name']              = __('Satisfaction');
+      $tab[62]['datatype']          = 'number';
+      $tab[62]['massiveaction']     = false;
+      $tab[62]['joinparams']        = array('jointype' => 'child');
 
-      $tab[93]['table']          = 'glpi_users';
-      $tab[93]['field']          = 'name';
-      $tab[93]['name']           = __('Writer');
-      $tab[93]['datatype']       = 'itemlink';
-      $tab[93]['right']          = 'all';
-      $tab[93]['forcegroupby']   = true;
-      $tab[93]['massiveaction']  = false;
-      $tab[93]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_ticketfollowups',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[63]['table']             = 'glpi_ticketsatisfactions';
+      $tab[63]['field']             = 'comment';
+      $tab[63]['name']              = __('Comments');
+      $tab[63]['datatype']          = 'text';
+      $tab[63]['massiveaction']     = false;
+      $tab[63]['joinparams']        = array('jointype' => 'child');
+
+
+      $tab['followup']              = _n('Followup', 'Followups', 2);
+
+      $tab[25]['table']             = 'glpi_ticketfollowups';
+      $tab[25]['field']             = 'content';
+      $tab[25]['name']              = __('Description');
+      $tab[25]['forcegroupby']      = true;
+      $tab[25]['splititems']        = true;
+      $tab[25]['massiveaction']     = false;
+      $tab[25]['joinparams']        = array('jointype' => 'child');
+      $tab[25]['datatype']          = 'text';
+
+      $tab[27]['table']             = 'glpi_ticketfollowups';
+      $tab[27]['field']             = 'count';
+      $tab[27]['name']              = "Number of followups";
+      $tab[27]['forcegroupby']      = true;
+      $tab[27]['usehaving']         = true;
+      $tab[27]['datatype']          = 'number';
+      $tab[27]['massiveaction']     = false;
+      $tab[27]['joinparams']        = array('jointype' => 'child');
+
+      $tab[29]['table']             = 'glpi_requesttypes';
+      $tab[29]['field']             = 'name';
+      $tab[29]['name']              = __('Request source');
+      $tab[29]['datatype']          = 'dropdown';
+      $tab[29]['forcegroupby']      = true;
+      $tab[29]['massiveaction']     = false;
+      $tab[29]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_ticketfollowups',
+                                                      'joinparams' => array('jointype' => 'child')));
+
+      $tab[91]['table']             = 'glpi_ticketfollowups';
+      $tab[91]['field']             = 'is_private';
+      $tab[91]['name']              = __('Private followup');
+      $tab[91]['datatype']          = 'bool';
+      $tab[91]['forcegroupby']      = true;
+      $tab[91]['splititems']        = true;
+      $tab[91]['massiveaction']     = false;
+      $tab[91]['joinparams']        = array('jointype' => 'child');
+
+      $tab[93]['table']             = 'glpi_users';
+      $tab[93]['field']             = 'name';
+      $tab[93]['name']              = __('Writer');
+      $tab[93]['datatype']          = 'itemlink';
+      $tab[93]['right']             = 'all';
+      $tab[93]['forcegroupby']      = true;
+      $tab[93]['massiveaction']     = false;
+      $tab[93]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_ticketfollowups',
+                                                      'joinparams' => array('jointype' => 'child')));
+
 
       $tab += $this->getSearchOptionsStats();
 
-      $tab[150]['table']         = $this->getTable();
-      $tab[150]['field']         = 'takeintoaccount_delay_stat';
-      $tab[150]['name']          = __('Take into account time');
-      $tab[150]['datatype']      = 'timestamp';
-      $tab[150]['forcegroupby']  = true;
-      $tab[150]['massiveaction'] = false;
+
+      $tab[150]['table']            = $this->getTable();
+      $tab[150]['field']            = 'takeintoaccount_delay_stat';
+      $tab[150]['name']             = __('Take into account time');
+      $tab[150]['datatype']         = 'timestamp';
+      $tab[150]['forcegroupby']     = true;
+      $tab[150]['massiveaction']    = false;
 
 
       if (Session::haveRight("show_all_ticket","1")

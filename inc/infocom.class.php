@@ -165,7 +165,9 @@ class Infocom extends CommonDBChild {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -173,16 +175,15 @@ class Infocom extends CommonDBChild {
       switch ($field) {
          case "sink_type" :
             return self::dropdownAmortType($name, $values[$field], false);
-            break;
 
          case "alert" :
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownAlert($options);
-            break;
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    /**
     * Retrieve an item from the database for a device
@@ -514,9 +515,10 @@ class Infocom extends CommonDBChild {
     * @param $options array
    **/
    static function dropdownAlert($options) {
-      $p['name']    = 'alert';
-      $p['value']   = 0;
-      $p['display'] = true;
+
+      $p['name']           = 'alert';
+      $p['value']          = 0;
+      $p['display']        = true;
       $p['inherit_parent'] = false;
 
       if (count($options)) {
@@ -539,16 +541,18 @@ class Infocom extends CommonDBChild {
    /**
     * Dropdown of amortissement type for infocoms
     *
-    * @param $name   select name
-    * @param $value  default value (default 0)
-    * @param $display display or get string
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $display   display or get string (true by default)
    **/
-   static function dropdownAmortType($name, $value=0, $display = true) {
+   static function dropdownAmortType($name, $value=0, $display=true) {
 
-      $output = "<select name='$name'>";
-      $output .= "<option value='0' ".($value==0?" selected ":"").">".Dropdown::EMPTY_VALUE."</option>";
-      $output .= "<option value='2' ".($value==2?" selected ":"").">".__('Linear')."</option>";
-      $output .= "<option value='1' ".($value==1?" selected ":"").">".__('Decreasing')."</option>";
+      $output  = "<select name='$name'>";
+      $output .= "<option value='0' ".(($value == 0)?" selected ":"").">".
+                   Dropdown::EMPTY_VALUE."</option>";
+      $output .= "<option value='2' ".(($value == 2)?" selected ":"").">".__('Linear')."</option>";
+      $output .= "<option value='1' ".(($value == 1)?" selected ":"").">".
+                   __('Decreasing')."</option>";
       $output .= "</select>";
 
       if ($display) {
@@ -889,7 +893,7 @@ class Infocom extends CommonDBChild {
                echo "<tr class='tab_bg_1'><td class='center'>";
 
                Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
-                                     'add', __('Enable the financial and administrative information'),
+                                    'add', __('Enable the financial and administrative information'),
                                      array('itemtype' => $item->getType(),
                                            'items_id' => $dev_ID));
                echo "</td></tr></table></div>";

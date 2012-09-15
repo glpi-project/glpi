@@ -75,32 +75,33 @@ class Fieldblacklist extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab                       = parent::getSearchOptions();
+      $tab                        = parent::getSearchOptions();
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'itemtype';
-      $tab[4]['name']            = __('Type');
-      $tab[4]['massiveaction']   = false;
-      $tab[4]['datatype']        = 'itemtypename';
-      $tab[4]['forcegroupby']    = true;
+      $tab[4]['table']            = $this->getTable();
+      $tab[4]['field']            = 'itemtype';
+      $tab[4]['name']             = __('Type');
+      $tab[4]['massiveaction']    = false;
+      $tab[4]['datatype']         = 'itemtypename';
+      $tab[4]['forcegroupby']     = true;
 
       $tab[6]['table']            = $this->getTable();
       $tab[6]['field']            = 'field';
       $tab[6]['name']             = _n('Field', 'Fields', 1);
-      $tab[6]['massiveaction']   = false;
+      $tab[6]['massiveaction']    = false;
       $tab[6]['datatype']         = 'specific';
       $tab[6]['additionalfields'] = array('itemtype');
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'value';
-      $tab[7]['name']            = __('Value'); // Is also specific
-      $tab[7]['datatype']        = 'specific';
+      $tab[7]['table']            = $this->getTable();
+      $tab[7]['field']            = 'value';
+      $tab[7]['name']             = __('Value'); // Is also specific
+      $tab[7]['datatype']         = 'specific';
       $tab[7]['additionalfields'] = array('itemtype', 'field');
-      $tab[7]['massiveaction']   = false;
+      $tab[7]['massiveaction']    = false;
 
       return $tab;
    }
-   
+
+
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -108,9 +109,8 @@ class Fieldblacklist extends CommonDropdown {
       }
       switch ($field) {
          case 'field':
-
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
-               $target = getItemForItemtype($values['itemtype']);
+               $target       = getItemForItemtype($values['itemtype']);
                $searchOption = $target->getSearchOptionByField('field', $values[$field]);
 //                if (empty($searchOption)) {
 //                   if ($table = getTableNameForForeignKeyField($values[$field])) {
@@ -118,10 +118,10 @@ class Fieldblacklist extends CommonDropdown {
 //                   }
 //                   echo $table.'--';
 //                }
-
                return $searchOption['name'];
             }
             break;
+
          case  'value' :
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                $target = getItemForItemtype($values['itemtype']);
@@ -139,8 +139,9 @@ class Fieldblacklist extends CommonDropdown {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
-      global $DB;
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -148,7 +149,7 @@ class Fieldblacklist extends CommonDropdown {
       switch ($field) {
          case 'field' :
             if (isset($values['itemtype'])
-              && !empty($values['itemtype'])) {
+                && !empty($values['itemtype'])) {
                $options['value'] = $values[$field];
                $options['name']  = $name;
                return self::dropdownField($values['itemtype'], $options);
@@ -157,22 +158,20 @@ class Fieldblacklist extends CommonDropdown {
 
          case 'value' :
             if (isset($values['itemtype'])
-              && !empty($values['itemtype'])) {
+                && !empty($values['itemtype'])) {
                if ($item = getItemForItemtype($values['itemtype'])) {
-                  if (isset($values['field'])
-                  && !empty($values['field'])) {
+                  if (isset($values['field']) && !empty($values['field'])) {
                      $searchOption = $item->getSearchOptionByField('field', $values['field']);
                      return $item->getValueToSelect($searchOption, $name, $values[$field], $options);
                   }
                }
             }
             break;
-
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
+
    /**
     * @see inc/CommonDBTM::prepareInputForAdd()
    **/
@@ -344,7 +343,7 @@ class Fieldblacklist extends CommonDropdown {
 //             } else {
 //                $linkfield = $searchOption['field'];
 //             }
-// 
+//
 //             if ($linkfield == $this->fields['field']) {
 //                $value = $this->fields['value'];
 //             } else {
@@ -360,19 +359,19 @@ class Fieldblacklist extends CommonDropdown {
 //             } else {
 //                $datatype = 'text';
 //             }
-// 
+//
 //             switch ($datatype) {
 //                case 'text' :
 //                case 'string' :
 //                default :
 //                   Html::autocompletionTextField($this, 'value', array('value' => $value));
 //                   break;
-// 
+//
 //                case 'bool':
 //                   Dropdown::showYesNo('value',$value);
 //                   break;
 //             }
-// 
+//
 //          } else {
 //             $itemtype = getItemTypeForTable($table);
 //             Dropdown::show($itemtype, array('name'  => 'value',

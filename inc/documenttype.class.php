@@ -94,7 +94,11 @@ class DocumentType  extends CommonDropdown {
 
       return $tab;
    }
-   
+
+
+   /**
+    * @since version 0.84
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -104,13 +108,18 @@ class DocumentType  extends CommonDropdown {
          case 'icon' :
             if (!empty($values[$field])) {
                return "&nbsp;<img style='vertical-align:middle;' alt='' src='".
-                     $CFG_GLPI["typedoc_icon_dir"]."/".$values[$field]."'>";
+                      $CFG_GLPI["typedoc_icon_dir"]."/".$values[$field]."'>";
             }
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    * @since version 0.84
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -118,11 +127,11 @@ class DocumentType  extends CommonDropdown {
       switch ($field) {
          case 'icon' :
             return Dropdown::dropdownIcons($name, $values[$field],
-                                       GLPI_ROOT."/pics/icones", false);
+                                           GLPI_ROOT."/pics/icones", false);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
 
    static function canCreate() {
       return Session::haveRight('typedoc', 'w');

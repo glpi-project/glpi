@@ -2196,7 +2196,8 @@ class Search {
       }
 
       $ADDITONALFIELDS = '';
-      if (isset($searchopt[$ID]["additionalfields"]) && count($searchopt[$ID]["additionalfields"])) {
+      if (isset($searchopt[$ID]["additionalfields"])
+          && count($searchopt[$ID]["additionalfields"])) {
          foreach ($searchopt[$ID]["additionalfields"] as $key) {
             $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS ".$NAME."_".$num."_$key, ";
          }
@@ -2205,15 +2206,16 @@ class Search {
       switch ($table.".".$field) {
          case "glpi_tickets.due_date" :
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                     `$table$addtable`.`status` AS ".$NAME."_".$num."_2, $ADDITONALFIELDS";
+                     `$table$addtable`.`status` AS ".$NAME."_".$num."_2,
+                      $ADDITONALFIELDS";
 
          case "glpi_tickets.is_late" :
             return " IF(`$table$addtable`.`due_date` IS NOT NULL
                         AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
                              OR (`$table$addtable`.`solvedate` IS NULL
                                  AND `$table$addtable`.`due_date` < NOW())),
-                        1, 0)
-                     AS ".$NAME."_$num, $ADDITONALFIELDS";
+                        1, 0) AS ".$NAME."_$num,
+                     $ADDITONALFIELDS";
 
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
@@ -2227,7 +2229,8 @@ class Search {
             return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$name1`, ' ',
                                                   `$table$addtable`.`$name2`, '$$',
                                                   `$table$addtable`.`id`)
-                                  SEPARATOR '$$$$') AS ".$NAME."_$num, $ADDITONALFIELDS";
+                                  SEPARATOR '$$$$') AS ".$NAME."_$num,
+                     $ADDITONALFIELDS";
 
          case "glpi_users.name" :
             if ($itemtype != 'User') {
@@ -2236,23 +2239,28 @@ class Search {
                   if ((($itemtype == 'Ticket') || ($itemtype == 'Problem'))
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                       && (($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users')
-                          || ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users'))) { // For tickets_users
+                          || ($searchopt[$ID]['joinparams']['beforejoin']['table']
+                                == 'glpi_problems_users'))) { // For tickets_users
 
-                     $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'].
-                                           "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
-                     $addaltemail       = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
-                                                                        ' ',
-                                                                        `$ticket_user_table`.`alternative_email`)
+                     $ticket_user_table
+                        = $searchopt[$ID]['joinparams']['beforejoin']['table'].
+                          "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
+                     $addaltemail
+                        = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
+                                                        `$ticket_user_table`.`alternative_email`)
                                                         SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
                   }
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
-                              AS ".$NAME."_".$num.", $addaltemail $ADDITONALFIELDS";
+                                       AS ".$NAME."_".$num.",
+                           $addaltemail
+                           $ADDITONALFIELDS";
 
                }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                       `$table$addtable`.`realname` AS ".$NAME."_".$num."_2,
-                       `$table$addtable`.`id`  AS ".$NAME."_".$num."_3,
-                       `$table$addtable`.`firstname` AS ".$NAME."_".$num."_4, $ADDITONALFIELDS";
+                        `$table$addtable`.`realname` AS ".$NAME."_".$num."_2,
+                        `$table$addtable`.`id`  AS ".$NAME."_".$num."_3,
+                        `$table$addtable`.`firstname` AS ".$NAME."_".$num."_4,
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2264,7 +2272,8 @@ class Search {
                                                         `$table$addtable`.`id`) SEPARATOR '$$$$')
                                        AS ".$NAME."_$num, ";
                }
-               return " `$table$addtable`.`$field` AS ".$NAME."_$num, $ADDITONALFIELDS";
+               return " `$table$addtable`.`$field` AS ".$NAME."_$num,
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2272,27 +2281,32 @@ class Search {
             return " FLOOR(SUM(`$table$addtable`.`$field`)
                            * COUNT(DISTINCT `$table$addtable`.`id`)
                            / COUNT(`$table$addtable`.`id`)) AS ".$NAME."_".$num.",
-                     MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2, $ADDITONALFIELDS";
+                     MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
+                      $ADDITONALFIELDS";
 
          case "glpi_documents_items.count" :
-            return " COUNT(DISTINCT `glpi_documents_items`.`id`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " COUNT(DISTINCT `glpi_documents_items`.`id`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_contracts_items.count" :
-            return " COUNT(DISTINCT `glpi_contracts_items`.`id`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " COUNT(DISTINCT `glpi_contracts_items`.`id`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_contractcosts.cost" :
-            return " SUM(`glpi_contractcosts$addtable`.`cost`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " SUM(`glpi_contractcosts$addtable`.`cost`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_computers_softwareversions.count" :
             return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
-                        AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                          AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_items_deviceharddrives.capacity" :
             if ($itemtype != 'DeviceHardDrive') {
                return " SUM(`glpi_items_deviceharddrives`.`capacity`)
                         / COUNT(`glpi_items_deviceharddrives`.`id`)
-                        * COUNT(DISTINCT `glpi_items_deviceharddrives`.`id`)
-                              AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                        * COUNT(DISTINCT `glpi_items_deviceharddrives`.`id`) AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2300,15 +2314,16 @@ class Search {
             if ($itemtype != 'DeviceMemory') {
                return " SUM(`glpi_items_devicememories`.`size`)
                         / COUNT(`glpi_items_devicememories`.`id`)
-                        * COUNT(DISTINCT `glpi_items_devicememories`.`id`)
-                              AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                        * COUNT(DISTINCT `glpi_items_devicememories`.`id`) AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
             break;
 
          case "glpi_items_deviceprocessors.frequency" :
             if ($itemtype != 'DeviceProcessor') {
                return " SUM(`glpi_items_deviceprocessors`.`frequency`)
-                        / COUNT(`glpi_items_deviceprocessors`.`id`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                        / COUNT(`glpi_items_deviceprocessors`.`id`) AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2317,29 +2332,35 @@ class Search {
          case "glpi_ticketfollowups.count" :
          case "glpi_tickettasks.count" :
          case "glpi_tickets_tickets.count" :
-            return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_ticketcosts.cost_time" :
          case "glpi_ticketcosts.cost_fixed" :
          case "glpi_ticketcosts.cost_material" :
-            return " SUM(`glpi_ticketcosts$addtable`.`$field`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " SUM(`glpi_ticketcosts$addtable`.`$field`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_ticketcosts.totalcost" :
-            return " SUM(`glpi_ticketcosts$addtable`.`actiontime`*`glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
-                         + `glpi_ticketcosts$addtable`.`cost_fixed` + `glpi_ticketcosts$addtable`.`cost_material`) AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " SUM(`glpi_ticketcosts$addtable`.`actiontime`
+                         * `glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
+                         + `glpi_ticketcosts$addtable`.`cost_fixed`
+                         + `glpi_ticketcosts$addtable`.`cost_material`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_tickets_tickets.tickets_id_1" :
             return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
-                           AS ".$NAME."_$num,
+                                 AS ".$NAME."_$num,
                      GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num."_2, $ADDITONALFIELDS";
+                                 AS ".$NAME."_".$num."_2,
+                     $ADDITONALFIELDS";
 
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
-                         AS ".$NAME."_$num, ";
+                                  AS ".$NAME."_$num, ";
             if ($itemtype == 'Computer') {
-               $port .= " GROUP_CONCAT(`glpi_items_devicenetworkcards`.`mac`
-                                       SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+               $port .= " GROUP_CONCAT(`glpi_items_devicenetworkcards`.`mac` SEPARATOR '$$$$')
+                                      AS ".$NAME."_".$num."_2, ";
             }
             return $port.$ADDITONALFIELDS;
 
@@ -2348,9 +2369,10 @@ class Search {
                 && ($ID == 20)) {
                return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_profiles_users`.`entities_id` SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num."_2,
+                                    AS ".$NAME."_".$num."_2,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num."_3, $ADDITONALFIELDS";
+                                    AS ".$NAME."_".$num."_3,
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2358,11 +2380,12 @@ class Search {
             if (($itemtype == 'User')
                 && ($ID == 80)) {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
-                           AS ".$NAME."_$num,
+                                    AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_profiles_users`.`profiles_id` SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num."_2,
+                                    AS ".$NAME."_".$num."_2,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num."_3, $ADDITONALFIELDS";
+                                    AS ".$NAME."_".$num."_3,
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2375,7 +2398,8 @@ class Search {
                               AS ".$NAME."_".$num."_3,
                      `glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field`
-                              AS ".$NAME."_".$num."_4, $ADDITONALFIELDS";
+                              AS ".$NAME."_".$num."_4,
+                     $ADDITONALFIELDS";
 
          case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
@@ -2383,7 +2407,8 @@ class Search {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `$table$addtable`.`$field`, '$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                                    AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
             break;
 
@@ -2396,50 +2421,58 @@ class Search {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                                    AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
             return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`name`, ' - ',
-                                                  `$table$addtable`.`$field`,'$$',
-                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
-                        AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                                                  `$table$addtable`.`$field`, '$$',
+                                                  `$table$addtable`.`id`) SEPARATOR '$$$$')
+                                 AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case "glpi_states.name" :
             if ($meta && ($meta_type == 'Software')) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'$$',
+                                                     `$table$addtable`.`$field`, '$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                                     AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             } else if ($itemtype == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
                                                      `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                                    AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
             break;
 
          case 'glpi_crontasks.description' :
-            return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+            return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case 'glpi_notifications.event' :
             return " `glpi_notifications`.`itemtype` AS `itemtype`,
-                     `glpi_notifications`.`event` AS ".$NAME."_".$num.", $ADDITONALFIELDS";
+                     `glpi_notifications`.`event` AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
 
          case 'glpi_tickets.name' :
             if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num.", $ADDITONALFIELDS";
-            } else {
-               return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                        `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
-                        `$table$addtable`.`content` AS ".$NAME."_".$num."_3,
-                        `$table$addtable`.`status` AS ".$NAME."_".$num."_4, $ADDITONALFIELDS";
+                                    AS ".$NAME."_".$num.",
+                        $ADDITONALFIELDS";
             }
+            return " `$table$addtable`.`$field` AS ".$NAME."_$num,
+                     `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
+                     `$table$addtable`.`content` AS ".$NAME."_".$num."_3,
+                     `$table$addtable`.`status` AS ".$NAME."_".$num."_4,
+                     $ADDITONALFIELDS";
 
          case 'glpi_tickets.items_id':
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                     `$table$addtable`.`itemtype` AS ".$NAME."_".$num."_2, $ADDITONALFIELDS";
+                     `$table$addtable`.`itemtype` AS ".$NAME."_".$num."_2,
+                     $ADDITONALFIELDS";
       }
 
       //// Default cases
@@ -2485,30 +2518,36 @@ class Search {
                                                          INTERVAL (`$table$addtable`.`".
                                                                      $searchopt[$ID]["datafields"][2].
                                                                      "` $add_minus) $interval)
-                                         SEPARATOR '$$$$') AS ".$NAME."_$num, $ADDITONALFIELDS";
+                                         SEPARATOR '$$$$') AS ".$NAME."_$num,
+                           $ADDITONALFIELDS";
                }
                return "ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
                                INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
-                                          "` $add_minus) $interval) AS ".$NAME."_$num, $ADDITONALFIELDS";
+                                          "` $add_minus) $interval) AS ".$NAME."_$num,
+                       $ADDITONALFIELDS";
 
             case "itemlink" :
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
                                                         `$table$addtable`.`id`) SEPARATOR '$$$$')
-                              AS ".$NAME."_$num, $ADDITONALFIELDS";
+                                       AS ".$NAME."_$num,
+                           $ADDITONALFIELDS";
                }
                return " $tocompute AS ".$NAME."_$num,
-                        `$table$addtable`.`id` AS ".$NAME."_".$num."_2, $ADDITONALFIELDS";
+                        `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
+                        $ADDITONALFIELDS";
          }
       }
       // Default case
       if ($meta
          || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
          return " GROUP_CONCAT(DISTINCT CONCAT($tocompute,'$$',$tocomputeid) SEPARATOR '$$$$')
-                     AS ".$NAME."_$num, $ADDITONALFIELDS";
+                              AS ".$NAME."_$num,
+                  $ADDITONALFIELDS";
       }
-      return "$tocompute AS ".$NAME."_$num, $ADDITONALFIELDS";
+      return "$tocompute AS ".$NAME."_$num,
+              $ADDITONALFIELDS";
    }
 
 

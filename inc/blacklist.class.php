@@ -144,29 +144,31 @@ class Blacklist extends CommonDropdown {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = false;
       switch ($field) {
-
          case 'type' :
             $options['value']  = $values[$field];
             return self::dropdownType($name, $options);
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
+
    /**
     * Dropdown of blacklist types
     *
     * @param $name            select name
     * @param $options   array of possible options:
-    *    - value : integer / preselected value (default 0)
-    *    - toadd : array / array of specific values to add at the begining
-    *    - on_change : string / value to transmit to "onChange"
+    *    - value       : integer / preselected value (default 0)
+    *    - toadd       : array / array of specific values to add at the begining
+    *    - on_change   : string / value to transmit to "onChange"
+    *    - display
     *
     * @return string id of the select
    **/

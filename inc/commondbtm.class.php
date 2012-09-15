@@ -3928,7 +3928,8 @@ class CommonDBTM extends CommonGLPI {
                   return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
 
                case "timestamp" :
-                  if ($value==0 && isset($searchoptions['emptylabel'])) {
+                  if (($value == 0)
+                      && isset($searchoptions['emptylabel'])) {
                      return $searchoptions['emptylabel'];
                   }
                   $withseconds = false;
@@ -3964,7 +3965,8 @@ class CommonDBTM extends CommonGLPI {
                   if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
                      return $searchoptions['toadd'][$value];
                   }
-                  if ($value==0 && isset($searchoptions['emptylabel'])) {
+                  if (($value == 0)
+                      && isset($searchoptions['emptylabel'])) {
                      return $searchoptions['emptylabel'];
                   }
 
@@ -4095,7 +4097,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $options['display'] = false;
-         $unit = '';
+         $unit               = '';
          if (isset($searchoptions['unit'])) {
             $unit = $searchoptions['unit'];
          }
@@ -4194,8 +4196,7 @@ class CommonDBTM extends CommonGLPI {
                if ($searchoptions['table'] == 'glpi_users') {
                   return User::dropdown($options);
                }
-               return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
-                           $options);
+               return Dropdown::show(getItemTypeForTable($searchoptions["table"]), $options);
 
             case "right" :
                $copytooption     = array('nonone', 'noread', 'nowrite');

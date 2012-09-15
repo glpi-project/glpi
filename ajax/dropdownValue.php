@@ -246,16 +246,16 @@ if ($item instanceof CommonTreeDropdown) {
             $ID        = $data['id'];
             $level     = $data['level'];
             $outputval = $data['name'];
-            
+
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
                   if (isset($data[$key])) {
                      $withoutput = $data[$key];
                      if (isForeignKeyField($key)) {
                         $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
-                                                               $data[$key]);
+                                                                $data[$key]);
                      }
-                     if (strlen($withoutput)>0 && $withoutput != '&nbsp;') {
+                     if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
                         $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
                      }
                   }
@@ -276,7 +276,7 @@ if ($item instanceof CommonTreeDropdown) {
             $class = " class='tree' ";
             $raquo = "&raquo;";
 
-            if ($level==1) {
+            if ($level == 1) {
                $class = " class='treeroot'";
                $raquo = "";
             }
@@ -490,17 +490,17 @@ if ($item instanceof CommonTreeDropdown) {
                      $withoutput = $data[$key];
                      if (isForeignKeyField($key)) {
                         $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
-                                                               $data[$key]);
+                                                                $data[$key]);
                      }
-                     if (strlen($withoutput)>0 && $withoutput != '&nbsp;') {
+                     if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
                         $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
                      }
                   }
                }
             }
-            $ID = $data['id'];
+            $ID         = $data['id'];
             $addcomment = "";
-            $title = $outputval;
+            $title      = $outputval;
             if (isset($data["comment"])) {
                $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
             }
