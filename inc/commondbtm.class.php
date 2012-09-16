@@ -4182,7 +4182,7 @@ class CommonDBTM extends CommonGLPI {
                }
 
             case "dropdown" :
-               $copytooption = array('condition', 'displaywith', 'emptylabel', 'right', 'toadd');
+               $copytooption     = array('condition', 'displaywith', 'emptylabel', 'right', 'toadd');
                $options['name']  = $name;
                $options['value'] = $value;
                foreach ($copytooption as $key) {

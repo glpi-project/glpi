@@ -4423,7 +4423,6 @@ class Search {
                   }
                }
                return $out;
-               break;
 
             case "text" :
                $separate = '<br>';
@@ -5197,11 +5196,12 @@ class Search {
                                'searchopt' => $searchopt[$field_num]);
                   // No is / isnot if no limits defined
                   if (!isset($searchopt[$field_num]['min'])
-                     && !isset($searchopt[$field_num]['max'])) {
+                      && !isset($searchopt[$field_num]['max'])) {
                      unset($opt['equals']);
                      unset($opt['notequals']);
                   }
                   return $opt;
+
                case 'bool' :
                   return array('equals'    => __('is'),
                                'notequals' => __('is not'),

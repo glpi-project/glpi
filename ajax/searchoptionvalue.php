@@ -55,9 +55,9 @@ if (isset($_POST['searchtype'])) {
       $addmeta = '2';
    }
 
-   $inputname = 'contains'.$addmeta.'['.$_POST['num'].']';
-   $display   = false;
-   $item = getItemForItemtype($_POST['itemtype']);
+   $inputname        = 'contains'.$addmeta.'['.$_POST['num'].']';
+   $display          = false;
+   $item             = getItemForItemtype($_POST['itemtype']);
    $options['value'] = $_POST['value'];
 
    switch ($_POST['searchtype']) {
