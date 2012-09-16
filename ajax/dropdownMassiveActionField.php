@@ -75,9 +75,9 @@ if (isset($_POST["itemtype"])
 
    $plugdisplay = false;
    // Specific plugin Type case
-   if (($plug=isPluginItemType($_POST["itemtype"]))
+   if (($plug = isPluginItemType($_POST["itemtype"]))
       // Specific for plugin which add link to core object
-      || ($plug=isPluginItemType(getItemTypeForTable($search['table'])))) {
+       || ($plug = isPluginItemType(getItemTypeForTable($search['table'])))) {
       $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
                                        array('itemtype' => $_POST["itemtype"],
                                              'options'  => $search));
@@ -93,7 +93,7 @@ if (isset($_POST["itemtype"])
    }
    if (!$plugdisplay) {
       $options = array();
-      $values = array();
+      $values  = array();
       // For ticket template or aditional options of massive actions
       if (isset($_POST['options']) && strlen($_POST['options'])) {
          $options = unserialize(stripslashes($_POST['options']));

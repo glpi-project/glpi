@@ -2447,8 +2447,6 @@ class Ticket extends CommonITILObject {
             $options['global'] = true;
             $options['value']  = $values[$field];
             return TicketValidation::dropdownStatus($name, $options);
-
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }

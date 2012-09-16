@@ -457,10 +457,10 @@ class Cartridge extends CommonDBTM {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $actions = array('delete' => _x('button', 'Delete'),
                              'activate_infocoms' => __('Enable the financial and administrative information'),
-                             'restore' => __('Back to stock'));
-            $paramsma = array('num_displayed' => $number,
+                             'restore'           => __('Back to stock'));
+            $paramsma = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
-                              'rand' => $rand);
+                              'rand'             => $rand);
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
