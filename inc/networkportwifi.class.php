@@ -197,7 +197,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $options   array
    **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
-      global $DB;
 
       if (!is_array($values)) {
          $values = array($field => $values);

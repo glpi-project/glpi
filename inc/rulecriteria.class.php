@@ -81,12 +81,18 @@ class RuleCriteria extends CommonDBChild {
       }
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function prepareInputForAdd($input) {
+
       if (!isset($input['criteria']) || empty($input['criteria'])) {
          return false;
       }
       return $input;
    }
+
 
    function getSearchOptions() {
 
@@ -116,57 +122,73 @@ class RuleCriteria extends CommonDBChild {
       return $tab;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       switch ($field) {
-         case 'criteria':
+         case 'criteria' :
             $generic_rule = new Rule;
             if (isset($values['rules_id'])
-              && !empty($values['rules_id'])
-              && $generic_rule->getFromDB($values['rules_id'])) {
+                && !empty($values['rules_id'])
+                && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   return $rule->getCriteria($values[$field]);
                }
             }
             break;
 
-         case 'condition':
+         case 'condition' :
             $generic_rule = new Rule;
             if (isset($values['rules_id'])
-              && !empty($values['rules_id'])
-              && $generic_rule->getFromDB($values['rules_id'])) {
+                && !empty($values['rules_id'])
+                && $generic_rule->getFromDB($values['rules_id'])) {
                if (isset($values['criteria']) && !empty($values['criteria'])) {
                   $criterion = $values['criteria'];
                }
-
                return $rule->getConditionByID($values[$field], $generic_rule->fields["sub_type"], $criterion);
             }
             break;
 
-         case 'pattern':
+         case 'pattern' :
             if (!isset($values["criteria"]) || !isset($values["condition"])) {
                return NOT_AVAILABLE;
             }
             $generic_rule = new Rule;
             if (isset($values['rules_id'])
-              && !empty($values['rules_id'])
-              && $generic_rule->getFromDB($values['rules_id'])) {
+                && !empty($values['rules_id'])
+                && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   return $rule->getCriteriaDisplayPattern($values["criteria"], $values["condition"],
                                                           $values[$field]);
                }
             }
             break;
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
       global $DB;
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -175,8 +197,8 @@ class RuleCriteria extends CommonDBChild {
          case 'criteria' :
             $generic_rule = new Rule;
             if (isset($values['rules_id'])
-              && !empty($values['rules_id'])
-              && $generic_rule->getFromDB($values['rules_id'])) {
+                && !empty($values['rules_id'])
+                && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   $options['value'] = $values[$field];
                   $options['name']  = $name;
@@ -185,11 +207,11 @@ class RuleCriteria extends CommonDBChild {
             }
             break;
 
-         case 'condition':
+         case 'condition' :
             $generic_rule = new Rule;
             if (isset($values['rules_id'])
-              && !empty($values['rules_id'])
-              && $generic_rule->getFromDB($values['rules_id'])) {
+                && !empty($values['rules_id'])
+                && $generic_rule->getFromDB($values['rules_id'])) {
                if (isset($values['criteria']) && !empty($values['criteria'])) {
                   $options['criterion'] = $values['criteria'];
                }
@@ -199,23 +221,25 @@ class RuleCriteria extends CommonDBChild {
             }
             break;
 
-         case 'pattern':
+         case 'pattern' :
             if (!isset($values["criteria"]) || !isset($values["condition"])) {
                return NOT_AVAILABLE;
             }
             $generic_rule = new Rule;
             if (isset($values['rules_id'])
-              && !empty($values['rules_id'])
-              && $generic_rule->getFromDB($values['rules_id'])) {
+                && !empty($values['rules_id'])
+                && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   /// TODO : manage display param to this function : need to send ot to all under functions
-                  $rule->displayCriteriaSelectPattern($name, $values["criteria"], $values["condition"], $values[$field]);
+                  $rule->displayCriteriaSelectPattern($name, $values["criteria"],
+                                                      $values["condition"], $values[$field]);
                }
             }
             break;
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    /**
     * Get all criterias for a given rule

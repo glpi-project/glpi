@@ -293,7 +293,7 @@ class Rule extends CommonDBTM {
          $values = array($field => $values);
       }
       switch ($field) {
-         case 'match':
+         case 'match' :
             switch ($values[$field]) {
                case self::AND_MATCHING :
                   return __('and');
@@ -317,7 +317,6 @@ class Rule extends CommonDBTM {
     * @param  $options   array
    **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
-      global $DB;
 
       if (!is_array($values)) {
          $values = array($field => $values);
@@ -328,11 +327,10 @@ class Rule extends CommonDBTM {
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                $options['value'] = $values[$field];
                $options['name']  = $name;
-               $rule = new static();
+               $rule             = new static();
                return $rule->dropdownRulesMatch($options);
             }
             break;
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -426,9 +424,12 @@ class Rule extends CommonDBTM {
    /**
     * Display a dropdown with all the rule matching
     *
+    * @since version 0.84 new proto
+    *
     * @param $options      array of parameters
    **/
-   function dropdownRulesMatch($options = array()) {
+   function dropdownRulesMatch($options=array()) {
+
       $p['name']     = 'match';
       $p['value']    = '';
       $p['restrict'] = $this->restrict_matching;
@@ -606,7 +607,7 @@ class Rule extends CommonDBTM {
 
          echo "<tr class='tab_bg_1 center'>";
          echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
-         $rand = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
+         $rand   = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
          $params = array('field'    => '__VALUE__',
                          'sub_type' => $this->getType());
 
@@ -642,7 +643,7 @@ class Rule extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td>";
-      $rand = $this->dropdownCriteria();
+      $rand   = $this->dropdownCriteria();
       $params = array('criteria' => '__VALUE__',
                       'rand'     => $rand,
                       'sub_type' => $this->getType());
@@ -755,10 +756,13 @@ class Rule extends CommonDBTM {
    /**
     * Display the dropdown of the criterias for the rule
     *
+    * @since version 0.84 new proto
+    *
     * @param $options   array of options : may be readonly
+    *
     * @return the initial value (first)
    **/
-   function dropdownCriteria($options = array()) {
+   function dropdownCriteria($options=array()) {
       global $CFG_GLPI;
 
       $p['name']    = 'criteria';

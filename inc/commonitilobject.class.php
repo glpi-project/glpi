@@ -2025,7 +2025,6 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $name            (default '')
     * @param $values          (default '')
     * @param $options   array
-    *
    **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
 

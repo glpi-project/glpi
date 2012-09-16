@@ -213,6 +213,7 @@ class NotImportedEmail extends CommonDBTM {
     * @param $reason_id
    **/
    static function getReason($reason_id) {
+
       $tab = self::getAllReasons();
       if (isset($tab[$reason_id])) {
          return $tab[$reason_id];
@@ -220,15 +221,27 @@ class NotImportedEmail extends CommonDBTM {
       return NOT_AVAILABLE;
    }
 
+
    /**
+    * @since versin 0.84
+    *
     * Get All possible reasons array
    **/
    static function getAllReasons() {
-      return array(self::MATCH_NO_RULE =>  __('Unable to affect the email to an entity'),
+
+      return array(self::MATCH_NO_RULE => __('Unable to affect the email to an entity'),
                    self::USER_UNKNOWN  => __('Email not found. Impossible import'),
                    self::FAILED_INSERT => __('Failed operation'));
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -241,17 +254,26 @@ class NotImportedEmail extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
-      global $DB;
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = false;
+
       switch ($field) {
          case 'reason' :
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, self::getAllReasons(), $options);
-            break;
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }

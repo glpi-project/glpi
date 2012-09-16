@@ -51,6 +51,7 @@ class NotificationEvent extends CommonDBTM {
     * @param $options   array to pass to showFromArray or $value
    **/
    static function dropdownEvents($itemtype, $options=array()) {
+
       $p['name']    = 'event';
       $p['display'] = true;
       $p['value']   = '';
