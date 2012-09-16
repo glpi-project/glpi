@@ -80,7 +80,7 @@ if (isset($_POST['full_page_tab'])) {
    // for being used full space ...
    if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
       // Debug string : not really need translation.
-      $msg  = 'WARNING : full page tabs are only for debug/validation purpose !\n';
+      $msg  = 'WARNING: full page tabs are only for debug/validation purpose !\n';
       $msg .= 'Actions on this page may have undefined result.';
       echo "<script type='text/javascript' >\n";
       echo "alert('$msg')";
