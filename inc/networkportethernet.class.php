@@ -82,18 +82,17 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    static function getInstantiationNetworkPortDisplayOptions() {
+
       return array('ethernet_opposite' => array('name'    => __('the opposite link'),
                                                 'default' => false));
    }
 
 
-  /**
-   * @param $group               HTMLTableGroup object
-   * @param $super               HTMLTableSuperHeader object
-   * @param $options    array
-  **/
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTableHeaders
+   **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super = NULL,
+                                             HTMLTableSuperHeader $internet_super=NULL,
                                              HTMLTableHeader $father=NULL,
                                              array $options=array()) {
 
@@ -171,14 +170,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
             $opposite_cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                            $connect_cell_value);
-            $opposite_cell->setAttributForTheRow(array('class' =>
-                                                       'htmltable_upper_separation_cell'));
+            $opposite_cell->setAttributForTheRow(array('class' => 'htmltable_upper_separation_cell'));
 
             $oppositeEthernetPort = $oppositePort->getInstantiation();
             if ($oppositeEthernetPort !== false) {
                $oppositeEthernetPort->getEthernetInstantiationHTMLTable($oppositePort, $row,
-                                                                         $opposite_cell,
-                                                                         $opposite_options);
+                                                                        $opposite_cell,
+                                                                        $opposite_options);
             }
 
          } else {
@@ -193,7 +191,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $this->getEthernetInstantiationHTMLTable($netport, $row, $cell, $options);
       return $cell;
-
    }
 
 
