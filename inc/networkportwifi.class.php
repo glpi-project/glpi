@@ -89,12 +89,10 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    /**
-    * @param $group              HTMLTableGroup object
-    * @param $super              HTMLTableSuperHeader object
-    * @param $options   array
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                              HTMLTableSuperHeader $internet_super = NULL,
+                                              HTMLTableSuperHeader $internet_super=NULL,
                                               HTMLTableHeader $father=NULL,
                                               array $options=array()) {
 
@@ -105,7 +103,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $group->addHeader('Version', __('Wifi protocol version'), $super);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-
       return NULL;
    }
 

@@ -144,16 +144,17 @@ class NetworkPortInstantiation extends CommonDBChild {
     *
     * @param $group           HTMLTableGroup object
     * @param $super           HTMLTableSuperHeader object
-    * @param $internet_super  HTMLTableSuperHeader object for the internet sub part
+    * @param $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
+    * @param $father          HTMLTableHeader object (default NULL)
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the columns that must not be display
     *
     * @return the father group for the Internet Informations ...
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                              HTMLTableSuperHeader $internet_super = NULL,
-                                              HTMLTableHeader $father=NULL,
-                                              array $options=array()) {
+                                             HTMLTableSuperHeader $internet_super=NULL,
+                                             HTMLTableHeader $father=NULL,
+                                             array $options=array()) {
 
       $display_options = &$options['display_options'];
 
@@ -225,8 +226,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                $cell_value = '<i>'.$virtualPort->getLink().'</i>';
 
                $virtual_cell = $row->addCell($virtual_header, $cell_value, $father);
-               $virtual_cell->setAttributForTheRow(array('class' =>
-                                                         'htmltable_upper_separation_cell'));
+               $virtual_cell->setAttributForTheRow(array('class' => 'htmltable_upper_separation_cell'));
 
                if (($this->canHaveVLAN) && ($display_options['vlans'])) {
                   NetworkPort_Vlan::getHTMLTableCellsForItem($row, $virtualPort, $virtual_cell,

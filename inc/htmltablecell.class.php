@@ -127,6 +127,9 @@ class HTMLTableCell extends HTMLTableEntity {
    }
 
 
+   /**
+    * @param $attributForTheRow
+   **/
    function setAttributForTheRow($attributForTheRow) {
       $this->attributForTheRow = $attributForTheRow;
    }
@@ -243,11 +246,12 @@ class HTMLTableCell extends HTMLTableEntity {
 
    /**
     * @param $index
+    * @param $options   array
    **/
-   function display($index, array $options = array()) {
+   function display($index, array $options=array()) {
 
       if (($index >= $this->start)
-          && ($index < $this->start + $this->numberOfLines)) {
+          && ($index < ($this->start + $this->numberOfLines))) {
 
          if ($index == $this->start) {
             if ($this->item instanceof CommonDBTM) {

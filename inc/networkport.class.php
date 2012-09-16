@@ -398,6 +398,8 @@ class NetworkPort extends CommonDBChild {
     * Update $_SESSION to set the display options of NetworkPort. If the $_GET variable is not
     * defined, then, set it to default value.
     *
+    * @since version 0.84
+    *
     * Is called by the popup to get the links to update and by the showForItem to set initial
     * values, if neccesary
     *
@@ -406,7 +408,7 @@ class NetworkPort extends CommonDBChild {
     * @param $link_options string    the fields to add to the link (for instance, itemtype and so on)
     *                                (default '')
     *
-    * @result all the options + the links if ($setLinks == true)
+    * @return all the options + the links if ($setLinks == true)
    **/
    static function updateAndGetDisplayOptions($itemtype, $setLinks, $link_options='') {
 
@@ -430,7 +432,7 @@ class NetworkPort extends CommonDBChild {
                                         'default' => true));
 
       foreach (self::getNetworkPortInstantiations() as $portType) {
-         $portTypeName = $portType::getTypeName(0);
+         $portTypeName           = $portType::getTypeName(0);
          $options[$portTypeName] = $portType::getInstantiationNetworkPortDisplayOptions();
       }
 
@@ -446,10 +448,10 @@ class NetworkPort extends CommonDBChild {
                $optionLink = "<a href='".$_SERVER["PHP_SELF"]."?display_".$option_name.'=';
                if ($display_options[$option_name]) {
                   $optionLink .= 'false';
-                  $content      = sprintf(__('Hide %s'), $attributs['name']);
+                  $content     = sprintf(__('Hide %s'), $attributs['name']);
                } else {
                   $optionLink .= 'true';
-                  $content      = sprintf(__('Show %s'), $attributs['name']);
+                  $content     = sprintf(__('Show %s'), $attributs['name']);
                }
                $optionLink .= "&amp;$link_options'>$content</a>";
 
@@ -462,6 +464,11 @@ class NetworkPort extends CommonDBChild {
    }
 
 
+   /**
+    * @since v ersion 0.84
+    *
+    * @param $itemtype
+   **/
    static function showDislayOptions($itemtype) {
 
       if (isset($_GET['reset'])) {
@@ -469,19 +476,19 @@ class NetworkPort extends CommonDBChild {
       }
 
       $link_options = "itemtype=$itemtype&amp;popup=networkport_display_options&amp;update_origin";
-      $options = self::updateAndGetDisplayOptions($itemtype, true, $link_options);
+      $options      = self::updateAndGetDisplayOptions($itemtype, true, $link_options);
 
       if (isset($_GET['update_origin'])) {
          Ajax::refreshPopupTab();
       }
 
       echo "<div class='center'>";
-
       echo "<table class='tab_cadre'>";
       echo "<tr><th>".__s('Network ports display options')."</th></tr>\n";
 
-      echo "<tr><td><a href='".$_SERVER["PHP_SELF"]."?reset&amp;$link_options'>" .
-            __('Reset display options') . "</a></td></tr>\n";
+      echo "<tr><td>";
+      echo "<a href='".$_SERVER["PHP_SELF"]."?reset&amp;$link_options'>".__('Reset display options');
+      echo "</a></td></tr>\n";
 
       foreach ($options as $option_group_name => $option_group) {
          if (count($option_group) > 0) {
@@ -516,7 +523,7 @@ class NetworkPort extends CommonDBChild {
          return false;
       }
 
-      $netport = new self();
+      $netport       = new self();
       $netport->item = $item;
 
       if ($itemtype == 'NetworkPort') {
@@ -666,13 +673,13 @@ class NetworkPort extends CommonDBChild {
             if ($display_options['characteristics']) {
                $instantiation = new $portType();
                $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
-                                                                 NULL, $table_options);
+                                                                NULL, $table_options);
                unset ($instantiation);
             }
          }
 
-         if (($display_options['internet'])
-             && (!$display_options['characteristics'])) {
+         if ($display_options['internet']
+             && !$display_options['characteristics']) {
             NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, NULL, $table_options);
          }
 
