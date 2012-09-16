@@ -1107,6 +1107,14 @@ class CronTask extends CommonDBTM{
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+   **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
 
       if (!is_array($values)) {

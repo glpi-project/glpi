@@ -2213,7 +2213,16 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+   **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+      global $DB;
 
       if (!is_array($values)) {
          $values = array($field => $values);

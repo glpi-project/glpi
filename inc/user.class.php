@@ -2357,6 +2357,13 @@ class User extends CommonDBTM {
    }
 
 
+   /**
+    * @since ersion 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -2374,6 +2381,14 @@ class User extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (defaut '')
+    * @param $options   array
+   **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
 
       if (!is_array($values)) {

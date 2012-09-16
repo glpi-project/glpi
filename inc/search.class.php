@@ -4273,18 +4273,18 @@ class Search {
 
          case 'glpi_tickets.name' :
             if (isset($searchopt[$ID]['forcegroupby'])
-             && $searchopt[$ID]['forcegroupby']) {
+                && $searchopt[$ID]['forcegroupby']) {
                $split = explode("$$$$",$data[$NAME.$num]);
                $out   = '';
-               $link = Toolbox::getItemTypeFormURL('Ticket');
+               $link  = Toolbox::getItemTypeFormURL('Ticket');
                foreach ($split as $val) {
                   if (!empty($val)) {
                      $split2 = self::explodeWithID("$$", $val);
-                     $out .= "<a id='ticket".$split2[1]."' href=\"".$link;
-                     $out .= (strstr($link,'?') ?'&amp;' :  '?');
-                     $out .= 'id='.$split2[1];
-                     $out .= "\">";
-                     $name = $split2[0];
+                     $out   .= "<a id='ticket".$split2[1]."' href=\"".$link;
+                     $out   .= (strstr($link,'?') ?'&amp;' :  '?');
+                     $out   .= 'id='.$split2[1];
+                     $out   .= "\">";
+                     $name   = $split2[0];
                      if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
                      }
@@ -4292,29 +4292,27 @@ class Search {
                   }
                }
                return $out;
-            } else {
-               $link = Toolbox::getItemTypeFormURL('Ticket');
-               $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
-               $out .= (strstr($link,'?') ?'&amp;' :  '?');
-               $out .= 'id='.$data[$NAME.$num."_2"];
-               // Force solution tab if solved
-               if ($data[$NAME.$num."_4"]=='solved') {
-                  $out .= "&amp;forcetab=Ticket$2";
-               }
-               $out .= "\">";
-               $name = $data[$NAME.$num];
-               if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
-                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
-               }
-               $out .= $name."</a>";
-
-               $out = sprintf(__('%1$s %2$s'), $out,
-                              Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
-                                                array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
-                                                      'display' => false)));
-               return $out;
             }
-            break;
+            $link = Toolbox::getItemTypeFormURL('Ticket');
+            $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
+            $out .= (strstr($link,'?') ?'&amp;' :  '?');
+            $out .= 'id='.$data[$NAME.$num."_2"];
+            // Force solution tab if solved
+            if ($data[$NAME.$num."_4"]=='solved') {
+               $out .= "&amp;forcetab=Ticket$2";
+            }
+            $out .= "\">";
+            $name = $data[$NAME.$num];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
+               $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
+            }
+            $out .= $name."</a>";
+
+            $out = sprintf(__('%1$s %2$s'), $out,
+                           Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
+                                                   array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
+                                                         'display' => false)));
+            return $out;
 
          case "glpi_tickets.due_date" :
             // No due date in waiting status

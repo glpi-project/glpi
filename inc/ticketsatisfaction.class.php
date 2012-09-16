@@ -249,7 +249,7 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $field
     * @param $name                  (default '')
     * @param $values                (default '')
-    * @param arr $options   array
+    * @param $options   array
    **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
 

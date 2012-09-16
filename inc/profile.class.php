@@ -480,7 +480,8 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__("Profile's interface")."</td>";
       echo "<td>";
-      Dropdown::showFromArray('interface', self::getInterfaces(), array('value'=>$this->fields["interface"]));
+      Dropdown::showFromArray('interface', self::getInterfaces(),
+                              array('value'=>$this->fields["interface"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Update password')."</td><td>";
@@ -1842,6 +1843,14 @@ class Profile extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -1850,11 +1859,9 @@ class Profile extends CommonDBTM {
       switch ($field) {
          case 'interface':
             return self::getInterfaceName($values[$field]);
-            break;
 
          case 'helpdesk_hardware':
             return self::getHelpdeskHardwareTypeName($values[$field]);
-            break;
 
          case "helpdesk_item_type":
             $types = explode(',', $values[$field]);
@@ -1865,13 +1872,21 @@ class Profile extends CommonDBTM {
                }
             }
             return implode(', ',$message);
-            break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
-      global $DB;
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -1880,18 +1895,15 @@ class Profile extends CommonDBTM {
          case 'interface' :
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, self::getInterfaces(), $options);
-            break;
 
          case 'helpdesk_hardware' :
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, self::getHelpdeskHardwareTypes(), $options);
-            break;
-         case "helpdesk_item_type":
-               $options['values'] = explode(',', $values[$field]);
-               $options['name']  = $name;
-               return self::dropdownHelpdeskItemtypes($options);
-            break;
 
+         case "helpdesk_item_type":
+            $options['values'] = explode(',', $values[$field]);
+            $options['name']  = $name;
+            return self::dropdownHelpdeskItemtypes($options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -2039,15 +2051,21 @@ class Profile extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function getInterfaces() {
-     return array('central' => __('Standard interface'),
+
+     return array('central'  => __('Standard interface'),
                   'helpdesk' => __('Simplified interface'));
    }
+
 
    /**
     * @param $value
    **/
    static function getInterfaceName($value) {
+
       $tab = self::getInterfaces();
       if (isset($tab[$value])) {
          return $tab[$value];
@@ -2055,19 +2073,27 @@ class Profile extends CommonDBTM {
       return NOT_AVAILABLE;
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    static function getHelpdeskHardwareTypes() {
 
-      return array(0 => Dropdown::EMPTY_VALUE,
-                   pow(2, Ticket::HELPDESK_MY_HARDWARE) => __('My devices'),
-                   pow(2, Ticket::HELPDESK_ALL_HARDWARE) => __('All items'),
+      return array(0                                        => Dropdown::EMPTY_VALUE,
+                   pow(2, Ticket::HELPDESK_MY_HARDWARE)     => __('My devices'),
+                   pow(2, Ticket::HELPDESK_ALL_HARDWARE)    => __('All items'),
                    pow(2, Ticket::HELPDESK_MY_HARDWARE)
                     + pow(2, Ticket::HELPDESK_ALL_HARDWARE) => __('My devices and all items'));
    }
 
+
    /**
+    * @since version 0.84
+    *
     * @param $value
    **/
    static function getHelpdeskHardwareTypeName($value) {
+
       $tab = self::getHelpdeskHardwareTypes();
       if (isset($tab[$value])) {
          return $tab[$value];
@@ -2075,13 +2101,15 @@ class Profile extends CommonDBTM {
       return NOT_AVAILABLE;
    }
 
+
    /**
     * Dropdown profiles which have rights under the active one
+    *
+    * @since ersin 0.84
     *
     * @param $options array of possible options:
     *    - name : string / name of the select (default is profiles_id)
     *    - values : array of values
-    *
    **/
    static function dropdownHelpdeskItemtypes($options) {
       global $CFG_GLPI;
@@ -2089,7 +2117,6 @@ class Profile extends CommonDBTM {
       $p['name']    = 'helpdesk_item_type';
       $p['values']  = array();
       $p['display'] = true;
-
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2106,7 +2133,6 @@ class Profile extends CommonDBTM {
             unset($CFG_GLPI["ticket_types"][$key]);
          }
       }
-
 
       $p['multiple'] = true;
       $p['size']     = 3;

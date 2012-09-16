@@ -165,7 +165,8 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
       echo "<td><span id='show_events'>";
-      NotificationEvent::dropdownEvents($this->fields['itemtype'],array('value'=>$this->fields['event']));
+      NotificationEvent::dropdownEvents($this->fields['itemtype'],
+                                        array('value'=>$this->fields['event']));
       echo "</span></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>". NotificationTemplate::getTypeName(1)."</td>";
@@ -179,6 +180,14 @@ class Notification extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -190,16 +199,24 @@ class Notification extends CommonDBTM {
                return NotificationEvent::getEventName($values['itemtype'],$values[$field]);
             }
             break;
+
          case 'mode':
             return self::getMode($values[$field]);
-            break;
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
-      global $DB;
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -207,7 +224,7 @@ class Notification extends CommonDBTM {
       switch ($field) {
          case 'event' :
             if (isset($values['itemtype'])
-              && !empty($values['itemtype'])) {
+                && !empty($values['itemtype'])) {
                $options['value'] = $values[$field];
                $options['name']  = $name;
                return NotificationEvent::dropdownEvents($values['itemtype'],$options);
@@ -218,11 +235,10 @@ class Notification extends CommonDBTM {
             $options['value'] = $values[$field];
             $options['name']  = $name;
             return self::dropdownMode($options);
-            break;
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    function getSearchOptions() {
 
@@ -327,6 +343,7 @@ class Notification extends CommonDBTM {
     * @param $options array of options
    **/
    static function dropdownMode($options) {
+
       $p['name']    = 'mode';
       $p['display'] = true;
       $p['value']   = '';
@@ -349,6 +366,7 @@ class Notification extends CommonDBTM {
     * @return the mode's label
    **/
    static function getMode($mode) {
+
       $tab = self::getModes();
       if (isset($tab[$mode])) {
          return $tab[$mode];
@@ -358,6 +376,8 @@ class Notification extends CommonDBTM {
 
    /**
     * Get notification method label (email only for the moment)
+    *
+    * @since versin 0.84
     *
     * @param $mode the mode to use
     *

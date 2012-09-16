@@ -2432,7 +2432,7 @@ class Html {
          echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\">
                 AJAX DEBUG</a>";
          if (!isset($_POST['full_page_tab'])
-            && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
+             && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
             echo "&nbsp;&nbsp;&nbsp;&nbsp;";
             Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab',
                                  'Display only tab for debug', $_POST);
