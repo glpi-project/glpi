@@ -77,6 +77,10 @@ class HTMLTableRow extends HTMLTableEntity {
    }
 
 
+   /**
+    * @param $lineIndex
+    * @param $attributs
+   **/
    function addAttributForLine($lineIndex, $attributs) {
       $this->linesWithAttributs[$lineIndex] = $attributs;
    }
@@ -159,7 +163,10 @@ class HTMLTableRow extends HTMLTableEntity {
    /**
     * @param $headers
    **/
+   //TODO webmyster : same function's name like htmltablecell but not same parameters
+   //                 both inherance of HTMLTableEntity
    function display($headers) {
+
 
       echo "\t<tbody";
       $this->displayEntityAttributs();
