@@ -178,7 +178,7 @@ class HTMLTableGroup extends HTMLTableBase {
     *
     * @return nothing (display only)
    **/
-   function display($totalNumberOfColumn, array $params) {
+   function displayGroup($totalNumberOfColumn, array $params) {
 
       $p['display_header_for_each_group'] = true;
       $p['display_super_for_each_group']  = true;
@@ -227,7 +227,7 @@ class HTMLTableGroup extends HTMLTableBase {
             if (($previousNumberOfSubRows * $currentNumberOfSubRow) > 1) {
                echo "\t<tbody><tr><td colspan='$totalNumberOfColumn'><hr></td></tr></tbody>\n";
             }
-            $row->display($this->ordered_headers);
+            $row->displayRow($this->ordered_headers);
             $previousNumberOfSubRows = $currentNumberOfSubRow;
          }
       }

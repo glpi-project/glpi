@@ -633,6 +633,8 @@ function update0831to084() {
             break;
 
        }
+      /// TODO : in case of unknown Interface Type, we should have to set instantiation_type to ''
+      /// Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
       if (!empty($instantiation_type)) {
          $query = "UPDATE `glpi_networkports`
                    SET `instantiation_type` = '$instantiation_type'

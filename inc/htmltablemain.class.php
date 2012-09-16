@@ -250,7 +250,7 @@ class HTMLTableMain extends HTMLTableBase {
          }
 
          foreach ($this->groups as $group) {
-            $group->display($totalNumberOfColumn, $p);
+            $group->displayGroup($totalNumberOfColumn, $p);
          }
      }
 

@@ -163,9 +163,7 @@ class HTMLTableRow extends HTMLTableEntity {
    /**
     * @param $headers
    **/
-   //TODO webmyster : same function's name like htmltablecell but not same parameters
-   //                 both inherance of HTMLTableEntity
-   function display($headers) {
+   function displayRow($headers) {
 
 
       echo "\t<tbody";
@@ -183,7 +181,7 @@ class HTMLTableRow extends HTMLTableEntity {
             if (isset($this->cells[$header_name])) {
                $display = false;
                foreach ($this->cells[$header_name] as $cell) {
-                  $display |= $cell->display($i, $options);
+                  $display |= $cell->displayCell($i, $options);
                }
                if (!$display) {
                   echo "\t\t\t<td colspan='".$header->getColSpan()."'";

@@ -665,8 +665,9 @@ class NetworkPort extends CommonDBChild {
             $t_group = $table->createGroup('Migration',
                                            __('Network ports waiting for manual migration'));
             if ($display_options['characteristics']) {
-               NetworkPortMigration::getInstantiationHTMLTableHeaders($t_group, $c_instant,
-                                                                      $table_options);
+               NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
+                                                                               $c_network, NULL,
+                                                                               $table_options);
             }
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));

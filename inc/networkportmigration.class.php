@@ -462,10 +462,12 @@ class NetworkPortMigration extends CommonDBChild {
     * @param $super           HTMLTableSuperHeader object
     * @param $options   array
    **/
-   // TODO DAMIEN : this function's name is ambigous with inc/NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   static function getInstantiationHTMLTableHeaders(HTMLTableGroup $group,
-                                                    HTMLTableSuperHeader $super,
-                                                    array $options=array()) {
+   /// TODO : study to display the correct informations for this undefined NetworkPort
+   static function getMigrationInstantiationHTMLTableHeaders(HTMLTableGroup $group,
+                                                             HTMLTableSuperHeader $super,
+                                                             HTMLTableSuperHeader $internet_super = NULL,
+                                                             HTMLTableHeader $father=NULL,
+                                                             array $options=array()) {
       return NULL;
    }
 
