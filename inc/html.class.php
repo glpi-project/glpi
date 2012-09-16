@@ -4396,7 +4396,7 @@ class Html {
     * @since version 0.84
    **/
    static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
-                                 $btoption='', $confirm = '') {
+                                 $btoption='', $confirm='') {
 
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
@@ -4404,7 +4404,7 @@ class Html {
       $fields['_glpi_simple_form'] = 1;
       $button = $btname;
       if (!is_array($btname)) {
-         $button = array();
+         $button          = array();
          $button[$btname] = $btname;
       }
       $fields          = array_merge($button, $fields);
@@ -4419,9 +4419,9 @@ class Html {
 
       $link = "<a ";
       if (empty($btimage)) {
-         $link.=" class='vsubmit' ";
+         $link .= " class='vsubmit' ";
       } else {
-         $link.=" class='pointer' ";
+         $link .= " class='pointer' ";
       }
 
       if (!empty($btoption)) {
@@ -4486,6 +4486,7 @@ class Html {
    **/
    static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
                                   $btoption='', $confirm='') {
+
       echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption, $confirm);
    }
 

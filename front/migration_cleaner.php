@@ -64,7 +64,7 @@ echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_net
      __('Reinit the network topology') . "</a></td></tr>";
 
 echo "<tr><td class='center'><a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
-     __('Clean the networkport migration errors') . "</a></td></tr>";
+     __('Clean the network port migration errors') . "</a></td></tr>";
 
 echo "</table>";
 echo "</div>";

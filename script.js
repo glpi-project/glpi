@@ -27,9 +27,9 @@ function setdisplay(objet, statut) {
 **/
 function isIe() {
 
-   var ie = false;	
+   var ie     = false;	
    var appVer = navigator.appVersion.toLowerCase();
-   var iePos = appVer.indexOf('msie');
+   var iePos  = appVer.indexOf('msie');
 
    if (iePos != -1) {
       var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
@@ -177,8 +177,8 @@ function doShowSelect(objet) {
       //correction du bugg sur IE
       if (isIe()) {
          if (setdisplay(objet,'block')) {
-            var selx=0; 
-            var sely=0; 
+            var selx = 0; 
+            var sely = 0; 
             var selp;
             selx = getLeft(objet);
             sely = getTop(objet);
@@ -194,7 +194,6 @@ function doShowSelect(objet) {
 }
 
 
-//affiche les select du document
 /**
  * affiche les select du document
  * 
@@ -253,7 +252,6 @@ function doHideSelect(object) {
 }
 
 
-//masque les selects du document
 /**
  * masque les select du document
  * 
@@ -321,7 +319,7 @@ function menuAff(id,idMenu){
       if (smenu) {
          //masquer tous les menus ouverts
          for (var i=0 ; i<m.length ; i++) {
-            setdisplay(	m[i],'none');
+            setdisplay(m[i],'none');
          }
          setdisplay(smenu[0],'block');
          clearTimeout(timeoutglobalvar);
@@ -462,6 +460,7 @@ function markSelect(select_id) {
  * @param    select_id    DOM select id
 **/
 function unMarkSelect(select_id) {
+
    var options = document.getElementById(select_id).getElementsByTagName('option');
    for (var j=0 ; j<options.length ; j++ ) {
       options[j].selected = false;
@@ -658,9 +657,17 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
    }
 }
 
+
+/**
+ * @since v ersion 0.84
+ * 
+ * @param target
+ * @param fields
+**/
 function submitGetLink(target,fields) {
-    var myForm = document.createElement("form");
-    myForm.method="post" ;
+
+    var myForm    = document.createElement("form");
+    myForm.method = "post" ;
     myForm.action = target ;
     for (var name in fields) {
         var myInput = document.createElement("input") ;

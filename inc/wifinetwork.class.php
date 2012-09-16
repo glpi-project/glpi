@@ -44,12 +44,13 @@ class WifiNetwork extends CommonDropdown {
 
 
    static function getWifiCardVersion() {
-      return array(''         => '', 
-                  'a'         => 'a',
-                  'a/b'       => 'a/b', 
-                  'a/b/g'     => 'a/b/g', 
-                  'a/b/g/n'   => 'a/b/g/n', 
-                  'a/b/g/n/y' => 'a/b/g/n/y');
+
+      return array(''          => '',
+                   'a'         => 'a',
+                   'a/b'       => 'a/b',
+                   'a/b/g'     => 'a/b/g',
+                   'a/b/g/n'   => 'a/b/g/n',
+                   'a/b/g/n/y' => 'a/b/g/n/y');
    }
 
 

@@ -222,6 +222,14 @@ class TicketSatisfaction extends CommonDBTM {
       }
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -230,12 +238,21 @@ class TicketSatisfaction extends CommonDBTM {
       switch ($field) {
          case 'type':
             return self::getTypeInquestName($values[$field]);
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name                  (default '')
+    * @param $values                (default '')
+    * @param arr $options   array
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }

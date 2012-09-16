@@ -3961,6 +3961,7 @@ class CommonDBTM extends CommonGLPI {
                   if ($searchoptions['table'] == $this->getTable()) {
                      break;
                   }
+
                case "dropdown" :
                   if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
                      return $searchoptions['toadd'][$value];

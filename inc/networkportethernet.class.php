@@ -369,10 +369,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    }
 
+
    /**
     * Get the possible value for Ethernet port type
-    *
-    * @since version 0.84
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -394,10 +393,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       return NOT_AVAILABLE;
    }
 
+
    /**
     * Get the possible value for Ethernet port speed
-    *
-    * @since version 0.84
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -420,6 +418,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       return NOT_AVAILABLE;
    }
 
+
+   /**
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -428,40 +432,46 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       switch ($field) {
          case 'type':
             return self::getPortTypeName($values[$field]);
-            break;
 
          case 'speed':
             return self::getPortSpeed($values[$field]);
-            break;
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
-
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+   /**
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (defaul '')
+    * @param $options   array
+    */
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
       global $DB;
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       $options['display'] = false;
+
       switch ($field) {
          case 'type':
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, self::getPortTypeName(), $options);
-            break;
 
          case 'speed':
             $options['value'] = $values[$field];
             return Dropdown::showFromArray($name, self::getPortSpeed(), $options);
-            break;
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
 
+   /**
+    * @param $tab         array
+    * @param $joinparams  array
+    * @param $itemtype
+   **/
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
                                                          $itemtype) {
 

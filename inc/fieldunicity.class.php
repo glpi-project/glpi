@@ -246,19 +246,24 @@ class FieldUnicity extends CommonDropdown {
       echo "<span id='span_fields' name='span_fields'>";
       self::dropdownFields($unicity->fields['itemtype'],
                            array('values' => $unicity_fields,
-                                 'name'  => '_fields'));
+                                 'name'   => '_fields'));
       echo "</span>";
    }
 
+
    /** Dropdown fields for a specific itemtype
-    * @param $itemtype itemtype
-    * @param $options array of options
+    *
+    * @since version 0.84
+    *
+    * @param $itemtype          itemtype
+    * @param $options   array    of options
    **/
-   static function dropdownFields($itemtype, $options = array()) {
+   static function dropdownFields($itemtype, $options=array()) {
       global $DB;
+
       $p['name']    = 'fields';
       $p['display'] = true;
-      $p['values']   = array();
+      $p['values']  = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -288,77 +293,85 @@ class FieldUnicity extends CommonDropdown {
          }
          $p['multiple'] = true;
          $p['size']     = 15;
-         return Dropdown::showFromArray($p['name'], $values, $p); 
-      } else {
-         return false;
+         return Dropdown::showFromArray($p['name'], $values, $p);
       }
+      return false;
    }
+
 
    function getSearchOptions() {
 
-      $tab                       = array();
-      $tab['common']             = self::getTypeName();
+      $tab                          = array();
+      $tab['common']                = self::getTypeName();
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               = __('Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['datatype']        = 'number';
-      $tab[2]['massiveaction']   = false;
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['datatype']           = 'number';
+      $tab[2]['massiveaction']      = false;
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'fields';
-      $tab[3]['name']            = __('Unique fields');
-      $tab[3]['massiveaction']   = false;
-      $tab[3]['datatype']        = 'specific'; 
-      $tab[3]['additionalfields'] = array('itemtype');
+      $tab[3]['table']              = $this->getTable();
+      $tab[3]['field']              = 'fields';
+      $tab[3]['name']               = __('Unique fields');
+      $tab[3]['massiveaction']      = false;
+      $tab[3]['datatype']           = 'specific';
+      $tab[3]['additionalfields']   = array('itemtype');
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'itemtype';
-      $tab[4]['name']            = __('Type');
-      $tab[4]['massiveaction']   = false;
-      $tab[4]['datatype']        = 'itemtypename';
-      $tab[4]['itemtype_list']   = 'unicity_types';
+      $tab[4]['table']              = $this->getTable();
+      $tab[4]['field']              = 'itemtype';
+      $tab[4]['name']               = __('Type');
+      $tab[4]['massiveaction']      = false;
+      $tab[4]['datatype']           = 'itemtypename';
+      $tab[4]['itemtype_list']      = 'unicity_types';
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'action_refuse';
-      $tab[5]['name']            = __('Record into the database denied');
-      $tab[5]['datatype']        = 'bool';
+      $tab[5]['table']              = $this->getTable();
+      $tab[5]['field']              = 'action_refuse';
+      $tab[5]['name']               = __('Record into the database denied');
+      $tab[5]['datatype']           = 'bool';
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'action_notify';
-      $tab[6]['name']            = __('Send a notification');
-      $tab[6]['datatype']        = 'bool';
+      $tab[6]['table']              = $this->getTable();
+      $tab[6]['field']              = 'action_notify';
+      $tab[6]['name']               = __('Send a notification');
+      $tab[6]['datatype']           = 'bool';
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
+      $tab[86]['table']             = $this->getTable();
+      $tab[86]['field']             = 'is_recursive';
+      $tab[86]['name']              = __('Child entities');
+      $tab[86]['datatype']          = 'bool';
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
 
-      $tab[30]['table']          = $this->getTable();
-      $tab[30]['field']          = 'is_active';
-      $tab[30]['name']           = __('Active');
-      $tab[30]['datatype']       = 'bool';
-      $tab[30]['massiveaction']  = false;
+      $tab[30]['table']             = $this->getTable();
+      $tab[30]['field']             = 'is_active';
+      $tab[30]['name']              = __('Active');
+      $tab[30]['datatype']          = 'bool';
+      $tab[30]['massiveaction']     = false;
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['datatype']          = 'dropdown';
 
       return $tab;
    }
 
+
+   /**
+    * @sincevesin 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -367,11 +380,11 @@ class FieldUnicity extends CommonDropdown {
       switch ($field) {
          case 'fields':
             if (isset($values['itemtype'])
-              && !empty($values['itemtype'])) {
+                && !empty($values['itemtype'])) {
                if ($target = getItemForItemtype($values['itemtype'])) {
                   $searchOption = $target->getSearchOptionByField('field', $values[$field]);
-                  $fields = explode(',', $values[$field]);
-                  $message = array();
+                  $fields       = explode(',', $values[$field]);
+                  $message      = array();
                   foreach ($fields as $field) {
                      $searchOption = $target->getSearchOptionByField('field',$field);
 
@@ -383,13 +396,24 @@ class FieldUnicity extends CommonDropdown {
                }
             }
             break;
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name              (defaul '')
+    * @param $values            (default '')
+    * @param $options   array
+    *
+    * @return boolean
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
       global $DB;
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -397,16 +421,16 @@ class FieldUnicity extends CommonDropdown {
       switch ($field) {
          case 'fields' :
             if (isset($values['itemtype'])
-              && !empty($values['itemtype'])) {
+                && !empty($values['itemtype'])) {
                $options['values'] = explode(',', $values[$field]);
-               $options['name']  = $name;
+               $options['name']   = $name;
                return self::dropdownFields($values['itemtype'], $options);
             }
             break;
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
 
    /**
     * Perform checks to be sure that an itemtype and at least a field are selected

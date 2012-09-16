@@ -279,12 +279,17 @@ class Fieldblacklist extends CommonDropdown {
       echo "</span>";
    }
 
+
    /** Dropdown fields for a specific itemtype
-    * @param $itemtype itemtype
-    * @param $options array of options
+    *
+    * @since version 0.84
+    *
+    * @param $itemtype          itemtype
+    * @param $options    array    of options
    **/
-   static function dropdownField($itemtype, $options = array()) {
+   static function dropdownField($itemtype, $options=array()) {
       global $DB;
+
       $p['name']    = 'field';
       $p['display'] = true;
       $p['value']   = '';
@@ -314,10 +319,11 @@ class Fieldblacklist extends CommonDropdown {
             }
          }
          return Dropdown::showFromArray($p['name'], $criteria, $p);
-      } else {
-         return false;
       }
+      return false;
    }
+
+
    /**
     * @param $field  (default '')
    **/
@@ -331,10 +337,9 @@ class Fieldblacklist extends CommonDropdown {
       if ($this->fields['itemtype'] != '') {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             $searchOption = $item->getSearchOptionByField('field', $field);
-//             print_r($searchOption);
-            $options = array();
+            $options      = array();
             if (isset($this->fields['entity'])) {
-               $options['entity'] = $this->fields['entity'];
+               $options['entity']      = $this->fields['entity'];
                $options['entity_sons'] = $this->fields['is_recursive'];
             }
             echo $item->getValueToSelect($searchOption, 'value', $this->fields['value'], $options);
@@ -377,7 +382,6 @@ class Fieldblacklist extends CommonDropdown {
 //             Dropdown::show($itemtype, array('name'  => 'value',
 //                                             'value' => $value));
 //          }
-
       }
       echo "</span>";
    }
