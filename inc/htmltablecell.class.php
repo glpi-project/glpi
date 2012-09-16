@@ -248,7 +248,7 @@ class HTMLTableCell extends HTMLTableEntity {
     * @param $index
     * @param $options   array
    **/
-   function display($index, array $options=array()) {
+   function displayCell($index, array $options=array()) {
 
       if (($index >= $this->start)
           && ($index < ($this->start + $this->numberOfLines))) {
