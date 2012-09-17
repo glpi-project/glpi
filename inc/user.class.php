@@ -356,9 +356,10 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyEmail($email) {
+
       return $this->getFromDBByQuery("LEFT JOIN `glpi_useremails`
-                  ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
-                  WHERE `glpi_useremails`.`email` = '$email'");
+                                       ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
+                                      WHERE `glpi_useremails`.`email` = '$email'");
    }
 
 
@@ -2738,9 +2739,8 @@ class User extends CommonDBTM {
       if ($p['display']) {
          echo $output;
          return $p['rand'];
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 

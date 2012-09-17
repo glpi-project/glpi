@@ -112,8 +112,9 @@ class CronTask extends CommonDBTM{
     * @return true if succeed else false
    **/
    function getFromDBbyName($itemtype, $name) {
+
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'
-                      AND `".$this->getTable()."`.`itemtype` = '$itemtype'");
+                                            AND `".$this->getTable()."`.`itemtype` = '$itemtype'");
    }
 
 

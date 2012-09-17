@@ -56,12 +56,14 @@ class NetworkName extends FQDNLabel {
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
    static function canCreate() {
+
       return (Session::haveRight('internet', 'w')
               && parent::canChild('canCreate'));
    }
 
 
    static function canView() {
+
       return (Session::haveRight('internet', 'r')
               && parent::canChild('canView'));
    }
@@ -250,7 +252,7 @@ class NetworkName extends FQDNLabel {
          $input = array('itemtype' => 'NetworkName',
                         'items_id' => $this->getID());
          foreach ($this->input['_ipaddresses'] as $id => $ip) {
-            $ipaddress = new IPAddress();
+            $ipaddress     = new IPAddress();
             $input['name'] = $ip;
             if ($id < 0) {
                if (!empty($ip)) {

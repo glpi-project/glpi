@@ -247,6 +247,7 @@ class HTMLTableGroup extends HTMLTableBase {
 
 
    function getSuperHeaderByName($name) {
+
       try {
          return $this->getHeaderByName($name, '');
       } catch (HTMLTableUnknownHeader $e) {

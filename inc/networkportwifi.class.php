@@ -92,9 +92,9 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @see inc/NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                              HTMLTableSuperHeader $internet_super=NULL,
-                                              HTMLTableHeader $father=NULL,
-                                              array $options=array()) {
+                                             HTMLTableSuperHeader $internet_super=NULL,
+                                             HTMLTableHeader $father=NULL,
+                                             array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, NULL, $options);
 
