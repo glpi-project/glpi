@@ -44,6 +44,11 @@ class Bookmark extends CommonDBTM {
    const URI    = 2;
 
 
+   /**
+    * @since version 0.84
+    *
+    * @return string
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();

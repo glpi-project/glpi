@@ -2981,14 +2981,14 @@ class Html {
    static function getCheckAllAsCheckbox($container_id) {
 
       $rand = mt_rand();
-      $out = "<input title='".__('Check all as')."' type='checkbox' name='_checkall_$rand' ".
-               "id='checkall_$rand' ".
-               "onclick= \"if ( checkAsCheckboxes('checkall_$rand',
-                                                 '$container_id'))
+      $out  = "<input title='".__('Check all as')."' type='checkbox' name='_checkall_$rand' ".
+                "id='checkall_$rand' ".
+                "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
                                              {return true;}\">";
 
       return $out;
    }
+
 
    /**
     * Get the massive action checkbox

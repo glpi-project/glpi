@@ -357,7 +357,8 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . __('Connection filter') . "</td>";
          echo "<td colspan='3'>";
-         echo "<textarea cols='100' rows='1' name='condition'>".$this->fields["condition"]."</textarea>";
+         echo "<textarea cols='100' rows='1' name='condition'>".$this->fields["condition"];
+         echo "</textarea>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('BaseDN') . "</td>";
@@ -496,7 +497,7 @@ class AuthLDAP extends CommonDBTM {
               ORDER BY `name`";
       $result = $DB->query($sql);
 
-      if (($nb=$DB->numrows($result)) > 0) {
+      if (($nb = $DB->numrows($result)) > 0) {
          echo "<br>";
          $canedit = Session::haveRight("config", "w");
          Html::openMassiveActionsForm('massAuthLdapReplicate'.$rand);
@@ -516,7 +517,8 @@ class AuthLDAP extends CommonDBTM {
             unset($_SESSION["LDAP_TEST_MESSAGE"]);
          }
 
-         echo "<tr class='tab_bg_2'><th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
          echo "<th class='center b'>".__('Name')."</th>";
          echo "<th class='center b'>".__('List of LDAP directory replicates')."</th>".
               "<th class='center'></th></tr>";
@@ -607,7 +609,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='group_field' value='".$this->fields["group_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Filter to search in groups') . "</td><td colspan='3'>";
+      echo "<tr class='tab_bg_1'><td>" . __('Filter to search in groups')."</td><td colspan='3'>";
       echo "<input type='text' name='group_condition' value='".$this->fields["group_condition"]."'
              size='100'>";
       echo "</td></tr>";
@@ -2790,12 +2792,12 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //If time restriction
-      $begin_date = (isset($_SESSION['ldap_import']['begin_date']) && !empty($_SESSION['ldap_import']['begin_date'])
-                        ?$_SESSION['ldap_import']['begin_date']
-                        :NULL);
-      $end_date   = (isset($_SESSION['ldap_import']['end_date']) && !empty($_SESSION['ldap_import']['end_date'])
-                        ?$_SESSION['ldap_import']['end_date']
-                        :NULL);
+      $begin_date = (isset($_SESSION['ldap_import']['begin_date'])
+                     && !empty($_SESSION['ldap_import']['begin_date'])
+                        ? $_SESSION['ldap_import']['begin_date'] : NULL);
+      $end_date   = (isset($_SESSION['ldap_import']['end_date'])
+                     && !empty($_SESSION['ldap_import']['end_date'])
+                        ? $_SESSION['ldap_import']['end_date'] : NULL);
       $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
       $ldap_condition = $authldap->getField('condition');
       //Add entity filter and filter filled in directory's configuration form

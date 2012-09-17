@@ -142,12 +142,15 @@ class CommonDBTM extends CommonGLPI {
     * we can replace "WHERE" to make complex SQL JOINED queries (for instance, see
     * User::getFromDBbyEmail()).
     *
+    * @since version 0.84
+    *
     * @param $query the "WHERE" or "JOIN" part of the SQL query
     *
     * @return true if succeed else false
    **/
    function getFromDBByQuery($query) {
       global $DB;
+
       // Make new database object and fill variables
 
       if (empty($query)) {
@@ -166,9 +169,9 @@ class CommonDBTM extends CommonGLPI {
             return true;
          }
       }
-
       return false;
    }
+
 
    /**
     * Get the identifier of the current item

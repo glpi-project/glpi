@@ -36,6 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * @since version 0.84
+**/
 class Change_Problem extends CommonDBRelation{
 
    // From CommonDBRelation
@@ -83,9 +86,9 @@ class Change_Problem extends CommonDBRelation{
          return false;
       }
 
-      $canedit = $problem->can($ID,'w');
-      $rand    = mt_rand();
-      $showentities = Session::isMultiEntitiesMode();
+      $canedit       = $problem->can($ID,'w');
+      $rand          = mt_rand();
+      $showentities  = Session::isMultiEntitiesMode();
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_changes`.*
@@ -97,21 +100,22 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
 
       $changes = array();
-      $used = array();
+      $used    = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $changes[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]    = $data['id'];
          }
       }
       if ($canedit) {
          echo "<div class='firstbloc'>";
 
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a change')."</th></tr>";
+
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
          Change::dropdown(array('used'        => $used,
@@ -123,7 +127,6 @@ class Change_Problem extends CommonDBRelation{
          echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
          _e('Create a change from this problem');
          echo "</a>";
-
          echo "</td></tr></table>";
          Html::closeForm();
          echo "</div>";
@@ -147,7 +150,6 @@ class Change_Problem extends CommonDBRelation{
          echo "<th>".__('Entity')."</th>";
       }
       echo "</tr>";
-
 
 
       $used = array();
@@ -199,8 +201,8 @@ class Change_Problem extends CommonDBRelation{
          return false;
       }
 
-      $canedit = $change->can($ID,'w');
-      $rand    = mt_rand();
+      $canedit      = $change->can($ID,'w');
+      $rand         = mt_rand();
       $showentities = Session::isMultiEntitiesMode();
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
@@ -213,11 +215,11 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
 
       $problems = array();
-      $used = array();
+      $used     = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $problems[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]     = $data['id'];
          }
       }
 
@@ -225,10 +227,11 @@ class Change_Problem extends CommonDBRelation{
          echo "<div class='firstbloc'>";
 
          echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a problem')."</th></tr>";
+
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
          Problem::dropdown(array('used'   => $used,

@@ -202,9 +202,9 @@ class Infocom extends CommonDBChild {
     * @return true if succeed else false
    **/
    function getFromDBforDevice ($itemtype, $ID) {
-      global $DB;
+
       if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`items_id` = '$ID'
-                      AND `".$this->getTable()."`.`itemtype` = '$itemtype'")) {
+                                  AND `".$this->getTable()."`.`itemtype` = '$itemtype'")) {
          return true;
       }
       $this->getEmpty();

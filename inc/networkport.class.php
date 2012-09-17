@@ -69,11 +69,17 @@ class NetworkPort extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function canCreateItem() {
       return parent::canChildItem('canCreateItem', 'canCreate');
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function canViewItem() {
       return parent::canChildItem('canViewItem', 'canView');
    }

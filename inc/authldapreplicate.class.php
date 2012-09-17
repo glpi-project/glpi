@@ -37,10 +37,20 @@
 **/
 class AuthLdapReplicate extends CommonDBTM {
 
+
+   /**
+    * @since version 0.84
+   **/
    static function canCreate() {
       return Session::haveRight('config', 'w');
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @return string
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();

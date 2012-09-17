@@ -58,14 +58,15 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+
       $conditions = array();
-      $fields = array('`'.static::getIndexName().'`');
+      $fields     = array('`'.static::getIndexName().'`');
 
       // Check item 1 type
       $condition_id_1 = "`".static::$items_id_1."` = '$items_id'";
-      $fields[] = "`".static::$items_id_1."` as items_id_1";
+      $fields[]       = "`".static::$items_id_1."` as items_id_1";
       if (preg_match('/^itemtype/', static::$itemtype_1)) {
-         $fields[] = "`".static::$itemtype_1."` AS itemtype_1";
+         $fields[]    = "`".static::$itemtype_1."` AS itemtype_1";
          $condition_1 = "($condition_id_1 AND `".static::$itemtype_1."` = '$itemtype')";
       } else {
          $fields[] = "'".static::$itemtype_1."' AS itemtype_1";
@@ -76,7 +77,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       if (isset($condition_1)) {
          $conditions[] = $condition_1;
-         $fields[] = "IF($condition_1, 1, 0) AS is_1";
+         $fields[]     = "IF($condition_1, 1, 0) AS is_1";
       } else {
          $fields[] = "0 AS is_1";
       }
@@ -84,9 +85,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       // Check item 2 type
       $condition_id_2 = "`".static::$items_id_2."` = 'items_id'";
-      $fields[] = "`".static::$items_id_2."` as items_id_2";
+      $fields[]       = "`".static::$items_id_2."` as items_id_2";
       if (preg_match('/^itemtype/', static::$itemtype_2)) {
-         $fields[] = "`".static::$itemtype_2."` AS itemtype_2";
+         $fields[]    = "`".static::$itemtype_2."` AS itemtype_2";
          $condition_2 = "($condition_id_2 AND `".static::$itemtype_2."` = '$itemtype')";
       } else {
          $fields[] = "'".static::$itemtype_2."' AS itemtype_2";
@@ -97,7 +98,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       if (isset($condition_2)) {
          $conditions[] = $condition_2;
-         $fields[] = "IF($condition_2, 2, 0) AS is_2";
+         $fields[]     = "IF($condition_2, 2, 0) AS is_2";
       } else {
          $fields[] = "0 AS is_2";
       }

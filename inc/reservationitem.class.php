@@ -40,11 +40,11 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBChild {
 
    /// From CommonDBChild
-   static public $itemtype = 'itemtype'; 
-   static public $items_id = 'items_id'; 
+   static public $itemtype = 'itemtype';
+   static public $items_id = 'items_id';
 
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
-   
+
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
    }
@@ -75,8 +75,9 @@ class ReservationItem extends CommonDBChild {
     * @return true if succeed else false
    **/
    function getFromDBbyItem($itemtype, $ID) {
+
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
-                                       AND `".$this->getTable()."`.`items_id` = '$ID'");
+                                            AND `".$this->getTable()."`.`items_id` = '$ID'");
    }
 
 

@@ -88,9 +88,10 @@ class PlanningRecall extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBForItemAndUser($itemtype, $items_id, $users_id) {
+
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
-                                       AND `".$this->getTable()."`.`items_id` = '$items_id'
-                                       AND `".$this->getTable()."`.`users_id` = '$users_id'");
+                                             AND `".$this->getTable()."`.`items_id` = '$items_id'
+                                             AND `".$this->getTable()."`.`users_id` = '$users_id'");
    }
 
 

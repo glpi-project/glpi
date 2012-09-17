@@ -91,12 +91,12 @@ if (isset($_POST['searchtype'])) {
 
 
                case "glpi_tickets.global_validation" :
-                  $options['all'] =true;
+                  $options['all'] = true;
                   break;
 
 
                case "glpi_ticketvalidations.status" :
-                  $options['all'] =true;
+                  $options['all'] = true;
                   break;
             }
 
