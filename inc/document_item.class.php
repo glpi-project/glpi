@@ -159,12 +159,34 @@ class Document_Item extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight('document', 'r')) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Associated item', 'Associated items',
-                                           self::countForDocument($item)));
-         }
-         return _n('Associated item', 'Associated items', 2);
+      switch ($item->getType()) {
+
+         case 'Document' :
+            $ong    = array();
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
+                                             self::countForDocument($item)));
+            }
+            $ong[1] = _n('Associated item', 'Associated items', 2);
+
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $ong[2] = Document::createTabEntry(Document::getTypeName(2), self::countForItem($item));
+            }
+            $ong[2] = Document::getTypeName(2);
+            return $ong;
+
+            break;
+         default :
+            // Can exist for template
+            if (Session::haveRight("document","r")
+               || ($item->getType() == 'Ticket')
+               || ($item->getType() == 'KnowbaseItem')) {
+
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return Document::createTabEntry(Document::getTypeName(2), self::countForItem($item));
+               }
+               return Document::getTypeName(2);
+            }
       }
       return '';
    }
@@ -174,8 +196,17 @@ class Document_Item extends CommonDBRelation{
 
       switch ($item->getType()) {
          case 'Document' :
-            self::showForDocument($item);
+            switch ($tabnum) {
+               case 1 :
+                  self::showForDocument($item);
+               break;
+               case 2 :
+                  self::showForItem($item, $withtemplate);
+               break;
+            }
             return true;
+         default :
+            self::showForitem($item, $withtemplate);
       }
    }
 
@@ -397,6 +428,279 @@ class Document_Item extends CommonDBRelation{
 
    }
 
+      /**
+    * Show documents associated to an item
+    *
+    * @param $item            CommonDBTM object for which associated documents must be displayed
+    * @param $withtemplate    (default '')
+   **/
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
+      global $DB, $CFG_GLPI;
+
+      $ID = $item->getField('id');
+
+      if ($item->isNewID($ID)) {
+         return false;
+      }
+      if (($item->getType() != 'Ticket')
+          && ($item->getType() != 'KnowbaseItem')
+          && !Session::haveRight('document','r')) {
+         return false;
+      }
+
+      if (!$item->can($item->fields['id'],'r')) {
+         return false;
+      }
+
+      if (empty($withtemplate)) {
+         $withtemplate = 0;
+      }
+      $linkparam = '';
+
+      if (get_class($item) == 'Ticket') {
+         $linkparam = "&amp;tickets_id=".$item->fields['id'];
+      }
+
+      $canedit       =  $item->canadditem('Document');
+      $rand = mt_rand();
+      $is_recursive  = $item->isRecursive();
+
+      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
+                       `glpi_entities`.`id` AS entity,
+                       `glpi_documents`.`name` AS assocName,
+                       `glpi_documents`.*
+                FROM `glpi_documents_items`
+                LEFT JOIN `glpi_documents`
+                          ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
+                LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                WHERE `glpi_documents_items`.`items_id` = '$ID'
+                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+
+      if (Session::getLoginUserID()) {
+         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+      } else {
+         // Anonymous access from FAQ
+         $query .= " AND `glpi_documents`.`entities_id`= '0' ";
+      }
+
+      // Document : search links in both order using union
+      if ($item->getType() == 'Document') {
+         $query .= "UNION
+                    SELECT `glpi_documents_items`.`id` AS assocID,
+                           `glpi_entities`.`id` AS entity,
+                           `glpi_documents`.`name` AS assocName,
+                           `glpi_documents`.*
+                    FROM `glpi_documents_items`
+                    LEFT JOIN `glpi_documents`
+                              ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
+                    LEFT JOIN `glpi_entities`
+                              ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                    WHERE `glpi_documents_items`.`documents_id` = '$ID'
+                          AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+
+         if (Session::getLoginUserID()) {
+            $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+         } else {
+            // Anonymous access from FAQ
+            $query .= " AND `glpi_documents`.`entities_id`='0' ";
+         }
+      }
+      $query .= " ORDER BY `assocName`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i      = 0;
+
+      $documents = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $documents[$data['assocID']] = $data;
+            $used[$data['id']] = $data['id'];
+         }
+      }
+      
+      if ($canedit && $withtemplate < 2) {
+         // Restrict entity for knowbase
+         $entities = "";
+         $entity   = $_SESSION["glpiactive_entity"];
+
+         if ($item->isEntityAssign()) {
+            /// Case of personal items : entity = -1 : create on active entity (Reminder case))
+            if ($item->getEntityID() >=0 ) {
+               $entity = $item->getEntityID();
+            }
+
+            if ($item->isRecursive()) {
+               $entities = getSonsOf('glpi_entities',$entity);
+            } else {
+               $entities = $entity;
+            }
+         }
+         $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
+         $q = "SELECT COUNT(*)
+               FROM `glpi_documents`
+               WHERE `is_deleted` = '0'
+               $limit";
+
+         $result = $DB->query($q);
+         $nb     = $DB->result($result,0,0);
+
+
+         if ($item->getType() == 'Document') {
+            $used[$ID] = $ID;
+         }
+
+         echo "<div class='firstbloc'>";
+         echo "<form name='documentitem_form$rand' id='documentitem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL('Document')."'  enctype=\"multipart/form-data\">";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='5'>".__('Add a document')."</th></tr>";
+         echo "<tr class='tab_bg_1'>";
+
+         echo "<td class='center'>";
+         _e('Heading');
+         echo '</td><td>';
+         DocumentCategory::dropdown(array('entity' => $entities));
+         echo "</td>";
+         echo "<td class='right'>";
+         echo "<input type='hidden' name='entities_id' value='$entity'>";
+         echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
+         echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
+         echo "<input type='hidden' name='items_id' value='$ID'>";
+         if ($item->getType() == 'Ticket') {
+            echo "<input type='hidden' name='tickets_id' value='$ID'>";
+            echo "<input type='hidden' name='documentcategories_id' value='".
+                     $CFG_GLPI["documentcategories_id_forticket"]."'>";
+         }
+         echo "<input type='file' name='filename' size='25'>";
+         echo "</td><td class='left'>";
+         echo "(".Document::getMaxUploadSize().")&nbsp;";
+         echo "</td>";
+         echo "<td class='center' width='20%'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"
+                  class='submit'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+
+         if (Session::haveRight('document','r')
+               && ($nb > count($used))) {
+            echo "<form name='document_form$rand' id='document_form$rand' method='post'
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='4' class='center'>";
+            echo "<input type='hidden' name='entities_id' value='$entity'>";
+            echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
+            if ($item->getType() == 'Ticket') {
+               echo "<input type='hidden' name='tickets_id' value='$ID'>";
+               echo "<input type='hidden' name='documentcategories_id' value='".
+                        $CFG_GLPI["documentcategories_id_forticket"]."'>";
+            }
+
+            Document::dropdown(array('entity' => $entities ,
+                                     'used'   => $used));
+            echo "</td><td class='center' width='20%'>";
+            echo "<input type='submit' name='add' value=\"".
+                     _sx('button', 'Associate an existing document')."\" class='submit'>";
+            echo "</td>";
+            echo "</tr>";
+            echo "</table>";
+            Html::closeForm();
+         }
+
+         echo "</div>";
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $number && ($withtemplate < 2)) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $number);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr>";
+      if ($canedit && $number && ($withtemplate < 2)) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Entity')."</th>";
+      echo "<th>".__('File')."</th>";
+      echo "<th>".__('Web link')."</th>";
+      echo "<th>".__('Heading')."</th>";
+      echo "<th>".__('MIME type')."</th>";
+      echo "</tr>";
+      $used = array();
+
+      if ($number) {
+         // Don't use this for document associated to document
+         // To not loose navigation list for current document
+         if ($item->getType() != 'Document') {
+            Session::initNavigateListItems('Document',
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'),
+                                                   $item->getTypeName(1), $item->getName()));
+         }
+
+         $document = new Document();
+         foreach  ($documents as $data) {
+            $docID        = $data["id"];
+            $link         = NOT_AVAILABLE;
+            $downloadlink = NOT_AVAILABLE;
+
+            if ($document->getFromDB($docID)) {
+               $link         = $document->getLink();
+               $downloadlink = $document->getDownloadLink($linkparam);
+            }
+
+            if ($item->getType() != 'Document') {
+               Session::addToNavigateListItems('Document', $docID);
+            }
+            $used[$docID] = $docID;
+            $assocID      = $data["assocID"];
+
+            echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
+            if ($canedit && ($withtemplate < 2)) {
+               echo "<td width='10'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+               echo "</td>";
+            }
+            echo "<td class='center'>$link</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data['entity']);
+            echo "</td>";
+            echo "<td class='center'>$downloadlink</td>";
+            echo "<td class='center'>";
+            if (!empty($data["link"])) {
+               echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"];
+               echo "</a>";
+            } else {;
+               echo "&nbsp;";
+            }
+            echo "</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_documentcategories",
+                                                                 $data["documentcategories_id"]);
+            echo "</td>";
+            echo "<td class='center'>".$data["mime"]."</td>";
+            echo "</tr>";
+            $i++;
+         }
+      }
+
+
+      echo "</table>";
+      if ($canedit && $number && ($withtemplate < 2)) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
+      }
+      echo "</div>";
+   }
 
 }
 ?>

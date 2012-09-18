@@ -268,7 +268,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    function canRelationItem($method, $methodNotItem, $check_entity=true) {
-
       $item1 = NULL;
 
       if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,

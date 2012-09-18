@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
 
    if ($newID = $doc->add($_POST)) {
       Event::log($newID, "documents", 4, "login",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
    }
 
    Html::back();
@@ -91,27 +91,6 @@ if (isset($_POST["add"])) {
       Event::log($_POST["id"], "documents", 4, "document",
                  //TRANS: %s is the user login
                  sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_POST["adddocumentitem"])) {
-   $documentitem->check(-1,'w',$_POST);
-   if ($documentitem->add($_POST)) {
-      Event::log($_POST["documents_id"], "documents", 4, "document",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
-} else if (isset($_GET["deletedocumentitem"])
-           && isset($_GET["documents_id"])
-           && isset($_GET["id"])) {
-
-   $documentitem->check($_GET["id"],'d');
-   if ($documentitem->delete(array('id' => $_GET["id"]))) {
-      Event::log($_GET["documents_id"], "documents", 4, "document",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

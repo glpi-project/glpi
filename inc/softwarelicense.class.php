@@ -105,7 +105,7 @@ class SoftwareLicense extends CommonDBTM {
       $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
       return $ong;
    }

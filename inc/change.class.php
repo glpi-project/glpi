@@ -230,7 +230,7 @@ class Change extends CommonITILObject {
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
       /// TODO add stats
       $this->addStandardTab('Note', $ong, $options);

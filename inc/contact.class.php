@@ -70,7 +70,7 @@ class Contact extends CommonDBTM{
 
       $ong = array();
       $this->addStandardTab('Contact_Supplier', $ong, $options);
-      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);

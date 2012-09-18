@@ -335,7 +335,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return nothing
    **/
    function post_addItem() {
-
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return;
       }
@@ -349,7 +348,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       Log::HISTORY_ADD_SUBITEM);
       }
-
    }
 
 

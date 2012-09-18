@@ -87,7 +87,7 @@ class Contract extends CommonDBTM {
       $this->addStandardTab('ContractCost', $ong, $options);
       $this->addStandardTab('Contract_Supplier', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
