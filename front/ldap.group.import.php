@@ -44,38 +44,7 @@ Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", 
 
 if (isset($_GET['next'])) {
    AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
-
 } else {
-   if (isset($_SESSION["ldap_import"])) {
-      if ($count = count($_SESSION["ldap_import"])) {
-         $percent = min(100, round(100*($_SESSION["ldap_import_count"]-$count)
-                                   /$_SESSION["ldap_import_count"], 0));
-
-         Html::displayProgressBar(400, $percent);
-         $key = array_pop($_SESSION["ldap_import"]);
-
-         if (isset($_SESSION["ldap_import_entities"][$key])) {
-            $entity = $_SESSION["ldap_import_entities"][$key];
-         } else {
-         $entity = $_SESSION["glpiactive_entity"];
-         }
-
-         AuthLdap::ldapImportGroup($key,
-                                   array("authldaps_id" => $_SESSION["ldap_server"],
-                                         "entities_id"  => $entity,
-                                         "is_recursive" => $_SESSION["ldap_import_recursive"][$key],
-                                         "type"         => $_SESSION["ldap_import_type"][$key]));
-         Html::redirect($_SERVER['PHP_SELF']);
-
-      } else {
-         unset($_SESSION["ldap_import"]);
-         Html::displayProgressBar(400, 100);
-
-         echo "<div class='center b'>".__('Successful importation')."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
-      }
-   }
-
    if (isset($_POST["change_ldap_filter"])) {
       if (isset($_POST["ldap_filter"])) {
          $_SESSION["ldap_group_filter"] = $_POST["ldap_filter"];
@@ -85,10 +54,7 @@ if (isset($_GET['next'])) {
       }
       Html::redirect($_SERVER['PHP_SELF']);
 
-   } else if (!isset($_POST["import_ok"])) {
-      if (!isset($_GET['check'])) {
-         $_GET['check'] = 'all';
-      }
+   } else {
       if (!isset($_GET['start'])) {
          $_GET['start'] = 0;
       }
@@ -116,35 +82,20 @@ if (isset($_GET['next'])) {
          if (!isset($_SESSION["ldap_group_filter2"])) {
             $_SESSION["ldap_group_filter2"] = '';
          }
-
+         if (isset($_GET["order"])) {
+            $_SESSION["ldap_sortorder"] = $_GET["order"];
+         }
          if (!isset($_SESSION["ldap_sortorder"])) {
             $_SESSION["ldap_sortorder"] = "ASC";
-         } else {
-            $_SESSION["ldap_sortorder"] = (!isset($_GET["order"])?"DESC":$_GET["order"]);
          }
 
          AuthLdap::displayLdapFilter($_SERVER['PHP_SELF'], false);
 
-         AuthLdap::showLdapGroups($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 0,
+         AuthLdap::showLdapGroups($_SERVER['PHP_SELF'], $_GET['start'], 0,
                                   $_SESSION["ldap_group_filter"], $_SESSION["ldap_group_filter2"],
                                   $_SESSION["glpiactive_entity"], $_SESSION["ldap_sortorder"]);
       }
 
-   } else {
-      if (count($_POST['toimport']) > 0) {
-         $_SESSION["ldap_import_count"] = 0;
-
-         foreach ($_POST['toimport'] as $key => $val) {
-            if ($val == "on") {
-               $_SESSION["ldap_import"][] = $key;
-               $_SESSION["ldap_import_count"]++;
-               $_SESSION["ldap_import_entities"][$key]  = $_POST["toimport_entities"][$key];
-               $_SESSION["ldap_import_type"][$key]      = $_POST["toimport_type"][$key];
-               $_SESSION["ldap_import_recursive"][$key] = $_POST["toimport_recursive"][$key];
-            }
-         }
-      }
-      Html::redirect($_SERVER['PHP_SELF']);
    }
 }
 
