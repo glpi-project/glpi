@@ -306,29 +306,11 @@ class NetworkPort extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      // TODO : should use the CommonDBChild::prepareInputForAdd facility
-      // Not attached to itemtype -> not added
-      if (!isset($input['itemtype'])
-          || empty($input['itemtype'])
-          || !($item = getItemForItemtype($input['itemtype']))
-          || !isset($input['items_id'])
-          || ($input['items_id'] <= 0)) {
-         return false;
-      }
-
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
          unset($input["logical_number"]);
       }
 
-      // TODO : should use the CommonDBChild::prepareInputForAdd facility
-      if ($item->getFromDB($input['items_id'])) {
-         $input['entities_id']  = $item->getEntityID();
-         $input['is_recursive'] = intval($item->isRecursive());
-         return $input;
-      }
-
-      // Item not found
-      return false;
+      return parent::prepareInputForAdd($input);
    }
 
 
