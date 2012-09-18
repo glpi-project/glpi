@@ -4418,14 +4418,17 @@ class Html {
       }
 
       $link = "<a ";
-      if (empty($btimage)) {
-         $link .= " class='vsubmit' ";
-      } else {
-         $link .= " class='pointer' ";
-      }
 
       if (!empty($btoption)) {
-         $link .= $btoption.' ';
+         $link .= ' '.$btoption.' ';
+      }
+      // Do not force class if already defined
+      if(!strstr($btoption, 'class=')) {
+         if (empty($btimage)) {
+            $link .= " class='vsubmit' ";
+         } else {
+            $link .= " class='pointer' ";
+         }
       }
       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
       $action  = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";

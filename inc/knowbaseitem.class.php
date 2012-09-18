@@ -682,25 +682,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * Remove kb item from the public FAQ
-    *
-    * @return nothing
-   **/
-   function removeFromFaq() {
-      global $DB;
-
-      $DB->query("UPDATE `".$this->getTable()."`
-                  SET `is_faq` = '0'
-                  WHERE `id` = '".$this->fields['id']."'");
-
-      if (isset($_SESSION['glpi_faqcategories'])) {
-         unset($_SESSION['glpi_faqcategories']);
-      }
-
-   }
-
-
-   /**
     * Print out an HTML Menu for knowbase item
     *
     * @return nothing (display the form)
@@ -729,31 +710,31 @@ class KnowbaseItem extends CommonDBTM {
       if ($edit) {
          echo "<tr class='tab_bg_1'>";
          if ($editFAQ) {
+            echo "<td class='center' width='33%'>";
             if ($isFAQ) {
-               echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
-                     $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;removefromfaq=yes\">
-                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt=\"".
-                        __s('Delete this item from the FAQ')."\" title=\"".
-                        __s('Delete this item from the FAQ')."\"></a></td>\n";
-            } else {
-               echo "<td class='center' width='33%'><a  class='icon_nav_move' href=\"".
-                     $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;addtofaq=yes\">
-                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt=\"".
-                        __s('Put this item in the FAQ')."\" title=\"".
-                        __s('Put this item in the FAQ')."\"></a></td>\n";
+               Html::showSimpleForm(static::getFormURL(), 'update', __('Delete this item from the FAQ'),
+                                 array('id' => $ID,
+                                       'is_faq' => 0),
+                                 $CFG_GLPI["root_doc"]."/pics/faqremove.png");
+            } else  {
+               Html::showSimpleForm(static::getFormURL(), 'update', __('Put this item in the FAQ'),
+                                 array('id' => $ID,
+                                       'is_faq' => 1),
+                                 $CFG_GLPI["root_doc"]."/pics/faqadd.png");
             }
+            echo "</td>\n";
          }
-         echo "<td class='center' width='34%'><a class='icon_nav_move' href=\"".
+         echo "<td class='center' width='34%'><a href=\"".
                $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".__s('Edit').
                "\" title=\"".__s('Edit')."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
-         echo "<a class='icon_nav_move' href=\"#\" ".
-                HTML::addConfirmationOnAction(__("Are you sure you want to delete this item?"),
-                                       "window.location='".$CFG_GLPI["root_doc"].
-                                       "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes'").">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".__s('Purge').
-               "\" title=\"".__s('Purge')."\"></a></td>";
+         Html::showSimpleForm(static::getFormURL(), 'delete', __('Purge'),
+                           array('id' => $ID),
+                           $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '', 
+                           __("Are you sure you want to delete this item?"));
+
+         echo "</td>";
          echo "</tr>";
       }
       echo "</table><br>";

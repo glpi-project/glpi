@@ -63,7 +63,7 @@ if (isset($_GET['forcetab'])) {
 }
 
 $kb = new Knowbase();
-$kb->show(Toolbox::addslashes_deep($_GET));
+$kb->show($_GET);
 
 
 Html::footer();
