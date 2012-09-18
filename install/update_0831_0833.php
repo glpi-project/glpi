@@ -64,7 +64,7 @@ function update0831to0833() {
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                      __('Compute entities information on document links'))); // Updating schema
+                                      'Compute entities information on document links')); // Updating schema
 
    $entities    = getAllDatasFromTable('glpi_entities');
    $entities[0] = "Root";
@@ -90,7 +90,7 @@ function update0831to0833() {
    }
 
    // ************ Keep it at the end **************
-   $migration->displayMessage(sprintf(__('Migration of glpi_displaypreferences')));
+   $migration->displayMessage('Migration of glpi_displaypreferences');
 
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
