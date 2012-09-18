@@ -44,7 +44,7 @@ class NetworkPortMigration extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype  = 'itemtype';
    static public $items_id  = 'items_id';
-
+   static public $mustBeAttached = true;
 
    static function getTypeName($nb=0) {
       return __('Network port migration');
