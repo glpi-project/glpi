@@ -38,10 +38,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $alias = new NetworkAlias();
 
-if (isset($_POST["id"])) {
-   $_GET["id"] = $_POST["id"];
-} else if (!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
+}
+if (empty($_GET["networknames_id"])) {
+   $_GET["networknames_id"] = "";
 }
 
 if (isset($_POST["add"])) {
@@ -81,10 +82,6 @@ if (isset($_POST["add"])) {
       }
       Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
    }
-}
-
-if (empty($_GET["networknames_id"])) {
-   $_GET["networknames_id"] = "";
 }
 
 if (!isset($options)) {
