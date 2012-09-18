@@ -53,17 +53,17 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
-   $link->check($_GET["id"],'d');
+   $link->check($_POST["id"],'d');
    $link->delete($_POST);
-   Event::log($_GET["id"], "links", 4, "setup",
+   Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $link->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $link->check($_GET["id"],'w');
+   $link->check($_POST["id"],'w');
    $link->update($_POST);
-   Event::log($_GET["id"], "links", 4, "setup",
+   Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();

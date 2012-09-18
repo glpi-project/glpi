@@ -38,15 +38,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
 
-if (empty($_GET["id"])) {
-   $_GET["id"] = "";
-}
-
 $link          = new Link();
 $link_itemtype = new Link_ItemType();
 
 if (isset($_POST["add"])) {
-   $link->check($_GET["id"],'w');
+   $link->check(-1,'w', $_POST);
 
    if ($link_itemtype->add($_POST)) {
     Event::log($_POST["links_id"], "links", 4, "setup",
@@ -54,15 +50,5 @@ if (isset($_POST["add"])) {
                sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
-}
-else if (isset($_GET["delete"])) {
-   $link->check($_GET["links_id"],'d');
-
-   $link_itemtype->delete($_GET);
-   Event::log($_GET["links_id"], "links", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
-
-   Html::back();
 }
 ?>

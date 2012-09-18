@@ -1078,7 +1078,7 @@ class Reminder extends CommonDBTM {
       if (self::canCreate()) {
          echo "<span class='reminder_right'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"". __s('Add')."\">".
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"". __s('Add')."\">".
               "</a></span>";
       }
 

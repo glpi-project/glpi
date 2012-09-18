@@ -244,7 +244,7 @@ class Bookmark extends CommonDBTM {
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</div></td></tr>";
 
       } else {
@@ -253,7 +253,7 @@ class Bookmark extends CommonDBTM {
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
-         echo "<input type='submit' name='delete' value=\"".__s('Delete')."\" class='submit'>";
+         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete')."\" class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div>";

@@ -366,7 +366,7 @@ class Contract_Supplier extends CommonDBRelation {
             echo "<a href='".$CFG_GLPI["root_doc"].
                   "/front/contract.form.php?deletecontractsupplier=1&amp;id=$ID&amp;contracts_id=".
                   $instID."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                  __s('Delete')."'></a>";
+                  _sx('button', 'Delete')."'></a>";
          } else {
             echo "&nbsp;";
          }

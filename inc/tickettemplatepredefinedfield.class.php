@@ -261,7 +261,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                                       'itemtype'         => 'Ticket',
                                       'additionalvalues' => array('itemtype' => $itemtype_used),
                                       'inline'           => true,
-                                      'submitname'       => __s('Add'),
+                                      'submitname'       => _sx('button', 'Add'),
                                       'options'          => array('relative_dates'     => 1,
                                                                   'with_time'          => 1,
                                                                   'with_days'          => 0,

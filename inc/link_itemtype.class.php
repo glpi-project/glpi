@@ -31,15 +31,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class Link_ItemType extends CommonDBTM{
+class Link_Itemtype extends CommonDBChild {
+   // From CommonDbChild
+   static public $itemtype = 'Link'; 
+   static public $items_id = 'links_id';
 
-   // From CommonDBRelation
-   public $itemtype_1 = 'Link';
-   public $items_id_1 = 'links_id';
+   function getForbiddenStandardMassiveAction() {
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
-
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
 
    /**
     * Print the HTML array for device on link
@@ -54,7 +56,7 @@ class Link_ItemType extends CommonDBTM{
       $links_id = $link->getField('id');
 
       $canedit = $link->can($links_id, 'w');
-      $canrecu = $link->can($links_id, 'recursive');
+      $rand = mt_rand();
 
       if (!Session::haveRight("link","r")
           || !$link->can($links_id, 'r')) {
@@ -66,42 +68,70 @@ class Link_ItemType extends CommonDBTM{
                 WHERE `links_id` = '$links_id'
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      $i      = 0;
-      $used   = array();
-
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php\">";
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".__('Associated hardware types')."</th></tr>";
-      echo "<tr><th>".__('Type')."</th>";
-      echo "<th>&nbsp;</th></tr>";
-
-      while ($i < $number) {
-         $ID       = $DB->result($result, $i, "id");
-         $itemtype = $DB->result($result, $i, "itemtype");
-         $typename = NOT_AVAILABLE;
-         if ($item = getItemForItemtype($itemtype)) {
-            $typename = $item->getTypeName(1);
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center'>$typename</td>";
-            echo "<td class='center b'>";
-            echo "<a href='".$CFG_GLPI["root_doc"].
-                  "/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
-                  ".__('Delete')."</a></td></tr>";
-            $used[$itemtype] = $itemtype;
-            $i++;
+      $types = array();
+      $used = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $types[$data['id']] = $data;
+            $used[$data['itemtype']] = $data['itemtype'];
          }
       }
+
       if ($canedit) {
-         echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
+         echo "<div class='firstbloc'>";
+         echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item type')."</th></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='links_id' value='$links_id'>";
          Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], array('used' => $used));
-         echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"". _sx('button','Add')."\"
-                            class='submit'>";
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
+
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
-      echo "</table></div>";
-      Html::closeForm();
+
+      echo "<div class='spaced'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'  => $numrows);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      if ($canedit && $numrows) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Type')."</th>";
+      echo "</tr>";
+
+      foreach ($types as $data) {
+         $typename = NOT_AVAILABLE;
+         if ($item = getItemForItemtype($data['itemtype'])) {
+            $typename = $item->getTypeName(1);
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               echo "</td>";
+            }
+            echo "<td class='center'>$typename</td>";
+            echo "</tr>";
+         }
+      }
+      echo "</table>";
+      if ($canedit && $numrows) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::closeForm();
+      }
+      echo "</div>";
    }
 
 

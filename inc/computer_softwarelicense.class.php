@@ -327,7 +327,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                   'entity_sons' => $license->fields['is_recursive']));
 
          echo "</td>";
-         echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table>";
