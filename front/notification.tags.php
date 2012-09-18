@@ -37,15 +37,12 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (isset($_POST["sub_type"])) {
-   $sub_type = $_POST["sub_type"];
-} else if (isset($_GET["sub_type"])) {
-   $sub_type = $_GET["sub_type"];
+if (isset($_GET["sub_type"])) {
+   Session::checkRight("config", "r");
+   NotificationTemplateTranslation::showAvailableTags($_GET["sub_type"]);
+   Html::ajaxFooter();
 } else {
-   $sub_type = 0;
+   Html::displayErrorAndDie("lost");
 }
 
-Session::checkRight("config", "r");
-NotificationTemplateTranslation::showAvailableTags($sub_type);
-Html::ajaxFooter();
 ?>

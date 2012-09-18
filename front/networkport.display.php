@@ -41,8 +41,9 @@ if (isset($_GET["itemtype"])) {
    Session::checkRight("internet", "r");
    NetworkPort::showDislayOptions($_GET["itemtype"]);
    Html::ajaxFooter();
-} 
-Html::displayErrorAndDie("lost");
+} else {
+   Html::displayErrorAndDie("lost");
+}
 
 
 
