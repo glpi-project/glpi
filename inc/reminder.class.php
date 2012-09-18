@@ -516,7 +516,7 @@ class Reminder extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Reminder', $ong, $options);
 
       return $ong;

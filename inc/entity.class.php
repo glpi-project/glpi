@@ -265,7 +265,7 @@ class Entity extends CommonTreeDropdown {
       $this->addStandardTab('Profile_User',$ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
-      $this->addStandardTab('Document',$ong, $options);
+      $this->addStandardTab('Document_Item',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 

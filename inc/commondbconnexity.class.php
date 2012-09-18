@@ -121,7 +121,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
       } else {
          $type = $itemtype;
       }
-
       $item = getItemForItemtype($type);
       if ($item !== false) {
          if ($getFromDB) {
