@@ -196,6 +196,8 @@ $CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'Networ
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense');
 
+$CFG_GLPI["directconnect_types"]          = array('Monitor', 'Peripheral', 'Phone', 'Printer');
+
 $CFG_GLPI["infocom_types"]                = array('Cartridge', 'CartridgeItem', 'Computer',
                                                   'Consumable', 'ConsumableItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',

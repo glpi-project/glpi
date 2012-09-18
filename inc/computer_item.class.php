@@ -45,8 +45,15 @@ class Computer_Item extends CommonDBRelation{
 
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
+   static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+   
+   function getForbiddenStandardMassiveAction() {
 
-
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    /**
     * Count connection for an item
     *
@@ -75,7 +82,22 @@ class Computer_Item extends CommonDBRelation{
                                   "`computers_id` ='".$comp->getField('id')."'");
    }
 
+   /**
+    * Count connection for a Computer and an itemtype
+    *
+    * @param $comp   Computer object
+    * @param $item   CommonDBTM object
+    *
+    * @return integer: count
+   **/
+   static function countForAll(Computer $comp, CommonDBTM $item) {
 
+      return countElementsInTable('glpi_computers_items',
+                                  "`computers_id` ='".$comp->getField('id')."'
+                                   AND `itemtype` = '".$item->getType()."'
+                                   AND `items_id` ='".$item->getField('id')."'");
+   }
+   
    /**
     * Check right on an item - overloaded to check is_global
     *
@@ -95,11 +117,6 @@ class Computer_Item extends CommonDBRelation{
 
          if (!$item->getFromDB($input['items_id'])) {
             return false;
-         }
-
-         if (($item->getField('is_global') == 0)
-             && ($this->countForItem($item) > 0)) {
-               return false;
          }
       }
       return parent::can($ID, $right, $input);
@@ -127,66 +144,75 @@ class Computer_Item extends CommonDBRelation{
       if (!$item->getFromDB($input['items_id'])) {
          return false;
       }
+      if (($item->getField('is_global') == 0)
+            && ($this->countForItem($item) > 0)) {
+            return false;
+      }
+      $comp = new Computer();
+      if (!$comp->getFromDB($input['computers_id'])) {
+         return false;
+      }
+      // no duplicates
+      if (self::countForAll($comp, $item) >0) {
+         return false;
+      }
       if (!$item->getField('is_global') ) {
          // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
-         $comp = new Computer();
-         if ($comp->getFromDB($input['computers_id'])) {
-            $updates = array();
+         $updates = array();
 
-            if ($CFG_GLPI["is_location_autoupdate"]
-                && ($comp->fields['locations_id'] != $item->getField('locations_id'))) {
+         if ($CFG_GLPI["is_location_autoupdate"]
+               && ($comp->fields['locations_id'] != $item->getField('locations_id'))) {
 
-               $updates['locations_id'] = addslashes($comp->fields['locations_id']);
-               Session::addMessageAfterRedirect(
-                  __('Location updated. The connected items have been moved in the same location.'),
+            $updates['locations_id'] = addslashes($comp->fields['locations_id']);
+            Session::addMessageAfterRedirect(
+               __('Location updated. The connected items have been moved in the same location.'),
+               true);
+         }
+         if (($CFG_GLPI["is_user_autoupdate"]
+               && ($comp->fields['users_id'] != $item->getField('users_id')))
+               || ($CFG_GLPI["is_group_autoupdate"]
+                  && ($comp->fields['groups_id'] != $item->getField('groups_id')))) {
+
+            if ($CFG_GLPI["is_user_autoupdate"]) {
+               $updates['users_id'] = $comp->fields['users_id'];
+            }
+            if ($CFG_GLPI["is_group_autoupdate"]) {
+               $updates['groups_id'] = $comp->fields['groups_id'];
+            }
+            Session::addMessageAfterRedirect(
+               __('User or group updated. The connected items have been moved in the same values.'),
+               true);
+         }
+
+         if ($CFG_GLPI["is_contact_autoupdate"]
+               && (($comp->fields['contact'] != $item->getField('contact'))
+                  || ($comp->fields['contact_num'] != $item->getField('contact_num')))) {
+
+            $updates['contact']     = addslashes($comp->fields['contact']);
+            $updates['contact_num'] = addslashes($comp->fields['contact_num']);
+            Session::addMessageAfterRedirect(
+               __('Alternate username updated. The connected items have been updated using this alternate username.'),
+               true);
+         }
+
+         if (($CFG_GLPI["state_autoupdate_mode"] < 0)
+               && ($comp->fields['states_id'] != $item->getField('states_id'))) {
+
+            $updates['states_id'] = $comp->fields['states_id'];
+            Session::addMessageAfterRedirect(
+                  __('Status updated. The connected items have been updated using this status.'),
                   true);
-            }
-            if (($CFG_GLPI["is_user_autoupdate"]
-                 && ($comp->fields['users_id'] != $item->getField('users_id')))
-                || ($CFG_GLPI["is_group_autoupdate"]
-                    && ($comp->fields['groups_id'] != $item->getField('groups_id')))) {
+         }
 
-               if ($CFG_GLPI["is_user_autoupdate"]) {
-                  $updates['users_id'] = $comp->fields['users_id'];
-               }
-               if ($CFG_GLPI["is_group_autoupdate"]) {
-                  $updates['groups_id'] = $comp->fields['groups_id'];
-               }
-               Session::addMessageAfterRedirect(
-                  __('User or group updated. The connected items have been moved in the same values.'),
-                  true);
-            }
+         if (($CFG_GLPI["state_autoupdate_mode"] > 0)
+               && ($item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"])) {
 
-            if ($CFG_GLPI["is_contact_autoupdate"]
-                && (($comp->fields['contact'] != $item->getField('contact'))
-                    || ($comp->fields['contact_num'] != $item->getField('contact_num')))) {
+            $updates['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
+         }
 
-               $updates['contact']     = addslashes($comp->fields['contact']);
-               $updates['contact_num'] = addslashes($comp->fields['contact_num']);
-               Session::addMessageAfterRedirect(
-                  __('Alternate username updated. The connected items have been updated using this alternate username.'),
-                  true);
-            }
-
-            if (($CFG_GLPI["state_autoupdate_mode"] < 0)
-                && ($comp->fields['states_id'] != $item->getField('states_id'))) {
-
-               $updates['states_id'] = $comp->fields['states_id'];
-               Session::addMessageAfterRedirect(
-                     __('Status updated. The connected items have been updated using this status.'),
-                     true);
-            }
-
-            if (($CFG_GLPI["state_autoupdate_mode"] > 0)
-                && ($item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"])) {
-
-               $updates['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
-            }
-
-            if (count($updates)) {
-               $updates['id'] = $input['items_id'];
-               $item->update($updates);
-            }
+         if (count($updates)) {
+            $updates['id'] = $input['items_id'];
+            $item->update($updates);
          }
       }
       return $input;
@@ -427,13 +453,18 @@ class Computer_Item extends CommonDBRelation{
 
       $ID      = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
+      $rand = mt_rand();
 
-      $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
       $datas = array();
-      foreach ($items as $itemtype) {
+      $used  = array();
+      foreach ($CFG_GLPI["directconnect_types"] as $itemtype) {
          $item = new $itemtype();
          if ($item->canView()) {
-            $query = "SELECT `glpi_computers_items`.*
+            $query = "SELECT `glpi_computers_items`.`id` as assoc_id,
+                      `glpi_computers_items`.`computers_id` as assoc_computers_id,
+                      `glpi_computers_items`.`itemtype` as assoc_itemtype,
+                      `glpi_computers_items`.`items_id` as assoc_items_id,
+                      ".getTableForItemType($itemtype).".*
                       FROM `glpi_computers_items`
                       LEFT JOIN `".getTableForItemType($itemtype)."`
                         ON (`".getTableForItemType($itemtype)."`.`id` = `glpi_computers_items`.`items_id`)
@@ -443,123 +474,99 @@ class Computer_Item extends CommonDBRelation{
                $query.= " AND NOT `".getTableForItemType($itemtype)."`.`is_template` ";
             }
 
-            $result = $DB->query($query);
-            if ($result) {
-               $nb                         = $DB->numrows($result);
-               $datas[$itemtype]['result'] = $result;
-               $datas[$itemtype]['title']  = $item->getTypeName($nb);
+            if ($result = $DB->query($query)) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  $datas[] = $data;
+                  $used[$itemtype][] = $data['assoc_items_id']; 
+               }
             }
          }
       }
+      $number = count($datas);
+      
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
-      if (count($datas)) {
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>".__('Direct connections')."</th></tr>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
-         //echo "<tr class='tab_bg_1'>";
-         $items_displayed = 0;
-         $nbperline       = 2;
-         foreach ($datas as $itemtype => $data) {
-            $used = array();
-
-            // Line change
-            if ($items_displayed%$nbperline == 0) {
-               // Begin case
-               if ($items_displayed != 0) {
-                  echo "</tr>";
-               }
-               echo "<tr>";
-               $count            = 0;
-               $header_displayed = 0;
-               foreach ($datas as $tmp_data) {
-                  if (($count >= $items_displayed)
-                      && ($header_displayed < $nbperline)) {
-                     echo "<th>".$tmp_data['title']."</th>";
-                     $header_displayed++;
-                  }
-                  $count++;
-               }
-               // Add header if line not complete
-               while ($header_displayed%$nbperline != 0) {
-                  echo "<th>&nbsp;</th>";
-                  $header_displayed++;
-               }
-               echo "</tr><tr class='tab_bg_1'>";
-            }
-            echo "<td class='center'>";
-
-            $resultnum = $DB->numrows($data['result']);
-            $item      = new $itemtype();
-            if ($resultnum > 0) {
-               echo "<table width='100%'>";
-               for ($i=0; $i < $resultnum; $i++) {
-                  $tID    = $DB->result($data['result'], $i, "items_id");
-                  $connID = $DB->result($data['result'], $i, "id");
-                  $item->getFromDB($tID);
-                  $used[$tID] = $tID;
-
-                  echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
-                  echo "<td class='center'><span class='b'>".$item->getLink()."</span>";
-                  echo " - ".Dropdown::getDropdownName("glpi_states", $item->getField('state'));
-                  echo "</td><td>".$item->getField('serial');
-                  echo "</td><td>".$item->getField('otherserial');
-                  echo "</td><td>";
-                  if ($canedit
-                      && (empty($withtemplate) || ($withtemplate != 2))) {
-                     echo "<td class='center b'>";
-                     Html::showSimpleForm(static::getFormURL(), 'disconnect', __('Disconnect'),
-                           array('computers_id' => $ID,
-                                 'id' => $connID));
-                     echo "</td>";
-                  }
-                  echo "</tr>";
-               }
-               echo "</table>";
-
-            } else {
-               switch ($itemtype) {
-                  case 'Printer' :
-                     _e('No connected printer');
-                     break;
-
-                  case 'Monitor' :
-                     _e('No connected monitor');
-                     break;
-
-                  case 'Peripheral' :
-                     _e('No connected device');
-                     break;
-
-                  case 'Phone' :
-                     _e('No connected phone');
-                     break;
-               }
-               echo "<br>";
-            }
-            if ($canedit) {
-               if (empty($withtemplate) || ($withtemplate != 2)) {
-                  echo "<form method='post' action=\"".static::getFormURL()."\">";
-                  echo "<input type='hidden' name='computers_id' value='$ID'>";
-                  echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
-                  if (!empty($withtemplate)) {
-                     echo "<input type='hidden' name='_no_history' value='1'>";
-                  }
-                  self::dropdownConnect($itemtype, 'Computer', "items_id",
-                                        $comp->fields["entities_id"], $withtemplate, $used);
-                  echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
-                         class='submit'>";
-                  Html::closeForm();
-               }
-            }
-            echo "</td>";
-            $items_displayed++;
+         echo "<tr class='tab_bg_1'><td class='right'>";
+//          Dropdown::showAllItems("items_id", 0, 0, $comp->fields['entities_id'],
+//                                 $CFG_GLPI["directconnect_types"], false, true);
+         if (!empty($withtemplate)) {
+            echo "<input type='hidden' name='_no_history' value='1'>";
          }
-         while ($items_displayed%$nbperline != 0) {
-            echo "<td>&nbsp;</td>";
-            $items_displayed++;
+         self::dropdownAllConnect('Computer', "items_id",
+                                 $comp->fields["entities_id"], $withtemplate, $used);
+         echo "</td><td class='center'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='hidden' name='computers_id' value='".$comp->fields['id']."'>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+      
+      if ($number) {
+      echo "<div class='spaced'>";
+         if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = array();
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
          }
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr>";
+
+         if ($canedit) {
+            echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         }
+
+         echo "<th>".__('Type')."</th>";
+         echo "<th>".__('Name')."</th>";
+         echo "<th>".__('Entity')."</th>";
+         echo "<th>".__('Serial number')."</th>";
+         echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
-         echo "</table></div>";
+
+
+         foreach ($datas as $data) {
+            $linkname = $data["name"];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+               $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
+            }
+            $link = Toolbox::getItemTypeFormURL($itemtype);
+            $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
+
+            echo "<tr class='tab_bg_1'>";
+
+            if ($canedit) {
+               echo "<td width='10'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["assoc_id"]);
+               echo "</td>";
+            }
+            echo "<td class='center'>".$data['assoc_itemtype']::getTypeName(1)."</td>";
+            echo "<td ".
+                  (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
+               ">".$name."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                               $data['entities_id']);
+            echo "</td>";
+            echo "<td class='center'>".(isset($data["serial"])? "".
+                                       $data["serial"]."" :"-")."</td>";
+            echo "<td class='center'>".(isset($data["otherserial"])? "".
+                                       $data["otherserial"]."" :"-")."</td>";
+            echo "</tr>";
+         }
+
+         echo "</table>";
+         if ($canedit && $number) {
+            $paramsma['ontop'] =false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::closeForm();
+         }
+         echo "</div>";
       }
    }
 
@@ -691,7 +698,6 @@ class Computer_Item extends CommonDBRelation{
    /**
    * Make a select box for connections
    *
-   * @param $itemtype               type to connect
    * @param $fromtype               from where the connection is
    * @param $myname                 select name
    * @param $entity_restrict        Restrict to a defined entity (default = -1)
@@ -700,7 +706,7 @@ class Computer_Item extends CommonDBRelation{
    *
    * @return nothing (print out an HTML select box)
    */
-   static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict=-1,
+   static function dropdownAllConnect($fromtype, $myname, $entity_restrict=-1,
                                    $onlyglobal=0, $used=array()) {
       global $CFG_GLPI;
 
@@ -717,10 +723,51 @@ class Computer_Item extends CommonDBRelation{
             $use_ajax = true;
          }
       }
+      $options               = array();
+      $options['checkright'] = true;
+      $options['name']       = 'itemtype';
+
+      $rand = Dropdown::showItemType($CFG_GLPI['directconnect_types'], $options);
+      if ($rand) {
+         $params = array('itemtype'        => '__VALUE__',
+                         'fromtype'        => $fromtype,
+                         'value'           => 0,
+                         'myname'          => $myname,
+                         'onlyglobal'      => $onlyglobal,
+                         'entity_restrict' => $entity_restrict,
+                         'used'            => $used);
+
+         if ($onlyglobal) {
+            $params['condition'] = "`is_global` = '1'";
+         }
+         Ajax::updateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownConnect.php", $params);
+
+         echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
+      }
+      return $rand;
+
+   }
+   
+   /**
+   * Make a select box for connections
+   *
+   * @param $itemtype               type to connect
+   * @param $fromtype               from where the connection is
+   * @param $myname                 select name
+   * @param $entity_restrict        Restrict to a defined entity (default = -1)
+   * @param $onlyglobal             display only global devices (used for templates) (default 0)
+   * @param $used             array Already used items ID: not to display in dropdown
+   *
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict=-1,
+                                   $onlyglobal=0, $used=array()) {
+      global $CFG_GLPI;
 
       $params = array('searchText'      => '__VALUE__',
                       'fromtype'        => $fromtype,
-                      'idtable'         => $itemtype,
+                      'itemtype'        => $itemtype,
                       'myname'          => $myname,
                       'onlyglobal'      => $onlyglobal,
                       'entity_restrict' => $entity_restrict,

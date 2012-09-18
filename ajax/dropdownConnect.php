@@ -49,10 +49,16 @@ if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromt
 
 $fromitem->checkGlobal('w');
 
+
 if (isset($_POST["used"]) && !is_numeric($_POST["used"]) && !is_array($_POST["used"])) {
    $used = unserialize(stripslashes($_POST["used"]));
 } else {
    $used = $_POST["used"];
+}
+if (isset($used[$_POST['itemtype']])) {
+   $used = $used[$_POST['itemtype']];
+} else {
+   $used = array();
 }
 
 if (isset($_POST["entity_restrict"])
@@ -63,8 +69,8 @@ if (isset($_POST["entity_restrict"])
 }
 
 // Make a select box
-$table = getTableForItemType($_POST["idtable"]);
-if (!$item = getItemForItemtype($_POST['idtable'])) {
+$table = getTableForItemType($_POST["itemtype"]);
+if (!$item = getItemForItemtype($_POST['itemtype'])) {
    exit;
 }
 
@@ -77,7 +83,7 @@ if ($item->maybeTemplate()) {
    $where .= " AND `$table`.`is_template` = '0' ";
 }
 
-if ((strlen($_POST['searchText']) > 0)
+if (isset($_POST['searchText']) && (strlen($_POST['searchText']) > 0)
     && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
    $where .= " AND (`$table`.`name` ".Search::makeTextSearch($_POST['searchText'])."
                     OR `$table`.`otherserial` ".Search::makeTextSearch($_POST['searchText'])."
@@ -103,7 +109,7 @@ if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if (isset($_POST['searchText']) && $_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
 
@@ -113,10 +119,10 @@ if (!empty($used)) {
 }
 
 
-if ($_POST["onlyglobal"] && $_POST["idtable"] != 'Computer') {
+if ($_POST["onlyglobal"] && $_POST["itemtype"] != 'Computer') {
    $CONNECT_SEARCH = " WHERE `$table`.`is_global` = '1' ";
 } else {
-   if ($_POST["idtable"] == 'Computer') {
+   if ($_POST["itemtype"] == 'Computer') {
       $CONNECT_SEARCH = " WHERE 1 ";
    } else {
       $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
@@ -127,10 +133,10 @@ if ($_POST["onlyglobal"] && $_POST["idtable"] != 'Computer') {
 
 $LEFTJOINCONNECT = "";
 
-if ($_POST["idtable"] != 'Computer' && !$_POST["onlyglobal"]) {
+if ($_POST["itemtype"] != 'Computer' && !$_POST["onlyglobal"]) {
    $LEFTJOINCONNECT = " LEFT JOIN `glpi_computers_items`
                            ON (`$table`.`id` = `glpi_computers_items`.`items_id`
-                               AND `glpi_computers_items`.`itemtype` = '".$_POST['idtable']."')";
+                               AND `glpi_computers_items`.`itemtype` = '".$_POST['itemtype']."')";
 }
 
 $query = "SELECT DISTINCT `$table`.`id`,
