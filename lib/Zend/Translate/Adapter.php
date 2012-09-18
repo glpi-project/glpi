@@ -656,7 +656,6 @@ abstract class Zend_Translate_Adapter {
             if (!isset($this->_translate[$key])) {
                 $this->_translate[$key] = array();
             }
-
             if (array_key_exists($key, $temp) && is_array($temp[$key])) {
                 $this->_translate[$key] = $temp[$key] + $this->_translate[$key];
             }
@@ -751,6 +750,7 @@ abstract class Zend_Translate_Adapter {
 
         $locale = (string) $locale;
         if ((is_string($messageId) || is_int($messageId)) && isset($this->_translate[$locale][$messageId])) {
+        
             // return original translation
             if ($plural === null) {
                 $this->_routed = array();
@@ -759,8 +759,13 @@ abstract class Zend_Translate_Adapter {
 
             $rule = Zend_Translate_Plural::getPlural($number, $locale);
             if (isset($this->_translate[$locale][$plural[0]][$rule])) {
-                $this->_routed = array();
-                return $this->_translate[$locale][$plural[0]][$rule];
+               $this->_routed = array();
+               /// FIX for GLPI for not translated plural on plugins
+               if (is_array($this->_translate[$locale][$plural[0]])) {
+                  return $this->_translate[$locale][$plural[0]][$rule];
+               } else {
+                  return $this->_translate[$locale][$plural[0]];
+               }
             }
         } else if (strlen($locale) != 2) {
             // faster than creating a new locale and separate the leading part
