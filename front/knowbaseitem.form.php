@@ -47,34 +47,10 @@ if (!isset($_GET["items_id"])) {
 if (!isset($_GET["modify"])) {
    $_GET["modify"] = "";
 }
-if (!isset($_GET["delete"])) {
-   $_GET["delete"] = "";
-}
-if (!isset($_GET["addtofaq"])) {
-   $_GET["addtofaq"] = "";
-}
-if (!isset($_GET["removefromfaq"])) {
-   $_GET["removefromfaq"] = "";
-}
 
 $kb = new KnowbaseItem();
 
-if ($_GET["id"] == "new") {
-   // on affiche le formulaire de saisie de l'item
-   $kb->check(-1,'w');
-
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
-   $available_options = array('itemtype', 'items_id');
-   $options           = array();
-   foreach ($available_options as $key) {
-      if (isset($_GET[$key])) {
-         $options[$key] = $_GET[$key];
-      }
-   }
-   $kb->showForm("",$options);
-   Html::footer();
-
-} else if (isset($_POST["add"])) {
+if (isset($_POST["add"])) {
    // ajoute un item dans la base de connaisssances
    $kb->check(-1,'w',$_POST);
 
@@ -93,40 +69,15 @@ if ($_GET["id"] == "new") {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
-} else if (isset($_GET["id"])
-           && (strcmp($_GET["modify"],"yes") == 0)) {
-   // modifier un item dans la base de connaissance
-   $kb->check($_GET["id"],'r');
-
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
-   $kb->showForm($_GET["id"]);
-   Html::footer();
-
-} else if (isset($_GET["id"])
-           && (strcmp($_GET["delete"],"yes") == 0)) {
+} else if (isset($_POST["delete"])) {
    // effacer un item dans la base de connaissances
-   $kb->check($_GET["id"],'d');
+   $kb->check($_POST["id"],'d');
 
-   $kb->delete($_GET);
-   Event::log($_GET["id"], "knowbaseitem", 5, "tools",
+   $kb->delete($_POST);
+   Event::log($_POST["id"], "knowbaseitem", 5, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $kb->redirectToList();
-
-} else if (isset($_GET["id"])
-           && (strcmp($_GET["addtofaq"],"yes") == 0)) {
-   // ajouter  un item dans la faq
-   $kb->check($_GET["id"],'w');
-   $kb->addToFaq();
-   Html::back();
-
-} else if (isset($_GET["id"])
-           && (strcmp($_GET["removefromfaq"],"yes") == 0)) {
-   // retirer  un item de la faq
-   $kb->check($_GET["id"],'w');
-   $kb->removeFromFaq($_GET["id"]);
-   Html::back();
-
 } else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["knowbaseitems_id"]) && $_POST["knowbaseitems_id"]) {
@@ -163,9 +114,33 @@ if ($_GET["id"] == "new") {
    }
    Html::back();
 
+} else if ($_GET["id"] == "new") {
+   // on affiche le formulaire de saisie de l'item
+   $kb->check(-1,'w');
+
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+   $available_options = array('itemtype', 'items_id');
+   $options           = array();
+   foreach ($available_options as $key) {
+      if (isset($_GET[$key])) {
+         $options[$key] = $_GET[$key];
+      }
+   }
+   $kb->showForm("",$options);
+   Html::footer();
+
 } else if (empty($_GET["id"])) {
    // No id or no tickets id to create from solution
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+
+} else if (isset($_GET["id"])
+           && ($_GET["modify"] == "yes")) {
+   // modifier un item dans la base de connaissance
+   $kb->check($_GET["id"],'r');
+
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+   $kb->showForm($_GET["id"]);
+   Html::footer();
 
 } else {
    // Affiche un item de la base de connaissances
