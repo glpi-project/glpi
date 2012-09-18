@@ -104,9 +104,6 @@ if (isset($_POST["update"])) {
             $_POST['_ok'] = $rr->add($_POST);
          }
       }
-      // Positionnement du calendrier au mois de debut
-      $_GET["mois_courant"]  = $begin_month;
-      $_GET["annee_courant"] = $begin_year;
 
       if ($_POST['_ok']) {
          Event::log($_POST["reservationitems_id"], "reservation", 4, "inventory",
@@ -117,11 +114,11 @@ if (isset($_POST["update"])) {
    }
    if ($all_ok) {
       $toadd = "";
-      // Only one reservation
+      // Only one reservation : move to correct month
       if (count($_POST['items']) == 1) {
          $toadd  = "?reservationitems_id=$reservationitems_id";
-         $toadd .= "&mois_courant=".$_GET["mois_courant"];
-         $toadd .= "&annee_courante=".$_GET["annee_courant"];
+         $toadd .= "&mois_courant=".intval($begin_month);
+         $toadd .= "&annee_courante=".intval($begin_year);
       }
       Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
    }

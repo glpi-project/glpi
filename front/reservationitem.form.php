@@ -38,6 +38,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkCentralAccess();
 Session::checkRight("reservation_central", "w");
 
+if (!isset($_GET["id"])) {
+   $_GET["id"] = '';
+}
+
 $ri = new ReservationItem();
 if (isset($_POST["add"])) {
    $ri->check(-1, 'w', $_POST);
@@ -84,6 +88,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
+   $ri->check($_GET["id"], 'r');
    Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "reservation");
    $ri->showForm($_GET["id"]);
 }
