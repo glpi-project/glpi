@@ -78,7 +78,7 @@ function update083to0831() {
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
 
    // ************ Keep it at the end **************
-   $migration->displayMessage(sprintf(__('Migration of glpi_displaypreferences')));
+   $migration->displayMessage('Migration of glpi_displaypreferences');
 
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
