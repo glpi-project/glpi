@@ -116,32 +116,16 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} /*else if (isset($_POST["connect"])) {
-   if (isset($_POST["dport"]) && count($_POST["dport"])) {
+} else if (isset($_POST["disconnect"])) {
+   $nn->check($_POST['id'],'d');
 
-      foreach ($_POST["dport"] as $sport => $dport) {
-         if ($sport && $dport) {
-            $nn->add(array('networkports_id_1' => $sport,
-                           'networkports_id_2' => $dport));
-         }
-      }
-   }
-   Html::back();
-
-}*/ else if (isset($_GET["disconnect"])) {
-   $nn->check($_GET['id'],'d');
-
-   if (isset($_GET["id"])) {
-      $nn->delete($_GET);
-      $fin = "";
-      if (isset($_GET["sport"])) {
-         $fin = "?sport=".$_GET["sport"];
-      }
-      Html::redirect($_SERVER['HTTP_REFERER'].$fin);
+   if (isset($_POST["id"])) {
+      $nn->delete($_POST);
    }
    Html::back();
 
 } else if (isset($_POST['assign_vlan'])) {
+   /// TODO do it on correct form page
    $npv->check(-1,'w',$_POST);
 
    if (isset($_POST["vlans_id"]) && ($_POST["vlans_id"] > 0)) {
@@ -155,6 +139,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET['unassign_vlan'])) {
+   /// TODO do it on correct form page / use MA to do it
    $npv->check($_GET['id'],'d');
 
    $npv->unassignVlanbyID($_GET['id']);

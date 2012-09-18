@@ -236,10 +236,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
             if ($canedit
                 || $device2->can($device2->fields["id"], 'w')) {
-               echo " <span class='b'>";
-               echo "<a href=\"".$oppositePort->getFormURL()."?disconnect=".
-                      "disconnect&amp;id=$relations_id\">". __('Disconnect')."</a>";
-               echo "</span>";
+               echo "&nbsp;";
+               Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Make Disconnect'),
+                                 array('id' => $relations_id));
             }
 
          } else {
