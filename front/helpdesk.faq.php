@@ -71,7 +71,7 @@ if (isset($_GET["id"])) {
    }
 
    $kb = new Knowbase();
-   $kb->show(Toolbox::addslashes_deep($_GET));
+   $kb->show($_GET);
 }
 
 Html::helpFooter();

@@ -819,7 +819,7 @@ class Dropdown {
       echo "</select>&nbsp;";
       echo "<input type='submit' name='add' value=\""._sx('button', 'Search')."\" class='submit' ";
       echo "onClick='document.location=document.getElementById(\"menu_nav\").value;'";
-      echo ">&nbsp;</td></tr>";
+      echo "></td></tr>";
       echo "</table><br>";
    }
 
@@ -839,7 +839,7 @@ class Dropdown {
       }
       $step = ($nb > 15 ? ($nb/3) : $nb);
 
-      echo "<table><tr class='top'><td><table class='tab_cadre'>";
+      echo "<table class='tab_glpi'><tr class='top'><td width='33% class='center'><table class='tab_cadre'>";
       $i = 1;
 
       foreach ($optgroup as $label => $dp) {
