@@ -230,12 +230,12 @@ class NetworkAlias extends FQDNLabel {
             }
 
             $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
-            if ($canedit) {
-               $content .= Html::getSimpleForm($alias->getFormURL(), 'remove', __('Purge'),
-                                               array('remove_alias' => 'purge',
-                                                     'id'           => $alias->getID()),
-                                               $CFG_GLPI["root_doc"] . "/pics/delete.png");
-            }
+//             if ($canedit) {
+//                $content .= Html::getSimpleForm($alias->getFormURL(), 'remove', __('Purge purge'),
+//                                                array('remove_alias' => 'purge',
+//                                                      'id'           => $alias->getID()),
+//                                                $CFG_GLPI["root_doc"] . "/pics/delete.png");
+//             }
 
             $row->addCell($header, $content, $father, $alias);
 
@@ -255,11 +255,10 @@ class NetworkAlias extends FQDNLabel {
    **/
    static function showForNetworkName($networkNameID, $fromForm, $withtemplate=0) {
       global $DB, $CFG_GLPI;
-
+      /// TODO move it to showForNetworkNameForm + use massive action to delete / dissociate
       $query = "SELECT *
                 FROM `glpi_networkaliases`
                 WHERE `networknames_id` = '$networkNameID'";
-
       $alias  = new self();
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
@@ -313,9 +312,9 @@ class NetworkAlias extends FQDNLabel {
 
       $alias = new self();
 
-      if (isset($_POST["remove_alias"])) {
-         $alias->delete(array('id' => $_POST["remove_alias"]));
-      }
+//       if (isset($_POST["remove_alias"])) {
+//          $alias->delete(array('id' => $_POST["remove_alias"]));
+//       }
 
       $networkNameID = $item->getID();
       echo "\n<div class='center'>";

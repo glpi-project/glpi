@@ -66,6 +66,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"]) || isset($_POST['remove_alias'])) {
+   /// TODO drop must be done via massive actions
    $alias->check($_POST["id"],'d');
    $alias->delete($_POST, 1);
    Ajax::refreshPopupMainWindow();

@@ -36,16 +36,14 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (isset($_POST["itemtype"])) {
-   $itemtype = $_POST["itemtype"];
-} else if (isset($_GET["itemtype"])) {
-   $itemtype = $_GET["itemtype"];
-} else {
-   $itemtype = 0;
-}
+if (isset($_GET["itemtype"])) {
+   Session::checkRight("networking", "r");
+   Session::checkRight("internet", "r");
+   NetworkPort::showDislayOptions($_GET["itemtype"]);
+   Html::ajaxFooter();
+} 
+Html::displayErrorAndDie("lost");
 
-Session::checkRight("networking", "r");
-Session::checkRight("internet", "r");
-NetworkPort::showDislayOptions($itemtype);
-Html::ajaxFooter();
+
+
 ?>

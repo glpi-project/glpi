@@ -49,7 +49,7 @@ echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
 echo "<tr><td class='center'>";
 Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
-                     __('Clean the network port migration errors'));
+                     __('Reinit the network topology'));
 echo "</td></tr>";
 
 echo "<tr><td class='center'>";

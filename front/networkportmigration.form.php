@@ -45,10 +45,10 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-if (isset($_GET["delete"])) {
-   $np->check($_GET['id'],'d');
-   $np->delete($_GET);
-   Event::log($_GET['id'], "networkport", 5, "inventory",
+if (isset($_POST["delete"])) {
+   $np->check($_POST['id'],'d');
+   $np->delete($_POST);
+   Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
 
@@ -98,7 +98,7 @@ if (isset($_GET["delete"])) {
    Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "utils",
                 "migration", "networkportmigration");
 
-   $np->showForm($_GET["id"], $_GET);
+   $np->showForm($_GET["id"]);
    Html::footer();
 }
 ?>

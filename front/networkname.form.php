@@ -84,6 +84,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST['remove_address'])) { // From NetworkPort or NetworkEquipement
+   /// TODO : see to manage it using massive action
    if ($_POST['remove_address'] == "purge") {
       $nn->check($_POST['id'],'d');
       $nn->delete($_POST);
