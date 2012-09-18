@@ -44,11 +44,11 @@ if (!isset($_GET["id"])) {
 
 $rulecollection->checkGlobal('r');
 
-if (isset($_GET["action"])) {
+if (isset($_POST["action"])) {
    $rulecollection->checkGlobal('w');
-   $rulecollection->changeRuleOrder($_GET["id"],$_GET["action"]);
+   $rulecollection->changeRuleOrder($_POST["id"],$_POST["action"]);
    Html::back();
-
+// POST and GET needed to manage reload
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
    $rulecollection->checkGlobal('w');
 

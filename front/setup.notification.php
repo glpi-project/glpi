@@ -41,7 +41,7 @@ Session::checkSeveralRightsOr(array('notification' => 'r',
 
 Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "mailing", -1);
 
-if (isset($_GET['activate'])) {
+if (isset($_POST['activate'])) {
    $config             = new Config();
    $tmp['id']          = $CFG_GLPI['id'];
    $tmp['use_mailing'] = 1;
@@ -50,12 +50,11 @@ if (isset($_GET['activate'])) {
 }
 
 if (!$CFG_GLPI['use_mailing']) {
-   echo "<div class='center'<p>";
    if (Session::haveRight("config","w")) {
-      echo "<a class='vsubmit' href='setup.notification.php?activate=1'>" .
-             __('Enable followup via email') ."</a></p></div>";
+      echo "<div class='center'>";
+      Html::showSimpleForm($_SERVER['PHP_SELF'], 'activate', __('Enable followup via email'));
+      echo "</div>";
    }
-
 } else {
    if (!Session::haveRight("config","r")
        && Session::haveRight("notification","r")
