@@ -122,7 +122,7 @@ class Change_Problem extends CommonDBRelation{
                                 'entity'      => $problem->getEntityID(),
                                 'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
          _e('Create a change from this problem');
@@ -237,7 +237,7 @@ class Change_Problem extends CommonDBRelation{
          Problem::dropdown(array('used'   => $used,
                                  'entity' => $change->getEntityID()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr></table>";
          Html::closeForm();
          echo "</div>";

@@ -282,7 +282,7 @@ class Document_Item extends CommonDBRelation{
                                 ($doc->fields['is_recursive']?-1:$doc->fields['entities_id']),
                                 $CFG_GLPI["document_types"], false, true);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='documents_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";

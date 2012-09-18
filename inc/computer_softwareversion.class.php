@@ -730,7 +730,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "</td><td width='20%'>";
-         echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"" ._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></div>\n";
          Html::closeForm();

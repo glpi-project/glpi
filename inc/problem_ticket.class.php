@@ -120,7 +120,7 @@ class Problem_Ticket extends CommonDBRelation{
                                 'entity'      => $problem->getEntityID(),
                                 'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -181,17 +181,6 @@ class Problem_Ticket extends CommonDBRelation{
       $canedit = $ticket->can($ID,'w');
 
       $rand = mt_rand();
-//       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-//              action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-//
-//       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-//       echo "<tr><th colspan='9'>";
-//       printf(__('%1$s - %2$s'), _n('Problem', 'Problems', 2),
-//              "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".
-//                __('Create a problem from this ticket')."</a>");
-//       echo "</th></tr>";
-//       echo "<tr><th colspan='9'>".__('Title')."</th>";
-//       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
                                 `glpi_problems`.*

@@ -85,8 +85,6 @@ class Change_Ticket extends CommonDBRelation{
 
       $canedit = $change->can($ID,'w');
       $rand    = mt_rand();
-      echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-             action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
@@ -121,7 +119,7 @@ class Change_Ticket extends CommonDBRelation{
                                 'entity'      => $change->getEntityID(),
                                 'entity_sons' => $change->isRecursive()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -203,8 +201,6 @@ class Change_Ticket extends CommonDBRelation{
 
       $canedit = $ticket->can($ID,'w');
       $rand    = mt_rand();
-      echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-             action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
@@ -236,7 +232,7 @@ class Change_Ticket extends CommonDBRelation{
          Change::dropdown(array('used'        => $used,
                                 'entity'      => $ticket->getEntityID()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td><td>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>";
          _e('Create a change from this ticket');

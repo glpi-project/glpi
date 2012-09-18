@@ -100,7 +100,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
    }
 
    if ($display) {
-      echo "&nbsp;<input type='submit' name='addvisibility' value=\"".__s('Add')."\" class='submit'>";
+      echo "&nbsp;<input type='submit' name='addvisibility' value=\""._sx('button','Add')."\" class='submit'>";
    }
 }
 ?>

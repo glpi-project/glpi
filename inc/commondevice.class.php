@@ -184,7 +184,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       if ($options['canedit']) {
          $field_name  = 'quantity_'.$this->getType().'_'.$this->getID();
-         $content .= "&nbsp;<img title='"._sx('button', 'Add')."' alt='" . _sx('button', 'Add')."'
+         $content .= "&nbsp;<img title='".__s('Add')."' alt='" . __s('Add')."'
                       onClick=\"Ext.get('$field_name').setDisplayed('block')\"
                       class='pointer' src='".$CFG_GLPI["root_doc"] . "/pics/add_dropdown.png'>";
          $content .= "<span id='$field_name' style='display:none'><br>";

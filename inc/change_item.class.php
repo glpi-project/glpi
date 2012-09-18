@@ -133,7 +133,7 @@ class Change_Item extends CommonDBRelation{
                                 ($change->fields['is_recursive']?-1:$change->fields['entities_id']),
                                 $types);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
