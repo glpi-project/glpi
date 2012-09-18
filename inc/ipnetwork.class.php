@@ -1006,8 +1006,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          echo "<div class='spaced' id='tabsbody'>";
          echo "<table class='tab_cadre_fixe'>";
 
-         echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_network'>".
-               __('Reinit the network topology') . "</a></td></tr>";
+         echo "<tr><td class='center'>";
+         Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
+                              __('Clean the network port migration errors'));
+
+         echo "</td></tr>";
 
          echo "</table>";
          echo "</div>";

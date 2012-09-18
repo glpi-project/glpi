@@ -40,19 +40,6 @@ if (!TableExists('glpi_networkportmigrations')) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 }
 
-if (isset($_GET['action'])) {
-   switch ($_GET['action']) {
-
-   case 'reinit_network':
-      IPNetwork::recreateTree();
-      Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
-      break;
-  }
-
-
-   Html::back();
-}
-
 Html::header(__('Migration cleaner'), $_SERVER['PHP_SELF'], "utils","migration");
 
 echo "<div class='spaced' id='tabsbody'>";
@@ -60,11 +47,15 @@ echo "<table class='tab_cadre_fixe'>";
 
 echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
-echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_network'>".
-     __('Reinit the network topology') . "</a></td></tr>";
+echo "<tr><td class='center'>";
+Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
+                     __('Clean the network port migration errors'));
+echo "</td></tr>";
 
-echo "<tr><td class='center'><a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
-     __('Clean the network port migration errors') . "</a></td></tr>";
+echo "<tr><td class='center'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
+     __('Clean the network port migration errors') . "</a>";
+echo "</td></tr>";
 
 echo "</table>";
 echo "</div>";
