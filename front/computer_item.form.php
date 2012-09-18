@@ -49,7 +49,7 @@ if (isset($_POST["disconnect"])) {
    Html::back();
 
 // Connect a computer to a printer/monitor/phone/peripheral
-} else if (isset($_POST["connect"])) {
+} else if (isset($_POST["add"])) {
    if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
       $conn->check(-1, 'w', $_POST);
       $conn->add($_POST);
