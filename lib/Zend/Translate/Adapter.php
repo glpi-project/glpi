@@ -762,6 +762,7 @@ abstract class Zend_Translate_Adapter {
                $this->_routed = array();
                /// FIX for GLPI for not translated plural on plugins
                if (is_array($this->_translate[$locale][$plural[0]])) {
+                  /// TODO maybe is empty string try $rule = 0
                   return $this->_translate[$locale][$plural[0]][$rule];
                } else {
                   return $this->_translate[$locale][$plural[0]];
