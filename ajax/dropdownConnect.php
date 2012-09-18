@@ -49,7 +49,6 @@ if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromt
 
 $fromitem->checkGlobal('w');
 
-
 if (isset($_POST["used"]) && !is_numeric($_POST["used"]) && !is_array($_POST["used"])) {
    $used = unserialize(stripslashes($_POST["used"]));
 } else {
@@ -118,12 +117,11 @@ if (!empty($used)) {
    $where_used = " AND `$table`.`id` NOT IN ('".implode("','",$used)."')";
 }
 
-
 if ($_POST["onlyglobal"] && $_POST["itemtype"] != 'Computer') {
    $CONNECT_SEARCH = " WHERE `$table`.`is_global` = '1' ";
 } else {
    if ($_POST["itemtype"] == 'Computer') {
-      $CONNECT_SEARCH = " WHERE 1 ";
+      $CONNECT_SEARCH = " WHERE 1 $where_used";
    } else {
       $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
                                   $where_used)
