@@ -46,7 +46,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    /// Drop the element if it is not attached to an item
    /// since version 0.84
-   static public $mustBeAttached = false;
+   static public $mustBeAttached = true;
 
    protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
       $conditions = array();
