@@ -581,26 +581,31 @@ class Bookmark extends CommonDBTM {
                }
                echo "</td>";
                echo "<td>$current_type_name</td>";
-               echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;id=".
-                          $this->fields["id"]."\">".$this->fields["name"]."</a></td>";
+               echo "<td>";
                if ($canedit) {
-                  echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".
-                             $this->fields["id"]."\">
-                            <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".
-                              _sx('button', 'Update')."'></a></td>";
+                  echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".
+                           $this->fields["id"]."\" alt='"._sx('button', 'Update')."'>".
+                           $this->fields["name"]."</a>";
                } else {
-                  echo "<td>&nbsp;</td>";
+                  echo $this->fields["name"];
                }
+               echo "</td>";
+                          
+               echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;id=".
+                           $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
+               echo "</td>";
                echo "<td class='center'>";
                if ($this->fields['type'] == self::SEARCH) {
                   if (is_null($this->fields['IS_DEFAULT'])) {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
-                            "mark_default=1&amp;id=".$this->fields["id"]."\">".__('No').
-                          "</a>";
+                            "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".__s('Set as default')."\"
+                            title=\"".__s('Set as default')."\">".
+                            "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
                   } else {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
-                            "mark_default=0&amp;id=".$this->fields["id"]."\">".__('Yes').
-                          "</a>";
+                            "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".__s('Unset as default')."\"
+                            title=\"".__s('Unset as default')."\">".
+                            "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
                   }
                }
                echo "</td></tr>";
