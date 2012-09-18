@@ -630,8 +630,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Events for ticket satisfaction
       $tags = array('satisfaction.datebegin'           => __('Creation date of the satisfaction survey'),
                     'satisfaction.dateanswered'        => __('Response date to the satisfaction survey'),
-                    'satisfaction.satisfactionlevel'   => __('Satisfaction'),
-                    'satisfaction.satisfactioncomment' => __('Comments to the satisfaction survey'));
+                    'satisfaction.satisfaction'        => __('Satisfaction'),
+                    'satisfaction.description'         => __('Comments to the satisfaction survey'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
