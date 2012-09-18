@@ -1286,10 +1286,12 @@ class Rule extends CommonDBTM {
          if ($this->can_sort
              && !$first
              && $canedit) {
-            echo "<td><a href='".$target."?type=".$this->fields["sub_type"].
-                       "&amp;action=up&amp;id=".$this->fields["id"]."'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_up.png' alt=''></a></td>";
-
+            echo "<td>";
+            Html::showSimpleForm($target, array('action' => 'up'), '',
+                              array('type' => $this->fields["sub_type"],
+                                    'id' => $this->fields["id"]),
+                              $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+            echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
          }
@@ -1299,10 +1301,12 @@ class Rule extends CommonDBTM {
          if ($this->can_sort
              && !$last
              && $canedit) {
-            echo "<td><a href='".$target."?type=".$this->fields["sub_type"].
-                       "&amp;action=down&amp;id=".$this->fields["id"]."'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' alt=''></a></td>";
-
+            echo "<td>";
+            Html::showSimpleForm($target, array('action' => 'down'), '',
+                              array('type' => $this->fields["sub_type"],
+                                    'id' => $this->fields["id"]),
+                              $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+            echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
          }
