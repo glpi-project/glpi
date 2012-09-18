@@ -43,13 +43,16 @@ if (!defined('GLPI_ROOT')) {
  * @see CartridgeItem
  * @author Julien Dombre
  **/
-class Cartridge extends CommonDBTM {
+class Cartridge extends CommonDBChild {
 
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
-
-   var $no_form_page = false;
-
+   public $dohistory = true;
+   
+   // From CommonDBChild
+   static public $itemtype = 'CartridgeItem'; 
+   static public $items_id = 'cartridgeitems_id';
+   
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -59,16 +62,6 @@ class Cartridge extends CommonDBTM {
 
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('cartridge', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('cartridge', 'r');
    }
 
 
@@ -88,6 +81,7 @@ class Cartridge extends CommonDBTM {
 
       Infocom::cloneItem('CartridgeItem', $this->fields["cartridgeitems_id"], $this->fields['id'],
                          $this->getType());
+      parent::post_addItem();
    }
 
 
@@ -103,6 +97,40 @@ class Cartridge extends CommonDBTM {
                                    'last_pages_counter' => $this->fields['pages'] ));
          }
       }
+      parent::post_updateItem();
+   }
+
+
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($input['action']) {
+         case "uninstall" :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'w')){
+                     if ($this->uninstall($key)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
    }
 
    /**
@@ -138,47 +166,6 @@ class Cartridge extends CommonDBTM {
                                  'pages' => $pages));
    }
 
-
-   /**
-    * Update dates use value of a cartridge
-    *
-    * @since version 0.84
-    *
-    * @param $date_use  date_use value
-    *
-    * @return boolean : true for success
-   **/
-   function updateCartUse($date_use) {
-
-      if ($date_use && ($date_use != 'NULL')) {
-         return $this->update(array('id'       => $this->fields['id'],
-                                    'date_use' => $date_use));
-      }
-      return false;
-   }
-
-
-   /**
-    * Update count pages and date out value of a cartridge
-    *
-    * @since version 0.84
-    *
-    * @param $pages  count pages value
-    * @param $date_out  date_out value
-    *
-    *@return boolean : true for success
-   **/
-   function updateCartOut($pages, $date_out) {
-
-      if ($date_out == 'NULL') {
-         $pages = 0;
-      }
-      return $this->update(array('id'       => $this->fields['id'],
-                                 'date_out' => $date_out,
-                                 'pages'    => $pages));
-   }
-
-
    /**
     * Link a cartridge to a printer.
     *
@@ -200,15 +187,20 @@ class Cartridge extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
+         $cID = $DB->result($result,0,0);
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $query = "UPDATE `".$this->getTable()."`
                    SET `date_use` = '".date("Y-m-d")."',
                        `printers_id` = '$pID'
-                   WHERE (`id`='".$DB->result($result,0,0)."'
+                   WHERE (`id`='$cID'
                           AND `date_use` IS NULL)";
 
          if ($result = $DB->query($query)
              && ($DB->affected_rows() > 0)) {
+            $changes[0] = '0';
+            $changes[1] = '';
+            $changes[2] = __('Install a cartridge');
+            Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
             return true;
          }
 
@@ -231,15 +223,23 @@ class Cartridge extends CommonDBTM {
    function uninstall($ID) {
       global $DB;
 
-      $query = "UPDATE`".$this->getTable()."`
-                SET `date_out` = '".date("Y-m-d")."'
-                WHERE `id`='$ID'";
+      if ($this->getFromDB($ID)) {
+         $query = "UPDATE`".$this->getTable()."`
+                  SET `date_out` = '".date("Y-m-d")."'
+                  WHERE `id`='$ID'";
 
-      if ($result = $DB->query($query)
-          && ($DB->affected_rows() > 0)) {
-         return true;
+         if ($result = $DB->query($query)
+            && ($DB->affected_rows() > 0)) {
+            $changes[0] = '0';
+            $changes[1] = '';
+            $changes[2] = __('Uninstall a cartridge');
+            Log::history($this->getField("printers_id"), 'Printer', $changes,
+                           0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+
+            return true;
+         }
+         return false;
       }
-      return false;
    }
 
 
@@ -571,7 +571,7 @@ class Cartridge extends CommonDBTM {
             if ($nb_pages_printed == 0) {
                 $nb_pages_printed = 1;
             }
-            echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
+            echo "<tr class='tab_bg_2'><td colspan='".($canedit?'4':'3')."'>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in stock')."<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".__('month')."</td>";
             echo "<td>&nbsp;</td>";
@@ -613,7 +613,7 @@ class Cartridge extends CommonDBTM {
          echo "<tr><td class='center tab_bg_2'>";
          echo "<input type='hidden' name='cartridgeitems_id' value='$ID'>\n";
          Dropdown::showInteger('to_add',1,1,100);
-         echo " <input type='submit' name='add_several' value=\"".__s('Add cartridges')."\"
+         echo " <input type='submit' name='add' value=\"".__s('Add cartridges')."\"
                 class='submit'>";
          echo "</td></tr>";
          echo "</table>";
@@ -631,7 +631,7 @@ class Cartridge extends CommonDBTM {
     *
     * @return nothing (display)
    **/
-   static function showInstalled(Printer $printer, $old=0) {
+   static function showForPrinter(Printer $printer, $old=0) {
       global $DB, $CFG_GLPI;
 
       $instID = $printer->getField('id');
@@ -639,6 +639,7 @@ class Cartridge extends CommonDBTM {
          return false;
       }
       $canedit = Session::haveRight("cartridge", "w");
+      $rand = mt_rand();
 
       $query = "SELECT `glpi_cartridgeitems`.`id` AS tID,
                        `glpi_cartridgeitems`.`is_deleted`,
@@ -671,7 +672,7 @@ class Cartridge extends CommonDBTM {
          echo "<input type='hidden' name='printers_id' value='$instID'>\n";
          $installok = false;
          if (CartridgeItem::dropdownForPrinter($printer)) {
-            $installok = false;
+            $installok = true;
          } else {
             _e('No cartridge available');
          }
@@ -684,24 +685,39 @@ class Cartridge extends CommonDBTM {
          echo "</div>";
       }
 
+      echo "<div id='viewcartridge$rand'></div>";
+      
       $pages = $printer->fields['init_pages_counter'];
+      echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='postdropdownForPrinter' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         if (!$old) {
+            $actions = array('uninstall' => __('End of Life'));
+         } else {
+            $actions = array('delete'    => _x('button', 'Delete'));
+         }
+         $paramsma = array('num_displayed'    => $number,
+                           'specific_actions' => $actions,
+                           'rand'             => $rand);
+         Html::showMassiveActions(__CLASS__, $paramsma);
       }
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
       if ($old == 0) {
          echo "<tr><th colspan='".($canedit?'5':'4')."'>".__('Used cartridges')."</th></tr>";
       } else {
-         echo "<tr><th colspan='".($canedit?'7':'6')."'>".__('Worn cartridges')."</th></tr>";
+         echo "<tr><th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th></tr>";
       }
-      echo "<tr><th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th width='10'>";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
       echo "<th>".__('Add date')."</th>";
       echo "<th>".__('Use date')."</th>";
       if ($old != 0) {
-         echo "<th>".__('End date')."</th><th>".__('Printer counter')."</th>";
-      }
-      if ($canedit) {
-         echo "<th>"._n('Action','Actions',2)."</th>";
+         echo "<th>".__('End date')."</th><th>".__('Printer counter')."</th><th>".__('Printed pages')."</th>";
       }
       echo "</tr>";
       $stock_time       = 0;
@@ -714,20 +730,36 @@ class Cartridge extends CommonDBTM {
          $date_in  = Html::convDate($data["date_in"]);
          $date_use = Html::convDate($data["date_use"]);
          $date_out = Html::convDate($data["date_out"]);
-         echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-         echo "<td class='center'>".$data["id"]."</td>";
+         echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."' ".
+               ($canedit ? "style='cursor:pointer' onClick=\"viewEditCartridge".$data['id'].
+                         "$rand();\""
+                       : '').">";
+         if ($canedit) {
+            echo "<td width='10'>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            echo "</td>";
+         }
+         echo "<td class='center'>";
+         if ($canedit) {
+            echo "\n<script type='text/javascript' >\n";
+            echo "function viewEditCartridge". $data["id"]."$rand() {\n";
+            $params = array('type'       => __CLASS__,
+                            'parenttype' => 'Printer',
+                            'printers_id' => $printer->fields["id"],
+                            'id'         => $data["id"]);
+            Ajax::updateItemJsCode("viewcartridge$rand",
+                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+            echo "};";
+            echo "</script>\n";
+         }
+         echo $data["id"]."</td>";
          echo "<td class='center'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">".
                 sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"])."</a></td>";
          echo "<td class='center'>".$date_in."</td>";
          echo "<td class='center'>";
 
-         if (($old == 0)
-             && $canedit) {
-            Html::showDateFormItem("date_use[$cart_id]", $data["date_use"], false, true, $date_in);
-         } else {
-            echo $date_use;
-         }
+         echo $date_use;
 
          $tmp_dbeg       = explode("-", $data["date_in"]);
          $tmp_dend       = explode("-", $data["date_use"]);
@@ -739,12 +771,7 @@ class Cartridge extends CommonDBTM {
          if ($old != 0) {
             echo "</td>";
             echo "<td class='center'>";
-            if ($canedit) {
-               Html::showDateFormItem("date_out[$cart_id]", $data["date_out"], true, true,
-                                      $date_use);
-            } else {
-               echo $date_out;
-            }
+            echo $date_out;
 
             $tmp_dbeg      = explode("-", $data["date_use"]);
             $tmp_dend      = explode("-", $data["date_out"]);
@@ -753,84 +780,116 @@ class Cartridge extends CommonDBTM {
                               - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
             $use_time     += $use_time_tmp;
 
-            echo "</td><td class='left'>";
-
-            if ($canedit) {
-               echo "<input type='text' name='pages[$cart_id]' value=\"".$data['pages']."\" size='6'>";
-            } else {
-               echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='6'>";
-            }
+            echo "</td><td class='numeric'>";
+            echo $data['pages']."</td><td class='numeric'>";
 
             if ($pages < $data['pages']) {
                $pages_printed   += $data['pages']-$pages;
                $nb_pages_printed++;
                $pp                = $data['pages']-$pages;
-               echo "&nbsp;";
-               printf(_n('%d printed page','%d printed pages',$pp), $pp);
+               echo $pp;
                $pages            = $data['pages'];
-            }
-         }
-         echo "</td>";
-         if ($canedit) {
-            echo "<td class='center'>";
-            if (is_null($date_out)) {
-               Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                    'uninstall', __('End of life'),
-                                     array('cartridgeitems_id' => $data['tID'],
-                                           'id'                => $data['id']));
             } else {
-               Html::showSimpleForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
-                                    $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
-                                     array('delete'            => 1,
-                                           'cartridgeitems_id' => $data['tID'],
-                                           'id'                => $data['id']));
+               echo "&nbsp;";
             }
-            echo "</td></tr>";
+            echo "</td>";
          }
+         echo "</td></tr>";
       }
-      if ($old == 0) {
-         if ($canedit) {
-            echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
-            echo "<input type='hidden' name='printers_id' value='$instID'>";
-            if ($number > 0) {
-               echo "<input type='submit' name='update_cart_use' value=\""._sx('button','Save')."\"
-                      class='submit'>";
-            }
-            echo "</td><td  colspan='3' class='tab_bg_2 center'>";
-
-
-            echo "</td></tr>";
-         }
-      } else { // Print average
+      if ($old) { // Print average
          if ($number > 0) {
             if ($nb_pages_printed == 0) {
                $nb_pages_printed = 1;
             }
-            echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
+            echo "<tr class='tab_bg_2'><td colspan='".($canedit?"4":'3')."'>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in stock')."<br>";
             $time_stock = round($stock_time/$number/60/60/24/30.5,1);
             echo sprintf(_n('%d month', '%d months', $time_stock), $time_stock)."</td>";
             echo "<td class='center b'>".__('Average time in use')."<br>";
             $time_use = round($use_time/$number/60/60/24/30.5,1);
             echo sprintf(_n('%d month', '%d months', $time_use), $time_use)."</td>";
-            echo "<td class='center b'>".__('Average number of printed pages')."<br>";
+            echo "<td class='center b' colspan='2'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
-            if ($canedit) {
-               echo "<td>";
-               echo "<input type='submit' name='update_cart_out' value=\""._sx('button','Save')."\"
-                      class='submit'>";
-               echo "</td>";
-            }
             echo "</tr>";
          }
       }
-      echo "</table></div>";
+      echo "</table>";
       if ($canedit) {
+         $paramsma['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
+      echo "</div>\n\n";
    }
 
+   /** form for Cartridge
+    *
+    *@param $ID      integer : Id of the cartridge
+    *@param $options array of possible options:
+    *     - parent Object : the printers where the cartridge is used
+   **/
+   function showForm($ID, $options=array()) {
+      global $DB, $CFG_GLPI;
 
+      if (isset($options['parent']) && !empty($options['parent'])) {
+         $printer = $options['parent'];
+      }
+      if (!$this->getFromDB($ID)) {
+         return false;
+      }
+      $printer = new Printer;
+      $printer->check($this->getField('printers_id'),'w');
+      
+      $cartitem = new CartridgeItem;
+      $cartitem->getFromDB($this->getField('cartridgeitems_id'),'w');
+
+      $is_old  = !empty($this->fields['date_out']);
+      $is_used = !empty($this->fields['date_use']);
+
+      $options['colspan'] = 2;
+      $options['candel']  = false; // Do not permit delete here
+      $options['canedit'] = $is_used; // Do not permit edit if cart is not used
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._n('Printer','Printers',1)."</td><td>";
+      echo $printer->getLink();
+      echo "<input type='hidden' name='printers_id' value='".$this->getField('printers_id')."'>\n";
+      echo "</td>\n";
+
+      echo "<td>"._n('Cartridge model','Cartridge models',1)."</td><td>";
+      echo $cartitem->getLink();
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Add date')."</td><td>";
+      echo Html::convDate($this->fields["date_in"]);
+      echo "</td>";
+
+      echo "<td>".__('Use date')."</td><td>";
+      if ($is_used && !$is_old) {
+         Html::showDateFormItem("date_use", $this->fields["date_use"], false, true, $this->fields["date_in"]);
+      } else {
+         echo Html::convDate($this->fields["date_use"]);
+      }
+      echo "</td></tr>\n";
+      if ($is_old) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('End date')."</td><td>";
+         Html::showDateFormItem("date_out", $this->fields["date_out"], false, true, $this->fields["date_use"]);
+         echo "</td>";
+
+         echo "<td>".__('Printer counter')."</td><td>";
+         echo "<input type='text' name='pages' value=\"".$this->fields['pages']."\">";
+         echo "</td></tr>\n";
+      }
+      $this->showFormButtons($options);
+
+      return true;
+   }
+   
    /**
     * Get notification parameters by entity
     *
@@ -906,8 +965,8 @@ class Cartridge extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Printer' :
-            self::showInstalled($item);
-            self::showInstalled($item, 1);
+            self::showForPrinter($item);
+            self::showForPrinter($item, 1);
             return true;
 
          case 'CartridgeItem' :
