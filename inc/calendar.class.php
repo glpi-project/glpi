@@ -109,12 +109,12 @@ class Calendar extends CommonDropdown {
 
       $query2 = "DELETE
                  FROM `glpi_calendars_holidays`
-                 WHERE `calendar_id` = '".$this->fields['id']."'";
+                 WHERE `calendars_id` = '".$this->fields['id']."'";
       $DB->query($query2);
 
       $query2 = "DELETE
                  FROM `glpi_calendarsegments`
-                 WHERE `calendar_id` = '".$this->fields['id']."'";
+                 WHERE `calendars_id` = '".$this->fields['id']."'";
       $DB->query($query2);
    }
 
