@@ -666,7 +666,7 @@ class Ticket extends CommonITILObject {
          if ($this->numberOfFollowups() == 0
              && $this->numberOfTasks() == 0
              && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
-             	toolbox::logdebug ("champs", $allowed_fields);
+             	//toolbox::logdebug ("champs", $allowed_fields);
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
             $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
@@ -674,7 +674,7 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'itemtype';
             $allowed_fields[] = 'items_id';
             $allowed_fields[] = 'name';
-            toolbox::logdebug ("champs finaux", $allowed_fields);
+            //toolbox::logdebug ("champs finaux", $allowed_fields);
          }
 
          if ($this->canSolve()) {
