@@ -381,7 +381,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          unset($oldvalues[static::$items_id]);
          if (count($oldvalues) > 0) {
             $item = $items_for_log['new'];
-            if (($item !== false) && ($item->dohistory)) {
+            if (($item !== false) && $item->dohistory) {
                $changes[0] = '0';
                $changes[1] = addslashes($this->getNameID(false, true));
                $changes[2] = addslashes($this->getNameID(false, true));
@@ -394,9 +394,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
          // Have updated the connexity relation
 
          $prevItem = $items_for_log['previous'];
-         $newItem = $items_for_log['new'];
+         $newItem  = $items_for_log['new'];
 
-         if (($prevItem !== false) && ($prevItem->dohistory)) {
+         if (($prevItem !== false) && $prevItem->dohistory) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getNameID(false, true));
             $changes[2] = "";
@@ -404,7 +404,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
                          Log::HISTORY_DELETE_SUBITEM);
          }
 
-         if (($newItem !== false) && ($newItem->dohistory)) {
+         if (($newItem !== false) && $newItem->dohistory) {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getNameID(false, true));
@@ -427,7 +427,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $item = $this->getItem();
 
-      if (($item !== false) && ($item->dohistory)) {
+      if (($item !== false) && $item->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = addslashes($this->getNameID(false, true));
