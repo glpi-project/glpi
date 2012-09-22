@@ -124,16 +124,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return false;
    }
 
+
    /**
-    * Get the item associated with the current object. Rely on getItemFromArray()
+    * Get the item associated with the current object. Rely on CommonDBConnexity::getItemFromArray()
     *
     * @since version 0.84
     *
+    * @param $getFromDB   (true by default)
+    * @param $getEmpty    (true by default)
+    *
     * @return object of the concerned item or false on error
    **/
-   function getItem($getFromDB = true, $getEmpty = true) {
+   function getItem($getFromDB=true, $getEmpty=true) {
+
       return $this->getConnexityItem(static::$itemtype, static::$items_id,
-                                         $getFromDB, $getEmpty);
+                                     $getFromDB, $getEmpty);
    }
 
 
@@ -341,7 +346,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $item = $this->getItem();
 
-      if (($item !== false) && ($item->dohistory)) {
+      if (($item !== false) && $item->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = addslashes($this->getNameID(false, true));

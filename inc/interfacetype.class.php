@@ -70,7 +70,7 @@ class InterfaceType extends CommonDropdown {
    /**
     * @since version 0.84
     *
-    * @param $row                HTMLTableRow object
+    * @param $row                HTMLTableRow object (default NULL)
     * @param $item               CommonDBTM object (default NULL)
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
