@@ -4999,7 +4999,8 @@ class Search {
             $search[$itemtype][60]['usehaving']     = true;
             $search[$itemtype][60]['datatype']      = 'number';
             $search[$itemtype][60]['massiveaction'] = false;
-            $search[$itemtype][60]['joinparams']    = array('jointype'  => "itemtype_item",
+            $search[$itemtype][60]['joinparams']    = array('jointype'
+                                                             => "itemtype_item",
                                                             'condition'
                                                              => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
@@ -5010,10 +5011,15 @@ class Search {
             $search[$itemtype][140]['usehaving']     = true;
             $search[$itemtype][140]['datatype']      = 'number';
             $search[$itemtype][140]['massiveaction'] = false;
-            $search[$itemtype][140]['joinparams']
-               = array('beforejoin' => array('table'      => 'glpi_items_problems',
-                                             'joinparams' => array('jointype' => 'itemtype_item')),
-                       'condition'  => getEntitiesRestrictRequest('AND', 'NEWTABLE'));
+            $search[$itemtype][140]['joinparams']    = array('beforejoin'
+                                                              => array('table'
+                                                                        => 'glpi_items_problems',
+                                                                       'joinparams'
+                                                                        => array('jointype'
+                                                                                  => 'itemtype_item')),
+                                                             'condition'
+                                                              => getEntitiesRestrictRequest('AND',
+                                                                                            'NEWTABLE'));
          }
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])
