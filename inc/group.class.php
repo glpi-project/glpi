@@ -740,8 +740,10 @@ class Group extends CommonTreeDropdown {
          echo "<p class='center b'>".__('No item found')."</p>";
       }
 
-      $paramsma['ontop'] =false;
-      Html::showMassiveActions(__CLASS__, $paramsma);
+      if ($nb) {
+         $paramsma['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
       Html::closeForm();
 
       if ($nb) {
