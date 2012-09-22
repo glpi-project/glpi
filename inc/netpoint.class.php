@@ -320,7 +320,7 @@ class Netpoint extends CommonDropdown {
          Html::closeForm();
          echo "</div>";
       }
-      
+
       echo "<div class='spaced'>";
 
       if ($number < 1) {
@@ -385,7 +385,7 @@ class Netpoint extends CommonDropdown {
          }
          Html::printAjaxPager(sprintf(__('Network outlets for %s'), $item->getTreeLink()),
                               $start, $number);
-         
+
       }
 
       echo "</div>\n";
@@ -419,7 +419,7 @@ class Netpoint extends CommonDropdown {
    /**
     * @since version 0.84
     *
-    * @param $row             HTMLTableRow object
+    * @param $row             HTMLTableRow object (default NULL)
     * @param $item            CommonDBTM object (default NULL)
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array

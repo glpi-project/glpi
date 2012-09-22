@@ -143,12 +143,9 @@ class DeviceNetworkCard extends CommonDevice {
 
 
    /**
-    * since version 0.84
+    * @since version 0.84
     *
-    * @param $row             HTMLTableRow object
-    * @param $item            CommonDBTM  object (default NULL)
-    * @param $father          HTMLTableCell object (default NULL)
-    * @param $options   array
+    * @see inc/CommonDevice::getHTMLTableCellForItem()
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
                                             HTMLTableCell $father=NULL, array $options=array()) {
