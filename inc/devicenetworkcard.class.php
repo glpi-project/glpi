@@ -108,11 +108,7 @@ class DeviceNetworkCard extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @param $itemtype
-    * @param $base               HTMLTableBase object
-    * @param $super              HTMLTableSuperHeader object (default NULL)
-    * @param $father             HTMLTableHeader object (default NULL)
-    * @param $options   array
+    * @see inc/CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=NULL,

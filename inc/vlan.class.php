@@ -91,6 +91,16 @@ class Vlan extends CommonDropdown {
       $result = $DB->query($query);
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base            HTMLTableBase object
+    * @param $super           HTMLTableSuperHeader object (default NULL
+    * @param $father          HTMLTableHeader object (default NULL)
+    * @param $options   array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=NULL,
                                       HTMLTableHeader $father=NULL, array $options=array()) {
@@ -107,6 +117,14 @@ class Vlan extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $row             HTMLTableRow object (default NULL)
+    * @param $item            CommonDBTM object (default NULL)
+    * @param $father          HTMLTableCell object (default NULL)
+    * @param $options   array
+   **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
                                             HTMLTableCell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
