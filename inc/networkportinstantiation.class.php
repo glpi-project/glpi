@@ -228,7 +228,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                $virtual_cell->setAttributForTheRow(array('class' => 'htmltable_upper_separation_cell'));
 
                if (($this->canHaveVLAN) && ($display_options['vlans'])) {
-                  NetworkPort_Vlan::getHTMLTableCellsForItem($row, $virtualPort, $virtual_cell,
+                  Vlan::getHTMLTableCellsForItem($row, $virtualPort, $virtual_cell,
                                                              $options);
                }
 
@@ -244,7 +244,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       if (($this->canHaveVLAN) && ($display_options['vlans'])) {
-         NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, $father, $options);
+         Vlan::getHTMLTableCellsForItem($row, $netport, $father, $options);
       }
 
       if (($this->haveMAC) && ($display_options['mac']) && (!empty($netport->fields["mac"]))) {
