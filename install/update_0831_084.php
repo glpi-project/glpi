@@ -2010,6 +2010,10 @@ function update0831to084() {
 
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 
+   // add rights to delete all validation
+   $migration->addField('glpi_profiles', 'delete_validations',
+                        'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

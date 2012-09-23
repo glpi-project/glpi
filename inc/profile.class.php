@@ -837,7 +837,9 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Delete all followups')."</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
       echo "</td>\n";
-      echo "<td colspan='2'></td></tr>\n";
+      echo "<td>".__('Delete all validations')."</td><td>";
+      Dropdown::showYesNo("delete_validations", $this->fields["delete_validations"]);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Approval')."</th><";
       echo "/tr>\n";
