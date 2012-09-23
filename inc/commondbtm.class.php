@@ -3201,8 +3201,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
-            $contract = new Contract();
-            if ($contract->canUpdate()) {
+            if (Contract::canUpdate()) {
                $actions['add_contract_item']    = _x('button', 'Add a contract');
                $actions['remove_contract_item'] = _x('button', 'Remove a contract');
             }
