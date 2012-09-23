@@ -40,8 +40,8 @@ class RuleMailCollector extends Rule {
 
    // From Rule
    static public $right    = 'rule_mailcollector';
-   public $orderby  = "name";
-   public $can_sort = true;
+   public $orderby         = "name";
+   public $can_sort        = true;
 
 
    // Temproray hack for this class in 0.84

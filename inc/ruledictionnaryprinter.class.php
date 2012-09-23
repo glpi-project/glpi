@@ -45,7 +45,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
    // From Rule
    static public $right    = 'rule_dictionnary_printer';
-   public $can_sort = true;
+   public $can_sort        = true;
 
 
    function getTitle() {

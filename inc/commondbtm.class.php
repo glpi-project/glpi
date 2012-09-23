@@ -109,8 +109,8 @@ class CommonDBTM extends CommonGLPI {
    static function getForeignKeyField() {
 
       if (empty($_SESSION['glpi_foreign_key_field_of'][get_called_class()])) {
-         $_SESSION['glpi_foreign_key_field_of'][get_called_class()] =
-            getForeignKeyFieldForTable(static::getTable());
+         $_SESSION['glpi_foreign_key_field_of'][get_called_class()]
+            = getForeignKeyFieldForTable(static::getTable());
       }
 
       return $_SESSION['glpi_foreign_key_field_of'][get_called_class()];

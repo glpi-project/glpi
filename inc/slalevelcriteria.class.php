@@ -28,8 +28,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
-// Purpose of file:
+// @since version 0.84
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
@@ -42,7 +41,8 @@ class SlaLevelCriteria extends RuleCriteria {
 
    static public $itemtype  = 'SlaLevel';
    static public $items_id  = 'slalevels_id';
-   public $dohistory = true;
+   public $dohistory        = true;
+
 
    /**
    * Constructor

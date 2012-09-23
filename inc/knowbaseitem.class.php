@@ -214,6 +214,8 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -731,7 +733,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<td class='center' width='33%'>";
          Html::showSimpleForm(static::getFormURL(), 'delete', __('Purge'),
                            array('id' => $ID),
-                           $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '', 
+                           $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '',
                            __("Are you sure you want to delete this item?"));
 
          echo "</td>";
@@ -1509,7 +1511,7 @@ class KnowbaseItem extends CommonDBTM {
 
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params  = array('type'  => '__VALUE__',
-                        'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
+                          'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
 
          Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php",

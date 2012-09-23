@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleRight extends Rule {
 
    // From Rule
-   static public $right               = 'rule_ldap';
+   static public $right        = 'rule_ldap';
    public $orderby             = "name";
    public $specific_parameters = true;
 

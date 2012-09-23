@@ -122,6 +122,8 @@ class Reminder extends CommonDBTM {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -833,7 +835,8 @@ class Reminder extends CommonDBTM {
       $joinstoadd = '';
 
       // See public reminder ?
-      if ($who===Session::getLoginUserID() && Session::haveRight("reminder_public","r")) {
+      if (($who === Session::getLoginUserID())
+          && Session::haveRight("reminder_public","r")) {
          $readpub    = self::addVisibilityRestrict();
          $joinstoadd = self::addVisibilityJoins(true);
       }
@@ -1149,7 +1152,7 @@ class Reminder extends CommonDBTM {
 
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params  = array('type'  => '__VALUE__',
-                        'right' => 'reminder_public');
+                          'right' => 'reminder_public');
 
          Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
@@ -1164,7 +1167,7 @@ class Reminder extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $nb,
+         $paramsma = array('num_displayed'    => $nb,
                            'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {

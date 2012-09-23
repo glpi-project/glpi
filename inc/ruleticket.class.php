@@ -40,7 +40,7 @@ class RuleTicket extends Rule {
 
    // From Rule
    static public $right    = 'entity_rule_ticket';
-   public $can_sort = true;
+   public $can_sort        = true;
 
 
    function getTitle() {
@@ -365,7 +365,7 @@ class RuleTicket extends Rule {
 
       $actions['_users_id_requester']['name']         = __('Requester');
       $actions['_users_id_requester']['type']         = 'dropdown_users';
-      
+
       $actions['_groups_id_requester']['name']        = __('Requesters group');
       $actions['_groups_id_requester']['type']        = 'dropdown';
       $actions['_groups_id_requester']['table']       = 'glpi_groups';

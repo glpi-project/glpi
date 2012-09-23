@@ -723,7 +723,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
-         $paramsma = array('num_displayed' => $nb,
+         $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
                            'check_items_id' => $rules_id);
          Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
@@ -749,7 +749,7 @@ class Rule extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
          Html::closeForm();
       }
@@ -1299,9 +1299,9 @@ class Rule extends CommonDBTM {
              && $canedit) {
             echo "<td>";
             Html::showSimpleForm($target, array('action' => 'up'), '',
-                              array('type' => $this->fields["sub_type"],
-                                    'id' => $this->fields["id"]),
-                              $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                                 array('type' => $this->fields["sub_type"],
+                                       'id'   => $this->fields["id"]),
+                                 $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
             echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
@@ -1314,9 +1314,9 @@ class Rule extends CommonDBTM {
              && $canedit) {
             echo "<td>";
             Html::showSimpleForm($target, array('action' => 'down'), '',
-                              array('type' => $this->fields["sub_type"],
-                                    'id' => $this->fields["id"]),
-                              $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                                 array('type' => $this->fields["sub_type"],
+                                       'id'   => $this->fields["id"]),
+                                 $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
             echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
@@ -2113,7 +2113,7 @@ class Rule extends CommonDBTM {
       } else {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
-            $paramsma = array('num_displayed' => $nb,
+            $paramsma = array('num_displayed'    => $nb,
                               'specific_actions' => array('update' => _x('button', 'Update'),
                                                           'purge'  => _x('button', 'Purge'),));
             Html::showMassiveActions(get_called_class(), $paramsma);
