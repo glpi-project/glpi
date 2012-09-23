@@ -58,6 +58,9 @@ class SlaLevel extends RuleTicket {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -123,17 +126,18 @@ class SlaLevel extends RuleTicket {
          Dropdown::showYesNo("is_active",array('value' => 1));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         Html::closeForm();
          echo "</td></tr>";
 
-         echo "</table></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
 
       $query = "SELECT *
-                  FROM `glpi_slalevels`
-                  WHERE `slas_id` = '$ID'
-                  ORDER BY `execution_time`";
-      $result = $DB->query($query);
+                FROM `glpi_slalevels`
+                WHERE `slas_id` = '$ID'
+                ORDER BY `execution_time`";
+      $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
       echo "<div class='spaced'>";
@@ -154,7 +158,7 @@ class SlaLevel extends RuleTicket {
       echo "</tr>";
       Session::initNavigateListItems('SlaLevel',
       //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                       sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
+                                     sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
                                              $sla->getName()));
 
       while ($data = $DB->fetch_assoc($result)) {
