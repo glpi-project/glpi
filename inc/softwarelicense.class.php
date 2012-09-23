@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class SoftwareLicense extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory            = true;
+   public $dohistory                   = true;
 
    static protected $forward_entity_to = array('Infocom');
 

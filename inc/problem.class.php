@@ -1418,8 +1418,8 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * @param $output_type  (default Search::HTML_OUTPUT)
-    * @param $mass_id id of the form to check all
+    * @param $output_type   (default Search::HTML_OUTPUT)
+    * @param $mass_id       id of the form to check all (default '')
    **/
    static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
 

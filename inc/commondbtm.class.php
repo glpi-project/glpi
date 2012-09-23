@@ -4349,6 +4349,7 @@ class CommonDBTM extends CommonGLPI {
       self::$plugins_forward_entity[$for_itemtype][] = $to_itemtype;
    }
 
+
    /**
     * Is entity informations forward To ?
     *
@@ -4359,12 +4360,13 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    static function isEntityForwardTo($itemtype) {
+
       if (in_array($itemtype, static::$forward_entity_to)) {
          return true;
       }
       //Fill forward_entity_to array with itemtypes coming from plugins
       if (isset(static::$plugins_forward_entity[static::getType()])
-         && in_array($itemtype, static::$plugins_forward_entity[static::getType()])) {
+          && in_array($itemtype, static::$plugins_forward_entity[static::getType()])) {
          return true;
       }
       return false;

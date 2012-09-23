@@ -42,8 +42,9 @@ if (!defined('GLPI_ROOT')) {
 class Contract extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory            = true;
+   public $dohistory                   = true;
    static protected $forward_entity_to = array('ContractCost');
+
 
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);

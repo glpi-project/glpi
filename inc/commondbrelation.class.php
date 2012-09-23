@@ -37,28 +37,28 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    // Mapping between DB fields
    static public $itemtype_1; // Type ref or field name (must start with itemtype)
    static public $items_id_1; // Field name
-   static public $checkItem_1_Rights  = self::HAVE_SAME_RIGHT_ON_ITEM ;
+   static public $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM ;
 
    static public $itemtype_2; // Type ref or field name (must start with itemtype)
    static public $items_id_2; // Field name
-   static public $checkItem_2_Rights  = self::HAVE_SAME_RIGHT_ON_ITEM;
+   static public $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
 
    static public $check_entity_coherency = true;
 
-   static public $logs_for_itemtype_1 = true;
-   static public $logs_for_itemtype_2 = true;
+   static public $logs_for_itemtype_1    = true;
+   static public $logs_for_itemtype_2    = true;
 
-   static public $log_history_1_add     = Log::HISTORY_ADD_RELATION;
-   static public $log_history_1_update  = Log::HISTORY_UPDATE_RELATION;
-   static public $log_history_1_delete  = Log::HISTORY_DEL_RELATION;
+   static public $log_history_1_add      = Log::HISTORY_ADD_RELATION;
+   static public $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
+   static public $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
 
-   static public $log_history_2_add     = Log::HISTORY_ADD_RELATION;
-   static public $log_history_2_update  = Log::HISTORY_UPDATE_RELATION;
-   static public $log_history_2_delete  = Log::HISTORY_DEL_RELATION;
+   static public $log_history_2_add      = Log::HISTORY_ADD_RELATION;
+   static public $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
+   static public $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
 
 
    /**
-    * àsince version 0.84
+    * @since version 0.84
     *
     * @param $itemtype
     * @param $items_id

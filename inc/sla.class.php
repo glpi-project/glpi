@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class SLA extends CommonDBTM {
 
    // From CommonDBTM
-   var $dohistory = true;
+   var $dohistory                      = true;
 
    static protected $forward_entity_to = array('SLALevel');
 
@@ -175,7 +175,7 @@ class SLA extends CommonDBTM {
       $possible_values = array();
       for ($i=10 ; $i<60 ; $i+=10) {
          $possible_values[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minutes','%d minutes',$i),$i);
-      }      
+      }
       for ($i=1 ; $i<24 ; $i++) {
          $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i),$i);
       }

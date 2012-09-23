@@ -182,24 +182,26 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $item_right    the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
     * @param $itemtype      the name of the field of the type of the item to get
     * @param $items_id      the name of the field of the id of the item to get
-    * @param &$item         the item concerned by the item
+    * @param &$item         the item concerned by the item (default NULL)
     *
     * @result true if we have absolute right to create the current connexity
    **/
    function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
-                             &$item = NULL) {
+                             &$item=NULL) {
+
       $item = $this->getConnexityItem($itemtype, $items_id);
       if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
          if ($item !== false) {
             // here, we can check item's global rights
-            if ((preg_match('/^itemtype/', $itemtype))
-                && (!$item->$methodNotItem())) {
+            if (preg_match('/^itemtype/', $itemtype)
+                && !$item->$methodNotItem()) {
                return false;
             }
             switch ($item_right) {
-               case self::HAVE_VIEW_RIGHT_ON_ITEM:
+               case self::HAVE_VIEW_RIGHT_ON_ITEM :
                   return $item->canViewItem();
-               case self::HAVE_SAME_RIGHT_ON_ITEM:
+
+               case self::HAVE_SAME_RIGHT_ON_ITEM :
                   return $item->$methodItem();
             }
          } else {

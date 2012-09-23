@@ -41,12 +41,13 @@ if (!defined('GLPI_ROOT')) {
 class CartridgeItem_PrinterModel extends CommonDBRelation {
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'CartridgeItem';
-   static public $items_id_1 = 'cartridgeitems_id';
+   static public $itemtype_1          = 'CartridgeItem';
+   static public $items_id_1          = 'cartridgeitems_id';
 
-   static public $itemtype_2 = 'PrinterModel';
-   static public $items_id_2 = 'printermodels_id';
+   static public $itemtype_2          = 'PrinterModel';
+   static public $items_id_2          = 'printermodels_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -82,7 +83,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       }
       return '';
    }
-   
+
    /**
     * @param $item   CartridgeItem object
    **/
@@ -96,7 +97,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       return countElementsInTable(array('glpi_printermodels', static::getTable()),
                                   $restrict);
    }
-   
+
    /**
     * Show the printer types that are compatible with a cartridge type
     *
@@ -111,7 +112,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       }
       $canedit = $item->can($instID, 'w');
       $rand = mt_rand();
-      
+
       $query = "SELECT `".static::getTable()."`.`id`,
                        `glpi_printermodels`.`name` AS `type`,
                        `glpi_printermodels`.`id` AS `pmid`
@@ -129,7 +130,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       $forbidden[] = 'update';
       return $forbidden;
    }
-      
+
       $used  = array();
       $datas = array();
       if ($number = $DB->numrows($result)) {
@@ -138,7 +139,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
             $datas[$data["id"]] = $data;
          }
       }
-      
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='printermodel_form$rand' id='printermodel_form$rand' method='post'";
@@ -158,7 +159,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          Html::closeForm();
          echo "</div>";
       }
-      
+
 
       if ($number) {
          echo "<div class='spaced'>";
@@ -199,6 +200,6 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";
       }
-   }   
+   }
 }
 ?>
