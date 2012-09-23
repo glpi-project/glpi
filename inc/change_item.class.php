@@ -119,7 +119,7 @@ class Change_Item extends CommonDBRelation{
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeitem_form$rand' id='changeitem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
@@ -234,7 +234,7 @@ class Change_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }

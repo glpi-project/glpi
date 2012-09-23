@@ -47,6 +47,9 @@ class CalendarSegment extends CommonDBChild {
    static public $items_id = 'calendars_id';
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -310,7 +313,7 @@ class CalendarSegment extends CommonDBChild {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
-               action='";
+                action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a schedule')."</tr>";
@@ -331,10 +334,7 @@ class CalendarSegment extends CommonDBChild {
          echo "</table>";
          Html::closeForm();
          echo "</div>";
-
-
       }
-
 
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
@@ -353,7 +353,6 @@ class CalendarSegment extends CommonDBChild {
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
       echo "</tr>";
-
 
       $daysofweek = Toolbox::getDaysOfWeekArray();
 
@@ -377,7 +376,7 @@ class CalendarSegment extends CommonDBChild {
       }
       echo "</table>";
       if ($canedit && $numrows) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }

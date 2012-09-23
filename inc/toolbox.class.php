@@ -1963,26 +1963,32 @@ class Toolbox {
       return false;
    }
 
+
    /**
     * Clean integer value (strip all chars not - and spaces )
     *
-    * @param $integer string: integer string
     * @since versin 0.83.5
+    *
+    * @param $integer string   integer string
+    *
     * @return clean integer
    **/
    static function cleanInteger($integer) {
       return preg_replace("/[^0-9-]/", "", $integer);
    }
 
+
    /**
-    * Clean integer value (strip all chars not - and spaces )
+    * Clean decimal value (strip all chars not - and spaces )
     *
-    * @param $integer string: integer string
     * @since versin 0.83.5
+    *
+    * @param $decimal string    float string
+    *
     * @return clean integer
    **/
-   static function cleanDecimal($integer) {
-      return preg_replace("/[^0-9\.-]/", "", $integer);
+   static function cleanDecimal($decimal) {
+      return preg_replace("/[^0-9\.-]/", "", $decimal);
    }
 }
 ?>

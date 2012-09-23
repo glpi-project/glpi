@@ -47,6 +47,9 @@ class Calendar_Holiday extends CommonDBRelation {
    static public $items_id_2 = 'holidays_id';
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -101,11 +104,11 @@ class Calendar_Holiday extends CommonDBRelation {
       $result = $DB->query($query);
 
       $holidays = array();
-      $used = array();
+      $used     = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $holidays[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]     = $data['id'];
          }
       }
 
@@ -113,7 +116,7 @@ class Calendar_Holiday extends CommonDBRelation {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
-               action='";
+                action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a close time')."</tr>";
@@ -127,8 +130,6 @@ class Calendar_Holiday extends CommonDBRelation {
          echo "</table>";
          Html::closeForm();
          echo "</div>";
-
-
       }
 
       echo "<div class='spaced'>";
@@ -151,8 +152,6 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "<th>".__('Recurrent')."</th>";
       echo "</tr>";
 
-
-
       $used = array();
 
       if ($numrows) {
@@ -171,7 +170,7 @@ class Calendar_Holiday extends CommonDBRelation {
                echo "</td>";
             }
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
-                      $data["name"]."</a></td>";
+                       $data["name"]."</a></td>";
             echo "<td>".Html::convDate($data["begin_date"])."</td>";
             echo "<td>".Html::convDate($data["end_date"])."</td>";
             echo "<td>".Dropdown::getYesNo($data["is_perpetual"])."</td>";
@@ -181,7 +180,7 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "</table>";
 
       if ($canedit && $numrows) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
