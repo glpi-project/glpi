@@ -42,6 +42,9 @@ class RuleAction extends CommonDBChild {
    public $dohistory = true;
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -262,10 +265,10 @@ class RuleAction extends CommonDBChild {
    **/
    function addActionByAttributes($action, $ruleid, $field, $value) {
 
-      $input["action_type"]   = $action;
-      $input["field"]         = $field;
-      $input["value"]         = $value;
-      $input[static::$items_id] = $ruleid;
+      $input["action_type"]      = $action;
+      $input["field"]            = $field;
+      $input["value"]            = $value;
+      $input[static::$items_id]  = $ruleid;
       $this->add($input);
    }
 

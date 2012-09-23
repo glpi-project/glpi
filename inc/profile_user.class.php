@@ -37,18 +37,19 @@ class Profile_User extends CommonDBRelation {
 
    // From CommonDBTM
    var $auto_message_on_action = false;
-   
+
    // From CommonDBRelation
-   static public $itemtype_1 = 'User';
-   static public $items_id_1 = 'users_id';
-   
-   static public $itemtype_2 = 'Profile';
-   static public $items_id_2 = 'profiles_id';
+   static public $itemtype_1          = 'User';
+   static public $items_id_1          = 'users_id';
+
+   static public $itemtype_2          = 'Profile';
+   static public $items_id_2          = 'profiles_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    // Specific log system
    static public $logs_for_itemtype_1 = true;
    static public $logs_for_itemtype_2 = false;
+
 
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
@@ -296,7 +297,7 @@ class Profile_User extends CommonDBRelation {
 
       $result = $DB->query($query);
       $nb = $DB->numrows($result);
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -331,7 +332,7 @@ class Profile_User extends CommonDBRelation {
                                                           $data["name"]);
             echo "</th></tr>";
             echo "<tbody id='profile".$data['id']."_$rand'>";
-            
+
             $query = "SELECT `glpi_users`.*,
                              `glpi_profiles_users`.`id` AS linkID,
                              `glpi_profiles_users`.`is_recursive`,
@@ -426,8 +427,6 @@ class Profile_User extends CommonDBRelation {
          return false;
       }
 
-
-
       $query = "SELECT `glpi_users`.*,
                        `glpi_profiles_users`.`entities_id` AS entity,
                        `glpi_profiles_users`.`id` AS linkID,
@@ -445,7 +444,7 @@ class Profile_User extends CommonDBRelation {
                 ORDER BY `glpi_entities`.`completename`";
 
       $result = $DB->query($query);
-      $nb = $DB->numrows($result);
+      $nb     = $DB->numrows($result);
 
       echo "<div class='spaced'>";
 
@@ -459,7 +458,7 @@ class Profile_User extends CommonDBRelation {
 
       echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
                                           __('D=Dynamic, R=Recursive'))."</th></tr>";
-      echo "</table>\n";      
+      echo "</table>\n";
       echo "<table class='tab_cadre_fixe'>";
 
       $i              = 0;
@@ -500,13 +499,13 @@ class Profile_User extends CommonDBRelation {
                echo "<span class='b'>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
                      "</span>";
                echo "</a>";
-               
+
                echo "</td></tr>\n";
 
                echo "<tr class='tab_bg_2'><td>";
                echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
                echo Html::checkAllAsCheckbox("entity$temp$rand").__('All');;
-               
+
                echo "<table class='tab_cadre_fixe'>\n";
             }
 
@@ -569,7 +568,7 @@ class Profile_User extends CommonDBRelation {
          $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
-      }      
+      }
       echo "</div>\n";
    }
 

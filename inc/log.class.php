@@ -136,9 +136,11 @@ class Log extends CommonDBTM {
                                            'priority', 'status', 'type', 'urgency'))) {
                   $changes = array($id_search_option,
                                    addslashes(Ticket::getSpecificValueToDisplay($key,
-                                                               array_merge($values, $oldvalues))),
+                                                                                array_merge($values,
+                                                                                            $oldvalues))),
                                    addslashes(Ticket::getSpecificValueToDisplay($key,
-                                                               array_merge($oldvalues, $values))));
+                                                                                array_merge($oldvalues,
+                                                                                            $values))));
                } else if ($val2['table'] == $item->getTable()) {
                   if (in_array($real_type, $oktype)) {
                      // 2nd case : use getValueToDisplay();

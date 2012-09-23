@@ -46,7 +46,7 @@ class RuleImportComputer extends Rule {
 
    // From Rule
    static public $right    = 'rule_ocs';
-   public $can_sort = true;
+   public $can_sort        = true;
 
 
    static function canCreate() {

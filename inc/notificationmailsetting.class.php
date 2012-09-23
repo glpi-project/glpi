@@ -45,11 +45,13 @@ class NotificationMailSetting extends CommonDBTM {
 
    protected $displaylist = false;
 
-   // Temproray hack for this class
+
+   // Temproray hack for this class in 0.84
    static function getTable() {
       return 'glpi_configs';
    }
-   
+
+
    static function getTypeName($nb=0) {
       return __('Email followups configuration');
    }
@@ -76,6 +78,7 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
       if($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
@@ -126,6 +129,7 @@ class NotificationMailSetting extends CommonDBTM {
 
    function showFormMailServerConfig() {
       global $CFG_GLPI;
+
       echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<div>";
       echo "<table class='tab_cadre_fixe'>";

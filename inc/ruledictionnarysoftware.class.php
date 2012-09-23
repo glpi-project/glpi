@@ -47,7 +47,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
    // From Rule
    static public $right    = 'rule_dictionnary_software';
-   public $can_sort = true;
+   public $can_sort        = true;
 
 
    /**

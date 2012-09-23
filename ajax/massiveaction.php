@@ -62,9 +62,9 @@ if (isset($_POST['itemtype'])) {
       $params[$key] = $val;
    }
 
-   $rand    = mt_rand();
+   $rand                      = mt_rand();
    $params['specific_action'] = 0;
-   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
+   $actions                   = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
    if (isset($_POST['specific_actions'])
        && is_array($_POST['specific_actions'])
        && count($_POST['specific_actions'])) {
