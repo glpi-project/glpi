@@ -4315,8 +4315,8 @@ class CommonDBTM extends CommonGLPI {
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                echo "<td class='tab_bg_2 center b'>";
                Html::showSimpleForm($target, 'purge', __('Purge'),
-                                        array('withtemplate' => 1,
-                                              'id'           => $data['id']));
+                                    array('withtemplate' => 1,
+                                          'id'           => $data['id']));
                echo "</td>";
             } else {
                echo "<tr><td class='tab_bg_1 center' colspan='2'>";

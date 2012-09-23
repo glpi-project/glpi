@@ -593,8 +593,8 @@ class NetworkName extends FQDNLabel {
             }
 
             if (!isset($options['dont_display'][$column_name])) {
-               $header= $row->getGroup()->getHeaderByName('Internet', $column_name);
-               $name_cell = $row->addCell($header, $content, $father, $address);
+               $header              = $row->getGroup()->getHeaderByName('Internet', $column_name);
+               $name_cell           = $row->addCell($header, $content, $father, $address);
                $father_for_children = $name_cell;
             } else {
                $father_for_children = $father;

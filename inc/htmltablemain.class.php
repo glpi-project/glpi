@@ -116,9 +116,14 @@ class HTMLTableMain extends HTMLTableBase {
    }
 
 
+   /**
+    * @param $itemtype
+    * @param $title
+   **/
    function addItemType($itemtype, $title) {
       $this->itemtypes[$itemtype] = $title;
    }
+
 
    /**
     * Retrieve a group by its name

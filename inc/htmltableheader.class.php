@@ -44,7 +44,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
    private $name;
    private $father;
-   private $itemtypes    = array();
+   private $itemtypes   = array();
    private $colSpan     = 1;
    private $numberCells = 0;
 
@@ -92,14 +92,19 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $itemtypes
+    * @param $itemtype
+    * @param $title         (default '')
    **/
-   function setItemType($itemtype, $title = '') {
+   function setItemType($itemtype, $title='') {
       $this->itemtypes[$itemtype] = $title;
    }
 
 
-   function checkItemType(CommonDBTM $item = NULL) {
+   /**
+    * @param $item      CommonDBTM object (default NULL)
+   **/
+   function checkItemType(CommonDBTM $item=NULL) {
+
       if (($item === NULL) && (count($this->itemtypes) > 0)) {
          throw new Exception('Implementation error: header requires an item');
       }

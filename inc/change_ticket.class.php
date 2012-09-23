@@ -97,18 +97,18 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
 
       $tickets = array();
-      $used = array();
+      $used    = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $tickets[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]    = $data['id'];
          }
       }
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a ticket')."</th></tr>";
@@ -146,8 +146,6 @@ class Change_Ticket extends CommonDBRelation{
          echo "<th>".__('Entity')."</th>";
       }
       echo "</tr>";
-
-
 
       $used = array();
       if ($numrows) {
