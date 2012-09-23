@@ -53,6 +53,9 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -201,17 +204,17 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          $mandatoryfields = array();
-         $used = array();
+         $used            = array();
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $mandatoryfields[$data['id']] = $data;
-               $used[$data['num']] = $data['num'];
+               $used[$data['num']]           = $data['num'];
             }
          }
          if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
@@ -219,12 +222,11 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
-            Dropdown::showFromArray('num', $fields, array('used'=> $used));
+            Dropdown::showFromArray('num', $fields, array('used' => $used));
             echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
-                           "\" class='submit'>";
+                         "\" class='submit'>";
             echo "</td></tr>";
-
 
             echo "</table>";
             Html::closeForm();
@@ -270,7 +272,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             Html::closeForm();
          }
          echo "</div>";
-
       }
    }
 

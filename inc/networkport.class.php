@@ -46,11 +46,11 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype  = 'itemtype';
-   static public $items_id  = 'items_id';
-   public $dohistory        = true;
+   static public $itemtype             = 'itemtype';
+   static public $items_id             = 'items_id';
+   public $dohistory                   = true;
 
-   static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+   static public $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
    static protected $forward_entity_to = array('NetworkName');
 

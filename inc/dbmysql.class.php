@@ -329,6 +329,7 @@ class DBmysql {
     * @return result associative array
    **/
    function fetch_assoc($result) {
+
       return (Toolbox::get_magic_quotes_runtime()
                   ? Toolbox::stripslashes_deep($result->fetch_assoc())
                   : $result->fetch_assoc());

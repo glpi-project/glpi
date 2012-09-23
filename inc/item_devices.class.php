@@ -29,7 +29,7 @@
 
 // ----------------------------------------------------------------------
 // Original Author of file: Damien Touraine
-// Purpose of file:
+// @sinceversion 0.84
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
@@ -58,6 +58,7 @@ class Item_Devices extends CommonDBRelation {
       return array();
    }
 
+
    /**
     * Get itemtype of devices : key is ocs identifier
     * @TODO : Think of allowing other kind of devices such as for NetworkPort Instantation types
@@ -80,18 +81,19 @@ class Item_Devices extends CommonDBRelation {
 
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
+
       foreach (self::getDeviceTypes() as $link_type) {
          $query = "SELECT *
                    FROM `".$link_type::getTable()."`
                    WHERE `itemtype` = '$itemtype'
-                   AND `items_id` = '$oldid'";
+                         AND `items_id` = '$oldid'";
 
          $result_iterator = $DB->request($query);
          if ($result_iterator->numrows() > 0) {
             $link = new $link_type();
             foreach ($result_iterator as $data) {
                unset($data['id']);
-               $data['items_id'] = $newid;
+               $data['items_id']     = $newid;
                $data['_itemtype']    = $itemtype;
                $data['_no_history']  = true;
                $data                 = Toolbox::addslashes_deep($data);
@@ -107,7 +109,7 @@ class Item_Devices extends CommonDBRelation {
 
       if ($item->canView()) {
          switch ($item->getType()) {
-            case 'Computer':
+            case 'Computer' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = 0;
                   foreach (self::getDeviceTypes() as $link_type) {
@@ -118,10 +120,8 @@ class Item_Devices extends CommonDBRelation {
                }
                if (isset($nb)) {
                   return self::createTabEntry(_n('Component', 'Components', 2), $nb);
-               } else {
-                  return _n('Component', 'Components', 2);
                }
-               break;
+               return _n('Component', 'Components', 2);
          }
       }
       return '';
@@ -136,18 +136,19 @@ class Item_Devices extends CommonDBRelation {
 
 
    static function showForItem(CommonGLPI $item, $withtemplate=0) {
+
       $ID = $item->getField('id');
 
       if (!$item->can($ID, 'r')) {
          return false;
       }
-      $canedit = ($withtemplate!=2 && $item->can($ID, 'w'));
+      $canedit = (($withtemplate != 2) && $item->can($ID, 'w'));
 
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {
          echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
-                action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>\n";
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>\n";
          echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
          echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
       }
@@ -166,7 +167,8 @@ class Item_Devices extends CommonDBRelation {
       $specific_column->setHTMLClass('center');
 
       if ($canedit) {
-         $content = "<input type='submit' class='submit' name='delete' value='"._sx('button', 'Delete')."'>";
+         $content       = "<input type='submit' class='submit' name='delete' value='".
+                            _sx('button', 'Delete')."'>";
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
       }
@@ -214,7 +216,6 @@ class Item_Devices extends CommonDBRelation {
                                  HTMLTableSuperHeader $common_column,
                                  HTMLTableSuperHeader $specific_column,
                                  HTMLTableSuperHeader $delete_column) {
-
       global $DB;
 
       $device_type = static::getDeviceType();
@@ -230,7 +231,7 @@ class Item_Devices extends CommonDBRelation {
       $device_type::getHTMLTableHeader($item->getType(), $table_group, $common_column, NULL,
                                        $options);
 
-      $spec_column = NULL;
+      $spec_column         = NULL;
       $specificity_columns = array();
       foreach (static::getSpecificities() as $field => $attributs) {
          $spec_column = $table_group->addHeader('spec_'.$field, $attributs['long name'],
@@ -247,7 +248,7 @@ class Item_Devices extends CommonDBRelation {
       $query = "SELECT *
                 FROM `".static::getTable()."`
                 WHERE `itemtype` = '".$item->getType()."'
-                AND `items_id` = '".$item->getID()."'
+                      AND `items_id` = '".$item->getID()."'
                 ORDER BY $fk";
 
       $device = new $device_type();
@@ -263,9 +264,9 @@ class Item_Devices extends CommonDBRelation {
 
             if ($options['canedit']) {
                $cell_value = "<input type='checkbox' name='removeall_$device_group'
-                                     id='removeall_$device_group'
-                                     onclick= \"if ( checkAsCheckboxes('removeall_$device_group',
-                                                                       '$device_group'))
+                               id='removeall_$device_group'
+                               onclick= \"if ( checkAsCheckboxes('removeall_$device_group',
+                                                                 '$device_group'))
                                                          {return true;}\">";
                $current_row->addCell($delete_all_column, $cell_value);
             }
@@ -279,20 +280,26 @@ class Item_Devices extends CommonDBRelation {
             $content = $link[$field];
             if ($options['canedit']) {
                $content = "<input type='text' name='value_" . $device_type . "_".$link['id']."_" .
-                          $field . "' value='$content' size='".$attributs['size']."'>";
+                            $field . "' value='$content' size='".$attributs['size']."'>";
             }
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
 
          if ($options['canedit']) {
             $cell_value   = "<input type='checkbox' name='remove_" . $device_type . "_" .
-                            $link['id'] . "' value='1'>";
+                              $link['id'] . "' value='1'>";
             $current_row->addCell($delete_one, $cell_value, $spec_cell);
          }
       }
    }
 
 
+   /**
+    * @param $numberToAdd
+    * @param $itemtype
+    * @param $items_id
+    * @param $devices_id
+   **/
    function addDevices($numberToAdd, $itemtype, $items_id, $devices_id) {
       global $DB;
 
@@ -307,7 +314,7 @@ class Item_Devices extends CommonDBRelation {
       $this->check(-1, 'w', $input);
 
       $device_type = static::getDeviceType();
-      $device = new $device_type();
+      $device      = new $device_type();
       $device->getFromDB($devices_id);
 
       foreach (static::getSpecificities() as $field => $attributs) {
@@ -322,10 +329,14 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $input
+    * @param $delete
+   **/
    static function updateAll($input, $delete) {
 
-      if ((!isset($input['itemtype']))
-          || (!isset($input['items_id']))) {
+      if (!isset($input['itemtype'])
+          || !isset($input['items_id'])) {
          Html::displayNotFoundError();
       }
 
@@ -346,8 +357,8 @@ class Item_Devices extends CommonDBRelation {
          } else {
             continue;
          }
-         if ((!empty($data[1]))
-             && (in_array('Item_'.$data[1], self::getDeviceTypes()))) {
+         if (!empty($data[1])
+             && in_array('Item_'.$data[1], self::getDeviceTypes())) {
             $link_type = 'Item_'.$data[1];
          } else {
             continue;
@@ -364,10 +375,11 @@ class Item_Devices extends CommonDBRelation {
          }
 
          switch ($command) {
-            case 'quantity':
+            case 'quantity' :
                $links[$link_type]['add'][$links_id] = $val;
                break;
-            case 'value':
+
+            case 'value' :
                if (!isset($links[$link_type]['update'][$links_id])) {
                   $links[$link_type]['update'][$links_id] = array();
                }
@@ -375,7 +387,8 @@ class Item_Devices extends CommonDBRelation {
                   $links[$link_type]['update'][$links_id][$data[3]] = $val;
                }
                break;
-            case 'remove':
+
+            case 'remove' :
                if ($val == 1) {
                   $links[$link_type]['remove'][] = $links_id;
                }
@@ -405,6 +418,10 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $itemtype
+    * @param $items_id
+   **/
    static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id) {
 
       foreach (self::getDeviceTypes() as $link_type) {
@@ -413,7 +430,6 @@ class Item_Devices extends CommonDBRelation {
             $link->cleanDBOnItemDelete($itemtype, $items_id);
          }
       }
-
    }
 
 }

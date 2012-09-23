@@ -3194,8 +3194,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if (in_array($itemtype,$CFG_GLPI["document_types"])) {
-            $doc = new Document();
-            if ($doc->canView()) {
+            if (Document::canView()) {
                $actions['add_document']    = _x('button', 'Add a document');
                $actions['remove_document'] = _x('button', 'Remove a document');
             }

@@ -28,15 +28,14 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
-// Purpose of file:
+// @since version 0.84
 // ----------------------------------------------------------------------
 
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Session::checkCentralAccess(); 
+Session::checkCentralAccess();
 
 if (isset($_POST["add"])) {
    if (isset($_POST['devicetype'])) {
@@ -53,5 +52,4 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 Html::displayErrorAndDie('Lost');
-
 ?>

@@ -51,7 +51,7 @@ if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
 
 $inline = false;
 if (isset($_POST['inline']) && $_POST['inline']) {
-   $inline= true;
+   $inline = true;
 }
 $submitname = __s('Post');
 if (isset($_POST['submitname']) && $_POST['submitname']) {

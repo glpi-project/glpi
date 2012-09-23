@@ -48,6 +48,9 @@ class TicketTemplateHiddenField extends CommonDBChild {
    public $dohistory = true;
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -199,21 +202,21 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $query = "SELECT `glpi_tickettemplatehiddenfields`.*
                 FROM `glpi_tickettemplatehiddenfields`
                 WHERE (`tickettemplates_id` = '$ID')";
-      if ($result = $DB->query($query)) {
 
+      if ($result = $DB->query($query)) {
          $hiddenfields = array();
-         $used = array();
+         $used         = array();
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $hiddenfields[$data['id']] = $data;
-               $used[$data['num']] = $data['num'];
+               $used[$data['num']]        = $data['num'];
             }
          }
 
          if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a hidden field')."</th></tr>";
@@ -224,11 +227,10 @@ class TicketTemplateHiddenField extends CommonDBChild {
             Dropdown::showFromArray('num', $fields, array('used'=> $used));
             echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
-                           "\" class='submit'>";
+                         "\" class='submit'>";
             echo "</td></tr>";
-
-
             echo "</table>";
+
             Html::closeForm();
             echo "</div>";
          }
