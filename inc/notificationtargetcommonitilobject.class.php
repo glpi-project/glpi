@@ -599,18 +599,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
-      $datas["##$objettype.status##"]
-                           = $item->getStatus(
-                                                                $item->getField('status'));
+      $datas["##$objettype.status##"]       = $item->getStatus($item->getField('status'));
 
-      $datas["##$objettype.urgency##"]
-                           = $item->getUrgencyName($item->getField('urgency'));
-      $datas["##$objettype.impact##"]
-                           = $item->getImpactName($item->getField('impact'));
-      $datas["##$objettype.priority##"]
-                           = $item->getPriorityName($item->getField('priority'));
-      $datas["##$objettype.time##"]
-                           = $item->getActionTime($item->getField('actiontime'));
+      $datas["##$objettype.urgency##"]      = $item->getUrgencyName($item->getField('urgency'));
+      $datas["##$objettype.impact##"]       = $item->getImpactName($item->getField('impact'));
+      $datas["##$objettype.priority##"]     = $item->getPriorityName($item->getField('priority'));
+      $datas["##$objettype.time##"]         = $item->getActionTime($item->getField('actiontime'));
 
       $datas["##$objettype.creationdate##"] = Html::convDateTime($item->getField('date'));
       $datas["##$objettype.closedate##"]    = Html::convDateTime($item->getField('closedate'));

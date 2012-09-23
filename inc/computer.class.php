@@ -42,10 +42,10 @@ if (!defined('GLPI_ROOT')) {
 class Computer extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory                   = true;
 
    static protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine', 'Infocom',
-                                        'NetworkPort', 'ReservationItem');
+                                               'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices = array();

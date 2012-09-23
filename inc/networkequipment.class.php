@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkEquipment extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory                   = true;
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 

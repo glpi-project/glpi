@@ -40,11 +40,14 @@ if (!defined('GLPI_ROOT')) {
 class Calendar extends CommonDropdown {
 
    // From CommonDBTM
-   var $dohistory = true;
+   var $dohistory                      = true;
 
    static protected $forward_entity_to = array('CalendarSegment');
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();

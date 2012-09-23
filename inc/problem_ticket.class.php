@@ -39,14 +39,17 @@ if (!defined('GLPI_ROOT')) {
 class Problem_Ticket extends CommonDBRelation{
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Problem';
-   static public $items_id_1 = 'problems_id';
+   static public $itemtype_1          = 'Problem';
+   static public $items_id_1          = 'problems_id';
 
-   static public $itemtype_2 = 'Ticket';
-   static public $items_id_2 = 'tickets_id';
+   static public $itemtype_2          = 'Ticket';
+   static public $items_id_2          = 'tickets_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -98,11 +101,11 @@ class Problem_Ticket extends CommonDBRelation{
 
 
       $tickets = array();
-      $used = array();
+      $used    = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $tickets[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]    = $data['id'];
          }
       }
 
@@ -142,8 +145,8 @@ class Problem_Ticket extends CommonDBRelation{
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $problem->getTypeName(1),
-                                                $problem->fields["name"]));
+                                         sprintf(__('%1$s = %2$s'), $problem->getTypeName(1),
+                                                 $problem->fields["name"]));
 
          $i = 0;
          foreach ($tickets as $data) {
@@ -159,8 +162,6 @@ class Problem_Ticket extends CommonDBRelation{
          Html::closeForm();
       }
       echo "</div>";
-
-
 
    }
 
@@ -192,24 +193,24 @@ class Problem_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
 
       $problems = array();
-      $used = array();
+      $used     = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $problems[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]     = $data['id'];
          }
       }
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a problem')."</th></tr>";
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Problem::dropdown(array('used'        => $used,
-                                'entity'      => $ticket->getEntityID()));
+         Problem::dropdown(array('used'   => $used,
+                                 'entity' => $ticket->getEntityID()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td><td>";

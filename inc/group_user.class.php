@@ -40,11 +40,11 @@ if (!defined('GLPI_ROOT')) {
 class Group_User extends CommonDBRelation{
 
    // From CommonDBRelation
-   static $itemtype_1 = 'User';
-   static $items_id_1 = 'users_id';
+   static $itemtype_1                 = 'User';
+   static $items_id_1                 = 'users_id';
 
-   static $itemtype_2 = 'Group';
-   static $items_id_2 = 'groups_id';
+   static $itemtype_2                 = 'Group';
+   static $items_id_2                 = 'groups_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    static public $logs_for_itemtype_1 = false;

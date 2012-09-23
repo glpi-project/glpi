@@ -39,11 +39,11 @@ if (!defined('GLPI_ROOT')) {
 class Change_Ticket extends CommonDBRelation{
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Change';
-   static public $items_id_1 = 'changes_id';
+   static public $itemtype_1          = 'Change';
+   static public $items_id_1          = 'changes_id';
 
-   static public $itemtype_2 = 'Ticket';
-   static public $items_id_2 = 'tickets_id';
+   static public $itemtype_2          = 'Ticket';
+   static public $items_id_2          = 'tickets_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
 

@@ -47,13 +47,13 @@ class NetworkName extends FQDNLabel {
    // From CommonDBChild
    static public $itemtype              = 'itemtype';
    static public $items_id              = 'items_id';
-   public $dohistory             = true;
+   public $dohistory                    = true;
 
-   static protected $forward_entity_to = array('IPAddress');
+   static protected $forward_entity_to  = array('IPAddress');
 
-   static public $canDeleteOnItemClean = false;
+   static public $canDeleteOnItemClean  = false;
 
-   static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+   static public $checkParentRights     = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
 
    static function canCreate() {

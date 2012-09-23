@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class Document extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory                   = true;
 
    static protected $forward_entity_to = array('Document_Item');
 

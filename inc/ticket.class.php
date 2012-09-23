@@ -40,20 +40,20 @@ if (!defined('GLPI_ROOT')) {
 class Ticket extends CommonITILObject {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory                   = true;
    static protected $forward_entity_to = array('TicketValidation', 'TicketCost');
 
    // From CommonITIL
-   public $userlinkclass     = 'Ticket_User';
-   public $grouplinkclass    = 'Group_Ticket';
-   public $supplierlinkclass = 'Supplier_Ticket';
+   public $userlinkclass               = 'Ticket_User';
+   public $grouplinkclass              = 'Group_Ticket';
+   public $supplierlinkclass           = 'Supplier_Ticket';
 
-   protected $userentity_oncreate = true;
+   protected $userentity_oncreate      = true;
 
-   const MATRIX_FIELD         = 'priority_matrix';
-   const URGENCY_MASK_FIELD   = 'urgency_mask';
-   const IMPACT_MASK_FIELD    = 'impact_mask';
-   const STATUS_MATRIX_FIELD  = 'ticket_status';
+   const MATRIX_FIELD                  = 'priority_matrix';
+   const URGENCY_MASK_FIELD            = 'urgency_mask';
+   const IMPACT_MASK_FIELD             = 'impact_mask';
+   const STATUS_MATRIX_FIELD           = 'ticket_status';
 
    // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
    const HELPDESK_MY_HARDWARE  = 0;
@@ -4895,7 +4895,7 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $output_type     (default 'Search::HTML_OUTPUT')
-    * @param $mass_id id of the form to check all
+    * @param $mass_id         id of the form to check all (default '')
     */
    static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
 
