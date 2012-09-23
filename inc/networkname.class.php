@@ -55,6 +55,7 @@ class NetworkName extends FQDNLabel {
 
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
+
    static function canCreate() {
 
       return (Session::haveRight('internet', 'w')
@@ -152,9 +153,8 @@ class NetworkName extends FQDNLabel {
       echo "</td>\n</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      $address = new IPAddress();
       echo "<td>".$address->getTypeName(2);
-      $address->showAddButtonForChildItem($this, '_ipaddresses');
+      IPAddress::showAddButtonForChildItem($this, '_ipaddresses');
       echo "</td>";
       echo "<td>";
       $address->showFieldsForItemForm($this, '_ipaddresses', 'name');

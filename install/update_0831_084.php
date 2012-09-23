@@ -203,11 +203,17 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
 }
 
 
-function migrateComputerDevice($deviceType, $new_specif = NULL, $new_specif_type = NULL,
-                               array $other_specif = array()) {
+/**
+ * @param $deviceType
+ * @param $new_specif               (default NULL)
+ * @param $new_specif_type          (default NULL)
+ * @param $other_specif      array
+ */
+function migrateComputerDevice($deviceType, $new_specif=NULL, $new_specif_type=NULL,
+                               array $other_specif=array()) {
    global $DB, $migration;
 
-   $table = getTableForItemType('Item_'.$deviceType);
+   $table        = getTableForItemType('Item_'.$deviceType);
    $device_table = getTableForItemType($deviceType);
    $migration->renameTable(getTableForItemType('Computer_'.$deviceType), $table);
 
@@ -231,6 +237,7 @@ function migrateComputerDevice($deviceType, $new_specif = NULL, $new_specif_type
       $migration->addField($table, $field, $format);
    }
 }
+
 
 /**
  * Update from 0.83.1 to 0.84
@@ -1984,14 +1991,11 @@ function update0831to084() {
    $DB->query($query);
 
 
-   migrateComputerDevice('DeviceProcessor', 'frequency', 'integer',
-                         array('serial'    => 'string'));
+   migrateComputerDevice('DeviceProcessor', 'frequency', 'integer', array('serial' => 'string'));
 
-   migrateComputerDevice('DeviceMemory', 'size', 'integer',
-                         array('serial' => 'string'));
+   migrateComputerDevice('DeviceMemory', 'size', 'integer', array('serial' => 'string'));
 
-   migrateComputerDevice('DeviceHardDrive', 'capacity', 'integer',
-                         array('serial'   => 'string'));
+   migrateComputerDevice('DeviceHardDrive', 'capacity', 'integer', array('serial' => 'string'));
 
    migrateComputerDevice('DeviceGraphicCard', 'memory', 'integer');
    migrateComputerDevice('DeviceNetworkCard', 'mac', 'string');
@@ -2004,9 +2008,9 @@ function update0831to084() {
    migrateComputerDevice('DevicePowerSupply');
 
    $migration->changeField('glpi_networkportethernets', 'computers_devicenetworkcards_id',
-                     'items_devicenetworkcards_id', 'integer', array('value' => 0));
+                           'items_devicenetworkcards_id', 'integer', array('value' => 0));
    $migration->changeField('glpi_networkportwifis', 'computers_devicenetworkcards_id',
-                     'items_devicenetworkcards_id', 'integer', array('value' => 0));
+                           'items_devicenetworkcards_id', 'integer', array('value' => 0));
 
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 

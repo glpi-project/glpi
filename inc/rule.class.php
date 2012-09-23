@@ -133,6 +133,12 @@ class Rule extends CommonDBTM {
       return __('Rules management');
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @return string
+   **/
    function getCollectionClassName() {
       return $this->getType().'Collection';
    }

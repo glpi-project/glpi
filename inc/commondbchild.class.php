@@ -48,15 +48,25 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /// since version 0.84
    static public $mustBeAttached = true;
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $items_id
+    *
+    * @return string
+   **/
    protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+
       $conditions = array();
-      $fields = array('`'.static::getIndexName().'`');
+      $fields     = array('`'.static::getIndexName().'`');
 
       // Check item 1 type
       $condition_id = "`".static::$items_id."` = '$items_id'";
-      $fields[] = "`".static::$items_id."` as items_id";
+      $fields[]     = "`".static::$items_id."` as items_id";
       if (preg_match('/^itemtype/', static::$itemtype)) {
-         $fields[] = "`".static::$itemtype."` AS itemtype";
+         $fields[]  = "`".static::$itemtype."` AS itemtype";
          $condition = "($condition_id AND `".static::$itemtype."` = '$itemtype')";
       } else {
          $fields[] = "'".static::$itemtype."' AS itemtype";
@@ -73,44 +83,67 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return '';
    }
 
+
    static function canCreate() {
       return static::canChild('canCreate');
    }
+
 
    static function canView() {
       return static::canChild('canView');
    }
 
+
    static function canUpdate() {
       return static::canChild('canUpdate');
    }
+
 
    static function canDelete() {
       return static::canChild('canDelete');
    }
 
+
    function canCreateItem() {
       return $this->canChildItem('canCreateItem', 'canCreate', true);
    }
+
 
    function canViewItem() {
       return $this->canChildItem('canViewItem', 'canView', false);
    }
 
+
    function canUpdateItem() {
       return $this->canChildItem('canUpdateItem', 'canUpdate', true);
    }
+
 
    function canDeleteItem() {
       return $this->canChildItem('canDeleteItem', 'canDelete', false);
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $method
+   **/
    static function canChild($method) {
-      return static::canConnexity($method, static::$checkParentRights,
-                                  static::$itemtype, static::$items_id);
+
+      return static::canConnexity($method, static::$checkParentRights, static::$itemtype,
+                                  static::$items_id);
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $methodItem
+    * @param $methodNotItem
+    *
+    * @return boolean
+   **/
    function canChildItem($methodItem, $methodNotItem) {
       /* Warning : in case of free child (ie : not attached), canConnexityItem return false if
        * it cannot load the item ... */

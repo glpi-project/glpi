@@ -44,7 +44,7 @@ class RuleRight extends Rule {
    public $specific_parameters = true;
 
 
-   // Temproray hack for this class
+   // Temproray hack for this class in 0.84
    static function getTable() {
       return 'glpi_rules';
    }

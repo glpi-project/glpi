@@ -48,6 +48,9 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    public $dohistory = true;
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -231,11 +234,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                                'html'           => true);
       if ($result = $DB->query($query)) {
          $predeffields = array();
-         $used = array();
+         $used         = array();
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $predeffields[$data['id']] = $data;
-               $used[$data['num']] = $data['num'];
+               $used[$data['num']]        = $data['num'];
             }
          }
          if ($canedit) {

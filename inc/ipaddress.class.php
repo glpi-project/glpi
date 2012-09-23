@@ -99,12 +99,14 @@ class IPAddress extends CommonDBChild {
 
 
    static function canView() {
+
       return (Session::haveRight('internet', 'r')
               && parent::canChild('canView'));
    }
 
 
    static function canCreate() {
+
       return (Session::haveRight('internet', 'w')
               && parent::canChild('canCreate'));
    }
