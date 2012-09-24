@@ -46,7 +46,7 @@ class Item_Problem extends CommonDBRelation{
 
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
    function getForbiddenStandardMassiveAction() {

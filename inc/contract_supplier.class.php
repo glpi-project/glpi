@@ -361,16 +361,7 @@ class Contract_Supplier extends CommonDBRelation {
          echo Dropdown::getDropdownName("glpi_suppliertypes", $data['type'])."</td>";
          echo "<td class='center'>".$data['phone']."</td>";
          echo "<td class='center'>".$website."</td>";
-         echo "<td class='tab_bg_2 center'>";
-         if ($canedit) {
-            echo "<a href='".$CFG_GLPI["root_doc"].
-                  "/front/contract.form.php?deletecontractsupplier=1&amp;id=$ID&amp;contracts_id=".
-                  $instID."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                  _sx('button', 'Delete')."'></a>";
-         } else {
-            echo "&nbsp;";
-         }
-         echo "</td></tr>";
+         echo "</tr>";
       }
       echo "</table>";
       if ($canedit && $number) {
