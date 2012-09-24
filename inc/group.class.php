@@ -697,7 +697,7 @@ class Group extends CommonTreeDropdown {
          Html::showMassiveActions(__CLASS__, $paramsma);
 
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th width='10'>".Html::getCheckAllAsCheckbox("group_form_$field$rand")."</th>";
+         echo "<tr><th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
          echo "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
             echo "<th>".sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
