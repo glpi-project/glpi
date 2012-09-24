@@ -43,6 +43,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $items_id_2; // Field name
    static public $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
 
+   static public $checkOnlyOneItem       = false;
+   
    static public $check_entity_coherency = true;
 
    static public $logs_for_itemtype_1    = true;
@@ -279,11 +281,24 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
     *
     * @param $method
+    * @param $forceCheckBoth boolean force check both items
     *
     * @return boolean
    **/
-   static function canRelation($method) {
+   static function canRelation($method, $forceCheckBoth = false) {
 
+      /// Check only one if SAME RIGHT for both items and not force checkBoth
+      if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
+         && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
+         && !$forceCheckBoth) {
+         return (static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
+                                static::$items_id_1)
+                 || static::canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
+                                static::$items_id_2)
+               );
+
+      }
+   
       if (!static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
                                 static::$items_id_1)) {
          return false;
@@ -303,24 +318,43 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $method
     * @param $methodNotItem
     * @param $check_entity      (true by default)
+    * @param $forceCheckBoth boolean force check both items
     *
     * @return boolean
    **/
-   function canRelationItem($method, $methodNotItem, $check_entity=true) {
+   function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth = false) {
+
 
       $item1 = NULL;
-
-      if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
-                                   static::$itemtype_1, static::$items_id_1, $item1)) {
-         return false;
-      }
-
       $item2 = NULL;
+      /// Check only one if SAME RIGHT for both items and not force checkBoth
+      if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
+         && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
+         && !$forceCheckBoth) {
+         if ($this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
+                                    static::$itemtype_1, static::$items_id_1, $item1)) {
+            // Load item 2 for entity checks
+            if ($check_entity && static::$check_entity_coherency) {
+               $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
+            }
+         } else if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
+                                    static::$itemtype_2, static::$items_id_2, $item2)) {
+            return false;
+         }
 
-      if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
-                                   static::$itemtype_2, static::$items_id_2, $item2)) {
-         return false;
+      } else {
+         if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
+                                    static::$itemtype_1, static::$items_id_1, $item1)) {
+            return false;
+         }
+
+         if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
+                                    static::$itemtype_2, static::$items_id_2, $item2)) {
+            return false;
+         }
       }
+      
+      
 
       // Check coherency of entities
       if ($check_entity && static::$check_entity_coherency) {
@@ -366,7 +400,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canView() {
-      return static::canRelation('canView');
+      return static::canRelation('canView', true);
    }
 
 
@@ -398,7 +432,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canViewItem() {
-      return $this->canRelationItem('canViewItem', 'canView', false);
+      return $this->canRelationItem('canViewItem', 'canView', false, true);
    }
 
 

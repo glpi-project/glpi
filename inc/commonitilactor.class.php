@@ -41,6 +41,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   
    var $no_form_page              = true;
 
 
