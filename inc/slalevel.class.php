@@ -428,6 +428,7 @@ class SlaLevel extends RuleTicket {
             $query = "SELECT `id`
                       FROM `glpi_slalevels`
                        WHERE `slas_id` = '$slas_id'
+                             AND `id` <> '$slalevels_id'
                              AND `execution_time` > '$execution_time'
                              AND `is_active` = 1
                       ORDER BY `execution_time` ASC LIMIT 1 ;";
