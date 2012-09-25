@@ -168,7 +168,7 @@ class Problem extends CommonITILObject {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (Session::haveRight("show_all_problem","1")) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
 //             case 'Change' :
