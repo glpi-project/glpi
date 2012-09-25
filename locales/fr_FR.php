@@ -962,6 +962,8 @@ $LANG['install'][74]  = "Test de l'utilisation de Session_use_trans_sid";
 $LANG['install'][75]  = "Vous devez désactiver l'option Session_use_trans_id dans votre PHP.ini";
 $LANG['install'][76]  = "Ok - Les sessions fonctionnent (pas de problèmes de trans_id) - Parfait !";
 $LANG['install'][77]  = "Étape";
+$LANG['install'][78] = "GLPI ne peut pas fonctionner correctement sans les fonctions ctype_digit";
+$LANG['install'][79] = "Test sur l'extension ctype";
 
 $LANG['install'][81]  = "Début de l'installation";
 $LANG['install'][82]  = "Base de données créée";

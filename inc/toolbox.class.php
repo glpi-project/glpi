@@ -777,6 +777,18 @@ class Toolbox {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][67].
                     "\" title=\"".$LANG['install'][67]."\"></td></tr>";
       }
+      
+      //Test for ctype extension loaded or not (forhtmlawed)
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][78]."</td>";
+
+      if (!function_exists('ctype_digit')) {
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][79]."></td></tr>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
+                    "\" title=\"".$LANG['install'][85]."\"></td></tr>";
+      }
 
       //Test for json_encode function.
       echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][102]."</td>";
