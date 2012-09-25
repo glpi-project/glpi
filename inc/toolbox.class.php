@@ -851,6 +851,22 @@ class Toolbox {
               "\"></td>";
       }
       echo "</tr>";
+      
+      //Test for ctype extension loaded or not (forhtmlawed)
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test ctype functions')."</td>";
+
+      if (!function_exists('ctype_digit')) {
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __("GLPI can't work correctly without the ctype functions").
+               "></td>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('The functionality is found - Perfect!')."\" title=\"".
+               __s('The functionality is found - Perfect!')."\"></td>";
+      }
+      echo "</tr>";
 
       //Test for json_encode function.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
