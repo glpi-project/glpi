@@ -124,30 +124,6 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST['assign_vlan'])) {
-   /// TODO do it on correct form page
-   $npv->check(-1,'w',$_POST);
-
-   if (isset($_POST["vlans_id"]) && ($_POST["vlans_id"] > 0)) {
-      $npv->assignVlan($_POST["networkports_id"], $_POST["vlans_id"],
-                       (isset($_POST['tagged']) ? '1' : '0'));
-      Event::log(0, "networkport", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s associates a VLAN to a network port'), $_SESSION["glpiname"]));
-
-   }
-   Html::back();
-
-} else if (isset($_GET['unassign_vlan'])) {
-   /// TODO do it on correct form page / use MA to do it
-   $npv->check($_GET['id'],'d');
-
-   $npv->unassignVlanbyID($_GET['id']);
-   Event::log(0, "networkport", 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s dissociates a VLAN from a network port'), $_SESSION["glpiname"]));
-   Html::back();
-
 } else {
    if (empty($_GET["items_id"])) {
       $_GET["items_id"] = "";

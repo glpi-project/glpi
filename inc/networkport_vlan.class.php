@@ -43,8 +43,15 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    static public $itemtype_2 = 'Vlan';
    static public $items_id_2 = 'vlans_id';
-   static public $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+   static public $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    /**
     * Get search function for the class
     *
@@ -152,97 +159,108 @@ class NetworkPort_Vlan extends CommonDBRelation {
       return $ok;
    }
 
-
    /**
     * @param $ID
-    * @param $canedit
-    * @param $withtemplate
    **/
-   static function showForNetworkPort($ID, $canedit, $withtemplate) {
+   static function showForNetworkPort (NetworkPort $port) {
       global $DB, $CFG_GLPI;
 
-      $used = array();
+      $ID = $port->getID();
+      if (!$port->can($ID, 'r')) {
+         return false;
+      }
 
-      $query = "SELECT `glpi_networkports_vlans`.*,
-                       `glpi_vlans`.`tag` AS vlantag,
-                       `glpi_vlans`.`comment` AS vlancomment
+      $canedit = $port->can($ID, 'w');
+      $rand = mt_rand();
+      
+      $query = "SELECT `glpi_networkports_vlans`.id as assocID,
+                       `glpi_networkports_vlans`.tagged ,
+                       `glpi_vlans`.*
                 FROM `glpi_networkports_vlans`
                 LEFT JOIN `glpi_vlans`
                         ON (`glpi_networkports_vlans`.`vlans_id` = `glpi_vlans`.`id`)
                 WHERE `networkports_id` = '$ID'";
 
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         echo "\n<table>";
+      $vlans = array();
+      $used = array();
+      if ($number = $DB->numrows($result)) {
          while ($line = $DB->fetch_assoc($result)) {
-            $used[$line["vlans_id"]] = $line["vlans_id"];
-            echo "<tr><td>";
-            if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
-               printf(__('%1$s - %2$s'),
-                      Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]), __('Tagged'));
-            } else {
-               printf(__('%1$s - %2$s'),
-                      Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]), __('Untagged'));
-            }
-            Html::showToolTip(sprintf(__('%1$s: %2$s'), __('ID TAG'),  $line['vlantag'])."<br>".
-                              sprintf(__('%1$s: %2$s'), __('Comments'),  $line['vlancomment']));
-
-
-            echo "</td>\n<td>";
-            if ($canedit) {
-               echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
-                     "unassigned&amp;id=" . $line["id"] . "'>";
-               echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                     __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td></tr>\n";
+            $used[$line["id"]] = $line["id"];
+            $vlans[$line["assocID"]] = $line;
          }
-         echo "</table>";
-      } else {
-         echo "&nbsp;";
       }
-      return $used;
-   }
 
+      if ($canedit) {
 
-   /**
-    * @param $ID
-   **/
-   static function showForNetworkPortForm ($ID) {
-      global $DB, $CFG_GLPI;
+         echo "<div class='firstbloc'>\n";
+         echo "<form method='post' action='".static::getFormURL()."'>\n";
+         echo "<table class='tab_cadre_fixe'>\n";
+         echo "<tr><th colspan='4'>".__('Associate a VLAN')."</th></tr>";
 
-      $port = new NetworkPort();
-
-      if ($ID
-          && $port->can($ID,'w')) {
-
-         echo "\n<div class='center'>";
-         echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/networkport.form.php'>";
-         echo "<input type='hidden' name='networkports_id' value='$ID'>\n";
-
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . Vlan::getTypeName() . "</th></tr>\n";
-
-         echo "<tr class='tab_bg_2'><td colspan='2'>";
-         $used = self::showForNetworkPort($ID, true,0);
+         echo "<tr><td class='right'>";
+         echo "<input type='hidden' name='networkports_id' value='$ID'>";
+         Vlan::dropdown(array('used' => $used));
+         echo "</td><td class='right'>";
+         echo __('Tagged')."</td><td  class='left'>";
+         echo "<input type='checkbox' name='tagged' value='1'>";
+         echo "</td><td>";
+         echo "<input type='submit' name='add' value='"._sx('button','Associate').
+                      "' class='submit'>";
          echo "</td></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td>".__('Associate a VLAN');
-         Vlan::dropdown(array('used' => $used));
-         echo "</td><td rowspan='2'>";
-         echo "<input type='submit' name='assign_vlan' value=\""._sx('button','Associate')."\"
-                class='submit'>";
-         echo "</td></tr>";
+         echo "</table>\n";
+         Html::closeForm();
+         echo "</div>\n";
+      }
 
-         echo "<tr class='tab_bg_2'><td>";
-         echo __('Tagged')."&nbsp;<input type='checkbox' name='tagged' value='1'>";
-         echo "</td></tr>";
+      echo "<div class='spaced'>";
+      if ($canedit && $number) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed' => $number);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixe'>";
 
-         echo "</table>";
+      echo "<tr>";
+      if ($canedit && $number) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Entity')."</th>";
+      echo "<th>".__('Tagged')."</th>";
+      echo "<th>".__('ID TAG')."</th>";
+      echo "</tr>";
+
+      $used = array();
+      foreach ($vlans as $data) {
+         echo "<tr>";
+         if ($canedit) {
+            echo "<td>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+            echo "</td>";
+         }
+         $name = $data["name"];
+         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
+         }
+         echo "<td class='center b'>
+               <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name."</a>";
+         echo "</td>";
+         echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+         echo "</td><td class='center'>".Dropdown::getYesNo($data["tagged"])."</td>";
+         echo "<td class='numeric'>".$data["tag"]."</td>";
+         echo "</tr>";
+      }
+
+      echo "</table>";
+      if ($canedit && $number) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
+      echo "</div>";
+      
    }
 
 
@@ -285,7 +303,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='NetworkPort') {
-         self::showForNetworkPortForm($item->getID());
+         self::showForNetworkPort($item);
       }
       return true;
    }
