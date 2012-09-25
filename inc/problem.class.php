@@ -162,7 +162,7 @@ class Problem extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("show_all_problem","1")) {
+      if (static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Change' :

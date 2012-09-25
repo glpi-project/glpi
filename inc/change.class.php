@@ -161,7 +161,7 @@ class Change extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("show_all_change","1")) {
+      if (static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Problem' :
