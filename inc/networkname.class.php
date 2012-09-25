@@ -94,7 +94,37 @@ class NetworkName extends FQDNLabel {
       return $ong;
    }
 
+   /**
+    * @see inc/CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
 
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($input['action']) {
+         case 'unaffect' :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'w')){
+                     if (NetworkName::unaffectAddressByID($key)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
    /**
     * Print the network name form
     *
@@ -327,7 +357,7 @@ class NetworkName extends FQDNLabel {
     * @param $networkNameID the id of the NetworkName
    **/
    static function unaffectAddressByID($networkNameID) {
-      self::affectAddress($networkNameID, 0, '');
+      return self::affectAddress($networkNameID, 0, '');
    }
 
 
@@ -339,7 +369,7 @@ class NetworkName extends FQDNLabel {
    static function affectAddress($networkNameID, $items_id, $itemtype) {
 
       $networkName = new self();
-      $networkName->update(array('id'       => $networkNameID,
+      return $networkName->update(array('id'       => $networkNameID,
                                  'items_id' => $items_id,
                                  'itemtype' => $itemtype));
    }
@@ -461,7 +491,13 @@ class NetworkName extends FQDNLabel {
                                       HTMLTableHeader $father=NULL, array $options=array()) {
 
       $column_name = __CLASS__;
-
+      if (isset($options['massiveactionnetworkname'])
+         && $options['massiveactionnetworkname']) {
+          $delete_all_column = $base->addHeader('delete',
+                                                Html::getCheckAllAsCheckbox('mass'.__CLASS__.$options['rand']),
+                                                $super, $father);
+          $delete_all_column->setHTMLClass('center');
+      }
       if (!isset($options['dont_display'][$column_name])) {
 
          $content = self::getTypeName();
@@ -572,26 +608,18 @@ class NetworkName extends FQDNLabel {
                $row = $row->createAnotherRow();
             }
 
+            if (isset($options['massiveactionnetworkname'])
+               && $options['massiveactionnetworkname']) {
+               $header              = $row->getGroup()->getHeaderByName('Internet', 'delete');
+               $cell_value = Html::getMassiveActionCheckBox(__CLASS__, $line["id"]);
+               $delete_cell           = $row->addCell($header, $cell_value, $father);
+            }
+
             $internetName = $address->getInternetName();
             if (empty($internetName)) {
                $internetName = "(".$line["id"].")";
             }
             $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
-
-            if ($canedit) {
-
-               $content .= "<br>";
-               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __('Dissociate'),
-                                               array('remove_address' => 'unaffect',
-                                                     'id'             => $address->getID()),
-                                               $CFG_GLPI["root_doc"] . "/pics/sub_dropdown.png");
-
-               $content .= "&nbsp;";
-               $content .= Html::getSimpleForm($address->getFormURL(), 'remove', __('Purge'),
-                                               array('remove_address' => 'purge',
-                                                     'id'             => $address->getID()),
-                                               $CFG_GLPI["root_doc"] . "/pics/delete.png");
-            }
 
             if (!isset($options['dont_display'][$column_name])) {
                $header              = $row->getGroup()->getHeaderByName('Internet', $column_name);
@@ -618,9 +646,50 @@ class NetworkName extends FQDNLabel {
     * @param $item                     CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
-   static function showForItem(CommonGLPI $item, $withtemplate=0) {
+   static function showForItem(CommonDBTM $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
+      $ID = $item->getID();
+      if (!$item->can($ID, 'r')) {
+         return false;
+      }
+      
+      $rand = mt_rand();
+
+      if ($item->getType() == 'NetworkPort' && $item->canUpdateItem()) {
+
+         $items_id = $item->getID();
+         $itemtype = $item->getType();
+
+         echo "<div class='firstbloc'>\n";
+         echo "<form method='post' action='".static::getFormURL()."'>\n";
+         echo "<table class='tab_cadre_fixe'>\n";
+         echo "<tr><th colspan='4'>".__('Add a network name')."</th></tr>";
+
+//          echo "<tr><td class='center'>";
+//          echo "</td></tr>\n";
+
+         echo "<tr><td class='right'>";
+         echo "<input type='hidden' name='items_id' value='$items_id'>\n";
+         echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
+         _e('Not associated');
+         echo "</td><td class='left'>";
+         self::dropdown(array('name'      => 'addressID',
+                              'condition' => '`items_id`=0'));
+         echo "</td><td class='left'>";
+         echo "<input type='submit' name='assign_address' value='"._sx('button','Associate').
+                      "' class='submit'>";
+         echo "</td><td class='right' width='30%'>";
+         echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
+         echo __('Create a new network name')."</a>";
+         echo "</td></tr>\n";
+
+         echo "</table>\n";
+         Html::closeForm();
+         echo "</div>\n";
+      }
+
+      
       $table_options = array('createRow' => true);
 
       if (($item->getType() == 'FQDN')
@@ -652,14 +721,15 @@ class NetworkName extends FQDNLabel {
          $canedit = false;
 
       } else {
-         $canedit = true;
+         $canedit = $item->canUpdateItem();
       }
 
-      $table_options['canedit']  = $canedit;
-      $table                     = new HTMLTableMain();
-      $column                    = $table->addHeader('Internet', self::getTypeName(2));
-      $t_group                   = $table->createGroup('Main', '');
-      $address                   = new self();
+      $table_options['canedit']    = false;
+      $table_options['rand']       = $rand;
+      $table_options['massiveactionnetworkname'] = $canedit;
+      $table                       = new HTMLTableMain();
+      $column                      = $table->addHeader('Internet', self::getTypeName(2));
+      $t_group                     = $table->createGroup('Main', '');
 
       self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
 
@@ -680,11 +750,11 @@ class NetworkName extends FQDNLabel {
           && ($table->getNumberOfRows() <= 1)) {
          $display_table = false;
       }
-
       if ($display_table) {
          if ($table->getNumberOfRows() > 0) {
-
+            $number = $table->getNumberOfRows();
             if ($item->getType() == 'FQDN') {
+               $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
                Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
             }
             Session::initNavigateListItems(__CLASS__,
@@ -692,9 +762,24 @@ class NetworkName extends FQDNLabel {
                                     //        %2$s is the name of the item (used for headings of a list)
                                            sprintf(__('%1$s = %2$s'),
                                                    $item->getTypeName(1), $item->getName()));
+            if ($canedit && $number) {
+               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               $massiveactionparams = array('num_displayed' => $number,
+                                            'specific_actions' => array('purge' => _x('button', 'Purge'),
+                                                                        'unaffect' => __('Dissociate')));
+               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            }
+
             $table->display(array('display_title_for_each_group' => false,
                                   'display_thead'                => false,
                                   'display_tfoot'                => false));
+
+            if ($canedit && $number) {
+               $paramsma['ontop'] =false;
+               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::closeForm();
+            }
+
             if ($item->getType() == 'FQDN') {
                Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
             }
@@ -703,40 +788,6 @@ class NetworkName extends FQDNLabel {
             echo "</table>";
          }
       }
-
-      if ($item->getType() == 'NetworkPort') {
-
-         $items_id = $item->getID();
-         $itemtype = $item->getType();
-
-         echo "<div class='center'>\n";
-         echo "<table class='tab_cadre'>\n";
-
-         echo "<tr><th>".__('Add a network name')."</th></tr>";
-
-         echo "<tr><td class='center'>";
-         echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
-         echo _x('network name','New one')."</a>";
-         echo "</td></tr>\n";
-
-         echo "<tr><td class='center'>";
-         echo "<form method='post' action='".$address->getFormURL()."'>\n";
-         echo "<input type='hidden' name='items_id' value='$items_id'>\n";
-         echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
-
-         _e('Not associated one');
-         echo "&nbsp;";
-         self::dropdown(array('name'      => 'addressID',
-                              'condition' => '`items_id`=0'));
-         echo "&nbsp;<input type='submit' name='assign_address' value='"._sx('button','Associate').
-                      "' class='submit'>";
-         Html::closeForm();
-         echo "</td></tr>\n";
-
-         echo "</table>\n";
-         echo "</div>\n";
-      }
-
    }
 
 

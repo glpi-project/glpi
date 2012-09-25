@@ -83,23 +83,6 @@ if (isset($_POST["add"])) {
       Html::displayNotFoundError();
    }
 
-} else if (isset($_POST['remove_address'])) { // From NetworkPort or NetworkEquipement
-   /// TODO : see to manage it using massive action
-   if ($_POST['remove_address'] == "purge") {
-      $nn->check($_POST['id'],'d');
-      $nn->delete($_POST);
-      Event::log($nn->getID(), $nn->getType(), 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   } else {
-      $nn->check($_POST['id'],'w');
-      NetworkName::unaffectAddressByID($_POST['id']);
-      Event::log($nn->getID(), $nn->getType(), 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s dissociates a network name from an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else {
    if (!isset($_GET["id"])) {
       $_GET["id"] = "";

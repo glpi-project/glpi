@@ -160,14 +160,6 @@ class Vlan extends CommonDropdown {
                                                   __('Comments'), $vlan->fields['comment']),
                                           array('display' => false));
 
-            if ($canedit) {
-               $content .= " <a href='" . $CFG_GLPI["root_doc"] .
-                  "/front/networkport.form.php?unassign_vlan=" . "unassigned&amp;id=" .
-                  $vlan->getID() . "'>";
-               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                  __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
-            }
-
             $this_cell = $row->addCell($row->getHeaderByName($column_name), $content, $father);
          }
       }
