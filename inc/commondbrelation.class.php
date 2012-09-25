@@ -315,7 +315,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
 
-      return ($can1 && $can2)
+      return ($can1 && $can2);
 
    }
 
