@@ -237,7 +237,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             if ($canedit
                 || $device2->can($device2->fields["id"], 'w')) {
                echo "&nbsp;";
-               Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Make Disconnect'),
+               Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Disconnect'),
                                  array('id' => $relations_id));
             }
 

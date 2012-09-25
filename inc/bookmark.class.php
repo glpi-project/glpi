@@ -598,13 +598,13 @@ class Bookmark extends CommonDBTM {
                if ($this->fields['type'] == self::SEARCH) {
                   if (is_null($this->fields['IS_DEFAULT'])) {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
-                            "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".__s('Set as default')."\"
-                            title=\"".__s('Set as default')."\">".
+                            "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".__s('Not default search')."\"
+                            title=\"".__s('Not default search')."\">".
                             "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
                   } else {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
-                            "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".__s('Unset as default')."\"
-                            title=\"".__s('Unset as default')."\">".
+                            "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".__s('Default search')."\"
+                            title=\"".__s('Default search')."\">".
                             "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
                   }
                }
