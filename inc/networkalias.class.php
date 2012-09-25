@@ -239,13 +239,6 @@ class NetworkAlias extends FQDNLabel {
             }
 
             $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
-//             if ($canedit) {
-//                $content .= Html::getSimpleForm($alias->getFormURL(), 'remove', __('Purge purge'),
-//                                                array('remove_alias' => 'purge',
-//                                                      'id'           => $alias->getID()),
-//                                                $CFG_GLPI["root_doc"] . "/pics/delete.png");
-//             }
-
             $row->addCell($header, $content, $father, $alias);
 
          }
