@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// NetworkPortMigration class : class of unknown objects defined inside the NetworkPort before 0.84
-/// @TODO we may have to add massive action for changing the type of a networkport ...
 /// @since 0.84
 class NetworkPortMigration extends CommonDBChild {
 
