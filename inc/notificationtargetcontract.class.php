@@ -134,7 +134,9 @@ class NotificationTargetContract extends NotificationTarget {
                     'contract.name'    => __('Name'),
                     'contract.number'  => _x('phone', 'Number'),
                     'contract.type'    => __('Type'),
-                    'contract.entity'  => __('Entity'));
+                    'contract.entity'  => __('Entity'),
+                    'contract.time' => sprintf('%1$s / %2$s',__('Contract expired since the'),
+                                                             __('Contract with notice since the')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -144,9 +146,7 @@ class NotificationTargetContract extends NotificationTarget {
 
 
       //Tags without lang
-      $tags = array('contract.url'       => sprintf(__('%1$s: %2$s'), __('Contract'), __('URL')),
-                    'lang.contract.time' => sprintf('%1$s / %2$s',__('Contract expired since the'),
-                                                    __('Contract with notice since the')));
+      $tags = array('contract.url'       => sprintf(__('%1$s: %2$s'), __('Contract'), __('URL')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
