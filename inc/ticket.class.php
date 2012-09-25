@@ -383,7 +383,7 @@ class Ticket extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("show_all_ticket","1")) {
+      if (static::canView()) {
          $nb    = 0;
          $title = self::getTypeName(2);
          if ($_SESSION['glpishow_count_on_tabs']) {
