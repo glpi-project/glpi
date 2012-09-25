@@ -64,26 +64,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
-
-} else if (isset($_POST["delete"]) || isset($_POST['remove_alias'])) {
-   /// TODO drop must be done via massive actions
-   $alias->check($_POST["id"],'d');
-   $alias->delete($_POST, 1);
-   Ajax::refreshPopupMainWindow();
-
-   Event::log($_POST["id"], $alias->getType(), 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   if (isset($_POST['remove_alias'])) {
-      Html::back();
-   } else {
-      $node = new NetworkName();
-      if ($node->can($alias->fields["networknames_id"], 'r')) {
-         Html::redirect($node->getLinkURL());
-      }
-      Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
-   }
-}
+} 
 
 if (isset($_GET['popup'])) {
    Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
