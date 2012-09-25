@@ -408,8 +408,8 @@ class NetworkPortInstantiation extends CommonDBChild {
                // get fields that must be copied from those of the network card
                $deviceInformations = array();
                foreach ($deviceFields as $field) {
-                  $deviceInformations[] = sprintf(__('%1$s: %2$s'), $field,
-                                                  $availableDevice[$field]);
+                  // No gettext here
+                  $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
                }
                //addslashes_deep($deviceInformations);
                // Fill the javascript array
@@ -418,7 +418,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
             // And add the javascript function that updates the other fields
             echo "
-   function updateForm(devID) {
+   function updateNetworkPortForm(devID) {
       for (var fieldName in deviceAttributs[devID]) {
          var field=document.getElementsByName(fieldName)[0];
          if ((field == undefined) || (deviceAttributs[devID][fieldName] == undefined))
@@ -430,7 +430,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
             if (count($deviceNames) > 0) {
                $options = array('value'     => $this->fields['items_devicenetworkcards_id'],
-                                'on_change' => 'updateForm(this.options[this.selectedIndex].value)');
+                                'on_change' => 'updateNetworkPortForm(this.options[this.selectedIndex].value)');
                Dropdown::showFromArray('items_devicenetworkcards_id', $deviceNames, $options);
             } else {
                 _e('No network card available');
