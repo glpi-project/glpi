@@ -297,7 +297,22 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
          && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
          && !$forceCheckBoth) {
-         return ($can1 || $can2);
+         if ($can1) {
+            // Can view the second one ?
+            if (!static::canConnexity($method, static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_2,
+                                static::$items_id_2)) {
+               return false;
+            }
+         } else if ($can2) {
+            // Can view the first one ?
+            if (!static::canConnexity($method, static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_1,
+                                static::$items_id_1)) {
+               return false;
+            }
+         } else {
+            // No item have right
+            return false;
+         }
       }
 
       return ($can1 && $can2)
@@ -325,15 +340,29 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $item2 = NULL;
       $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
                                        static::$itemtype_2, static::$items_id_2, $item2);
-
+                                       
       /// Check only one if SAME RIGHT for both items and not force checkBoth
       if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
          && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
          && !$forceCheckBoth) {
-         if (!$can1 && !$can2) {
+         if ($can1) {
+            // Can view the second one ?
+            if (!$this->canConnexityItem($method, $methodNotItem, static::HAVE_VIEW_RIGHT_ON_ITEM,
+                                    static::$itemtype_2, static::$items_id_2, $item2)) {
+               return false;
+            }
+         } else if ($can2) {
+            // Can view the first one ?
+            if (!$this->canConnexityItem($method, $methodNotItem, static::HAVE_VIEW_RIGHT_ON_ITEM,
+                                    static::$itemtype_1, static::$items_id_1, $item1)) {
+               return false;
+            }
+         } else {
+            // No item have right
             return false;
          }
       } else {
+         // Check both objects with rights
          if (!$can1 || !$can2) {
             return false;
          }

@@ -189,7 +189,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
    function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
                              &$item=NULL) {
 
-      $item = $this->getConnexityItem($itemtype, $items_id);
+      // Do not get it twice
+      if ($item == NULL) {
+         $item = $this->getConnexityItem($itemtype, $items_id);
+      }
       if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
          if ($item !== false) {
             // here, we can check item's global rights
