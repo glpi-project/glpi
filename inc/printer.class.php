@@ -648,6 +648,11 @@ class Printer  extends CommonDBTM {
       $tab[46]['name']     = $LANG['printers'][29];
       $tab[46]['datatype'] = 'bool';
 
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'memory_size';
+      $tab[13]['name']     = $LANG['devices'][6];
+      $tab[13]['datatype'] = 'string';
+      
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'init_pages_counter';
       $tab[11]['name']     = $LANG['printers'][30];
