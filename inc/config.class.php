@@ -260,9 +260,14 @@ class Config extends CommonDBTM {
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
                                array(0 => __('Never')));
          echo "</td><td>".
-               __('Maximum number of items to display in the dropdown when wildcard is not used').
+               __('Buffer time for dynamic search in dropdowns').
               "</td><td>";
-         Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
+         Dropdown::showNumber('ajax_buffertime_load', array('value' => $CFG_GLPI["ajax_buffertime_load"],
+                                                            'min'   => 0,
+                                                            'max'   => 5000,
+                                                            'step'  => 100,
+                                                            'unit'  => 'millisecond',
+                                                            ));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
@@ -272,6 +277,13 @@ class Config extends CommonDBTM {
          echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
                     $CFG_GLPI["ajax_wildcard"] . "'></td>";
          echo "</tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".
+               __('Maximum number of items to display in the dropdown when wildcard is not used').
+              "</td><td>";
+         Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
+         echo "</td>";
+         echo "<td colspan='2'>&nbsp;</td></tr>";
       }
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";

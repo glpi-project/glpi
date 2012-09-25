@@ -1183,6 +1183,18 @@ class Dropdown {
             //TRANS: %d is a number of hours
             return sprintf(_n('%d hour', '%d hours', $value), $value);
 
+         case 'minute' :
+            //TRANS: %d is a number of minutes
+            return sprintf(_n('%d minute', '%d minutes', $value), $value);
+
+         case 'second' :
+            //TRANS: %d is a number of seconds
+            return sprintf(_n('%d second', '%d seconds', $value), $value);
+
+         case 'millisecond' :
+            //TRANS: %d is a number of milliseconds
+            return sprintf(_n('%d millisecond', '%d milliseconds', $value), $value);
+            
          case '%' :
             return sprintf(__('%d%%'), $value);
 

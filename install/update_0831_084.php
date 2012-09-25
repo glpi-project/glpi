@@ -945,6 +945,11 @@ function update0831to084() {
 
    $migration->addField('glpi_configs', 'use_check_pref', 'bool');
 
+   // Ajax buffer time
+   $migration->addField('glpi_configs', 'ajax_buffertime_load', 'integer',
+                        array('value' => 0,
+                              'after' => 'ajax_min_textsearch_load'));
+
    // Clean display prefs
    $query = "UPDATE `glpi_displaypreferences`
              SET `num` = 160
