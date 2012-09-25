@@ -820,15 +820,7 @@ class NetworkPort extends CommonDBChild {
          return false;
       }
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         $input = array('itemtype'           => $options["itemtype"],
-                        'items_id'           => $options["items_id"],
-                        'instantiation_type' => $options['instantiation_type']);
-         // Create item
-         $this->check(-1, 'w', $input);
-      }
+      $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) > 0) {
@@ -838,15 +830,6 @@ class NetworkPort extends CommonDBChild {
          $lastItem_entities_id = $_SESSION['glpiactive_entity'];
       }
 
-      // TODO : is it usefull ?
-      // Ajout des infos deja remplies
-      if (isset($_POST) && !empty($_POST)) {
-         foreach ($netport->fields as $key => $val) {
-            if (($key != 'id') && isset($_POST[$key])) {
-               $netport->fields[$key] = $_POST[$key];
-            }
-         }
-      }
       $this->showTabs();
 
       $options['entities_id'] = $lastItem_entities_id;

@@ -76,84 +76,6 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          return false;
       }
 
-      /*
-      // TODO check for 0.84 : do not propagate informations from one side to the other
-      // Check netpoint for copy
-      $source      = "";
-      $destination = "";
-      if (isset($ps->fields['netpoints_id']) && ($ps->fields['netpoints_id'] != 0)) {
-         $source = $ps->fields['netpoints_id'];
-      }
-
-      if (isset($pd->fields['netpoints_id']) && ($pd->fields['netpoints_id'] != 0)) {
-         $destination = $pd->fields['netpoints_id'];
-      }
-
-      // Update Item
-      $updates[0] = 'netpoints_id';
-
-      if (empty($source)
-          && !empty($destination)) {
-         $ps->fields['netpoints_id'] = $destination;
-         $ps->updateInDB($updates);
-         Session::addMessageAfterRedirect(__('Automatic update of network outlets'));
-
-      } else if (!empty($source) && empty($destination)) {
-         $pd->fields['netpoints_id'] = $source;
-         $pd->updateInDB($updates);
-         Session::addMessageAfterRedirect(__('Automatic update of network outlets'));
-
-      } else if ($source != $destination) {
-         Session::addMessageAfterRedirect(__("Warning! The network outlets of two items don't match"));
-      }
-      */
-
-      /*
-      // TODO check for 0.84 : do not propagate informations from one side to the other
-      // Manage VLAN : use networkings one as defaults
-      $npnet = -1;
-      $npdev = -1;
-
-      if (($ps->fields["itemtype"] != 'NetworkEquipment')
-          && ($pd->fields["itemtype"] == 'NetworkEquipment')) {
-         $npnet = $dport;
-         $npdev = $sport;
-      }
-
-      if (($pd->fields["itemtype"] != 'NetworkEquipment')
-          && ($ps->fields["itemtype"] == 'NetworkEquipment')) {
-         $npnet = $sport;
-         $npdev = $dport;
-      }
-
-      if (($npnet > 0)
-          && ($npdev > 0)) {
-         // Get networking VLAN
-         // Unset MAC and IP from networking device
-         $query = "SELECT *
-                   FROM `glpi_networkports_vlans`
-                   WHERE `networkports_id` = '$npnet'";
-
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               // Found VLAN : clean vlan device and add found ones
-               $query = "DELETE
-                         FROM `glpi_networkports_vlans`
-                         WHERE `networkports_id` = '$npdev' ";
-               $DB->query($query);
-
-               while ($data = $DB->fetch_assoc($result)) {
-                  $query = "INSERT INTO `glpi_networkports_vlans`
-                                   (`networkports_id`, `vlans_id`)
-                            VALUES ('$npdev', '".$data['vlans_id']."')";
-                  $DB->query($query);
-               }
-            }
-         }
-      }
-      // end manage VLAN
-      */
-
       // Manage History
       $sourcename    = NOT_AVAILABLE;
       $destname      = NOT_AVAILABLE;
@@ -219,43 +141,6 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $np2 = new NetworkPort();
       if ($np1->getFromDB($this->fields['networkports_id_1'])
           && $np2->getFromDB($this->fields['networkports_id_2'])) {
-         /*
-         // TODO check for 0.84 : do not propagate informations from one side to the other
-         $npnet = NULL;
-         $npdev = NULL;
-
-         if (($np1->fields["itemtype"] != 'NetworkEquipment')
-             && ($np2->fields["itemtype"] == 'NetworkEquipment')) {
-            $npnet = $np2;
-            $npdev = $np1;
-         }
-
-         if (($np2->fields["itemtype"] != 'NetworkEquipment')
-             && ($np1->fields["itemtype"] == 'NetworkEquipment')) {
-            $npnet = $np2;
-            $npdev = $np1;
-         }
-
-         if ($npnet && $npdev ) {
-            // If addresses are egal, was copied from device in GLPI 0.71 : clear it
-            // Unset MAC and IP from networking device
-            if ($npnet->fields['mac'] == $npdev->fields['mac']) {
-               $npnet->update(array('id'  => $npnet->fields['id'],
-                                    'mac' => ''));
-            }
-            // since 0.84 No more ip field. Maybe several IPs
-//             if ($np1->fields['ip'] == $np2->fields['ip']) {
-//                $npnet->update(array('id'      => $npnet->fields['id'],
-//                                     'ip'      => '',
-//                                     'netmask' => '',
-//                                     'subnet'  => '',
-//                                     'gateway' => ''));
-//             }
-            // Unset netpoint from common device
-            $npdev->update(array('id'           => $npdev->fields['id'],
-                                 'netpoints_id' => 0));
-         }
-         */
 
          // Manage history
 
