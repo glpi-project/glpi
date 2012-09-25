@@ -492,7 +492,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          case 'move_under' :
             _e('As child of');
             Dropdown::show($input['itemtype'], array('name'     => 'parent',
-                                                     'comments' => 0));
+                                                     'comments' => 0,
+                                                     'entity'   => $_SESSION['glpiactive_entity']));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
