@@ -199,7 +199,7 @@ class Cartridge extends CommonDBChild {
              && ($DB->affected_rows() > 0)) {
             $changes[0] = '0';
             $changes[1] = '';
-            $changes[2] = __('Install a cartridge');
+            $changes[2] = __('Installing a cartridge');
             Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
             return true;
          }
@@ -232,7 +232,7 @@ class Cartridge extends CommonDBChild {
             && ($DB->affected_rows() > 0)) {
             $changes[0] = '0';
             $changes[1] = '';
-            $changes[2] = __('Uninstall a cartridge');
+            $changes[2] = __('Uninstalling a cartridge');
             Log::history($this->getField("printers_id"), 'Printer', $changes,
                            0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
