@@ -325,16 +325,18 @@ class Ajax {
     * @param $parameters   array    of parameters to send to ajax URL
     * @param $events       array    of the observed events (default 'change')
     * @param $minsize               minimum size of data to update content (default -1)
+    * @param $buffertime            minimum time to wait before reload (default -1)
     * @param $forceloadfor array    of content which must force update content
     * @param $display      boolean  display or get string (default true)
    **/
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
                                      $events=array("change"), $minsize=-1,
+                                     $buffertime = -1,
                                      $forceloadfor=array(), $display=true) {
 
       $output  = "<script type='text/javascript'>";
       $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters,
-                                    $events, $minsize, $forceloadfor, false);
+                                    $events, $minsize, $buffertime, $forceloadfor, false);
       $output .=  "</script>";
       if ($display) {
          echo $output;
@@ -357,7 +359,7 @@ class Ajax {
                                            $display=true) {
 
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"),
-                                     -1, array(), $display);
+                                     -1, -1, array(), $display);
    }
 
 
@@ -369,12 +371,13 @@ class Ajax {
     * @param $url                   Url to get datas to update the item
     * @param $parameters   array    of parameters to send to ajax URL
     * @param $minsize               minimum size of data to update content (default -1)
+    * @param $buffertime            minimum time to wait before reload (default -1)
     * @param $forceloadfor array    of content which must force update content
     * @param $display      boolean  display or get string (default true)
     *
    **/
    static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                              $minsize=-1, $forceloadfor=array(), $display=true) {
+                                              $minsize=-1, $buffertime = -1, $forceloadfor=array(), $display=true) {
       global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
@@ -384,9 +387,12 @@ class Ajax {
       if ($minsize < 0) {
          $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
       }
+      if ($buffertime < 0) {
+         $buffertime = $CFG_GLPI['ajax_buffertime_load'];
+      }
 
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
-                                     array("dblclick", "keyup"),  $minsize, $forceloadfor, $display);
+                                     array("dblclick", "keyup"),  $minsize, $buffertime, $forceloadfor, $display);
    }
 
 
@@ -399,11 +405,13 @@ class Ajax {
     * @param $parameters   array    of parameters to send to ajax URL
     * @param $events       array    of the observed events (default 'change')
     * @param $minsize               minimum size of data to update content (default -1)
+    * @param $buffertime            minimum time to wait before reload (default -1)
     * @param $forceloadfor array    of content which must force update content
     * @param $display      boolean  display or get string (default true)
    **/
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
                                            $events=array("change"), $minsize = -1,
+                                           $buffertime = -1,
                                            $forceloadfor=array(), $display=true) {
 
       if (is_array($toobserve)) {
@@ -438,7 +446,11 @@ class Ajax {
                      $output .= "}";
                   }
 
-          $output .=  "});\n";
+               $output .=  "}";
+               if ($buffertime > 0) {
+                  $output.= ", this, { buffer : $buffertime }";
+               }
+            $output .=");\n";
          }
       }
       if ($display) {
@@ -580,6 +592,7 @@ class Ajax {
                                                         $CFG_GLPI["root_doc"].$relativeurl,
                                                         $params,
                                                         $CFG_GLPI['ajax_min_textsearch_load'],
+                                                        $CFG_GLPI['ajax_buffertime_load'],
                                                         array(), false);
       }
       $locoutput .=  "<span id='results_$rand'>\n";
