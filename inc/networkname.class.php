@@ -152,6 +152,7 @@ class NetworkName extends FQDNLabel {
                            'displaywith' => array('view')));
       echo "</td>\n</tr>\n";
 
+      $address = new IPAddress();
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$address->getTypeName(2);
       IPAddress::showAddButtonForChildItem($this, '_ipaddresses');
