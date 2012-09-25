@@ -288,28 +288,20 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    static function canRelation($method, $forceCheckBoth = false) {
 
+      $can1 = static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
+                                    static::$items_id_1);
+      $can2 = static::canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
+                                    static::$items_id_2);
+
       /// Check only one if SAME RIGHT for both items and not force checkBoth
       if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
          && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
          && !$forceCheckBoth) {
-         return (static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
-                                static::$items_id_1)
-                 || static::canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
-                                static::$items_id_2)
-               );
-
-      }
-   
-      if (!static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
-                                static::$items_id_1)) {
-         return false;
+         return ($can1 || $can2);
       }
 
-      if (!static::canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
-                                static::$items_id_2)) {
-         return false;
-      }
-      return true;
+      return ($can1 && $can2)
+
    }
 
 
@@ -327,35 +319,25 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
       $item1 = NULL;
+      $can1  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
+                                       static::$itemtype_1, static::$items_id_1, $item1);
+
       $item2 = NULL;
+      $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
+                                       static::$itemtype_2, static::$items_id_2, $item2);
+
       /// Check only one if SAME RIGHT for both items and not force checkBoth
       if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
          && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
          && !$forceCheckBoth) {
-         if ($this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
-                                    static::$itemtype_1, static::$items_id_1, $item1)) {
-            // Load item 2 for entity checks
-            if ($check_entity && static::$check_entity_coherency) {
-               $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
-            }
-         } else if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
-                                    static::$itemtype_2, static::$items_id_2, $item2)) {
+         if (!$can1 && !$can2) {
             return false;
          }
-
       } else {
-         if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
-                                    static::$itemtype_1, static::$items_id_1, $item1)) {
-            return false;
-         }
-
-         if (!$this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
-                                    static::$itemtype_2, static::$items_id_2, $item2)) {
+         if (!$can1 || !$can2) {
             return false;
          }
       }
-      
-      
 
       // Check coherency of entities
       if ($check_entity && static::$check_entity_coherency) {
