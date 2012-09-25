@@ -629,6 +629,11 @@ class Printer  extends CommonDBTM {
       $tab[46]['name']           = __('Wifi');
       $tab[46]['datatype']       = 'bool';
 
+      $tab[13]['table']          = $this->getTable();
+      $tab[13]['field']          = 'memory_size';
+      $tab[13]['name']           = __('Memory');
+      $tab[13]['datatype']       = 'string';
+      
       $tab[11]['table']          = $this->getTable();
       $tab[11]['field']          = 'init_pages_counter';
       $tab[11]['name']           = __('Initial page counter');
