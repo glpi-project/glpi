@@ -85,17 +85,12 @@ if (isset($_POST["add"])) {
    }
 }
 
-if (!isset($options)) {
-   $options = array();
-}
-$options = array_merge($options, $_GET);
-
 if (isset($_GET['popup'])) {
    Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }
-   $alias->showForm($_GET["id"], $options);
+   $alias->showForm($_GET["id"], $_GET);
    echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
    echo "</div>";
    Html::popFooter();
@@ -103,7 +98,7 @@ if (isset($_GET['popup'])) {
 } else {
    Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'networkalias');
 
-   $alias->showForm($_GET["id"],$options);
+   $alias->showForm($_GET["id"],$_GET);
    Html::footer();
 }
 ?>
