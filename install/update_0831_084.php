@@ -2018,6 +2018,21 @@ function update0831to084() {
    $migration->addField('glpi_profiles', 'delete_validations',
                         'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
 
+   // Clean unlinked calendar segments and holidays
+   $query = "DELETE
+             FROM `glpi_calendars_holidays`
+             WHERE `glpi_calendars_holidays`.`calendars_id`
+                     NOT IN (SELECT `glpi_calendars`.`id`
+                               FROM `glpi_calendars`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_calendars_holidays");
+
+   $query = "DELETE
+             FROM `glpi_calendarsegments`
+             WHERE `glpi_calendarsegments`.`calendars_id`
+                     NOT IN (SELECT `glpi_calendars`.`id`
+                               FROM `glpi_calendars`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_calendarsegments");
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
