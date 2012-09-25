@@ -779,10 +779,10 @@ class Toolbox {
       }
       
       //Test for ctype extension loaded or not (forhtmlawed)
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][78]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][79]."</td>";
 
       if (!function_exists('ctype_digit')) {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][79]."></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][78]."></td></tr>";
          $error = 2;
 
       } else {
