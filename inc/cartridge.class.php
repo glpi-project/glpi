@@ -689,7 +689,7 @@ class Cartridge extends CommonDBChild {
       
       $pages = $printer->fields['init_pages_counter'];
       echo "<div class='spaced'>";
-      if ($canedit) {
+      if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          if (!$old) {
             $actions = array('uninstall' => __('End of Life'));
@@ -701,7 +701,7 @@ class Cartridge extends CommonDBChild {
                            'rand'             => $rand);
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
       if ($old == 0) {
          echo "<tr><th colspan='".($canedit?'5':'4')."'>".__('Used cartridges')."</th></tr>";
       } else {
@@ -730,16 +730,15 @@ class Cartridge extends CommonDBChild {
          $date_in  = Html::convDate($data["date_in"]);
          $date_use = Html::convDate($data["date_use"]);
          $date_out = Html::convDate($data["date_out"]);
-         echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."' ".
-               ($canedit ? "style='cursor:pointer' onClick=\"viewEditCartridge".$data['id'].
-                         "$rand();\""
-                       : '').">";
+         $viewitemjs = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCartridge".$data['id'].
+                         "$rand();\"" : '');
+         echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          if ($canedit) {
             echo "<td width='10'>";
             Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
             echo "</td>";
          }
-         echo "<td class='center'>";
+         echo "<td class='center' $viewitemjs>";
          if ($canedit) {
             echo "\n<script type='text/javascript' >\n";
             echo "function viewEditCartridge". $data["id"]."$rand() {\n";
@@ -753,13 +752,14 @@ class Cartridge extends CommonDBChild {
             echo "</script>\n";
          }
          echo $data["id"]."</td>";
-         echo "<td class='center'>";
+         echo "<td class='center' $viewitemjs>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">".
                 sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"])."</a></td>";
-         echo "<td class='center'>".$date_in."</td>";
-         echo "<td class='center'>";
+         echo "<td class='center' $viewitemjs>".$date_in."</td>";
+         echo "<td class='center' $viewitemjs>";
 
          echo $date_use;
+         echo '</td>';
 
          $tmp_dbeg       = explode("-", $data["date_in"]);
          $tmp_dend       = explode("-", $data["date_use"]);
@@ -767,10 +767,8 @@ class Cartridge extends CommonDBChild {
          $stock_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                            - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
          $stock_time    += $stock_time_tmp;
-
          if ($old != 0) {
-            echo "</td>";
-            echo "<td class='center'>";
+            echo "<td class='center' $viewitemjs>";
             echo $date_out;
 
             $tmp_dbeg      = explode("-", $data["date_use"]);
@@ -780,8 +778,8 @@ class Cartridge extends CommonDBChild {
                               - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
             $use_time     += $use_time_tmp;
 
-            echo "</td><td class='numeric'>";
-            echo $data['pages']."</td><td class='numeric'>";
+            echo "</td><td class='numeric' $viewitemjs>";
+            echo $data['pages']."</td><td class='numeric' $viewitemjs>";
 
             if ($pages < $data['pages']) {
                $pages_printed   += $data['pages']-$pages;
@@ -794,7 +792,7 @@ class Cartridge extends CommonDBChild {
             }
             echo "</td>";
          }
-         echo "</td></tr>";
+         echo "</tr>";
       }
       if ($old) { // Print average
          if ($number > 0) {
@@ -814,7 +812,7 @@ class Cartridge extends CommonDBChild {
          }
       }
       echo "</table>";
-      if ($canedit) {
+      if ($canedit && $number) {
          $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();

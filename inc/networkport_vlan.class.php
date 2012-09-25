@@ -182,8 +182,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
                 WHERE `networkports_id` = '$ID'";
 
       $result = $DB->query($query);
-      $vlans = array();
-      $used = array();
+      $vlans  = array();
+      $used   = array();
       if ($number = $DB->numrows($result)) {
          while ($line = $DB->fetch_assoc($result)) {
             $used[$line["id"]] = $line["id"];
@@ -192,7 +192,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
       }
 
       if ($canedit) {
-
          echo "<div class='firstbloc'>\n";
          echo "<form method='post' action='".static::getFormURL()."'>\n";
          echo "<table class='tab_cadre_fixe'>\n";
