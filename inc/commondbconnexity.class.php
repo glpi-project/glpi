@@ -196,9 +196,18 @@ abstract class CommonDBConnexity extends CommonDBTM {
       if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
          if ($item !== false) {
             // here, we can check item's global rights
-            if (preg_match('/^itemtype/', $itemtype)
-                && !$item->$methodNotItem()) {
-               return false;
+            if (preg_match('/^itemtype/', $itemtype)) {
+               switch ($item_right) {
+                  case self::HAVE_VIEW_RIGHT_ON_ITEM :
+                     if (!$item->canView()) {
+                        return false;
+                     }
+
+                  case self::HAVE_SAME_RIGHT_ON_ITEM :
+                     if (!$item->$methodNotItem()) {
+                        return false;
+                     }
+               }
             }
             switch ($item_right) {
                case self::HAVE_VIEW_RIGHT_ON_ITEM :
