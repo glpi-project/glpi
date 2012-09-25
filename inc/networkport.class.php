@@ -856,12 +856,11 @@ class NetworkPort extends CommonDBChild {
       $this->displayRecursiveItems($recursiveItems, 'Type');
       echo "&nbsp;:</td>\n<td>";
 
-      if (!($ID > 0)) {
-         echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
-         echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
-         echo "<input type='hidden' name='instantiation_type' value='" .
-                $this->fields["instantiation_type"]."'>\n";
-      }
+      // Need these to update informations
+      echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
+      echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+      echo "<input type='hidden' name='instantiation_type' value='" .
+               $this->fields["instantiation_type"]."'>\n";
 
       $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td>\n";
