@@ -104,16 +104,24 @@ class NetworkAlias extends FQDNLabel {
    **/
    function showForm ($ID, $options=array()) {
 
+      // Show only simple form to add / edit
+      $showsimple = false;
+      if (isset($options['parent'])) {
+         $showsimple = true;
+         $options['networknames_id'] = $options['parent']->getID();
+      }
+      
       $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) == 0) {
          return false;
       }
-
+      
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
-
-      $this->showTabs();
+      if (!$showsimple) {
+         $this->showTabs();
+      }
 
       $options['entities_id'] = $lastItem->getField('entities_id');
       $this->showFormHeader($options);
@@ -142,8 +150,9 @@ class NetworkAlias extends FQDNLabel {
       echo "</tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
-
+      if (!$showsimple) {
+         $this->addDivForTabs();
+      }
       return true;
    }
 
@@ -245,61 +254,6 @@ class NetworkAlias extends FQDNLabel {
 
 
    /**
-    * Print the tab for NetworkName object
-    *
-    * @param $networkNameID   integer  ID of the NetworkName
-    * @param $fromForm                 display change if from the NetworkName form or other
-    * @param $withtemplate    integer  withtemplate param (default 0)
-    *
-    *@return Nothing (display)
-   **/
-   static function showForNetworkName($networkNameID, $fromForm, $withtemplate=0) {
-      global $DB, $CFG_GLPI;
-      /// TODO move it to showForNetworkNameForm + use massive action to delete / dissociate
-      $query = "SELECT *
-                FROM `glpi_networkaliases`
-                WHERE `networknames_id` = '$networkNameID'";
-      $alias  = new self();
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         if (!$fromForm) {
-            echo "\n<ul>";
-         }
-
-         while ($line = $DB->fetch_assoc($result)) {
-            if ($alias->getFromDB($line["id"])) {
-               if ($fromForm) {
-                  echo "<tr><td><a href='" . $alias->getLinkURL(). "'>";
-               } else {
-                  echo "<li>";
-               }
-               echo $alias->getInternetName();
-               if ($fromForm) {
-                  echo "</a>";
-                  echo "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=" .
-                         $alias->getID() . "'>&nbsp;";
-                  //echo "<a href='#' onclick='javascript:reloadTab(\"remove_alias=" .
-                  //     $alias->getID() . "\") ; return false;'>&nbsp;";
-                  echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                         __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
-                  echo "</td></tr>";
-               } else {
-                  echo "</li>\n";
-               }
-            }
-         }
-         if (!$fromForm) {
-            echo "</ul>\n";
-         }
-      } else {
-         if (!$fromForm) {
-            echo "&nbsp;";
-         }
-      }
-   }
-
-
-   /**
     * \brief Show aliases for an item from its form
     * Beware that the rendering can be different if readden from direct item form (ie : add new
     * NetworkAlias, remove, ...) or if readden from item of the item (for instance from the computer
@@ -308,28 +262,106 @@ class NetworkAlias extends FQDNLabel {
     * @param $item                     CommonDBTM object
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
-   static function showForNetworkNameForm(CommonGLPI $item, $withtemplate=0) {
+   static function showForNetworkName(NetworkName $item, $withtemplate=0) {
+      global $DB, $CFG_GLPI;
+      
+      $ID = $item->getID();
+      if (!$item->can($ID, 'r')) {
+         return false;
+      }
 
-      $alias = new self();
+      $canedit = $item->can($ID, 'w');
+      $rand = mt_rand();
 
-//       if (isset($_POST["remove_alias"])) {
-//          $alias->delete(array('id' => $_POST["remove_alias"]));
-//       }
+      $query = "SELECT *
+                FROM `glpi_networkaliases`
+                WHERE `networknames_id` = '$ID'";
 
-      $networkNameID = $item->getID();
-      echo "\n<div class='center'>";
-      echo "\n<table class='tab_cadre'>\n";
-      echo "<tr><th>" . self::getTypeName(2) . "</th></tr>\n";
+      $result  = $DB->query($query);
+      $aliases = array();
+      if ($number = $DB->numrows($result)) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $aliases[$line["id"]] = $line;
+         }
+      }
 
-      self::showForNetworkName($networkNameID, true, $withtemplate);
+      if ($canedit) {
+         echo "\n<div class='firstbloc'>";
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddAlias$rand() {\n";
+         $params = array('type'            => __CLASS__,
+                         'parenttype'      => 'NetworkName',
+                         'networknames_id' => $ID,
+                         'id'              => -1);
+         Ajax::updateItemJsCode("viewnetworkalias$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>";
+         echo "<a class='vsubmit' href='javascript:viewAddAlias$rand();'>";
+         echo __('Add a network alias')."</a>\n";
+         echo "</div>\n";
+      }
+      echo "<div id='viewnetworkalias$rand'></div>";
+      
+      echo "<div class='spaced'>";
+      if ($canedit && $number) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed' => $number);
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
 
-      echo "<tr><td class='center'>".
-           "<a href='' onClick=\"var w = window.open('".$alias->getFormURL()."?networknames_id=" .
-             $networkNameID ."&amp;popup=1&amp;rand=1' ,'glpipopup', 'height=400, ".
-             "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".__('Add').
-           "</a></td></tr>\n";
-      echo "\n</table>";
-      echo "</div>\n";
+      echo "<tr>";
+      if ($canedit && $number) {
+         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      }
+      echo "<th>".__('Name')."</th>";
+      echo "<th>"._n('Internet domain', 'Internet domains', 1)."</th>";
+      echo "<th>".__('Entity')."</th>";
+      echo "</tr>";
+
+      $used = array();
+      foreach ($aliases as $data) {
+         $showviewjs = ($canedit ?
+                     "style='cursor:pointer' onClick=\"viewEditAlias".$data['id']."$rand();\"" :
+                       '');
+         echo "<tr>";
+         if ($canedit) {
+            echo "<td>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            echo "</td>";
+         }
+         $name = $data["name"];
+         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
+         }
+         echo "<td class='center b' $showviewjs>";
+         if ($canedit) {
+            echo "\n<script type='text/javascript' >\n";
+            echo "function viewEditAlias". $data["id"]."$rand() {\n";
+            $params = array('type'       => __CLASS__,
+                            'parenttype' => 'NetworkName',
+                            'networknames_id' => $ID,
+                            'id'         => $data["id"]);
+            Ajax::updateItemJsCode("viewnetworkalias$rand",
+                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+            echo "};";
+            echo "</script>\n";
+         }
+         echo "<a href='".static::getFormURL()."?id=".$data["id"]."'>".$name."</a>";
+         echo "</td>";
+         echo "<td class='center' $showviewjs>".Dropdown::getDropdownName("glpi_fqdns", $data["fqdns_id"]);
+         echo "<td class='center' $showviewjs>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+         echo "</tr>";
+      }
+
+      echo "</table>";
+      if ($canedit && $number) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
+      }
+      echo "</div>";
    }
 
 
@@ -419,7 +451,7 @@ class NetworkAlias extends FQDNLabel {
 
       switch ($item->getType()) {
          case 'NetworkName' :
-            self::showForNetworkNameForm($item, $withtemplate);
+            self::showForNetworkName($item, $withtemplate);
             break;
 
          case 'FQDN' :
@@ -464,7 +496,7 @@ class NetworkAlias extends FQDNLabel {
       $tab[20]['table']        = 'glpi_networknames';
       $tab[20]['field']        = 'name';
       $tab[20]['name']         = NetworkName::getTypeName(1);
-      $tab[20]['massiveation'] = false;
+      $tab[20]['massiveaction'] = false;
       $tab[20]['datatype']     = 'dropdown';
 
       return $tab;
