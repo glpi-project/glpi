@@ -156,15 +156,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function canConnexity($method, $item_right, $itemtype, $items_id) {
       if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
           &&(!preg_match('/^itemtype/', $itemtype))) {
-         switch ($item_right) {
-            case self::HAVE_VIEW_RIGHT_ON_ITEM:
-               if (!$itemtype::canView()) {
-                  return false;
-               }
-            case self::HAVE_SAME_RIGHT_ON_ITEM:
-               if (!$itemtype::$method()) {
-                  return false;
-               }
+         if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
+            $method = 'canView';
+         }
+         if (!$itemtype::$method()) {
+            return false;
          }
       }
       return true;
@@ -195,27 +191,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
       }
       if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
          if ($item !== false) {
+            if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
+               $methodNotItem = 'canView';
+               $methodItem    = 'canViewItem';
+            }
             // here, we can check item's global rights
             if (preg_match('/^itemtype/', $itemtype)) {
-               switch ($item_right) {
-                  case self::HAVE_VIEW_RIGHT_ON_ITEM :
-                     if (!$item->canView()) {
-                        return false;
-                     }
-
-                  case self::HAVE_SAME_RIGHT_ON_ITEM :
-                     if (!$item->$methodNotItem()) {
-                        return false;
-                     }
+               if (!$item->$methodNotItem()) {
+                  return false;
                }
             }
-            switch ($item_right) {
-               case self::HAVE_VIEW_RIGHT_ON_ITEM :
-                  return $item->canViewItem();
-
-               case self::HAVE_SAME_RIGHT_ON_ITEM :
-                  return $item->$methodItem();
-            }
+            return $item->$methodItem();
          } else {
             // if we cannot get the parent, then we cannot check its rights
             return false;
