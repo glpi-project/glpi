@@ -101,24 +101,14 @@ class IPAddress extends CommonDBChild {
    static function canView() {
 
       return (Session::haveRight('internet', 'r')
-              && parent::canChild('canView'));
+              && parent::canView());
    }
 
 
    static function canCreate() {
 
       return (Session::haveRight('internet', 'w')
-              && parent::canChild('canCreate'));
-   }
-
-
-   function canViewItem() {
-      return parent::canChildItem('canViewItem', 'canView');
-   }
-
-
-   function canCreateItem() {
-      return parent::canChildItem('canCreateItem', 'canCreate');
+              && parent::canCreate());
    }
 
 

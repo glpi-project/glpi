@@ -59,24 +59,14 @@ class NetworkName extends FQDNLabel {
    static function canCreate() {
 
       return (Session::haveRight('internet', 'w')
-              && parent::canChild('canCreate'));
+              && parent::canCreate());
    }
 
 
    static function canView() {
 
       return (Session::haveRight('internet', 'r')
-              && parent::canChild('canView'));
-   }
-
-
-   function canCreateItem() {
-      return parent::canChildItem('canCreateItem', 'canCreate');
-   }
-
-
-   function canViewItem() {
-      return parent::canChildItem('canViewItem', 'canView');
+              && parent::canView());
    }
 
 
