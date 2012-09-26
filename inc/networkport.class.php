@@ -58,30 +58,14 @@ class NetworkPort extends CommonDBChild {
    static function canCreate() {
 
       return (Session::haveRight('networking','w')
-              && parent::canChild('canCreate'));
+              && parent::canCreate());
    }
 
 
    static function canView() {
 
       return (Session::haveRight('networking','r')
-              && parent::canChild('canView'));
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   function canCreateItem() {
-      return parent::canChildItem('canCreateItem', 'canCreate');
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   function canViewItem() {
-      return parent::canChildItem('canViewItem', 'canView');
+              && parent::canView());
    }
 
 
