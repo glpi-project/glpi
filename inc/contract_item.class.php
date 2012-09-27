@@ -559,9 +559,8 @@ class Contract_Item extends CommonDBRelation{
             $nb   = count($datas);
             foreach ($datas as $id => $objdata) {
                $name = $objdata["name"];
-               if ($_SESSION["glpiis_ids_visible"]
-                   || empty($objdata["name"])) {
-                  $name = " (".$objdata["id"].")";
+               if ($_SESSION["glpiis_ids_visible"]) {
+                  $name = sprintf(__('%1$s (%2$s)'), $name, $objdata["id"]);
                }
                $link = Toolbox::getItemTypeFormURL($itemtype);
                $name = "<a href=\"".$link."?id=".$objdata["id"]."\">".$name."</a>";
