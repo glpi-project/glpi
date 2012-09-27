@@ -216,6 +216,8 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -238,14 +240,13 @@ class AuthLDAP extends CommonDBTM {
                   Html::createProgressBar();
                   Html::changeProgressBarPosition($i, $input["ldap_process_count"],
                                                   sprintf(__('%1$s/%2$s'),
-                                                             $i, $input["ldap_process_count"]));
+                                                          $i, $input["ldap_process_count"]));
                   $key = key($input["item"]);
                   array_pop($input["item"]);
                   if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                                'value'  => $key),
                                                          $input["mode"],
-                                                         $input["authldaps_id"],
-                                                         true)) {
+                                                         $input["authldaps_id"], true)) {
                      $input['res']['ok']++;
                   }  else {
                      $input['res']['ko']++;
@@ -281,8 +282,8 @@ class AuthLDAP extends CommonDBTM {
                }
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.import.php";
-
             break;
+
          case "import_group" :
             $group = new Group;
             if (!Session::haveRight("user_authtype", 'w') ||
@@ -296,7 +297,7 @@ class AuthLDAP extends CommonDBTM {
                   Html::createProgressBar();
                   Html::changeProgressBarPosition($i, $input["ldap_process_count"],
                                                   sprintf(__('%1$s/%2$s'),
-                                                             $i, $input["ldap_process_count"]));
+                                                          $i, $input["ldap_process_count"]));
                   $key = key($input["item"]);
                   array_pop($input["item"]);
                   if (isset($input["ldap_import_entities"][$key])) {
@@ -306,10 +307,14 @@ class AuthLDAP extends CommonDBTM {
                   }
 
                   if (AuthLdap::ldapImportGroup($key,
-                                   array("authldaps_id" => $input["authldaps_id"],
-                                         "entities_id"  => $entity,
-                                         "is_recursive" => $input["ldap_import_recursive"][$key],
-                                         "type"         => $input["ldap_import_type"][$key]))) {
+                                                array("authldaps_id"
+                                                         => $input["authldaps_id"],
+                                                      "entities_id"
+                                                         => $entity,
+                                                      "is_recursive"
+                                                         => $input["ldap_import_recursive"][$key],
+                                                      "type"
+                                                         => $input["ldap_import_type"][$key]))) {
                      $input['res']['ok']++;
                   }  else {
                      $input['res']['ko']++;
@@ -320,7 +325,7 @@ class AuthLDAP extends CommonDBTM {
                      Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
                   } else { // Nothing to do redirect
                      Html::changeProgressBarPosition(100, 100, __('Successful importation'));
-                     $res = $input['res'];
+                     $res                               = $input['res'];
                      $_SESSION['ldap_import']['action'] = 'show';
                   }
 
@@ -1256,13 +1261,13 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
       }
 
-      $rand = mt_rand();
+      $rand          = mt_rand();
       $results       = array();
       $limitexceeded = false;
       $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
 
       if (is_array($ldap_users)) {
-         $numrows     = count($ldap_users);
+         $numrows = count($ldap_users);
 
          if ($numrows > 0) {
             self::displaySizeLimitWarning($limitexceeded);
@@ -1276,23 +1281,22 @@ class AuthLDAP extends CommonDBTM {
                array_splice($ldap_users, 0, $values['start']);
             }
 
-
 //             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
 //                    $_SERVER['PHP_SELF']."'>";
-
 
             $form_action = '';
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {
-               $textbutton = _x('button','Synchronize');
+               $textbutton  = _x('button','Synchronize');
                $form_action = 'sync';
             } else {
-               $textbutton = _x('button','Import');
+               $textbutton  = _x('button','Import');
                $form_action = 'import';
             }
 
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed'   => min(count($ldap_users), $_SESSION['glpilist_limit']),
+            $paramsma = array('num_displayed'    => min(count($ldap_users),
+                                                        $_SESSION['glpilist_limit']),
                               'specific_actions' => array($form_action => $textbutton));
             Html::showMassiveActions(__CLASS__, $paramsma);
 
@@ -1356,7 +1360,7 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "</table>";
 
-            $paramsma['ontop'] =false;
+            $paramsma['ontop'] = false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
 
@@ -2117,7 +2121,7 @@ class AuthLDAP extends CommonDBTM {
       if (!$res) {
          return false;
       }
-      
+
       //Connect to the directory
       $ds = $config_ldap->connect();
       if ($ds) {

@@ -3052,7 +3052,8 @@ class Ticket extends CommonITILObject {
 
       // Set default values...
       $default_values = array('_users_id_requester_notif'
-                                                    => array('use_notification' => (($email == "")?0:1)),
+                                                    => array('use_notification'
+                                                              => (($email == "")?0:1)),
                               'nodelegate'          => 1,
                               '_users_id_requester' => 0,
                               'name'                => '',
@@ -3068,9 +3069,9 @@ class Ticket extends CommonITILObject {
                               'due_date'            => 'NULL',
                               'slas_id'             => 0,
                               '_add_validation'     => 0,
-                              'type'         => Entity::getUsedConfig('tickettype',
-                                                                      $_SESSION['glpiactive_entity'],
-                                                                      '', Ticket::INCIDENT_TYPE),
+                              'type'                => Entity::getUsedConfig('tickettype',
+                                                                             $_SESSION['glpiactive_entity'],
+                                                                             '', Ticket::INCIDENT_TYPE),
                               '_right'              => "id");
 
       // Get default values from posted values on reload form
@@ -3221,7 +3222,7 @@ class Ticket extends CommonITILObject {
                        && ($values[$predeffield] == $values['_predefined_fields'][$field]))
                    || (isset($values['_tickettemplates_id'])
                        && ($values['_tickettemplates_id'] != $tt->getID()))) {
-                  $values[$predeffield]           = $predefvalue;
+                  $values[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             } else { // Not defined options set as hidden field

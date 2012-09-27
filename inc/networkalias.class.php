@@ -100,14 +100,14 @@ class NetworkAlias extends FQDNLabel {
          $showsimple = true;
          $options['networknames_id'] = $options['parent']->getID();
       }
-      
+
       $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) == 0) {
          return false;
       }
-      
+
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
       if (!$showsimple) {
          $this->showTabs();
@@ -247,7 +247,7 @@ class NetworkAlias extends FQDNLabel {
    **/
    static function showForNetworkName(NetworkName $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
-      
+
       $ID = $item->getID();
       if (!$item->can($ID, 'r')) {
          return false;
@@ -285,7 +285,7 @@ class NetworkAlias extends FQDNLabel {
          echo "</div>\n";
       }
       echo "<div id='viewnetworkalias$rand'></div>";
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);

@@ -57,7 +57,7 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
       $max_closedate  = '';
    }
 
-   if ($_POST['inquest_config']>0 ) {
+   if ($_POST['inquest_config'] > 0) {
       echo "<table class='tab_cadre_fixe' width='50%'>";
       echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after')."</td>";
       echo "<td>";
