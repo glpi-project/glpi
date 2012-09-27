@@ -74,6 +74,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
@@ -89,7 +91,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      }
                      SoftwareVersion::dropdown($options);
                      echo "<br><br><input type='submit' name='massiveaction' value=\"".
-                           _sx('button','Move')."\" class='submit'>&nbsp;";
+                                    _sx('button','Move')."\" class='submit'>&nbsp;";
                   return true;
                }
             }
@@ -104,6 +106,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -141,7 +145,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if (isset($input['computers_id'])){
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     $params = array('computers_id' => $input['computers_id'],
+                     $params = array('computers_id'       => $input['computers_id'],
                                     'softwareversions_id' => $key);
                      //Get software name and manufacturer
                      if ($this->can(-1,'w', $params)) {
@@ -690,7 +694,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => $number,
+            $paramsma = array('num_displayed'    => $number,
                               'specific_actions' => array('purge' => _x('button', 'Purge')));
 
             Html::showMassiveActions(__CLASS__, $paramsma);

@@ -63,6 +63,8 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -591,8 +593,9 @@ class DisplayPreference extends CommonDBTM {
          $rand = mt_rand();
          echo "<div class='spaced'>";
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('width'=>400, 'height' => 200,
-                  'specific_actions' => array('delete_for_user' => _x('button', 'Delete')));
+         $paramsma = array('width'            => 400,
+                           'height'           => 200,
+                           'specific_actions' => array('delete_for_user' => _x('button', 'Delete')));
 
          Html::showMassiveActions(__CLASS__, $paramsma);
          echo "<input type='hidden' name='users_id' value='$users_id'>";
@@ -615,7 +618,7 @@ class DisplayPreference extends CommonDBTM {
             echo "</tr>";
          }
          echo "</table>";
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
          echo "</div>";

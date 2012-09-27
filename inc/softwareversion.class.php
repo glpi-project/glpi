@@ -210,10 +210,10 @@ class SoftwareVersion extends CommonDBChild {
     * Make a select box for  software to install
     *
     * @param $options array of possible options:
-    *    - name : string / name of the select (default is softwareversions_id)
-    *    - softwares_id : integer / ID of the software
-    *    - value : integer / value of the selected version
-    *    - used : array / already used items
+    *    - name          : string / name of the select (default is softwareversions_id)
+    *    - softwares_id  : integer / ID of the software
+    *    - value         : integer / value of the selected version
+    *    - used          : array / already used items
     *
     * @return nothing (print out an HTML select box)
    **/

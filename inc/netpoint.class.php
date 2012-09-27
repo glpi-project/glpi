@@ -291,7 +291,8 @@ class Netpoint extends CommonDropdown {
          // Minimal form for quick input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>"._n('Network outlet', 'Network outlets', 1)."</td>";
+         echo "<tr class='tab_bg_2 center'>";
+         echo "<td class='b'>"._n('Network outlet', 'Network outlets', 1)."</td>";
          echo "<td>".__('Name')."</td><td>";
          Html::autocompletionTextField($item, "name", array('value' => ''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
@@ -304,7 +305,8 @@ class Netpoint extends CommonDropdown {
          // Minimal form for massive input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>"._n('Network outlet', 'Network outlets', 2)."</td>";
+         echo "<tr class='tab_bg_2 center'>";
+         echo "<td class='b'>"._n('Network outlet', 'Network outlets', 2)."</td>";
          echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
          Dropdown::showInteger('_from', 0, 0, 400);
@@ -335,7 +337,7 @@ class Netpoint extends CommonDropdown {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
+            $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
                               'specific_actions' => array('purge' => _x('button', 'Purge')));
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
@@ -379,7 +381,7 @@ class Netpoint extends CommonDropdown {
          echo "</table>\n";
 
          if ($canedit) {
-            $paramsma['ontop'] =false;
+            $paramsma['ontop'] = false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }

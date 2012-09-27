@@ -60,8 +60,7 @@ if (isset($_POST["activate"])) {
 
 } else if (isset($_POST["down"]) || isset($_POST["down_x"])) {
    $setupdisplay->orderItem($_POST,'down');
-
-} 
+}
 
 // Datas may come from GET or POST : use REQUEST
 if ((strpos($_SERVER['PHP_SELF'],"popup")
