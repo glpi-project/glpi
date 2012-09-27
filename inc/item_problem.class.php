@@ -208,7 +208,7 @@ class Item_Problem extends CommonDBRelation{
                $link = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
-                  $link = " (".$data["id"].")";
+                  $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                }
                $link = Toolbox::getItemTypeFormURL($itemtype);
                $name = "<a href=\"".$link."?id=".$data["id"]."\">".$link."</a>";
