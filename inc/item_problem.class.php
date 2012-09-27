@@ -41,14 +41,17 @@ class Item_Problem extends CommonDBRelation{
 
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Problem';
-   static public $items_id_1 = 'problems_id';
+   static public $itemtype_1          = 'Problem';
+   static public $items_id_1          = 'problems_id';
 
-   static public $itemtype_2 = 'itemtype';
-   static public $items_id_2 = 'items_id';
+   static public $itemtype_2          = 'itemtype';
+   static public $items_id_2          = 'items_id';
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -127,7 +130,7 @@ class Item_Problem extends CommonDBRelation{
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemitem_form$rand' id='problemitem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
@@ -242,7 +245,7 @@ class Item_Problem extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }

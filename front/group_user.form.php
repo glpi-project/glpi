@@ -26,6 +26,7 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
+// @since version 0.84
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -38,8 +39,8 @@ if (isset($_POST["add"])) {
    $group_user->check(-1,'w',$_POST);
    if ($group_user->add($_POST)) {
       Event::log($_POST["groups_id"], "groups", 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
    }
    Html::back();
 
