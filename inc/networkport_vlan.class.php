@@ -51,7 +51,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    /**
     * Get search function for the class
     *
@@ -172,7 +172,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       $canedit = $port->can($ID, 'w');
       $rand = mt_rand();
-      
+
       $query = "SELECT `glpi_networkports_vlans`.id as assocID,
                        `glpi_networkports_vlans`.tagged ,
                        `glpi_vlans`.*
@@ -259,7 +259,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          Html::closeForm();
       }
       echo "</div>";
-      
+
    }
 
 

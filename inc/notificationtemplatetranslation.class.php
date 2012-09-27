@@ -46,6 +46,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -235,7 +238,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</table>";
 
       if ($canedit) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }

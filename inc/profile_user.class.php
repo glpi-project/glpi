@@ -307,13 +307,12 @@ class Profile_User extends CommonDBRelation {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
 
-      echo "<th colspan='$headerspan'>".
-            sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
-                                       __('D=Dynamic, R=Recursive'))."</th></tr>";
+      echo "<th colspan='$headerspan'>";
+      printf(__('%1$s (%2$s)'), _n('User', 'Users', 2), __('D=Dynamic, R=Recursive'));
+      echo "</th></tr>";
 
 
       if ($nb) {
-
          Session::initNavigateListItems('User',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $entity->getTypeName(1),
@@ -328,8 +327,8 @@ class Profile_User extends CommonDBRelation {
                echo "</th>";
                $reduce_header++;
             }
-            echo "<th colspan='".($headerspan-$reduce_header)."'>".sprintf(__('%1$s: %2$s'), __('Profile'),
-                                                          $data["name"]);
+            echo "<th colspan='".($headerspan-$reduce_header)."'>";
+            printf(__('%1$s: %2$s'), __('Profile'), $data["name"]);
             echo "</th></tr>";
             echo "<tbody id='profile".$data['id']."_$rand'>";
 
@@ -403,7 +402,7 @@ class Profile_User extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $nb) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
