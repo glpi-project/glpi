@@ -48,6 +48,9 @@ class Document_Item extends CommonDBRelation{
    static public $items_id_2 = 'items_id';
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -244,7 +247,11 @@ class Document_Item extends CommonDBRelation{
 
    /**
     * Show items links to a document
+    *
+    * @since version 0.84
+    *
     * @param $doc Document object
+    *
     * @return nothing (HTML display)
    **/
    static function showForDocument(Document $doc) {
@@ -387,7 +394,8 @@ class Document_Item extends CommonDBRelation{
                                                 $soft->fields['name']);
                      }
                      $linkname = $data["name"];
-                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                     if ($_SESSION["glpiis_ids_visible"]
+                         || empty($data["name"])) {
                         $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                      }
 
@@ -408,10 +416,10 @@ class Document_Item extends CommonDBRelation{
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                           $data['entity']);
                      echo "</td>";
-                     echo "<td class='center'>".(isset($data["serial"])? "".
-                                                 $data["serial"]."" :"-")."</td>";
-                     echo "<td class='center'>".(isset($data["otherserial"])? "".
-                                                 $data["otherserial"]."" :"-")."</td>";
+                     echo "<td class='center'>".
+                            (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
+                     echo "<td class='center'>".
+                            (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                      echo "</tr>";
                   }
                }
@@ -519,7 +527,7 @@ class Document_Item extends CommonDBRelation{
             $used[$data['id']] = $data['id'];
          }
       }
-      
+
       if ($canedit && $withtemplate < 2) {
          // Restrict entity for knowbase
          $entities = "";
