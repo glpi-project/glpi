@@ -1202,8 +1202,9 @@ class Contract extends CommonDBTM {
             }
 
             $name = $data["name"];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-               $name = " (".$data["id"].")";
+            if ($_SESSION["glpiis_ids_visible"]
+                || empty($data["name"])) {
+               $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
             }
 
             echo "<option  value='".$data["id"]."'>";

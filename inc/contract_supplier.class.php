@@ -52,7 +52,7 @@ class Contract_Supplier extends CommonDBRelation {
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    /**
     * @param $item   string   Supplier object
    **/
@@ -217,7 +217,8 @@ class Contract_Supplier extends CommonDBRelation {
             echo "</td>";
          }
          $name = $data["name"];
-         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+         if ($_SESSION["glpiis_ids_visible"]
+             || empty($data["name"])) {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
          echo "<td class='center b'>
@@ -246,7 +247,7 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "</div>";
    }
-   
+
    /**
     * Print the HTML array of suppliers for this contract
     * @param $contract Contract object
@@ -310,7 +311,7 @@ class Contract_Supplier extends CommonDBRelation {
          Html::closeForm();
          echo "</div>";
       }
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -352,7 +353,7 @@ class Contract_Supplier extends CommonDBRelation {
          echo "<td class='center'>";
          if ($_SESSION["glpiis_ids_visible"]
              || empty($entname)) {
-            $entname = " (".$entID.")";
+            $entname = sprintf(__('%1$s (%2$s)'), $entname, $entID);
          }
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
          echo "</a></td>";
@@ -371,6 +372,6 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "</div>";
 
-   }   
+   }
 }
 ?>

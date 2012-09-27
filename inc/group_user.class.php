@@ -219,10 +219,9 @@ class Group_User extends CommonDBRelation{
                Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
+            $link = $data["completename"];
             if ($_SESSION["glpiis_ids_visible"]) {
-               $link = sprintf(__('%1$s (%2$s)'), $data["completename"], $data["id"]);
-            } else {
-               $link = $data["completename"];
+               $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
             }
             $href = "<a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
                       $link."</a>";

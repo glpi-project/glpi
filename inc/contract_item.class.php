@@ -381,8 +381,8 @@ class Contract_Item extends CommonDBRelation{
             echo "<td class='center b'>";
             $name = $con->fields["name"];
             if ($_SESSION["glpiis_ids_visible"]
-               || empty($con->fields["name"])) {
-               $name = " (".$con->fields["id"].")";
+                || empty($con->fields["name"])) {
+               $name = sprintf(__('%1$s (%2$s)'), $name, $con->fields["id"]);
             }
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$name;
             echo "</a></td>";
@@ -559,7 +559,8 @@ class Contract_Item extends CommonDBRelation{
             $nb   = count($datas);
             foreach ($datas as $id => $objdata) {
                $name = $objdata["name"];
-               if ($_SESSION["glpiis_ids_visible"]) {
+               if ($_SESSION["glpiis_ids_visible"]
+                   || empty($data["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $objdata["id"]);
                }
                $link = Toolbox::getItemTypeFormURL($itemtype);
