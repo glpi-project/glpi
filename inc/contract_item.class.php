@@ -47,6 +47,9 @@ class Contract_Item extends CommonDBRelation{
    static public $items_id_2 = 'items_id';
 
 
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -414,11 +417,16 @@ class Contract_Item extends CommonDBRelation{
       echo "</div>";
    }
 
+
    /**
     * Print the HTML array for Items linked to current contract
     *
-    *@return Nothing (display)
-    **/
+    * @since version 0.84
+    *
+    * @param $contract   Contract object
+    *
+    * @return Nothing (display)
+   **/
    static function showForContract(Contract $contract) {
       global $DB, $CFG_GLPI;
 
@@ -472,13 +480,14 @@ class Contract_Item extends CommonDBRelation{
 
             if ($nb > $_SESSION['glpilist_limit']) {
                $link = "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
-                     rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
-                     rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
-                     "&amp;start=0". "'>" . __('Device list')."</a>";
+                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
+                         rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
+                         "&amp;start=0". "'>" . __('Device list')."</a>";
 
                $data[$itemtype] = array('longlist' => true,
-                                        'name' => sprintf(__('%1$s: %2$s'), $item->getTypeName($nb), $nb),
-                                        'link' => $link);
+                                        'name'     => sprintf(__('%1$s: %2$s'),
+                                                              $item->getTypeName($nb), $nb),
+                                        'link'     => $link);
             } else if ($nb > 0) {
                for ($prem=true ; $objdata=$DB->fetch_assoc($result_linked) ; $prem=false) {
                   $data[$itemtype][$objdata['id']] = $objdata;
@@ -489,11 +498,11 @@ class Contract_Item extends CommonDBRelation{
       }
 
       if ($canedit
-         && (($contract->fields['max_links_allowed'] == 0)
-            || ($contract->fields['max_links_allowed'] > $totalnb))) {
+          && (($contract->fields['max_links_allowed'] == 0)
+              || ($contract->fields['max_links_allowed'] > $totalnb))) {
          echo "<div class='firstbloc'>";
          echo "<form name='contract_form$rand' id='contract_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
@@ -547,11 +556,11 @@ class Contract_Item extends CommonDBRelation{
 
          } else {
             $prem = true;
-            $nb = count($datas);
+            $nb   = count($datas);
             foreach ($datas as $id => $objdata) {
                $name = $objdata["name"];
                if ($_SESSION["glpiis_ids_visible"]
-                     || empty($objdata["name"])) {
+                   || empty($objdata["name"])) {
                   $name = " (".$objdata["id"].")";
                }
                $link = Toolbox::getItemTypeFormURL($itemtype);
@@ -564,21 +573,21 @@ class Contract_Item extends CommonDBRelation{
                   echo "</td>";
                }
                if ($prem) {
-                  $item = new $itemtype();
+                  $item     = new $itemtype();
                   $typename = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
-                           ($nb  >1 ? sprintf(__('%1$s: %2$s'), $typename, $nb): $typename)."</td>";
+                         ($nb  >1 ? sprintf(__('%1$s: %2$s'), $typename, $nb): $typename)."</td>";
                   $prem = false;
                }
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities",$objdata['entity'])."</td>";
                echo "<td class='center".
-                        (isset($objdata['is_deleted']) && $objdata['is_deleted'] ? " tab_bg_2_2'" : "'");
+                      (isset($objdata['is_deleted']) && $objdata['is_deleted'] ? " tab_bg_2_2'" : "'");
                echo ">".$name."</td>";
+               echo"<td class='center'>".
+                      (isset($objdata["serial"])? "".$objdata["serial"]."" :"-")."</td>";
                echo "<td class='center'>".
-                        (isset($objdata["serial"])? "".$objdata["serial"]."" :"-")."</td>";
-               echo "<td class='center'>".
-                        (isset($objdata["otherserial"])? "".$objdata["otherserial"]."" :"-")."</td>";
+                      (isset($objdata["otherserial"])? "".$objdata["otherserial"]."" :"-")."</td>";
                echo "<td class='center'>";
                if (isset($objdata["states_id"])) {
                   echo Dropdown::getDropdownName("glpi_states", $objdata['states_id']);

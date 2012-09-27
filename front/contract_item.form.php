@@ -26,6 +26,7 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
+// @since version 0.84
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
