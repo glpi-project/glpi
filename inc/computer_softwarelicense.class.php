@@ -45,9 +45,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static public $items_id_2 = 'softwarelicenses_id';
 
 
-
    /**
     * Get search function for the class
+    *
+    * @since version 0.84
     *
     * @return array of search option
    **/
@@ -79,6 +80,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
@@ -89,9 +92,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $input['options'] = unserialize(stripslashes($input['options']));
                if (isset($input['options']['move'])) {
                   SoftwareLicense::dropdown(array('condition'
-                                                          => "`glpi_softwarelicenses`.`softwares_id`
-                                                              = '".$input['options']['move']['softwares_id']."'",
-                                                   'used' => $input['options']['move']['used']));
+                                                         => "`glpi_softwarelicenses`.`softwares_id`
+                                                             = '".$input['options']['move']['softwares_id']."'",
+                                                  'used' => $input['options']['move']['used']));
                      echo "<br><br><input type='submit' name='massiveaction' value=\"".
                                     _sx('button','Move')."\" class='submit'>&nbsp;";
                   return true;
@@ -108,6 +111,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -386,11 +391,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
-                                 'specific_actions' => array('move_license' => __('Move'),
-                                                             'purge' => _x('button', 'Purge')));
+               $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
+                                 'specific_actions' => array('move_license' => _x('button', 'Move'),
+                                                             'purge'        => _x('button', 'Purge')));
                // Options to update license
-               $paramsma['extraparams']['options']['move']['used'] = array($searchID);
+               $paramsma['extraparams']['options']['move']['used']         = array($searchID);
                $paramsma['extraparams']['options']['move']['softwares_id'] = $license->fields['softwares_id'];
 
                Html::showMassiveActions(__CLASS__, $paramsma);
@@ -406,7 +411,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             Session::initNavigateListItems('Computer', $text);
 
             $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
-                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
+                          ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
             echo "<table class='tab_cadre_fixehov'><tr>";
             if ($canedit) {
                echo "<th width='10'>";
@@ -478,7 +483,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             echo "</table>\n";
             if ($canedit) {
-               $paramsma['ontop'] =false;
+               $paramsma['ontop'] = false;
                Html::showMassiveActions(__CLASS__, $paramsma);
                Html::closeForm();
             }
