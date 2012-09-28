@@ -159,9 +159,9 @@ class TicketFollowup  extends CommonDBTM {
       }
       // Only the technician
       return (Session::haveRight("update_followups","1")
-              || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+              || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
+                  && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
    }
 
 
@@ -355,9 +355,9 @@ class TicketFollowup  extends CommonDBTM {
           && $this->input["_reopen"]
           && in_array($this->input["_job"]->fields["status"], array('solved', 'waiting'))) {
 
-         if (($this->input["_job"]->countUsers(CommonITILObject::ASSIGN) > 0)
-             || ($this->input["_job"]->countGroups(CommonITILObject::ASSIGN) > 0)
-             || ($this->input["_job"]->countSuppliers(CommonITILObject::ASSIGN) > 0)) {
+         if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
+             || ($this->input["_job"]->countGroups(CommonITILActor::ASSIGN) > 0)
+             || ($this->input["_job"]->countSuppliers(CommonITILActor::ASSIGN) > 0)) {
             $update['status'] = 'assign';
          } else {
             $update['status'] = 'new';
@@ -510,9 +510,9 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       $tech = (Session::haveRight("global_add_followups", "1")
-               || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+               || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
-                   && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
+                   && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
 
       if ($tech) {
          $this->showFormHeader($options);

@@ -737,7 +737,7 @@ class Stat {
          case "technicien" :
             $LEFTJOIN = $LEFTJOINUSER;
             $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
-                               AND `$userlinktable`.`type`='".CommonITILObject::ASSIGN."')";
+                               AND `$userlinktable`.`type`='".CommonITILActor::ASSIGN."')";
             break;
 
          case "technicien_followup" :
@@ -749,7 +749,7 @@ class Stat {
          case "user" :
             $LEFTJOIN = $LEFTJOINUSER;
             $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
-                               AND `$userlinktable`.`type` ='".CommonITILObject::REQUESTER."')";
+                               AND `$userlinktable`.`type` ='".CommonITILActor::REQUESTER."')";
             break;
 
          case "usertitles_id" :
@@ -757,7 +757,7 @@ class Stat {
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
                               ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
             $WHERE    .= " AND (`glpi_users`.`usertitles_id` = '$value'
-                                AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+                                AND `$userlinktable`.`type` = '".CommonITILActor::REQUESTER."')";
             break;
 
          case "usercategories_id" :
@@ -765,7 +765,7 @@ class Stat {
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
                               ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
             $WHERE    .= " AND (`glpi_users`.`usercategories_id` = '$value'
-                                AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+                                AND `$userlinktable`.`type` = '".CommonITILActor::REQUESTER."')";
             break;
 
          case "itilcategories_tree" :
@@ -790,8 +790,8 @@ class Stat {
 
          case 'group_tree' :
          case 'groups_tree_assign' :
-            $grptype = (($param == 'group_tree') ? CommonITILObject::REQUESTER
-                                                 : CommonITILObject::ASSIGN);
+            $grptype = (($param == 'group_tree') ? CommonITILActor::REQUESTER
+                                                 : CommonITILActor::ASSIGN);
             if ($value == $value2) {
                $groups = array($value);
             } else {
@@ -807,19 +807,19 @@ class Stat {
          case "group" :
             $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
-                               AND `$grouplinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+                               AND `$grouplinktable`.`type` = '".CommonITILActor::REQUESTER."')";
             break;
 
          case "groups_id_assign" :
             $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
-                               AND `$grouplinktable`.`type` = '".CommonITILObject::ASSIGN."')";
+                               AND `$grouplinktable`.`type` = '".CommonITILActor::ASSIGN."')";
             break;
 
          case "suppliers_id_assign" :
             $LEFTJOIN = $LEFTJOINSUPPLIER;
             $WHERE   .= " AND (`$supplierlinktable`.`suppliers_id` = '$value'
-                               AND `$supplierlinktable`.`type` = '".CommonITILObject::ASSIGN."')";
+                               AND `$supplierlinktable`.`type` = '".CommonITILActor::ASSIGN."')";
             break;
 
          case "requesttypes_id" :

@@ -807,7 +807,7 @@ function update0782to080() {
                                    (`tickets_id`, `groups_id`,
                                     `type`)
                             VALUES ('".$data['id']."', '".$data['groups_id']."',
-                                    '".Ticket::REQUESTER."')";
+                                    '".CommonITILActor::REQUESTER."')";
                   $DB->queryOrDie($query, "0.80 migrate data to glpi_groups_tickets table");
                }
                if ($data['groups_id_assign']>0) {
@@ -815,7 +815,7 @@ function update0782to080() {
                                   (`tickets_id`, `groups_id`,
                                    `type`)
                            VALUES ('".$data['id']."', '".$data['groups_id_assign']."',
-                                   '".Ticket::ASSIGN."')";
+                                   '".CommonITILActor::ASSIGN."')";
                   $DB->queryOrDie($query, "0.80 migrate data to glpi_groups_tickets table");
                }
             }
@@ -886,7 +886,7 @@ function update0782to080() {
                                    (`tickets_id`, `users_id`,
                                     `type`, `use_notification`)
                             VALUES ('".$data['id']."', '".$data['users_id_assign']."',
-                                    '".Ticket::ASSIGN."', '1')";
+                                    '".CommonITILActor::ASSIGN."', '1')";
                   $DB->queryOrDie($query, "0.80 migrate data to glpi_tickets_users table");
                }
                if ($data['users_id']>0
@@ -903,7 +903,7 @@ function update0782to080() {
                   $query = "INSERT INTO `glpi_tickets_users`
                                    (`tickets_id`, `users_id`,`type`,
                                     `use_notification`, `alternative_email`)
-                            VALUES ('".$data['id']."', '$user_id', '".Ticket::REQUESTER."',
+                            VALUES ('".$data['id']."', '$user_id', '".CommonITILActor::REQUESTER."',
                                     '".$data['use_email_notification']."', '$user_email')";
                   $DB->queryOrDie($query, "0.80 migrate data to glpi_tickets_users table");
                }

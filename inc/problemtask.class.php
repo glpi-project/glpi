@@ -100,9 +100,9 @@ class ProblemTask extends CommonITILTask {
 
       return (Session::haveRight("edit_all_problem","1")
               || (Session::haveRight("show_my_problem","1")
-                  && ($ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+                  && ($ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
-                          && $ticket->haveAGroup(CommonITILObject::ASSIGN,
+                          && $ticket->haveAGroup(CommonITILActor::ASSIGN,
                                                  $_SESSION['glpigroups'])))));
    }
 

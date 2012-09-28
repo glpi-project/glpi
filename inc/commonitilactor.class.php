@@ -44,6 +44,12 @@ abstract class CommonITILActor extends CommonDBRelation {
    
    var $no_form_page              = true;
 
+   // Requester
+   const REQUESTER = 1;
+   // Assign
+   const ASSIGN    = 2;
+   // Observer
+   const OBSERVER  = 3;
 
    function getActorForeignKey() {
       return static::$items_id_2;
@@ -70,7 +76,7 @@ abstract class CommonITILActor extends CommonDBRelation {
           && isset($input['alternative_email'])
           && !empty($input['alternative_email'])
           && isset($input['type'])
-          && ($input['type'] != CommonITILObject::ASSIGN)) {
+          && ($input['type'] != CommonITILActor::ASSIGN)) {
          return false;
       }
       return true;
@@ -236,9 +242,9 @@ abstract class CommonITILActor extends CommonDBRelation {
       $item = new static::$itemtype_1();
 
       if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
-         if (($item->countSuppliers(CommonITILObject::ASSIGN) == 0)
-             && ($item->countUsers(CommonITILObject::ASSIGN) == 0)
-             && ($item->countGroups(CommonITILObject::ASSIGN) == 0)
+         if (($item->countSuppliers(CommonITILActor::ASSIGN) == 0)
+             && ($item->countUsers(CommonITILActor::ASSIGN) == 0)
+             && ($item->countGroups(CommonITILActor::ASSIGN) == 0)
              && ($item->fields['status'] != 'closed')
              && ($item->fields['status'] != 'solved')) {
 
@@ -266,7 +272,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       $item = new static::$itemtype_1();
 
       $no_stat_computation = true;
-      if ($this->input['type']==CommonITILObject::ASSIGN) {
+      if ($this->input['type']==CommonITILActor::ASSIGN) {
          $no_stat_computation = false;
       }
       $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);

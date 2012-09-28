@@ -60,5 +60,5 @@ if (isset($_POST['_users_id_requester_notif']) && !empty($_POST['_users_id_reque
 }
 
 $ticket = new Ticket();
-$ticket->showActorAddFormOnCreate(Ticket::REQUESTER, $_POST);
+$ticket->showActorAddFormOnCreate(Ticket_User::REQUESTER, $_POST);
 ?>
