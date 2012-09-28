@@ -166,7 +166,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * Get the email of the item's user : Overloaded manual address used
    **/
    function getItemAuthorAddress() {
-      $this->getLinkedUserByType(CommonITILObject::REQUESTER);
+      $this->getLinkedUserByType(CommonITILActor::REQUESTER);
    }
 
 
@@ -174,7 +174,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $CFG_GLPI;
 
        if (isset($this->options['_old_user'])
-           && ($this->options['_old_user']['type'] == CommonITILObject::ASSIGN)
+           && ($this->options['_old_user']['type'] == CommonITILActor::ASSIGN)
            && $this->options['_old_user']['use_notification']) {
 
             $user = new User();
@@ -219,7 +219,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (!$sendprivate
-          && $this->countSuppliers(CommonITILObject::ASSIGN)) {
+          && $this->countSuppliers(CommonITILActor::ASSIGN)) {
 
          $supplierlinktable = getTableForItemType($this->obj->supplierlinkclass);
          $fkfield           = $this->obj->getForeignKeyField();
@@ -431,12 +431,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             switch ($data['items_id']) {
                case Notification::ASSIGN_TECH :
-                  $this->getLinkedUserByType(CommonITILObject::ASSIGN);
+                  $this->getLinkedUserByType(CommonITILActor::ASSIGN);
                   break;
 
                //Send to the supervisor of group in charge of the ITIL object
                case Notification::SUPERVISOR_ASSIGN_GROUP :
-                  $this->getLinkedGroupSupervisorByType(CommonITILObject::ASSIGN);
+                  $this->getLinkedGroupSupervisorByType(CommonITILActor::ASSIGN);
                   break;
 
                //Send to the user who's got the issue
@@ -446,7 +446,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
                //Send to the supervisor of the requester's group
                case Notification::SUPERVISOR_REQUESTER_GROUP :
-                  $this->getLinkedGroupSupervisorByType(CommonITILObject::REQUESTER);
+                  $this->getLinkedGroupSupervisorByType(CommonITILActor::REQUESTER);
                   break;
 
                //Send to the technician previously in charge of the ITIL object (before reassignation)
@@ -460,11 +460,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   break;
 
                case Notification::REQUESTER_GROUP :
-                  $this->getLinkedGroupByType(CommonITILObject::REQUESTER);
+                  $this->getLinkedGroupByType(CommonITILActor::REQUESTER);
                   break;
 
                case Notification::ASSIGN_GROUP :
-                  $this->getLinkedGroupByType(CommonITILObject::ASSIGN);
+                  $this->getLinkedGroupByType(CommonITILActor::ASSIGN);
                   break;
 
                //Send to the ITIL object validation approver
@@ -494,17 +494,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
                //Notification to the ITIL object's observer group
                case Notification::OBSERVER_GROUP :
-                  $this->getLinkedGroupByType(CommonITILObject::OBSERVER);
+                  $this->getLinkedGroupByType(CommonITILActor::OBSERVER);
                   break;
 
                //Notification to the ITIL object's observer user
                case Notification::OBSERVER :
-                  $this->getLinkedUserByType(CommonITILObject::OBSERVER);
+                  $this->getLinkedUserByType(CommonITILActor::OBSERVER);
                   break;
 
                //Notification to the supervisor of the ITIL object's observer group
                case Notification::SUPERVISOR_OBSERVER_GROUP :
-                  $this->getLinkedGroupSupervisorByType(CommonITILObject::OBSERVER);
+                  $this->getLinkedGroupSupervisorByType(CommonITILActor::OBSERVER);
                   break;
             }
          }
@@ -619,9 +619,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.authors##"] = '';
-      if ($item->countUsers(CommonITILObject::REQUESTER)) {
+      if ($item->countUsers(CommonITILActor::REQUESTER)) {
          $users = array();
-         foreach ($item->getUsers(CommonITILObject::REQUESTER) as $tmpusr) {
+         foreach ($item->getUsers(CommonITILActor::REQUESTER) as $tmpusr) {
             $uid = $tmpusr['users_id'];
             $user_tmp = new User();
             if ($uid
@@ -666,9 +666,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.assigntousers##"] = '';
-      if ($item->countUsers(CommonITILObject::ASSIGN)) {
+      if ($item->countUsers(CommonITILActor::ASSIGN)) {
          $users = array();
-         foreach ($item->getUsers(CommonITILObject::ASSIGN) as $tmp) {
+         foreach ($item->getUsers(CommonITILActor::ASSIGN) as $tmp) {
             $uid      = $tmp['users_id'];
             $user_tmp = new User();
             if ($user_tmp->getFromDB($uid)) {
@@ -680,9 +680,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
       $datas["##$objettype.assigntosupplier##"] = '';
-      if ($item->countSuppliers(CommonITILObject::ASSIGN)) {
+      if ($item->countSuppliers(CommonITILActor::ASSIGN)) {
          $suppliers = array();
-         foreach ($item->getSuppliers(CommonITILObject::ASSIGN) as $tmp) {
+         foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $tmp) {
             $uid           = $tmp['suppliers_id'];
             $supplier_tmp  = new Supplier();
             if ($supplier_tmp->getFromDB($uid)) {
@@ -693,9 +693,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.groups##"] = '';
-      if ($item->countGroups(CommonITILObject::REQUESTER)) {
+      if ($item->countGroups(CommonITILActor::REQUESTER)) {
          $groups = array();
-         foreach ($item->getGroups(CommonITILObject::REQUESTER) as $tmp) {
+         foreach ($item->getGroups(CommonITILActor::REQUESTER) as $tmp) {
             $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
@@ -703,9 +703,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.observergroups##"] = '';
-      if ($item->countGroups(CommonITILObject::OBSERVER)) {
+      if ($item->countGroups(CommonITILActor::OBSERVER)) {
          $groups = array();
-         foreach ($item->getGroups(CommonITILObject::OBSERVER) as $tmp) {
+         foreach ($item->getGroups(CommonITILActor::OBSERVER) as $tmp) {
             $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
@@ -713,9 +713,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.observerusers##"] = '';
-      if ($item->countUsers(CommonITILObject::OBSERVER)) {
+      if ($item->countUsers(CommonITILActor::OBSERVER)) {
          $users = array();
-         foreach ($item->getUsers(CommonITILObject::OBSERVER) as $tmp) {
+         foreach ($item->getUsers(CommonITILActor::OBSERVER) as $tmp) {
             $uid      = $tmp['users_id'];
             $user_tmp = new User();
             if ($uid
@@ -729,9 +729,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.assigntogroups##"] = '';
-      if ($item->countGroups(CommonITILObject::ASSIGN)) {
+      if ($item->countGroups(CommonITILActor::ASSIGN)) {
          $groups = array();
-         foreach ($item->getGroups(CommonITILObject::ASSIGN) as $tmp) {
+         foreach ($item->getGroups(CommonITILActor::ASSIGN) as $tmp) {
             $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }

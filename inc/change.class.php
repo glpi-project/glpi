@@ -84,9 +84,9 @@ class Change extends CommonITILObject {
       return (self::isAllowedStatus($this->fields['status'], 'solved')
               && (Session::haveRight("edit_all_change", "1")
                   || (Session::haveRight('show_my_change', 1)
-                      && ($this->isUser(parent::ASSIGN, Session::getLoginUserID())
+                      && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
-                              && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))))));
+                              && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))))));
    }
 
 
@@ -113,14 +113,14 @@ class Change extends CommonITILObject {
       }
       return (Session::haveRight('edit_all_change', 1)
               || (Session::haveRight('show_my_change', 1)
-                  && ($this->isUser(parent::REQUESTER, Session::getLoginUserID())
-                      || $this->isUser(parent::OBSERVER, Session::getLoginUserID())
+                  && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                      || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
-                          && ($this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])
-                              || $this->haveAGroup(parent::OBSERVER, $_SESSION["glpigroups"])))
-                      || ($this->isUser(parent::ASSIGN, Session::getLoginUserID())
+                          && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
+                              || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])))
+                      || ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
-                              && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))))));
+                              && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))))));
    }
 
 
@@ -132,9 +132,9 @@ class Change extends CommonITILObject {
    function canApprove() {
 
       return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
-              || $this->isUser(parent::REQUESTER, Session::getLoginUserID())
+              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])));
+                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
    }
 
 

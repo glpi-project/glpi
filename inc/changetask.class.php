@@ -104,9 +104,9 @@ class ChangeTask extends CommonITILTask {
       if ($change->getFromDB($this->fields['changes_id'])) {
          return (Session::haveRight("edit_all_change", "1")
                  || (Session::haveRight("show_my_change", "1")
-                     && ($change->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+                     && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
-                             && $change->haveAGroup(CommonITILObject::ASSIGN,
+                             && $change->haveAGroup(CommonITILActor::ASSIGN,
                                                     $_SESSION['glpigroups'])))));
       }
       return false;
