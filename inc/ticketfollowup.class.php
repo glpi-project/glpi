@@ -340,10 +340,10 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($this->input["_close"])
           && $this->input["_close"]
-          && ($this->input["_job"]->fields["status"] == 'solved')) {
+          && ($this->input["_job"]->fields["status"] == CommonITILObject::SOLVED)) {
 
          $update['id']        = $this->input["_job"]->fields['id'];
-         $update['status']    = 'closed';
+         $update['status']    = self::CLOSED;
          $update['closedate'] = $_SESSION["glpi_currenttime"];
 
          // Use update method for history
@@ -353,14 +353,14 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && in_array($this->input["_job"]->fields["status"], array('solved', 'waiting'))) {
+          && in_array($this->input["_job"]->fields["status"], array(self::SOLVED, self::WAITING))) {
 
          if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countGroups(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countSuppliers(CommonITILActor::ASSIGN) > 0)) {
-            $update['status'] = 'assign';
+            $update['status'] = CommonITILObject::ASSIGNED;
          } else {
-            $update['status'] = 'new';
+            $update['status'] = CommonITILObject::INCOMING;
          }
 
          $update['id'] = $this->input["_job"]->fields['id'];
@@ -611,7 +611,8 @@ class TicketFollowup  extends CommonDBTM {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         if (($ticket->fields["status"] != 'solved') && ($ticket->fields["status"] != 'closed')) {
+         if (($ticket->fields["status"] != CommonITILObject::SOLVED) 
+             && ($ticket->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div class='center firstbloc'>".
                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
             echo __('Add a new followup')."</a></div>\n";
@@ -693,7 +694,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $input = array('tickets_id' => $ticket->getField('id'));
 
-      if (($ticket->fields["status"] == 'solved')
+      if (($ticket->fields["status"] == CommonITILObject::SOLVED)
           && $ticket->canApprove()) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";

@@ -707,7 +707,7 @@ class MailCollector  extends CommonDBTM {
          // Check if ticket  exists and users_id exists in GLPI
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
-             && ($job->fields['status'] != 'closed')
+             && ($job->fields['status'] != CommonITILObject::CLOSED)
              && ($CFG_GLPI['use_anonymous_followups']
                  || ($tkt['_users_id_requester'] > 0)
                  || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from']))) {

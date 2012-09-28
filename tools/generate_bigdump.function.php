@@ -407,7 +407,7 @@ function addTracking($type, $ID, $ID_entity) {
 
    while (mt_rand(0,100)<$percent['tracking_on_item']) {
       // ticket closed ?
-      $status    = "closed";
+      $status    = CommonITILObject::CLOSED;
       $closedate = "";
       $solvedate = "";
 
@@ -418,27 +418,27 @@ function addTracking($type, $ID, $ID_entity) {
          $rtype = mt_rand(0, 100);
 
          if ($rtype<20) {
-            $status = "solved";
+            $status = CommonITILObject::SOLVED;
          } else {
-            $status = "closed";
+            $status = CommonITILObject::CLOSED;
          }
 
       } else {
          $rtype = mt_rand(0, 100);
 
          if ($rtype<20) {
-            $status = "new";
+            $status = CommonITILObject::INCOMING;
 
          } else if ($rtype<40) {
-            $status = "waiting";
+            $status = CommonITILObject::WAITING;
 
          } else if ($rtype<80) {
-            $status = "plan";
+            $status = CommonITILObject::PLANNED;
             $date3  = $opendate+mt_rand(10800, 7776000); // + entre 3 heures et 3 mois
             $date4  = $date3+10800; // + 3 heures
 
          } else {
-            $status = "assign";
+            $status = CommonITILObject::ASSIGNED;
          }
       }
 
@@ -448,7 +448,7 @@ function addTracking($type, $ID, $ID_entity) {
       // Assign user
       $users[1] = 0;
 
-      if ($status!="new") {
+      if ($status!=CommonITILObject::INCOMING) {
          $users[1] = mt_rand($FIRST['users_sadmin'], $LAST['users_admin']);
       }
       $enterprise = 0;
@@ -470,14 +470,14 @@ function addTracking($type, $ID, $ID_entity) {
       $duedatetoadd    = date("Y-m-d H:i:s", intval($due_date));
 
 
-      if ($status=="closed" || $status=="solved") {
+      if ($status==CommonITILObject::CLOSED || $status==CommonITILObject::SOLVED) {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
                       mt_rand(0, 60)*MINUTE_TIMESTAMP;
          $solvedate = $opendate+$solvetime;
          $closedate = $opendate+$solvetime;
          $actiontime = mt_rand(0, 10)*HOUR_TIMESTAMP+
                       mt_rand(0, 60)*MINUTE_TIMESTAMP;
-         if ($status=="closed") {
+         if ($status==CommonITILObject::CLOSED) {
             $closetime = $solvetime+mt_rand(0, 5)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
                          mt_rand(0, 60)*MINUTE_TIMESTAMP;
             $closedate = $opendate+$closetime;
@@ -568,7 +568,7 @@ function addTracking($type, $ID, $ID_entity) {
          $begin       = $end = 'NULL';
          $assign_user = 0;
          $state       = 1;
-         if ($status=="plan" && $doplan) {
+         if ($status==CommonITILObject::PLANNED && $doplan) {
             $endtask = date("Y-m-d H:i:s", $date4);
             if ($endtask < date("Y-m-d H:i:s")) {
                $state = 2; // done
@@ -582,7 +582,7 @@ function addTracking($type, $ID, $ID_entity) {
                          'is_private'        => mt_rand(0,1),
                          'state'             => $state);
 
-         if ($status=="plan" && $doplan) {
+         if ($status==CommonITILObject::PLANNED && $doplan) {
             $params['plan'] = array('begin'       => date("Y-m-d H:i:s", $date3),
                                     'end'         => $endtask,
                                     'users_id'    => $users[1]);
@@ -600,7 +600,7 @@ function addTracking($type, $ID, $ID_entity) {
                      'actiontime'        => floor($actiontime/2));
 
       // Insert satisfaction for stats
-      if ($status=='closed'
+      if ($status==CommonITILObject::CLOSED
           && mt_rand(0,100) < $percent['satisfaction']) {
 
          $answerdate = 'NULL';

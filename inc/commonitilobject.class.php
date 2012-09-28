@@ -58,6 +58,21 @@ abstract class CommonITILObject extends CommonDBTM {
    const IMPACT_MASK_FIELD    = '';
    const STATUS_MATRIX_FIELD  = '';
 
+
+   // STATUS
+   const INCOMING      = 1; // new
+   const ASSIGNED      = 2; // assign
+   const PLANNED       = 3; // plan
+   const WAITING       = 4; // waiting
+   const SOLVED        = 5; // solved
+   const CLOSED        = 6; // closed
+   const ACCEPTED      = 7; // accepted
+   const OBSERVED      = 8; // observe
+   const EVALUATION    = 9; // evaluation
+   const APPROVAL      = 10; // approbation
+   const TEST          = 11; // test
+   const QUALIFICATION = 12; // qualification
+
    function post_getFromDB() {
 
       if (!empty($this->grouplinkclass)) {
@@ -611,9 +626,9 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $useractors->can(-1,'w',$input['_itil_assign'])) {
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
-                        if ((!isset($input['status']) && ($this->fields['status'] == 'new'))
-                            || (isset($input['status']) && ($input['status'] == 'new'))) {
-                           $input['status'] = 'assign';
+                        if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
+                            || (isset($input['status']) && ($input['status'] == self::INCOMING))) {
+                           $input['status'] = self::ASSIGNED;
                         }
                      }
                   }
@@ -628,9 +643,9 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $groupactors->can(-1,'w',$input['_itil_assign'])) {
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
-                        if ((!isset($input['status']) && ($this->fields['status'] == 'new'))
-                            || (isset($input['status']) && ($input['status'] == 'new'))) {
-                           $input['status'] = 'assign';
+                        if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
+                            || (isset($input['status']) && ($input['status'] == self::INCOMING))) {
+                           $input['status'] = self::ASSIGNED;
                         }
                      }
                   }
@@ -644,9 +659,9 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $supplieractors->can(-1,'w',$input['_itil_assign'])) {
                         $supplieractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
-                        if ((!isset($input['status']) && ($this->fields['status'] == 'new'))
-                            || (isset($input['status']) && ($input['status'] == 'new'))) {
-                           $input['status'] = 'assign';
+                        if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
+                            || (isset($input['status']) && ($input['status'] == self::INCOMING))) {
+                           $input['status'] = self::ASSIGNED;
                         }
                      }
                   }
@@ -691,16 +706,16 @@ abstract class CommonITILObject extends CommonDBTM {
 
             // 0 = immediatly
             if ($autoclosedelay == 0) {
-               $this->fields['status'] = 'closed';
-               $this->input['status']  = 'closed';
+               $this->fields['status'] = self::CLOSED;
+               $this->input['status']  = self::CLOSED;
             } else {
-               $this->fields['status'] = 'solved';
-               $this->input['status']  = 'solved';
+               $this->fields['status'] = self::SOLVED;
+               $this->input['status']  = self::SOLVED;
             }
          } else {
 
-            $this->fields['status'] = 'solved';
-            $this->input['status']  = 'solved';
+            $this->fields['status'] = self::SOLVED;
+            $this->input['status']  = self::SOLVED;
          }
       }
 
@@ -732,7 +747,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (isset($this->input["status"])) {
-         if (($this->input["status"] != 'waiting')
+         if (($this->input["status"] != self::WAITING)
              && ($this->countSuppliers(CommonITILActor::ASSIGN) == 0)
              && ($this->countUsers(CommonITILActor::ASSIGN) == 0)
              && ($this->countGroups(CommonITILActor::ASSIGN) == 0)
@@ -743,7 +758,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $this->oldvalues['status'] = $this->fields['status'];
                $this->updates[] = 'status';
             }
-            $this->fields['status'] = 'new';
+            $this->fields['status'] = self::INCOMING;
          }
 
          if (in_array("status", $this->updates)
@@ -858,7 +873,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Manage come back to waiting state
       if (!is_null($this->fields['begin_waiting_date'])
           && (($key = array_search('status',$this->updates)) !== false)
-          && (($this->oldvalues['status'] == 'waiting')
+          && (($this->oldvalues['status'] == self::WAITING)
                // From solved to another state than closed
               || (in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
                   && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
@@ -931,7 +946,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Set begin waiting date if needed
       if ((($key = array_search('status', $this->updates)) !== false)
-          && (($this->fields['status'] == 'waiting')
+          && (($this->fields['status'] == self::WAITING)
               || in_array($this->fields["status"], $this->getSolvedStatusArray()))) {
 
          $this->updates[]                    = "begin_waiting_date";
@@ -1000,7 +1015,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (!isset($input["status"])) {
-         $input["status"] = "new";
+         $input["status"] = self::INCOMING;
       }
 
       if (!isset($input["date"]) || empty($input["date"])) {
@@ -1046,7 +1061,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Set begin waiting time if status is waiting
-      if (isset($input["status"]) && ($input["status"] == "waiting")) {
+      if (isset($input["status"]) && ($input["status"] == self::WAITING)) {
          $input['begin_waiting_date'] = $input['date'];
       }
 
@@ -1817,7 +1832,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab = static::getAllStatusArray();
       if (!isset($current)) {
-         $current = 'new';
+         $current = self::INCOMING;
       }
 
       foreach ($tab as $status => $label) {
@@ -1837,7 +1852,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $options   array of options
     *  - name     : select name (default is status)
-    *  - value    : default value (default 'new')
+    *  - value    : default value (default self::INCOMING)
     *  - showtype : list proposed : normal, search or allowed (default normal)
     *  - display  : boolean if false get string
     *
@@ -1846,7 +1861,7 @@ abstract class CommonITILObject extends CommonDBTM {
    static function dropdownStatus(array $options=array()) {
 
       $p['name']      = 'status';
-      $p['value']     = 'new';
+      $p['value']     = self::INCOMING;
       $p['showtype']  = 'normal';
       $p['display']   = true;
 
@@ -3415,13 +3430,13 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Due date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
-      if (($this->fields['status'] == 'solved')
-          || ($this->fields['status'] == 'closed')) {
+      if (($this->fields['status'] == self::SOLVED)
+          || ($this->fields['status'] == self::CLOSED)) {
          echo "<tr class='tab_bg_2'><td>".__('Resolution date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['solvedate'])."</td></tr>";
       }
 
-      if ($this->fields['status']=='closed') {
+      if ($this->fields['status']==self::CLOSED) {
          echo "<tr class='tab_bg_2'><td>".__('Closing date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
@@ -3438,8 +3453,8 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      if (($this->fields['status'] == 'solved')
-          || ($this->fields['status'] == 'closed')) {
+      if (($this->fields['status'] == self::SOLVED)
+          || ($this->fields['status'] == self::CLOSED)) {
          echo "<tr class='tab_bg_2'><td>".__('Resolution')."</td><td>";
 
          if ($this->fields['solve_delay_stat'] > 0) {
@@ -3450,7 +3465,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      if ($this->fields['status'] == 'closed') {
+      if ($this->fields['status'] == self::CLOSED) {
          echo "<tr class='tab_bg_2'><td>".__('Closure')."</td><td>";
          if ($this->fields['close_delay_stat'] > 0) {
             echo Html::timestampToString($this->fields['close_delay_stat']);

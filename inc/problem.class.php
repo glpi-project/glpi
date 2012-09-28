@@ -81,7 +81,7 @@ class Problem extends CommonITILObject {
 
    function canSolve(){
 
-      return (self::isAllowedStatus($this->fields['status'], 'solved')
+      return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               && (Session::haveRight("edit_all_problem","1")
                   || (Session::haveRight('show_my_problem', 1)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -331,9 +331,9 @@ class Problem extends CommonITILObject {
       if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
            || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
            || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
-          && ($input["status"] == "new")) {
+          && ($input["status"] == self::INCOMING)) {
 
-         $input["status"] = "assign";
+         $input["status"] = self::ASSIGNED;
       }
 
       return $input;
@@ -368,7 +368,7 @@ class Problem extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
@@ -620,14 +620,14 @@ class Problem extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array('new'      => _x('problem', 'New'),
-                   'accepted' => _x('problem', 'Accepted'),
-                   'assign'   => _x('problem', 'Processing (assigned)'),
-                   'plan'     => _x('problem', 'Processing (planned)'),
-                   'waiting'  => __('Pending'),
-                   'solved'   => _x('problem', 'Solved'),
-                   'observe'  => __('Under observation'),
-                   'closed'   => _x('problem', 'Closed'));
+      $tab = array(self::INCOMING      => _x('problem', 'New'),
+                   self::ACCEPTED => _x('problem', 'Accepted'),
+                   self::ASSIGNED => _x('problem', 'Processing (assigned)'),
+                   self::PLANNED  => _x('problem', 'Processing (planned)'),
+                   self::WAITING  => __('Pending'),
+                   self::SOLVED   => _x('problem', 'Solved'),
+                   self::OBSERVED => __('Under observation'),
+                   self::CLOSED   => _x('problem', 'Closed'));
 
       if ($withmetaforsearch) {
          $tab['notold']    = _x('problem', 'Not solved');
@@ -650,7 +650,7 @@ class Problem extends CommonITILObject {
    static function getClosedStatusArray() {
 
       // To be overridden by class
-      $tab = array('closed');
+      $tab = array(self::CLOSED);
 
       return $tab;
    }
@@ -666,7 +666,7 @@ class Problem extends CommonITILObject {
    static function getSolvedStatusArray() {
 
       // To be overridden by class
-      $tab = array('observe', 'solved');
+      $tab = array(self::OBSERVED, self::SOLVED);
 
       return $tab;
    }
@@ -682,7 +682,7 @@ class Problem extends CommonITILObject {
    static function getProcessStatusArray() {
 
       // To be overridden by class
-      $tab = array('accepted', 'assign', 'plan');
+      $tab = array(self::ACCEPTED, self::ASSIGNED, self::PLANNED);
 
       return $tab;
    }
@@ -735,14 +735,14 @@ class Problem extends CommonITILObject {
          case "waiting" : // on affiche les problemes en attente
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
-                             AND `status` = 'waiting' ".
+                             AND `status` = '".self::WAITING."' ".
                              getEntitiesRestrictRequest("AND", "glpi_problems");
             break;
 
          case "process" : // on affiche les problemes planifiés ou assignés au user
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
-                             AND (`status` IN ('plan','assign')) ".
+                             AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_problems");
             break;
 
@@ -750,7 +750,11 @@ class Problem extends CommonITILObject {
          default :
             $query .= "WHERE $is_deleted
                              AND ($search_users_id)
-                             AND (`status` IN ('new', 'accepted', 'plan', 'assign', 'waiting'))
+                             AND (`status` IN ('".self::INCOMING."', 
+                                               '".self::ACCEPTED."', 
+                                               '".self::PLANNED."', 
+                                               '".self::ASSIGNED."', 
+                                               '".self::WAITING."'))
                              AND NOT ($search_assign) ".
                              getEntitiesRestrictRequest("AND","glpi_problems");
       }
@@ -786,7 +790,7 @@ class Problem extends CommonITILObject {
                      $num++;
                      $options['field'][$num]      = 12; // status
                      $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'waiting';
+                     $options['contains'][$num]   = self::WAITING;
                      $options['link'][$num]       = 'AND';
                      $num++;
                   }
@@ -836,7 +840,7 @@ class Problem extends CommonITILObject {
                case "waiting" :
                   $options['field'][0]      = 12; // status
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'waiting';
+                  $options['contains'][0]   = self::WAITING;
                   $options['link'][0]       = 'AND';
 
                   $options['field'][1]      = 5; // users_id_assign
@@ -1517,11 +1521,11 @@ class Problem extends CommonITILObject {
          echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
 
          // Second column
-         if ($job->fields['status'] == 'closed') {
+         if ($job->fields['status'] == self::CLOSED) {
             $second_col = sprintf(__('Closed on %s'),
                                   (($output_type == Search::HTML_OUTPUT)?'<br>':'').
                                     Html::convDateTime($job->fields['closedate']));
-          } else if ($job->fields['status'] == 'solved') {
+          } else if ($job->fields['status'] == self::SOLVED) {
             $second_col = sprintf(__('Solved on %s'),
                                   (($output_type == Search::HTML_OUTPUT)?'<br>':'').
                                     Html::convDateTime($job->fields['solvedate']));

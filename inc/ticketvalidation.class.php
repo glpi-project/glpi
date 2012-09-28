@@ -174,8 +174,8 @@ class TicketValidation  extends CommonDBChild {
          return false;
       }
 
-/*       if (strstr($job->fields["status"],"solved")
-                  || strstr($job->fields["status"],"closed")) {
+/*       if ($job->fields["status"] == CommonITILObject::SOLVED
+                  || $job->fields["status"] == CommonITILObject::CLOSED) {
             return false;
          }*/
 
@@ -600,8 +600,8 @@ class TicketValidation  extends CommonDBChild {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         if (($ticket->fields["status"] != 'solved')
-             && ($ticket->fields["status"] != 'closed')) {
+         if (($ticket->fields["status"] != CommonITILObject::SOLVED)
+             && ($ticket->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div class='center'>";
             echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
             echo __('Send an approval request')."</a></div><br>\n";

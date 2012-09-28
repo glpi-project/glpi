@@ -81,7 +81,7 @@ class Change extends CommonITILObject {
 
    function canSolve(){
 
-      return (self::isAllowedStatus($this->fields['status'], 'solved')
+      return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               && (Session::haveRight("edit_all_change", "1")
                   || (Session::haveRight('show_my_change', 1)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -287,14 +287,14 @@ class Change extends CommonITILObject {
 
          if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
-             && ($this->input["status"] == "solved")) {
+             && ($this->input["status"] == self::SOLVED)) {
 
             $mailtype = "solved";
          }
 
          if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
-             && ($this->input["status"] == "closed")) {
+             && ($this->input["status"] == self::CLOSED)) {
 
             $mailtype = "closed";
          }
@@ -355,7 +355,7 @@ class Change extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
@@ -594,18 +594,18 @@ class Change extends CommonITILObject {
       /// TODO define standard function to check solved / closed status
 
       // To be overridden by class
-      $tab = array('new'           => _x('change', 'New'),
-                   'evaluation'    => __('Evaluation'),
-                   'approbation'   => __('Approval'),
-                   'accepted'      => _x('change', 'Accepted'),
-                   'waiting'       => __('Pending'),
-//                   'assign'      => __('Processing (assigned)'),
-//                   'plan'        => __('Processing (planned)'),
-                   'test'          => __('Test'),
-                   'qualification' => __('Qualification'),
-                   'solved'        => __('Applied'),
-                   'observe'       => __('Review'),
-                   'closed'        => _x('change', 'Closed'),
+      $tab = array(self::INCOMING      => _x('change', 'New'),
+                   self::EVALUATION    => __('Evaluation'),
+                   self::APPROVAL      => __('Approval'),
+                   self::ACCEPTED      => _x('change', 'Accepted'),
+                   self::WAITING       => __('Pending'),
+//                   self::ACCEPTED      => __('Processing (assigned)'),
+//                   self::PLANNED        => __('Processing (planned)'),
+                   self::TEST          => __('Test'),
+                   self::QUALIFICATION => __('Qualification'),
+                   self::SOLVED        => __('Applied'),
+                   self::OBSERVED      => __('Review'),
+                   self::CLOSED        => _x('change', 'Closed'),
 //                   'abandoned'     => __('Abandonned'), // managed using trash ?
    );
 
@@ -631,7 +631,7 @@ class Change extends CommonITILObject {
    static function getClosedStatusArray() {
 
       // To be overridden by class
-      $tab = array('closed'/*, 'abandoned'*/);
+      $tab = array(self::CLOSED/*, 'abandoned'*/);
       return $tab;
    }
 
@@ -646,7 +646,7 @@ class Change extends CommonITILObject {
    **/
    static function getSolvedStatusArray() {
       // To be overridden by class
-      $tab = array('observe', 'solved');
+      $tab = array(self::OBSERVED, self::SOLVED);
       return $tab;
    }
 
@@ -662,7 +662,7 @@ class Change extends CommonITILObject {
    static function getProcessStatusArray() {
 
       // To be overridden by class
-      $tab = array('accepted', 'qualification', 'test');
+      $tab = array(self::ACCEPTED, self::QUALIFICATION, self::TEST);
       return $tab;
    }
 
@@ -794,7 +794,7 @@ class Change extends CommonITILObject {
 
       if ($ID) {
          switch ($this->fields["status"]) {
-            case 'closed' :
+            case self::CLOSED :
                echo "<tr>";
                echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
                echo "<td>";
@@ -802,8 +802,8 @@ class Change extends CommonITILObject {
                echo "</td></tr>";
                break;
 
-            case 'solved' :
-            case 'observe' :
+            case self::SOLVED :
+            case self::OBSERVED :
                echo "<tr>";
                echo "<td><span class='tracking_small'>".__('Resolution date')."</span></td>";
                echo "<td>";

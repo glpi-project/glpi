@@ -245,11 +245,11 @@ abstract class CommonITILActor extends CommonDBRelation {
          if (($item->countSuppliers(CommonITILActor::ASSIGN) == 0)
              && ($item->countUsers(CommonITILActor::ASSIGN) == 0)
              && ($item->countGroups(CommonITILActor::ASSIGN) == 0)
-             && ($item->fields['status'] != 'closed')
-             && ($item->fields['status'] != 'solved')) {
+             && ($item->fields['status'] != CommonITILObject::CLOSED)
+             && ($item->fields['status'] != CommonITILObject::SOLVED)) {
 
             $item->update(array('id'     => $this->fields[static::getItilObjectForeignKey()],
-                                'status' => 'new'));
+                                'status' => CommonITILObject::INCOMING));
          } else {
             $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
