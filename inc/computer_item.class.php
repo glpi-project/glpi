@@ -46,14 +46,16 @@ class Computer_Item extends CommonDBRelation{
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
-   
+
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    /**
     * Count connection for an item
     *
@@ -97,29 +99,23 @@ class Computer_Item extends CommonDBRelation{
                                    AND `itemtype` = '".$item->getType()."'
                                    AND `items_id` ='".$item->getField('id')."'");
    }
-   
+
+
    /**
-    * Check right on an item - overloaded to check is_global
     *
-    * @param $ID           ID of the item (-1 if new item)
-    * @param $right        Right to check : r / w / recursive
-    * @param $input  array of input data (used for adding item) (default NULL)
+    * Don't create a Computer_Item that don't have a valid Item
+    * Was previously done (until 0.83) by inc/Computer_Item::can()
+    * @see inc/CommonDBRelation::canCreateItem()
+    * @since version 0.84
     *
-    * @return boolean
+    * @return boolean : true if we can create the item
    **/
-   function can($ID, $right, array &$input=NULL) {
-
-      if ($ID < 0) {
-         // Ajout
-         if (!($item = getItemForItemtype($input['itemtype']))) {
-            return false;
-         }
-
-         if (!$item->getFromDB($input['items_id'])) {
-            return false;
-         }
+   function canCreateItem() {
+      $item = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
+      if ($item === false) {
+         return false;
       }
-      return parent::can($ID, $right, $input);
+      return parent::canCreateItem();
    }
 
 
