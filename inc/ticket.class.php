@@ -172,7 +172,7 @@ class Ticket extends CommonITILObject {
                       || (isset($_SESSION["glpigroups"])
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
                       || (Session::haveRight('assign_ticket',1)
-                          && ($this->fields["status"] == 'new'))))
+                          && ($this->fields["status"] == self::INCOMING))))
               || (Session::haveRight('validate_ticket','1')
                   && TicketValidation::canValidate($this->fields["id"])));
    }
@@ -190,7 +190,7 @@ class Ticket extends CommonITILObject {
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && self::isAllowedStatus($this->fields['status'], 'solved'));
+              && self::isAllowedStatus($this->fields['status'], self::SOLVED));
    }
 
 
@@ -449,7 +449,7 @@ class Ticket extends CommonITILObject {
 
             $ong[2] = _n('Solution', 'Solutions', 1);
             // enquete si statut clos
-            if ($item->fields['status'] == 'closed') {
+            if ($item->fields['status'] == self::CLOSED) {
                $satisfaction = new TicketSatisfaction();
                if ($satisfaction->getFromDB($item->getID())) {
                   $ong[3] = __('Satisfaction');
@@ -495,7 +495,7 @@ class Ticket extends CommonITILObject {
 
                case 3 :
                   $satisfaction = new TicketSatisfaction();
-                  if (($item->fields['status'] == 'closed')
+                  if (($item->fields['status'] == self::CLOSED)
                       && $satisfaction->getFromDB($_POST["id"])) {
                      $satisfaction->showSatisfactionForm($item);
                   } else {
@@ -1226,9 +1226,9 @@ class Ticket extends CommonITILObject {
       if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
            || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
            || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
-          && ($input["status"] == "new")) {
+          && ($input["status"] == self::INCOMING)) {
 
-         $input["status"] = "assign";
+         $input["status"] = self::ASSIGNED;
       }
 
 
@@ -1287,7 +1287,7 @@ class Ticket extends CommonITILObject {
 
          $fup  = new TicketFollowup();
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
@@ -1311,7 +1311,7 @@ class Ticket extends CommonITILObject {
 
          $task = new TicketTask();
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"]  =="solved")) {
+         if (isset($this->fields["status"]) && ($this->fields["status"]  ==self::SOLVED)) {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
@@ -1443,7 +1443,7 @@ class Ticket extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
@@ -1646,7 +1646,7 @@ class Ticket extends CommonITILObject {
    function canAddItem($type) {
 
       if (($type == 'Document')
-          && ($this->getField('status') == 'closed')) {
+          && ($this->getField('status') == self::CLOSED)) {
          return false;
       }
       return parent::canAddItem($type);
@@ -2539,12 +2539,12 @@ class Ticket extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array('new'     => _x('ticket', 'New'),
-                   'assign'  => __('Processing (assigned)'),
-                   'plan'    => __('Processing (planned)'),
-                   'waiting' => __('Pending'),
-                   'solved'  => __('Solved'),
-                   'closed'  => __('Closed'));
+      $tab = array(self::INCOMING      => _x('ticket', 'New'),
+                   self::ASSIGNED => __('Processing (assigned)'),
+                   self::PLANNED  => __('Processing (planned)'),
+                   self::WAITING  => __('Pending'),
+                   self::SOLVED   => __('Solved'),
+                   self::CLOSED   => __('Closed'));
 
       if ($withmetaforsearch) {
          $tab['notold']    = __('Not solved');
@@ -2565,7 +2565,7 @@ class Ticket extends CommonITILObject {
     * @return an array
    **/
    static function getClosedStatusArray() {
-      return array('closed');
+      return array(self::CLOSED);
    }
 
 
@@ -2577,7 +2577,7 @@ class Ticket extends CommonITILObject {
     * @return an array
    **/
    static function getSolvedStatusArray() {
-      return array('solved');
+      return array(self::SOLVED);
    }
 
 
@@ -2589,7 +2589,7 @@ class Ticket extends CommonITILObject {
     * @return an array
    **/
    static function getProcessStatusArray() {
-      return array('assign', 'plan');
+      return array(self::ASSIGNED, self::PLANNED);
    }
 
 
@@ -3023,7 +3023,7 @@ class Ticket extends CommonITILObject {
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
          $opt['searchtype'][0] = 'equals';
-         $opt['contains'][0]   = 'waiting';
+         $opt['contains'][0]   = self::WAITING;
          $opt['link'][0]       = 'AND';
 
          $opt['field'][1]      = 59; // validation aprobator
@@ -3446,7 +3446,7 @@ class Ticket extends CommonITILObject {
                     'actiontime'                => 0,
                     'date'                      => $_SESSION["glpi_currenttime"],
                     'entities_id'               => $entity,
-                    'status'                    => 'new',
+                    'status'                    => self::INCOMING,
                     'followup'                  => array(),
                     'itemtype'                  => '',
                     'items_id'                  => 0,
@@ -3625,7 +3625,7 @@ class Ticket extends CommonITILObject {
       $colsize4 = '45';
 
       $canupdate_descr = $canupdate
-                         || (($this->fields['status'] == 'new')
+                         || (($this->fields['status'] == self::INCOMING)
                              && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                              && ($this->numberOfFollowups() == 0)
                              && ($this->numberOfTasks() == 0));
@@ -3738,7 +3738,7 @@ class Ticket extends CommonITILObject {
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
-            if (($this->fields['status'] != 'closed')
+            if (($this->fields['status'] != self::CLOSED)
                 && $canupdate) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText('slas_id');
@@ -4424,20 +4424,20 @@ class Ticket extends CommonITILObject {
          case "waiting" : // on affiche les tickets en attente
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
-                             AND `status` = 'waiting' ".
+                             AND `status` = '".self::WAITING."' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "process" : // on affiche les tickets planifiés ou assignés au user
             $query .= "WHERE $is_deleted
                              AND ( $search_assign )
-                             AND (`status` IN ('plan','assign')) ".
+                             AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "toapprove" : // on affiche les tickets planifiés ou assignés au user
             $query .= "WHERE $is_deleted
-                             AND (`status` = 'solved')
+                             AND (`status` = '".self::SOLVED."')
                              AND ($search_users_id";
             if (!$showgrouptickets) {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
@@ -4450,14 +4450,14 @@ class Ticket extends CommonITILObject {
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = 'waiting' ".
+                              AND `glpi_ticketvalidations`.`status` = '".self::WAITING."' ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "rejected" : // on affiche les tickets rejetés
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
-                             AND `status` <> 'closed'
+                             AND `status` <> '".self::CLOSED."'
                              AND `global_validation` = 'rejected' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
@@ -4469,7 +4469,10 @@ class Ticket extends CommonITILObject {
          default :
             $query .= "WHERE $is_deleted
                              AND ($search_users_id)
-                             AND (`status` IN ('new', 'plan', 'assign', 'waiting'))
+                             AND (`status` IN ('".self::INCOMING."', 
+                                               '".self::PLANNED."', 
+                                               '".self::ASSIGNED."', 
+                                               '".self::WAITING."'))
                              AND NOT ( $search_assign ) ".
                              getEntitiesRestrictRequest("AND","glpi_tickets");
       }
@@ -4504,7 +4507,7 @@ class Ticket extends CommonITILObject {
                      $num++;
                      $options['field'][$num]      = 12; // status
                      $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'solved';
+                     $options['contains'][$num]   = self::SOLVED;
                      $options['link'][$num]       = 'AND';
                      $num++;
                      $forcetab                    = 'Ticket$2';
@@ -4523,7 +4526,7 @@ class Ticket extends CommonITILObject {
                      $num++;
                      $options['field'][$num]      = 12; // status
                      $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'waiting';
+                     $options['contains'][$num]   = self::WAITING;
                      $options['link'][$num]       = 'AND';
                      $num++;
                   }
@@ -4574,7 +4577,7 @@ class Ticket extends CommonITILObject {
                case "waiting" :
                   $options['field'][0]      = 12; // status
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'waiting';
+                  $options['contains'][0]   = self::WAITING;
                   $options['link'][0]       = 'AND';
 
                   $options['field'][1]      = 5; // users_id_assign
@@ -4606,7 +4609,7 @@ class Ticket extends CommonITILObject {
                case "tovalidate" :
                   $options['field'][0]      = 55; // validation status
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'waiting';
+                  $options['contains'][0]   = self::WAITING;
                   $options['link'][0]        = 'AND';
 
                   $options['field'][1]      = 59; // validation aprobator
@@ -4642,7 +4645,7 @@ class Ticket extends CommonITILObject {
                case "toapprove" :
                   $options['field'][0]      = 12; // status
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'solved';
+                  $options['contains'][0]   = self::SOLVED;
                   $options['link'][0]        = 'AND';
 
                   $options['field'][1]      = 4; // users_id_assign
@@ -4657,7 +4660,7 @@ class Ticket extends CommonITILObject {
 
                   $options['field'][3]      = 12; // status
                   $options['searchtype'][3] = 'equals';
-                  $options['contains'][3]   = 'solved';
+                  $options['contains'][3]   = self::SOLVED;
                   $options['link'][3]       = 'AND';
 
                   $forcetab                 = 'Ticket$2';
@@ -4698,37 +4701,7 @@ class Ticket extends CommonITILObject {
          }
          echo "</table>";
 
-      } else {
-//          echo "<table class='tab_cadrehov' style='width:420px'>";
-//          echo "<tr><th>";
-//          switch ($status) {
-//             case 'waiting' :
-//                _e('Tickets on pending status');
-//                break;
-//
-//             case 'process' :
-//                _e('Tickets to be processed');
-//                break;
-//
-//             case 'tovalidate' :
-//                _e('Your tickets to validate');
-//                break;
-//
-//             case 'rejected' :
-//                _e('Your rejected tickets');
-//                break;
-//
-//             case 'toapprove' :
-//                _e('Your tickets to close');
-//                break;
-//
-//             case 'requestbyself' :
-//             default :
-//                _e('Your tickets in progress');
-//          }
-//          echo "</th></tr>";
-//          echo "</table>";
-      }
+      } 
    }
 
    /**
@@ -4852,7 +4825,7 @@ class Ticket extends CommonITILObject {
 
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE `status` = 'new' ".
+                WHERE `status` = '".self::INCOMING."' ".
                       getEntitiesRestrictRequest("AND","glpi_tickets")."
                       AND NOT `is_deleted`
                 ORDER BY `glpi_tickets`.`date_mod` DESC
@@ -4865,7 +4838,7 @@ class Ticket extends CommonITILObject {
 
          $options['field'][0]      = 12;
          $options['searchtype'][0] = 'equals';
-         $options['contains'][0]   = 'new';
+         $options['contains'][0]   = self::INCOMING;
          $options['link'][0]       = 'AND';
          $options['reset']         ='reset';
 
@@ -5197,11 +5170,11 @@ class Ticket extends CommonITILObject {
          echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
 
          // Second column
-         if ($job->fields['status'] == 'closed') {
+         if ($job->fields['status'] == self::CLOSED) {
             $second_col = sprintf(__('Closed on %s'),
                                   ($output_type == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($job->fields['closedate']));
-         } else if ($job->fields['status'] == 'solved') {
+         } else if ($job->fields['status'] == self::SOLVED) {
             $second_col = sprintf(__('Solved on %s'),
                                   ($output_type == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($job->fields['solvedate']));
@@ -5570,7 +5543,7 @@ class Ticket extends CommonITILObject {
             $query = "SELECT *
                       FROM `glpi_tickets`
                       WHERE `entities_id` = '".$entity."'
-                            AND `status` = 'solved'
+                            AND `status` = '".self::SOLVED."'
                             AND `is_deleted` = 0";
 
             if ($delay > 0) {
@@ -5580,7 +5553,7 @@ class Ticket extends CommonITILObject {
             $nb = 0;
             foreach ($DB->request($query) as $tick) {
                $ticket->update(array('id'           => $tick['id'],
-                                     'status'       => 'closed',
+                                     'status'       => self::CLOSED,
                                      '_auto_update' => true));
                $nb++;
             }
@@ -5617,7 +5590,10 @@ class Ticket extends CommonITILObject {
                    FROM `glpi_tickets`
                    WHERE `glpi_tickets`.`entities_id` = '".$entity."'
                          AND `glpi_tickets`.`is_deleted` = 0
-                         AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
+                         AND `glpi_tickets`.`status` IN ('".self::INCOMING."',
+                                                         '".self::ASSIGNED."',
+                                                         '".self::PLANNED."',
+                                                         '".self::WAITING."')
                          AND `glpi_tickets`.`closedate` IS NULL
                          AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()";
          $tickets = array();
@@ -5687,7 +5663,7 @@ class Ticket extends CommonITILObject {
                        ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
                    WHERE `glpi_tickets`.`entities_id` = '$entity'
                          AND `glpi_tickets`.`is_deleted` = 0
-                         AND `glpi_tickets`.`status` = 'closed'
+                         AND `glpi_tickets`.`status` = '".self::CLOSED."'
                          AND `glpi_tickets`.`closedate` > '$max_closedate'
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
                          AND `glpi_ticketsatisfactions`.`id` IS NULL

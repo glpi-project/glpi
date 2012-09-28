@@ -992,13 +992,61 @@ function update0831to084() {
       $query = "UPDATE `glpi_configs`
                SET `language` = '$new'
                WHERE `language` = '$old';";
-      $DB->queryOrDie($query, "0.74 language in config $old to $new");
+      $DB->queryOrDie($query, "0.84 language in config $old to $new");
 
       $query = "UPDATE `glpi_users`
                SET `language` = '$new'
                WHERE `language` = '$old';";
-      $DB->queryOrDie($query, "0.74 language in users $old to $new");
+      $DB->queryOrDie($query, "0.84 language in users $old to $new");
    }
+
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'ticket and problems status'));
+   
+   $status = array ('new'           => CommonITILObject::INCOMING,
+                    'assign'        => CommonITILObject::ASSIGNED, 
+                    'plan'          => CommonITILObject::PLANNED, 
+                    'waiting'       => CommonITILObject::WAITING, 
+                    'solved'        => CommonITILObject::SOLVED, 
+                    'closed'        => CommonITILObject::CLOSED, 
+                    'accepted'      => CommonITILObject::ACCEPTED, 
+                    'observe'       => CommonITILObject::OBSERVED, 
+                    'evaluation'    => CommonITILObject::EVALUATION, 
+                    'approbation'   => CommonITILObject::APPROVAL, 
+                    'test'          => CommonITILObject::TEST, 
+                    'qualification' => CommonITILObject::QUALIFICATION);
+   foreach (array('glpi_tickets', 'glpi_problems') as $table) {
+      // Migrate datas
+      foreach ($status as $old => $new) {
+         $query = "UPDATE `$table` SET `status` = '$new' WHERE `status` = '$old'";
+         $DB->queryOrDie($query, "0.84 status in $table $old to $new");
+      }
+      $migration->changeField($table, 'status', 'status', 'integer', array('value' => CommonITILObject::INCOMING));
+   }
+
+   // Update glpi_profiles : ticket_status
+   foreach ($DB->request('glpi_profiles') as $data) {
+      $fields_to_decode = array('ticket_status','problem_status');
+      foreach ($fields_to_decode as $field) {
+         $tab = importArrayFromDB($data[$field]);
+         if (is_array($tab)) {
+            $newtab= array();
+            foreach ($tab as $key => $values) {
+               foreach ($values as $key2 => $val2) {
+                  $newtab[$status[$key]][$status[$key2]] = $val2;
+               }
+            }
+
+            $query  = "UPDATE `glpi_profiles`
+                        SET `$field` = '".addslashes(exportArrayToDB($newtab))."'
+                        WHERE `id` = '".$data['id']."'";
+            $DB->queryOrDie($query, "0.84 migrate $field of glpi_profiles");
+         }
+      } 
+   }
+
+   $migration->addField('glpi_profiles', 'change_status', "text",
+                        array('comment' => "json encoded array of from/dest allowed status change"));
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
@@ -1010,7 +1058,7 @@ function update0831to084() {
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `status` varchar(255) DEFAULT NULL,
+                  `status` int(11) NOT NULL DEFAULT '1',
                   `content` longtext DEFAULT NULL,
                   `date_mod` DATETIME DEFAULT NULL,
                   `date` DATETIME DEFAULT NULL,
@@ -1039,7 +1087,7 @@ function update0831to084() {
                   KEY `is_deleted` (`is_deleted`),
                   KEY `date` (`date`),
                   KEY `closedate` (`closedate`),
-                  KEY `status` (`status`(1)),
+                  KEY `status` (`status`),
                   KEY `priority` (`priority`),
                   KEY `date_mod` (`date_mod`),
                   KEY `itilcategories_id` (`itilcategories_id`),
@@ -2038,6 +2086,11 @@ function update0831to084() {
                                FROM `glpi_calendars`)";
    $DB->queryOrDie($query, "0.84 clean glpi_calendarsegments");
    
+
+
+
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

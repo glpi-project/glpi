@@ -251,8 +251,8 @@ class Ticket_Ticket extends CommonDBRelation {
                $input['id'] = $data['tickets_id'];
                if ($ticket->can($input['id'],'w')
                    && ($data['link'] == self::DUPLICATE_WITH)
-                   && ($ticket->fields['status'] != 'solved')
-                   && ($ticket->fields['status'] != 'closed')) {
+                   && ($ticket->fields['status'] != CommonITILObject::SOLVED)
+                   && ($ticket->fields['status'] != CommonITILObject::CLOSED)) {
                   $ticket->update($input);
                }
             }

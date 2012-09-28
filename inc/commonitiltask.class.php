@@ -218,10 +218,11 @@ abstract class CommonITILTask  extends CommonDBTM {
             }
 
             if (!empty($this->fields['begin'])
-                && (($item->fields["status"] == "new") || ($item->fields["status"] == "assign"))) {
+                && (($item->fields["status"] == CommonITILObject::INCOMING) 
+                     || ($item->fields["status"] == CommonITILObject::ASSIGN))) {
 
                $input2['id']            = $item->getID();
-               $input2['status']        = "plan";
+               $input2['status']        = CommonITILObject::PLANNED;
                $input2['_disablenotif'] = true;
                $item->update($input2);
             }
@@ -323,11 +324,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if (!empty($this->fields['begin'])
-          && (($this->input["_job"]->fields["status"] == "new")
-              || ($this->input["_job"]->fields["status"] == "assign"))) {
+          && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
+              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGN))) {
 
          $input2['id']            = $this->input["_job"]->getID();
-         $input2['status']        = "plan";
+         $input2['status']        = CommonITILObject::PLANNED;
          $input2['_disablenotif'] = true;
          $this->input["_job"]->update($input2);
       }
@@ -1061,7 +1062,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         if (($item->fields["status"] != 'solved') && ($item->fields["status"] != 'closed')) {
+         if (($item->fields["status"] != self::SOLVED) && ($item->fields["status"] != self::CLOSED)) {
             echo "<div class='center'>".
                  "<a class='vsubmit' href='javascript:viewAddFollowup".$item->fields['id']."$rand();'>";
             echo __('Add a new task')."</a></div></p><br>\n";

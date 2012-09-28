@@ -2634,7 +2634,7 @@ class Search {
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
                   if (Session::haveRight('assign_ticket',1)) {
-                     $condition .= " OR `glpi_tickets`.`status`='new'";
+                     $condition .= " OR `glpi_tickets`.`status`='".CommonITILObject::INCOMING."'";
                   }
                }
 
@@ -3801,7 +3801,7 @@ class Search {
 
          case "glpi_tickets.due_date" :
             if (!empty($data[$NAME.$num])
-                && ($data[$NAME.$num.'_2'] != 'waiting')
+                && ($data[$NAME.$num.'_2'] != CommonITILObject::WAITING)
                 && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
                return " class='tab_bg_2_2' ";
             }
@@ -4298,7 +4298,7 @@ class Search {
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
             $out .= 'id='.$data[$NAME.$num."_2"];
             // Force solution tab if solved
-            if ($data[$NAME.$num."_4"]=='solved') {
+            if ($data[$NAME.$num."_4"]==CommonITILObject::SOLVED) {
                $out .= "&amp;forcetab=Ticket$2";
             }
             $out .= "\">";
@@ -4316,7 +4316,7 @@ class Search {
 
          case "glpi_tickets.due_date" :
             // No due date in waiting status
-            if ($data[$NAME.$num.'_2'] == 'waiting') {
+            if ($data[$NAME.$num.'_2'] == CommonITILObject::WAITING) {
                $data[$NAME.$num] = "";
             }
             break;

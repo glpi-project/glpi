@@ -131,11 +131,11 @@ class SlaLevel_Ticket extends CommonDBTM {
          if (($ticket->fields['slas_id'] > 0)
              && ($ticket->fields['slalevels_id'] == $data['slalevels_id'])) {
 
-            if ($ticket->fields['status'] == 'closed') {
+            if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                // Drop line when status is closed
                $slalevelticket->delete(array('id' => $data['id']));
 
-            } else if ($ticket->fields['status'] != 'solved') {
+            } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
                // If status = solved : keep the line in case of solution not validated
                $input['id']           = $ticket->getID();
                $input['_auto_update'] = true;
