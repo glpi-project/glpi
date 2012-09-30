@@ -343,6 +343,7 @@ class Reservation extends CommonDBChild {
          $annee_courante = $_GET["annee_courante"];
       }
 
+      $mois_courant     = intval($mois_courant);
       $mois_suivant     = $mois_courant+1;
       $mois_precedent   = $mois_courant-1;
       $annee_suivante   = $annee_courante;
