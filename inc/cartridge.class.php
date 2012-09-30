@@ -855,6 +855,7 @@ class Cartridge extends CommonDBChild {
       echo "<td>"._n('Printer','Printers',1)."</td><td>";
       echo $printer->getLink();
       echo "<input type='hidden' name='printers_id' value='".$this->getField('printers_id')."'>\n";
+      echo "<input type='hidden' name='cartridgeitems_id' value='".$this->getField('cartridgeitems_id')."'>\n";
       echo "</td>\n";
 
       echo "<td>"._n('Cartridge model','Cartridge models',1)."</td><td>";
