@@ -1062,7 +1062,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         if (($item->fields["status"] != self::SOLVED) && ($item->fields["status"] != self::CLOSED)) {
+         if (($item->fields["status"] != CommonITILObject::SOLVED) && ($item->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div class='center'>".
                  "<a class='vsubmit' href='javascript:viewAddFollowup".$item->fields['id']."$rand();'>";
             echo __('Add a new task')."</a></div></p><br>\n";
