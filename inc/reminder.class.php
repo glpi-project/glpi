@@ -832,13 +832,12 @@ class Reminder extends CommonDBTM {
 
       $readpub    = $readpriv = "";
 
-      $joinstoadd = '';
+      $joinstoadd = self::addVisibilityJoins(true);
 
       // See public reminder ?
       if (($who === Session::getLoginUserID())
           && Session::haveRight("reminder_public","r")) {
          $readpub    = self::addVisibilityRestrict();
-         $joinstoadd = self::addVisibilityJoins(true);
       }
 
       // See my private reminder ?
@@ -849,13 +848,16 @@ class Reminder extends CommonDBTM {
             $readpriv = "`glpi_reminders`.`users_id` = '$who'";
          }
          if ($who_group > 0) {
-            $readpriv .= "OR `glpi_groups_reminders`.`groups_id` = '$who_group'";
+            if (!empty($readpriv)) {
+               $readpriv .= " OR ";
+            }
+            $readpriv .= " `glpi_groups_reminders`.`groups_id` = '$who_group'";         
          }
          if (!empty($readpriv)) {
             $readpriv = '('.$readpriv.')';
          }
       }
-
+      $ASSIGN = '';
       if (!empty($readpub)
           && !empty($readpriv)) {
          $ASSIGN = "($readpub OR $readpriv)";
