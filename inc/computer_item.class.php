@@ -740,18 +740,18 @@ class Computer_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       $rand     = mt_rand();
-      $use_ajax = false;
-      if ($CFG_GLPI["use_ajax"]) {
-         $nb = 0;
-         if ($entity_restrict >= 0) {
-            $nb = countElementsInTableForEntity(getTableForItemType($itemtype), $entity_restrict);
-         } else {
-            $nb = countElementsInTableForMyEntities(getTableForItemType($itemtype));
-         }
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
+//       $use_ajax = false;
+//       if ($CFG_GLPI["use_ajax"]) {
+//          $nb = 0;
+//          if ($entity_restrict >= 0) {
+//             $nb = countElementsInTableForEntity(getTableForItemType($itemtype), $entity_restrict);
+//          } else {
+//             $nb = countElementsInTableForMyEntities(getTableForItemType($itemtype));
+//          }
+//          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
+//             $use_ajax = true;
+//          }
+//       }
       $options               = array();
       $options['checkright'] = true;
       $options['name']       = 'itemtype';
