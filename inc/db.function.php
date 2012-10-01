@@ -236,7 +236,8 @@ function getSingular($string) {
 //                   'cases$'          => 'case', // Case like cases
                   '([aeiou]{2})ses$' => '\1s', // Case like aliases
                   'ss$'            => 'ss', // Special case (addresses) when getSingular is called on already singular form
-                  'alias$'           => 'alias', // Special case (aliases) when getSingular is called on already singular form
+                  'alias$'         => 'alias', // Special case (aliases) when getSingular is called on already singular form
+                  'status$'        => 'status', // Special case (statuses) when getSingular is called on already singular form
                   'ies$'           => 'y', // special case : category
                   's$'             => ''); // Add at the end if not exists
 
