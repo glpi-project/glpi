@@ -3105,6 +3105,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             break;
+
          default :
             // Plugin specific actions
             $split = explode('_',$input["action"]);
@@ -3114,11 +3115,11 @@ class CommonDBTM extends CommonGLPI {
                // Allow hook from any plugin on any (core or plugin) type
                $res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $input);
 
-            } /*else if ($plug=isPluginItemType($input["itemtype"])) {
+//            } else if ($plug=isPluginItemType($input["itemtype"])) {
                // non-normalized name
                // hook from the plugin defining the type
-               $res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
-            }*/ else {
+//               $res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
+            } else {
                $res = $this->doSpecificMassiveActions($input);
             }
             break;
