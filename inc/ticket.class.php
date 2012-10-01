@@ -3099,7 +3099,7 @@ class Ticket extends CommonITILObject {
       }
 
 
-      $delegating = User::getDelegateGroupsForUser($options['entities_id']);
+      $delegating = User::getDelegateGroupsForUser($values['entities_id']);
 
       if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
