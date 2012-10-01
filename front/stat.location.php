@@ -45,7 +45,7 @@ if (empty($_GET["showgraph"])) {
 }
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-   $year              = date("Y")-1;
+   $year          = date("Y")-1;
    $_GET["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
    $_GET["date2"] = date("Y-m-d");
 }
@@ -54,7 +54,7 @@ if (!empty($_GET["date1"])
     && !empty($_GET["date2"])
     && (strcmp($_GET["date2"], $_GET["date1"]) < 0)) {
 
-   $tmp               = $_GET["date1"];
+   $tmp           = $_GET["date1"];
    $_GET["date1"] = $_GET["date2"];
    $_GET["date2"] = $tmp;
 }
@@ -82,14 +82,14 @@ echo "<form method='get' name='form' action='stat.location.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name='dropdown'>";
 echo "<optgroup label=\""._sn('Dropdown','Dropdowns',2)."\">";
-echo "<option value='ComputerType' ".($_GET["dropdown"]=="ComputerType"?"selected":"").">".
+echo "<option value='ComputerType' ".(($_GET["dropdown"] == "ComputerType")?"selected":"").">".
        __('Type')."</option>";
-echo "<option value='ComputerModel' ".($_GET["dropdown"]=="ComputerModel"?"selected":"").">".
+echo "<option value='ComputerModel' ".(($_GET["dropdown"] == "ComputerModel")?"selected":"").">".
        __('Model')."</option>";
 echo "<option value='OperatingSystem' ".
       ($_GET["dropdown"]=="OperatingSystem"?"selected":"").">".__('Operating system').
      "</option>";
-echo "<option value='Location' ".($_GET["dropdown"]=="Location"?"selected":"").">".
+echo "<option value='Location' ".(($_GET["dropdown"] == "Location")?"selected":"").">".
       __('Location')."</option>";
 echo "</optgroup>";
 
@@ -97,7 +97,7 @@ $devices = Dropdown::getDeviceItemTypes();
 foreach ($devices as $label => $dp) {
    echo "<optgroup label=\"$label\">";
    foreach ($dp as $i => $name) {
-      echo "<option value='$i' ".($_GET["dropdown"]==$i?"selected":"").">$name</option>";
+      echo "<option value='$i' ".(($_GET["dropdown"] == $i)?"selected":"").">$name</option>";
    }
    echo "</optgroup>";
 }
@@ -121,7 +121,8 @@ echo "</table>";
 // form using GET method : CRSF not needed
 echo "</form>";
 
-if (empty($_GET["dropdown"]) || !($item = getItemForItemtype($_GET["dropdown"]))) {
+if (empty($_GET["dropdown"])
+    || !($item = getItemForItemtype($_GET["dropdown"]))) {
    // Do nothing
    Html::footer();
    exit();
@@ -132,8 +133,7 @@ if (!($item instanceof CommonDevice)) {
   // echo "Dropdown";
    $type = "comp_champ";
 
-   $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"],
-                         $_GET["dropdown"]);
+   $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_GET["dropdown"],
                    'date1'    => $_GET["date1"],
@@ -145,8 +145,7 @@ if (!($item instanceof CommonDevice)) {
    $type  = "device";
    $field = $_GET["dropdown"];
 
-   $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"],
-                         $_GET["dropdown"]);
+   $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_GET["dropdown"],
                    'date1'    => $_GET["date1"],
@@ -160,11 +159,11 @@ Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat
                  'Stat', $params);
 
 if (!$_GET['showgraph']) {
-   Stat::show($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"],
-              $_GET['start'], $val, $_GET["dropdown"]);
+   Stat::show($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'], $val,
+              $_GET["dropdown"]);
 } else {
-   $data = Stat::getDatas($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"],
-                          $_GET['start'], $val, $_GET["dropdown"]);
+   $data = Stat::getDatas($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'],
+                          $val, $_GET["dropdown"]);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {

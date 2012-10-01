@@ -41,7 +41,7 @@ Session::checkRight("statistic", "1");
 
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-   $year              = date("Y")-1;
+   $year          = date("Y")-1;
    $_GET["date1"] = date("Y-m-d", mktime(1,0,0,date("m"), date("d"), $year));
    $_GET["date2"] = date("Y-m-d");
 }
@@ -50,7 +50,7 @@ if (!empty($_GET["date1"])
     && !empty($_GET["date2"])
     && (strcmp($_GET["date2"],$_GET["date1"]) < 0)) {
 
-   $tmp               = $_GET["date1"];
+   $tmp           = $_GET["date1"];
    $_GET["date1"] = $_GET["date2"];
    $_GET["date2"] = $tmp;
 }
@@ -77,14 +77,14 @@ echo "</table></div>";
 
 ///////// Stats nombre intervention
 // Total des interventions
-$values['total']   = Stat::constructEntryValues($_GET['itemtype'], "inter_total",
-                                                $_GET["date1"], $_GET["date2"]);
+$values['total']   = Stat::constructEntryValues($_GET['itemtype'], "inter_total", $_GET["date1"],
+                                                $_GET["date2"]);
 // Total des interventions résolues
-$values['solved']  = Stat::constructEntryValues($_GET['itemtype'], "inter_solved",
-                                                $_GET["date1"], $_GET["date2"]);
+$values['solved']  = Stat::constructEntryValues($_GET['itemtype'], "inter_solved", $_GET["date1"],
+                                                $_GET["date2"]);
 // Total des interventions closes
-$values['closed']  = Stat::constructEntryValues($_GET['itemtype'], "inter_closed",
-                                                $_GET["date1"], $_GET["date2"]);
+$values['closed']  = Stat::constructEntryValues($_GET['itemtype'], "inter_closed", $_GET["date1"],
+                                                $_GET["date2"]);
 // Total des interventions closes
 $values['late']    = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_late",
                                                 $_GET["date1"], $_GET["date2"]);
@@ -147,13 +147,12 @@ $available = array('avgclosed'      => __('Closure'),
                    'avgactiontime'  => __('Real duration'));
 
 
-if ($_GET['itemtype']=='Ticket') {
+if ($_GET['itemtype'] == 'Ticket') {
    $available['avgtaketime'] = __('Take into account');
 
    //Temps moyen de prise en compte de l'intervention
-   $values2['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'],
-                                                        "inter_avgtakeaccount", $_GET["date1"],
-                                                        $_GET["date2"]);
+   $values2['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgtakeaccount",
+                                                        $_GET["date1"], $_GET["date2"]);
 
    // Pass to hour values
    foreach ($values2['avgtaketime'] as $key => $val) {
@@ -194,13 +193,11 @@ if ($_GET['itemtype'] == 'Ticket') {
    ///////// Satisfaction
    $values['opensatisfaction']   = Stat::constructEntryValues($_GET['itemtype'],
                                                               "inter_opensatisfaction",
-                                                              $_GET["date1"],
-                                                              $_GET["date2"]);
+                                                              $_GET["date1"], $_GET["date2"]);
 
    $values['answersatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
                                                               "inter_answersatisfaction",
-                                                              $_GET["date1"],
-                                                              $_GET["date2"]);
+                                                              $_GET["date1"], $_GET["date2"]);
 
 
    $available = array('opensatisfaction'   => __('Opened'),
@@ -240,7 +237,8 @@ if ($_GET['itemtype'] == 'Ticket') {
 
    $toprint = array();
    foreach ($available as $key => $name) {
-      if ($show_all || isset($_GET['graph'][$key])) {
+      if ($show_all
+          || isset($_GET['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }

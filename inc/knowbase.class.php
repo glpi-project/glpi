@@ -146,7 +146,7 @@ class Knowbase extends CommonGLPI {
       $ki = new KnowbaseItem();
       $ki->showBrowseForm($_POST);
       if (!isset($_POST["itemtype"])
-         || !isset($_POST["items_id"])) {
+          || !isset($_POST["items_id"])) {
          KnowbaseItemCategory::showFirstLevel($_POST);
       }
       KnowbaseItem::showList($_POST, 'browse');

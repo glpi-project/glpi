@@ -40,30 +40,48 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBChild {
 
    /// From CommonDBChild
-   static public $itemtype = 'itemtype';
-   static public $items_id = 'items_id';
+   static public $itemtype          = 'itemtype';
+   static public $items_id          = 'items_id';
 
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+
 
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
    }
 
+
+   /**
+    * @since 0.84
+   **/
    static function canCreate() {
       return static::canUpdate();
    }
 
+
+   /**
+    * @since 0.84
+   **/
    static function canView() {
       return true;
    }
 
+
+   /**
+    * @since 0.84
+   **/
    static function canUpdate() {
       return Session::haveRight("reservation_central", "w");
    }
 
+
+   /**
+    * @since 0.84
+   **/
    static function canDelete() {
       return static::canUpdate();
    }
+
 
    // From CommonDBTM
    /**
@@ -115,10 +133,10 @@ class ReservationItem extends CommonDBChild {
       $tab[4]['name']            = __('Comments');
       $tab[4]['datatype']        = 'text';
 
-      $tab[5]['table']          = $this->getTable();
-      $tab[5]['field']          = 'is_active';
-      $tab[5]['name']           = __('Active');
-      $tab[5]['datatype']       = 'bool';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'is_active';
+      $tab[5]['name']            = __('Active');
+      $tab[5]['datatype']        = 'bool';
 
       $tab['common']             = __('Characteristics');
 
@@ -138,7 +156,7 @@ class ReservationItem extends CommonDBChild {
       $loc = Location::getSearchOptionsToAdd();
       // Force massive actions to false
       foreach ($loc as $key => $val) {
-         $tab[$key] = $val;
+         $tab[$key]                  = $val;
          $tab[$key]['massiveaction'] = false;
       }
 
@@ -146,20 +164,20 @@ class ReservationItem extends CommonDBChild {
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
-      $tab[16]['massiveaction']   = false;
+      $tab[16]['massiveaction']  = false;
 
       $tab[70]['table']          = 'glpi_users';
       $tab[70]['field']          = 'name';
       $tab[70]['name']           = __('User');
       $tab[70]['datatype']       = 'dropdown';
       $tab[70]['right']          = 'all';
-      $tab[70]['massiveaction']   = false;
+      $tab[70]['massiveaction']  = false;
 
       $tab[71]['table']          = 'glpi_groups';
       $tab[71]['field']          = 'completename';
       $tab[71]['name']           = __('Group');
       $tab[71]['datatype']       = 'dropdown';
-      $tab[71]['massiveaction']   = false;
+      $tab[71]['massiveaction']  = false;
 
       $tab[19]['table']          = 'reservation_types';
       $tab[19]['field']          = 'date_mod';
@@ -171,7 +189,7 @@ class ReservationItem extends CommonDBChild {
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
       $tab[23]['datatype']       = 'dropdown';
-      $tab[23]['massiveaction']   = false;
+      $tab[23]['massiveaction']  = false;
 
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
@@ -179,14 +197,14 @@ class ReservationItem extends CommonDBChild {
       $tab[24]['name']           = __('Technician in charge of the hardware');
       $tab[24]['datatype']       = 'dropdown';
       $tab[24]['right']          = 'interface';
-      $tab[24]['massiveaction']   = false;
+      $tab[24]['massiveaction']  = false;
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
       $tab[80]['datatype']       = 'dropdown';
-      $tab[80]['massiveaction']   = false;
+      $tab[80]['massiveaction']  = false;
 
       return $tab;
    }
@@ -223,12 +241,12 @@ class ReservationItem extends CommonDBChild {
 
          if ($ri->fields["is_active"]) {
             Html::showSimpleForm(static::getFormURL(), 'update', __('Make unavailable'),
-                              array('id' => $ri->fields['id'],
-                                    'is_active' => 0));
+                                 array('id'        => $ri->fields['id'],
+                                       'is_active' => 0));
          } else {
             Html::showSimpleForm(static::getFormURL(), 'update', __('Make available'),
-                              array('id' => $ri->fields['id'],
-                                    'is_active' => 1));
+                                 array('id'        => $ri->fields['id'],
+                                       'is_active' => 1));
          }
 
          echo '</td><td>';

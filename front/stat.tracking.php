@@ -65,7 +65,7 @@ if (!empty($_GET["date1"])
     && !empty($_GET["date2"])
     && (strcmp($_GET["date2"],$_GET["date1"]) < 0)) {
 
-   $tmp               = $_GET["date1"];
+   $tmp           = $_GET["date1"];
    $_GET["date1"] = $_GET["date2"];
    $_GET["date2"] = $tmp;
 }
@@ -115,7 +115,7 @@ $INSELECT = "";
 foreach ($items as $label => $tab) {
    $INSELECT .= "<optgroup label=\"$label\">";
    foreach ($tab as $key => $val) {
-      $INSELECT .= "<option value='$key' ".($key==$_GET["type"]?"selected":"").">".$val['title'].
+      $INSELECT .= "<option value='$key' ".(($key == $_GET["type"])?"selected":"").">".$val['title'].
                    "</option>";
    }
    $INSELECT .= "</optgroup>";
@@ -145,8 +145,8 @@ echo "</table>";
 echo "</form>";
 echo "</div>";
 
-$val    = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                         $_GET["type"], $_GET["value2"]);
+$val    = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"],
+                         $_GET["value2"]);
 $params = array('type'   => $_GET["type"],
                 'date1'  => $_GET["date1"],
                 'date2'  => $_GET["date2"],
@@ -154,18 +154,18 @@ $params = array('type'   => $_GET["type"],
                 'start'  => $_GET["start"]);
 
 Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
-                 "date1=".$_GET["date1"]."&amp;date2=".$_GET["date2"].
-                     "&amp;type=".$_GET["type"]."&amp;showgraph=".$_GET["showgraph"].
-                     "&amp;itemtype=".$_GET["itemtype"]."&amp;value2=".$_GET['value2'],
+                 "date1=".$_GET["date1"]."&amp;date2=".$_GET["date2"]."&amp;type=".$_GET["type"].
+                    "&amp;showgraph=".$_GET["showgraph"]."&amp;itemtype=".$_GET["itemtype"].
+                    "&amp;value2=".$_GET['value2'],
                  'Stat', $params);
 
 if (!$_GET['showgraph']) {
-   Stat::show($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"],
-              $_GET['start'], $val, $_GET['value2']);
+   Stat::show($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"], $_GET['start'],
+              $val, $_GET['value2']);
 
 } else {
-   $data = Stat::getDatas($_GET["itemtype"], $_GET["type"], $_GET["date1"],
-                          $_GET["date2"], $_GET['start'], $val, $_GET['value2']);
+   $data = Stat::getDatas($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"],
+                          $_GET['start'], $val, $_GET['value2']);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {

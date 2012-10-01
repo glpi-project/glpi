@@ -1942,7 +1942,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if ($canedit) {
                echo "&nbsp;";
                Html::showSimpleForm($this->getFormURL(), 'delete_group', __('Delete'),
-                                    array('id'=>$d['id'],
+                                    array('id'                        => $d['id'],
                                           $this->getForeignKeyField() => $this->fields['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
@@ -1982,7 +1982,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if ($canedit) {
                echo "&nbsp;";
                Html::showSimpleForm($this->getFormURL(), 'delete_supplier', __('Delete'),
-                                    array('id'=>$d['id'],
+                                    array('id'                        => $d['id'],
                                           $this->getForeignKeyField() => $this->fields['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
@@ -2466,7 +2466,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if ($canedit) {
                echo "&nbsp;";
                Html::showSimpleForm($this->getFormURL(), 'delete_user', __('Delete'),
-                                    array('id'=>$d['id'],
+                                    array('id'                        => $d['id'],
                                           $this->getForeignKeyField() => $this->fields['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
@@ -2792,8 +2792,9 @@ abstract class CommonITILObject extends CommonDBTM {
                  && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                  && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
          echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-         Html::showSimpleForm($this->getFormURL(), 'addme_observer', __('Associate myself with this ticket'),
-                           array('tickets_id' => $this->fields['id']));
+         Html::showSimpleForm($this->getFormURL(), 'addme_observer',
+                              __('Associate myself with this ticket'),
+                              array('tickets_id' => $this->fields['id']));
       }
 
       echo "</th>";
