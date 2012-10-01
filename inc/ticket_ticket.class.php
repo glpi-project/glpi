@@ -41,10 +41,10 @@ class Ticket_Ticket extends CommonDBRelation {
 
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Ticket';
-   static public $items_id_1 = 'tickets_id_1';
-   static public $itemtype_2 = 'Ticket';
-   static public $items_id_2 = 'tickets_id_2';
+   static public $itemtype_1     = 'Ticket';
+   static public $items_id_1     = 'tickets_id_1';
+   static public $itemtype_2     = 'Ticket';
+   static public $items_id_2     = 'tickets_id_2';
 
    static public $check_entities = false;
 
@@ -127,7 +127,7 @@ class Ticket_Ticket extends CommonDBRelation {
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
                   $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'delete', __('Delete'),
-                                                         array('id' => $linkID,
+                                                         array('id'         => $linkID,
                                                                'tickets_id' => $ID),
                                                          $CFG_GLPI["root_doc"]."/pics/delete.png");
                }

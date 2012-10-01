@@ -3817,8 +3817,7 @@ class Html {
       if (Session::isMultiEntitiesMode()) {
          echo "<li>";
 
-         Ajax::createModalWindow('entity_window',
-                                 $CFG_GLPI['root_doc']."/ajax/entitytree.php",
+         Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
                                  array('title'       => __('Select the desired entity'),
                                        'extraparams' => array('target' => $target)));
 

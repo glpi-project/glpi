@@ -75,8 +75,7 @@ switch($_GET["type"]) {
    case "technicien" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
                          $item->getAssignName($_GET["id"], 'User', 1));
       break;
@@ -84,8 +83,7 @@ switch($_GET["type"]) {
    case "technicien_followup" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
                          $item->getAssignName($_GET["id"], 'User', 1));
       break;
@@ -93,8 +91,7 @@ switch($_GET["type"]) {
    case "suppliers_id_assign" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Supplier'),
                          $item->getAssignName($_GET["id"], 'Supplier', 1));
       break;
@@ -102,16 +99,14 @@ switch($_GET["type"]) {
    case "user" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
    case "users_id_recipient" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
@@ -123,8 +118,8 @@ switch($_GET["type"]) {
    case "itilcategories_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"], $parent );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"],
+                                $parent);
       $title   = sprintf(__('%1$s: %2$s'), __('Category'),
                          Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
       break;
@@ -137,8 +132,8 @@ switch($_GET["type"]) {
    case 'locations_id' :
       $val1    = $_GET['id'];
       $val2    = '';
-      $values  = Stat::getItems($_GET['itemtype'], $_GET['date1'], $_GET['date2'],
-                                $_GET['type'], $parent );
+      $values  = Stat::getItems($_GET['itemtype'], $_GET['date1'], $_GET['date2'], $_GET['type'],
+                                $parent);
       $title   = sprintf(__('%1$s: %2$s'), __('Location'),
                          Dropdown::getDropdownName('glpi_locations', $_GET['id']));
       break;
@@ -146,8 +141,7 @@ switch($_GET["type"]) {
    case "type" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Type'), Ticket::getTicketTypeName($_GET["id"]));
       break;
 
@@ -161,8 +155,8 @@ switch($_GET["type"]) {
    case "group" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"], $parent );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"],
+                                $parent);
       $title   = sprintf(__('%1$s: %2$s'), __('Group'),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
@@ -170,8 +164,7 @@ switch($_GET["type"]) {
    case "groups_id_assign" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Group'),
                          Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
@@ -179,32 +172,28 @@ switch($_GET["type"]) {
    case "priority" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($_GET["id"]));
       break;
 
    case "urgency" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($_GET["id"]));
       break;
 
    case "impact" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"]));
       break;
 
    case "usertitles_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Title'),
                          Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
@@ -212,8 +201,7 @@ switch($_GET["type"]) {
    case "solutiontypes_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Solution type'),
                          Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
       break;
@@ -221,8 +209,7 @@ switch($_GET["type"]) {
    case "usercategories_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Category'),
                          Dropdown::getDropdownName("glpi_usercategories", $_GET["id"]));
       break;
@@ -230,8 +217,7 @@ switch($_GET["type"]) {
    case "requesttypes_id" :
       $val1    = $_GET["id"];
       $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                $_GET["type"] );
+      $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Request source'),
                          Dropdown::getDropdownName("glpi_requesttypes", $_GET["id"]));
       break;
@@ -241,8 +227,8 @@ switch($_GET["type"]) {
       $val2 = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
          $device_table = $item->getTable();
-         $values       = Stat::getItems($_GET["itemtype"], $_GET["date1"],
-                                        $_GET["date2"], $_GET["champ"] );
+         $values       = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
+                                        $_GET["champ"]);
 
          $query  = "SELECT `designation`
                     FROM `".$device_table."`
@@ -260,7 +246,7 @@ switch($_GET["type"]) {
       if ($item = getItemForItemtype($_GET["champ"])) {
          $table  = $item->getTable();
          $values = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
-                                  $_GET["champ"] );
+                                  $_GET["champ"]);
          $title  = sprintf(__('%1$s: %2$s'),
                            $item->getTypeName(), Dropdown::getDropdownName($table, $_GET["id"]));
       }
@@ -332,21 +318,18 @@ if (!isset($_GET['graph']) || (count($_GET['graph']) == 0)) {
 
 ///////// Stats nombre intervention
 // Total des interventions
-$values['total']  = Stat::constructEntryValues($_GET['itemtype'], "inter_total",
-                                               $_GET["date1"], $_GET["date2"],
-                                               $_GET["type"], $val1, $val2);
+$values['total']  = Stat::constructEntryValues($_GET['itemtype'], "inter_total", $_GET["date1"],
+                                               $_GET["date2"], $_GET["type"], $val1, $val2);
 // Total des interventions résolues
-$values['solved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_solved",
-                                               $_GET["date1"], $_GET["date2"],
-                                               $_GET["type"], $val1, $val2);
+$values['solved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_solved", $_GET["date1"],
+                                               $_GET["date2"], $_GET["type"], $val1, $val2);
 // Total des interventions closes
-$values['closed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_closed",
-                                               $_GET["date1"], $_GET["date2"],
-                                               $_GET["type"], $val1, $val2);
+$values['closed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_closed", $_GET["date1"],
+                                               $_GET["date2"], $_GET["type"], $val1, $val2);
 // Total des interventions closes
 $values['late']   = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_late",
-                                               $_GET["date1"], $_GET["date2"],
-                                               $_GET["type"], $val1, $val2);
+                                               $_GET["date1"], $_GET["date2"], $_GET["type"],
+                                               $val1, $val2);
 
 $available = array('total'  => __('Opened'),
                    'solved' => __('Solved'),
@@ -405,10 +388,9 @@ $available = array('avgclosed'     => __('Closure'),
 if ($_GET['itemtype'] == 'Ticket') {
    $available['avgtaketime'] = __('Take into account');
    //Temps moyen de prise en compte de l'intervention
-   $values2['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'],
-                                                        "inter_avgtakeaccount", $_GET["date1"],
-                                                        $_GET["date2"], $_GET["type"], $val1,
-                                                        $val2);
+   $values2['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgtakeaccount",
+                                                        $_GET["date1"], $_GET["date2"],
+                                                        $_GET["type"], $val1, $val2);
    // Pass to hour values
    foreach ($values2['avgtaketime'] as $key => $val) {
       $values2['avgtaketime'][$key] /= HOUR_TIMESTAMP;

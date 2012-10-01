@@ -130,9 +130,9 @@ class Search {
          }
       }
 
-      $target         = Toolbox::getItemTypeSearchURL($itemtype);
+      $target           = Toolbox::getItemTypeSearchURL($itemtype);
 
-      $limitsearchopt = self::getCleanedOptions($itemtype);
+      $limitsearchopt   = self::getCleanedOptions($itemtype);
 
       $blacklist_tables = array();
       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
@@ -958,12 +958,12 @@ class Search {
             $header_num = 1;
             if (($output_type == self::HTML_OUTPUT)
                 && $showmassiveactions) { // HTML display - massive modif
-               $headers_line_top .= self::showHeaderItem($output_type,
-                                         Html::getCheckAllAsCheckbox('massform'.$itemtype),
-                                         $header_num, "", 0, $p['order']);
+               $headers_line_top    .= self::showHeaderItem($output_type,
+                                                            Html::getCheckAllAsCheckbox('massform'.$itemtype),
+                                                            $header_num, "", 0, $p['order']);
                $headers_line_bottom .= self::showHeaderItem($output_type,
-                                         Html::getCheckAllAsCheckbox('massform'.$itemtype),
-                                         $header_num, "", 0, $p['order']);
+                                                            Html::getCheckAllAsCheckbox('massform'.$itemtype),
+                                                            $header_num, "", 0, $p['order']);
             }
 
             // Display column Headers for toview items
@@ -976,8 +976,10 @@ class Search {
                              (($p['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$p['start'].
                              $globallinkto;
                }
-               $headers_line .= self::showHeaderItem($output_type, $searchopt[$itemtype][$val]["name"],
-                                         $header_num, $linkto,$p['sort']==$val, $p['order']);
+               $headers_line .= self::showHeaderItem($output_type,
+                                                     $searchopt[$itemtype][$val]["name"],
+                                                     $header_num, $linkto, ($p['sort'] == $val),
+                                                     $p['order']);
             }
 
             // Display columns Headers for meta items
@@ -997,10 +999,10 @@ class Search {
                         }
 
                         $headers_line .= self::showHeaderItem($output_type,
-                                                  sprintf(__('%1$s - %2$s'),
-                                                          $metanames[$p['itemtype2'][$i]],
-                                                          $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"]),
-                                                  $header_num);
+                                                              sprintf(__('%1$s - %2$s'),
+                                                                      $metanames[$p['itemtype2'][$i]],
+                                                                      $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"]),
+                                                              $header_num);
                         $already_printed[$p['itemtype2'][$i].$p['field2'][$i]] = 1;
                      }
                   }
@@ -1009,10 +1011,12 @@ class Search {
 
             // Add specific column Header
             if ($itemtype == 'CartridgeItem') {
-               $headers_line .= self::showHeaderItem($output_type, _n('Cartridge','Cartridges',2), $header_num);
+               $headers_line .= self::showHeaderItem($output_type, _n('Cartridge','Cartridges',2),
+                                                     $header_num);
             }
             if ($itemtype == 'ConsumableItem') {
-               $headers_line .= self::showHeaderItem($output_type, _n('Consumable','Consumables',2), $header_num);
+               $headers_line .= self::showHeaderItem($output_type, _n('Consumable','Consumables',2),
+                                                     $header_num);
             }
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                $headers_line .= self::showHeaderItem($output_type, __('Item type'), $header_num);
@@ -1022,7 +1026,7 @@ class Search {
                $headers_line .= self::showHeaderItem($output_type, "&nbsp;", $header_num);
             }
             // End Line for column headers
-            $headers_line .= self::showEndLine($output_type);
+            $headers_line        .= self::showEndLine($output_type);
 
             $headers_line_top    .= $headers_line;
             $headers_line_bottom .= $headers_line;
@@ -1069,7 +1073,7 @@ class Search {
                    && $showmassiveactions) { // HTML display - massive modif
                   $tmpcheck = "";
                   if (($itemtype == 'Entity')
-                        && !in_array($data["id"], $_SESSION["glpiactiveentities"])) {
+                      && !in_array($data["id"], $_SESSION["glpiactiveentities"])) {
 
                      $tmpcheck = "&nbsp;";
 

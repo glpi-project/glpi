@@ -565,7 +565,8 @@ if (isset($_POST["delfile"])) {
 if (Session::haveRight("check_update","r")) {
    echo "<div class='center spaced'><table class='tab_glpi'>";
    echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
-   Html::showSimpleForm($_SERVER['PHP_SELF'], 'check_version', __('Check if a new version is available'));
+   Html::showSimpleForm($_SERVER['PHP_SELF'], 'check_version',
+                        __('Check if a new version is available'));
    echo "</td></tr></table></div>";
 }
 
@@ -612,8 +613,9 @@ if (count($files)) {
            "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__('Delete the file %s?'), $file);
-           Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', __('Delete'), array('file' => $file),'','',$string);
-           
+           Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', __('Delete'),
+                                array('file' => $file),'','',$string);
+
            echo "</td>";
            echo "<td>&nbsp;";
            //TRANS: %s is the filename
@@ -623,7 +625,8 @@ if (count($files)) {
                                           "/front/backup.php?file=$file&amp;donotcheckversion=1'").
                 ">".__('Restore')."</a>&nbsp;</td>";
 
-           echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
+           echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
+                            __('Download')."</a>".
            "</td></tr>";
    }
 }
