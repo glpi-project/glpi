@@ -232,9 +232,10 @@ function getPlural($string) {
                   'ss$'          => 'sses', // Special case (addresses) when getSingular is called on already singular form
                   'uses$'        => 'uses', // Case like statuses
                   'us$'          => 'uses', // Case like status
+                  '([^aeiou])y$' => '\1ies', // special case : category (but not key)
+                  '([^aeiou])ies$' => '\1ies', // special case : category (but not key)
                   '([aeiou]{2})ses$' => '\1ses', // Case like aliases
                   '([aeiou]{2})s$'   => '\1ses', // Case like aliases
-                  '([^aeiou])y$' => '\1ies', // special case : category (but not key)
                   'x$'           =>'xes',
                   'ed$'          => 'ed',  // case table without plural (ex. imported)
 //                   's$'           =>'ses',
@@ -271,7 +272,8 @@ function getSingular($string) {
                   'us$'               => 'us', // Case like status
                   '([aeiou]{2})ses$'  => '\1s', // Case like aliases
                   'lias$'             => 'lias', // Special case (aliases) when getSingular is called on already singular form
-                  'ies$'              => 'y', // special case : category
+                  '([^aeiou])ies$'     => '\1y', // special case : category
+                  '([^aeiou])y$'       => '\1y', // special case : category
                   's$'                => ''); // Add at the end if not exists
 
    foreach ($rules as  $plural => $singular) {
