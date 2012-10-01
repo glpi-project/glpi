@@ -224,12 +224,20 @@ function getPlural($string) {
                   /// TODO : real singular is criterion and plural criteria.
                   /// Need to update class / tables names
                   'criterias$'   =>'criterias',// Special case (criterias) when getPLural is called on already plural form
-                  's$'           =>'ses',
-                  '([^aeiou])y$' => '\1ies', // special case : category (but not key)
                   'ch$'          =>'ches',
+                  'ches$'        =>'ches',
                   'sh$'          =>'shes',
+                  'shes$'        =>'shes',
+                  'sses$'        => 'sses', // Case like addresses
+                  'ss$'          => 'sses', // Special case (addresses) when getSingular is called on already singular form
+                  'uses$'        => 'uses', // Case like statuses
+                  'us$'          => 'uses', // Case like status
+                  '([aeiou]{2})ses$' => '\1ses', // Case like aliases
+                  '([aeiou]{2})s$'   => '\1ses', // Case like aliases
+                  '([^aeiou])y$' => '\1ies', // special case : category (but not key)
                   'x$'           =>'xes',
                   'ed$'          => 'ed',  // case table without plural (ex. imported)
+//                   's$'           =>'ses',
                   '([^s])$'      => '\1s',   // Add at the end if not exists
                   );
 
@@ -254,11 +262,14 @@ function getSingular($string) {
 
    $rules = array(//'plural' => 'singular'
                   'ches$'             => 'ch',
+                  'ch$'               => 'ch',
                   'shes$'             => 'sh',
+                  'sh$'               => 'sh',
                   'sses$'             => 'ss', // Case like addresses
-//                   'cases$'            => 'case', // Case like cases
-                  '([aeiou]{2})ses$'  => '\1s', // Case like aliases
                   'ss$'               => 'ss', // Special case (addresses) when getSingular is called on already singular form
+                  'uses$'             => 'us', // Case like statuses
+                  'us$'               => 'us', // Case like status
+                  '([aeiou]{2})ses$'  => '\1s', // Case like aliases
                   'lias$'             => 'lias', // Special case (aliases) when getSingular is called on already singular form
                   'ies$'              => 'y', // special case : category
                   's$'                => ''); // Add at the end if not exists
