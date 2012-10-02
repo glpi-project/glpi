@@ -2362,7 +2362,44 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
-
+   /**
+    * Get status icon URL
+    *
+    * @param $status status to get icon URL
+    *
+    * @return icon URL
+   **/
+   static function getStatusIconURL($status) {
+      global $CFG_GLPI;
+      
+      switch ($status) {
+         case self::INCOMING :
+            return $CFG_GLPI["root_doc"]."/pics/new.png";
+         case self::ASSIGNED :
+            return $CFG_GLPI["root_doc"]."/pics/assign.png";
+         case self::PLANNED :
+            return $CFG_GLPI["root_doc"]."/pics/plan.png";
+         case self::WAITING :
+            return $CFG_GLPI["root_doc"]."/pics/waiting.png";
+         case self::SOLVED :
+            return $CFG_GLPI["root_doc"]."/pics/solved.png";
+         case self::CLOSED :
+            return $CFG_GLPI["root_doc"]."/pics/closed.png";
+         case self::ACCEPTED :
+            return $CFG_GLPI["root_doc"]."/pics/accepted.png";
+         case self::OBSERVED :
+            return $CFG_GLPI["root_doc"]."/pics/observe.png";
+         case self::EVALUATION :
+            return $CFG_GLPI["root_doc"]."/pics/evaluation.png";
+         case self::APPROVAL :
+            return $CFG_GLPI["root_doc"]."/pics/approbation.png";
+         case self::TEST :
+            return $CFG_GLPI["root_doc"]."/pics/test.png";
+         case self::QUALIFICATION :
+            return $CFG_GLPI["root_doc"]."/pics/qualification.png";
+      }
+      return '';
+   }
    /**
     * show Icon for Actor
     *

@@ -4253,17 +4253,17 @@ class Search {
 
          case 'glpi_changes.status':
             $status = Change::getStatus($data[$NAME.$num]);
-            return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
+            return "<img src=\"".Change::getStatusIconURL($data[$NAME.$num])."\"
                      alt=\"$status\" title=\"$status\">&nbsp;$status";
 
          case 'glpi_problems.status':
             $status = Problem::getStatus($data[$NAME.$num]);
-            return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
+            return "<img src=\"".Problem::getStatusIconURL($data[$NAME.$num])."\"
                      alt=\"$status\" title=\"$status\">&nbsp;$status";
 
          case 'glpi_tickets.status':
             $status = Ticket::getStatus($data[$NAME.$num]);
-            return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
+            return "<img src=\"".Ticket::getStatusIconURL($data[$NAME.$num])."\"
                      alt=\"$status\" title=\"$status\">&nbsp;$status";
 
          case 'glpi_tickets.items_id' :
