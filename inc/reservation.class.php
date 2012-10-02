@@ -576,7 +576,7 @@ class Reservation extends CommonDBChild {
     *     - date date for creation process
    **/
    function showForm($ID, $options=array()) {
-
+      global $CFG_GLPI;
       if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
       }
@@ -664,22 +664,48 @@ class Reservation extends CommonDBChild {
          echo "</td></tr>\n";
       }
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-      Html::showDateTimeFormItem("begin", $resa->fields["begin"], -1, false);
+      $rand_begin = Html::showDateTimeFormItem("resa[begin]", $resa->fields["begin"], -1, false);
       echo "</td></tr>\n";
+      $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
+                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
+      
+      echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
+      $rand = Dropdown::showTimeStamp("resa[_duration]", array('min'        => 0,
+                                                               'max'        => 24*HOUR_TIMESTAMP,
+                                                               'value'      => $default_delay,
+                                                               'emptylabel' => __('Specify an end date')));
+      echo "<br><div id='date_end$rand'></div>";
+      $params = array('duration'     => '__VALUE__',
+                      'end'          => $resa->fields["end"],
+                      'name'         => "resa[end]");
 
-      echo "<tr class='tab_bg_2'><td>".__('End date')."</td><td>";
-      Html::showDateTimeFormItem("end", $resa->fields["end"], -1, false);
+      Ajax::updateItemOnSelectEvent("dropdown_resa[_duration]$rand", "date_end$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
+
+      if ($default_delay == 0) {
+         $params['duration'] = 0;
+         Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
+      }
       Alert::displayLastAlert('Reservation', $ID);
       echo "</td></tr>\n";
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
          echo "<td>";
-         echo "<select name='periodicity'>";
-         echo "<option value='day'>".__('By day')."</option>\n";
-         echo "<option value='week'>".__('By week')."</option>\n";
+         echo "<select name='periodicity[type]' id='resaperiod$rand'>";
+         echo "<option value=''>"._x('periodicity', 'None')."</option>\n";
+         echo "<option value='day'>"._x('periodicity', 'Daily')."</option>\n";
+         echo "<option value='week'>"._x('periodicity', 'Weekly')."</option>\n";
+         echo "<option value='month'>"._x('periodicity', 'Monthly')."</option>\n";
          echo "</select>";
-         Dropdown::showInteger('periodicity_times', 1, 1, 60);
+         $params = array('type'     => '__VALUE__',
+                         'end'      => $resa->fields["end"]);
+
+         Ajax::updateItemOnSelectEvent("resaperiod$rand", "resaperiodcontent$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", $params);
+         echo "<br><div id='resaperiodcontent$rand'></div>";
+         
+//         Dropdown::showInteger('periodicity_times', 1, 1, 60);
          echo "</td></tr>\n";
       }
 
@@ -710,7 +736,73 @@ class Reservation extends CommonDBChild {
       echo "</div>\n";
    }
 
+   /**
+    * compute periodicities for reservation
+    *
+    * @param $options  periodicity parameters : must contain : type (day/week/month), end 
+    * @param $begin   begin of the initial reservation
+    * @param $end   begin of the initial reservation
+   **/
+   static function computePeriodicities ($begin, $end, $options = array()){
+      $toadd = array();
 
+      if (isset($options['type'])) {
+         $begin_time = strtotime($begin);
+         $end_time = strtotime($end);
+         print_r($options);
+         switch ($options['type']) {
+            case 'day' :
+               if (isset($options['end'])) {
+                  $repeat_end = strtotime($options['end'].' 00:00:00');
+                  $begin_time += DAY_TIMESTAMP;
+                  $end_time   += DAY_TIMESTAMP;
+                  while ($begin_time < $repeat_end) {
+                     $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
+                     $begin_time += DAY_TIMESTAMP;
+                     $end_time   += DAY_TIMESTAMP;
+                  }
+               }
+               break;
+            case 'week' :
+               if (isset($options['end'])) {
+                  $repeat_end = strtotime($options['end'].' 00:00:00');
+                  $dates = array();
+                  
+                  // No days set add 1 week 
+                  if (!isset($options['days'])) {
+                     $dates = array(array('begin' => $begin_time+WEEK_TIMESTAMP,
+                                          'end'   => $end_time+WEEK_TIMESTAMP));
+                  } else {
+                     if (is_array($options['days'])) {
+                        $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
+                        $end_hour =   $end_time - strtotime(date('Y-m-d', $end_time));
+                        foreach ($options['days'] as $day => $val) {
+                           $dates[] = array('begin' => strtotime("next $day", $begin_time)+$begin_hour,
+                                            'end'   => strtotime("next $day", $end_time)+$end_hour);
+                        }
+                     }
+                  }
+                  
+                  foreach ($dates as $key => $val) {
+                     $begin_time = $val['begin'];
+                     $end_time   = $val['end'];
+                           echo date('Y-m-d H:i:s--', $begin_time);
+                           echo date('Y-m-d H:i:s--', $end_time);
+                     while ($begin_time < $repeat_end) {
+                        $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
+                        $begin_time += WEEK_TIMESTAMP;
+                        $end_time   += WEEK_TIMESTAMP;
+                     }
+                  }
+               }
+               break;
+         }
+
+      }
+
+      return $toadd;
+   }
+   
    /**
     * Display for reservation
     *

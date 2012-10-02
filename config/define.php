@@ -31,7 +31,7 @@
 define("GLPI_VERSION","0.84");
 define("GLPI_DEMO_MODE","0");
 
-define("GLPI_USE_CSRF_CHECK", "1");
+define("GLPI_USE_CSRF_CHECK", "0");
 define("GLPI_CSRF_EXPIRES","7200");
 define("GLPI_CSRF_MAX_TOKENS","100");
 

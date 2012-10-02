@@ -42,8 +42,14 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['duration']) && ($_POST['duration'] == 0)) {
-   Html::showDateTimeFormItem("plan[end]", $_POST['end'], -1, false, true, '', '',
+if (isset($_POST['duration']) && ($_POST['duration'] == 0) && isset($_POST['name'])) {
+   if (!isset($_POST['global_begin'])) {
+      $_POST['global_begin'] = '';
+   }
+   if (!isset($_POST['global_end'])) {
+      $_POST['global_end'] = '';
+   }
+   Html::showDateTimeFormItem($_POST['name'], $_POST['end'], -1, false, true, '', '',
                               $_POST['global_begin'], $_POST['global_end']);
 }
 ?>

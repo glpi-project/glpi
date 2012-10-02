@@ -110,6 +110,7 @@ echo "<br><div id='date_end$rand'></div>";
 
 $params = array('duration'     => '__VALUE__',
                 'end'          => $end,
+                'name'         => "plan[end]",
                 'global_begin' => $CFG_GLPI["planning_begin"],
                 'global_end'   => $CFG_GLPI["planning_end"]);
 
