@@ -65,7 +65,7 @@ if (isset($_POST["update"])) {
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
 
-   list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
+   list($begin_year,$begin_month,$begin_day) = explode("-",$rr->fields["begin"]);
    Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
@@ -75,42 +75,51 @@ if (isset($_POST["update"])) {
    if (empty($_POST['users_id'])) {
       $_POST['users_id'] = Session::getLoginUserID();
    }
-   foreach ($_POST['items'] as $reservationitems_id) {
-      $_POST['reservationitems_id'] = $reservationitems_id;
-
-      $times  = $_POST["periodicity_times"];
-      $begin  = $_POST["begin"];
-      list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
-      $end    = $_POST["end"];
-      $to_add = 1;
-
-      if ($_POST["periodicity"] == "week") {
-         $to_add = 7;
+   Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
+   $dates_to_add = array();
+   list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
+   if (isset($_POST['resa']["end"])) {
+      // Compute dates to add.
+      $dates_to_add[$_POST['resa']["begin"]] = $_POST['resa']["end"];
+      
+      if (isset($_POST['periodicity']) && is_array($_POST['periodicity'])
+         && isset($_POST['periodicity']['type']) && !empty($_POST['periodicity']['type'])) {
+         // Compute others dates to add.
+         $dates_to_add += Reservation::computePeriodicities($_POST['resa']["begin"],
+                                                            $_POST['resa']["end"],
+                                                            $_POST['periodicity']);
       }
-      $_POST['_target'] = $_SERVER['PHP_SELF'];
-
-      $_POST['_ok'] = true;
-      if ($times > 1 ) {
-         $_POST['group'] = $rr->getUniqueGroupFor($reservationitems_id);
-      }
-
-      for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
-         $_POST["begin"]  = date('Y-m-d H:i:s', strtotime($begin." +".($i*$to_add)." day"));
-         $_POST["end"]    = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));
-
-         if (Session::haveRight("reservation_central","w")
-             || (Session::getLoginUserID() === $_POST["users_id"])) {
-            unset($rr->fields["id"]);
-            $_POST['_ok'] = $rr->add($_POST);
+   }
+   // Sort dates
+//    ksort($dates_to_add);
+//    Html::printCleanArray($dates_to_add);
+//    exit();
+   if (count($dates_to_add) && count($_POST['items']) && isset($_POST['users_id'])) {
+      foreach ($_POST['items'] as $reservationitems_id) {
+         $input = array();
+         $input['reservationitems_id'] = $reservationitems_id;
+         if (count($dates_to_add)) {
+            $input['group'] = $rr->getUniqueGroupFor($reservationitems_id);
+         }
+         foreach ($dates_to_add as $begin => $end) {
+            $input['begin']    = $begin;
+            $input['end']      = $end;
+            $input['users_id'] = $_POST['users_id'];
+            
+            if (Session::haveRight("reservation_central","w")
+               || (Session::getLoginUserID() === $input["users_id"])) {
+               unset($rr->fields["id"]);
+               if ($newID = $rr->add($input)) {
+                  Event::log($reservationitems_id, "reservation", 4, "inventory",
+                           sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
+               } else {
+                  $all_ok = false;
+               }
+            }
          }
       }
-
-      if ($_POST['_ok']) {
-         Event::log($_POST["reservationitems_id"], "reservation", 4, "inventory",
-                    sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["_ok"]));
-      } else {
-         $all_ok = false;
-      }
+   } else {
+      $all_ok = false;
    }
    if ($all_ok) {
       $toadd = "";
@@ -122,6 +131,53 @@ if (isset($_POST["update"])) {
       }
       Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
    }
+//          $times  = $_POST["periodicity_times"];
+//          $begin  = $_POST["begin"];
+//          list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
+//          $end    = $_POST["end"];
+//          $to_add = 1;
+// 
+//          if ($_POST["periodicity"] == "week") {
+//             $to_add = 7;
+//          }
+//          $_POST['_target'] = $_SERVER['PHP_SELF'];
+// 
+//          $_POST['_ok'] = true;
+//          if ($times > 1 ) {
+//             $_POST['group'] = $rr->getUniqueGroupFor($reservationitems_id);
+//          }
+
+//          for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
+//             $_POST["begin"]  = date('Y-m-d H:i:s', strtotime($begin." +".($i*$to_add)." day"));
+//             $_POST["end"]    = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));
+// 
+//             if (Session::haveRight("reservation_central","w")
+//                || (Session::getLoginUserID() === $_POST["users_id"])) {
+//                unset($rr->fields["id"]);
+//                $_POST['_ok'] = $rr->add($_POST);
+//             }
+//          }
+
+//          if ($_POST['_ok']) {
+//             Event::log($_POST["reservationitems_id"], "reservation", 4, "inventory",
+//                      sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["_ok"]));
+//          } else {
+//             $all_ok = false;
+//          }
+//       }
+//    } else {
+//       $all_ok = false;
+//    }
+//    if ($all_ok) {
+//       $toadd = "";
+//       // Only one reservation : move to correct month
+//       if (count($_POST['items']) == 1) {
+//          $toadd  = "?reservationitems_id=$reservationitems_id";
+//          $toadd .= "&mois_courant=".intval($begin_month);
+//          $toadd .= "&annee_courante=".intval($begin_year);
+//       }
+//       Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
+//    }
 
 } else if (isset($_GET["id"])) {
    if (!isset($_GET['date'])) {
