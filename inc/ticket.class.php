@@ -1004,7 +1004,6 @@ class Ticket extends CommonITILObject {
 
             $mailtype = "closed";
          }
-
          // Read again ticket to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
