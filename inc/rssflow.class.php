@@ -68,7 +68,7 @@ class RSSFlow extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return _n('RSS flow', 'RSS flows', $nb);
+      return _n('RSS feed', 'RSS feeds', $nb);
    }
 
 
