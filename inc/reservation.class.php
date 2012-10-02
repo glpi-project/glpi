@@ -691,7 +691,7 @@ class Reservation extends CommonDBChild {
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
-         echo "<td>";
+         echo "<td class='center'>";
          echo "<select name='periodicity[type]' id='resaperiod$rand'>";
          echo "<option value=''>"._x('periodicity', 'None')."</option>\n";
          echo "<option value='day'>"._x('periodicity', 'Daily')."</option>\n";
@@ -746,55 +746,90 @@ class Reservation extends CommonDBChild {
    static function computePeriodicities ($begin, $end, $options = array()){
       $toadd = array();
 
-      if (isset($options['type'])) {
+      if (isset($options['type']) && isset($options['end'])) {
          $begin_time = strtotime($begin);
          $end_time = strtotime($end);
+         $repeat_end = strtotime($options['end'].' 00:00:00');
          print_r($options);
          switch ($options['type']) {
             case 'day' :
-               if (isset($options['end'])) {
-                  $repeat_end = strtotime($options['end'].' 00:00:00');
+               $begin_time += DAY_TIMESTAMP;
+               $end_time   += DAY_TIMESTAMP;
+               while ($begin_time < $repeat_end) {
+                  $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
                   $begin_time += DAY_TIMESTAMP;
                   $end_time   += DAY_TIMESTAMP;
-                  while ($begin_time < $repeat_end) {
-                     $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                     $begin_time += DAY_TIMESTAMP;
-                     $end_time   += DAY_TIMESTAMP;
-                  }
                }
                break;
             case 'week' :
-               if (isset($options['end'])) {
-                  $repeat_end = strtotime($options['end'].' 00:00:00');
-                  $dates = array();
-                  
-                  // No days set add 1 week 
-                  if (!isset($options['days'])) {
-                     $dates = array(array('begin' => $begin_time+WEEK_TIMESTAMP,
-                                          'end'   => $end_time+WEEK_TIMESTAMP));
-                  } else {
-                     if (is_array($options['days'])) {
-                        $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
-                        $end_hour =   $end_time - strtotime(date('Y-m-d', $end_time));
-                        foreach ($options['days'] as $day => $val) {
-                           $dates[] = array('begin' => strtotime("next $day", $begin_time)+$begin_hour,
-                                            'end'   => strtotime("next $day", $end_time)+$end_hour);
-                        }
-                     }
-                  }
-                  
-                  foreach ($dates as $key => $val) {
-                     $begin_time = $val['begin'];
-                     $end_time   = $val['end'];
-                           echo date('Y-m-d H:i:s--', $begin_time);
-                           echo date('Y-m-d H:i:s--', $end_time);
-                     while ($begin_time < $repeat_end) {
-                        $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                        $begin_time += WEEK_TIMESTAMP;
-                        $end_time   += WEEK_TIMESTAMP;
+               $dates = array();
+
+               // No days set add 1 week
+               if (!isset($options['days'])) {
+                  $dates = array(array('begin' => $begin_time+WEEK_TIMESTAMP,
+                                       'end'   => $end_time+WEEK_TIMESTAMP));
+               } else {
+                  if (is_array($options['days'])) {
+                     $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
+                     $end_hour =   $end_time - strtotime(date('Y-m-d', $end_time));
+                     foreach ($options['days'] as $day => $val) {
+                        $dates[] = array('begin' => strtotime("next $day", $begin_time)+$begin_hour,
+                                          'end'   => strtotime("next $day", $end_time)+$end_hour);
                      }
                   }
                }
+
+               foreach ($dates as $key => $val) {
+                  $begin_time = $val['begin'];
+                  $end_time   = $val['end'];
+
+                  while ($begin_time < $repeat_end) {
+                     $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
+                     $begin_time += WEEK_TIMESTAMP;
+                     $end_time   += WEEK_TIMESTAMP;
+                  }
+               }
+               break;
+
+            case 'month' :
+               if (isset($options['subtype'])) {
+                  switch ($options['subtype']) {
+                     case 'date':
+                        $i=1;
+                        $calc_begin_time = strtotime("+$i month", $begin_time);
+                        $calc_end_time   = strtotime("+$i month", $end_time);
+                        while ($calc_begin_time < $repeat_end) {
+                           $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date('Y-m-d H:i:s', $calc_end_time);
+                           $i++;
+                           $calc_begin_time = strtotime("+$i month", $begin_time);
+                           $calc_end_time   = strtotime("+$i month", $end_time);
+                        }
+                        break;
+                     case 'day':
+                        $dayofweek = date('l',$begin_time);
+                        
+                        $i=1;
+                        $calc_begin_time = strtotime("+$i month", $begin_time);
+                        $calc_end_time   = strtotime("+$i month", $end_time);
+                        $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
+                        $end_hour =   $end_time - strtotime(date('Y-m-d', $end_time));
+
+                        $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time) + $begin_hour;
+                        $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
+                        
+                        while ($calc_begin_time < $repeat_end) {
+                           $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date('Y-m-d H:i:s', $calc_end_time);
+                           $i++;
+                           $calc_begin_time = strtotime("+$i month", $begin_time);
+                           $calc_end_time   = strtotime("+$i month", $end_time);
+                           $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time) + $begin_hour;
+                           $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
+                        }
+                        break;
+                  }
+
+               }
+
                break;
          }
 

@@ -91,9 +91,7 @@ if (isset($_POST["update"])) {
       }
    }
    // Sort dates
-//    ksort($dates_to_add);
-//    Html::printCleanArray($dates_to_add);
-//    exit();
+   ksort($dates_to_add);
    if (count($dates_to_add) && count($_POST['items']) && isset($_POST['users_id'])) {
       foreach ($_POST['items'] as $reservationitems_id) {
          $input = array();
