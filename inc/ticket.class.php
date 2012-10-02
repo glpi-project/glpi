@@ -5169,7 +5169,7 @@ class Ticket extends CommonITILObject {
          // First column
          $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          if ($output_type == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
+            $first_col .= "<br><img src='".self::getStatusIconURL($job->fields["status"])."'
                                 alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
                                 self::getStatus($job->fields["status"])."\">";
          } else {

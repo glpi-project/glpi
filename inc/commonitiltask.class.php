@@ -667,7 +667,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
              Html::entities_deep($parent->getTypeName(1))."\">&nbsp;&nbsp;";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png' alt='".
+      echo "<img src='".$parent->getStatusIconULR($val["status"])."' alt='".
              Html::entities_deep($parent->getStatus($val["status"]))."' title=\"".
              Html::entities_deep($parent->getStatus($val["status"]))."\">";
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
