@@ -75,7 +75,7 @@ class User extends CommonDBTM {
 
    function canViewItem() {
 
-      $entities = Profile_User::getUserEntities($this->fields['id'], true);
+      $entities = Profile_User::getUserEntities($this->fields['id'], false);
       if (Session::isViewAllEntities()
           || Session::haveAccessToOneOfEntities($entities)) {
          return true;
@@ -105,7 +105,7 @@ class User extends CommonDBTM {
 
    function canUpdateItem() {
 
-      $entities = Profile_User::getUserEntities($this->fields['id'], true);
+      $entities = Profile_User::getUserEntities($this->fields['id'], false);
       if (Session::isViewAllEntities()
           || Session::haveAccessToOneOfEntities($entities)) {
          return true;
@@ -116,7 +116,7 @@ class User extends CommonDBTM {
 
    function canDeleteItem() {
 
-      $entities = Profile_User::getUserEntities($this->fields['id'], true);
+      $entities = Profile_User::getUserEntities($this->fields['id'], false);
       if (Session::isViewAllEntities()
           || Session::haveAccessToAllOfEntities($entities)) {
          return true;
