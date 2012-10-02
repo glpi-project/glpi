@@ -83,8 +83,8 @@ class User extends CommonDBTM {
 
 
    function canViewItem() {
-
       $entities = Profile_User::getUserEntities($this->fields['id'], true);
+
       if (Session::isViewAllEntities() || Session::haveAccessToOneOfEntities($entities)) {
          return true;
       }
@@ -100,7 +100,8 @@ class User extends CommonDBTM {
 
    function canUpdateItem() {
 
-      $entities = Profile_User::getUserEntities($this->fields['id'], true);
+      // Need to have access to an entity based of rights for the user. (not a son)
+      $entities = Profile_User::getUserEntities($this->fields['id'], false);
       if (Session::isViewAllEntities() || Session::haveAccessToOneOfEntities($entities)) {
          return true;
       }
@@ -1469,7 +1470,7 @@ class User extends CommonDBTM {
       if ($ID != Session::getLoginUserID() && !Session::haveRight("user", "r")) {
          return false;
       }
-
+      
       if ($ID > 0) {
          $this->check($ID,'r');
          $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
