@@ -116,7 +116,7 @@ class User extends CommonDBTM {
 
    function canDeleteItem() {
 
-      $entities = Profile_User::getUserEntities($this->fields['id'], false);
+      $entities = Profile_User::getUserEntities($this->fields['id'], true);
       if (Session::isViewAllEntities()
           || Session::haveAccessToAllOfEntities($entities)) {
          return true;
