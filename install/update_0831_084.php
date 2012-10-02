@@ -266,12 +266,15 @@ function update0831to084() {
                           'glpi_changes_problems', 'glpi_changes_suppliers',
                           'glpi_changes_tickets', 'glpi_changes_users',
                           'glpi_changetasks', 'glpi_contractcosts',
-                          'glpi_fqdns', 'glpi_ipaddresses',
+                          'glpi_entities_rssflows',
+                          'glpi_fqdns', 'glpi_groups_rssflows', 'glpi_ipaddresses',
                           'glpi_ipaddresses_ipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
                           'glpi_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
                           'glpi_networkportlocals', 'glpi_networkportmigrations',
                           'glpi_networkportwifis', 'glpi_problems_suppliers',
+                          'glpi_profiles_rssflows', 'glpi_rssflows_users',
+                          'glpi_rssflows',
                           'glpi_suppliers_tickets', 'glpi_ticketcosts', 'glpi_wifinetworks');
 
    foreach ($newtables as $new_table) {
@@ -1591,6 +1594,91 @@ function update0831to084() {
    $DB->queryOrDie($query, "0.84 set ticketcost in glpi_profiles");
 
 
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'rss flows'));
+
+   if (!TableExists('glpi_rssflows')) {
+      $query = "CREATE TABLE `glpi_rssflows` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `is_private` tinyint(1) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `url` text COLLATE utf8_unicode_ci,
+                  `refresh_rate` int(11) NOT NULL DEFAULT '86400',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `users_id` (`users_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `is_private` (`is_private`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_rssflows");
+   }
+   if (!TableExists('glpi_rssflows_users')) {
+      $query = "CREATE TABLE `glpi_rssflows_users` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `rssflows_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `rssflows_id` (`rssflows_id`),
+                  KEY `users_id` (`users_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->queryOrDie($query, "0.84 add table glpi_rssflows_users");
+   }
+
+   if (!TableExists('glpi_groups_rssflows')) {
+      $query = "CREATE TABLE `glpi_groups_rssflows` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `rssflows_id` int(11) NOT NULL DEFAULT '0',
+                  `groups_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `rssflows_id` (`rssflows_id`),
+                  KEY `groups_id` (`groups_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->queryOrDie($query, "0.84 add table glpi_groups_rssflows");
+   }
+
+   if (!TableExists('glpi_profiles_rssflows')) {
+      $query = "CREATE TABLE `glpi_profiles_rssflows` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `rssflows_id` int(11) NOT NULL DEFAULT '0',
+                  `profiles_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `rssflows_id` (`rssflows_id`),
+                  KEY `profiles_id` (`profiles_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->queryOrDie($query, "0.84 add table glpi_profiles_rssflows");
+   }
+
+   if (!TableExists('glpi_entities_rssflows')) {
+      $query = "CREATE TABLE `glpi_entities_rssflows` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `rssflows_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `rssflows_id` (`rssflows_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->queryOrDie($query, "0.84 add table glpi_entities_rssflows");
+   }
+   
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
 
    if (!TableExists('glpi_planningrecalls')) {

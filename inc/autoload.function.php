@@ -291,7 +291,13 @@ function glpi_autoload($classname) {
          Zend_Loader::loadClass($classname);
          return true;
       }
-      // Do not try to load phpcas using GLPi autoload
+      // Is Zend class ?
+      if (preg_match('/^SimplePie/',$classname,$matches)) {
+         require_once(GLPI_SIMPLEPIE_PATH.DIRECTORY_SEPARATOR.str_replace('_', DIRECTORY_SEPARATOR, $classname) . '.php');
+         return true;
+      }
+
+      // Do not try to load phpcas using GLPI autoload
       if (preg_match('/^CAS_.*/', $classname)) {
          return false;
       }
