@@ -1600,19 +1600,13 @@ function update0831to084() {
       $query = "CREATE TABLE `glpi_rssflows` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `users_id` int(11) NOT NULL DEFAULT '0',
-                  `is_private` tinyint(1) NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   `url` text COLLATE utf8_unicode_ci,
                   `refresh_rate` int(11) NOT NULL DEFAULT '86400',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
-                  KEY `users_id` (`users_id`),
-                  KEY `entities_id` (`entities_id`),
-                  KEY `is_recursive` (`is_recursive`),
-                  KEY `is_private` (`is_private`)
+                  KEY `users_id` (`users_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_rssflows");
    }
@@ -2193,8 +2187,16 @@ function update0831to084() {
 
    // add rights to delete all validation
    $migration->addField('glpi_profiles', 'delete_validations',
-                        'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+                        'char', array('value' => 0,
+                                      'update' => 'delete_ticket'));
+   // 
 
+   // add rights to manage public rssflow
+   $migration->addField('glpi_profiles', 'rssflow_public',
+                        'char', array('value'  => 0,
+                                      'update' => 'reminder_public',
+                                      'after'  => 'reminder_public'));
+                        
    // Clean unlinked calendar segments and holidays
    $query = "DELETE
              FROM `glpi_calendars_holidays`
