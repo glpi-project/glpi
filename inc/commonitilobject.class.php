@@ -75,6 +75,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function post_getFromDB() {
 
+      $this->loadActors();
+   }
+
+   function loadActors() {
       if (!empty($this->grouplinkclass)) {
          $class = new $this->grouplinkclass();
          $this->groups = $class->getActors($this->fields['id']);
@@ -90,7 +94,6 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->suppliers  = $class->getActors($this->fields['id']);
       }
    }
-
 
    /**
     * Retrieve an item from the database with datas associated (hardwares)
@@ -547,6 +550,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $useractors = new $this->userlinkclass();
                         if (isset($input['_auto_update'])
                             || $useractors->can(-1,'w',$input['_itil_requester'])) {
+                           $input['_itil_requester']['_from_object'] = true;
                            $useractors->add($input['_itil_requester']);
                            $input['_forcenotif'] = true;
                         }
@@ -560,6 +564,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
                          || $groupactors->can(-1,'w',$input['_itil_requester'])) {
+                        $input['_itil_requester']['_from_object'] = true;
                         $groupactors->add($input['_itil_requester']);
                         $input['_forcenotif'] = true;
                      }
@@ -590,6 +595,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $useractors = new $this->userlinkclass();
                         if (isset($input['_auto_update'])
                            || $useractors->can(-1,'w',$input['_itil_observer'])) {
+                           $input['_itil_observer']['_from_object'] = true;
                            $useractors->add($input['_itil_observer']);
                            $input['_forcenotif'] = true;
                         }
@@ -603,6 +609,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
                          || $groupactors->can(-1,'w',$input['_itil_observer'])) {
+                        $input['_itil_observer']['_from_object'] = true;
                         $groupactors->add($input['_itil_observer']);
                         $input['_forcenotif'] = true;
                      }
@@ -624,6 +631,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $useractors = new $this->userlinkclass();
                      if (isset($input['_auto_update'])
                          || $useractors->can(-1,'w',$input['_itil_assign'])) {
+                        $input['_itil_assign']['_from_object'] = true;
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
@@ -641,6 +649,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                      if (isset($input['_auto_update'])
                          || $groupactors->can(-1,'w',$input['_itil_assign'])) {
+                        $input['_itil_assign']['_from_object'] = true;
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
@@ -657,6 +666,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $supplieractors = new $this->supplierlinkclass();
                      if (isset($input['_auto_update'])
                          || $supplieractors->can(-1,'w',$input['_itil_assign'])) {
+                        $input['_itil_assign']['_from_object'] = true;
                         $supplieractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
@@ -690,6 +700,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function pre_updateInDB() {
 
+      // get again object to reload actors
+      $this->loadActors();
+      
       // Setting a solution or solution type means the problem is solved
       if ((in_array("solutiontypes_id",$this->updates) && ($this->input["solutiontypes_id"] > 0))
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
@@ -745,7 +758,7 @@ abstract class CommonITILObject extends CommonDBTM {
          unset($this->updates[$key]);
          unset($this->oldvalues['solvedate']);
       }
-
+      
       if (isset($this->input["status"])) {
          if (($this->input["status"] != self::WAITING)
              && ($this->countSuppliers(CommonITILActor::ASSIGN) == 0)
@@ -1104,7 +1117,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $input2[$key] = $val;
                }
             }
-
+            $input2['_from_object'] = true;
             $useractors->add($input2);
          }
 
@@ -1122,7 +1135,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $input2[$key] = $val;
                }
             }
-
+            $input2['_from_object'] = true;
             $useractors->add($input2);
          }
 
@@ -1137,7 +1150,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $input2[$key] = $val;
                }
             }
-
+            $input2['_from_object'] = true;
             $useractors->add($input2);
          }
       }
@@ -1148,14 +1161,16 @@ abstract class CommonITILObject extends CommonDBTM {
             $groupactors->add(array($groupactors->getItilObjectForeignKey()
                                                 => $this->fields['id'],
                                     'groups_id' => $this->input["_groups_id_requester"],
-                                    'type'      => CommonITILActor::REQUESTER));
+                                    'type'      => CommonITILActor::REQUESTER,
+                                    '_from_object' => true));
          }
 
          if (isset($this->input["_groups_id_assign"]) && ($this->input["_groups_id_assign"] > 0)) {
             $groupactors->add(array($groupactors->getItilObjectForeignKey()
                                                 => $this->fields['id'],
                                     'groups_id' => $this->input["_groups_id_assign"],
-                                    'type'      => CommonITILActor::ASSIGN));
+                                    'type'      => CommonITILActor::ASSIGN,
+                                    '_from_object' => true));
          }
 
          if (isset($this->input["_groups_id_observer"])
@@ -1163,7 +1178,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $groupactors->add(array($groupactors->getItilObjectForeignKey()
                                                 => $this->fields['id'],
                                     'groups_id' => $this->input["_groups_id_observer"],
-                                    'type'      => CommonITILActor::OBSERVER));
+                                    'type'      => CommonITILActor::OBSERVER,
+                                    '_from_object' => true));
          }
       }
 
@@ -1173,7 +1189,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $supplieractors->add(array($supplieractors->getItilObjectForeignKey()
                                                      => $this->fields['id'],
                                       'suppliers_id' => $this->input["_suppliers_id_assign"],
-                                      'type'         => CommonITILActor::ASSIGN));
+                                      'type'         => CommonITILActor::ASSIGN,
+                                      '_from_object'    => true));
          }
       }
 
@@ -1190,6 +1207,7 @@ abstract class CommonITILObject extends CommonDBTM {
             foreach ($this->input['_additional_groups_requesters'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id'] = $tmp;
+                  $input2['_from_object'] = true;
                   $groupactors->add($input2);
                }
             }
@@ -1206,6 +1224,7 @@ abstract class CommonITILObject extends CommonDBTM {
             foreach ($this->input['_additional_groups_observers'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id'] = $tmp;
+                  $input2['_from_object'] = true;
                   $groupactors->add($input2);
                }
             }
@@ -1222,6 +1241,7 @@ abstract class CommonITILObject extends CommonDBTM {
             foreach ($this->input['_additional_groups_assigns'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id'] = $tmp;
+                  $input2['_from_object'] = true;
                   $groupactors->add($input2);
                }
             }
@@ -1241,6 +1261,7 @@ abstract class CommonITILObject extends CommonDBTM {
             foreach ($this->input['_additional_suppliers_assigns'] as $tmp) {
                if ($tmp > 0) {
                   $input2['suppliers_id'] = $tmp;
+                  $input2['_from_object'] = true;
                   $supplieractors->add($input2);
                }
             }
@@ -1255,7 +1276,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($this->input["_additional_observers"])) {
 
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                 => CommonITILActor::OBSERVER);
+                            'type'                                 => CommonITILActor::OBSERVER,
+                            '_from_object'                            => true);
 
             foreach ($this->input["_additional_observers"] as $tmp) {
                if (isset($tmp['users_id'])) {
@@ -1272,7 +1294,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($this->input["_additional_assigns"])) {
 
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                 => CommonITILActor::ASSIGN);
+                            'type'                                 => CommonITILActor::ASSIGN,
+                            '_from_object'                            => true);
 
             foreach ($this->input["_additional_assigns"] as $tmp) {
                if (isset($tmp['users_id'])) {
@@ -1289,7 +1312,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($this->input["_additional_requesters"])) {
 
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                 => CommonITILActor::REQUESTER);
+                            'type'                                 => CommonITILActor::REQUESTER,
+                            '_from_object'                            => true);
 
             foreach ($this->input["_additional_requesters"] as $tmp) {
                if (isset($tmp['users_id'])) {

@@ -277,6 +277,15 @@ abstract class CommonITILActor extends CommonDBRelation {
       }
       $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
 
+      // Check object status and update it if needed
+      if (!isset($this->input['_from_object'])) {
+         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
+            if ($item->fields["status"] == CommonITILObject::INCOMING) {
+               $item->update(array('id' => $item->getID(),
+                                   'status' => CommonITILObject::ASSIGNED));
+            }
+         }
+      }
       parent::post_addItem();
    }
 
