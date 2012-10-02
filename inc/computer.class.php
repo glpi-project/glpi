@@ -44,7 +44,8 @@ class Computer extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine', 'Infocom',
+   static protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine',
+                                               'Computer_SoftwareVersion', 'Infocom',
                                                'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")

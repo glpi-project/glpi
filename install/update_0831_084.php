@@ -1000,6 +1000,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 language in users $old to $new");
    }
 
+                                      
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'ticket and problems status'));
    
@@ -1354,7 +1355,33 @@ function update0831to084() {
    }
    regenerateTreeCompleteName("glpi_entities");
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'copy entity information to computers_softwareversions'));
 
+   if ($migration->addField("glpi_computers_softwareversions", "entities_id", "integer")) {
+      $migration->migrationOneTable('glpi_computers_softwareversions');
+
+      $entities    = getAllDatasFromTable('glpi_entities');
+
+      foreach ($entities as $entID => $val) {
+         $query3 = "UPDATE `glpi_computers_softwareversions`
+                    SET `entities_id` = $entID
+                    WHERE `computers_id` IN (SELECT `id`
+                                             FROM `glpi_computers`
+                                             WHERE `entities_id` = $entID)";
+         $DB->queryOrDie($query3, "0.84 update entities_id in glpi_computers_softwareversions");
+      }
+
+      /// create index for search count on tab
+      $migration->addKey("glpi_computers_softwareversions",
+                         array('entities_id', 'is_template', 'is_deleted'),
+                         'computers_info');
+      $migration->addKey("glpi_computers_softwareversions",
+                         'is_template');
+      $migration->addKey("glpi_computers_softwareversions",
+                         'is_deleted');
+   }
+   
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
 
