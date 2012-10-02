@@ -106,6 +106,7 @@ class TicketRecurrent extends CommonDropdown {
    function prepareInputForAdd($input) {
 
       $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
+                                                                    $input['end_date'],
                                                                     $input['periodicity'],
                                                                     $input['create_before'],
                                                                     $input['calendars_id']);
@@ -120,6 +121,7 @@ class TicketRecurrent extends CommonDropdown {
           && isset($input['create_before'])) {
 
          $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
+                                                                       $input['end_date'],
                                                                        $input['periodicity'],
                                                                        $input['create_before'],
                                                                        $input['calendars_id']);
@@ -143,6 +145,10 @@ class TicketRecurrent extends CommonDropdown {
                          'list'  => true),
                    array('name'  => 'begin_date',
                          'label' => __('Start date'),
+                         'type'  => 'datetime',
+                         'list'  => false),
+                   array('name'  => 'end_date',
+                         'label' => __('End date'),
                          'type'  => 'datetime',
                          'list'  => false),
                    array('name'  => 'periodicity',
@@ -247,6 +253,11 @@ class TicketRecurrent extends CommonDropdown {
       $tab[13]['name']     = __('Start date');
       $tab[13]['datatype'] = 'datetime';
 
+      $tab[17]['table']    = $this->getTable();
+      $tab[17]['field']    = 'end_date';
+      $tab[17]['name']     = __('End date');
+      $tab[17]['datatype'] = 'datetime';
+      
       $tab[15]['table']    = $this->getTable();
       $tab[15]['field']    = 'periodicity';
       $tab[15]['name']     = __('Periodicity');
@@ -289,16 +300,22 @@ class TicketRecurrent extends CommonDropdown {
     * New parameter in  version 0.84 : $calendars_id
     *
     * @param $begin_date      datetime    Begin date of the recurrent ticket
+    * @param $end_date        datetime    End date of the recurrent ticket
     * @param $periodicity     timestamp   Periodicity of creation
     * @param $create_before   timestamp   Create before specific timestamp
     * @param $calendars_id    integer     ID of the calendar to used
     *
     * @return datetime next creation date
    **/
-   function computeNextCreationDate($begin_date, $periodicity, $create_before, $calendars_id){
+   function computeNextCreationDate($begin_date, $end_date, $periodicity, $create_before, $calendars_id){
 
       if (empty($begin_date)) {
          return 'NULL';
+      }
+      if (!empty($end_date) && $end_date<>'NULL') {
+         if (strtotime($begin_date) < time()) {
+            return 'NULL';
+         }
       }
       $check = true;
       if (preg_match('/([0-9]+)MONTH/',$periodicity)
@@ -382,7 +399,9 @@ class TicketRecurrent extends CommonDropdown {
       $query = "SELECT *
                 FROM `glpi_ticketrecurrents`
                 WHERE `glpi_ticketrecurrents`.`next_creation_date` < NOW()
-                      AND `glpi_ticketrecurrents`.`is_active` = 1";
+                      AND `glpi_ticketrecurrents`.`is_active` = 1
+                      AND (`glpi_ticketrecurrents`.`end_date` IS NULL
+                           OR `glpi_ticketrecurrents`.`end_date` > NOW())";
 
       foreach ($DB->request($query) as $data) {
          if (self::createTicket($data)) {
@@ -457,6 +476,7 @@ class TicketRecurrent extends CommonDropdown {
          $input                       = array();
          $input['id']                 = $data['id'];
          $input['next_creation_date'] = $tr->computeNextCreationDate($data['begin_date'],
+                                                                     $data['end_date'],
                                                                      $data['periodicity'],
                                                                      $data['create_before'],
                                                                      $data['calendars_id']);
