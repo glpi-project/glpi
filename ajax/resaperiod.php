@@ -67,6 +67,18 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
             echo "<td><input type='checkbox' name='periodicity[days][$day]'></td>";
          }
          echo "</tr>";
+         break;
+      case 'month' :
+         echo "<tr class='center'><td colspan='2'>";
+         echo "<select name='periodicity[subtype]'>";
+         echo "<option value='date'>".__('Same date')."</option>\n";
+         echo "<option value='day'>".__('Same day')."</option>\n";
+         echo "</select>";
+         echo "</td></tr>";
+         echo "<tr><td>".__('End date').'</td><td>';
+         Html::showDateFormItem('periodicity[end]', $_POST['end']);
+         echo "</td></tr></table>";
+         
    }
    echo '</table>';
 }
