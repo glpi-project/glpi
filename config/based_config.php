@@ -102,6 +102,11 @@ if (!defined("GLPI_TMP_DIR")) {
    define("GLPI_TMP_DIR",GLPI_ROOT . "/files/_tmp");
 }
 
+// Path for rss storage
+if (!defined("GLPI_RSS_DIR")) {
+   define("GLPI_RSS_DIR",GLPI_ROOT . "/files/_rss");
+}
+
 // Path for upload storage
 if (!defined("GLPI_UPLOAD_DIR")) {
    define("GLPI_UPLOAD_DIR",GLPI_ROOT . "/files/_uploads");
@@ -145,6 +150,13 @@ if (!defined("GLPI_ZEND_PATH")) {
    # define("GLPI_ZEND_PATH", "");                 // if already in include_path
 }
 
+// Default SimplePie path
+if (!defined("GLPI_SIMPLEPIE_PATH")) {
+   define("GLPI_SIMPLEPIE_PATH", GLPI_ROOT."/lib/simplepie");
+
+   # if SimplePie installed, use (in config_path.php)
+   # define("GLPI_SIMPLEPIE_PATH", "/usr/share/php/simplepie");  // if not in standard include_path
+}
 // Default phpCAS installation dir
 if (!defined("GLPI_PHPCAS")) {
    define("GLPI_PHPCAS", GLPI_ROOT . "/lib/phpcas/CAS.php");

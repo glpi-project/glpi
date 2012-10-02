@@ -1484,6 +1484,8 @@ class Config extends CommonDBTM {
                                     => __('Checking write permissions for plugins document files'),
                             GLPI_TMP_DIR
                                     => __('Checking write permissions for temporary files'),
+                            GLPI_RSS_DIR
+                                    => __('Checking write permissions for rss files'),
                             GLPI_UPLOAD_DIR
                                     => __('Checking write permissions for upload files'));
       $error = 0;
