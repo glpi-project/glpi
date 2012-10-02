@@ -1381,7 +1381,15 @@ function update0831to084() {
       $migration->addKey("glpi_computers_softwareversions",
                          'is_deleted');
    }
-   
+
+
+   /// create new index for search
+   $migration->addKey("glpi_softwarelicenses",
+                        array('softwares_id', 'expire'),
+                        'softwares_id_expire');
+   $migration->dropKey("glpi_softwarelicenses",
+                        'softwares_id');
+
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
 
