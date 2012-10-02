@@ -219,7 +219,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
             if (!empty($this->fields['begin'])
                 && (($item->fields["status"] == CommonITILObject::INCOMING) 
-                     || ($item->fields["status"] == CommonITILObject::ASSIGN))) {
+                     || ($item->fields["status"] == CommonITILObject::ASSIGNED))) {
 
                $input2['id']            = $item->getID();
                $input2['status']        = CommonITILObject::PLANNED;
@@ -325,7 +325,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (!empty($this->fields['begin'])
           && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
-              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGN))) {
+              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))) {
 
          $input2['id']            = $this->input["_job"]->getID();
          $input2['status']        = CommonITILObject::PLANNED;
