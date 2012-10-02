@@ -1988,13 +1988,21 @@ class Ticket extends CommonITILObject {
 
       $tab['followup'] = $LANG['mailing'][141];
 
+
+      $followup_condition = '';
+      if (!Session::haveRight('show_full_ticket', 1)) {
+         $followup_condition = "AND (`NEWTABLE`.`is_private` = '0'
+                                 OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+      }
+      
       $tab[25]['table']         = 'glpi_ticketfollowups';
       $tab[25]['field']         = 'content';
       $tab[25]['name']          = $LANG['job'][9]." - ".$LANG['joblist'][6];
       $tab[25]['forcegroupby']  = true;
       $tab[25]['splititems']    = true;
       $tab[25]['massiveaction'] = false;
-      $tab[25]['joinparams']    = array('jointype' => 'child');
+      $tab[25]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => $followup_condition);
 
       $tab[27]['table']         = 'glpi_ticketfollowups';
       $tab[27]['field']         = 'count';
@@ -2003,7 +2011,8 @@ class Ticket extends CommonITILObject {
       $tab[27]['usehaving']     = true;
       $tab[27]['datatype']      = 'number';
       $tab[27]['massiveaction'] = false;
-      $tab[27]['joinparams']    = array('jointype' => 'child');
+      $tab[27]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => $followup_condition);
 
       $tab[29]['table']         = 'glpi_requesttypes';
       $tab[29]['field']         = 'name';
@@ -2012,7 +2021,8 @@ class Ticket extends CommonITILObject {
       $tab[29]['massiveaction'] = false;
       $tab[29]['joinparams']    = array('beforejoin'
                                           => array('table'      => 'glpi_ticketfollowups',
-                                                   'joinparams' => array('jointype' => 'child')));
+                                                   'joinparams' => array('jointype' => 'child',
+                                                                         'condition' => $followup_condition)));
 
       $tab[91]['table']         = 'glpi_ticketfollowups';
       $tab[91]['field']         = 'is_private';
@@ -2021,7 +2031,8 @@ class Ticket extends CommonITILObject {
       $tab[91]['forcegroupby']  = true;
       $tab[91]['splititems']    = true;
       $tab[91]['massiveaction'] = false;
-      $tab[91]['joinparams']    = array('jointype' => 'child');
+      $tab[91]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => $followup_condition);
 
       $tab[93]['table']         = 'glpi_users';
       $tab[93]['field']         = 'name';
@@ -2032,7 +2043,8 @@ class Ticket extends CommonITILObject {
       $tab[93]['massiveaction'] = false;
       $tab[93]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_ticketfollowups',
-                                                 'joinparams' => array('jointype' => 'child')));
+                                                 'joinparams' => array('jointype' => 'child',
+                                                                       'condition' => $followup_condition)));
 
 
       $tab += $this->getSearchOptionsStats();
