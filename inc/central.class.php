@@ -57,6 +57,7 @@ class Central extends CommonGLPI {
          $tabs[1] = __('Personal View');
          $tabs[2] = __('Group View');
          $tabs[3] = __('Global View');
+         $tabs[4] = _n('RSS feed', 'RSS feeds', 2);
 
          return $tabs;
       }
@@ -78,6 +79,10 @@ class Central extends CommonGLPI {
 
             case 3 :
                $item->showGlobalView();
+               break;
+
+            case 4 :
+               $item->showRSSView();
                break;
          }
       }
@@ -192,6 +197,25 @@ class Central extends CommonGLPI {
       echo "</table></td></tr></table>";
    }
 
+   /**
+    * Show the central RSS view
+   **/
+   static function showRSSView() {
+      global $DB;
+
+
+      echo "<table class='tab_cadre_central'>";
+
+      echo "<tr><td>";
+      Planning::showCentral(Session::getLoginUserID());
+      Reminder::showListForCentral();
+      if (Session::haveRight("reminder_public","r")) {
+         Reminder::showListForCentral(false);
+      }
+      echo "</td></tr>";
+      echo "</table>";
+   }
+   
 
    /**
     * Show the central group view
