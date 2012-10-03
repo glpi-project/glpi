@@ -29,7 +29,7 @@
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
-// Purpose of file:
+// @since version 0.84
 // ----------------------------------------------------------------------
 
 
@@ -42,7 +42,7 @@ if (isset($_POST["add"])) {
    $contactsupplier->check(-1,'w',$_POST);
 
    if (isset($_POST["contacts_id"]) && ($_POST["contacts_id"] > 0)
-      && isset($_POST["suppliers_id"]) && ($_POST["suppliers_id"] > 0)) {
+       && isset($_POST["suppliers_id"]) && ($_POST["suppliers_id"] > 0)) {
       if ($contactsupplier->add($_POST)) {
          Event::log($_POST["contacts_id"], "contacts", 4, "financial",
                     //TRANS: %s is the user login

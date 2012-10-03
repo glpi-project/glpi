@@ -98,7 +98,7 @@ if (isset($_POST["action"])
 
    /// Save selection
    if (!isset($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]])
-       || count($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]]) == 0) {
+       || (count($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]]) == 0)) {
       $_SESSION['glpimassiveactionselected'][$_POST["itemtype"]] = array();
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {

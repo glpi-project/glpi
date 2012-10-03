@@ -473,13 +473,13 @@ class Computer_Item extends CommonDBRelation{
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
                   $datas[] = $data;
-                  $used[$itemtype][] = $data['assoc_items_id']; 
+                  $used[$itemtype][] = $data['assoc_items_id'];
                }
             }
          }
       }
       $number = count($datas);
-      
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
@@ -494,8 +494,8 @@ class Computer_Item extends CommonDBRelation{
          if (!empty($withtemplate)) {
             echo "<input type='hidden' name='_no_history' value='1'>";
          }
-         self::dropdownAllConnect('Computer', "items_id",
-                                 $comp->fields["entities_id"], $withtemplate, $used);
+         self::dropdownAllConnect('Computer', "items_id", $comp->fields["entities_id"],
+                                  $withtemplate, $used);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
          echo "<input type='hidden' name='computers_id' value='".$comp->fields['id']."'>";
@@ -504,7 +504,7 @@ class Computer_Item extends CommonDBRelation{
          Html::closeForm();
          echo "</div>";
       }
-      
+
       if ($number) {
          echo "<div class='spaced'>";
          if ($canedit) {
@@ -603,10 +603,10 @@ class Computer_Item extends CommonDBRelation{
       $number = count($compids);
 
       if ($canedit
-            && ($global || $number)) {
+          && ($global || $number)) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Connect a computer')."</th></tr>";
@@ -616,10 +616,10 @@ class Computer_Item extends CommonDBRelation{
          echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
          if ($item->isRecursive()) {
             self::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                    getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
+                                  getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
          } else {
             self::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                    $item->getEntityID(), 0, $used);
+                                  $item->getEntityID(), 0, $used);
          }
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
@@ -777,7 +777,7 @@ class Computer_Item extends CommonDBRelation{
       return $rand;
 
    }
-   
+
    /**
    * Make a select box for connections
    *
@@ -808,7 +808,7 @@ class Computer_Item extends CommonDBRelation{
             $use_ajax = true;
          }
       }
-      
+
       $params = array('searchText'      => '__VALUE__',
                       'fromtype'        => $fromtype,
                       'itemtype'        => $itemtype,

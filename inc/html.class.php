@@ -3000,13 +3000,12 @@ class Html {
     *
     * @since version 0.84
     *
-    * @param $itemtype Massive action itemtype
-    * @param $id ID of the item
+    * @param $itemtype    Massive action itemtype
+    * @param $id          ID of the item
     *
     * @return get checkbox
    **/
    static function getMassiveActionCheckBox($itemtype, $id) {
-
 
       $sel = "";
       if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
@@ -3015,19 +3014,21 @@ class Html {
       return "<input type='checkbox' name='item[".$id."]' value='1' $sel>";
    }
 
+
    /**
     * Show the massive action checkbox
     *
     * @since version 0.84
     *
-    * @param $itemtype Massive action itemtype
-    * @param $id ID of the item
+    * @param $itemtype    Massive action itemtype
+    * @param $id          ID of the item
     *
     * @return show checkbox
    **/
    static function showMassiveActionCheckBox($itemtype, $id) {
       echo Html::getMassiveActionCheckBox($itemtype, $id);
    }
+
 
    /**
     * Display open form for massive action

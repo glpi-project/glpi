@@ -46,12 +46,17 @@ class Contract_Supplier extends CommonDBRelation {
    static public $itemtype_2 = 'Supplier';
    static public $items_id_2 = 'suppliers_id';
 
+
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    /**
     * @param $item   string   Supplier object
@@ -124,10 +129,15 @@ class Contract_Supplier extends CommonDBRelation {
       return true;
    }
 
+
    /**
     * Print an HTML array with contracts associated to the enterprise
     *
-    *@return Nothing (display)
+    * @since version 0.84
+    *
+    * @param $supplier   Supplier object
+    *
+    * @return Nothing (display)
    **/
    static function showForSupplier(Supplier $supplier) {
       global $DB, $CFG_GLPI;
@@ -138,7 +148,7 @@ class Contract_Supplier extends CommonDBRelation {
          return false;
       }
       $canedit = $supplier->can($ID,'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $query = "SELECT `glpi_contracts`.*,
                        `glpi_contracts_suppliers`.`id` AS assocID,
@@ -151,13 +161,13 @@ class Contract_Supplier extends CommonDBRelation {
                 ORDER BY `glpi_entities`.`completename`,
                          `glpi_contracts`.`name`";
 
-      $result = $DB->query($query);
+      $result    = $DB->query($query);
       $contracts = array();
-      $used = array();
+      $used      = array();
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $contracts[$data['assocID']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]           = $data['id'];
          }
       }
 
@@ -171,10 +181,10 @@ class Contract_Supplier extends CommonDBRelation {
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a contract')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td class='right'>";
-         Contract::dropdown(array('used'        => $used,
-                                 'entity'       => $supplier->fields["entities_id"],
-                                 'entity_sons'  => $supplier->fields["is_recursive"],
-                                 'nochecklimit' => true));
+         Contract::dropdown(array('used'         => $used,
+                                  'entity'       => $supplier->fields["entities_id"],
+                                  'entity_sons'  => $supplier->fields["is_recursive"],
+                                  'nochecklimit' => true));
 
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -248,10 +258,15 @@ class Contract_Supplier extends CommonDBRelation {
       echo "</div>";
    }
 
+
    /**
     * Print the HTML array of suppliers for this contract
+    *
+    * @since version 0.84
+    *
     * @param $contract Contract object
-    *@return Nothing (HTML display)
+    *
+    * @return Nothing (HTML display)
     **/
    static function showForContract(Contract $contract) {
       global $DB, $CFG_GLPI;
@@ -263,7 +278,7 @@ class Contract_Supplier extends CommonDBRelation {
          return false;
       }
       $canedit = $contract->can($instID,'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $query = "SELECT `glpi_contracts_suppliers`.`id`,
                        `glpi_suppliers`.`id` AS entID,
@@ -280,20 +295,20 @@ class Contract_Supplier extends CommonDBRelation {
                       getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true). "
                 ORDER BY `glpi_entities`.`completename`, `name`";
 
-      $result = $DB->query($query);
+      $result    = $DB->query($query);
       $suppliers = array();
-      $used = array();
+      $used      = array();
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $suppliers[$data['id']] = $data;
-            $used[$data['entID']] = $data['entID'];
+            $used[$data['entID']]   = $data['entID'];
          }
       }
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='contractsupplier_form$rand' id='contractsupplier_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
 
          echo "<table class='tab_cadre_fixe'>";
@@ -302,8 +317,8 @@ class Contract_Supplier extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td class='right'>";
 
          Supplier::dropdown(array('used'         => $used,
-                                    'entity'       => $contract->fields["entities_id"],
-                                    'entity_sons'  => $contract->fields["is_recursive"]));
+                                  'entity'       => $contract->fields["entities_id"],
+                                  'entity_sons'  => $contract->fields["is_recursive"]));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -371,7 +386,7 @@ class Contract_Supplier extends CommonDBRelation {
          Html::closeForm();
       }
       echo "</div>";
-
    }
+
 }
 ?>
