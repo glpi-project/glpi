@@ -57,8 +57,8 @@ if (!defined('GLPI_ROOT')) {
 // }
 
 
-/// RSSFlow class
-class RSSFlow extends CommonDBTM {
+/// RSSFeed class
+class RSSFeed extends CommonDBTM {
 
    // For visibility checks
    protected $users     = array();
