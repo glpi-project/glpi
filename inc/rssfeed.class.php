@@ -362,6 +362,47 @@ class RSSFeed extends CommonDBTM {
       return '('.$restrict.')';
    }
 
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'refresh_rate':
+            return Html::timestampToString($values[$field], false);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (default '')
+    * @param $options      array
+    **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'refresh_rate' :
+            return Planning::dropdownState($name, $values[$field], false);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    function getSearchOptions() {
 
@@ -391,7 +432,7 @@ class RSSFeed extends CommonDBTM {
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'is_active';
       $tab[4]['name']          = __('Active');
-      $tab[4]['datatype']      = 'boolean';
+      $tab[4]['datatype']      = 'bool';
       $tab[4]['massiveaction'] = true;
 
       $tab[16]['table']          = $this->getTable();
@@ -400,9 +441,13 @@ class RSSFeed extends CommonDBTM {
       $tab[16]['datatype']       = 'text';
 
       $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'resfresh_rate';
+      $tab[5]['field']         = 'refresh_rate';
       $tab[5]['name']          = __('Refresh rate');
       $tab[5]['datatype']      = 'timestamp';
+      $tab[5]['min']           = HOUR_TIMESTAMP;
+      $tab[5]['max']           = HOUR_TIMESTAMP;
+      $tab[5]['toadd']         = array(DAY_TIMESTAMP);
+      $tab[5]['display_emptychoice'] = false;
       $tab[5]['massiveaction'] = true;
       $tab[5]['searchtype']    = 'equals';
       
@@ -425,10 +470,11 @@ class RSSFeed extends CommonDBTM {
          switch ($item->getType()) {
             case 'RSSFeed' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return array(1 => self::createTabEntry(__('Targets'),
+                  return array(1 => _n('RSS feed', 'RSS feeds', 1),
+                               2 => self::createTabEntry(__('Targets'),
                                                          $item->countVisibilities()));
                }
-               return array(1 => __('Targets'));
+               return array(2 => __('Targets'));
          }
       }
       return '';
@@ -456,8 +502,15 @@ class RSSFeed extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'RSSFeed' :
-            $item->showVisibility();
-            return true;
+            switch ($tabnum) {
+               case 1 :
+                  $item->showFeedContent();
+                  return true;
+               
+               case 2 :
+                  $item->showVisibility();
+                  return true;
+            }
       }
       return false;
    }
@@ -470,6 +523,9 @@ class RSSFeed extends CommonDBTM {
 
       if ($feed = $this->getRSSFeed($input['url'])) {
          $input['name'] = addslashes($feed->get_title());
+         if (empty($input['comment'])) {
+            $input['comment'] = $feed->get_description();
+         }
       } else {
          $input['name'] = '';
       }
@@ -572,18 +628,60 @@ class RSSFeed extends CommonDBTM {
       return true;
    }
 
-
+   /**
+    * Show the feed content
+    **/
+   function showFeedContent() {
+      if (!$this->canViewItem()) {
+         return false;
+      }
+      $feed = $this->getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
+      echo "<div class='firstbloc'>";
+      if (!$feed || $feed->error()) {
+         _e('Error getting RSS feed');
+      } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
+         foreach($feed->get_items() as $item) {
+            $link = $item->get_permalink();
+            echo "<tr><td>";
+            echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
+            echo "</td><td>";
+            if (!is_null($link)) {
+               echo "<a target='_blank' href='$link'>".$item->get_title().'</a>';
+            } else {
+               $item->get_title();
+            }
+            echo "</td><td>";
+            $rand = mt_rand();
+            echo "<span id='rssitem$rand' class='pointer'>";
+            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 1000);
+            echo "</span>";
+            Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
+                                         array('applyto' => "rssitem$rand",
+                                               'display' => true));
+            echo "</td></tr>";
+         }
+         echo "</table>";
+         
+      }
+      echo "</div>";
+   }
    /**
     * Get a specific RSS feed
     *
-    * @param $url string : URL of the feed
+    * @param $url string/array : URL of the feed or array of URL
+    * @param $use_cache boolean : use cache
     *
     * @return feed object
     **/
-   function getRSSFeed($url) {
+   function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
    
       $feed = new SimplePie();
-      $feed->enable_cache(false);
+      $feed->set_cache_location(GLPI_RSS_DIR);
+      $feed->set_cache_duration($cache_duration);
+
+      $feed->enable_cache(true);
       $feed->set_feed_url($url);
       $feed->force_feed(true);
       // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and
@@ -602,299 +700,309 @@ class RSSFeed extends CommonDBTM {
       }
    }
    
-//    /**
-//     * Show list for central view
-//     *
-//     * @param $personal boolean : display rssfeeds created by me ? (true by default)
-//     *
-//     * @return Nothing (display function)
-//     **/
-//    static function showListForCentral($personal=true) {
-//       global $DB, $CFG_GLPI;
-// 
-//       $users_id = Session::getLoginUserID();
-//       $today    = date('Y-m-d');
-//       $now      = date('Y-m-d H:i:s');
-// 
-//       $restrict_visibility = " AND (`glpi_rssfeeds`.`begin_view_date` IS NULL
-//                                     OR `glpi_rssfeeds`.`begin_view_date` < '$now')
-//                               AND (`glpi_rssfeeds`.`end_view_date` IS NULL
-//                                    OR `glpi_rssfeeds`.`end_view_date` > '$now') ";
-// 
-//       if ($personal) {
-// 
-//          /// Personal notes only for central view
-//          if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-//             return false;
-//          }
-// 
-//          $query = "SELECT `glpi_rssfeeds`.*
-//                    FROM `glpi_rssfeeds`
-//                    WHERE `glpi_rssfeeds`.`users_id` = '$users_id'
-//                          AND (`glpi_rssfeeds`.`end` >= '$today'
-//                               OR `glpi_rssfeeds`.`is_planned` = '0')
-//                          $restrict_visibility
-//                    ORDER BY `glpi_rssfeeds`.`name`";
-// 
-//          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.php'>".
-//                     _n('Personal rssfeed', 'Personal rssfeeds', 2)."</a>";
-// 
-//       } else {
-//          // Show public rssfeeds / not mines : need to have access to public rssfeeds
-//          if (!Session::haveRight('rssfeed_public', 'r')) {
-//             return false;
-//          }
-// 
-//          $restrict_user = '1';
-//          // Only personal on central so do not keep it
-//          if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-//             $restrict_user = "`glpi_rssfeeds`.`users_id` <> '$users_id'";
-//          }
-// 
-//          $query = "SELECT `glpi_rssfeeds`.*
-//                    FROM `glpi_rssfeeds` ".
-//                    self::addVisibilityJoins()."
-//                    WHERE $restrict_user
-//                          $restrict_visibility
-//                          AND ".self::addVisibilityRestrict()."
-//                    ORDER BY `glpi_rssfeeds`.`name`";
-// 
-//          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
-//             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/rssfeed.php\">".
-//                        _n('Public rssfeed', 'Public rssfeeds', 2)."</a>";
-//          } else {
-//             $titre = _n('Public rssfeed', 'Public rssfeeds', 2);
-//          }
-//       }
-// 
-//       $result = $DB->query($query);
-//       $nb     = $DB->numrows($result);
-// 
-//       echo "<br><table class='tab_cadrehov'>";
-//       echo "<tr><th><div class='relative'><span>$titre</span>";
-// 
-//       if (self::canCreate()) {
-//          echo "<span class='rssfeed_right'>";
-//          echo "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.form.php'>";
-//          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"". __s('Add')."\">".
-//               "</a></span>";
-//       }
-// 
-//       echo "</div></th></tr>\n";
-// 
-//       if ($nb) {
-//          $rand = mt_rand();
-// 
-//          while ($data = $DB->fetch_assoc($result)) {
-//             echo "<tr class='tab_bg_2'><td><div class='relative rssfeed_list'>";
-//             $link = "<a id='content_rssfeed_".$data["id"].$rand."'
-//                       href='".$CFG_GLPI["root_doc"]."/front/rssfeed.form.php?id=".$data["id"]."'>".
-//                       $data["name"]."</a>";
-// 
-//             $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data["text"]),
-//                                          array('applyto' => "content_rssfeed_".$data["id"].$rand,
-//                                                'display' => false));
-//             printf(__('%1$s %2$s'), $link, $tooltip);
-// 
-//             if ($data["is_planned"]) {
-//                $tab      = explode(" ",$data["begin"]);
-//                $date_url = $tab[0];
-//                echo "<span class='rssfeed_right'>";
-//                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
-//                      "&amp;type=day'>";
-//                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"". __s('Planning').
-//                      "\" title=\"".sprintf(__s('From %1$s to %2$s'),
-//                                            Html::convDateTime($data["begin"]),
-//                                            Html::convDateTime($data["end"]))."\">";
-//                echo "</a></span>";
-//             }
-// 
-//             echo "</div></td></tr>\n";
-//          }
-// 
-//       }
-//       echo "</table>\n";
-// 
-//    }
-// 
-// 
-// 
-//    /**
-//     * Show visibility config for a rssfeed
-//    **/
-//    function showVisibility() {
-//       global $DB, $CFG_GLPI;
-// 
-//       $ID      = $this->fields['id'];
-//       $canedit = $this->can($ID,'w');
-// 
-//       echo "<div class='center'>";
-// 
-//       $rand = mt_rand();
-// 
-//       $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
-// 
-//       if ($canedit) {
-//          echo "<div class='firstbloc'>";
-//          echo "<form name='rssfeedvisibility_form$rand' id='rssfeedvisibility_form$rand' ";
-//          echo " method='post' action='".Toolbox::getItemTypeFormURL('RSSFeed')."'>";
-//          echo "<input type='hidden' name='rssfeeds_id' value='$ID'>";
-//          echo "<table class='tab_cadre_fixe'>";
-//          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
-//          echo "<tr><td class='tab_bg_2' width='100px'>";
-// 
-//          $types = array('Entity', 'Group', 'Profile', 'User');
-// 
-//          $addrand = Dropdown::showItemTypes('_type', $types);
-//          $params  = array('type'  => '__VALUE__',
-//                           'right' => 'rssfeed_public');
-// 
-//          Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
-//                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
-// 
-//          echo "</td>";
-//          echo "<td><span id='visibility$rand'></span>";
-//          echo "</td></tr>";
-//          echo "</table>";
-//          Html::closeForm();
-//          echo "</div>";
-//       }
-//       echo "<div class='spaced'>";
-//       if ($canedit && $nb) {
-//          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-//          $paramsma = array('num_displayed'    => $nb,
-//                            'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
-// 
-//          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-//             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
-//          }
-//          Html::showMassiveActions(__CLASS__, $paramsma);
-//       }
-//       echo "<table class='tab_cadre_fixe'>";
-//       echo "<tr>";
-//       if ($canedit && $nb) {
-//          echo "<th width='10'>";
-//          echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-//          echo "</th>";
-//       }
-//       echo "<th>".__('Type')."</th>";
-//       echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
-//       echo "</tr>";
-// 
-//       // Users
-//       if (count($this->users)) {
-//          foreach ($this->users as $key => $val) {
-//             foreach ($val as $data) {
-//                echo "<tr>";
-//                if ($canedit) {
-//                   echo "<td>";
-//                   echo "<input type='checkbox' name='item[RSSFeed_User][".$data["id"]."]' value='1' >";
-//                   echo "</td>";
-//                }
-//                echo "<td>".__('User')."</td>";
-//                echo "<td>".getUserName($data['users_id'])."</td>";
-//                echo "</tr>";
-//             }
-//          }
-//       }
-// 
-//       // Groups
-//       if (count($this->groups)) {
-//          foreach ($this->groups as $key => $val) {
-//             foreach ($val as $data) {
-//                echo "<tr>";
-//                if ($canedit) {
-//                   echo "<td>";
-//                   echo "<input type='checkbox' name='item[Group_RSSFeed][".$data["id"]."]' value='1'>";
-//                   echo "</td>";
-//                }
-//                echo "<td>".__('Group')."</td>";
-// 
-//                $names    = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
-//                $entname = printf(__('%1$s %2$s'), $names["name"],
-//                                    Html::showToolTip($names["comment"], array('display' => false)));
-//                if ($data['entities_id'] >= 0) {
-//                   $entname = sprintf(__('%1$s / %2$s'), $entname,
-//                                      Dropdown::getDropdownName('glpi_entities',
-//                                                                $data['entities_id']));
-//                   if ($data['is_recursive']) {
-//                      //TRANS: R for Recursive
-//                      sprintf(__('%1$s %2$s'), $entname,
-//                              "<span class='b'>(".__('R').")</span>");
-//                   }
-//                }
-//                echo "<td>".$entname."</td>";
-//                echo "<tr>";
-//             }
-//          }
-//       }
-// 
-//       // Entity
-//       if (count($this->entities)) {
-//          foreach ($this->entities as $key => $val) {
-//             foreach ($val as $data) {
-//                echo "<tr>";
-//                if ($canedit) {
-//                   echo "<td>";
-//                   echo "<input type='checkbox' name='item[Entity_RSSFeed][".$data["id"]."]' value='1'>";
-//                   echo "</td>";
-//                }
-//                echo "<td>".__('Entity')."</td>";
-//                $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
-//                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
-//                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
-//                if ($data['is_recursive']) {
-//                   $entname = sprintf(__('%1$s %2$s'), $entname,
-//                                      "<span class='b'>(".__('R').")</span>");
-//                }
-//                echo "<td>".$entname."</td>";
-//                echo "<tr>";
-//             }
-//          }
-//       }
-// 
-//       // Profiles
-//       if (count($this->profiles)) {
-//          foreach ($this->profiles as $key => $val) {
-//             foreach ($val as $data) {
-//                echo "<tr>";
-//                if ($canedit) {
-//                   echo "<td>";
-//                   echo "<input type='checkbox' name='item[Profile_RSSFeed][".$data["id"]."]' value='1'>";
-//                   echo "</td>";
-//                }
-//                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
-// 
-//                $names   = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
-//                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
-//                $entname = sprintf(__('%1$s %2$s'), $names["name"], $entname);
-//                if ($data['entities_id'] >= 0) {
-//                   $entname = sprintf(__('%1$s / %2$s'), $entname,
-//                                      Dropdown::getDropdownName('glpi_entities',
-//                                                                $data['entities_id']));
-//                   if ($data['is_recursive']) {
-//                      $entname = sprintf(__('%1$s %2$s'), $entname,
-//                                         "<span class='b'>(".__('R').")</span>");
-//                   }
-//                }
-//                echo "<td>".$entname."</td>";
-//                echo "<tr>";
-//             }
-//          }
-//       }
-// 
-//       echo "</table>";
-//       if ($canedit && $nb) {
-//          $paramsma['ontop'] =false;
-//          Html::showMassiveActions(__CLASS__, $paramsma);
-//          Html::closeForm();
-//       }
-// 
-//       echo "</div>";
-//       // Add items
-// 
-//       return true;
-//    }
+   /**
+    * Show list for central view
+    *
+    * @param $personal boolean : display rssfeeds created by me ? (true by default)
+    *
+    * @return Nothing (display function)
+    **/
+   static function showListForCentral($personal=true) {
+      global $DB, $CFG_GLPI;
+
+      $users_id = Session::getLoginUserID();
+      $today    = date('Y-m-d');
+      $now      = date('Y-m-d H:i:s');
+
+      $restrict_visibility = "";
+
+      if ($personal) {
+
+         /// Personal notes only for central view
+         if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+            return false;
+         }
+
+         $query = "SELECT `glpi_rssfeeds`.*
+                   FROM `glpi_rssfeeds`
+                   WHERE `glpi_rssfeeds`.`users_id` = '$users_id'
+                         AND `glpi_rssfeeds`.`is_active` = '1'
+                         $restrict_visibility
+                   ORDER BY `glpi_rssfeeds`.`name`";
+
+         $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.php'>".
+                    _n('Personal RSS feed', 'Personal RSS feeds', 2)."</a>";
+
+      } else {
+         // Show public rssfeeds / not mines : need to have access to public rssfeeds
+         if (!Session::haveRight('rssfeed_public', 'r')) {
+            return false;
+         }
+
+         $restrict_user = '1';
+         // Only personal on central so do not keep it
+         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            $restrict_user = "`glpi_rssfeeds`.`users_id` <> '$users_id'";
+         }
+
+         $query = "SELECT `glpi_rssfeeds`.*
+                   FROM `glpi_rssfeeds` ".
+                   self::addVisibilityJoins()."
+                   WHERE $restrict_user
+                         $restrict_visibility
+                         AND ".self::addVisibilityRestrict()."
+                   ORDER BY `glpi_rssfeeds`.`name`";
+
+         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+            $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/rssfeed.php\">".
+                       _n('Public RSS feed', 'Public RSS feeds', 2)."</a>";
+         } else {
+            $titre = _n('Public RSS feed', 'Public RSS feeds', 2);
+         }
+      }
+
+      $result = $DB->query($query);
+      $feeds = array();
+      $rssfeed = new self();
+      if ($nb     = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            // Force fetching feeds
+            $rssfeed->getRSSFeed($data['url'], $data['refresh_rate']);
+
+            // Store feeds in array of feeds
+            $feeds[$data['id']]=$data['url'];
+         }
+      }
+
+      echo "<br><table class='tab_cadrehov'>";
+      echo "<tr><th colspan='3'><div class='relative'><span>$titre</span>";
+
+      if (self::canCreate()) {
+         echo "<span class='rssfeed_right'>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.form.php'>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"". __s('Add')."\">".
+              "</a></span>";
+      }
+
+      echo "</div></th></tr>\n";
+
+      if ($nb) {
+         if ($feed = $rssfeed->getRSSFeed($feeds)) {
+            foreach($feed->get_items() as $item) {
+
+               echo "<tr><td>";
+               echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
+               echo "</td><td>";
+               $link = $item->feed->get_permalink();
+               if (empty($link)) {
+                  echo $item->feed->get_title();
+               } else {
+                  echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
+               }
+               $link = $item->get_permalink();
+               echo "<br>";
+               echo $item->get_title();
+               echo "</td><td>";
+               $rand = mt_rand();
+               echo "<span id='rssitem$rand' class='pointer'>";
+               if (!is_null($link)) {
+                  echo "<a target='_blank' href='$link'>";
+               }
+               echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
+               if (!is_null($link)) {
+                  echo "</a>";
+               }
+               echo "</span>";
+               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
+                                          array('applyto' => "rssitem$rand",
+                                                'display' => true));
+               echo "</td></tr>";
+            }
+         }
+
+      }
+      echo "</table>\n";
+
+   }
+
+
+
+   /**
+    * Show visibility config for a rssfeed
+   **/
+   function showVisibility() {
+      global $DB, $CFG_GLPI;
+
+      $ID      = $this->fields['id'];
+      $canedit = $this->can($ID,'w');
+
+      echo "<div class='center'>";
+
+      $rand = mt_rand();
+
+      $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
+
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='rssfeedvisibility_form$rand' id='rssfeedvisibility_form$rand' ";
+         echo " method='post' action='".Toolbox::getItemTypeFormURL('RSSFeed')."'>";
+         echo "<input type='hidden' name='rssfeeds_id' value='$ID'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
+         echo "<tr><td class='tab_bg_2' width='100px'>";
+
+         $types = array('Entity', 'Group', 'Profile', 'User');
+
+         $addrand = Dropdown::showItemTypes('_type', $types);
+         $params  = array('type'  => '__VALUE__',
+                          'right' => 'rssfeed_public');
+
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
+
+         echo "</td>";
+         echo "<td><span id='visibility$rand'></span>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+      echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $paramsma = array('num_displayed'    => $nb,
+                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
+
+         if ($this->fields['users_id'] != Session::getLoginUserID()) {
+            $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+         }
+         Html::showMassiveActions(__CLASS__, $paramsma);
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      if ($canedit && $nb) {
+         echo "<th width='10'>";
+         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".__('Type')."</th>";
+      echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+      echo "</tr>";
+
+      // Users
+      if (count($this->users)) {
+         foreach ($this->users as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  echo "<input type='checkbox' name='item[RSSFeed_User][".$data["id"]."]' value='1' >";
+                  echo "</td>";
+               }
+               echo "<td>".__('User')."</td>";
+               echo "<td>".getUserName($data['users_id'])."</td>";
+               echo "</tr>";
+            }
+         }
+      }
+
+      // Groups
+      if (count($this->groups)) {
+         foreach ($this->groups as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  echo "<input type='checkbox' name='item[Group_RSSFeed][".$data["id"]."]' value='1'>";
+                  echo "</td>";
+               }
+               echo "<td>".__('Group')."</td>";
+
+               $names    = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               $entname = printf(__('%1$s %2$s'), $names["name"],
+                                   Html::showToolTip($names["comment"], array('display' => false)));
+               if ($data['entities_id'] >= 0) {
+                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+                                     Dropdown::getDropdownName('glpi_entities',
+                                                               $data['entities_id']));
+                  if ($data['is_recursive']) {
+                     //TRANS: R for Recursive
+                     sprintf(__('%1$s %2$s'), $entname,
+                             "<span class='b'>(".__('R').")</span>");
+                  }
+               }
+               echo "<td>".$entname."</td>";
+               echo "<tr>";
+            }
+         }
+      }
+
+      // Entity
+      if (count($this->entities)) {
+         foreach ($this->entities as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  echo "<input type='checkbox' name='item[Entity_RSSFeed][".$data["id"]."]' value='1'>";
+                  echo "</td>";
+               }
+               echo "<td>".__('Entity')."</td>";
+               $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
+               $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
+               if ($data['is_recursive']) {
+                  $entname = sprintf(__('%1$s %2$s'), $entname,
+                                     "<span class='b'>(".__('R').")</span>");
+               }
+               echo "<td>".$entname."</td>";
+               echo "<tr>";
+            }
+         }
+      }
+
+      // Profiles
+      if (count($this->profiles)) {
+         foreach ($this->profiles as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  echo "<input type='checkbox' name='item[Profile_RSSFeed][".$data["id"]."]' value='1'>";
+                  echo "</td>";
+               }
+               echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
+
+               $names   = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
+               $entname = sprintf(__('%1$s %2$s'), $names["name"], $entname);
+               if ($data['entities_id'] >= 0) {
+                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+                                     Dropdown::getDropdownName('glpi_entities',
+                                                               $data['entities_id']));
+                  if ($data['is_recursive']) {
+                     $entname = sprintf(__('%1$s %2$s'), $entname,
+                                        "<span class='b'>(".__('R').")</span>");
+                  }
+               }
+               echo "<td>".$entname."</td>";
+               echo "<tr>";
+            }
+         }
+      }
+
+      echo "</table>";
+      if ($canedit && $nb) {
+         $paramsma['ontop'] =false;
+         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::closeForm();
+      }
+
+      echo "</div>";
+      // Add items
+
+      return true;
+   }
 
 }
 ?>

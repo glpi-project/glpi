@@ -1613,6 +1613,7 @@ function update0831to084() {
                   KEY `is_active` (`is_active`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_rssfeeds");
+      $ADDTODISPLAYPREF['RSSFeed'] = array(2,4,5,19);
    }
    if (!TableExists('glpi_rssfeeds_users')) {
       $query = "CREATE TABLE `glpi_rssfeeds_users` (

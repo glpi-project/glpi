@@ -206,9 +206,9 @@ class Central extends CommonGLPI {
 
       echo "<table class='tab_cadre_central'>";
 
-      echo "<tr><td>";
+      echo "<tr><td class='top' width='50%'>";
       RSSFeed::showListForCentral();
-      echo "</td><td>";
+      echo "</td><td class='top' width='50%'>";
       if (Session::haveRight("reminder_public","r")) {
          RSSFeed::showListForCentral(false);
       } else {
