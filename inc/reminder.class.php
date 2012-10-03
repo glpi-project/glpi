@@ -1177,7 +1177,7 @@ class Reminder extends CommonDBTM {
          }
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $nb) {
          echo "<th width='10'>";

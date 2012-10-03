@@ -640,7 +640,7 @@ class RSSFeed extends CommonDBTM {
       if (!$feed || $feed->error()) {
          _e('Error getting RSS feed');
       } else {
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
          foreach($feed->get_items() as $item) {
             $link = $item->get_permalink();
@@ -878,7 +878,7 @@ class RSSFeed extends CommonDBTM {
          }
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $nb) {
          echo "<th width='10'>";
