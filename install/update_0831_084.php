@@ -697,13 +697,13 @@ function update0831to084() {
       $query = "CREATE TABLE `glpi_networkportethernets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+                  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
                   `netpoints_id` int(11) NOT NULL DEFAULT '0',
                   `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT '' COMMENT 'T, LX, SX',
                   `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
-                  KEY `card` (`computers_devicenetworkcards_id`),
+                  KEY `card` (`items_devicenetworkcards_id`),
                   KEY `netpoint` (`netpoints_id`),
                   KEY `type` (`type`),
                   KEY `speed` (`speed`)
@@ -724,7 +724,7 @@ function update0831to084() {
       $query = "CREATE TABLE `glpi_networkportwifis` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+                  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
                   `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
                   `networkportwifis_id` int(11) NOT NULL DEFAULT '0'
                                         COMMENT 'only usefull in case of Managed node',
@@ -734,7 +734,7 @@ function update0831to084() {
                          COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
-                  KEY `card` (`computers_devicenetworkcards_id`),
+                  KEY `card` (`items_devicenetworkcards_id`),
                   KEY `essid` (`wifinetworks_id`),
                   KEY `version` (`version`),
                   KEY `mode` (`mode`)
@@ -1003,21 +1003,21 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 language in users $old to $new");
    }
 
-                                      
+
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'ticket and problems status'));
-   
+
    $status = array ('new'           => CommonITILObject::INCOMING,
-                    'assign'        => CommonITILObject::ASSIGNED, 
-                    'plan'          => CommonITILObject::PLANNED, 
-                    'waiting'       => CommonITILObject::WAITING, 
-                    'solved'        => CommonITILObject::SOLVED, 
-                    'closed'        => CommonITILObject::CLOSED, 
-                    'accepted'      => CommonITILObject::ACCEPTED, 
-                    'observe'       => CommonITILObject::OBSERVED, 
-                    'evaluation'    => CommonITILObject::EVALUATION, 
-                    'approbation'   => CommonITILObject::APPROVAL, 
-                    'test'          => CommonITILObject::TEST, 
+                    'assign'        => CommonITILObject::ASSIGNED,
+                    'plan'          => CommonITILObject::PLANNED,
+                    'waiting'       => CommonITILObject::WAITING,
+                    'solved'        => CommonITILObject::SOLVED,
+                    'closed'        => CommonITILObject::CLOSED,
+                    'accepted'      => CommonITILObject::ACCEPTED,
+                    'observe'       => CommonITILObject::OBSERVED,
+                    'evaluation'    => CommonITILObject::EVALUATION,
+                    'approbation'   => CommonITILObject::APPROVAL,
+                    'test'          => CommonITILObject::TEST,
                     'qualification' => CommonITILObject::QUALIFICATION);
    foreach (array('glpi_tickets', 'glpi_problems') as $table) {
       // Migrate datas
@@ -1046,7 +1046,7 @@ function update0831to084() {
                         WHERE `id` = '".$data['id']."'";
             $DB->queryOrDie($query, "0.84 migrate $field of glpi_profiles");
          }
-      } 
+      }
    }
 
    $migration->addField('glpi_profiles', 'change_status', "text",
@@ -1677,7 +1677,7 @@ function update0831to084() {
 
       $DB->queryOrDie($query, "0.84 add table glpi_entities_rssfeeds");
    }
-   
+
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
 
    if (!TableExists('glpi_planningrecalls')) {
@@ -2166,7 +2166,6 @@ function update0831to084() {
                     AND `num` = '2'");
    $DB->query($query);
 
-
    migrateComputerDevice('DeviceProcessor', 'frequency', 'integer', array('serial' => 'string'));
 
    migrateComputerDevice('DeviceMemory', 'size', 'integer', array('serial' => 'string'));
@@ -2183,10 +2182,13 @@ function update0831to084() {
    migrateComputerDevice('DeviceCase');
    migrateComputerDevice('DevicePowerSupply');
 
+   // TODO : Delete this before RC - only for dev
    $migration->changeField('glpi_networkportethernets', 'computers_devicenetworkcards_id',
                            'items_devicenetworkcards_id', 'integer', array('value' => 0));
    $migration->changeField('glpi_networkportwifis', 'computers_devicenetworkcards_id',
                            'items_devicenetworkcards_id', 'integer', array('value' => 0));
+
+
 
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 
@@ -2194,14 +2196,14 @@ function update0831to084() {
    $migration->addField('glpi_profiles', 'delete_validations',
                         'char', array('value' => 0,
                                       'update' => 'delete_ticket'));
-   // 
+   //
 
    // add rights to manage public rssfeed
    $migration->addField('glpi_profiles', 'rssfeed_public',
                         'char', array('value'  => 0,
                                       'update' => 'reminder_public',
                                       'after'  => 'reminder_public'));
-                        
+
    // Clean unlinked calendar segments and holidays
    $query = "DELETE
              FROM `glpi_calendars_holidays`
@@ -2216,7 +2218,7 @@ function update0831to084() {
                      NOT IN (SELECT `glpi_calendars`.`id`
                                FROM `glpi_calendars`)";
    $DB->queryOrDie($query, "0.84 clean glpi_calendarsegments");
-   
+
 
 
 
