@@ -28,7 +28,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Profile_Reminder
-/// since version 0.83
+/// @since version 0.83
 class Profile_Reminder extends CommonDBRelation {
 
    // From CommonDBRelation
