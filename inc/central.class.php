@@ -207,10 +207,12 @@ class Central extends CommonGLPI {
       echo "<table class='tab_cadre_central'>";
 
       echo "<tr><td>";
-      Planning::showCentral(Session::getLoginUserID());
-      Reminder::showListForCentral();
+      RSSFeed::showListForCentral();
+      echo "</td><td>";
       if (Session::haveRight("reminder_public","r")) {
-         Reminder::showListForCentral(false);
+         RSSFeed::showListForCentral(false);
+      } else {
+         echo "&nbsp;";
       }
       echo "</td></tr>";
       echo "</table>";

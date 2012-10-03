@@ -36,31 +36,31 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Group_Reminder
-/// @since version 0.83
-class Group_Reminder extends CommonDBRelation {
+/// Class Group_RSSFeed
+/// @since version 0.84
+class Group_RSSFeed extends CommonDBRelation {
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Reminder';
-   static public $items_id_1 = 'reminders_id';
+   static public $itemtype_1 = 'RSSFeed';
+   static public $items_id_1 = 'rssfeeds_id';
    static public $itemtype_2 = 'Group';
    static public $items_id_2 = 'groups_id';
 
 
    /**
-    * Get groups for a reminder
+    * Get groups for a rssfeed
     *
-    * @param $reminders_id ID of the reminder
+    * @param $rssfeeds_id ID of the rssfeed
     *
-    * @return array of groups linked to a reminder
+    * @return array of groups linked to a rssfeed
    **/
-   static function getGroups($reminders_id) {
+   static function getGroups($rssfeeds_id) {
       global $DB;
 
       $groups = array();
-      $query  = "SELECT `glpi_groups_reminders`.*
-                 FROM `glpi_groups_reminders`
-                 WHERE `reminders_id` = '$reminders_id'";
+      $query  = "SELECT `glpi_groups_rssfeeds`.*
+                 FROM `glpi_groups_rssfeeds`
+                 WHERE `rssfeeds_id` = '$rssfeeds_id'";
 
       foreach ($DB->request($query) as $data) {
          $groups[$data['groups_id']][] = $data;

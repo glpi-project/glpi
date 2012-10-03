@@ -58,6 +58,7 @@ if (!defined('GLPI_ROOT')) {
 
 
 /// RSSFeed class
+/// @since version 0.84
 class RSSFeed extends CommonDBTM {
 
    // For visibility checks
@@ -72,57 +73,57 @@ class RSSFeed extends CommonDBTM {
    }
 
 
-//    static function canCreate() {
-//       return (Session::haveRight('reminder_public', 'w')
-//               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
-//    }
-// 
-// 
-//    static function canView() {
-//       return (Session::haveRight('reminder_public', 'r')
-//               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
-//    }
-// 
-// 
-//    function canViewItem() {
-// 
-//       // Is my reminder or is in visibility
-//       return ($this->fields['users_id'] == Session::getLoginUserID()
-//               || (Session::haveRight('reminder_public', 'r')
-//                   && $this->haveVisibilityAccess()));
-//    }
-// 
-// 
-//    function canCreateItem() {
-//       // Is my reminder
-//       return ($this->fields['users_id'] == Session::getLoginUserID());
-//    }
-// 
-// 
-//    function canUpdateItem() {
-// 
-//       return ($this->fields['users_id'] == Session::getLoginUserID()
-//               || (Session::haveRight('reminder_public', 'w')
-//                   && $this->haveVisibilityAccess()));
-//    }
-// 
-// 
-//    function post_getFromDB() {
-// 
-//       // Users
-//       $this->users    = Reminder_User::getUsers($this->fields['id']);
-// 
-//       // Entities
-//       $this->entities = Entity_Reminder::getEntities($this->fields['id']);
-// 
-//       // Group / entities
-//       $this->groups   = Group_Reminder::getGroups($this->fields['id']);
-// 
-//       // Profile / entities
-//       $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
-//    }
-// 
-// 
+   static function canCreate() {
+      return (Session::haveRight('rssfeed_public', 'w')
+              || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
+   }
+
+
+   static function canView() {
+      return (Session::haveRight('rssfeed_public', 'r')
+              || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
+   }
+
+
+   function canViewItem() {
+
+      // Is my reminder or is in visibility
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || (Session::haveRight('rssfeed_public', 'r')
+                  && $this->haveVisibilityAccess()));
+   }
+
+
+   function canCreateItem() {
+      // Is my reminder
+      return ($this->fields['users_id'] == Session::getLoginUserID());
+   }
+
+
+   function canUpdateItem() {
+
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || (Session::haveRight('rssfeed_public', 'w')
+                  && $this->haveVisibilityAccess()));
+   }
+
+
+   function post_getFromDB() {
+
+      // Users
+      $this->users    = RSSFeed_User::getUsers($this->fields['id']);
+
+      // Entities
+      $this->entities = Entity_RSSFeed::getEntities($this->fields['id']);
+
+      // Group / entities
+      $this->groups   = Group_RSSFeed::getGroups($this->fields['id']);
+
+      // Profile / entities
+      $this->profiles = Profile_RSSFeed::getProfiles($this->fields['id']);
+   }
+
+
 //    /**
 //     * @see inc/CommonDBTM::cleanDBonPurge()
 //     *
