@@ -104,18 +104,7 @@ if (isset($_GET['create_ticket'])) {
 
    if (Session::haveRight("reminder_public","r")) {
       echo "<tr><td class='top' width='450px'>";
-      Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
-      $entities = array_reverse(getAncestorsOf("glpi_entities", $_SESSION["glpiactive_entity"]));
-
-      foreach ($entities as $entity) {
-         Reminder::showListForCentral($entity, true);
-      }
-
-      foreach ($_SESSION["glpiactiveentities"] as $entity) {
-         if ($entity != $_SESSION["glpiactive_entity"]) {
-            Reminder::showListForCentral($entity, false);
-         }
-      }
+      Reminder::showListForCentral(false);
       echo "</td></tr>";
    }
 
@@ -138,6 +127,8 @@ if (isset($_GET['create_ticket'])) {
    } else {
       echo "<tr><td>&nbsp;</td></tr>";
    }
+
+   /// TODO add RSS feeds
    echo "</table>";
    echo "</td>";
    echo "</tr></table>";
