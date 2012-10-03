@@ -47,15 +47,20 @@ class Consumable extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
 
-   var $no_form_page            = false;
+   var $no_form_page                   = false;
 
+
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Consumable', 'Consumables', $nb);
    }
@@ -149,6 +154,8 @@ class Consumable extends CommonDBTM {
    }
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
@@ -158,9 +165,9 @@ class Consumable extends CommonDBTM {
          case "give" :
             if (isset($input["entities_id"])) {
                Dropdown::showAllItems("give_items_id", 0, 0,$input["entities_id"],
-                                       $CFG_GLPI["consumables_types"], false, false, 'give_itemtype');
+                                      $CFG_GLPI["consumables_types"], false, false, 'give_itemtype');
                echo "<br><br><input type='submit' class='submit' name='massiveaction' value='".
-                     _sx('button', 'Give')."'>";
+                              _sx('button', 'Give')."'>";
                return true;
             }
 
@@ -171,7 +178,10 @@ class Consumable extends CommonDBTM {
       return false;
    }
 
+
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -214,7 +224,8 @@ class Consumable extends CommonDBTM {
       }
       return $res;
    }
-   
+
+
    /**
     * count how many consumable for the consumable item $tID
     *
@@ -434,23 +445,23 @@ class Consumable extends CommonDBTM {
                       $where";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-                      
+
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $actions = array('delete' => _x('button', 'Delete'),
-                           'activate_infocoms' => __('Enable the financial and administrative information'));
+         $actions = array('delete'            => _x('button', 'Delete'),
+                          'activate_infocoms' => __('Enable the financial and administrative information'));
          if ($show_old) {
             $actions['restore'] = __('Back to stock');
          } else {
             $actions['give'] = _x('button', 'Give');
          }
-         $paramsma = array('num_displayed' => $number,
+         $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
-                           'extraparams' => array('entities_id' => $consitem->getEntityID()));
+                           'extraparams'      => array('entities_id' => $consitem->getEntityID()));
          Html::showMassiveActions(__CLASS__, $paramsma);
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
       }
-         
+
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if (!$show_old) {
          echo "<tr><th colspan=".($canedit?'5':'4').">";

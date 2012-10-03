@@ -56,6 +56,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       return $forbidden;
    }
 
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
@@ -67,6 +68,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       return true;
    }
 
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
@@ -74,8 +76,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          switch ($item->getType()) {
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-
-                  return self::createTabEntry(PrinterModel::getTypeName(2), self::countForCartridgeItem($item));
+                  return self::createTabEntry(PrinterModel::getTypeName(2),
+                                              self::countForCartridgeItem($item));
                }
                return PrinterModel::getTypeName(2);
                break;
@@ -84,22 +86,24 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       return '';
    }
 
+
    /**
     * @param $item   CartridgeItem object
    **/
    static function countForCartridgeItem(CartridgeItem $item) {
 
-      $restrict = "`".static::getTable()."`.`cartridgeitems_id`
-                           = '".$item->getField('id') ."'
-                   AND `".static::getTable()."`.`printermodels_id`
-                           = `glpi_printermodels`.`id`";
+      $restrict = "`".static::getTable()."`.`cartridgeitems_id` = '".$item->getField('id') ."'
+                   AND `".static::getTable()."`.`printermodels_id` = `glpi_printermodels`.`id`";
 
       return countElementsInTable(array('glpi_printermodels', static::getTable()),
                                   $restrict);
    }
 
+
    /**
     * Show the printer types that are compatible with a cartridge type
+    *
+    * @param $item   CartridgeItem object
     *
     * @return nothing (display)
    **/
@@ -118,8 +122,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                        `glpi_printermodels`.`id` AS `pmid`
                 FROM `".static::getTable()."`,
                      `glpi_printermodels`
-                WHERE `".static::getTable()."`.`printermodels_id`
-                           = `glpi_printermodels`.`id`
+                WHERE `".static::getTable()."`.`printermodels_id` = `glpi_printermodels`.`id`
                       AND `".static::getTable()."`.`cartridgeitems_id` = '$instID'
                 ORDER BY `glpi_printermodels`.`name`";
 
@@ -136,7 +139,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $used[$data["pmid"]] = $data["pmid"];
-            $datas[$data["id"]] = $data;
+            $datas[$data["id"]]  = $data;
          }
       }
 
@@ -146,25 +149,24 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          echo " action='".static::getFormURL()."'>";
 
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add a compatible printer model')."</th></tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='6'>".__('Add a compatible printer model')."</th></tr>";
+
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
          PrinterModel::dropdown(array('used' => $used));
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\"
-                  class='submit'>";
-
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
          echo "</div>";
       }
 
-
       if ($number) {
          echo "<div class='spaced'>";
          if ($canedit) {
-            $rand = mt_rand();
+            $rand     = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed' => count($used));
             Html::showMassiveActions(__CLASS__, $paramsma);
@@ -201,5 +203,6 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          echo "<p class='center b'>".__('No item found')."</p>";
       }
    }
+
 }
 ?>
