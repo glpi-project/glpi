@@ -47,18 +47,23 @@ class Cartridge extends CommonDBChild {
 
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
-   public $dohistory = true;
-   
+   public $dohistory                   = true;
+
    // From CommonDBChild
-   static public $itemtype = 'CartridgeItem'; 
-   static public $items_id = 'cartridgeitems_id';
-   
+   static public $itemtype             = 'CartridgeItem';
+   static public $items_id             = 'cartridgeitems_id';
+
+
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
@@ -429,24 +434,24 @@ class Cartridge extends CommonDBChild {
          $pages_printed    = 0;
          $nb_pages_printed = 0;
          $ORDER = " `glpi_cartridges`.`date_use` ASC,
-                  `glpi_cartridges`.`date_out` DESC,
-                  `glpi_cartridges`.`date_in`";
+                    `glpi_cartridges`.`date_out` DESC,
+                    `glpi_cartridges`.`date_in`";
 
          if (!$show_old) {
             $ORDER = " `glpi_cartridges`.`date_out` ASC,
-                     `glpi_cartridges`.`date_use` ASC,
-                     `glpi_cartridges`.`date_in`";
+                       `glpi_cartridges`.`date_use` ASC,
+                       `glpi_cartridges`.`date_in`";
          }
          $query = "SELECT `glpi_cartridges`.*,
                         `glpi_printers`.`id` AS printID,
                         `glpi_printers`.`name` AS printname,
                         `glpi_printers`.`init_pages_counter`
-                  FROM `glpi_cartridges`
-                  LEFT JOIN `glpi_printers`
+                   FROM `glpi_cartridges`
+                   LEFT JOIN `glpi_printers`
                         ON (`glpi_cartridges`.`printers_id` = `glpi_printers`.`id`)
-                  WHERE `glpi_cartridges`.`cartridgeitems_id` = '$tID'
-                        $where
-                  ORDER BY $ORDER";
+                   WHERE `glpi_cartridges`.`cartridgeitems_id` = '$tID'
+                         $where
+                   ORDER BY $ORDER";
 
          $result = $DB->query($query);
          $number = $DB->numrows($result);
@@ -455,7 +460,7 @@ class Cartridge extends CommonDBChild {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $actions = array('delete' => _x('button', 'Delete'),
+            $actions = array('delete'            => _x('button', 'Delete'),
                              'activate_infocoms' => __('Enable the financial and administrative information'),
                              'restore'           => __('Back to stock'));
             $paramsma = array('num_displayed'    => $number,
@@ -492,7 +497,6 @@ class Cartridge extends CommonDBChild {
          echo "<th width='18%'>".__('Financial and administrative information')."</th>";
          echo "</tr>";
       }
-
 
 
       $pages = array();
@@ -678,7 +682,7 @@ class Cartridge extends CommonDBChild {
          }
 
          echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
-                           ".($installok?'':'disabled')." class='submit'>";
+                         ".($installok?'':'disabled')." class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -686,7 +690,7 @@ class Cartridge extends CommonDBChild {
       }
 
       echo "<div id='viewcartridge$rand'></div>";
-      
+
       $pages = $printer->fields['init_pages_counter'];
       echo "<div class='spaced'>";
       if ($canedit && $number) {
@@ -837,7 +841,7 @@ class Cartridge extends CommonDBChild {
       }
       $printer = new Printer;
       $printer->check($this->getField('printers_id'),'w');
-      
+
       $cartitem = new CartridgeItem;
       $cartitem->getFromDB($this->getField('cartridgeitems_id'),'w');
 
@@ -888,7 +892,7 @@ class Cartridge extends CommonDBChild {
 
       return true;
    }
-   
+
    /**
     * Get notification parameters by entity
     *

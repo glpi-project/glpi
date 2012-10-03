@@ -397,6 +397,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return nothing
    **/
    function post_addItem() {
+
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return;
       }
@@ -518,13 +519,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
          if (!$item->canCreate()) {
             return false;
          }
-         $canedit     = $item->canUpdate();
+         $canedit = $item->canUpdate();
       } else {
          if (!$item->can($items_id,'r')) {
             return false;
          }
 
-         $canedit     = $item->can($items_id,"w");
+         $canedit = $item->can($items_id,"w");
       }
 
       $lower_name  = strtolower(get_called_class());
@@ -571,13 +572,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
          if (!$item->canCreate()) {
             return false;
          }
-         $canedit     = $item->canUpdate();
+         $canedit = $item->canUpdate();
       } else {
          if (!$item->can($items_id,'r')) {
             return false;
          }
 
-         $canedit     = $item->can($items_id,"w");
+         $canedit = $item->can($items_id,"w");
       }
 
       $lower_name = strtolower($this->getType());
