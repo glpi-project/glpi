@@ -50,7 +50,7 @@ if (isset($_POST['transfer'])) {
       $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
       unset($_SESSION['glpitransfer_list']);
       echo "<span class='b'>".__('Operation successful')."<br>";
-      echo "<a href='central.php'>".__('Back')."</span></a>";
+      echo "<a href='central.php'>".__('Back')."</a></span>";
       Html::footer();
       exit();
    }
