@@ -4093,14 +4093,14 @@ class Html {
    /**
     * Print Ajax pager for list in tab panel
     *
-    * @param $title     displayed above
-    * @param $start     from witch item we start
-    * @param $numrows   total items
-    * @param $additional_info             Additional information to display (default '')
+    * @param $title              displayed above
+    * @param $start              from witch item we start
+    * @param $numrows            total items
+    * @param $additional_info    Additional information to display (default '')
     *
     * @return nothing (print a pager)
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info = '') {
+   static function printAjaxPager($title, $start, $numrows, $additional_info='') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -4407,7 +4407,7 @@ class Html {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }
       $fields['_glpi_simple_form'] = 1;
-      $button = $btname;
+      $button                      = $btname;
       if (!is_array($btname)) {
          $button          = array();
          $button[$btname] = $btname;

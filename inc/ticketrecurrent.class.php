@@ -175,7 +175,7 @@ class TicketRecurrent extends CommonDropdown {
     *
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field = array()) {
+   function displaySpecificTypeField($ID, $field=array()) {
 
       switch ($field['name']) {
          case 'periodicity' :
@@ -257,7 +257,7 @@ class TicketRecurrent extends CommonDropdown {
       $tab[17]['field']    = 'end_date';
       $tab[17]['name']     = __('End date');
       $tab[17]['datatype'] = 'datetime';
-      
+
       $tab[15]['table']    = $this->getTable();
       $tab[15]['field']    = 'periodicity';
       $tab[15]['name']     = __('Periodicity');
