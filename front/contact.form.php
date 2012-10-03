@@ -42,7 +42,7 @@ if (empty($_GET["id"])) {
    $_GET["id"] = -1;
 }
 
-$contact         = new Contact();
+$contact = new Contact();
 
 if (isset($_GET['getvcard'])) {
    if ($_GET["id"] < 0) {
