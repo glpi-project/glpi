@@ -1605,9 +1605,11 @@ function update0831to084() {
                   `url` text COLLATE utf8_unicode_ci,
                   `refresh_rate` int(11) NOT NULL DEFAULT '86400',
                   `is_active` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `date_mod` DATETIME DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `users_id` (`users_id`),
+                  KEY `date_mod` (`date_mod`),
                   KEY `is_active` (`is_active`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_rssfeeds");

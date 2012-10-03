@@ -1302,6 +1302,11 @@ class Html {
       $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
 
+      $menu['utils']['content']['rssfeed']['title']        = _n('RSS feed', 'RSS feeds', 2);
+      $menu['utils']['content']['rssfeed']['page']            = '/front/rssfeed.php';
+      $menu['utils']['content']['rssfeed']['links']['search'] = '/front/rssfeed.php';
+      $menu['utils']['content']['rssfeed']['links']['add']    = '/front/rssfeed.form.php';
+
       if (Session::haveRight("knowbase","r") || Session::haveRight("faq","r")) {
          if (Session::haveRight("knowbase","r")) {
             $menu['utils']['content']['knowbase']['title']        = __('Knowledge base');
