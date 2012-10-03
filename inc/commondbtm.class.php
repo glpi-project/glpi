@@ -4169,7 +4169,7 @@ class CommonDBTM extends CommonGLPI {
 
             case "timestamp" :
                $copytooption = array('addfirstminutes', 'emptylabel', 'inhours',  'max', 'min',
-                                     'step', 'toadd');
+                                     'step', 'toadd', 'display_emptychoice');
                foreach ($copytooption as $key) {
                   if (isset($searchoptions[$key]) && !isset($options[$key])) {
                      $options[$key] = $searchoptions[$key];

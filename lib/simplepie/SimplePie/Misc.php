@@ -79,8 +79,12 @@ class SimplePie_Misc
 
 	public static function absolutize_url($relative, $base)
 	{
-		$iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative);
-		return $iri->get_uri();
+            // Fix for GLPI : if $iri is false return $relative URL
+            // See https://github.com/simplepie/simplepie/issues/214
+            if ($iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative)) {
+               return $iri->get_uri();
+            }
+            return false;
 	}
 
 	/**
