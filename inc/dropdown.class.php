@@ -1255,15 +1255,17 @@ class Dropdown {
    static function showTimeStamp($myname, $options=array()) {
       global $CFG_GLPI;
 
-      $params['value']           = 0;
-      $params['min']             = 0;
-      $params['max']             = DAY_TIMESTAMP;
-      $params['step']            = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
-      $params['emptylabel']      = self::EMPTY_VALUE;
-      $params['addfirstminutes'] = false;
-      $params['toadd']           = array();
-      $params['inhours']         = false;
-      $params['display']         = true;
+      $params['value']               = 0;
+      $params['min']                 = 0;
+      $params['max']                 = DAY_TIMESTAMP;
+      $params['step']                = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
+      $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['addfirstminutes']     = false;
+      $params['toadd']               = array();
+      $params['inhours']             = false;
+      $params['display']             = true;
+      $params['display_emptychoice'] = true;
+
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1288,7 +1290,10 @@ class Dropdown {
          $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
       }
 
-      $values = array(0 => $params['emptylabel']);
+      $values = array();
+      if ($params['display_emptychoice']) {
+         $values = array(0 => $params['emptylabel']);
+      }
 
       if ($params['value']) {
          $values[$params['value']] = '';

@@ -2688,7 +2688,7 @@ class AuthLDAP extends CommonDBTM {
                   echo "</td></tr>";
                }
 
-               echo "<tr class='tab_bg_2'><td>Basedn</td><td colspan='3'>";
+               echo "<tr class='tab_bg_2'><td>".__('BaseDN')."</td><td colspan='3'>";
                echo "<input type='text' name='basedn' value=\"".$_SESSION['ldap_import']['basedn'].
                      "\" size='90' ".(!$_SESSION['ldap_import']['basedn']?"disabled":"").">";
                echo "</td></tr>";
