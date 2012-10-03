@@ -56,7 +56,7 @@ class Contact_Supplier extends CommonDBRelation{
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    /**
     * Get search function for the class
     *
@@ -245,7 +245,7 @@ class Contact_Supplier extends CommonDBRelation{
             $used[$data['entID']] = $data['entID'];
          }
       }
-      
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='contactsupplier_form$rand' id='contactsupplier_form$rand' method='post' action='";
@@ -266,7 +266,7 @@ class Contact_Supplier extends CommonDBRelation{
          Html::closeForm();
          echo "</div>";
       }
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -334,7 +334,7 @@ class Contact_Supplier extends CommonDBRelation{
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
          Html::closeForm();
-      }      
+      }
       echo "</div>";
    }
 
@@ -350,7 +350,7 @@ class Contact_Supplier extends CommonDBRelation{
       }
       $canedit = $supplier->can($instID,'w');
       $rand = mt_rand();
-      
+
       $query = "SELECT `glpi_contacts`.*,
                        `glpi_contacts_suppliers`.`id` AS ID_ent,
                        `glpi_entities`.`id` AS entity
@@ -393,7 +393,7 @@ class Contact_Supplier extends CommonDBRelation{
          Html::closeForm();
          echo "</div>";
       }
-      
+
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -430,7 +430,7 @@ class Contact_Supplier extends CommonDBRelation{
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             if ($canedit) {
-               echo "<td>".Html::showMassiveActionCheckBox(__CLASS__, $data["ID_ent"])."</td>";
+               echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["ID_ent"])."</td>";
             }
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
