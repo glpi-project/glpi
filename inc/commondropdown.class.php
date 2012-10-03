@@ -160,7 +160,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
-      $nb = count($fields);
+      $nb     = count($fields);
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";

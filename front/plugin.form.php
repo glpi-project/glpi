@@ -28,15 +28,14 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
+// Original Author of file: Julien Dombre
+// @since version 0.84
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");
-
 
 $plugin = new Plugin();
 

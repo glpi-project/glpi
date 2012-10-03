@@ -441,12 +441,12 @@ class Plugin extends CommonDBTM {
                case self::ACTIVATED :
                   echo "<td>";
                   Html::showSimpleForm(static::getFormURL(), array('action' => 'unactivate'),
-                           _x('button','Disable'), array('id' => $ID));
+                                       _x('button','Disable'), array('id' => $ID));
                   echo "</td>";
                   echo "<td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                              _x('button','Uninstall'), array('id' => $ID));
+                                          _x('button','Uninstall'), array('id' => $ID));
                   } else {
                      //TRANS: %s is the list of missing functions
                      echo sprintf(__('%1$s: %2$s'), __('Non-existent function'),
@@ -474,7 +474,7 @@ class Plugin extends CommonDBTM {
                      }
                      if ($do_install) {
                         Html::showSimpleForm(static::getFormURL(), array('action' => 'install'),
-                                    $msg, array('id' => $ID));
+                                             $msg, array('id' => $ID));
                      }
                   } else {
 
@@ -493,7 +493,7 @@ class Plugin extends CommonDBTM {
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      if (function_exists("plugin_".$plug['directory']."_check_config")) {
                         Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                    _x('button','Uninstall'), array('id' => $ID));
+                                             _x('button','Uninstall'), array('id' => $ID));
                      } else {
                         // This is an incompatible plugin (0.71), uninstall fonction could crash
                         echo "&nbsp;";
@@ -521,7 +521,7 @@ class Plugin extends CommonDBTM {
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                 _x('button','Uninstall'), array('id' => $ID));
+                                          _x('button','Uninstall'), array('id' => $ID));
                   } else {
                      printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -537,13 +537,13 @@ class Plugin extends CommonDBTM {
                      _e('Not CSRF compliant');
                   } else if (function_exists($function) && $function()) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'activate'),
-                                 _x('button','Enable'), array('id' => $ID));
+                                          _x('button','Enable'), array('id' => $ID));
                   }
                   // Else : reason displayed by the plugin
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                 _x('button','Uninstall'), array('id' => $ID));
+                                          _x('button','Uninstall'), array('id' => $ID));
                   } else {
                      printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -555,7 +555,7 @@ class Plugin extends CommonDBTM {
                default :
                   echo "<td colspan='2'>";
                   Html::showSimpleForm(static::getFormURL(), array('action' => 'clean'),
-                              _x('button','Clean'), array('id' => $ID));
+                                       _x('button','Clean'), array('id' => $ID));
                   echo "</td>";
                   break;
             }
@@ -985,7 +985,7 @@ class Plugin extends CommonDBTM {
          unset($attrib['netport_types']);
       }
 
-      foreach (array('contract_types', 'directconnect_types', 'document_types', 'helpdesk_visible_types', 
+      foreach (array('contract_types', 'directconnect_types', 'document_types', 'helpdesk_visible_types',
                      'infocom_types', 'linkgroup_tech_types', 'linkgroup_types', 'linkuser_tech_types',
                      'linkuser_types', 'networkport_instantiations',
                      'networkport_types', 'notificationtemplates_types', 'planning_types',

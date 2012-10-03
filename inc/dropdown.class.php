@@ -1194,7 +1194,7 @@ class Dropdown {
          case 'millisecond' :
             //TRANS: %d is a number of milliseconds
             return sprintf(_n('%d millisecond', '%d milliseconds', $value), $value);
-            
+
          case '%' :
             return sprintf(__('%d%%'), $value);
 
@@ -1590,10 +1590,9 @@ class Dropdown {
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;";
             Html::showSimpleForm($params['target'], 'unglobalize', __('Use unitary management'),
-                              array('id' => $ID),'','',
-                              array(__('Do you really want to use unitary management for this item?'),
-                                 __('Duplicate the element as many times as there are connections')));
-
+                                 array('id' => $ID), '', '',
+                                 array(__('Do you really want to use unitary management for this item?'),
+                                       __('Duplicate the element as many times as there are connections')));
             echo "&nbsp;";
 
             echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').

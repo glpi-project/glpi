@@ -3281,8 +3281,8 @@ class Transfer extends CommonDBTM {
          }
 
          echo "<div class='center' id='transfer_form'><br>";
-            Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",
-                                'clear', __('To empty the list of elements to be transferred'));
+         Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/transfer.action.php", 'clear',
+                              __('To empty the list of elements to be transferred'));
          echo "</div>";
          echo '</td></tr>';
          echo '</table>';
