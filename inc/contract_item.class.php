@@ -271,11 +271,14 @@ class Contract_Item extends CommonDBRelation{
       }
    }
 
-      /**
+
+   /**
     * Print an HTML array of contract associated to an object
     *
+    * @since version 0.84
+    *
     * @param $item            CommonDBTM object wanted
-    * @param $withtemplate     not used (to be deleted) (default '')
+    * @param $withtemplate    not used (to be deleted) (default '')
     *
     * @return Nothing (display)
    **/
@@ -305,18 +308,18 @@ class Contract_Item extends CommonDBRelation{
       $result = $DB->query($query);
 
       $contracts = array();
-      $used = array();
+      $used      = array();
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $contracts[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]      = $data['id'];
          }
       }
 
       if ($canedit && ($withtemplate != 2)) {
          echo "<div class='firstbloc'>";
          echo "<form name='contractitem_form$rand' id='contractitem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<input type='hidden' name='items_id' value='$ID'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 
@@ -325,7 +328,7 @@ class Contract_Item extends CommonDBRelation{
 
          echo "<tr class='tab_bg_1'><td class='right'>";
          Contract::dropdown(array('entity' => $item->getEntityID(),
-                              'used'   => $used));
+                                  'used'   => $used));
 
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -336,7 +339,7 @@ class Contract_Item extends CommonDBRelation{
       }
 
       echo "<div class='spaced'>";
-      if ($withtemplate!=2) {
+      if ($withtemplate != 2) {
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = array('num_displayed' => $number);
@@ -395,22 +398,21 @@ class Contract_Item extends CommonDBRelation{
             echo "<td class='center'>".$con->getSuppliersNames()."</td>";
             echo "<td class='center'>".Html::convDate($con->fields["begin_date"])."</td>";
 
-            echo "<td class='center'>".$con->fields["duration"]." "._n('month', 'months',
-                                                                     $con->fields["duration"]);
+            echo "<td class='center'>".sprintf(__('%1$s %2$s'), $con->fields["duration"],
+                                               _n('month', 'months', $con->fields["duration"]));
             if (($con->fields["begin_date"] != '')
-               && !empty($con->fields["begin_date"])) {
+                && !empty($con->fields["begin_date"])) {
                echo " -> ".Infocom::getWarrantyExpir($con->fields["begin_date"],
-                                                   $con->fields["duration"]);
+                                                     $con->fields["duration"]);
             }
             echo "</td>";
-
             echo "</tr>";
          }
       }
 
       echo "</table>";
       if ($canedit && $number && ($withtemplate != 2)) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
@@ -548,10 +550,8 @@ class Contract_Item extends CommonDBRelation{
             if ($canedit) {
                echo "<td>&nbsp;</td>";
             }
-            //TRANS: %1$s is a type name, %2$s is a number
             echo "<td class='center'>".$datas['name']."</td>";
-            echo "<td class='center' colspan='2'>";
-            echo $datas['link']."</td>";
+            echo "<td class='center' colspan='2'>".$datas['link']."</td>";
             echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
          } else {
@@ -606,7 +606,7 @@ class Contract_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
