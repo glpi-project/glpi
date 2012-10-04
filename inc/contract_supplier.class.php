@@ -174,7 +174,7 @@ class Contract_Supplier extends CommonDBRelation {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='contractsupplier_form$rand' id='contractsupplier_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<input type='hidden' name='suppliers_id' value='$ID'>";
 
          echo "<table class='tab_cadre_fixe'>";
@@ -239,8 +239,8 @@ class Contract_Supplier extends CommonDBRelation {
          echo "<td class='center'>".
                 Dropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"])."</td>";
          echo "<td class='center'>".Html::convDate($data["begin_date"])."</td>";
-         echo "<td class='center'>".
-               sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
+         echo "<td class='center'>";
+         sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
 
          if (($data["begin_date"] != '') && !empty($data["begin_date"])) {
             echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"]);
@@ -381,7 +381,7 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
