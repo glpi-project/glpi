@@ -47,7 +47,7 @@ class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
    public $dohistory = true;
-   
+
    static function getTypeName($nb=0) {
       return _n('Cartridge model','Cartridge models',$nb);
    }
@@ -125,7 +125,7 @@ class CartridgeItem extends CommonDBTM {
       $this->addStandardTab('Link',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
       $this->addStandardTab('Log', $ong, $options);
-      
+
       return $ong;
    }
 
@@ -498,9 +498,8 @@ class CartridgeItem extends CommonDBTM {
       }
       if (count($datas)) {
          return Dropdown::showFromArray('cartridgeitems_id', $datas);
-      } else {
-         return false;
       }
+      return false;
    }
 
 

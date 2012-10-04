@@ -447,8 +447,8 @@ class CronTask extends CommonDBTM{
       } else {
          echo Html::convDateTime($this->fields['lastrun']);
          echo "&nbsp;";
-         Html::showSimpleForm(static::getFormURL(), 'resetdate',
-                                    __('Blank'), array('id' => $ID), GLPI_ROOT."/pics/reset.png");
+         Html::showSimpleForm(static::getFormURL(), 'resetdate', __('Blank'),
+                              array('id' => $ID), GLPI_ROOT."/pics/reset.png");
       }
       echo "</td></tr>";
 
@@ -509,11 +509,11 @@ class CronTask extends CommonDBTM{
       if ($launch) {
          echo "&nbsp;";
          Html::showSimpleForm(static::getFormURL(), array('execute' => $this->fields['name']),
-                                    __('Execute'));
+                              __('Execute'));
       }
       if ($tmpstate == self::STATE_RUNNING) {
-         Html::showSimpleForm(static::getFormURL(), 'resetstate',
-                                    __('Blank'), array('id' => $ID), GLPI_ROOT."/pics/reset.png");
+         Html::showSimpleForm(static::getFormURL(), 'resetstate', __('Blank'),
+                              array('id' => $ID), GLPI_ROOT."/pics/reset.png");
       }
       echo "</td></tr>";
 
