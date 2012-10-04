@@ -253,7 +253,7 @@ function update0831to084() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(_('Update to %s'), '0.84'));
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.84'));
    $migration->setVersion('0.84');
 
 
