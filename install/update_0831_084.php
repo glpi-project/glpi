@@ -204,103 +204,61 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
 
 
 /**
- * @param $deviceType
- * @param $new_specif               (default NULL)
- * @param $new_specif_type          (default NULL)
- * @param $other_specif      array
- */
-function migrateComputerDevice($deviceType, $new_specif=NULL, $new_specif_type=NULL,
-                               array $other_specif=array()) {
+ * Update all Network Organisation
+ **/
+function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    global $DB, $migration;
 
-   $table        = getTableForItemType('Item_'.$deviceType);
-   $device_table = getTableForItemType($deviceType);
-   $migration->renameTable(getTableForItemType('Computer_'.$deviceType), $table);
+   $ADDTODISPLAYPREF['FQDN']        = array(11);
+   $ADDTODISPLAYPREF['WifiNetwork'] = array(10);
+   $ADDTODISPLAYPREF['NetworkPortMigration'] = array();
+   $ADDTODISPLAYPREF['IPNetwork'] = array(14, 10, 11, 12, 13);
+   $ADDTODISPLAYPREF['NetworkName'] = array(12, 13);
 
-   $migration->changeField($table, 'computers_id', 'items_id', 'integer', array('value' => 0));
-   $migration->addField($table, 'itemtype', 'string', array('after'  => 'items_id',
-                                                            'update' => "'Computer'"));
-
-   if (!empty($new_specif) && !empty($new_specif_type)) {
-      $migration->changeField($table, 'specificity', $new_specif, $new_specif_type);
-      $migration->changeField($device_table, 'specif_default',
-                              $new_specif.'_default', $new_specif_type);
-
-      // Update the log ...
-      $query = "UPDATE `glpi_logs`
-                SET `itemtype_link` = 'Item_".$deviceType."#".$new_specif."'
-                WHERE `itemtype_link` = '$deviceType'";
-      $DB->queryOrDie($query, "0.84 adapt glpi_logs to new item_devices");
-   }
-
-   foreach ($other_specif as $field => $format) {
-      $migration->addField($table, $field, $format);
-   }
-}
-
-
-/**
- * Update from 0.83.1 to 0.84
- *
- * @return bool for success (will die for most error)
-**/
-function update0831to084() {
-   global $DB, $migration;
-
-   $GLOBALS['migration_log_file'] = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
-
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
-
-   //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.84'));
-   $migration->setVersion('0.84');
-
-
-   // Add the internet field and copy rights from networking
-   $migration->addField('glpi_profiles', 'internet', 'char', array('after'  => 'networking',
-                                                                   'update' => '`networking`'));
-
-   $backup_tables = false;
-   $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
-                          'glpi_changes_problems', 'glpi_changes_suppliers',
-                          'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_contractcosts',
-                          'glpi_entities_rssfeeds',
-                          'glpi_fqdns', 'glpi_groups_rssfeeds', 'glpi_ipaddresses',
-                          'glpi_ipaddresses_ipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
-                          'glpi_networknames', 'glpi_networkportaggregates',
-                          'glpi_networkportdialups', 'glpi_networkportethernets',
-                          'glpi_networkportlocals', 'glpi_networkportmigrations',
-                          'glpi_networkportwifis', 'glpi_problems_suppliers',
-                          'glpi_profiles_rssfeeds', 'glpi_rssfeeds_users',
-                          'glpi_rssfeeds',
-                          'glpi_suppliers_tickets', 'glpi_ticketcosts', 'glpi_wifinetworks');
-
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if (TableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
+   $optionIndex = 10;
+   foreach (NetworkPortMigration::getMotives() as $key => $name) {
+      $ADDTODISPLAYPREF['NetworkPortMigration'][] = $optionIndex ++;
    }
 
    $originTables = array();
-   foreach (array('glpi_networkports', 'glpi_networkequipments') as $copyTable) {
-      $originTable = 'origin_'.$copyTable;
-      if (!TableExists($originTable) && TableExists($copyTable)) {
-         $migration->copyTable($copyTable, $originTable);
-         $originTables[] = $originTable;
-         $migration->displayWarning("To be safe, we are working on $originTable. ".
-                                    "It is a copy of $copyTable", false);
+   foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
+      $originTables[$table] = 'origin_'.$table;
+   }
+
+   if (!TableExists('origin_glpi_networkequipments')) {
+      if (TableExists('glpi_networkportethernets')) {
+         // Nothing to be done : migration of NetworkPort already OK !
+
+         // But don't add display preference for NetworkPortMigration if none exists
+         if (!TableExists('glpi_networkportmigrations')) {
+            unset($ADDTODISPLAYPREF['NetworkPortMigration']);
+         }
+
+         $migration->displayWarning('Network Framework already migrated : nothing to be done !',
+                                    false);
+
+         return;
       }
+
+      foreach ($originTables as $table => $originTable) {
+         if (!TableExists($originTable) && TableExists($table)) {
+            $migration->copyTable($table, $originTable);
+            $migration->displayWarning("To be safe, we are working on $originTable. ".
+                                       "It is a copy of $table", false);
+         }
+      }
+   }
+
+   // Remove all tables created by any previous migration
+   $new_network_ports = array('glpi_fqdns', 'glpi_ipaddresses', 'glpi_ipaddresses_ipnetworks',
+                              'glpi_ipnetworks', 'glpi_networkaliases', 'glpi_networknames',
+                              'glpi_networkportaggregates', 'glpi_networkportdialups',
+                              'glpi_networkportethernets', 'glpi_networkportlocals',
+                              'glpi_networkportmigrations', 'glpi_networkportwifis',
+                              'glpi_wifinetworks');
+
+   foreach ($new_network_ports as $table) {
+      $migration->dropTable($table);
    }
 
    // Create the glpi_networkportmigrations that is a copy of origin_glpi_networkports
@@ -308,11 +266,7 @@ function update0831to084() {
    $DB->queryOrDie($query, "0.84 create glpi_networkportmigrations");
 
    // And add the error motive fields
-   $optionIndex = 10;
-   $ADDTODISPLAYPREF['NetworkPortMigration'] = array();
    foreach (NetworkPortMigration::getMotives() as $key => $name) {
-
-      $ADDTODISPLAYPREF['NetworkPortMigration'][] = $optionIndex ++;
       $migration->addField('glpi_networkportmigrations', $key, 'bool');
    }
    $migration->migrationOneTable('glpi_networkportmigrations');
@@ -354,7 +308,6 @@ function update0831to084() {
                                             'comment'     => $domain['comment']));
          }
       }
-      $ADDTODISPLAYPREF['FQDN'] = array(11);
    }
 
    //TRANS: %s is the name of the table
@@ -404,7 +357,6 @@ function update0831to084() {
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_wifinetworks");
 
-      $ADDTODISPLAYPREF['WifiNetwork'] = array(10);
    }
 
    //TRANS: %s is the name of the table
@@ -520,7 +472,6 @@ function update0831to084() {
             }
          }
       }
-      $ADDTODISPLAYPREF['IPNetwork'] = array(14, 10, 11, 12, 13);
    }
 
    //TRANS: %s is the name of the table
@@ -544,8 +495,6 @@ function update0831to084() {
                   KEY `fqdns_id` (`fqdns_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networknames");
-
-      $ADDTODISPLAYPREF['NetworkName'] = array(12, 13);
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
       $query = "SELECT `ip`, `id`, `entities_id`, `itemtype`, `items_id`
@@ -932,7 +881,100 @@ function update0831to084() {
    if (countElementsInTable("glpi_networkportmigrations") == 0) {
       $migration->dropTable("glpi_networkportmigrations");
       $migration->dropTable("glpi_networkportinterfaces");
+      unset($ADDTODISPLAYPREF['NetworkPortMigration']);
    }
+
+   foreach ($originTables as $table) {
+      $migration->dropTable($table);
+   }
+
+}
+
+
+/**
+ * @param $deviceType
+ * @param $new_specif               (default NULL)
+ * @param $new_specif_type          (default NULL)
+ * @param $other_specif      array
+ */
+function migrateComputerDevice($deviceType, $new_specif=NULL, $new_specif_type=NULL,
+                               array $other_specif=array()) {
+   global $DB, $migration;
+
+   $table        = getTableForItemType('Item_'.$deviceType);
+   $device_table = getTableForItemType($deviceType);
+   $migration->renameTable(getTableForItemType('Computer_'.$deviceType), $table);
+
+   $migration->changeField($table, 'computers_id', 'items_id', 'integer', array('value' => 0));
+   $migration->addField($table, 'itemtype', 'string', array('after'  => 'items_id',
+                                                            'update' => "'Computer'"));
+
+   if (!empty($new_specif) && !empty($new_specif_type)) {
+      $migration->changeField($table, 'specificity', $new_specif, $new_specif_type);
+      $migration->changeField($device_table, 'specif_default',
+                              $new_specif.'_default', $new_specif_type);
+
+      // Update the log ...
+      $query = "UPDATE `glpi_logs`
+                SET `itemtype_link` = 'Item_".$deviceType."#".$new_specif."'
+                WHERE `itemtype_link` = '$deviceType'";
+      $DB->queryOrDie($query, "0.84 adapt glpi_logs to new item_devices");
+   }
+
+   foreach ($other_specif as $field => $format) {
+      $migration->addField($table, $field, $format);
+   }
+}
+
+
+/**
+ * Update from 0.83.1 to 0.84
+ *
+ * @return bool for success (will die for most error)
+**/
+function update0831to084() {
+   global $DB, $migration;
+
+   $GLOBALS['migration_log_file'] = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
+
+   $updateresult     = true;
+   $ADDTODISPLAYPREF = array();
+
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.84'));
+   $migration->setVersion('0.84');
+
+
+   // Add the internet field and copy rights from networking
+   $migration->addField('glpi_profiles', 'internet', 'char', array('after'  => 'networking',
+                                                                   'update' => '`networking`'));
+
+   $backup_tables = false;
+   $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
+                          'glpi_changes_problems', 'glpi_changes_suppliers',
+                          'glpi_changes_tickets', 'glpi_changes_users',
+                          'glpi_changetasks', 'glpi_contractcosts',
+                          'glpi_entities_rssfeeds', 'glpi_groups_rssfeeds',
+                          'glpi_problems_suppliers', 'glpi_profiles_rssfeeds',
+                          'glpi_rssfeeds_users', 'glpi_rssfeeds',
+                          'glpi_suppliers_tickets', 'glpi_ticketcosts');
+
+   foreach ($newtables as $new_table) {
+      // rename new tables if exists ?
+      if (TableExists($new_table)) {
+         $migration->dropTable("backup_$new_table");
+         $migration->displayWarning("$new_table table already exists. ".
+                                    "A backup have been done to backup_$new_table.");
+         $backup_tables = true;
+         $query         = $migration->renameTable("$new_table", "backup_$new_table");
+      }
+   }
+   if ($backup_tables) {
+      $migration->displayWarning("You can delete backup tables if you have no need of them.",
+                                 true);
+   }
+
+   updateNetworkFramework($ADDTODISPLAYPREF);
 
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
