@@ -173,7 +173,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
             $set_first = ($DB->numrows($result) == 1);
             while ($link = $DB->fetch_assoc($result)) {
                if (($set_first) || ($link['name'] == $portInformation['name'])) {
-                  $input['computers_devicenetworkcards_id'] = $link['link_id'];
+                  $input['items_devicenetworkcards_id'] = $link['link_id'];
                   break;
                }
             }
@@ -2181,13 +2181,6 @@ function update0831to084() {
    migrateComputerDevice('DevicePci');
    migrateComputerDevice('DeviceCase');
    migrateComputerDevice('DevicePowerSupply');
-
-   // TODO : Delete this before RC - only for dev
-   $migration->changeField('glpi_networkportethernets', 'computers_devicenetworkcards_id',
-                           'items_devicenetworkcards_id', 'integer', array('value' => 0));
-   $migration->changeField('glpi_networkportwifis', 'computers_devicenetworkcards_id',
-                           'items_devicenetworkcards_id', 'integer', array('value' => 0));
-
 
 
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
