@@ -43,7 +43,6 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['type']) && isset($_POST['end'])) {
-   print_r($_POST);
    echo "<table class='tab_glpi'>";
    switch ($_POST['type']) {
       case 'day' :
