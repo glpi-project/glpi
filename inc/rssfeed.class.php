@@ -775,7 +775,7 @@ class RSSFeed extends CommonDBTM {
       }
 
       echo "<br><table class='tab_cadrehov'>";
-      echo "<tr><th colspan='3'><div class='relative'><span>$titre</span>";
+      echo "<tr><th colspan='2'><div class='relative'><span>$titre</span>";
 
       if (self::canCreate()) {
          echo "<span class='rssfeed_right'>";
@@ -800,19 +800,21 @@ class RSSFeed extends CommonDBTM {
                   echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
                }
                $link = $item->get_permalink();
-               echo "<br>";
-               echo $item->get_title();
-               echo "</td><td>";
+//                echo "<br>";
+//                echo $item->get_title();
+//                echo "</td><td>";
+               
                $rand = mt_rand();
-               echo "<span id='rssitem$rand' class='pointer'>";
+               echo "<div id='rssitem$rand' class='pointer rss'>";
                if (!is_null($link)) {
                   echo "<a target='_blank' href='$link'>";
                }
-               echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
+               echo $item->get_title();
+//                echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
                if (!is_null($link)) {
                   echo "</a>";
                }
-               echo "</span>";
+               echo "</div>";
                Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
                                           array('applyto' => "rssitem$rand",
                                                 'display' => true));

@@ -643,6 +643,10 @@ td { }
    margin-bottom: 5px;
 }
 
+div.rss {
+   margin-left: 10px;
+}
+
 td.numeric {
    text-align:right;
 /*   width:10%;*/
