@@ -614,7 +614,7 @@ class Reservation extends CommonDBChild {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
 
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadre' width='700px'>";
       echo "<tr><th colspan='2'>".__('Reserve an item')."</th></tr>\n";
 
       // Add Hardware name
@@ -691,7 +691,7 @@ class Reservation extends CommonDBChild {
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
-         echo "<td class='center'>";
+         echo "<td>";
          echo "<select name='periodicity[type]' id='resaperiod$rand'>";
          echo "<option value=''>"._x('periodicity', 'None')."</option>\n";
          echo "<option value='day'>"._x('periodicity', 'Daily')."</option>\n";

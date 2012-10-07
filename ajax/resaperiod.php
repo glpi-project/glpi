@@ -43,7 +43,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['type']) && isset($_POST['end'])) {
-   echo "<table class='tab_glpi'>";
+   echo "<table>";
    switch ($_POST['type']) {
       case 'day' :
          echo "<tr><td>".__('End date').'</td><td>';
@@ -68,7 +68,7 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
          echo "</tr>";
          break;
       case 'month' :
-         echo "<tr class='center'><td colspan='2'>";
+         echo "<tr><td colspan='2'>";
          echo "<select name='periodicity[subtype]'>";
          echo "<option value='date'>".__('Same date')."</option>\n";
          echo "<option value='day'>".__('Same day')."</option>\n";
