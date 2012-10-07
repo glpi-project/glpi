@@ -418,7 +418,7 @@ class RSSFeed extends CommonDBTM {
 
       $tab[2]['table']         = 'glpi_users';
       $tab[2]['field']         = 'name';
-      $tab[2]['name']          = __('Writer');
+      $tab[2]['name']          = __('Creator');
       $tab[2]['datatype']      = 'dropdown';
       $tab[2]['massiveaction'] = false;
       $tab[2]['right']           = 'all';
@@ -524,7 +524,7 @@ class RSSFeed extends CommonDBTM {
       if ($feed = $this->getRSSFeed($input['url'])) {
          $input['name'] = addslashes($feed->get_title());
          if (empty($input['comment'])) {
-            $input['comment'] = $feed->get_description();
+            $input['comment'] = addslashes($feed->get_description());
          }
       } else {
          $input['name'] = '';
@@ -574,10 +574,21 @@ class RSSFeed extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      $rowspan=4;
+      $rowspan=3;
       if ($this->isNewID($ID)) {
          $rowspan--;
       }
+      
+      if (!$this->isNewID($ID)) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".__('Name')."</td>";
+         echo "<td>";
+         Html::autocompletionTextField($this, "name",
+                                       array('entity' => -1,
+                                             'user'   => $this->fields["users_id"]));
+         echo "</td><td colspans='2'>&nbsp;</td></tr>\n";
+      }
+      
       echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='url' size='100' value='".$this->fields["url"]."'>";
@@ -601,16 +612,6 @@ class RSSFeed extends CommonDBTM {
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
       echo "</td></tr>\n";
       
-      if (!$this->isNewID($ID)) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>".__('Name')."</td>";
-         echo "<td>";
-         Html::autocompletionTextField($this, "name",
-                                       array('entity' => -1,
-                                             'user'   => $this->fields["users_id"]));
-         echo "</td></tr>\n";
-      }
-
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Refresh rate')."</td>";
       echo "<td>";
@@ -767,10 +768,10 @@ class RSSFeed extends CommonDBTM {
       if ($nb     = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             // Force fetching feeds
-            $rssfeed->getRSSFeed($data['url'], $data['refresh_rate']);
-
-            // Store feeds in array of feeds
-            $feeds[$data['id']]=$data['url'];
+            if ($rssfeed->getRSSFeed($data['url'], $data['refresh_rate'])) {
+               // Store feeds in array of feeds
+               $feeds[$data['id']]=$data['url'];
+            }
          }
       }
 

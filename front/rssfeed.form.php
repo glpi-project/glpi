@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
    $newID = $rssfeed->add($_POST);
    Event::log($newID, "rssfeed", 4, "tools",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rssfeed->fields["name"]));
-   Html::back();
+   Html::redirect($CFG_GLPI["root_doc"]."/front/rssfeed.form.php?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
    $rssfeed->check($_POST["id"],'d');
