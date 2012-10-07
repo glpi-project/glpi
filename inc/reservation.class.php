@@ -750,7 +750,7 @@ class Reservation extends CommonDBChild {
          $begin_time = strtotime($begin);
          $end_time = strtotime($end);
          $repeat_end = strtotime($options['end'].' 00:00:00');
-         print_r($options);
+//          print_r($options);
          switch ($options['type']) {
             case 'day' :
                $begin_time += DAY_TIMESTAMP;
