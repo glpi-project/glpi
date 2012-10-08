@@ -3395,7 +3395,7 @@ class Ticket extends CommonITILObject {
             echo "<input type='hidden' name='_predefined_fields'
                    value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
-         echo "<input type='submit' name='add' value=\""._s('Submit message')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
 
