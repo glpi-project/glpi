@@ -46,7 +46,8 @@ if (!defined('GLPI_ROOT')) {
 class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
-   public $dohistory = true;
+   public $dohistory                   = true;
+
 
    static function getTypeName($nb=0) {
       return _n('Cartridge model','Cartridge models',$nb);

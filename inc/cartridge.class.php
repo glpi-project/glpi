@@ -107,6 +107,8 @@ class Cartridge extends CommonDBChild {
 
 
    /**
+    * @since version 0.84
+    *
     * @see inc/CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -137,6 +139,7 @@ class Cartridge extends CommonDBChild {
       }
       return $res;
    }
+
 
    /**
     * @see inc/CommonDBTM::restore()
@@ -230,16 +233,16 @@ class Cartridge extends CommonDBChild {
 
       if ($this->getFromDB($ID)) {
          $query = "UPDATE`".$this->getTable()."`
-                  SET `date_out` = '".date("Y-m-d")."'
-                  WHERE `id`='$ID'";
+                   SET `date_out` = '".date("Y-m-d")."'
+                   WHERE `id`='$ID'";
 
          if ($result = $DB->query($query)
-            && ($DB->affected_rows() > 0)) {
+             && ($DB->affected_rows() > 0)) {
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = __('Uninstalling a cartridge');
             Log::history($this->getField("printers_id"), 'Printer', $changes,
-                           0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+                         0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
             return true;
          }
@@ -630,6 +633,8 @@ class Cartridge extends CommonDBChild {
    /**
     * Show installed cartridges
     *
+    * @since version 0.84 (before showInstalled)
+    *
     * @param $printer            Printer object
     * @param $old       boolean  old cartridges or not ? (default 0)
     *
@@ -643,7 +648,7 @@ class Cartridge extends CommonDBChild {
          return false;
       }
       $canedit = Session::haveRight("cartridge", "w");
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $query = "SELECT `glpi_cartridgeitems`.`id` AS tID,
                        `glpi_cartridgeitems`.`is_deleted`,
@@ -696,7 +701,7 @@ class Cartridge extends CommonDBChild {
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          if (!$old) {
-            $actions = array('uninstall' => __('End of Life'));
+            $actions = array('uninstall' => __('End of life'));
          } else {
             $actions = array('delete'    => _x('button', 'Delete'));
          }
@@ -721,7 +726,9 @@ class Cartridge extends CommonDBChild {
       echo "<th>".__('Add date')."</th>";
       echo "<th>".__('Use date')."</th>";
       if ($old != 0) {
-         echo "<th>".__('End date')."</th><th>".__('Printer counter')."</th><th>".__('Printed pages')."</th>";
+         echo "<th>".__('End date')."</th>";
+         echo "<th>".__('Printer counter')."</th>";
+         echo "<th>".__('Printed pages')."</th>";
       }
       echo "</tr>";
       $stock_time       = 0;
@@ -746,19 +753,20 @@ class Cartridge extends CommonDBChild {
          if ($canedit) {
             echo "\n<script type='text/javascript' >\n";
             echo "function viewEditCartridge". $data["id"]."$rand() {\n";
-            $params = array('type'       => __CLASS__,
-                            'parenttype' => 'Printer',
+            $params = array('type'        => __CLASS__,
+                            'parenttype'  => 'Printer',
                             'printers_id' => $printer->fields["id"],
-                            'id'         => $data["id"]);
+                            'id'          => $data["id"]);
             Ajax::updateItemJsCode("viewcartridge$rand",
-                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+                                   $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
             echo "</script>\n";
          }
          echo $data["id"]."</td>";
          echo "<td class='center' $viewitemjs>";
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">".
-                sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"])."</a></td>";
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">";
+         printf(__('%1$s - %2$s'), $data["type"], $data["ref"]);
+         echo "</a></td>";
          echo "<td class='center' $viewitemjs>".$date_in."</td>";
          echo "<td class='center' $viewitemjs>";
 
@@ -782,13 +790,13 @@ class Cartridge extends CommonDBChild {
                               - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
             $use_time     += $use_time_tmp;
 
-            echo "</td><td class='numeric' $viewitemjs>";
-            echo $data['pages']."</td><td class='numeric' $viewitemjs>";
+            echo "</td><td class='numeric' $viewitemjs>".$data['pages']."</td>";
+            echo "<td class='numeric' $viewitemjs>";
 
             if ($pages < $data['pages']) {
                $pages_printed   += $data['pages']-$pages;
                $nb_pages_printed++;
-               $pp                = $data['pages']-$pages;
+               $pp               = $data['pages']-$pages;
                echo $pp;
                $pages            = $data['pages'];
             } else {
@@ -824,10 +832,13 @@ class Cartridge extends CommonDBChild {
       echo "</div>\n\n";
    }
 
+
    /** form for Cartridge
     *
-    *@param $ID      integer : Id of the cartridge
-    *@param $options array of possible options:
+    * @since version 0.84
+    *
+    * @param $ID      integer  Id of the cartridge
+    * @param $options array    of possible options:
     *     - parent Object : the printers where the cartridge is used
    **/
    function showForm($ID, $options=array()) {
@@ -859,31 +870,31 @@ class Cartridge extends CommonDBChild {
       echo "<td>"._n('Printer','Printers',1)."</td><td>";
       echo $printer->getLink();
       echo "<input type='hidden' name='printers_id' value='".$this->getField('printers_id')."'>\n";
-      echo "<input type='hidden' name='cartridgeitems_id' value='".$this->getField('cartridgeitems_id')."'>\n";
+      echo "<input type='hidden' name='cartridgeitems_id' value='".
+             $this->getField('cartridgeitems_id')."'>\n";
       echo "</td>\n";
-
-      echo "<td>"._n('Cartridge model','Cartridge models',1)."</td><td>";
-      echo $cartitem->getLink();
-      echo "</td></tr>\n";
+      echo "<td>"._n('Cartridge model','Cartridge models',1)."</td>";
+      echo "<td>".$cartitem->getLink()."</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Add date')."</td><td>";
-      echo Html::convDate($this->fields["date_in"]);
-      echo "</td>";
+      echo "<td>".__('Add date')."</td>";
+      echo "<td>".Html::convDate($this->fields["date_in"])."</td>";
 
       echo "<td>".__('Use date')."</td><td>";
       if ($is_used && !$is_old) {
-         Html::showDateFormItem("date_use", $this->fields["date_use"], false, true, $this->fields["date_in"]);
+         Html::showDateFormItem("date_use", $this->fields["date_use"], false, true,
+                                $this->fields["date_in"]);
       } else {
          echo Html::convDate($this->fields["date_use"]);
       }
       echo "</td></tr>\n";
+
       if ($is_old) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('End date')."</td><td>";
-         Html::showDateFormItem("date_out", $this->fields["date_out"], false, true, $this->fields["date_use"]);
+         Html::showDateFormItem("date_out", $this->fields["date_out"], false, true,
+                                $this->fields["date_use"]);
          echo "</td>";
-
          echo "<td>".__('Printer counter')."</td><td>";
          echo "<input type='text' name='pages' value=\"".$this->fields['pages']."\">";
          echo "</td></tr>\n";
@@ -892,6 +903,7 @@ class Cartridge extends CommonDBChild {
 
       return true;
    }
+
 
    /**
     * Get notification parameters by entity
