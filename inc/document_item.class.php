@@ -163,30 +163,30 @@ class Document_Item extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       switch ($item->getType()) {
-
          case 'Document' :
-            $ong    = array();
+            $ong = array();
             if ($_SESSION['glpishow_count_on_tabs']) {
                $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
-                                             self::countForDocument($item)));
+                                              self::countForDocument($item)));
             }
             $ong[1] = _n('Associated item', 'Associated items', 2);
 
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[2] = Document::createTabEntry(Document::getTypeName(2), self::countForItem($item));
+               $ong[2] = Document::createTabEntry(Document::getTypeName(2),
+                                                  self::countForItem($item));
             }
             $ong[2] = Document::getTypeName(2);
             return $ong;
 
-            break;
          default :
             // Can exist for template
             if (Session::haveRight("document","r")
-               || ($item->getType() == 'Ticket')
-               || ($item->getType() == 'KnowbaseItem')) {
+                || ($item->getType() == 'Ticket')
+                || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return Document::createTabEntry(Document::getTypeName(2), self::countForItem($item));
+                  return Document::createTabEntry(Document::getTypeName(2),
+                                                  self::countForItem($item));
                }
                return Document::getTypeName(2);
             }
@@ -202,12 +202,14 @@ class Document_Item extends CommonDBRelation{
             switch ($tabnum) {
                case 1 :
                   self::showForDocument($item);
-               break;
+                  break;
+
                case 2 :
                   self::showForItem($item, $withtemplate);
-               break;
+                  break;
             }
             return true;
+
          default :
             self::showForitem($item, $withtemplate);
       }
@@ -439,6 +441,8 @@ class Document_Item extends CommonDBRelation{
       /**
     * Show documents associated to an item
     *
+    * @since version 0.84
+    *
     * @param $item            CommonDBTM object for which associated documents must be displayed
     * @param $withtemplate    (default '')
    **/
@@ -470,7 +474,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       $canedit       =  $item->canadditem('Document');
-      $rand = mt_rand();
+      $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
 
       $query = "SELECT `glpi_documents_items`.`id` AS assocID,
@@ -520,11 +524,11 @@ class Document_Item extends CommonDBRelation{
       $i      = 0;
 
       $documents = array();
-      $used = array();
+      $used      = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $documents[$data['assocID']] = $data;
-            $used[$data['id']] = $data['id'];
+            $used[$data['id']]           = $data['id'];
          }
       }
 
@@ -561,7 +565,7 @@ class Document_Item extends CommonDBRelation{
 
          echo "<div class='firstbloc'>";
          echo "<form name='documentitem_form$rand' id='documentitem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL('Document')."'  enctype=\"multipart/form-data\">";
+                action='".Toolbox::getItemTypeFormURL('Document')."'  enctype=\"multipart/form-data\">";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='5'>".__('Add a document')."</th></tr>";
@@ -580,7 +584,7 @@ class Document_Item extends CommonDBRelation{
          if ($item->getType() == 'Ticket') {
             echo "<input type='hidden' name='tickets_id' value='$ID'>";
             echo "<input type='hidden' name='documentcategories_id' value='".
-                     $CFG_GLPI["documentcategories_id_forticket"]."'>";
+                   $CFG_GLPI["documentcategories_id_forticket"]."'>";
          }
          echo "<input type='file' name='filename' size='25'>";
          echo "</td><td class='left'>";
@@ -588,15 +592,15 @@ class Document_Item extends CommonDBRelation{
          echo "</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"
-                  class='submit'>";
+                class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
 
          if (Session::haveRight('document','r')
-               && ($nb > count($used))) {
+             && ($nb > count($used))) {
             echo "<form name='document_form$rand' id='document_form$rand' method='post'
-                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='4' class='center'>";
@@ -607,7 +611,7 @@ class Document_Item extends CommonDBRelation{
             if ($item->getType() == 'Ticket') {
                echo "<input type='hidden' name='tickets_id' value='$ID'>";
                echo "<input type='hidden' name='documentcategories_id' value='".
-                        $CFG_GLPI["documentcategories_id_forticket"]."'>";
+                      $CFG_GLPI["documentcategories_id_forticket"]."'>";
             }
 
             Document::dropdown(array('entity' => $entities ,
