@@ -754,10 +754,10 @@ class NetworkName extends FQDNLabel {
                                                    $item->getTypeName(1), $item->getName()));
             if ($canedit && $number) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed' => $number,
-                                            'specific_actions' => array('purge' => _x('button', 'Purge'),
-                                                                        'unaffect' => __('Dissociate')));
-               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+               $paramsma = array('num_displayed' => $number,
+                                 'specific_actions' => array('purge' => _x('button', 'Purge'),
+                                                             'unaffect' => __('Dissociate')));
+               Html::showMassiveActions(__CLASS__, $paramsma);
             }
 
             $table->display(array('display_title_for_each_group' => false,
@@ -765,7 +765,7 @@ class NetworkName extends FQDNLabel {
                                   'display_tfoot'                => false));
 
             if ($canedit && $number) {
-               $paramsma['ontop'] =false;
+               $paramsma['ontop'] = false;
                Html::showMassiveActions(__CLASS__, $paramsma);
                Html::closeForm();
             }
