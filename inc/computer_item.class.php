@@ -40,14 +40,18 @@ if (!defined('GLPI_ROOT')) {
 class Computer_Item extends CommonDBRelation{
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Computer';
-   static public $items_id_1 = 'computers_id';
+   static public $itemtype_1          = 'Computer';
+   static public $items_id_1          = 'computers_id';
 
-   static public $itemtype_2 = 'itemtype';
-   static public $items_id_2 = 'items_id';
+   static public $itemtype_2          = 'itemtype';
+   static public $items_id_2          = 'items_id';
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
+   /**
+    * @since version 0.84
+    *
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -84,8 +88,11 @@ class Computer_Item extends CommonDBRelation{
                                   "`computers_id` ='".$comp->getField('id')."'");
    }
 
+
    /**
     * Count connection for a Computer and an itemtype
+    *
+    * @since version 0.84
     *
     * @param $comp   Computer object
     * @param $item   CommonDBTM object
@@ -106,11 +113,13 @@ class Computer_Item extends CommonDBRelation{
     * Don't create a Computer_Item that don't have a valid Item
     * Was previously done (until 0.83) by inc/Computer_Item::can()
     * @see inc/CommonDBRelation::canCreateItem()
+    *
     * @since version 0.84
     *
     * @return boolean : true if we can create the item
    **/
    function canCreateItem() {
+
       $item = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
       if ($item === false) {
          return false;
@@ -141,7 +150,7 @@ class Computer_Item extends CommonDBRelation{
          return false;
       }
       if (($item->getField('is_global') == 0)
-            && ($this->countForItem($item) > 0)) {
+          && ($this->countForItem($item) > 0)) {
             return false;
       }
       $comp = new Computer();
@@ -157,17 +166,17 @@ class Computer_Item extends CommonDBRelation{
          $updates = array();
 
          if ($CFG_GLPI["is_location_autoupdate"]
-               && ($comp->fields['locations_id'] != $item->getField('locations_id'))) {
+             && ($comp->fields['locations_id'] != $item->getField('locations_id'))) {
 
             $updates['locations_id'] = addslashes($comp->fields['locations_id']);
             Session::addMessageAfterRedirect(
-               __('Location updated. The connected items have been moved in the same location.'),
-               true);
+                  __('Location updated. The connected items have been moved in the same location.'),
+                                             true);
          }
          if (($CFG_GLPI["is_user_autoupdate"]
-               && ($comp->fields['users_id'] != $item->getField('users_id')))
-               || ($CFG_GLPI["is_group_autoupdate"]
-                  && ($comp->fields['groups_id'] != $item->getField('groups_id')))) {
+              && ($comp->fields['users_id'] != $item->getField('users_id')))
+             || ($CFG_GLPI["is_group_autoupdate"]
+                 && ($comp->fields['groups_id'] != $item->getField('groups_id')))) {
 
             if ($CFG_GLPI["is_user_autoupdate"]) {
                $updates['users_id'] = $comp->fields['users_id'];
@@ -177,31 +186,31 @@ class Computer_Item extends CommonDBRelation{
             }
             Session::addMessageAfterRedirect(
                __('User or group updated. The connected items have been moved in the same values.'),
-               true);
+                                             true);
          }
 
          if ($CFG_GLPI["is_contact_autoupdate"]
-               && (($comp->fields['contact'] != $item->getField('contact'))
-                  || ($comp->fields['contact_num'] != $item->getField('contact_num')))) {
+             && (($comp->fields['contact'] != $item->getField('contact'))
+                 || ($comp->fields['contact_num'] != $item->getField('contact_num')))) {
 
             $updates['contact']     = addslashes($comp->fields['contact']);
             $updates['contact_num'] = addslashes($comp->fields['contact_num']);
             Session::addMessageAfterRedirect(
                __('Alternate username updated. The connected items have been updated using this alternate username.'),
-               true);
+                                             true);
          }
 
          if (($CFG_GLPI["state_autoupdate_mode"] < 0)
-               && ($comp->fields['states_id'] != $item->getField('states_id'))) {
+             && ($comp->fields['states_id'] != $item->getField('states_id'))) {
 
             $updates['states_id'] = $comp->fields['states_id'];
             Session::addMessageAfterRedirect(
-                  __('Status updated. The connected items have been updated using this status.'),
-                  true);
+                     __('Status updated. The connected items have been updated using this status.'),
+                                             true);
          }
 
          if (($CFG_GLPI["state_autoupdate_mode"] > 0)
-               && ($item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"])) {
+             && ($item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"])) {
 
             $updates['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
          }
@@ -449,7 +458,7 @@ class Computer_Item extends CommonDBRelation{
 
       $ID      = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $datas = array();
       $used  = array();
@@ -463,7 +472,8 @@ class Computer_Item extends CommonDBRelation{
                       ".getTableForItemType($itemtype).".*
                       FROM `glpi_computers_items`
                       LEFT JOIN `".getTableForItemType($itemtype)."`
-                        ON (`".getTableForItemType($itemtype)."`.`id` = `glpi_computers_items`.`items_id`)
+                        ON (`".getTableForItemType($itemtype)."`.`id`
+                              = `glpi_computers_items`.`items_id`)
                       WHERE `computers_id` = '$ID'
                             AND `itemtype` = '".$itemtype."'";
             if ($item->maybetemplate()) {
@@ -472,7 +482,7 @@ class Computer_Item extends CommonDBRelation{
 
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $datas[] = $data;
+                  $datas[]           = $data;
                   $used[$itemtype][] = $data['assoc_items_id'];
                }
             }
@@ -483,7 +493,7 @@ class Computer_Item extends CommonDBRelation{
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Connect an item')."</th></tr>";
@@ -544,21 +554,21 @@ class Computer_Item extends CommonDBRelation{
             }
             echo "<td class='center'>".$data['assoc_itemtype']::getTypeName(1)."</td>";
             echo "<td ".
-                  (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
-               ">".$name."</td>";
+                  ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
+                 ">".$name."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
             echo "</td>";
-            echo "<td class='center'>".(isset($data["serial"])? "".
-                                       $data["serial"]."" :"-")."</td>";
-            echo "<td class='center'>".(isset($data["otherserial"])? "".
-                                       $data["otherserial"]."" :"-")."</td>";
+            echo "<td class='center'>".
+                   (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
+            echo "<td class='center'>".
+                   (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
             echo "</tr>";
          }
 
          echo "</table>";
          if ($canedit && $number) {
-            $paramsma['ontop'] =false;
+            $paramsma['ontop'] = false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }
@@ -586,7 +596,7 @@ class Computer_Item extends CommonDBRelation{
          return false;
       }
       $canedit = $item->can($ID,"w");
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       // Is global connection ?
       $global  = $item->getField('is_global');
@@ -661,7 +671,7 @@ class Computer_Item extends CommonDBRelation{
             }
             echo "<td ".
                   ($comp->getField('is_deleted')?"class='tab_bg_2_2'":"").
-               ">".$comp->getNameID()."</td>";
+                 ">".$comp->getNameID()."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $comp->getField('entities_id'));
             echo "</td>";
@@ -676,7 +686,7 @@ class Computer_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
@@ -727,6 +737,8 @@ class Computer_Item extends CommonDBRelation{
    /**
    * Make a select box for connections
    *
+   * @since version 0.84
+   *
    * @param $fromtype               from where the connection is
    * @param $myname                 select name
    * @param $entity_restrict        Restrict to a defined entity (default = -1)
@@ -736,10 +748,10 @@ class Computer_Item extends CommonDBRelation{
    * @return nothing (print out an HTML select box)
    */
    static function dropdownAllConnect($fromtype, $myname, $entity_restrict=-1,
-                                   $onlyglobal=0, $used=array()) {
+                                      $onlyglobal=0, $used=array()) {
       global $CFG_GLPI;
 
-      $rand     = mt_rand();
+      $rand = mt_rand();
 //       $use_ajax = false;
 //       if ($CFG_GLPI["use_ajax"]) {
 //          $nb = 0;
@@ -778,6 +790,7 @@ class Computer_Item extends CommonDBRelation{
 
    }
 
+
    /**
    * Make a select box for connections
    *
@@ -799,12 +812,12 @@ class Computer_Item extends CommonDBRelation{
       $use_ajax = false;
       if ($CFG_GLPI["use_ajax"]) {
          $nb = 0;
-         if ($entity_restrict>=0) {
+         if ($entity_restrict >= 0) {
             $nb = countElementsInTableForEntity(getTableForItemType($itemtype), $entity_restrict);
          } else {
             $nb = countElementsInTableForMyEntities(getTableForItemType($itemtype));
          }
-         if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax = true;
          }
       }

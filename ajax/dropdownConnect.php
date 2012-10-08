@@ -108,7 +108,7 @@ if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
 
-if (isset($_POST['searchText']) && $_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if (isset($_POST['searchText']) && ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"])) {
    $LIMIT = "";
 }
 
@@ -117,11 +117,13 @@ if (!empty($used)) {
    $where_used = " AND `$table`.`id` NOT IN ('".implode("','",$used)."')";
 }
 
-if ($_POST["onlyglobal"] && $_POST["itemtype"] != 'Computer') {
+if ($_POST["onlyglobal"]
+    && ($_POST["itemtype"] != 'Computer')) {
    $CONNECT_SEARCH = " WHERE `$table`.`is_global` = '1' ";
 } else {
    if ($_POST["itemtype"] == 'Computer') {
-      $CONNECT_SEARCH = " WHERE 1 $where_used";
+      $CONNECT_SEARCH = " WHERE 1
+                                $where_used";
    } else {
       $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
                                   $where_used)
@@ -131,7 +133,8 @@ if ($_POST["onlyglobal"] && $_POST["itemtype"] != 'Computer') {
 
 $LEFTJOINCONNECT = "";
 
-if ($_POST["itemtype"] != 'Computer' && !$_POST["onlyglobal"]) {
+if (($_POST["itemtype"] != 'Computer')
+     && !$_POST["onlyglobal"]) {
    $LEFTJOINCONNECT = " LEFT JOIN `glpi_computers_items`
                            ON (`$table`.`id` = `glpi_computers_items`.`items_id`
                                AND `glpi_computers_items`.`itemtype` = '".$_POST['itemtype']."')";
