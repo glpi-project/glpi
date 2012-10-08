@@ -865,8 +865,6 @@ class Cartridge extends CommonDBChild {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Printer','Printers',1)."</td><td>";
       echo $printer->getLink();
       echo "<input type='hidden' name='printers_id' value='".$this->getField('printers_id')."'>\n";
