@@ -369,6 +369,14 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function prepareInputForUpdate($input) {
 
+      // Get need informations :
+      if (!isset($input[static::$itemtype]) && isset($this->fields[static::$itemtype])) {
+         $input[static::$itemtype] = $this->fields[static::$itemtype];
+      }
+      if (!isset($input[static::$items_id]) && isset($this->fields[static::$items_id])) {
+         $input[static::$items_id] = $this->fields[static::$items_id];
+      }
+   
       $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       /// TODO : must we apply this filter for the update ?
