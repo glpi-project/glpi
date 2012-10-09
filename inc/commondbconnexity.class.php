@@ -148,6 +148,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * Factorization of canCreate, canView, canUpate and canDelete. It checks the ability to
     * create, view, update or delete the item if it is possible (ie : $itemtype != 'itemtype')
     *
+    * The aim is that the rights are driven by the attached item : if we can do the action on the
+    * item, then we can do the action of the CommonDBChild or the CommonDBRelation. Thus, it is the
+    * inverse of CommonDBTM's behaviour, that, by default forbid any action (cf.
+    * CommonDBTM::canCreate and CommonDBTM::canView)
+    *
+    * @warning By default, if the action is possible regarding the attaching item, then it is
+    * possible on the CommonDBChild and the CommonDBRelation.
+    *
     * @param $method     the method to check (canCreate, canView, canUpdate of canDelete)
     * @param $item_right the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
     * @param $itemtype   the name of the field of the type of the item to get
