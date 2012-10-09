@@ -917,7 +917,7 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      echo "<tr><th colspan='4'>".__('Configuring the due date bar')."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Due date progression')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('OK state color')."</td>";
