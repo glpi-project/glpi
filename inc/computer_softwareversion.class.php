@@ -1031,7 +1031,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($soft->getFromDB($item->fields['softwares_id'])) {
          return addslashes($soft->getName() . " " . $item->getName());
       }
-      return $item->getName();
+      return addslashes($item->getName());
    }
 
 
