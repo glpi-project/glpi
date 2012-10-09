@@ -290,11 +290,6 @@ function glpi_autoload($classname) {
          Zend_Loader::loadClass($classname);
          return true;
       }
-      // Is Zend class ?
-      if (preg_match('/^SimplePie/',$classname,$matches)) {
-         require_once(GLPI_SIMPLEPIE_PATH.DIRECTORY_SEPARATOR.str_replace('_', DIRECTORY_SEPARATOR, $classname) . '.php');
-         return true;
-      }
 
       // Do not try to load phpcas using GLPI autoload
       if (preg_match('/^CAS_.*/', $classname)) {
@@ -323,5 +318,34 @@ function glpi_autoload($classname) {
 
 // Use spl autoload to allow stackable autoload.
 spl_autoload_register('glpi_autoload');
+spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 
+/**
+ * Autoloader class
+ *
+ * @package SimplePie
+ * @subpackage API
+ */
+class SimplePie_Autoloader {
+   /**
+   * Constructor
+   */
+   public function __construct() {
+      $this->path = GLPI_SIMPLEPIE_PATH;
+   }
+
+   /**
+   * Autoloader
+   *
+   * @param string $class The name of the class to attempt to load.
+   */
+   public function autoload($class) {
+      // Only load the class if it starts with "SimplePie"
+      if (strpos($class, 'SimplePie') !== 0) {
+         return;
+      }
+      $filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+      require_once($filename);
+   }
+}
 ?>
