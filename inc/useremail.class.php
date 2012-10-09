@@ -47,14 +47,8 @@ class UserEmail  extends CommonDBChild {
 
    static function getTypeName($nb=0) {
       return _n('Email', 'Emails', $nb);
-   
-
-
-   function canViewItem() {
-
-      return (Session::haveRight('user','r')
-              || ($this->fields['users_id'] == Session::getLoginUserID()));
    }
+
 
 
 
