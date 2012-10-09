@@ -1043,17 +1043,19 @@ class Ticket extends CommonITILObject {
                         $input['name']                     = $title;
                         $_SESSION["helpdeskSaved"]['name'] = $input['name'];
                      }
-                     // If content is also predefined need to be different from predefined value
-                     if ($key == 'content' && isset($tt->predefined['content'])) {
-                        // Clean new lines to be fix encoding
-                        if (!isset($input[$key])
-                           || (strcmp(preg_replace("/\r?\n/", "", $tt->predefined['content']),
-                                      preg_replace("/\r?\n/", "", Html::cleanPostForTextArea($input[$key])))==0)) {
+                     // Check only defined values : Not defined not in form
+                     if (isset($input[$key])) {
+                        // If content is also predefined need to be different from predefined value
+                        if ($key == 'content' && isset($tt->predefined['content'])) {
+                           // Clean new lines to be fix encoding
+                           if (strcmp(preg_replace("/\r?\n/", "", $tt->predefined['content']),
+                                       preg_replace("/\r?\n/", "", Html::cleanPostForTextArea($input[$key])))==0) {
+                              $mandatory_missing[$key] = $fieldsname[$val];
+                           }
+                        }
+                        if (empty($input[$key]) || ($input[$key] == 'NULL')) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
-                     }
-                     if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
-                        $mandatory_missing[$key] = $fieldsname[$val];
                      }
                   }
                   if (count($mandatory_missing)) {
