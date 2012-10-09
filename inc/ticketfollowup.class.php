@@ -399,7 +399,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getName()
+    * @see CommonDBTM::getName()
    **/
    function getName($with_comment=0) {
 

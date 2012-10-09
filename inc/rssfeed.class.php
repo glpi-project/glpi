@@ -124,7 +124,7 @@ class RSSFeed extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::cleanDBonPurge()
+    * @see CommonDBTM::cleanDBonPurge()
     *
    **/
    function cleanDBonPurge() {
@@ -142,7 +142,7 @@ class RSSFeed extends CommonDBTM {
 
    /**
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -477,7 +477,7 @@ class RSSFeed extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -497,7 +497,7 @@ class RSSFeed extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::defineTabs()
+    * @see CommonGLPI::defineTabs()
    **/
    function defineTabs($options=array()) {
 
@@ -532,7 +532,7 @@ class RSSFeed extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 

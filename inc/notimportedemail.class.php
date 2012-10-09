@@ -69,7 +69,7 @@ class NotImportedEmail extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
     **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
@@ -85,7 +85,7 @@ class NotImportedEmail extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
     **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -105,7 +105,7 @@ class NotImportedEmail extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
     **/
    function doSpecificMassiveActions($input=array()) {
 

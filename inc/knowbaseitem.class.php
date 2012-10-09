@@ -196,7 +196,7 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::cleanDBonPurge()
+    * @see CommonDBTM::cleanDBonPurge()
     *
     * @since version 0.83.1
    **/
@@ -216,7 +216,7 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -483,7 +483,7 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -511,7 +511,7 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForUpdate()
+    * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
 

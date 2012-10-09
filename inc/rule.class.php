@@ -145,7 +145,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
@@ -165,7 +165,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -197,7 +197,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -1327,7 +1327,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -2168,7 +2168,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::defineTabs()
+    * @see CommonGLPI::defineTabs()
    **/
    function defineTabs($options=array()) {
 
@@ -2298,7 +2298,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

@@ -109,7 +109,7 @@ class Cartridge extends CommonDBChild {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -142,7 +142,7 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBTM::restore()
+    * @see CommonDBTM::restore()
     */
    function restore(array $input, $history=1) {
       global $DB;

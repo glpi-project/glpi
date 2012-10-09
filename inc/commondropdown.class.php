@@ -125,7 +125,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * @since version 0.83.3
     *
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -140,7 +140,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * @since version 0.83.3
     *
-    * @see inc/CommonDBTM::prepareInputForUpdate()
+    * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
       return self::prepareInputForAdd($input);
@@ -321,7 +321,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
     **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
@@ -339,7 +339,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
     **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -358,7 +358,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
     **/
    function doSpecificMassiveActions($input=array()) {
 

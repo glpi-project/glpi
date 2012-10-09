@@ -245,7 +245,7 @@ class SoftwareLicense extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 

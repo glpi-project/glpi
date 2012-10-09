@@ -366,7 +366,7 @@ class FieldUnicity extends CommonDropdown {
 
 
    /**
-    * @sincevesin 0.84
+    * @since version 0.84
     *
     * @param $field
     * @param $values

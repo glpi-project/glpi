@@ -522,7 +522,7 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -553,7 +553,7 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 

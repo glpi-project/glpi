@@ -100,7 +100,7 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -229,7 +229,7 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBChild::prepareInputForAdd()
+    * @see CommonDBChild::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
@@ -358,7 +358,7 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBChild::prepareInputForUpdate()
+    * @see CommonDBChild::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
 

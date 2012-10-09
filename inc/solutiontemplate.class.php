@@ -93,7 +93,7 @@ class SolutionTemplate extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDropdown::displaySpecificTypeField()
+    * @see CommonDropdown::displaySpecificTypeField()
    **/
    function displaySpecificTypeField($ID, $field=array()) {
 

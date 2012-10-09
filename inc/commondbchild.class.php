@@ -506,7 +506,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @since version 0.84
     *
-    * @TODO study if we cannot use these methods for the user emails
+    * @todo study if we cannot use these methods for the user emails
     * @see showFieldsForItemForm(CommonDBTM $item, $html_field, $db_field)
     *
     * @param $item         CommonDBTM object: the item on which to add the current CommenDBChild
@@ -557,7 +557,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @since version 0.84
     *
-    * @TODO study if we cannot use these methods for the user emails
+    * @todo study if we cannot use these methods for the user emails
     * @see showAddButtonForChildItem(CommonDBTM $item, $html_field)
     *
     * @param $item         CommonDBTM object the item on which to add the current CommenDBChild

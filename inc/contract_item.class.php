@@ -61,7 +61,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Don't create a Contract_Item on contract that is alreay max used
     * Was previously done (until 0.83.*) by inc/Contract_Item::can()
-    * @see inc/CommonDBRelation::canCreateItem()
+    * @see CommonDBRelation::canCreateItem()
     * @since version 0.84
    **/
    function canCreateItem() {
@@ -165,7 +165,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @pram $item    CommonDBTM object
+    * @param $item    CommonDBTM object
    **/
    static function countForItem(CommonDBTM $item) {
 
@@ -187,7 +187,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $CFG_GLPI;

@@ -298,7 +298,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -331,7 +331,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -818,7 +818,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

@@ -65,7 +65,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBTM::getName()
+    * @see CommonDBTM::getName()
     *
     * @since version 0.84
    **/

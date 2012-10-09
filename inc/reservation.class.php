@@ -53,7 +53,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -98,7 +98,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBChild::prepareInputForUpdate()
+    * @see CommonDBChild::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
 
@@ -136,7 +136,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBTM::post_updateItem()
+    * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history=1) {
       global $CFG_GLPI;
@@ -151,7 +151,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBChild::prepareInputForAdd()
+    * @see CommonDBChild::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 

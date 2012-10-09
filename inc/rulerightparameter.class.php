@@ -42,7 +42,7 @@ class RuleRightParameter extends CommonDropdown {
    var $refresh_page = true;
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 

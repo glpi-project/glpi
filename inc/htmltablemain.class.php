@@ -98,7 +98,7 @@ class HTMLTableMain extends HTMLTableBase {
    /**
     * @param $name      string   The name of the group, to be able to retrieve the group
     *                            later with HTMLTableMain::getHeaderByName()
-    * @param $content            (@see inc/HTMLTableEntity::content)
+    * @param $content            (@see HTMLTableEntity::content)
     *                             The title of the group : display before the group itself
     *
     * TODO : study to be sure that the order is the one we have defined ...

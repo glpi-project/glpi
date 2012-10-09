@@ -468,7 +468,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
@@ -484,7 +484,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -506,7 +506,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 

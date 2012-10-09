@@ -61,7 +61,7 @@ class Item_Devices extends CommonDBRelation {
 
    /**
     * Get itemtype of devices : key is ocs identifier
-    * @TODO : Think of allowing other kind of devices such as for NetworkPort Instantation types
+    * @todo : Think of allowing other kind of devices such as for NetworkPort Instantation types
    **/
    static function getDeviceTypes() {
 

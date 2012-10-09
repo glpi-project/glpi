@@ -1883,7 +1883,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Initialize item and check right before managing the edit form
     *
-    * @sinve version 0.84
+    * @since version 0.84
     *
     * @param $ID       Integer  ID of the item/template
     * @param $options  Array    of possible options:

@@ -92,7 +92,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
 
 
    /**
-    * @see inc/HTMLTableHeader::getHeaderAndSubHeaderName()
+    * @see HTMLTableHeader::getHeaderAndSubHeaderName()
    **/
    function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
 

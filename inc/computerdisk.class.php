@@ -50,7 +50,7 @@ class ComputerDisk extends CommonDBChild {
    }
 
    /**
-    * @see inc/CommonDBChild::prepareInputForAdd()
+    * @see CommonDBChild::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -75,7 +75,7 @@ class ComputerDisk extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

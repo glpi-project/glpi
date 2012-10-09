@@ -85,7 +85,7 @@ class DeviceDrive extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableHeader()
+    * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=NULL,
@@ -112,7 +112,7 @@ class DeviceDrive extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableCellForItem()
+    * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
                                     HTMLTableCell $father=NULL, array $options=array()) {

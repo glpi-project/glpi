@@ -779,7 +779,7 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @see inc/CommonDBTM::getName()
+    * @see CommonDBTM::getName()
    **/
    function getName($with_comment=0) {
 
