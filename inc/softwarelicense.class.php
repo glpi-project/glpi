@@ -661,15 +661,23 @@ class SoftwareLicense extends CommonDBTM {
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
-               echo "<td class='center'>".Html::convDate($data['expire'])."</td>";
+               $expired = true;
+               if (is_null($data['expire'])
+                  || ($data['expire'] > date('Y-m-d'))) {
+                  $expired = false; 
+               }
+               echo "<td class='center ".($expired?'deleted':'')."'>".Html::convDate($data['expire'])."</td>";
                echo "</tr>";
 
                if ($data['number'] < 0) {
                   // One illimited license, total is illimited
                   $tot = -1;
                } else if ($tot >= 0) {
-                  // Not illimited, add the current number
-                  $tot += $data['number'];
+                  // Expire license not count
+                  if (!$expired) {
+                     // Not illimited, add the current number
+                     $tot += $data['number'];
+                  }
                }
             }
             echo "<tr class='tab_bg_1'>";
