@@ -472,11 +472,25 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
+   /**
+    * Get the name of the entry when updating the history of the first item
+    *
+    * @param $item the other item (ie. : $item2)
+    *
+    * @return (string) the name of the entry for the database (ie. : correctly slashed)
+   **/
    function getHistoryName_for_item1(CommonDBTM $item) {
       return addslashes($item->getNameID(false, true));
    }
 
 
+   /**
+    * Get the name of the entry when updating the history of the second item
+    *
+    * @param $item the other item (ie. : $item1)
+    *
+    * @return (string) the name of the entry for the database (ie. : correctly slashed)
+   **/
    function getHistoryName_for_item2(CommonDBTM $item) {
       return addslashes($item->getNameID(false, true));
    }

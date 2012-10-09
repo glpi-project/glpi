@@ -45,6 +45,12 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    static public $itemtype_2 = 'NetworkPort';
    static public $items_id_2 = 'networkports_id_2';
 
+   static public $log_history_1_add    = Log::HISTORY_CONNECT_DEVICE;
+   static public $log_history_2_add    = Log::HISTORY_CONNECT_DEVICE;
+
+   static public $log_history_1_delete = Log::HISTORY_DISCONNECT_DEVICE;
+   static public $log_history_2_delete = Log::HISTORY_DISCONNECT_DEVICE;
+
 
    /**
     * Retrieve an item from the database
@@ -53,6 +59,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
     *
     * @return true if succeed else false
    **/
+
    function getFromDBForNetworkPort($ID) {
 
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`networkports_id_1` = '$ID'
@@ -60,147 +67,16 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 
-   // TODO CommonDBConnexity: this post_addItem is only to define a smarter log (ie :
-   // HISTORY_CONNECT_DEVICE with "From device1 to device2" We should remove that ...
-   function post_addItem() {
-      global $DB;
-
-      // Get netpoint for $sport and $dport
-      $sport = $this->fields['networkports_id_1'];
-      $dport = $this->fields['networkports_id_2'];
-
-      $ps = new NetworkPort();
-      if (!$ps->getFromDB($sport)) {
-         return false;
-      }
-      $pd = new NetworkPort();
-      if (!$pd->getFromDB($dport)) {
-         return false;
-      }
-
-      // Manage History
-      $sourcename    = NOT_AVAILABLE;
-      $destname      = NOT_AVAILABLE;
-      $sourcehistory = false;
-      $desthistory   = false;
-
-      if ($sourceitem = getItemForItemtype($ps->fields['itemtype'])) {
-         if ($sourceitem->getFromDB($ps->fields['items_id'])) {
-            $sourcename    = $sourceitem->getName();
-            $sourcehistory = $sourceitem->dohistory;
-         }
-      }
-
-      if ($destitem = getItemForItemtype($pd->fields['itemtype'])) {
-         if ($destitem->getFromDB($pd->fields['items_id'])) {
-            $destname    = $destitem->getName();
-            $desthistory = $destitem->dohistory;
-         }
-      }
-
-      $changes[0] = 0;
-      $changes[1] = "";
-
-      if ($sourcehistory) {
-         $changes[2] = $destname;
-
-         if ($ps->fields["itemtype"] == 'NetworkEquipment') {
-            //TRANS: %1$s is a name, %2$s is the new name
-            $changes[2] = sprintf(__('From #%1$s to %2$s'), $ps->fields["name"], $changes[2]);
-         }
-
-         if ($pd->fields["itemtype"] == 'NetworkEquipment') {
-            //TRANS: %1$s is a name, %2$s is the new name
-            $changes[2] = sprintf(__('From %1$s to #%2$s'), $changes[2], $pd->fields["name"]);
-         }
-
-         Log::history($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
-                      $pd->fields["itemtype"], Log::HISTORY_CONNECT_DEVICE);
-      }
-
-      if ($desthistory) {
-         $changes[2] = $sourcename;
-
-         if ($pd->fields["itemtype"] == 'NetworkEquipment') {
-            $changes[2] = sprintf(__('From #%1$s to %2$s'), $pd->fields["name"], $changes[2]);
-         }
-
-         if ($ps->fields["itemtype"] == 'NetworkEquipment') {
-            $changes[2] = sprintf(__('From %1$s to #%2$s'), $changes[2], $ps->fields["name"]);
-         }
-
-         Log::history($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
-                      $ps->fields["itemtype"], Log::HISTORY_CONNECT_DEVICE);
-      }
+   function getHistoryName_for_item1(CommonDBTM $networkPort) {
+      $item = $networkPort->getItem();
+      return addslashes($item->getName() . ' < ' . $networkPort->getName());
    }
 
 
-   // TODO CommonDBConnexity: ... and also remove that
-   function post_deleteFromDB() {
-
-      // Update to blank networking item
-      // clean datas of linked ports if network one
-      $np1 = new NetworkPort();
-      $np2 = new NetworkPort();
-      if ($np1->getFromDB($this->fields['networkports_id_1'])
-          && $np2->getFromDB($this->fields['networkports_id_2'])) {
-
-         // Manage history
-
-         $name      = NOT_AVAILABLE;
-         $dohistory = false;
-
-         if ($item = getItemForItemtype($np2->fields["itemtype"])) {
-            if ($item->getFromDB($np2->fields["items_id"])) {
-               $name      = $item->getName();
-               $dohistory = $item->dohistory;
-            }
-         }
-
-         if ($dohistory) {
-            $changes[0] = 0;
-            $changes[1] = $name;
-            $changes[2] = '';
-
-            if ($np1->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = sprintf(__('From #%1$s to %2$s'), $np1->fields["name"], $changes[1]);
-            }
-
-            if ($np2->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = sprintf(__('From %1$s to #%2$s'), $changes[1], $np2->fields["name"]);
-            }
-            Log::history($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
-                         $np2->fields["itemtype"], Log::HISTORY_DISCONNECT_DEVICE);
-         }
-
-         $name      = NOT_AVAILABLE;
-         $dohistory = false;
-         if ($item = getItemForItemtype($np1->fields["itemtype"])) {
-            if ($item->getFromDB($np1->fields["items_id"])) {
-               $name      = $item->getName();
-               $dohistory = $item->dohistory;
-            }
-         }
-
-         if ($dohistory) {
-            $changes[0] = 0;
-            $changes[1] = $name;
-            $changes[2] = '';
-
-            if ($np2->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = sprintf(__('From #%1$s to %2$s'), $np2->fields["name"], $changes[1]);
-            }
-
-            if ($np1->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = sprintf(__('From %1$s to #%2$s'), $changes[1], $np1->fields["name"]);
-            }
-            Log::history($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
-                         $np1->fields["itemtype"], Log::HISTORY_DISCONNECT_DEVICE);
-         }
-      }
-
+   function getHistoryName_for_item2(CommonDBTM $networkPort) {
+      $item = $networkPort->getItem();
+      return addslashes($item->getName() . ' < ' . $networkPort->getName());
    }
-
 
    /**
     * Get port opposite port ID
