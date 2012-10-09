@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Walif Nouh
-// Purpose of file: Virtual machine management
-// ----------------------------------------------------------------------
+/** @file
+* @brief Virtual machine management
+*/
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");

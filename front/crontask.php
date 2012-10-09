@@ -26,12 +26,10 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-
-// ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
-// Purpose of file: Search engine from cron tasks
-// ----------------------------------------------------------------------
-
+ 
+/** @file
+* @brief Search engine from cron tasks
+*/
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

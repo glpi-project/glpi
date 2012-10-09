@@ -27,10 +27,10 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
-// Purpose of file: Purge history with some criterias
-// ----------------------------------------------------------------------
+/** @file
+* @brief Purge history with some criterias
+*/
+
 ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 

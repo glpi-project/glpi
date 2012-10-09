@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Nelly Mahu-Lasson
-// Purpose of file:
-// ----------------------------------------------------------------------
+/** @file
+* @brief 
+*/
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"ticketiteminformation.php")) {

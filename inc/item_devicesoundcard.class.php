@@ -27,10 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Damien Touraine
-// @since version 0.84
-// ----------------------------------------------------------------------
+/** @file
+* @brief
+* @since version 0.84
+*/
+
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");

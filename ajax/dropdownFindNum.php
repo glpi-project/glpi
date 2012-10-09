@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file: List of device for tracking.
-// ----------------------------------------------------------------------
+/** @file
+* @brief List of device for tracking.
+*/
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT . "/inc/includes.php");
