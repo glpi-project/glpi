@@ -64,65 +64,16 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $ID
-   **/
-   function unassignVlanbyID($ID) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `glpi_networkports_vlans`
-                WHERE `id` = '$ID'";
-      if ($result = $DB->query($query)) {
-         $data = $DB->fetch_assoc($result);
-
-         // Delete VLAN
-         $query = "DELETE
-                   FROM `glpi_networkports_vlans`
-                   WHERE `id` = '$ID'";
-         $DB->query($query);
-
-         // Delete Contact VLAN if set
-         $np = new NetworkPort();
-         if ($contact_id = $np->getContact($data['networkports_id'])) {
-            $query = "DELETE
-                      FROM `glpi_networkports_vlans`
-                      WHERE `networkports_id` = '$contact_id'
-                            AND `vlans_id` = '" . $data['vlans_id'] . "'";
-            $DB->query($query);
-         }
-      }
-   }
-
-
-   /**
+  /**
     * @param $portID
     * @param $vlanID
    **/
    function unassignVlan($portID, $vlanID) {
-      global $DB;
 
-      $ok = true;
-      $query = "DELETE
-                FROM `glpi_networkports_vlans`
-                WHERE `networkports_id` = '$portID'
-                      AND `vlans_id` = '$vlanID'";
-      if (!$DB->query($query)) {
-         $ok = false;
-      }
+      $this->getFromDBByQuery("WHERE `networkports_id` = '$portID'
+                                     AND `vlans_id` = '$vlanID'");
 
-      // Delete Contact VLAN if set
-      $np = new NetworkPort();
-      if ($contact_id=$np->getContact($portID)) {
-         $query = "DELETE
-                   FROM `glpi_networkports_vlans`
-                   WHERE `networkports_id` = '$contact_id'
-                         AND `vlans_id` = '$vlanID'";
-         if (!$DB->query($query)) {
-            $ok = false;
-         }
-      }
-      return $ok;
+      return $this->delete($this->fields);
    }
 
 
@@ -132,31 +83,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @param $tagged
    **/
    function assignVlan($port, $vlan, $tagged) {
-      global $DB;
+      $input = array('networkports_id' => $port,
+                     'vlans_id'        => $vlan,
+                     'tagged'          => $tagged);
 
-      $ok = true;
-      $query = "INSERT INTO `glpi_networkports_vlans`
-                       (`networkports_id`,`vlans_id`,`tagged`)
-                VALUES ('$port','$vlan','$tagged')";
-      if (!$DB->query($query)) {
-         $ok = false;
-      }
-
-      $np = new NetworkPort();
-      if ($contact_id=$np->getContact($port)) {
-         if ($np->getFromDB($contact_id)) {
-            $vlans = self::getVlansForNetworkPort($port);
-            if (!in_array($vlan,$vlans)) {
-               $query = "INSERT INTO `glpi_networkports_vlans`
-                                (`networkports_id`,`vlans_id`,`tagged`)
-                         VALUES ('$contact_id','$vlan','$tagged')";
-               if (!$DB->query($query)) {
-                  $ok = false;
-               }
-            }
-         }
-      }
-      return $ok;
+      return $this->add($input);
    }
 
    /**
