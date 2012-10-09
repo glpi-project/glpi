@@ -392,7 +392,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
                                  'specific_actions' => array('move_license' => _x('button', 'Move'),
-                                                             'purge'        => _x('button', 'Purge')));
+                                                             'purge'        => _x('button', 'Delete permanently')));
                // Options to update license
                $paramsma['extraparams']['options']['move']['used']         = array($searchID);
                $paramsma['extraparams']['options']['move']['softwares_id'] = $license->fields['softwares_id'];

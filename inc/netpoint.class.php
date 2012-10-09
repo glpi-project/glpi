@@ -337,7 +337,7 @@ class Netpoint extends CommonDropdown {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
-                              'specific_actions' => array('purge' => _x('button', 'Purge')));
+                              'specific_actions' => array('purge' => _x('button', 'Delete permanently')));
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
 

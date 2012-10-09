@@ -3744,7 +3744,7 @@ class Ticket extends CommonITILObject {
             Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
-                            _sx('button', 'Delete')."'>";
+                            _sx('button', 'Delete permanently')."'>";
             }
             echo "</td>";
             echo "</tr></table>";
@@ -4333,11 +4333,11 @@ class Ticket extends CommonITILObject {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='purge' value='".
-                         _sx('button','Purge')."' ".
+                         _sx('button', 'Delete permanently')."' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
                   echo "<input type='submit' class='submit' name='delete' value='".
-                         _sx('button','Delete')."'></td>";
+                         _x('button', 'Put in trash')."'></td>";
                }
 
             } else {

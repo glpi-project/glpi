@@ -683,7 +683,7 @@ class Document extends CommonDBTM {
             Dropdown::showAllItems("items_id", 0, 0, 1,
                                     $CFG_GLPI["document_types"], false, true, 'item_itemtype');
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete')."'>";
+                           _sx('button', 'Delete permanently')."'>";
             return true;
 
          default :

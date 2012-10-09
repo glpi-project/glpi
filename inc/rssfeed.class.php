@@ -980,7 +980,7 @@ class RSSFeed extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
-                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
+                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');

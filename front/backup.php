@@ -612,7 +612,7 @@ if (count($files)) {
            "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__('Delete the file %s?'), $file);
-           Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', __('Delete'),
+           Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
                                 array('file' => $file),'','',$string);
 
            echo "</td>";
@@ -656,7 +656,7 @@ if (count($files)) {
             $string = sprintf(__('Delete the file %s?'),$file);
            echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
                      "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?delfile=$file'").
-                ">".__('Delete')."</a>&nbsp;</td>";
+                ">"._x('button', 'Delete permanently')."</a>&nbsp;</td>";
 
             "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
             "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".

@@ -1835,16 +1835,16 @@ class CommonDBTM extends CommonGLPI {
                echo "<input type='submit' name='restore' value=\""._sx('button','Restore')."\"
                       class='submit'>";
                echo "<span class='very_small_space'><input type='submit' name='purge' value=\"".
-                      _sx('button','Purge')."\" class='submit'></span>";
+                      _sx('button', 'Delete permanently')."\" class='submit'></span>";
 
             } else {
                echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
                if (!$this->maybeDeleted()) {
-                  echo "<input type='submit' name='delete' value=\""._sx('button','Purge')."\"
+                  echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\"
                          class='submit' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
-                  echo "<input type='submit' name='delete' value='" . _sx('button','Delete') ."'
+                  echo "<input type='submit' name='delete' value='" . _sx('button', 'Put in trash') ."'
                          class='submit'>";
                }
             }
@@ -2673,12 +2673,12 @@ class CommonDBTM extends CommonGLPI {
             if ($input['itemtype'] == 'Contract') {
                Dropdown::showAllItems("items_id", 0, 0, 1,
                                     $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete')."'>";
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete permanently')."'>";
             } else {
                Contract::dropdown(array('name' => "contracts_id"));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Delete')."'>";
+                              _sx('button', 'Delete permanently')."'>";
             }
             break;
 
@@ -2691,7 +2691,7 @@ class CommonDBTM extends CommonGLPI {
          case "remove_document" :
             Document::dropdown(array('name' => 'documents_id'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete')."'>";
+                           _sx('button', 'Delete permanently')."'>";
             break;
 
          case "update" :
@@ -3173,7 +3173,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($is_deleted) {
          if ($isadmin) {
-            $actions['purge']   = _x('button', 'Purge');
+            $actions['purge']   = _x('button', 'Delete permanently');
             $actions['restore'] = _x('button', 'Restore');
          }
 
@@ -3193,9 +3193,9 @@ class CommonDBTM extends CommonGLPI {
          // No delete for entities and tracking of not have right
          if ($isadmin) {
             if ($this->maybeDeleted()) {
-               $actions['delete'] = _x('button', 'Delete');
+               $actions['delete'] = _x('button', 'Put in trash');
             } else {
-               $actions['purge'] = _x('button', 'Purge');
+               $actions['purge'] = _x('button', 'Delete permanently');
             }
          }
 
@@ -4318,7 +4318,7 @@ class CommonDBTM extends CommonGLPI {
                echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                echo "<td class='tab_bg_2 center b'>";
-               Html::showSimpleForm($target, 'purge', __('Purge'),
+               Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
                                     array('withtemplate' => 1,
                                           'id'           => $data['id']));
                echo "</td>";
