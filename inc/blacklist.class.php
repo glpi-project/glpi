@@ -103,7 +103,7 @@ class Blacklist extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -116,7 +116,7 @@ class Blacklist extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDropdown::displaySpecificTypeField()
+    * @see CommonDropdown::displaySpecificTypeField()
    **/
    function displaySpecificTypeField($ID, $field=array()) {
 

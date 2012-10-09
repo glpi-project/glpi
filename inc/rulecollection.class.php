@@ -1060,7 +1060,7 @@ class RuleCollection extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::defineTabs()
+    * @see CommonGLPI::defineTabs()
    **/
    function defineTabs($options=array()) {
 
@@ -1072,7 +1072,7 @@ class RuleCollection extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

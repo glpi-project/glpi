@@ -73,7 +73,7 @@ class RuleCached extends Rule {
 
 
    /**
-    * @see inc/CommonDBTM::post_updateItem()
+    * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history=1) {
 

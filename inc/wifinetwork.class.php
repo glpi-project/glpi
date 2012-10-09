@@ -107,9 +107,6 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
-   /**
-    * @see inc/CommonDropdown::displaySpecificTypeField()
-   **/
    function displaySpecificTypeField($ID, $field=array()) {
 
       if ($field['type'] == 'wifi_mode') {

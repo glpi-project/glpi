@@ -89,7 +89,7 @@ class Config extends CommonDBTM {
    /**
     * Prepare input datas for updating the item
     *
-    * @see inc/CommonDBTM::prepareInputForUpdate()
+    * @see CommonDBTM::prepareInputForUpdate()
     *
     * @param $input array of datas used to update the item
     *
@@ -1410,7 +1410,7 @@ class Config extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

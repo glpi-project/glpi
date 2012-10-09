@@ -73,7 +73,7 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::defineTabs()
+    * @see CommonGLPI::defineTabs()
    **/
    function defineTabs($options=array()) {
 
@@ -113,7 +113,7 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::post_updateItem()
+    * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history=1) {
       global $DB, $CFG_GLPI;
@@ -303,7 +303,7 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -673,7 +673,7 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
     **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
@@ -695,7 +695,7 @@ class Computer extends CommonDBTM {
    }
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -719,7 +719,7 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 

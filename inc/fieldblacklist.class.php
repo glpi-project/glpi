@@ -181,7 +181,7 @@ class Fieldblacklist extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -191,7 +191,7 @@ class Fieldblacklist extends CommonDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForUpdate()
+    * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
 

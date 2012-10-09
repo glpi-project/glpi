@@ -218,7 +218,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
       global $CFG_GLPI;

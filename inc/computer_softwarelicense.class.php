@@ -82,7 +82,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -113,7 +113,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -576,7 +576,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

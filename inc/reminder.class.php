@@ -104,7 +104,7 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::cleanDBonPurge()
+    * @see CommonDBTM::cleanDBonPurge()
     *
     * @since version 0.83.1
    **/
@@ -124,7 +124,7 @@ class Reminder extends CommonDBTM {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -364,7 +364,7 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::post_updateItem()
+    * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history=1) {
 
@@ -494,7 +494,7 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -513,7 +513,7 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonGLPI::defineTabs()
+    * @see CommonGLPI::defineTabs()
    **/
    function defineTabs($options=array()) {
 
@@ -542,7 +542,7 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -582,7 +582,7 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::prepareInputForUpdate()
+    * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
 

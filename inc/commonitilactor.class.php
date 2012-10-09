@@ -66,7 +66,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     *
     * @param $input  array of data to be added
     *
-    * @see inc/CommonDBRelation::mustRelation2Exists()
+    * @see CommonDBRelation::mustRelation2Exists()
    **/
    function mustRelation2Exists(Array &$input) {
 

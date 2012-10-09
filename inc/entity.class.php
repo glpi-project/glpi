@@ -148,7 +148,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::canViewItem()
+    * @see CommonDBTM::canViewItem()
    **/
    function canViewItem() {
       // Check the current entity
@@ -157,7 +157,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @see inc/CommonDBTM::isNewID()
+    * @see CommonDBTM::isNewID()
    **/
    static function isNewID($ID) {
       return (($ID < 0) || !strlen($ID));
@@ -256,7 +256,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @see inc/CommonTreeDropdown::defineTabs()
+    * @see CommonTreeDropdown::defineTabs()
    **/
    function defineTabs($options=array()) {
 
@@ -2058,7 +2058,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since version 0.84 (before in entitydata.class)
     *
-    * @param $fiel
+    * @param $field
     * @param $values
     * @param $options   array
    **/

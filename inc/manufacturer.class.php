@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Manufacturer
-/// @TODO study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
+/// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown {
 
 

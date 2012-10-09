@@ -95,7 +95,7 @@ class DeviceHardDrive extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDevice::getHTMLTableHeader()
+    * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=NULL,

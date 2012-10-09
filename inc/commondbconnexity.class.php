@@ -64,7 +64,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * To be call from the cleanDBonPurge of each Item class
     *
     * @param $itemtype  type of the item
-    * @param $item_id   id of the item
+    * @param $items_id   id of the item
    **/
    function cleanDBonItemDelete ($itemtype, $items_id) {
       global $DB;
@@ -86,7 +86,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /**
     * get associated item (defined by $itemtype and $items_id)
     *
-    * @see inc/CommonDBConnexity::getItemFromArray()
+    * @see CommonDBConnexity::getItemFromArray()
     *
     * @param $itemtype  the name of the field of the type of the item to get
     * @param $items_id  the name of the field of the id of the item to get

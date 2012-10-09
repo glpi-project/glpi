@@ -242,7 +242,7 @@ class DBmysql {
     * @since version 0.84
     *
     * @param $query     Query to execute
-    * @param $messag    explaination of query (default '')
+    * @param $message    explaination of query (default '')
     *
     * @return Query result handler
    **/

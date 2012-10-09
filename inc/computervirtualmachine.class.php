@@ -51,7 +51,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -84,7 +84,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBChild::prepareInputForAdd()
+    * @see CommonDBChild::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 

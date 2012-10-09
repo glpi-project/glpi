@@ -154,7 +154,7 @@ class IPAddress extends CommonDBChild {
    }
 
    /**
-    * @see inc/CommonDBChild::prepareInputForAdd()
+    * @see CommonDBChild::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
 
@@ -169,7 +169,7 @@ class IPAddress extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBChild::prepareInputForUpdate()
+    * @see CommonDBChild::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
 
@@ -184,7 +184,7 @@ class IPAddress extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBTM::post_addItem()
+    * @see CommonDBTM::post_addItem()
    **/
    function post_addItem() {
       IPAddress_IPNetwork::addIPAddress($this);
@@ -192,7 +192,7 @@ class IPAddress extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBTM::post_updateItem()
+    * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history=1) {
 

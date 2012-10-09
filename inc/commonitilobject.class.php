@@ -2089,7 +2089,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
@@ -2127,7 +2127,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 

@@ -209,7 +209,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see inc/CommonDBTM::canMassiveAction()
+    * @see CommonDBTM::canMassiveAction()
    **/
    function canMassiveAction($action, $field, $value){
 
@@ -344,7 +344,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see inc/CommonITILObject::getDefaultActor()
+    * @see CommonITILObject::getDefaultActor()
    **/
    function getDefaultActor($type) {
 
@@ -359,7 +359,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see inc/CommonITILObject::getDefaultActorRightSearch()
+    * @see CommonITILObject::getDefaultActorRightSearch()
    **/
    function getDefaultActorRightSearch($type) {
 
@@ -1693,7 +1693,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
@@ -1727,7 +1727,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -1756,7 +1756,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 

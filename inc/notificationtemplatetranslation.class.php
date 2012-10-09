@@ -58,7 +58,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    /**
-    * @see inc/CommonDBTM::getName()
+    * @see CommonDBTM::getName()
    **/
    function getName($with_comment=0) {
       global $CFG_GLPI;

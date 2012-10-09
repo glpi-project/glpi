@@ -107,7 +107,7 @@ class Consumable extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::restore()
+    * @see CommonDBTM::restore()
    **/
    function restore(array $input, $history=1) {
       global $DB;
@@ -156,7 +156,7 @@ class Consumable extends CommonDBTM {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
@@ -182,7 +182,7 @@ class Consumable extends CommonDBTM {
    /**
     * @since version 0.84
     *
-    * @see inc/CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
 

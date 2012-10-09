@@ -99,7 +99,7 @@ class Contract extends CommonDBTM {
    /**
     * @since version 0.83.3
     *
-    * @see inc/CommonDBTM::prepareInputForAdd()
+    * @see CommonDBTM::prepareInputForAdd()
     */
    function prepareInputForAdd($input) {
 
@@ -451,7 +451,7 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * @see inc/CommonDBTM::getSpecificMassiveActions()
+    * @see CommonDBTM::getSpecificMassiveActions()
     **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
