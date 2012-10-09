@@ -459,7 +459,7 @@ class Cartridge extends CommonDBChild {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'>";
-         if ($canedit) {
+         if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $actions = array('delete'            => _x('button', 'Delete permanently'),
@@ -480,7 +480,7 @@ class Cartridge extends CommonDBChild {
          }
          $i = 0;
          echo "<tr>";
-         if ($canedit) {
+         if ($canedit && $number) {
             echo "<th width='10'>";
             Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
@@ -589,7 +589,7 @@ class Cartridge extends CommonDBChild {
          }
       }
       echo "</table>";
-      if ($canedit) {
+      if ($canedit && $number) {
          $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
