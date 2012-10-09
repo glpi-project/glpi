@@ -44,6 +44,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static public $items_id_2 = 'softwareversions_id';
 
 
+   static public $log_history_1_add    = Log::HISTORY_INSTALL_SOFTWARE;
+   static public $log_history_1_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
+
+   static public $log_history_2_add    = Log::HISTORY_INSTALL_SOFTWARE;
+   static public $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
+
    static function getTypeName($nb=0) {
       return _n('Installation', 'Installations', $nb);
    }
@@ -1019,93 +1025,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   function post_addItem() {
-      global $DB;
-
-      $vers = new SoftwareVersion();
-      if (!$vers->getFromDB($this->fields['softwareversions_id'])) {
-         return false;
-      }
-
-      // Update affected licenses
-//       $lic = new SoftwareLicense();
-//       $query = "SELECT `id`
-//                 FROM `glpi_softwarelicenses`
-//                 WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
-//                       AND `computers_id` = '".$this->fields['computers_id']."'
-//                       AND `softwareversions_id_use` = '0'";
-//       foreach ($DB->request($query) as $data) {
-//          $data['softwareversions_id_use'] = $this->fields['softwareversions_id'];
-//          $lic->update($data);
-//       }
-
-      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
-         return false;
-      }
+   function getHistoryName_for_item2(CommonDBTM $item) { // ie. the software
 
       $soft = new Software();
-      if ($soft->getFromDB($vers->fields['softwares_id'])) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-         // Log on Computer history
-         Log::history($this->fields['computers_id'], 'Computer', $changes, 0,
-                      Log::HISTORY_INSTALL_SOFTWARE);
+      if ($soft->getFromDB($item->fields['softwares_id'])) {
+         return addslashes($soft->getName() . " " . $item->getName());
       }
-      $comp = new Computer();
-      if ($comp->getFromDB($this->fields['computers_id'])) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($comp->fields["name"]);
-         // Log on SoftwareVersion history
-         Log::history($this->fields['softwareversions_id'], 'SoftwareVersion', $changes, 0,
-                      Log::HISTORY_INSTALL_SOFTWARE);
-      }
-   }
-
-
-   function post_deleteFromDB() {
-
-      $vers = new SoftwareVersion();
-      if (!$vers->getFromDB($this->fields['softwareversions_id'])) {
-         return false;
-      }
-
-      /// Could not be possible : because several computers may be linked to a version
-      // Update affected licenses
-//       $lic = new SoftwareLicense();
-//       $query = "SELECT `id`
-//                 FROM `glpi_softwarelicenses`
-//                 WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
-//                   AND `computers_id` = '".$this->fields['computers_id']."'
-//                   AND `softwareversions_id_use` = '".$this->fields['softwareversions_id']."'";
-//       foreach ($DB->request($query) as $data) {
-//          $data['softwareversions_id_use'] = 0;
-//          $lic->update($data);
-//       }
-
-      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
-         return false;
-      }
-
-      $soft = new Software();
-      if ($soft->getFromDB($vers->fields['softwares_id'])) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-         $changes[2] = "";
-         // Log on Computer history
-         Log::history($this->fields['computers_id'], 'Computer', $changes, 0,
-                      Log::HISTORY_UNINSTALL_SOFTWARE);
-      }
-      $comp = new Computer();
-      if ($comp->getFromDB($this->fields['computers_id'])) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($comp->fields["name"]);
-         $changes[2] = "";
-         // Log on SoftwareVersion history
-         Log::history($this->fields['softwareversions_id'], 'SoftwareVersion', $changes, 0,
-                      Log::HISTORY_UNINSTALL_SOFTWARE);
-      }
+      return $item->getName();
    }
 
 

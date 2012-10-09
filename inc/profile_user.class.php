@@ -50,6 +50,9 @@ class Profile_User extends CommonDBRelation {
    static public $logs_for_itemtype_1 = true;
    static public $logs_for_itemtype_2 = false;
 
+  static public $log_history_1_add    = Log::HISTORY_ADD_SUBITEM;
+  static public $log_history_1_delete = Log::HISTORY_DELETE_SUBITEM;
+
 
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
@@ -791,33 +794,6 @@ class Profile_User extends CommonDBRelation {
              Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
              (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic'] ? $dyn : '').
              (isset($this->fields['is_recursive']) && $this->fields['is_recursive'] ? $rec : '');
-   }
-
-
-   // TODO CommonDBConnexity : check why it is HISTORY_ADD_SUBITEM instead of HISTORY_ADD_RELATION
-   function post_addItem() {
-
-      if (isset($this->input['_no_history'])) {
-         return false;
-      }
-      $changes[0] = '0';
-      $changes[1] = '';
-      $changes[2] = addslashes($this->getName());
-      Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                   Log::HISTORY_ADD_SUBITEM);
-   }
-
-
-   function post_deleteFromDB() {
-
-      if (isset($this->input['_no_history'])) {
-         return false;
-      }
-      $changes[0] = '0';
-      $changes[1] = addslashes($this->getName());
-      $changes[2] = '';
-      Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                   Log::HISTORY_DELETE_SUBITEM);
    }
 
 
