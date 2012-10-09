@@ -69,7 +69,7 @@ class NetworkPortMigration extends CommonDBChild {
 
 
    static function canDelete() {
-      return (Session::haveRight('networking','r')
+      return (Session::haveRight('networking','w')
               && parent::canDelete());
    }
 
