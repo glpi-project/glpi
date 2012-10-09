@@ -41,7 +41,6 @@ if (!defined('GLPI_ROOT')) {
 abstract class FQDNLabel extends CommonDBChild {
    // Inherits from CommonDBChild as it must be attached to a specific element
    // (NetworkName, NetworkPort, ...)
-   static public $mustBeAttached = false;
 
    function getInternetName() {
 

@@ -45,7 +45,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
    /// If both items must be checked for rights (default is only one)
    static public $checkAlwaysBothItems   = false;
-   
+
    static public $check_entity_coherency = true;
 
    static public $logs_for_itemtype_1    = true;
@@ -333,13 +333,20 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth = false) {
 
 
-      $item1 = NULL;
-      $can1  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
-                                       static::$itemtype_1, static::$items_id_1, $item1);
+      try {
+         $item1 = NULL;
+         $can1 = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
+                                         static::$itemtype_1, static::$items_id_1, $item1);
 
-      $item2 = NULL;
-      $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
-                                       static::$itemtype_2, static::$items_id_2, $item2);
+         $item2 = NULL;
+         $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
+                                          static::$itemtype_2, static::$items_id_2, $item2);
+
+      } catch (CommonDBConnexityItemNotFound $e) {
+         // if one of both Item is not reachable, then all following tests will fail because
+         // $can1 or $can2 will always be false ...
+         return false;
+      }
 
       /// Check only one if SAME RIGHT for both items and not force checkBoth
       if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights

@@ -73,13 +73,13 @@ class NetworkPort extends CommonDBChild {
       return (Session::haveRight('networking','r')
               && parent::canUpdate());
    }
-   
+
    static function canDelete() {
 
       return (Session::haveRight('networking','r')
               && parent::canDelete());
    }
-   
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -309,15 +309,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function pre_deleteItem() {
-
-      $nn = new NetworkPort_NetworkPort();
-      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      return true;
-   }
-
-
    function cleanDBonPurge() {
 
       $instantiation = $this->getInstantiation();
@@ -332,7 +323,8 @@ class NetworkPort extends CommonDBChild {
       $nv = new NetworkPort_Vlan();
       $nv->cleanDBonItemDelete ($this->getType(), $this->getID());
 
-      NetworkName::unaffectAddressesOfItem($this->getID(), $this->getType());
+      $names = new NetworkName();
+      $names->cleanDBonItemDelete ($this->getType(), $this->getID());
   }
 
 

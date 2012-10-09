@@ -31,6 +31,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+class CommonDBConnexityItemNotFound extends Exception {}
+
 /// Common DataBase Connexity Table Manager Class
 /// This class factorize code for CommonDBChild and CommonDBRelation
 /// @since 0.84
@@ -203,8 +205,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             return $item->$methodItem();
          } else {
-            // if we cannot get the parent, then we cannot check its rights
-            return false;
+            // if we cannot get the parent, then we throw an exception
+            throw new CommonDBConnexityItemNotFound();
          }
       }
       return true;

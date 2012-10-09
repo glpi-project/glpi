@@ -169,16 +169,12 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return boolean
    **/
    function canChildItem($methodItem, $methodNotItem) {
-      /* Warning : in case of free child (ie : not attached), canConnexityItem return false if
-       * it cannot load the item ... */
-      if (static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
-                                   static::$itemtype, static::$items_id, $item)) {
-         return true;
-      }
-      if ($item === false) {
+      try {
+         return static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
+                                         static::$itemtype, static::$items_id, $item);
+      } catch (CommonDBConnexityItemNotFound $e) {
          return !static::$mustBeAttached;
       }
-      return false;
    }
 
 
