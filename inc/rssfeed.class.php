@@ -598,6 +598,13 @@ class RSSFeed extends CommonDBTM {
       }
       
       if (!$this->isNewID($ID)) {
+         // Force getting feed :
+         $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
+         if (!$feed || $feed->error()) {
+            $this->setError(true);
+         } else {
+            $this->setError(false);
+         }
          echo "<tr class='tab_bg_2'>";
          echo "<td>".__('Name')."</td>";
          echo "<td>";
@@ -655,8 +662,17 @@ class RSSFeed extends CommonDBTM {
       echo "<td>".__('Error retrieving RSS feed')."</td>";
       echo "<td>";
       echo Dropdown::getYesNo($this->fields['have_error']);
-      echo "</td><td colspan='2'>&nbsp;</td></tr>\n";
-
+      echo "</td>";
+      if ($this->fields['have_error']) {
+         echo "<td>";
+         _e('Founded RSS feeds');
+         echo "</td><td>";
+         $this->showDiscoveredFeeds();
+         echo "</td>\n";
+      } else {
+         echo "<td colspan='2'>&nbsp;</td>";
+      }
+      echo "</tr>";
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
@@ -723,16 +739,49 @@ class RSSFeed extends CommonDBTM {
       }
       echo "</div>";
    }
+
+   /**
+    * Show discovered feeds
+    *
+    * @return nothin
+    **/
+   function showDiscoveredFeeds() {
+      $feed = new SimplePie();
+      $feed->set_cache_location(GLPI_RSS_DIR);
+      $feed->enable_cache(false);
+//       echo $this->fields['url'];
+      $feed->set_feed_url($this->fields['url']);
+      $feed->init();
+      $feed->handle_content_type();
+      if ($feed->error()) {
+//          echo "kk";
+         return false;
+      } else {
+         foreach ($feed->get_all_discovered_feeds() as $f){
+            $newurl = $f->url;
+            $newfeed = self::getRSSFeed($newurl);
+            if ($newfeed && !$newfeed->error()) {
+               $link = $newfeed->get_permalink();
+               if (!empty($link)) {
+                  echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
+                  Html::showSimpleForm($this->getFormURL(),'update', __('Use'),array('id' => $this->getID(),
+                                                                                     'url' => $newurl));
+                  echo "<br>";
+               }
+            }
+         }
+      }
+
+   }
    /**
     * Get a specific RSS feed
     *
     * @param $url string/array : URL of the feed or array of URL
-    * @param $use_cache boolean : use cache
-    * @param $max_number integer : number of item to retrieve
+    * @param $cache_duration timestamp : cache duration
     *
     * @return feed object
     **/
-   static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP, $max_number=20) {
+   static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
    
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);
@@ -749,8 +798,7 @@ class RSSFeed extends CommonDBTM {
       // We'll make sure that the right content type and character encoding gets set automatically.
       // This function will grab the proper character encoding, as well as set the content type to text/html.
       $feed->handle_content_type();
-      if ($feed->error())
-      {
+      if ($feed->error()) {
          return false;
       } else {
          return $feed;
