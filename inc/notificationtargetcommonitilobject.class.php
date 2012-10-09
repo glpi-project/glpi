@@ -828,7 +828,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array($objettype.'.days'               => _n('day', 'days', 2),
+      $tags = array($objettype.'.days'               => _n('Day', 'Days', 2),
                     $objettype.'.attribution'        => __('Assigned to'),
                     $objettype.'.entity'             => __('Entity'),
                     $objettype.'.nocategoryassigned' => __('No defined category'));
