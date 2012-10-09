@@ -153,9 +153,9 @@ class Plugin extends CommonDBTM {
                                           'locale'  => $coretrytoload));
          $translation_included = true;
 
-      } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
+      } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["languages"]][1])) {
          $TRANSLATE->addTranslation(array('content'
-                                             => $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
+                                             => $dir.$CFG_GLPI["languages"][$CFG_GLPI["languages"]][1],
                                           'locale'  => $coretrytoload));
          $translation_included = true;
       } else if (file_exists($dir."en_GB.mo")) {
