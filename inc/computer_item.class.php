@@ -109,26 +109,6 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    *
-    * Don't create a Computer_Item that don't have a valid Item
-    * Was previously done (until 0.83) by inc/Computer_Item::can()
-    * @see inc/CommonDBRelation::canCreateItem()
-    *
-    * @since version 0.84
-    *
-    * @return boolean : true if we can create the item
-   **/
-   function canCreateItem() {
-
-      $item = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
-      if ($item === false) {
-         return false;
-      }
-      return parent::canCreateItem();
-   }
-
-
-   /**
     * Prepare input datas for adding the relation
     *
     * Overloaded to check is Disconnect needed (during OCS sync)

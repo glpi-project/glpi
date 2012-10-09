@@ -129,24 +129,11 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 
-   /**
-    * Check right on an item - overloaded to check user access to its datas
-    *
-    * @param $ID            ID of the item (-1 if new item)
-    * @param $right         Right to check : r / w / recursive
-    * @param &$input  array of input data (used for adding item) (default NULL)
-    *
-    * @return boolean
-   **/
-   function can($ID, $right, array &$input=NULL) {
+   function canDeleteItem() {
 
-      if ($ID > 0) {
-         if (isset($this->fields['users_id'])
-             && ($this->fields['users_id'] === Session::getLoginUserID())) {
-            return true;
-         }
-      }
-      return parent::can($ID, $right, $input);
+      return (parent::canDeleteItem()
+              || (isset($this->fields['users_id'])
+                  && ($this->fields['users_id'] == Session::getLoginUserID())));
    }
 
 

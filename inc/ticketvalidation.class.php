@@ -57,6 +57,8 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
+   // TODO CommonDBConnexity : are the rights on the TicketValidation are completely different
+   // from one on Ticket ?
    static function canCreate() {
       return Session::haveRight('create_validation', 1);
    }

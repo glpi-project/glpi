@@ -63,16 +63,6 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('calendar', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('calendar', 'r');
-   }
-
-
    function prepareInputForAdd($input) {
 
       // Check override of segment : do not add

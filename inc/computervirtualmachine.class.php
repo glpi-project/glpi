@@ -50,16 +50,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('computer', 'r');
-   }
-
-
    /**
     * @see inc/CommonGLPI::getTabNameForItem()
    **/

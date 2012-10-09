@@ -52,15 +52,6 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('software', 'w');
-   }
-
-   static function canView() {
-      return Session::haveRight('software', 'r');
-   }
-
-
    function cleanDBonPurge() {
       global $DB;
 

@@ -50,6 +50,7 @@ class UserEmail  extends CommonDBChild {
    }
 
 
+   // TODO CommonDBConnexity: why definining can* == true while checking haveRight inside can*Item ?
    static function canCreate() {
       // All users can create own emails
       return true;

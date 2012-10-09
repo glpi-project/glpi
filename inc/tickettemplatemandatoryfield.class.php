@@ -81,16 +81,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('tickettemplate', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('tickettemplate', 'r');
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template

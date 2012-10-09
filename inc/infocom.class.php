@@ -63,12 +63,26 @@ class Infocom extends CommonDBChild {
 
 
    static function canCreate() {
-      return Session::haveRight('infocom', 'w');
+      return (Session::haveRight('infocom', 'w')
+              && parent::canCreate());
    }
 
 
    static function canView() {
-      return Session::haveRight('infocom', 'r');
+      return (Session::haveRight('infocom', 'r')
+              && parent::canView());
+   }
+
+
+   static function canUpdate() {
+      return (Session::haveRight('infocom', 'w')
+              && parent::canUpdate());
+   }
+
+
+   static function canDelete() {
+      return (Session::haveRight('infocom', 'w')
+              && parent::canDelete());
    }
 
 

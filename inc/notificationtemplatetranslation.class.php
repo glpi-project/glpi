@@ -83,16 +83,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
-
-
    function showForm($ID, $options) {
       global $DB, $CFG_GLPI;
 

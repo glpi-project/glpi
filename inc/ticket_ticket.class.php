@@ -53,18 +53,11 @@ class Ticket_Ticket extends CommonDBRelation {
    const DUPLICATE_WITH = 2;
 
 
+   // TODO CommonDBConnexity : check regaring Ticket::canCreate, Ticket::canUpdate
    static function canCreate() {
 
       return (Session::haveRight('create_ticket', 1) // Add on creation
               || Session::haveRight('update_ticket', 1));
-   }
-
-
-   function canCreateItem() {
-
-      $ticket = new Ticket();
-      return ($ticket->can($this->fields['tickets_id_1'], 'w')
-              || $ticket->can($this->fields['tickets_id_2'], 'w'));
    }
 
 
