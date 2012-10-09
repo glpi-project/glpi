@@ -4204,12 +4204,12 @@ class Search {
             if (empty($data[$NAME.$num])) {
                return '';
             }
+            if ($data[$NAME.$num.'_2'] == Ticket::SOLVED
+                || $data[$NAME.$num.'_2'] == Ticket::CLOSED) {
+               return $data[$NAME.$num];
+            }
             $ticket = new Ticket();
             $ticket->getFromDB($data['ITEM_0']);
-            if ($ticket->fields['status'] == Ticket::SOLVED
-                     OR $ticket->fields['status'] == Ticket::CLOSED) {
-               return '';
-            }
             $percentage = 0;
             if ($ticket->fields['slas_id'] != 0) { // Have SLA
                $sla = new SLA();
