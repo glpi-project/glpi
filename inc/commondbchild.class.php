@@ -400,6 +400,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
+    * Get the history name of item
+    *
+    * @param $item the other item (ie. : $item1)
+    *
+    * @return (string) the name of the entry for the database (ie. : correctly slashed)
+   **/
+   function getHistoryName_for_item() {
+      return addslashes($this->getNameID(false, true));
+   }
+
+
+   /**
     * Actions done after the ADD of the item in the database
     *
     * @return nothing
@@ -415,7 +427,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if (($item !== false) && $item->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
-         $changes[2] = addslashes($this->getNameID(false, true));
+         $changes[2] = $this->getHistoryName_for_item();
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       Log::HISTORY_ADD_SUBITEM);
       }
@@ -449,8 +461,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
             $item = $items_for_log['new'];
             if (($item !== false) && $item->dohistory) {
                $changes[0] = '0';
-               $changes[1] = addslashes($this->getNameID(false, true));
-               $changes[2] = addslashes($this->getNameID(false, true));
+               $changes[1] = $this->getHistoryName_for_item();
+               $changes[2] = $this->getHistoryName_for_item();
                Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                             Log::HISTORY_UPDATE_SUBITEM);
             }
@@ -464,16 +476,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (($prevItem !== false) && $prevItem->dohistory) {
             $changes[0] = '0';
-            $changes[1] = addslashes($this->getNameID(false, true));
-            $changes[2] = "";
+            $changes[1] = $this->getHistoryName_for_item();
+            $changes[2] = '';
             Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
                          Log::HISTORY_DELETE_SUBITEM);
          }
 
          if (($newItem !== false) && $newItem->dohistory) {
             $changes[0] = '0';
-            $changes[1] = "";
-            $changes[2] = addslashes($this->getNameID(false, true));
+            $changes[1] = '';
+            $changes[2] = $this->getHistoryName_for_item();
             Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
                          Log::HISTORY_ADD_SUBITEM);
          }
@@ -495,8 +507,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (($item !== false) && $item->dohistory) {
          $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($this->getNameID(false, true));
+         $changes[1] = $this->getHistoryName_for_item();
+         $changes[2] = '';
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       Log::HISTORY_DELETE_SUBITEM);
       }

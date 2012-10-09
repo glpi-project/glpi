@@ -189,6 +189,7 @@ class IPAddress extends CommonDBChild {
    **/
    function post_addItem() {
       IPAddress_IPNetwork::addIPAddress($this);
+      parent::post_addItem();
    }
 
 
@@ -207,6 +208,7 @@ class IPAddress extends CommonDBChild {
          $link->addIPAddress($this);
       }
 
+      parent::post_updateItem();
    }
 
 
