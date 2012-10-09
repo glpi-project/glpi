@@ -316,9 +316,9 @@ function glpi_autoload($classname) {
    }
 }
 
+spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 // Use spl autoload to allow stackable autoload.
 spl_autoload_register('glpi_autoload');
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 
 /**
  * Autoloader class
