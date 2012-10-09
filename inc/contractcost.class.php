@@ -51,15 +51,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('contract', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('contract', 'r');
-   }
-
    /**
     * @see inc/CommonDBChild::prepareInputForAdd()
    **/

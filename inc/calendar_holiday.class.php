@@ -46,6 +46,9 @@ class Calendar_Holiday extends CommonDBRelation {
    static public $itemtype_2 = 'Holiday';
    static public $items_id_2 = 'holidays_id';
 
+   // TODO : ensure this check right is correct !
+   static public $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+
 
    /**
     * @since version 0.84
@@ -55,13 +58,6 @@ class Calendar_Holiday extends CommonDBRelation {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
-   }
-
-
-   function canCreateItem() {
-
-      $calendar = new Calendar();
-      return $calendar->can($this->fields['calendars_id'],'w');
    }
 
 

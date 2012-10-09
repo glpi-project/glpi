@@ -120,7 +120,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canCreateItem() {
-      return $this->canChildItem('canUpdateItem', 'canUpdate', true);
+      return $this->canChildItem('canUpdateItem', 'canUpdate');
    }
 
 
@@ -128,7 +128,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canViewItem() {
-      return $this->canChildItem('canViewItem', 'canView', false);
+      return $this->canChildItem('canViewItem', 'canView');
    }
 
 
@@ -136,7 +136,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canUpdateItem() {
-      return $this->canChildItem('canUpdateItem', 'canUpdate', true);
+      return $this->canChildItem('canUpdateItem', 'canUpdate');
    }
 
 
@@ -144,7 +144,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canDeleteItem() {
-      return $this->canChildItem('canUpdateItem', 'canUpdate', false);
+      return $this->canChildItem('canUpdateItem', 'canUpdate');
    }
 
 

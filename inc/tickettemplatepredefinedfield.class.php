@@ -64,16 +64,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('tickettemplate', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('tickettemplate', 'r');
-   }
-
-
    /**
     * @see inc/CommonDBTM::getName()
     *

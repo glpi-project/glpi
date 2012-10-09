@@ -59,31 +59,25 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * Check right on an contract - overloaded to check max_links_allowed
-    *
-    * @param $ID              ID of the item (-1 if new item)
-    * @param $right           Right to check : r / w / recursive
-    * @param &$input    array of input data (used for adding item) (default NULL)
-    *
-    * @return boolean
+    * Don't create a Contract_Item on contract that is alreay max used
+    * Was previously done (until 0.83.*) by inc/Contract_Item::can()
+    * @see inc/CommonDBRelation::canCreateItem()
+    * @since version 0.84
    **/
-   function can($ID, $right, array &$input=NULL) {
-
-      if ($ID < 0) {
-         // Ajout
-         $contract = new Contract();
-
-         if (!$contract->getFromDB($input['contracts_id'])) {
-            return false;
-         }
-         if ($contract->fields['max_links_allowed'] > 0
-             && countElementsInTable($this->getTable(),
-                                     "`contracts_id`='".$input['contracts_id']."'")
-                                       >= $contract->fields['max_links_allowed']) {
-               return false;
-         }
+   function canCreateItem() {
+      // Try to load the contract
+      $contract = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
+      if ($contract === false) {
+         return false;
       }
-      return parent::can($ID,$right,$input);
+      if (($contract->fields['max_links_allowed'] > 0)
+          && (countElementsInTable($this->getTable(),
+                                   "`contracts_id`='".$this->input['contracts_id']."'")
+              >= $contract->fields['max_links_allowed'])) {
+         return false;
+      }
+
+      return parent::canCreateItem();
    }
 
 

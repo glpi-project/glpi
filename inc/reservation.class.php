@@ -284,20 +284,39 @@ class Reservation extends CommonDBChild {
    }
 
 
-   /**
-    * @see inc/CommonDBTM::can()
-   **/
-   function can($ID, $right, array &$input=NULL) {
+   static function canCreate() {
 
-      if (empty($ID) || ($ID <= 0)) {
-         return Session::haveRight("reservation_helpdesk", "1");
-      }
+      return (Session::haveRight("reservation_helpdesk", "1")
+              && parent::canCreate());
+   }
 
-      if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
-         // Item not found : no right
-         if (!$this->getFromDB($ID)) {
-            return false;
-         }
+
+   static function canView() {
+
+      return (Session::haveRight("reservation_central", "r")
+              && parent::canView());
+   }
+
+
+   static function canUpdate() {
+
+      return (Session::haveRight("reservation_central", "w")
+              && parent::canUpdate());
+   }
+
+
+   static function canDelete() {
+
+      return (Session::haveRight("reservation_central", "w")
+              && parent::canDelete());
+   }
+
+
+   // Overload canChildItem to make specific checks
+   function canChildItem($methodItem, $methodNotItem) {
+
+      if (!parent::canChildItem($methodItem, $methodNotItem)) {
+         return false;
       }
 
       // Original user always have right
@@ -305,20 +324,13 @@ class Reservation extends CommonDBChild {
          return true;
       }
 
-      if (!Session::haveRight("reservation_central", $right)) {
+      $ri = $this->getItem();
+      if ($ri === false) {
          return false;
       }
 
-      $ri = new ReservationItem();
-      if (!$ri->getFromDB($this->fields["reservationitems_id"])) {
-         return false;
-      }
-
-      if (!($item = getItemForItemtype($ri->fields["itemtype"]))) {
-         return false;
-      }
-
-      if (!$item->getFromDB($ri->fields["items_id"])) {
+      $item = $ri->getItem();
+      if ($item === false) {
          return false;
       }
 

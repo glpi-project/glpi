@@ -57,16 +57,7 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   static function canView() {
-      return Session::haveRight('user','r');
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('user','w');
-   }
-
-
+   // TODO CommonDBConnexity : check in details if we can replace canCreateItem by canRelationItem ...
    function canCreateItem() {
 
       $user = new User();
