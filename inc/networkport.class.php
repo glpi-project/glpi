@@ -298,15 +298,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function pre_deleteItem() {
-
-      $nn = new NetworkPort_NetworkPort();
-      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      return true;
-   }
-
-
    function cleanDBonPurge() {
 
       $instantiation = $this->getInstantiation();
@@ -321,7 +312,8 @@ class NetworkPort extends CommonDBChild {
       $nv = new NetworkPort_Vlan();
       $nv->cleanDBonItemDelete ($this->getType(), $this->getID());
 
-      NetworkName::unaffectAddressesOfItem($this->getID(), $this->getType());
+      $nn = new NetworkName();
+      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
   }
 
 
