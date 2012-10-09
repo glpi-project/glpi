@@ -41,7 +41,7 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    /**
-    * @see inc/NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::getNotificationTargets()
    **/
    function getNotificationTargets($entity) {
       $this->addTarget(Notification::USER, __('User'));
@@ -49,7 +49,7 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    /**
-    * @see inc/NotificationTarget::getSpecificTargets()
+    * @see NotificationTarget::getSpecificTargets()
    **/
    function getSpecificTargets($data,$options) {
 

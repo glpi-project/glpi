@@ -45,7 +45,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    /**
-    * @see inc/NotificationTarget::getAdditionalTargets()
+    * @see NotificationTarget::getAdditionalTargets()
    **/
    function getAdditionalTargets($event='') {
 
@@ -61,7 +61,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    /**
-    * @see inc/NotificationTarget::getDatasForTemplate()
+    * @see NotificationTarget::getDatasForTemplate()
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;

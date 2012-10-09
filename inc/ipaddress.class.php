@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 * attributes are not empty.
 * This object is usefull for SQL research and binary<=>textual conversions.
 * @warning textual (ie. human readable) representation is not unique for IPv6 addresses :
-* 2001:db8:0:85a3::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
+* 2001:db8:0:85a3\::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
 * @warning All textual representation of IPv6 addresses conforms to RFC 5952 : they are
 * automatically converted by IPAddress::setAddressFromString().
 * @since version 0.84

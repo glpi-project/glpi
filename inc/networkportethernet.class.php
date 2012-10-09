@@ -89,7 +89,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    /**
-    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTableHeaders
+    * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super=NULL,
@@ -149,7 +149,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
   /**
-   * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
+   * @see NetworkPortInstantiation::getInstantiationHTMLTable()
   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father=NULL, array $options=array()) {

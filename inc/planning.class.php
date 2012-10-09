@@ -207,8 +207,7 @@ class Planning extends CommonGLPI {
     * @param $type            planning type : can be day, week, month
     * @param $date            working date
     * @param $usertype        type of planning to view : can be user or group
-    * @param $uID             ID of the user
-    * @param $gID             ID of the group
+    * @param $value           ID of the item
     * @param $limititemtype   itemtype only display this itemtype (default '')
     *
     * @return Display form

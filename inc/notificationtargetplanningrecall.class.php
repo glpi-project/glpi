@@ -41,7 +41,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
    /**
-    * @see inc/NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::getNotificationTargets()
    **/
    function getNotificationTargets($entity) {
       $this->addTarget(Notification::AUTHOR, __('Requester'));
@@ -49,7 +49,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
    /**
-    * @see inc/NotificationTarget::getDatasForTemplate()
+    * @see NotificationTarget::getDatasForTemplate()
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
@@ -158,7 +158,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    /**
     * Get item associated with the object on which the event was raised
     *
-    * @see inc/NotificationTarget::getObjectItem()
+    * @see NotificationTarget::getObjectItem()
     *
     * @param $event  (default '')
     *

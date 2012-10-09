@@ -53,7 +53,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    /**
-    * @see inc/NetworkPortInstantiation::showInstantiationForm()
+    * @see NetworkPortInstantiation::showInstantiationForm()
    **/
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
@@ -89,7 +89,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    /**
-    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTableHeaders
+    * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super=NULL,
@@ -108,7 +108,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    /**
-    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
+    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father=NULL, array $options=array()) {

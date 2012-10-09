@@ -38,7 +38,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
    /**
     * Overwrite the function in NotificationTarget because there's only one target to be notified
     *
-    * @see inc/NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::getNotificationTargets()
    **/
    function getNotificationTargets($entity) {
 

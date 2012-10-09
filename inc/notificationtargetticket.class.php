@@ -43,7 +43,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @param $entity          (default '')
     * @param $event           (default '')
     * @param $object          (default null)
-    * $param $options   array
+    * @param $options   array
     */
    function __construct($entity='', $event='', $object=null, $options=array()) {
 
@@ -62,7 +62,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
    /**
-    * @see inc/NotificationTarget::validateSendTo()
+    * @see NotificationTarget::validateSendTo()
    **/
    function validateSendTo(array $infos, $notify_me=false) {
 
@@ -213,7 +213,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
    /**
-    * @see inc/NotificationTargetCommonITILObject::getDatasForObject()
+    * @see NotificationTargetCommonITILObject::getDatasForObject()
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;

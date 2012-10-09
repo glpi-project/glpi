@@ -58,7 +58,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
 
    /**
-    * @see inc/NotificationTargetCommonITILObject::getDatasForObject()
+    * @see NotificationTargetCommonITILObject::getDatasForObject()
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;
