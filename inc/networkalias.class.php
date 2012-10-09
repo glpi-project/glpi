@@ -53,18 +53,6 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function canCreate() {
-      return (Session::haveRight('internet', 'w')
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-      return (Session::haveRight('internet', 'r')
-              && parent::canView());
-   }
-
-
    /**
     * Get the full name (internet name) of a NetworkName
     *

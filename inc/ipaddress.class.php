@@ -98,6 +98,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   // Keep can* because IP Address can be attach to whatever type of item
    static function canView() {
 
       return (Session::haveRight('internet', 'r')
@@ -109,6 +110,20 @@ class IPAddress extends CommonDBChild {
 
       return (Session::haveRight('internet', 'w')
               && parent::canCreate());
+   }
+
+
+   static function canUpdate() {
+
+      return (Session::haveRight('internet', 'w')
+              && parent::canUpdate());
+   }
+
+
+   static function canDelete() {
+
+      return (Session::haveRight('internet', 'w')
+              && parent::canDelete());
    }
 
 

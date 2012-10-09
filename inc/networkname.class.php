@@ -55,6 +55,7 @@ class NetworkName extends FQDNLabel {
 
    static public $checkParentRights     = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
+   static public $mustBeAttached = false;
 
    static function canCreate() {
 
@@ -67,6 +68,20 @@ class NetworkName extends FQDNLabel {
 
       return (Session::haveRight('internet', 'r')
               && parent::canView());
+   }
+
+
+   static function canUpdate() {
+
+      return (Session::haveRight('internet', 'w')
+              && parent::canUpdate());
+   }
+
+
+   static function canDelete() {
+
+      return (Session::haveRight('internet', 'w')
+              && parent::canDelete());
    }
 
 
@@ -131,19 +146,19 @@ class NetworkName extends FQDNLabel {
       $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
-      if (count($recursiveItems) == 0) {
-         return false;
+      if (count($recursiveItems) != 0) {
+         $lastItem = $recursiveItems[count($recursiveItems) - 1];
+         $options['entities_id'] = $lastItem->getField('entities_id');
       }
-
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       $this->showTabs();
 
-      $options['entities_id'] = $lastItem->getField('entities_id');
-      $this->showFormHeader($options);
+     $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>";
-      $this->displayRecursiveItems($recursiveItems, 'Type');
+      if (count($recursiveItems) > 0) {
+         $this->displayRecursiveItems($recursiveItems, 'Type');
+      }
       echo "</td>\n<td>";
 
       if (!($ID > 0)) {
