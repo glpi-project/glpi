@@ -405,7 +405,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canCreate() {
-      return static::canRelation('canCreate', static::$checkAlwaysBothItems);
+      return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
    }
 
    /**
@@ -429,7 +429,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canDelete() {
-      return static::canRelation('canDelete', static::$checkAlwaysBothItems);
+      return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
    }
 
 
@@ -437,7 +437,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canCreateItem() {
-      return $this->canRelationItem('canCreateItem', 'canCreate', true, static::$checkAlwaysBothItems);
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', true, static::$checkAlwaysBothItems);
    }
 
 
@@ -461,7 +461,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canDeleteItem() {
-      return $this->canRelationItem('canDeleteItem', 'canDelete', false, static::$checkAlwaysBothItems);
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', false, static::$checkAlwaysBothItems);
    }
 
 
