@@ -52,15 +52,6 @@ class Ticket_Ticket extends CommonDBRelation {
    const LINK_TO        = 1;
    const DUPLICATE_WITH = 2;
 
-
-   // TODO CommonDBConnexity : check regaring Ticket::canCreate, Ticket::canUpdate
-   static function canCreate() {
-
-      return (Session::haveRight('create_ticket', 1) // Add on creation
-              || Session::haveRight('update_ticket', 1));
-   }
-
-
    /**
     * Get linked tickets to a ticket
     *
