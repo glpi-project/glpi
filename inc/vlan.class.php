@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class Vlan
 class Vlan extends CommonDropdown {
 
+   public $dohistory                   = true;
 
    static function getTypeName($nb=0) {
     // Acronymous, no plural

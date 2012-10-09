@@ -472,6 +472,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
+   function getHistoryName_for_item1(CommonDBTM $item) {
+      return addslashes($item->getNameID(false, true));
+   }
+
+
+   function getHistoryName_for_item2(CommonDBTM $item) {
+      return addslashes($item->getNameID(false, true));
+   }
+
+
    /**
     * Actions done after the ADD of the item in the database
     *
@@ -489,7 +499,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          if ($item1->dohistory && static::$logs_for_itemtype_1) {
             $changes[0] = '0';
             $changes[1] = "";
-            $changes[2] = addslashes($item2->getNameID(false, true));
+            $changes[2] = $this->getHistoryName_for_item1($item2);
             Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                          static::$log_history_1_add);
          }
@@ -497,12 +507,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          if ($item2->dohistory && static::$logs_for_itemtype_2) {
             $changes[0] = '0';
             $changes[1] = "";
-            $changes[2] = addslashes($item1->getNameID(false, true));
+            $changes[2] = $this->getHistoryName_for_item2($item1);
             Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
                          static::$log_history_2_add);
          }
       }
-
    }
 
 
@@ -567,7 +576,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                 && $previous1 && $previous1->dohistory
                 && static::$logs_for_itemtype_1) {
                $changes[0] = '0';
-               $changes[1] = addslashes($previous2->getNameID(false, true));
+               $changes[1] = $this->getHistoryName_for_item1($previous2);
                $changes[2] = "";
                Log::history($previous1->getID(), $previous1->getType(), $changes,
                             $previous2->getType(), static::$log_history_1_delete);
@@ -577,7 +586,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                 && $previous2 && $previous2->dohistory
                 && static::$logs_for_itemtype_2) {
                $changes[0] = '0';
-               $changes[1] = addslashes($previous1->getNameID(false, true));
+               $changes[1] = $this->getHistoryName_for_item2($previous1);
                $changes[2] = "";
                Log::history($previous2->getID(), $previous2->getType(), $changes,
                             $previous1->getType(), static::$log_history_2_delete);
@@ -588,7 +597,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                 && static::$logs_for_itemtype_1) {
                $changes[0] = '0';
                $changes[1] = "";
-               $changes[2] = addslashes($new2->getNameID(false, true));
+               $changes[2] = $this->getHistoryName_for_item1($new2);
                Log::history($new1->getID(), $new1->getType(), $changes,
                             $new2->getType(), static::$log_history_1_add);
             }
@@ -598,7 +607,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                 && static::$logs_for_itemtype_2) {
                $changes[0] = '0';
                $changes[1] = "";
-               $changes[2] = addslashes($new1->getNameID(false, true));
+               $changes[2] = $this->getHistoryName_for_item2($new1);
                Log::history($new2->getID(), $new2->getType(), $changes,
                             $new1->getType(), static::$log_history_2_add);
             }
@@ -626,7 +635,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          if ($item1->dohistory
              && static::$logs_for_itemtype_1) {
             $changes[0] = '0';
-            $changes[1] = addslashes($item2->getNameID(false, true));
+            $changes[1] = $this->getHistoryName_for_item1($item2);
             $changes[2] = "";
             Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                          static::$log_history_1_delete);
@@ -635,7 +644,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          if ($item2->dohistory
              && static::$logs_for_itemtype_2) {
             $changes[0] = '0';
-            $changes[1] = addslashes($item1->getNameID(false, true));
+            $changes[1] = $this->getHistoryName_for_item2($item1);
             $changes[2] = "";
             Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
                          static::$log_history_2_delete);
