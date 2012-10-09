@@ -61,7 +61,7 @@ class RuleRight extends Rule {
 
 
    /**
-    * @see inc/Rule::preProcessPreviewResults()
+    * @see Rule::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
       return $output;
@@ -69,7 +69,7 @@ class RuleRight extends Rule {
 
 
    /**
-    * @see inc/Rule::maxActionsCount()
+    * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
       // Unlimited
@@ -78,7 +78,7 @@ class RuleRight extends Rule {
 
 
    /**
-    * @see inc/Rule::showNewRuleForm()
+    * @see Rule::showNewRuleForm()
    **/
    function showNewRuleForm($ID) {
 
@@ -118,7 +118,7 @@ class RuleRight extends Rule {
    /**
     * Execute the actions as defined in the rule
     *
-    * @see inc/Rule::executeActions()
+    * @see Rule::executeActions()
     *
     * @param $output the result of the actions
     * @param $params the parameters
@@ -243,7 +243,7 @@ class RuleRight extends Rule {
 
 
    /**
-    * @see inc/Rule::getCriterias()
+    * @see Rule::getCriterias()
    **/
    function getCriterias() {
       static $criterias = array();
@@ -290,7 +290,7 @@ class RuleRight extends Rule {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 

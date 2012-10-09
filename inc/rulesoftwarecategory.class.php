@@ -56,7 +56,7 @@ class RuleSoftwareCategory extends Rule {
 
 
    /**
-    * @see inc/Rule::maxActionsCount()
+    * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
       return 1;

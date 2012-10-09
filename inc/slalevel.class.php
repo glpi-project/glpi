@@ -221,7 +221,7 @@ class SlaLevel extends RuleTicket {
    /**
     * @since version 0.84
     *
-    * @see inc/RuleTicket::getCriterias()
+    * @see RuleTicket::getCriterias()
    **/
    function getCriterias() {
 

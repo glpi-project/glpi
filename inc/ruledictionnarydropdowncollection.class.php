@@ -45,7 +45,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
 
    /**
-    * @see inc/RuleCollection::replayRulesOnExistingDB()
+    * @see RuleCollection::replayRulesOnExistingDB()
    **/
    function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB;

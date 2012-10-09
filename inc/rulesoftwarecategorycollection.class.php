@@ -52,7 +52,7 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
    /**
     * Get the attributes needed for processing the rules
     *
-    * @see inc/RuleCollection::prepareInputDataForProcess()
+    * @see RuleCollection::prepareInputDataForProcess()
     *
     * @param $input     input data
     * @param $software  software data array

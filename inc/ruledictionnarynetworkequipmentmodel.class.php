@@ -44,7 +44,7 @@ class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown {
 
 
    /**
-    * @see inc/Rule::getCriterias()
+    * @see Rule::getCriterias()
    **/
    function getCriterias() {
 
@@ -62,7 +62,7 @@ class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 

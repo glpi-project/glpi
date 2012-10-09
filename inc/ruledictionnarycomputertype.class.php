@@ -55,7 +55,7 @@ class RuleDictionnaryComputerType extends RuleDictionnaryDropdown {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 

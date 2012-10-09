@@ -60,7 +60,7 @@ class RuleRightCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::cleanTestOutputCriterias()
+    * @see RuleCollection::cleanTestOutputCriterias()
    */
    function cleanTestOutputCriterias(array $output) {
 
@@ -72,7 +72,7 @@ class RuleRightCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::showTestResults()
+    * @see RuleCollection::showTestResults()
    */
    function showTestResults($rule, array $output, $global_result) {
 
@@ -172,7 +172,7 @@ class RuleRightCollection extends RuleCollection {
    /**
     * Get all the fields needed to perform the rule
     *
-    * @see inc/RuleCollection::getFieldsToLookFor()
+    * @see RuleCollection::getFieldsToLookFor()
    **/
    function getFieldsToLookFor() {
       global $DB;
@@ -200,7 +200,7 @@ class RuleRightCollection extends RuleCollection {
    /**
     * Get the attributes needed for processing the rules
     *
-    * @see inc/RuleCollection::prepareInputDataForProcess()
+    * @see RuleCollection::prepareInputDataForProcess()
     *
     * @param $input  input datas
     * @param $params extra parameters given

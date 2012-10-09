@@ -54,7 +54,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    /**
-    * @see inc/Rule::maxActionsCount()
+    * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
       return 4;
@@ -62,7 +62,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    /**
-    * @see inc/RuleCached::showCacheRuleHeader()
+    * @see RuleCached::showCacheRuleHeader()
    **/
    function showCacheRuleHeader() {
 
@@ -80,7 +80,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    /**
-    * @see inc/RuleCached::showCacheRuleDetail()
+    * @see RuleCached::showCacheRuleDetail()
    **/
    function showCacheRuleDetail($fields) {
 
@@ -107,7 +107,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    /**
-    * @see inc/Rule::getCriterias()
+    * @see Rule::getCriterias()
    **/
    function getCriterias() {
 
@@ -130,7 +130,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 
