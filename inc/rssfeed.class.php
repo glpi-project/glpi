@@ -763,7 +763,7 @@ class RSSFeed extends CommonDBTM {
                $link = $newfeed->get_permalink();
                if (!empty($link)) {
                   echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
-                  Html::showSimpleForm($this->getFormURL(),'update', __('Use'),array('id' => $this->getID(),
+                  Html::showSimpleForm($this->getFormURL(),'update', _x('button', 'Use'),array('id' => $this->getID(),
                                                                                      'url' => $newurl));
                   echo "<br>";
                }
