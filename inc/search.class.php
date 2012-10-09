@@ -5268,7 +5268,6 @@ class Search {
             }
             return $actions;
          }
-
          if (isset($searchopt[$field_num]['datatype'])) {
             switch ($searchopt[$field_num]['datatype']) {
                case 'number' :
