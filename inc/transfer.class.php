@@ -3028,12 +3028,12 @@ class Transfer extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      $keep  = array(0 => __('Delete'),
+      $keep  = array(0 => _x('button', 'Delete permanently'),
                      1 => __('Preserve'));
 
       $clean = array(0 => __('Preserve'),
-                     1 => __('Delete'),
-                     2 => __('Purge'));
+                     1 => _x('button', 'Put in trash'),
+                     2 => _x('button', 'Delete permanently'));
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Historical')."</td><td>";
@@ -3050,14 +3050,14 @@ class Transfer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Network port', 'Network ports', 2)."</td><td>";
-      $options = array(0 => __('Delete'),
+      $options = array(0 => _x('button', 'Delete permanently'),
                        1 => __('Disconnect') ,
                        2 => __('Keep') );
       $params['value'] = $this->fields['keep_networklink'];
       Dropdown::showFromArray('keep_networklink',$options,$params);
       echo "</td>";
       echo "<td>"._n('Ticket', 'Tickets', 2)."</td><td>";
-      $options = array(0 => __('Delete'),
+      $options = array(0 => _x('button', 'Delete permanently'),
                        1 => __('Disconnect') ,
                        2 => __('Keep') );
       $params['value'] = $this->fields['keep_ticket'];

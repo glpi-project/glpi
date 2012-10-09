@@ -730,7 +730,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".__s('Edit').
                "\" title=\"".__s('Edit')."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
-         Html::showSimpleForm(static::getFormURL(), 'delete', __('Purge'),
+         Html::showSimpleForm(static::getFormURL(), 'delete', _x('button', 'Delete permanently'),
                            array('id' => $ID),
                            $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '',
                            __("Are you sure you want to delete this item?"));
@@ -1529,7 +1529,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed' => $nb,
-                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete')) );
+                           'specific_actions' => array('deletevisibility' => _sx('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');

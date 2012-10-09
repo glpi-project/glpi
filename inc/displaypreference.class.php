@@ -392,9 +392,9 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value=\""._sx('button', 'Delete')."\" src='".
+                  echo "<input type='image' name='delete' value=\""._sx('button', 'Delete permanently')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
-                         _sx('button', 'Delete')."\" title=\""._sx('button', 'Delete')."\">";
+                         _sx('button', 'Delete permanently')."\" title=\""._sx('button', 'Delete permanently')."\">";
                   Html::closeForm();
                   echo "</td>\n";
                   echo "</tr>";
@@ -554,9 +554,9 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value=\""._sx('button', 'Delete')."\" src='".
+                  echo "<input type='image' name='delete' value=\""._sx('button', 'Delete permanently')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
-                         _sx('button', 'Delete')."\" title=\""._sx('button', 'Delete')."\">";
+                         _sx('button', 'Delete permanently')."\" title=\""._sx('button', 'Delete permanently')."\">";
                   Html::closeForm();
                   echo "</td>\n";
                }
@@ -594,7 +594,7 @@ class DisplayPreference extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('width'            => 400,
                            'height'           => 200,
-                           'specific_actions' => array('delete_for_user' => _x('button', 'Delete')));
+                           'specific_actions' => array('delete_for_user' => _sx('button', 'Delete permanently')));
 
          Html::showMassiveActions(__CLASS__, $paramsma);
          echo "<input type='hidden' name='users_id' value='$users_id'>";

@@ -462,7 +462,7 @@ class Cartridge extends CommonDBChild {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $actions = array('delete'            => _x('button', 'Delete'),
+            $actions = array('delete'            => _x('button', 'Delete permanently'),
                              'activate_infocoms' => __('Enable the financial and administrative information'),
                              'restore'           => __('Back to stock'));
             $paramsma = array('num_displayed'    => $number,
@@ -702,7 +702,7 @@ class Cartridge extends CommonDBChild {
          if (!$old) {
             $actions = array('uninstall' => __('End of life'));
          } else {
-            $actions = array('delete'    => _x('button', 'Delete'));
+            $actions = array('delete'    => _x('button', 'Delete permanently'));
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,

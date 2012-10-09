@@ -447,7 +447,7 @@ class Consumable extends CommonDBTM {
 
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $actions = array('delete'            => _x('button', 'Delete'),
+         $actions = array('delete'            => _x('button', 'Delete permanently'),
                           'activate_infocoms' => __('Enable the financial and administrative information'));
          if ($show_old) {
             $actions['restore'] = __('Back to stock');

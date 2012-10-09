@@ -769,7 +769,7 @@ class NetworkName extends FQDNLabel {
             if ($canedit && $number) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $paramsma = array('num_displayed' => $number,
-                                 'specific_actions' => array('purge' => _x('button', 'Purge'),
+                                 'specific_actions' => array('purge' => _x('button', 'Delete permanently'),
                                                              'unaffect' => __('Dissociate')));
                Html::showMassiveActions(__CLASS__, $paramsma);
             }

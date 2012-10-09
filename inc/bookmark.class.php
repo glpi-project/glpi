@@ -257,7 +257,7 @@ class Bookmark extends CommonDBTM {
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
-         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete')."\" class='submit'>";
+         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div>";

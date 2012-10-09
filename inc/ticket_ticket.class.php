@@ -109,7 +109,7 @@ class Ticket_Ticket extends CommonDBRelation {
                              ".png' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
-                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'delete', __('Delete'),
+                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'delete', _x('button', 'Delete permanently'),
                                                          array('id'         => $linkID,
                                                                'tickets_id' => $ID),
                                                          $CFG_GLPI["root_doc"]."/pics/delete.png");
