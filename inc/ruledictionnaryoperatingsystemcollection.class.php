@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
-// Purpose of file:
-// ----------------------------------------------------------------------
+/** @file
+* @brief 
+*/
 
 class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCollection {
 
