@@ -49,17 +49,6 @@ class ComputerDisk extends CommonDBChild {
       return _n('Volume', 'Volumes', $nb);
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('computer', 'r');
-   }
-
-
    /**
     * @see inc/CommonDBChild::prepareInputForAdd()
    **/
