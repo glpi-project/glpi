@@ -63,7 +63,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
 
    /**
-    * @see inc/RuleCollection::getTitle()
+    * @see RuleCollection::getTitle()
    **/
    function getTitle() {
       //TRANS: software in plural
@@ -72,7 +72,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
 
    /**
-    * @see inc/RuleCollection::cleanTestOutputCriterias()
+    * @see RuleCollection::cleanTestOutputCriterias()
    **/
    function cleanTestOutputCriterias(array $output) {
 
@@ -87,7 +87,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
 
    /**
-    * @see inc/RuleCollection::warningBeforeReplayRulesOnExistingDB()
+    * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
    **/
    function warningBeforeReplayRulesOnExistingDB($target) {
       global $CFG_GLPI;
@@ -123,7 +123,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
 
    /**
-    * @see inc/RuleCollection::replayRulesOnExistingDB()
+    * @see RuleCollection::replayRulesOnExistingDB()
    **/
    function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB;

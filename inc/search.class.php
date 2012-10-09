@@ -2151,6 +2151,7 @@ class Search {
     * @param $itemtype     item type
     * @param $ID           ID of the item to add
     * @param $num          item num in the reque (default 0)
+    * @param $meta         boolean is a meta
     * @param $meta_type    meta type table ID (default 0)
     *
     * @return select string

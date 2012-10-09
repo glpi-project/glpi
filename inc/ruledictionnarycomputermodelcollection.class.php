@@ -55,7 +55,7 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
 
 
    /**
-    * @see inc/RuleCollection::getTitle()
+    * @see RuleCollection::getTitle()
    **/
    function getTitle() {
       return __('Dictionnary of computer models');

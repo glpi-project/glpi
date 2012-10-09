@@ -51,7 +51,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/Rule::getTitle()
+    * @see Rule::getTitle()
    **/
    function getTitle() {
       //TRANS: plural for software
@@ -60,7 +60,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/Rule::maxActionsCount()
+    * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
       return 4;
@@ -68,7 +68,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/RuleCached::showCacheRuleHeader()
+    * @see RuleCached::showCacheRuleHeader()
    **/
    function showCacheRuleHeader() {
 
@@ -89,7 +89,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/RuleCached::showCacheRuleDetail()
+    * @see RuleCached::showCacheRuleDetail()
    **/
    function showCacheRuleDetail($fields) {
 
@@ -124,7 +124,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/Rule::getCriterias()
+    * @see Rule::getCriterias()
    **/
    function getCriterias() {
 
@@ -148,7 +148,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 
@@ -181,7 +181,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/Rule::addSpecificParamsForPreview()
+    * @see Rule::addSpecificParamsForPreview()
    **/
    function addSpecificParamsForPreview($params) {
 
@@ -193,7 +193,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * @see inc/Rule::showSpecificCriteriasForPreview()
+    * @see Rule::showSpecificCriteriasForPreview()
    **/
    function showSpecificCriteriasForPreview($fields) {
 

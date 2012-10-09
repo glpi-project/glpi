@@ -45,7 +45,7 @@ class RuleImportEntityCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::canList()
+    * @see RuleCollection::canList()
    **/
    function canList() {
       global $PLUGIN_HOOKS;
@@ -58,7 +58,7 @@ class RuleImportEntityCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::getTitle()
+    * @see RuleCollection::getTitle()
    **/
    function getTitle() {
       return __('Rules for assigning an item to an entity');

@@ -47,7 +47,7 @@ class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCo
 
 
    /**
-    * @see inc/RuleCollection::getTitle()
+    * @see RuleCollection::getTitle()
    **/
    function getTitle() {
       return __('Dictionnary of device models');

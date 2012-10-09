@@ -53,7 +53,7 @@ class RuleImportComputerCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::prepareInputDataForProcess()
+    * @see RuleCollection::prepareInputDataForProcess()
    **/ /*
    function prepareInputDataForProcess($input, $params) {
       global $DBocs;
@@ -86,7 +86,7 @@ class RuleImportComputerCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::preProcessPreviewResults()
+    * @see RuleCollection::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
       return OcsServer::previewRuleImportProcess($output);

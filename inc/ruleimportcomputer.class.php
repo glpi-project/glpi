@@ -65,7 +65,7 @@ class RuleImportComputer extends Rule {
 
 
    /**
-    * @see inc/Rule::maxActionsCount()
+    * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
       // Unlimited
@@ -146,7 +146,7 @@ class RuleImportComputer extends Rule {
    /**
     * Add more action values specific to this type of rule
     *
-    * @see inc/Rule::displayAdditionRuleActionValue()
+    * @see Rule::displayAdditionRuleActionValue()
     *
     * @param value the value for this action
     *
@@ -192,7 +192,7 @@ class RuleImportComputer extends Rule {
 
 
    /**
-    * @see inc/Rule::getAdditionalCriteriaDisplayPattern()
+    * @see Rule::getAdditionalCriteriaDisplayPattern()
    **/
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
@@ -204,7 +204,7 @@ class RuleImportComputer extends Rule {
 
 
    /**
-    * @see inc/Rule::displayAdditionalRuleCondition()
+    * @see Rule::displayAdditionalRuleCondition()
    **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
 
@@ -224,7 +224,7 @@ class RuleImportComputer extends Rule {
 
 
    /**
-    * @see inc/Rule::displayAdditionalRuleAction()
+    * @see Rule::displayAdditionalRuleAction()
    **/
    function displayAdditionalRuleAction(array $action) {
 
@@ -253,7 +253,7 @@ class RuleImportComputer extends Rule {
 
 
    /**
-    * @see inc/Rule::findWithGlobalCriteria()
+    * @see Rule::findWithGlobalCriteria()
    **/
    function findWithGlobalCriteria($input) {
       global $DB;
@@ -412,7 +412,7 @@ class RuleImportComputer extends Rule {
    /**
     * Execute the actions as defined in the rule
     *
-    * @see inc/Rule::executeActions()
+    * @see Rule::executeActions()
     *
     * @param $output the fields to manipulate
     * @param $params parameters
@@ -435,7 +435,7 @@ class RuleImportComputer extends Rule {
    /**
     * Function used to display type specific criterias during rule's preview
     *
-    * @see inc/Rule::showSpecificCriteriasForPreview()
+    * @see Rule::showSpecificCriteriasForPreview()
    **/
    function showSpecificCriteriasForPreview($fields) {
 
@@ -453,7 +453,7 @@ class RuleImportComputer extends Rule {
 
 
    /**
-    * @see inc/Rule::preProcessPreviewResults()
+    * @see Rule::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
       return OcsServer::previewRuleImportProcess($output);

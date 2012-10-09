@@ -62,7 +62,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::preProcessPreviewResults()
+    * @see RuleCollection::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
       return Ticket::showPreviewAssignAction($output);
@@ -70,7 +70,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::showInheritedTab()
+    * @see RuleCollection::showInheritedTab()
    **/
    function showInheritedTab() {
       return (Session::haveRight('rule_ticket','r') && ($this->entity));
@@ -78,7 +78,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::showChildrensTab()
+    * @see RuleCollection::showChildrensTab()
    **/
    function showChildrensTab() {
       return (Session::haveRight('rule_ticket','r')
@@ -87,7 +87,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    /**
-    * @see inc/RuleCollection::prepareInputDataForProcess()
+    * @see RuleCollection::prepareInputDataForProcess()
    **/
    function prepareInputDataForProcess($input, $params) {
 

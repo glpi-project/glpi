@@ -44,7 +44,7 @@ class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown {
 
 
    /**
-    * @see inc/Rule::getCriterias()
+    * @see Rule::getCriterias()
    **/
    function getCriterias() {
 
@@ -63,7 +63,7 @@ class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 

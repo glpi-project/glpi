@@ -55,7 +55,7 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
 
 
    /**
-    * @see inc/RuleCollection::getTitle()
+    * @see RuleCollection::getTitle()
    **/
    function getTitle() {
       return __('Dictionary of manufacturers');

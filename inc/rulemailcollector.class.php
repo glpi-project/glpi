@@ -61,7 +61,7 @@ class RuleMailCollector extends Rule {
 
 
    /**
-    * @see inc/Rule::preProcessPreviewResults()
+    * @see Rule::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
       return $output;
@@ -69,7 +69,7 @@ class RuleMailCollector extends Rule {
 
 
    /**
-    * @see inc/Rule::maxActionsCount()
+    * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
       return 1;
@@ -77,7 +77,7 @@ class RuleMailCollector extends Rule {
 
 
    /**
-    * @see inc/Rule::getTitle()
+    * @see Rule::getTitle()
    **/
    function getTitle() {
       return __('Rules for assigning a ticket created through a mails receiver');
@@ -85,7 +85,7 @@ class RuleMailCollector extends Rule {
 
 
    /**
-    * @see inc/Rule::getCriterias()
+    * @see Rule::getCriterias()
    **/
    function getCriterias() {
 
@@ -191,7 +191,7 @@ class RuleMailCollector extends Rule {
 
 
    /**
-    * @see inc/Rule::getActions()
+    * @see Rule::getActions()
    **/
    function getActions() {
 
@@ -228,7 +228,7 @@ class RuleMailCollector extends Rule {
 
 
    /**
-    * @see inc/Rule::executeActions()
+    * @see Rule::executeActions()
    **/
    function executeActions($output,$params) {
 

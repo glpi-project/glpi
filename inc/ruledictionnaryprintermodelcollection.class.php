@@ -48,7 +48,7 @@ class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownColle
 
 
    /**
-    * @see inc/RuleCollection::getTitle()
+    * @see RuleCollection::getTitle()
    **/
    function getTitle() {
       return __('Dictionnary of printer models');
