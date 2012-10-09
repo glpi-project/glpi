@@ -30,10 +30,9 @@
 // Based on:
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
+/** @file
+* @brief 
+*/
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
