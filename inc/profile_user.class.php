@@ -794,6 +794,7 @@ class Profile_User extends CommonDBRelation {
    }
 
 
+   // TODO CommonDBConnexity : check why it is HISTORY_ADD_SUBITEM instead of HISTORY_ADD_RELATION
    function post_addItem() {
 
       if (isset($this->input['_no_history'])) {

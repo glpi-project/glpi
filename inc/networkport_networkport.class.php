@@ -60,6 +60,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 
+   // TODO CommonDBConnexity: this post_addItem is only to define a smarter log (ie :
+   // HISTORY_CONNECT_DEVICE with "From device1 to device2" We should remove that ...
    function post_addItem() {
       global $DB;
 
@@ -133,6 +135,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 
+   // TODO CommonDBConnexity: ... and also remove that
    function post_deleteFromDB() {
 
       // Update to blank networking item
