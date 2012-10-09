@@ -28,10 +28,9 @@
  */
 
 // Based on cacti plugin system
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
+/** @file
+* @brief 
+*/
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
