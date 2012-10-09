@@ -299,6 +299,7 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
+   // TODO CommonDBConnexity : check how to centralize the history
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 

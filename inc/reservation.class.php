@@ -146,6 +146,8 @@ class Reservation extends CommonDBChild {
          //$mail = new MailingResa($this,"update");
          //$mail->send();
       }
+
+      parent::post_updateItem($history);
    }
 
 
@@ -184,6 +186,8 @@ class Reservation extends CommonDBChild {
       if ($CFG_GLPI["use_mailing"]) {
          NotificationEvent::raiseEvent("new",$this);
       }
+
+      parent::post_addItem();
    }
 
 
