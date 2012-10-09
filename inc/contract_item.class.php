@@ -60,7 +60,7 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * Don't create a Contract_Item on contract that is alreay max used
-    * Was previously done (until 0.83.*) by inc/Contract_Item::can()
+    * Was previously done (until 0.83.*) by Contract_Item::can()
     * @see CommonDBRelation::canCreateItem()
     * @since version 0.84
    **/

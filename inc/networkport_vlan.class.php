@@ -91,7 +91,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
    /**
-    * @param $ID
+    * @param $port
    **/
    static function showForNetworkPort (NetworkPort $port) {
       global $DB, $CFG_GLPI;

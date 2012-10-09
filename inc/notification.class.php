@@ -379,8 +379,6 @@ class Notification extends CommonDBTM {
     *
     * @since versin 0.84
     *
-    * @param $mode the mode to use
-    *
     * @return the mode's label
    **/
    static function getModes() {

@@ -1163,7 +1163,7 @@ class Rule extends CommonDBTM {
     *
     * @since 0.84
     *
-    * @pram $action
+    * @param $action
     * @param $output rule execution output
     * @param $params parameters
     *
