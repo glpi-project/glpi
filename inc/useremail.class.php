@@ -47,6 +47,7 @@ class UserEmail  extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype = 'User';
    static public $items_id = 'users_id';
+   public $dohistory         = true;
 
 
    static function getTypeName($nb=0) {
@@ -224,6 +225,10 @@ class UserEmail  extends CommonDBChild {
    }
 
 
+   function getHistoryName_for_item() {
+      return addslashes($this->fields['email']);
+   }
+
    function post_updateItem($history=1) {
       global $DB;
 
@@ -237,13 +242,7 @@ class UserEmail  extends CommonDBChild {
          $DB->query($query);
       }
 
-      if (count($this->updates)) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = addslashes($this->fields['email']);
-         Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                      Log::HISTORY_UPDATE_SUBITEM);
-      }
+      parent::post_updateItem($history);
    }
 
 
@@ -259,11 +258,7 @@ class UserEmail  extends CommonDBChild {
          $DB->query($query);
       }
 
-      $changes[0] = '0';
-      $changes[1] = "";
-      $changes[2] = addslashes($this->fields['email']);
-      Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                   Log::HISTORY_ADD_SUBITEM);
+      parent::post_addItem();
 
    }
 
@@ -281,11 +276,7 @@ class UserEmail  extends CommonDBChild {
          $DB->query($query);
       }
 
-      $changes[0] = '0';
-      $changes[1] = "";
-      $changes[2] = addslashes($this->fields['email']);
-      Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                   Log::HISTORY_DELETE_SUBITEM);
+      parent::post_deleteFromDB();
    }
 
 }

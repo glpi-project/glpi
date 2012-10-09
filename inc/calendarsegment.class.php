@@ -104,6 +104,8 @@ class CalendarSegment extends CommonDBChild {
       // Update calendar cache
       $cal = new Calendar();
       $cal->updateDurationCache($this->fields['calendars_id']);
+
+      parent::post_addItem();
    }
 
 
@@ -112,6 +114,8 @@ class CalendarSegment extends CommonDBChild {
       // Update calendar cache
       $cal = new Calendar();
       $cal->updateDurationCache($this->fields['calendars_id']);
+
+      parent::post_deleteFromDB();
    }
 
 

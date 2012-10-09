@@ -101,7 +101,7 @@ class Cartridge extends CommonDBChild {
                                    'last_pages_counter' => $this->fields['pages'] ));
          }
       }
-      parent::post_updateItem();
+      parent::post_updateItem($history);
    }
 
 

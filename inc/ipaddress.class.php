@@ -208,7 +208,7 @@ class IPAddress extends CommonDBChild {
          $link->addIPAddress($this);
       }
 
-      parent::post_updateItem();
+      parent::post_updateItem($history);
    }
 
 
