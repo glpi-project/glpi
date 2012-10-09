@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
+/** @file
+* @brief 
+*/
 
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
    global $migration_log_file;
