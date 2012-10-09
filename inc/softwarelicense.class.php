@@ -638,7 +638,12 @@ class SoftwareLicense extends CommonDBTM {
             $tot_assoc = 0;
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
                Session::addToNavigateListItems('SoftwareLicense', $data['id']);
-               echo "<tr class='tab_bg_2'>";
+               $expired = true;
+               if (is_null($data['expire'])
+                  || ($data['expire'] > date('Y-m-d'))) {
+                  $expired = false;
+               }
+               echo "<tr class='tab_bg_2".($expired?'_2':'')."'>";
 
                if ($license->can($data['id'], "w")) {
                   echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
@@ -661,12 +666,7 @@ class SoftwareLicense extends CommonDBTM {
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
-               $expired = true;
-               if (is_null($data['expire'])
-                  || ($data['expire'] > date('Y-m-d'))) {
-                  $expired = false; 
-               }
-               echo "<td class='center ".($expired?'deleted':'')."'>".Html::convDate($data['expire'])."</td>";
+               echo "<td class='center'>".Html::convDate($data['expire'])."</td>";
                echo "</tr>";
 
                if ($data['number'] < 0) {
