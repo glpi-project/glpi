@@ -435,6 +435,21 @@ class RSSFeed extends CommonDBTM {
       $tab[4]['datatype']      = 'bool';
       $tab[4]['massiveaction'] = true;
 
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'have_error';
+      $tab[6]['name']          = __('Error');
+      $tab[6]['datatype']      = 'bool';
+      $tab[6]['massiveaction'] = true;
+
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'max_items';
+      $tab[7]['name']          = __('Number of items displayed');
+      $tab[7]['datatype']      = 'number';
+      $tab[7]['min']           = 1;
+      $tab[7]['max']           = 100;
+      $tab[7]['step']          = 1;
+      $tab[7]['massiveaction'] = true;
+
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
@@ -521,12 +536,14 @@ class RSSFeed extends CommonDBTM {
    **/
    function prepareInputForAdd($input) {
 
-      if ($feed = $this->getRSSFeed($input['url'])) {
+      if ($feed = self::getRSSFeed($input['url'])) {
+         $input['have_error'] = 0;
          $input['name'] = addslashes($feed->get_title());
          if (empty($input['comment'])) {
             $input['comment'] = addslashes($feed->get_description());
          }
       } else {
+         $input['have_error'] = 1;
          $input['name'] = '';
       }
       $input["name"] = trim($input["name"]);
@@ -553,6 +570,7 @@ class RSSFeed extends CommonDBTM {
       $this->fields["name"]         = __('New note');
       $this->fields["users_id"]     = Session::getLoginUserID();
       $this->fields["refresh_rate"] = DAY_TIMESTAMP;
+      $this->fields["max_items"] = 20;
    }
 
 
@@ -574,7 +592,7 @@ class RSSFeed extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      $rowspan=3;
+      $rowspan=4;
       if ($this->isNewID($ID)) {
          $rowspan--;
       }
@@ -622,6 +640,22 @@ class RSSFeed extends CommonDBTM {
                                                      'display_emptychoice' => false));
       echo "</td></tr>\n";
       
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Number of items displayed')."</td>";
+      echo "<td>";
+      Dropdown::showNumber("max_items", array('value' => $this->fields["max_items"],
+                                               'min'   => 1,
+                                               'max'   => 100,
+                                               'step'  => 1,
+                                               'display_emptychoice' => false));
+      echo "</td></tr>\n";
+
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Error retrieving RSS feed')."</td>";
+      echo "<td>";
+      echo Dropdown::getYesNo($this->fields['have_error']);
+      echo "</td><td colspan='2'>&nbsp;</td></tr>\n";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -630,20 +664,41 @@ class RSSFeed extends CommonDBTM {
    }
 
    /**
+    * Set error field
+    **/
+   function setError($error = false) {
+      if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
+         return;
+      }
+      // Set error if not set
+      if ($error && !$this->fields['have_error']) {
+         $this->update(array('id'    => $this->fields['id'],
+                             'have_error' => 1));
+      }
+      // Unset error if set
+      if (!$error && $this->fields['have_error']) {
+         $this->update(array('id'    => $this->fields['id'],
+                             'have_error' => 0));
+      }
+
+   }
+   /**
     * Show the feed content
     **/
    function showFeedContent() {
       if (!$this->canViewItem()) {
          return false;
       }
-      $feed = $this->getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
+      $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
       echo "<div class='firstbloc'>";
       if (!$feed || $feed->error()) {
-         _e('Error getting RSS feed');
+         _e('Error retrieving RSS feed');
+         $this->setError(true);
       } else {
+         $this->setError(false);
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
-         foreach($feed->get_items() as $item) {
+         foreach($feed->get_items(0,$this->fields['max_items']) as $item) {
             $link = $item->get_permalink();
             echo "<tr><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
@@ -673,10 +728,11 @@ class RSSFeed extends CommonDBTM {
     *
     * @param $url string/array : URL of the feed or array of URL
     * @param $use_cache boolean : use cache
+    * @param $max_number integer : number of item to retrieve
     *
     * @return feed object
     **/
-   function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
+   static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP, $max_number=20) {
    
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);
@@ -763,14 +819,19 @@ class RSSFeed extends CommonDBTM {
       }
 
       $result = $DB->query($query);
-      $feeds = array();
+      $items = array();
       $rssfeed = new self();
       if ($nb     = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            // Force fetching feeds
-            if ($rssfeed->getRSSFeed($data['url'], $data['refresh_rate'])) {
-               // Store feeds in array of feeds
-               $feeds[$data['id']]=$data['url'];
+            if ($rssfeed->getFromDB($data['id'])) {
+               // Force fetching feeds
+               if ($feed = self::getRSSFeed($data['url'], $data['refresh_rate'])) {
+                  // Store feeds in array of feeds
+                  $items = array_merge($items, $feed->get_items(0, $data['max_items']));
+                  $rssfeed->setError(false);
+               } else {
+                  $rssfeed->setError(true);
+               }
             }
          }
       }
@@ -788,41 +849,39 @@ class RSSFeed extends CommonDBTM {
       echo "</div></th></tr>\n";
 
       if ($nb) {
-         if ($feed = $rssfeed->getRSSFeed($feeds)) {
-            foreach($feed->get_items() as $item) {
+         usort($items, array('SimplePie', 'sort_items'));
+         foreach($items as $item) {
 
-               echo "<tr><td>";
-               echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
-               echo "</td><td>";
-               $link = $item->feed->get_permalink();
-               if (empty($link)) {
-                  echo $item->feed->get_title();
-               } else {
-                  echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
-               }
-               $link = $item->get_permalink();
+            echo "<tr><td>";
+            echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
+            echo "</td><td>";
+            $link = $item->feed->get_permalink();
+            if (empty($link)) {
+               echo $item->feed->get_title();
+            } else {
+               echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
+            }
+            $link = $item->get_permalink();
 //                echo "<br>";
 //                echo $item->get_title();
 //                echo "</td><td>";
-               
-               $rand = mt_rand();
-               echo "<div id='rssitem$rand' class='pointer rss'>";
-               if (!is_null($link)) {
-                  echo "<a target='_blank' href='$link'>";
-               }
-               echo $item->get_title();
-//                echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
-               if (!is_null($link)) {
-                  echo "</a>";
-               }
-               echo "</div>";
-               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                                          array('applyto' => "rssitem$rand",
-                                                'display' => true));
-               echo "</td></tr>";
-            }
-         }
 
+            $rand = mt_rand();
+            echo "<div id='rssitem$rand' class='pointer rss'>";
+            if (!is_null($link)) {
+               echo "<a target='_blank' href='$link'>";
+            }
+            echo $item->get_title();
+//                echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
+            if (!is_null($link)) {
+               echo "</a>";
+            }
+            echo "</div>";
+            Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
+                                       array('applyto' => "rssitem$rand",
+                                             'display' => true));
+            echo "</td></tr>";
+         }
       }
       echo "</table>\n";
 
