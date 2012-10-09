@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
-// Purpose of file: Form to edit Cron Task
-// ----------------------------------------------------------------------
+/** @file
+* @brief Form to edit Cron Task
+*/
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

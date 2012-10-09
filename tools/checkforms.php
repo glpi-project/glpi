@@ -27,10 +27,10 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file: Check forms opened / closed
-// ----------------------------------------------------------------------
+/** @file
+* @brief Check forms opened / closed
+*/
+
 // since version 0.83.3
 define('GLPI_ROOT', '..');
 

@@ -27,10 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
-// Purpose of file: Check obsoleted function
-// ----------------------------------------------------------------------
+/** @file
+* @brief Check obsoleted function
+*/
 
 if (isset($_SERVER['argv'][1])) {
    $rep = $_SERVER['argv'][1];
