@@ -31,9 +31,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
+/** @file
+* @brief 
+*/ 
+
 /**
- *  Common DataBase Table Manager Class - Persistent Object
- */
+*  Common DataBase Table Manager Class - Persistent Object
+*/
 class CommonDBTM extends CommonGLPI {
 
    /// Data of the Item
