@@ -1834,7 +1834,22 @@ function update0831to084() {
                               'condition' => 'WHERE `id`=0'));
 
    $migration->addField("glpi_configs", "notification_to_myself", "bool");
-   $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_configs", 'duedateok_color', "string", array('value' => '#06ff00'));
+   $migration->addField("glpi_configs", 'duedatewarning_color', "string", array('value' => '#ffb800'));
+   $migration->addField("glpi_configs", 'duedatecritical_color', "string", array('value' => '#ff0000'));
+   $migration->addField("glpi_configs", 'duedatewarning_less', "integer", array('value' => 20));
+   $migration->addField("glpi_configs", 'duedatecritical_less',"integer", array('value' => 5));
+   $migration->addField("glpi_configs", 'duedatewarning_unit', "string", array('value' => '%'));
+   $migration->addField("glpi_configs", 'duedatecritical_unit', "string", array('value' => '%'));
+
+   $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) DEFAULT NULL");
+   $migration->addField("glpi_users", 'duedateok_color', "string");
+   $migration->addField("glpi_users", 'duedatewarning_color', "string");
+   $migration->addField("glpi_users", 'duedatecritical_color', "string");
+   $migration->addField("glpi_users", 'duedatewarning_less', "int(11) DEFAULT NULL");
+   $migration->addField("glpi_users", 'duedatecritical_less', "int(11) DEFAULT NULL");
+   $migration->addField("glpi_users", 'duedatewarning_unit', "string");
+   $migration->addField("glpi_users", 'duedatecritical_unit', "string");
 
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
