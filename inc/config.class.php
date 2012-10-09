@@ -735,8 +735,8 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='25%'>" . ($userpref?__('Language'):__('Default language')) . "</td>";
-      echo "<td  width='25%'>";
+      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td>";
+      echo "<td>";
       if (Session::haveRight("config","w")
           || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
@@ -744,8 +744,8 @@ class Config extends CommonDBTM {
          echo "&nbsp;";
       }
 
-      echo "<td width='25%'>" . __('Date format') ."</td>";
-      echo "<td width='25%'>";
+      echo "<td>" . __('Date format') ."</td>";
+      echo "<td>";
       $date_formats = array(0 => __('YYYY-MM-DD'),
                             1 => __('DD-MM-YYYY'),
                             2 => __('MM-DD-YYYY'));
@@ -920,14 +920,18 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>".__('Configuring the due date bar')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td>".__('OK state')."</td>";
+           "<td>".__('OK state color')."</td>";
       echo "<td bgcolor='".$data['duedateok_color']."'>";
       echo "<input name='duedateok_color' size='7' value='".$data['duedateok_color']."' type='text'/>";
-      echo "</td>";
-      echo "<td>".__('Warning state')."</td>";
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Warning state color')."</td>";
       echo "<td bgcolor='".$data['duedatewarning_color']."'>";
-      echo "<input name='duedatewarning_color' size='7' value='".$data['duedatewarning_color']."' type='text'/><br>";
-      echo __('if less than')." ";
+      echo "<input name='duedatewarning_color' size='7' value='".$data['duedatewarning_color']."' type='text'/>";
+      echo "</td>";
+      echo "<td>".__('Warning state threshold')."</td>";
+      echo "<td>";
       Dropdown::showNumber("duedatewarning_less", array('value'=>$data['duedatewarning_less']))." ";
       $elements = array('%' => '%',
                        'hours' => _n('Hour', 'Hours', 2),
@@ -937,17 +941,18 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td>".__('Critical state')."</td>";
+           "<td>".__('Critical state color')."</td>";
       echo "<td bgcolor='".$data['duedatecritical_color']."'>";
-      echo "<input name='duedatecritical_color' size='7' value='".$data['duedatecritical_color']."' type='text'/><br>";
-      echo __('if less than')." ";
+      echo "<input name='duedatecritical_color' size='7' value='".$data['duedatecritical_color']."' type='text'/>";
+      echo "</td>";
+      echo "<td>".__('Critical state threshold')."</td>";
+      echo "<td>";
       Dropdown::showNumber("duedatecritical_less", array('value'=>$data['duedatecritical_less']))." ";
       $elements = array('%' => '%',
                        'hours' => _n('Hour', 'Hours', 2),
                        'days' => _n('Day', 'Days', 2));
       Dropdown::showFromArray("duedatecritical_unit", $elements, array('value'=>$data['duedatecritical_unit']));
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_2'>";
