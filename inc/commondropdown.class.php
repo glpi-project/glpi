@@ -610,7 +610,8 @@ abstract class CommonDropdown extends CommonDBTM {
             $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
                                                  $input['entities_id'], $this->maybeRecursive());
          }
-
+         $query .= " LIMIT 1";
+         
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
             if ($DB->numrows($result_twin) > 0) {
