@@ -47,26 +47,7 @@ class UserEmail  extends CommonDBChild {
 
    static function getTypeName($nb=0) {
       return _n('Email', 'Emails', $nb);
-   }
-
-
-   // TODO CommonDBConnexity: why definining can* == true while checking haveRight inside can*Item ?
-   static function canCreate() {
-      // All users can create own emails
-      return true;
-   }
-
-
-   function canCreateItem() {
-
-      return (Session::haveRight('user','w')
-              || ($this->fields['users_id'] == Session::getLoginUserID()));
-   }
-
-
-   static function canView() {
-      return true;
-   }
+   
 
 
    function canViewItem() {
@@ -75,17 +56,6 @@ class UserEmail  extends CommonDBChild {
               || ($this->fields['users_id'] == Session::getLoginUserID()));
    }
 
-
-   static function canUpdate() {
-      // All users can update own emails
-      return true;
-   }
-
-
-   static function canDelete() {
-      // All users can delete own emails
-      return true;
-   }
 
 
    /**

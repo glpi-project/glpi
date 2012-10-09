@@ -49,26 +49,26 @@ class TicketCost extends CommonDBChild {
       return _n('Cost', 'Costs', $nb);
    }
 
-
-   // TODO CommonDBConnexity : don't we have to also check rights on ticket ?
    static function canCreate() {
-      return Session::haveRight('ticketcost', 'w');
+      return (Session::haveRight('ticketcost','w')
+              && parent::canCreate());
    }
 
 
    static function canView() {
-      return Session::haveRight('ticketcost', 'r');
+      return (Session::haveRight('ticketcost','r')
+              && parent::canView());
    }
 
    static function canUpdate() {
-      return Session::haveRight('ticketcost', 'w');
+      return (Session::haveRight('ticketcost','w')
+              && parent::canUpdate());
    }
 
-
-    static function canDelete() {
-      return Session::haveRight('ticketcost', 'w');
+   static function canDelete() {
+      return (Session::haveRight('ticketcost','w')
+              && parent::canDelete());
    }
-
 
     /**
     * @see inc/CommonDBChild::prepareInputForAdd()
