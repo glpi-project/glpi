@@ -26,9 +26,10 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-/*!
-  \brief affiche les diffents choix de rapports reseaux
- */
+
+/** @file
+* @brief show choices for network reports
+*/
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

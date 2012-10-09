@@ -27,6 +27,10 @@
  --------------------------------------------------------------------------
 */
 
+/** @file
+* @brief
+*/
+
 // Current version of GLPI
 define("GLPI_VERSION","0.84");
 define("GLPI_DEMO_MODE","0");

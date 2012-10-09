@@ -26,6 +26,10 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
+ 
+/** @file
+* @brief
+*/
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 

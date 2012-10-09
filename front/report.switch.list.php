@@ -26,9 +26,12 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-/*!
-  \brief affiche le rapport reseau par switch
- */
+
+
+/** @file
+* @brief show network port by network equipment
+*/
+
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
