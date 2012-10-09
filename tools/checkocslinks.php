@@ -26,6 +26,10 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
+ 
+/** @file
+* @brief
+*/
 
 // Ensure current directory when run from crontab
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
