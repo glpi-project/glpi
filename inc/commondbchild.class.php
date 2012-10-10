@@ -343,6 +343,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function prepareInputForAdd($input) {
 
+      if (!is_array($input)) {
+         return false;
+      }
+
       $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       // Invalidate the element if it is not attached to an item although it must
@@ -369,6 +373,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function prepareInputForUpdate($input) {
 
+      if (!is_array($input)) {
+         return false;
+      }
+
       // Get need informations :
       if (!isset($input[static::$itemtype]) && isset($this->fields[static::$itemtype])) {
          $input[static::$itemtype] = $this->fields[static::$itemtype];
@@ -376,7 +384,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if (!isset($input[static::$items_id]) && isset($this->fields[static::$items_id])) {
          $input[static::$items_id] = $this->fields[static::$items_id];
       }
-   
+
       $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       /// TODO : must we apply this filter for the update ?
