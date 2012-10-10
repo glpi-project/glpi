@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -351,8 +351,8 @@ class AuthLDAP extends CommonDBTM {
                }
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.group.import.php";
-
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -1644,8 +1644,8 @@ class AuthLDAP extends CommonDBTM {
 
       if (is_array($ldap_groups)) {
          $numrows     = count($ldap_groups);
-         $rand = mt_rand();
-         $colspan = (Session::isMultiEntitiesMode()?5:4);
+         $rand        = mt_rand();
+         $colspan     = (Session::isMultiEntitiesMode()?5:4);
          if ($numrows > 0) {
             self::displaySizeLimitWarning($limitexceeded);
             $parameters = '';
@@ -1660,7 +1660,8 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<div class='center'>";
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed'   => min($_SESSION['glpilist_limit'], count($ldap_groups)),
+            $paramsma = array('num_displayed'    => min($_SESSION['glpilist_limit'],
+                                                        count($ldap_groups)),
                               'specific_actions' => array('import_group' => _sx('button','Import')));
             Html::showMassiveActions(__CLASS__, $paramsma);
 
@@ -1706,7 +1707,7 @@ class AuthLDAP extends CommonDBTM {
                       $search_type."\"></td></tr>";
             }
 
-            $paramsma['ontop'] =false;
+            $paramsma['ontop'] = false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
             echo "</div>";
@@ -2108,6 +2109,7 @@ class AuthLDAP extends CommonDBTM {
     * @return  nothing
    **/
    static function ldapImportGroup ($group_dn, $options=array()) {
+
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($options['authldaps_id']);
       $ldap_users  = array();
@@ -2125,16 +2127,15 @@ class AuthLDAP extends CommonDBTM {
          $group       = new Group();
          if ($options['type'] == "groups") {
             return $group->add(array("name"          => addslashes($group_infos["cn"][0]),
-                              "ldap_group_dn" => addslashes($group_infos["dn"]),
-                              "entities_id"   => $options['entities_id'],
-                              "is_recursive"  => $options['is_recursive']));
-         } else {
-            return $group->add(array("name"         => addslashes($group_infos["cn"][0]),
-                              "ldap_field"   => $config_ldap->fields["group_field"],
-                              "ldap_value"   => addslashes($group_infos["dn"]),
-                              "entities_id"  => $options['entities_id'],
-                              "is_recursive" => $options['is_recursive']));
+                                     "ldap_group_dn" => addslashes($group_infos["dn"]),
+                                     "entities_id"   => $options['entities_id'],
+                                     "is_recursive"  => $options['is_recursive']));
          }
+         return $group->add(array("name"         => addslashes($group_infos["cn"][0]),
+                                  "ldap_field"   => $config_ldap->fields["group_field"],
+                                  "ldap_value"   => addslashes($group_infos["dn"]),
+                                  "entities_id"  => $options['entities_id'],
+                                  "is_recursive" => $options['is_recursive']));
       }
       return false;
    }

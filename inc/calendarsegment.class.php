@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -313,7 +313,8 @@ class CalendarSegment extends CommonDBChild {
 
          echo "<tr class='tab_bg_2'><td class='center'>".__('Day')."</td><td>";
          echo "<input type='hidden' name='entities_id' value='".$calendar->fields['entities_id']."'>";
-         echo "<input type='hidden' name='is_recursive' value='".$calendar->fields['is_recursive']."'>";
+         echo "<input type='hidden' name='is_recursive' value='".
+                $calendar->fields['is_recursive']."'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', Toolbox::getDaysOfWeekArray());
          echo "</td><td class='center'>".__('Start').'</td><td>';

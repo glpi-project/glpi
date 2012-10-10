@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -713,15 +713,16 @@ class KnowbaseItem extends CommonDBTM {
          if ($editFAQ) {
             echo "<td class='center' width='33%'>";
             if ($isFAQ) {
-               Html::showSimpleForm(static::getFormURL(), 'update', __('Delete this item from the FAQ'),
-                                 array('id' => $ID,
-                                       'is_faq' => 0),
-                                 $CFG_GLPI["root_doc"]."/pics/faqremove.png");
+               Html::showSimpleForm(static::getFormURL(), 'update',
+                                    __('Delete this item from the FAQ'),
+                                    array('id'     => $ID,
+                                          'is_faq' => 0),
+                                    $CFG_GLPI["root_doc"]."/pics/faqremove.png");
             } else  {
                Html::showSimpleForm(static::getFormURL(), 'update', __('Put this item in the FAQ'),
-                                 array('id' => $ID,
-                                       'is_faq' => 1),
-                                 $CFG_GLPI["root_doc"]."/pics/faqadd.png");
+                                    array('id'     => $ID,
+                                          'is_faq' => 1),
+                                    $CFG_GLPI["root_doc"]."/pics/faqadd.png");
             }
             echo "</td>\n";
          }
@@ -731,9 +732,8 @@ class KnowbaseItem extends CommonDBTM {
                "\" title=\"".__s('Edit')."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
          Html::showSimpleForm(static::getFormURL(), 'delete', _x('button', 'Delete permanently'),
-                           array('id' => $ID),
-                           $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '',
-                           __("Are you sure you want to delete this item?"));
+                              array('id' => $ID), $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '',
+                              __("Are you sure you want to delete this item?"));
 
          echo "</td>";
          echo "</tr>";
