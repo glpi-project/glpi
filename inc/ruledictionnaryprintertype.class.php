@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPrinterType extends RuleDictionnaryDropdown {
@@ -47,7 +47,12 @@ class RuleDictionnaryPrinterType extends RuleDictionnaryDropdown {
    **/
    function getCriterias() {
 
-      $criterias                  = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
+
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Type');
       $criterias['name']['table'] = 'glpi_printertypes';

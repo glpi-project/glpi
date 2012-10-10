@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
@@ -46,7 +46,12 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
    **/
    function getCriterias() {
 
-      $criterias                  = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
+
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Manufacturer');
       $criterias['name']['table'] = 'glpi_manufacturers';

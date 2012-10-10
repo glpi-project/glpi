@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -110,7 +110,11 @@ class RuleDictionnaryPrinter extends RuleCached {
    **/
    function getCriterias() {
 
-      $criterias                          = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
 
       $criterias['name']['field']         = 'name';
       $criterias['name']['name']          = __('Name');
