@@ -196,7 +196,6 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }
-         Html::closeForm();
          echo "</div>";
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";
