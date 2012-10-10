@@ -74,11 +74,6 @@ class TicketCost extends CommonDBChild {
    **/
    function prepareInputForAdd($input) {
 
-      // Not attached to computer -> not added
-      if (!isset($input['tickets_id']) || ($input['tickets_id'] <= 0)) {
-         return false;
-      }
-
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
           || ($input['end_date'] < $input['begin_date'])) {
