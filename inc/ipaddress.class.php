@@ -159,12 +159,9 @@ class IPAddress extends CommonDBChild {
    **/
    function prepareInputForAdd($input) {
 
-     $input = $this->prepareInput($input);
+      $input = $this->prepareInput($input);
 
-      if (is_array($input)) {
-         return parent::prepareInputForAdd($input);
-      }
-      return false;
+      return parent::prepareInputForAdd($input);
 
    }
 
@@ -176,10 +173,7 @@ class IPAddress extends CommonDBChild {
 
       $input = $this->prepareInput($input);
 
-      if (is_array($input)) {
-         return parent::prepareInputForUpdate($input);
-      }
-      return false;
+      return parent::prepareInputForUpdate($input);
 
    }
 

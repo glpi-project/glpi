@@ -352,8 +352,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       // Invalidate the element if it is not attached to an item although it must
       if (static::$mustBeAttached
           && !$item) {
-         Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO,
-                                          true);
+         Session::addMessageAfterRedirect(__('Cannot create item: it must be attach'), INFO, true);
          return false;
       }
 
@@ -364,7 +363,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $input['is_recursive'] = intval($item->isRecursive());
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 
@@ -391,7 +390,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       // Return invalidate the element if it must be attached but it won't
       if (static::$mustBeAttached
           && ($item === false)) {
-         Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO,
+         Session::addMessageAfterRedirect(__('Cannot update the item: it must be attached'), INFO,
                                           true);
          return false;
       }
@@ -403,7 +402,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $input['is_recursive'] = intval($item->isRecursive());
       }
 
-      return $input;
+      return parent::prepareInputForUpdate($input);
    }
 
 

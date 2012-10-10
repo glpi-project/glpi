@@ -191,7 +191,7 @@ class Ticket_Ticket extends CommonDBRelation {
          }
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

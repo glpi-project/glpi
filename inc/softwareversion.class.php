@@ -69,14 +69,7 @@ class SoftwareVersion extends CommonDBChild {
          return false;
       }
 
-      $item = new Software();
-      if ($item->getFromDB($input['softwares_id'])) {
-         $input['entities_id']  = $item->getEntityID();
-         $input['is_recursive'] = intval($item->isRecursive());
-         return $input;
-      }
-      // Software not found
-      return false;
+      return parent::prepareInputForAdd($input);
    }
 
 

@@ -78,7 +78,6 @@ class TicketCost extends CommonDBChild {
       if (!isset($input['tickets_id']) || ($input['tickets_id'] <= 0)) {
          return false;
       }
-      $input = parent::prepareInputForAdd($input);
 
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
@@ -87,7 +86,7 @@ class TicketCost extends CommonDBChild {
          $input['end_date'] = $input['begin_date'];
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 
@@ -103,7 +102,7 @@ class TicketCost extends CommonDBChild {
          $input['end_date'] = $input['begin_date'];
       }
 
-      return $input;
+      return parent::prepareInputForUpdate($input);
    }
 
 

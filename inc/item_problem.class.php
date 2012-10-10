@@ -79,7 +79,7 @@ class Item_Problem extends CommonDBRelation{
       if (countElementsInTable($this->getTable(),$restrict)>0) {
          return false;
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

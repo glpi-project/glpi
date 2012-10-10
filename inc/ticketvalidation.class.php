@@ -198,7 +198,7 @@ class TicketValidation  extends CommonDBChild {
       $input["submission_date"] = $_SESSION["glpi_currenttime"];
       $input["status"]          = 'waiting';
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 
@@ -295,7 +295,7 @@ class TicketValidation  extends CommonDBChild {
          }
       }
 
-      return $input;
+      return parent::prepareInputForUpdate($input);
    }
 
 

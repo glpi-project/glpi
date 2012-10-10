@@ -74,7 +74,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $input['is_template'] = $computer->getField('is_template');
          $input['is_deleted']  = $computer->getField('is_deleted');
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 
