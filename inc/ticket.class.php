@@ -4030,9 +4030,9 @@ class Ticket extends CommonITILObject {
       echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
       printf(__('%1$s%2$s'), __('Associated element'), $tt->getMandatoryMark('itemtype'));
       if ($ID && $canupdate) {
-         echo "&nbsp;<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
-                     onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
-                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
+         echo "&nbsp;<img title='".__s('Update')."' alt='".__s('Update')."'
+                      onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
+                      class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
       }
       echo $tt->getEndHiddenFieldText('itemtype');
       echo "</th>";
@@ -4281,7 +4281,7 @@ class Ticket extends CommonITILObject {
          if ($canupdate) {
             echo "&nbsp;";
             echo "<img onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\"
-                   title=\""._sx('button', 'Add')."\" alt=\""._sx('button', 'Add')."\"
+                   title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
          echo '</th>';
@@ -4807,8 +4807,7 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["interface"] != "central") {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
                 __('Create a ticket')."&nbsp;<img src='".$CFG_GLPI["root_doc"].
-                "/pics/menu_add.png' title=\"". _sx('button', 'Add')."\"
-                alt=\""._sx('button', 'Add')."\"></a>";
+                "/pics/menu_add.png' title=\"". __s('Add')."\" alt=\"".__s('Add')."\"></a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."\">".__('Ticket followup')."</a>";

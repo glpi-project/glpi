@@ -440,8 +440,8 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
-      echo "<span class='b'>" . __('Item not found') . "</span></div>";
+      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('warning')."'>";
+      echo "<br><br><span class='b'>" . __('Item not found') . "</span></div>";
       self::nullFooter();
       exit ();
    }
@@ -628,8 +628,8 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
-      echo "<span class='b'>$message</span></div>";
+      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('warning')."'";
+      echo "><br><br><span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
    }
@@ -2990,7 +2990,7 @@ class Html {
    static function getCheckAllAsCheckbox($container_id) {
 
       $rand = mt_rand();
-      $out  = "<input title='".__('Check all as')."' type='checkbox' name='_checkall_$rand' ".
+      $out  = "<input title='".__s('Check all as')."' type='checkbox' name='_checkall_$rand' ".
                 "id='checkall_$rand' ".
                 "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
                                              {return true;}\">";
