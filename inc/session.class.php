@@ -555,6 +555,12 @@ class Session {
       if (function_exists('apc_fetch')) { // Try from APC cache
          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
          $TRANSLATE = apc_fetch($key);
+
+      } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
+         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
+         if (@xcache_isset($key)) {
+            $TRANSLATE = unserialize(xcache_get($key));
+         }
       }
 
       // New localization system :
@@ -566,6 +572,9 @@ class Session {
 
          if (function_exists('apc_fetch')) { // Save to APC cache
             $tmp = apc_store($key, $TRANSLATE);
+
+         } else if (function_exists('xcache_get') && !isCommandLine()) { // Save to XCache
+            $tmp = xcache_set($key, serialize($TRANSLATE));
          }
       }
 
