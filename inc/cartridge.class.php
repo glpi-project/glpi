@@ -71,13 +71,14 @@ class Cartridge extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      $item = new CartridgeItem();
-      if ($item->getFromDB($input["cartridgeitems_id"])) {
-         return array("cartridgeitems_id" => $item->fields["id"],
-                      "entities_id"       => $item->getEntityID(),
-                      "date_in"           => date("Y-m-d"));
+      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      if ($item === false) {
+         return false;
       }
-      return array();
+
+      return array("cartridgeitems_id" => $item->fields["id"],
+                   "entities_id"       => $item->getEntityID(),
+                   "date_in"           => date("Y-m-d"));
    }
 
 

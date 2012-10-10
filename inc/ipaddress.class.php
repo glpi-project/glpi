@@ -158,11 +158,7 @@ class IPAddress extends CommonDBChild {
     * @see CommonDBChild::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
-
-      $input = $this->prepareInput($input);
-
-      return parent::prepareInputForAdd($input);
-
+      return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
 
@@ -170,11 +166,7 @@ class IPAddress extends CommonDBChild {
     * @see CommonDBChild::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
-
-      $input = $this->prepareInput($input);
-
-      return parent::prepareInputForUpdate($input);
-
+      return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
 

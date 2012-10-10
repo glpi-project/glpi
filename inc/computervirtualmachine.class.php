@@ -82,24 +82,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
-   function prepareInputForAdd($input) {
-
-      // Not attached to computer -> not added
-      if (!isset($input['computers_id']) || ($input['computers_id'] <= 0)) {
-         return false;
-      }
-
-      if (!isset($input['entities_id'])) {
-         $input['entities_id'] = parent::getItemEntity('Computer', $input['computers_id']);
-      }
-
-      return $input;
-   }
-
-
    function post_getEmpty() {
 
       $this->fields["vcpu"] = '0';

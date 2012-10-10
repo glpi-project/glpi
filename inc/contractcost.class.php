@@ -60,11 +60,6 @@ class ContractCost extends CommonDBChild {
          return false;
       }
 
-      $contract = new Contract();
-      if ($contract->getFromDB($input['contracts_id'])) {
-         $input['entities_id']  = $contract->getEntityID();
-         $input['is_recursive'] = $contract->fields['is_recursive'];
-      }
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
           || ($input['end_date'] < $input['begin_date'])) {
@@ -72,7 +67,7 @@ class ContractCost extends CommonDBChild {
          $input['end_date'] = $input['begin_date'];
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 
@@ -88,7 +83,7 @@ class ContractCost extends CommonDBChild {
          $input['end_date'] = $input['begin_date'];
       }
 
-      return $input;
+      return parent::prepareInputForUpdate($input);
    }
 
 

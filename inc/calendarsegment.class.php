@@ -71,7 +71,7 @@ class CalendarSegment extends CommonDBChild {
                                           false, ERROR);
          return false;
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

@@ -154,26 +154,12 @@ abstract class FQDNLabel extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-
-      $input = $this->prepareLabelInput($input);
-
-      if (!is_array($input)) {
-         return false;
-      }
-
-      return parent::prepareInputForAdd($input);
+      return parent::prepareInputForAdd($this->prepareLabelInput($input));
    }
 
 
    function prepareInputForUpdate($input) {
-
-      $input = $this->prepareLabelInput($input);
-
-      if (!is_array($input)) {
-         return false;
-      }
-
-      return parent::prepareInputForUpdate($input);
+      return parent::prepareInputForUpdate($this->prepareLabelInput($input));
    }
 
 
