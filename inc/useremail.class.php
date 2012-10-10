@@ -221,7 +221,7 @@ class UserEmail  extends CommonDBChild {
          $input['is_default'] = 1;
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

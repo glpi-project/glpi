@@ -92,7 +92,7 @@ class Document_Item extends CommonDBRelation{
             }
          }
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

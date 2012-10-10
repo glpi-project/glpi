@@ -199,7 +199,7 @@ class Computer_Item extends CommonDBRelation{
             $item->update($updates);
          }
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

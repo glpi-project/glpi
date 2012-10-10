@@ -92,7 +92,7 @@ class RuleCriteria extends CommonDBChild {
       if (!isset($input['criteria']) || empty($input['criteria'])) {
          return false;
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

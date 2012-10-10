@@ -91,7 +91,7 @@ class RuleAction extends CommonDBChild {
       if (!isset($input['field']) || empty($input['field'])) {
          return false;
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

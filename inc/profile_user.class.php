@@ -86,7 +86,7 @@ class Profile_User extends CommonDBRelation {
                                           false, ERROR);
          return false;
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

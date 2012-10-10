@@ -91,7 +91,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             unset($input['field']);
          }
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

@@ -67,7 +67,7 @@ class Calendar_Holiday extends CommonDBRelation {
           || ($input['holidays_id'] <= 0)) {
          return false;
       }
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 
