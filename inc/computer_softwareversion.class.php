@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -700,7 +700,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'specific_actions' => array('purge' => _x('button', 'Delete permanently')));
+                              'specific_actions' => array('purge'
+                                                            => _x('button', 'Delete permanently')));
 
             Html::showMassiveActions(__CLASS__, $paramsma);
          }

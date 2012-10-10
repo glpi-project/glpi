@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -2123,7 +2123,7 @@ class Ticket extends CommonITILObject {
 
 
       $tab['followup']              = _n('Followup', 'Followups', 2);
-      
+
       $followup_condition = '';
       if (!Session::haveRight('show_full_ticket', 1)) {
          $followup_condition = "AND (`NEWTABLE`.`is_private` = '0'
@@ -4281,8 +4281,8 @@ class Ticket extends CommonITILObject {
          if ($canupdate) {
             echo "&nbsp;";
             echo "<img onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\"
-                   title=\""._sx('button', 'Add')."\" alt=\""._sx('button', 'Add')."\" class='pointer' src='".
-                   $CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                   title=\""._sx('button', 'Add')."\" alt=\""._sx('button', 'Add')."\"
+                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
          echo '</th>';
          echo "<td width='$colsize4%'>";
@@ -4425,7 +4425,8 @@ class Ticket extends CommonITILObject {
 
             if (Session::haveRight("show_group_ticket",1)) {
                $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
-                                     AND `glpi_groups_tickets`.`type` = '".CommonITILActor::REQUESTER."') ";
+                                     AND `glpi_groups_tickets`.`type`
+                                           = '".CommonITILActor::REQUESTER."') ";
             }
          }
       }
@@ -4486,9 +4487,9 @@ class Ticket extends CommonITILObject {
          default :
             $query .= "WHERE $is_deleted
                              AND ($search_users_id)
-                             AND (`status` IN ('".self::INCOMING."', 
-                                               '".self::PLANNED."', 
-                                               '".self::ASSIGNED."', 
+                             AND (`status` IN ('".self::INCOMING."',
+                                               '".self::PLANNED."',
+                                               '".self::ASSIGNED."',
                                                '".self::WAITING."'))
                              AND NOT ( $search_assign ) ".
                              getEntitiesRestrictRequest("AND","glpi_tickets");
@@ -4718,7 +4719,7 @@ class Ticket extends CommonITILObject {
          }
          echo "</table>";
 
-      } 
+      }
    }
 
    /**
@@ -4806,7 +4807,8 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["interface"] != "central") {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
                 __('Create a ticket')."&nbsp;<img src='".$CFG_GLPI["root_doc"].
-                "/pics/menu_add.png' title=\"". _sx('button', 'Add')."\" alt=\""._sx('button', 'Add')."\"></a>";
+                "/pics/menu_add.png' title=\"". _sx('button', 'Add')."\"
+                alt=\""._sx('button', 'Add')."\"></a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."\">".__('Ticket followup')."</a>";

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 define('GLPI_ROOT', '..');
@@ -47,13 +47,12 @@ echo "<table class='tab_cadre_fixe'>";
 echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
 echo "<tr><td class='center'>";
-Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
-                     __('Reinit the network topology'));
+Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network', __('Reinit the network topology'));
 echo "</td></tr>";
 
 echo "<tr><td class='center'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
-     __('Clean the network port migration errors') . "</a>";
+       __('Clean the network port migration errors') . "</a>";
 echo "</td></tr>";
 
 echo "</table>";

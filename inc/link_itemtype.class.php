@@ -37,15 +37,20 @@ if (!defined('GLPI_ROOT')) {
 
 class Link_Itemtype extends CommonDBChild {
    // From CommonDbChild
-   static public $itemtype = 'Link'; 
+   static public $itemtype = 'Link';
    static public $items_id = 'links_id';
 
+
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    /**
     * Print the HTML array for device on link
@@ -60,7 +65,7 @@ class Link_Itemtype extends CommonDBChild {
       $links_id = $link->getField('id');
 
       $canedit = $link->can($links_id, 'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       if (!Session::haveRight("link","r")
           || !$link->can($links_id, 'r')) {
@@ -72,11 +77,11 @@ class Link_Itemtype extends CommonDBChild {
                 WHERE `links_id` = '$links_id'
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
-      $types = array();
-      $used = array();
+      $types  = array();
+      $used   = array();
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $types[$data['id']] = $data;
+            $types[$data['id']]      = $data;
             $used[$data['itemtype']] = $data['itemtype'];
          }
       }
@@ -84,7 +89,7 @@ class Link_Itemtype extends CommonDBChild {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item type')."</th></tr>";
