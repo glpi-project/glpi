@@ -1280,9 +1280,6 @@ class AuthLDAP extends CommonDBTM {
                array_splice($ldap_users, 0, $values['start']);
             }
 
-//             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
-//                    $_SERVER['PHP_SELF']."'>";
-
             $form_action = '';
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {

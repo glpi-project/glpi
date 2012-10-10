@@ -194,7 +194,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
 
-      echo "<form name='form_language' id='form_language' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
