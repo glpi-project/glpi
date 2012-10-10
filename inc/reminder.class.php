@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -568,7 +568,8 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'),
+            Session::addMessageAfterRedirect(
+                     __('Error in entering dates. The starting date is later than the ending date'),
                                              false, ERROR);
          }
       }
@@ -612,7 +613,8 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'),
+            Session::addMessageAfterRedirect(
+                     __('Error in entering dates. The starting date is later than the ending date'),
                                              false, ERROR);
          }
       }
@@ -850,7 +852,7 @@ class Reminder extends CommonDBTM {
             if (!empty($readpriv)) {
                $readpriv .= " OR ";
             }
-            $readpriv .= " `glpi_groups_reminders`.`groups_id` = '$who_group'";         
+            $readpriv .= " `glpi_groups_reminders`.`groups_id` = '$who_group'";
          }
          if (!empty($readpriv)) {
             $readpriv = '('.$readpriv.')';
@@ -1082,8 +1084,8 @@ class Reminder extends CommonDBTM {
       if (self::canCreate()) {
          echo "<span class='reminder_right'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"". __s('Add')."\">".
-              "</a></span>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
+                title=\"". __s('Add')."\"></a></span>";
       }
 
       echo "</div></th></tr>\n";
@@ -1169,7 +1171,8 @@ class Reminder extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
-                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete permanently')) );
+                           'specific_actions' => array('deletevisibility'
+                                                         => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
@@ -1194,7 +1197,8 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]' value='1' >";
+                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]'
+                          value='1' >";
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1211,7 +1215,8 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1242,7 +1247,8 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]'
+                          value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1266,7 +1272,8 @@ class Reminder extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";

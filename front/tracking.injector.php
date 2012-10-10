@@ -31,7 +31,7 @@
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer
 /** @file
-* @brief 
+* @brief
 */
 
 define('GLPI_ROOT', '..');
@@ -81,7 +81,7 @@ if (isset($_POST['add'])) {
          echo "</div>";
       } else {
          echo "<div class='center b spaced'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='".__s('OK')."'>";
          Session::addMessageAfterRedirect(__('Thank you for using our automatic helpdesk system.'));
          Html::displayMessageAfterRedirect();
          echo "</div>";
@@ -89,7 +89,7 @@ if (isset($_POST['add'])) {
 
    } else {
       echo "<div class='center'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".__s('warning')."'><br>";
       Html::displayMessageAfterRedirect();
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>".
             __('Back')."</a></div>";

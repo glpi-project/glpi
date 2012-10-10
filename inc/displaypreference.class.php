@@ -393,9 +393,10 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value=\""._sx('button', 'Delete permanently')."\" src='".
+                  echo "<input type='image' name='delete' value=\"".
+                         _sx('button', 'Delete permanently')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
-                         _sx('button', 'Delete permanently')."\" title=\""._sx('button', 'Delete permanently')."\">";
+                         __s('Delete permanently')."\" title=\"".__s('Delete permanently')."\">";
                   Html::closeForm();
                   echo "</td>\n";
                   echo "</tr>";
@@ -555,9 +556,10 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value=\""._sx('button', 'Delete permanently')."\" src='".
+                  echo "<input type='image' name='delete' value=\"".
+                         _sx('button', 'Delete permanently')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
-                         _sx('button', 'Delete permanently')."\" title=\""._sx('button', 'Delete permanently')."\">";
+                         __s('Delete permanently')."\" title=\"". __s('Delete permanently')."\">";
                   Html::closeForm();
                   echo "</td>\n";
                }

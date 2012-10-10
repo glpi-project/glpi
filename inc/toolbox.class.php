@@ -831,8 +831,7 @@ class Toolbox {
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
                __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
-               "\" title=\"".
-               __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
+               "\" title=\"". __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
                "\"></td>";
       }
       echo "</tr>";
@@ -855,7 +854,7 @@ class Toolbox {
               "\"></td>";
       }
       echo "</tr>";
-      
+
       //Test for ctype extension loaded or not (forhtmlawed)
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test ctype functions')."</td>";
 

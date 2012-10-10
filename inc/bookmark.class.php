@@ -257,7 +257,8 @@ class Bookmark extends CommonDBTM {
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
-         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
+         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\"
+                class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div>";
@@ -367,7 +368,8 @@ class Bookmark extends CommonDBTM {
                foreach ($query_tab_save['field2'] as $key => $val) {
                   $opt = Search::getCleanedOptions($query_tab_save['itemtype2'][$key]);
                   // Use if meta type is valid and option available
-                  if (!in_array($query_tab_save['itemtype2'][$key],$meta_ok) || !isset($opt[$val])) {
+                  if (!in_array($query_tab_save['itemtype2'][$key], $meta_ok)
+                      || !isset($opt[$val])) {
                      $query_tab['glpisearchcount2']--;
                      $partial_load = true;
                   } else {
@@ -588,13 +590,13 @@ class Bookmark extends CommonDBTM {
                echo "<td>";
                if ($canedit) {
                   echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".
-                           $this->fields["id"]."\" alt='"._sx('button', 'Update')."'>".
+                           $this->fields["id"]."\" alt='".__s('Update')."'>".
                            $this->fields["name"]."</a>";
                } else {
                   echo $this->fields["name"];
                }
                echo "</td>";
-                          
+
                echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;id=".
                            $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
                echo "</td>";
@@ -602,13 +604,13 @@ class Bookmark extends CommonDBTM {
                if ($this->fields['type'] == self::SEARCH) {
                   if (is_null($this->fields['IS_DEFAULT'])) {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
-                            "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".__s('Not default search')."\"
-                            title=\"".__s('Not default search')."\">".
+                            "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
+                            __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
                             "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
                   } else {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;".
-                            "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".__s('Default search')."\"
-                            title=\"".__s('Default search')."\">".
+                            "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
+                            __s('Default search')."\" title=\"".__s('Default search')."\">".
                             "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
                   }
                }
