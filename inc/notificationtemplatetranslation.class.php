@@ -241,7 +241,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-      return self::cleanContentHtml($input);
+      return parent::prepareInputForAdd(self::cleanContentHtml($input));
    }
 
 
@@ -266,7 +266,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
-      return self::cleanContentHtml($input);
+      return parent::prepareInputForUpdate(self::cleanContentHtml($input));
    }
 
 

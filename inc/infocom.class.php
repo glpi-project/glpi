@@ -234,16 +234,11 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
-         if ($item = getItemForItemtype($input['itemtype'])) {
-            if ($item->getFromDB($input['items_id'])) {
-               $input['alert']        = Entity::getUsedConfig('default_infocom_alert',
-                                                              $item->getEntityID());
-               $input['entities_id']  = $item->getEntityID();
-               $input['is_recursive'] = intval($item->isRecursive());
-               return $input;
-            }
-         }
+         $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+         $input['alert'] = Entity::getUsedConfig('default_infocom_alert', $item->getEntityID());
+         return parent::prepareInputForAdd($input);
       }
+
       return false;
    }
 
@@ -380,7 +375,7 @@ class Infocom extends CommonDBChild {
          }
       }
 
-      return $input;
+      return parent::prepareInputForUpdate($input);
    }
 
 

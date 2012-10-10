@@ -130,7 +130,7 @@ class Reservation extends CommonDBChild {
       // Restore fields
       $this->fields = $oldfields;
 
-      return $input;
+      return parent::prepareInputForUpdate($input);
    }
 
 
@@ -176,7 +176,7 @@ class Reservation extends CommonDBChild {
          return false;
       }
 
-      return $input;
+      return parent::prepareInputForAdd($input);
    }
 
 

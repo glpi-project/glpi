@@ -90,24 +90,12 @@ class NetworkPortInstantiation extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-
-      $input = $this->prepareInput($input);
-
-      if (!is_array($input)) {
-         return false;
-      }
-      return parent::prepareInputForAdd($input);
+      return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
 
    function prepareInputForUpdate($input) {
-
-      $input = $this->prepareInput($input);
-
-      if (!is_array($input)) {
-         return false;
-      }
-      return parent::prepareInputForUpdate($input);
+      return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
 

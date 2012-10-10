@@ -397,7 +397,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       /// TODO : must we apply this filter for the update ?
       // If the entity is inherited from the item, then set it
-      if ($item && $item->isEntityForwardTo(get_called_class())) {
+      if ($item
+          && $item->isEntityForwardTo(get_called_class())) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
       }
