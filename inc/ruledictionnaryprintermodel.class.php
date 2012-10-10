@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
@@ -47,7 +47,11 @@ class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
    **/
    function getCriterias() {
 
-      $criterias                          = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
 
       $criterias['name']['field']         = 'name';
       $criterias['name']['name']          = __('Model');

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
@@ -44,7 +44,12 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
 
    function getCriterias() {
 
-      $criterias                  = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
+
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Operating system');
       $criterias['name']['table'] = 'glpi_operatingsystems';

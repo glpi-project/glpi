@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryComputerType extends RuleDictionnaryDropdown {
@@ -44,7 +44,12 @@ class RuleDictionnaryComputerType extends RuleDictionnaryDropdown {
 
    function getCriterias() {
 
-      $criterias                  = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
+
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Type');
       $criterias['name']['table'] = 'glpi_computertypes';

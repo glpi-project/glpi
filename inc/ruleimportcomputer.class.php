@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -74,7 +74,11 @@ class RuleImportComputer extends Rule {
 
    function getCriterias() {
 
-      $criterias                                 = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
 
       $criterias['entities_id']['table']         = 'glpi_entities';
       $criterias['entities_id']['field']         = 'entities_id';

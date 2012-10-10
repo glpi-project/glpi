@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -88,7 +88,11 @@ class RuleMailCollector extends Rule {
    **/
    function getCriterias() {
 
-      $criterias                                      = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
 
       $criterias['mailcollector']['field']            = 'name';
       $criterias['mailcollector']['name']             = __('Mails receiver');

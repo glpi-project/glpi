@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryMonitorModel extends RuleDictionnaryDropdown {
@@ -47,7 +47,11 @@ class RuleDictionnaryMonitorModel extends RuleDictionnaryDropdown {
    **/
    function getCriterias() {
 
-      $criterias                          = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
 
       $criterias['name']['field']         = 'name';
       $criterias['name']['name']          = __('Model');

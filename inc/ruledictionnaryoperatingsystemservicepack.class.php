@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown {
@@ -47,7 +47,12 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
    **/
    function getCriterias() {
 
-      $criterias                  = array();
+      static $criterias = array();
+
+      if (count($criterias)) {
+         return $criterias;
+      }
+
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Service pack');
       $criterias['name']['table'] = 'glpi_operatingsystemservicepacks';
