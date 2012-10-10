@@ -62,17 +62,6 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function prepareInputForAdd($input) {
-
-      // Not attached to software -> not added
-      if (!isset($input['softwares_id']) || ($input['softwares_id'] <= 0)) {
-         return false;
-      }
-
-      return parent::prepareInputForAdd($input);
-   }
-
-
    function defineTabs($options=array()) {
 
       $ong = array();

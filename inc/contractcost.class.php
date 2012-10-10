@@ -55,11 +55,6 @@ class ContractCost extends CommonDBChild {
    **/
    function prepareInputForAdd($input) {
 
-      // Not attached to computer -> not added
-      if (!isset($input['contracts_id']) || ($input['contracts_id'] <= 0)) {
-         return false;
-      }
-
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
           || ($input['end_date'] < $input['begin_date'])) {
