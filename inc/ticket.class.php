@@ -3672,14 +3672,17 @@ class Ticket extends CommonITILObject {
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td>";
-         echo "<td class='nopadding'>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
-                     $tt->getMandatoryMark('slas_id').
-                     $tt->getEndHiddenFieldText('slas_id')."</td>";
-         echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue('slas_id');
-         Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
-                                    'value'  => $this->fields["slas_id"]));
-         echo $tt->getEndHiddenFieldValue('slas_id',$this);
-         echo "</td></tr></table>";
+         if ($canupdate) {
+            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
+                        $tt->getMandatoryMark('slas_id').
+                        $tt->getEndHiddenFieldText('slas_id')."</td>";
+            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue('slas_id');
+            Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
+                                       'value'  => $this->fields["slas_id"]));
+            echo $tt->getEndHiddenFieldValue('slas_id',$this);
+            echo "</td>";
+         }
+         echo "</tr></table>";
       }
 
       echo "</td></tr>";
