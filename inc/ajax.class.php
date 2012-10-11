@@ -392,7 +392,7 @@ class Ajax {
                $out .=  "'+Ext.get('$toobserve').getValue()+'";
 
             } else {
-               if (preg_match("/'/",$val)) {
+               if (preg_match("/['\"]/",$val)) {
                   $out .=  rawurlencode($val);
                } else {
                   $out .=  $val;

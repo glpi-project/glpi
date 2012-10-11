@@ -946,7 +946,7 @@ class Change extends CommonITILObject {
       $params = array('maxlength' => 250,
                       'size'      => 50,
                       'name'      => 'name',
-                      'data'      => serialize($this->fields["name"]));
+                      'data'      => rawurlencode($this->fields["name"]));
       Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
       echo "}";
       echo "</script>\n";
@@ -977,7 +977,7 @@ class Change extends CommonITILObject {
       $params = array('rows'  => 6,
                       'cols'  => 50,
                       'name'  => 'content',
-                      'data'  => serialize($this->fields["content"]));
+                      'data'  => rawurlencode($this->fields["content"]));
       Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
       echo "}";
       echo "</script>\n";

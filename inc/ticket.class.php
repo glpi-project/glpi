@@ -4035,7 +4035,7 @@ class Ticket extends CommonITILObject {
          $params = array('maxlength' => 250,
                          'size'      => 90,
                          'name'      => 'name',
-                         'data'      => (serialize($this->fields["name"])));
+                         'data'      => rawurlencode($this->fields["name"]));
          Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php",
                                 $params);
          echo "}";
@@ -4082,7 +4082,7 @@ class Ticket extends CommonITILObject {
          $params = array('rows'  => 6,
                          'cols'  => 90,
                          'name'  => 'content',
-                         'data'  => serialize($this->fields["content"]));
+                         'data'  => rawurlencode($this->fields["content"]));
          Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php",
                                 $params);
          echo "}";

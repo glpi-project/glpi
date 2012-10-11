@@ -46,7 +46,7 @@ if (isset($_POST['name'])) {
    echo "<input type='text' ".(isset($_POST["size"])?" size='".$_POST["size"]."' ":"")." ".
          (isset($_POST["maxlength"])?"maxlength='".$_POST["maxlength"]."' ":"")." name='".
          $_POST['name']."' value=\"".
-         Html::cleanInputText((unserialize(stripslashes($_POST["data"]))))."\">";
+         Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"]))))."\">";
 }
 
 ?>
