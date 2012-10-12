@@ -149,7 +149,18 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * Factorization of prepareInputForAdd, prepareInputForUpdate ...
+    * @brief Factorization of prepareInputForAdd, prepareInputForUpdate ...
+    * Two checks are performed : 1°) do we try to create or update a CommonDBConnexity that is not
+    * attached although it must ? 2°) if we change the item on which we attach the
+    * CommonDBConnexity, are we sure that we have Update right on the new item ?
+    *
+    * @param $input  (array) the $input parameter of prepareInputForAdd or preprareInputForUpdate
+    * @param $itemtype       the name of the field containing the type of the item
+    * @param $items_id       the name of the field containing the id of the item
+    * @param $mustBeAttached true if we cannot create a CommonDBConnexity that is not attached
+    *                        (cf. first check)
+    * @param $type_of_check  the type of the check (ie. : 'add' or 'update' to define a smarter
+    *                        message in case of check failure
     *
     * @result false if we cannot do the action (problem of rights), the item if we can load it,
     *         or true if we cannot load the item (and the element should not be attached
