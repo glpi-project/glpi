@@ -149,6 +149,56 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
+    * Factorization of prepareInputForAdd, prepareInputForUpdate ...
+    *
+    * @result false if we cannot do the action (problem of rights), the item if we can load it,
+    *         or true if we cannot load the item (and the element should not be attached
+    **/
+   function checkInputForAllPrepareInput(array $input, $itemtype, $items_id, $mustBeAttached,
+                                         $type_of_check) {
+
+      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+
+      if ($item === false) {
+         if ($mustBeAttached) {
+            //TRANS: %1$s is the type of action : 'add', 'update ' or 'delete'
+            Session::addMessageAfterRedirect(sprintf(__('Cannot %1$s item: it must be attach'),
+                                                     $type_of_check), INFO, true);
+            return false;
+         }
+         return true;
+      }
+
+      if (preg_match('/^itemtype/', $itemtype)) {
+         if (isset($this->fields[$itemtype])) {
+            $previous_itemtype = $this->fields[$itemtype];
+         } else {
+            $previous_itemtype = '';
+         }
+      } else {
+         $previous_itemtype = $itemtype;
+      }
+
+      if (isset($this->fields[$items_id])) {
+         $previous_items_id = $this->fields[$items_id];
+      } else {
+         $previous_items_id = -1;
+      }
+
+      if ($previous_itemtype !== $item->getType() || $previous_items_id != $item->getID()) {
+         if ((!$item->canUpdate()) || (!$item->canUpdateItem())) {
+            //TRANS: %1$s is the type of action : 'add', 'update ' or 'delete'
+            Session::addMessageAfterRedirect(sprintf(__('Cannot %1$s item: not enough right on the item'),
+                                                     $type_of_check), INFO, true);
+            return false;
+         }
+      }
+
+      return $item;
+   }
+
+
+   /**
     * Factorization of canCreate, canView, canUpate and canDelete. It checks the ability to
     * create, view, update or delete the item if it is possible (ie : $itemtype != 'itemtype')
     *
