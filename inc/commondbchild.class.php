@@ -347,17 +347,15 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
-      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
+                                                   static::$mustBeAttached, 'add');
 
-      // Invalidate the element if it is not attached to an item although it must
-      if (static::$mustBeAttached
-          && !$item) {
-         Session::addMessageAfterRedirect(__('Cannot create item: it must be attach'), INFO, true);
+      if ($item === false) {
          return false;
       }
 
       // Set its entity according to the item, if it should
-      if ($item
+      if (($item instanceof CommonDBTM)
           && $item->isEntityForwardTo(get_called_class())) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
@@ -384,20 +382,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $input[static::$items_id] = $this->fields[static::$items_id];
       }
 
-      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
+                                                   static::$mustBeAttached, 'update');
 
-      /// TODO : must we apply this filter for the update ?
-      // Return invalidate the element if it must be attached but it won't
-      if (static::$mustBeAttached
-          && ($item === false)) {
-         Session::addMessageAfterRedirect(__('Cannot update the item: it must be attached'), INFO,
-                                          true);
+      if ($item === false) {
          return false;
       }
 
       /// TODO : must we apply this filter for the update ?
       // If the entity is inherited from the item, then set it
-      if ($item
+      if (($item instanceof CommonDBTM)
           && $item->isEntityForwardTo(get_called_class())) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
