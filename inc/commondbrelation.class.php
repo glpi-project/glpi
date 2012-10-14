@@ -38,42 +38,30 @@ if (!defined('GLPI_ROOT')) {
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBRelation extends CommonDBConnexity {
 
-   // Item 1 informations
-   // * definition
+   // Mapping between DB fields
    static public $itemtype_1; // Type ref or field name (must start with itemtype)
    static public $items_id_1; // Field name
-
-   // * rights
    static public $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM ;
-   static public $mustBeAttached_1       = true;
 
-   // * log
+   static public $itemtype_2; // Type ref or field name (must start with itemtype)
+   static public $items_id_2; // Field name
+   static public $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+
+   /// If both items must be checked for rights (default is only one)
+   static public $checkAlwaysBothItems   = false;
+
+   static public $check_entity_coherency = true;
+
    static public $logs_for_itemtype_1    = true;
+   static public $logs_for_itemtype_2    = true;
+
    static public $log_history_1_add      = Log::HISTORY_ADD_RELATION;
    static public $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
    static public $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
 
-   // Item 2 informations
-   // * definition
-   static public $itemtype_2; // Type ref or field name (must start with itemtype)
-   static public $items_id_2; // Field name
-
-   // * rights
-   static public $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
-   static public $mustBeAttached_2       = true;
-
-   // * log
-   static public $logs_for_itemtype_2    = true;
    static public $log_history_2_add      = Log::HISTORY_ADD_RELATION;
    static public $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
    static public $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
-
-   // Relation between items to check
-   /// If both items must be checked for rights (default is only one)
-   static public $checkAlwaysBothItems   = false;
-   /// If both items must be in viewable each other entities
-   static public $check_entity_coherency = true;
-
 
 
    /**
@@ -348,58 +336,48 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth = false) {
 
-      $OneWriteIsEnough = (!$forceCheckBoth
-                           && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
-                           && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights);
 
       try {
          $item1 = NULL;
-         $can1  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
-                                          static::$itemtype_1, static::$items_id_1, $item1);
-         if ($OneWriteIsEnough) {
-            $view1 = $this->canConnexityItem($method, $methodNotItem,
-                                             static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_1,
-                                             static::$items_id_1, $item1);
-         }
-      } catch (CommonDBConnexityItemNotFound $e) {
-         if (static::$mustBeAttached_1) {
-            return false;
-         }
-         $can1         = true;
-         $view1        = true;
-         $check_entity = false; // If no item, then, we cannot check entities
-      }
+         $can1 = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
+                                         static::$itemtype_1, static::$items_id_1, $item1);
 
-      try {
          $item2 = NULL;
          $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
                                           static::$itemtype_2, static::$items_id_2, $item2);
-         if ($OneWriteIsEnough) {
-            $view2 = $this->canConnexityItem($method, $methodNotItem,
-                                             static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_2,
-                                             static::$items_id_2, $item2);
-         }
+
       } catch (CommonDBConnexityItemNotFound $e) {
-         if (static::$mustBeAttached_2) {
-            return false;
-         }
-         $can2         = true;
-         $view2        = true;
-         $check_entity = false; // If no item, then, we cannot check entities
+         // if one of both Item is not reachable, then all following tests will fail because
+         // $can1 or $can2 will always be false ...
+         return false;
       }
 
-      if ($OneWriteIsEnough) {
-         if ((!$can1 && !$can2)
-             || ($can1 && !$view2)
-             || ($can2 && !$view1)) {
+      /// Check only one if SAME RIGHT for both items and not force checkBoth
+      if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
+         && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
+         && !$forceCheckBoth) {
+         if ($can1) {
+            // Can view the second one ?
+            if (!$this->canConnexityItem($method, $methodNotItem, static::HAVE_VIEW_RIGHT_ON_ITEM,
+                                         static::$itemtype_2, static::$items_id_2, $item2)) {
+               return false;
+            }
+         } else if ($can2) {
+            // Can view the first one ?
+            if (!$this->canConnexityItem($method, $methodNotItem, static::HAVE_VIEW_RIGHT_ON_ITEM,
+                                         static::$itemtype_1, static::$items_id_1, $item1)) {
+               return false;
+            }
+         } else {
+            // No item have right
             return false;
          }
       } else {
+         // Check both objects with rights
          if (!$can1 || !$can2) {
             return false;
          }
       }
-
 
       // Check coherency of entities
       if ($check_entity && static::$check_entity_coherency) {
@@ -497,68 +475,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       return $this->canRelationItem('canUpdateItem', 'canUpdate', false, static::$checkAlwaysBothItems);
    }
 
-
-   function prepareInputForAdd($input) {
-
-      if (!is_array($input)) {
-         return false;
-      }
-
-      $item1 = static::checkInputForAllPrepareInput($input, static::$itemtype_1,
-                                                    static::$items_id_1, static::$mustBeAttached_1,
-                                                    'add');
-
-      if ($item1 === false) {
-         return false;
-      }
-
-      $item2 = static::checkInputForAllPrepareInput($input, static::$itemtype_2,
-                                                    static::$items_id_2, static::$mustBeAttached_2,
-                                                    'add');
-
-      if ($item2 === false) {
-         return false;
-      }
-
-      return parent::prepareInputForAdd($input);
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   function prepareInputForUpdate($input) {
-
-      if (!is_array($input)) {
-         return false;
-      }
-
-      foreach (array(static::$itemtype_1, static::$items_id_1,
-                     static::$itemtype_2, static::$items_id_2) as $field_name) {
-         if (!isset($input[$field_name]) && isset($this->fields[$field_name])) {
-            $input[$field_name] = $this->fields[$field_name];
-         }
-      }
-
-      $item1 = static::checkInputForAllPrepareInput($input, static::$itemtype_1,
-                                                    static::$items_id_1, static::$mustBeAttached_1,
-                                                    'update');
-
-      if ($item1 === false) {
-         return false;
-      }
-
-      $item2 = static::checkInputForAllPrepareInput($input, static::$itemtype_2,
-                                                    static::$items_id_2, static::$mustBeAttached_2,
-                                                    'update');
-
-      if ($item2 === false) {
-         return false;
-      }
-
-
-      return parent::prepareInputForUpdate($input);
-   }
 
    /**
     * Get the history name of first item
