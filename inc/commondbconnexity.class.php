@@ -168,7 +168,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    function checkInputForAllPrepareInput(array $input, $itemtype, $items_id, $mustBeAttached,
                                          $type_of_check) {
 
-      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      $item = static::getItemFromArray($itemtype, $items_id, $input);
 
       if ($item === false) {
          if ($mustBeAttached) {
