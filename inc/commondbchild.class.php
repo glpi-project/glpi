@@ -374,12 +374,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
-      // Get need informations :
-      if (!isset($input[static::$itemtype]) && isset($this->fields[static::$itemtype])) {
-         $input[static::$itemtype] = $this->fields[static::$itemtype];
-      }
-      if (!isset($input[static::$items_id]) && isset($this->fields[static::$items_id])) {
-         $input[static::$items_id] = $this->fields[static::$items_id];
+      foreach (array(static::$itemtype, static::$items_id) as $field_name) {
+         if (!isset($input[$field_name]) && isset($this->fields[$field_name])) {
+            $input[$field_name] = $this->fields[$field_name];
+         }
       }
 
       $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
