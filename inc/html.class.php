@@ -355,7 +355,7 @@ class Html {
       if ($units['minute']>0) {
          if ($display_sec) {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
-            return sprintf(_('%1$d minutes %2$d seconds'), $units['minute'], $units['second']);
+            return sprintf(__('%1$d minutes %2$d seconds'), $units['minute'], $units['second']);
          }
          //TRANS: %d number of minutes
          return sprintf(_n('%d minute', '%d minutes', $units['minute']), $units['minute']);
