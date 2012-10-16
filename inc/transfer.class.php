@@ -2987,16 +2987,14 @@ class Transfer extends CommonDBTM {
          // Create item
          $this->check(-1,'w');
       }
-
       $params = array();
       if (!Session::haveRight("transfer","w")) {
          $params['readonly']=true;
       }
-
+      
       if ($edit_form) {
          $this->showTabs($options);
          $this->showFormHeader($options);
-
       } else {
          echo "<form method='post' name=form action='".$options['target']."'>";
          echo "<div class='center' id='tabsbody' >";
@@ -3200,14 +3198,12 @@ class Transfer extends CommonDBTM {
       Dropdown::showFromArray('clean_contract', $clean, $params);
       echo "</td></tr>";
 
-      if (Session::haveRight("transfer", "w")) {
-         if ($edit_form) {
-            $this->showFormButtons($options);
-            $this->addDivForTabs();
-         } else {
-            echo "</table></div>";
-            Html::closeForm();
-         }
+      if ($edit_form) {
+         $this->showFormButtons($options);
+         $this->addDivForTabs();
+      } else {
+         echo "</table></div>";
+         Html::closeForm();
       }
    }
 
