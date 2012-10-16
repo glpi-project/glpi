@@ -32,7 +32,7 @@ class PatternFactory
      * @param  string|Pattern\PatternInterface $patternName
      * @param  array|Traversable|Pattern\PatternOptions $options
      * @return Pattern\PatternInterface
-     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public static function factory($patternName, $options = array())
     {

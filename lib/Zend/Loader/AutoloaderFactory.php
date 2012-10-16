@@ -11,6 +11,7 @@
 namespace Zend\Loader;
 
 use ReflectionClass;
+use Traversable;
 
 require_once __DIR__ . '/SplAutoloader.php';
 
@@ -74,7 +75,7 @@ abstract class AutoloaderFactory
             return;
         }
 
-        if (!is_array($options) && !($options instanceof \Traversable)) {
+        if (!is_array($options) && !($options instanceof Traversable)) {
             require_once __DIR__ . '/Exception/InvalidArgumentException.php';
             throw new Exception\InvalidArgumentException(
                 'Options provided must be an array or Traversable'
@@ -84,7 +85,6 @@ abstract class AutoloaderFactory
         foreach ($options as $class => $options) {
             if (!isset(static::$loaders[$class])) {
                 $autoloader = static::getStandardAutoloader();
-                echo $class;
                 if (!class_exists($class) && !$autoloader->autoload($class)) {
                     require_once 'Exception/InvalidArgumentException.php';
                     throw new Exception\InvalidArgumentException(

@@ -103,6 +103,7 @@ class Filesystem extends AbstractAdapter implements
     /**
      * Flush the whole storage
      *
+     * @throws Exception\RuntimeException
      * @return boolean
      */
     public function flush()
@@ -179,6 +180,7 @@ class Filesystem extends AbstractAdapter implements
      * Remove items by given namespace
      *
      * @param string $namespace
+     * @throws Exception\RuntimeException
      * @return boolean
      */
     public function clearByNamespace($namespace)
@@ -191,8 +193,6 @@ class Filesystem extends AbstractAdapter implements
         . str_repeat(\DIRECTORY_SEPARATOR . $nsPrefix . '*', $options->getDirLevel())
         . \DIRECTORY_SEPARATOR . $nsPrefix . '*';
         $glob = new GlobIterator($path, $flags);
-        $time = time();
-        $ttl  = $options->getTtl();
 
         ErrorHandler::start();
         foreach ($glob as $pathname) {
@@ -212,6 +212,7 @@ class Filesystem extends AbstractAdapter implements
      * Remove items matching given prefix
      *
      * @param string $prefix
+     * @throws Exception\RuntimeException
      * @return boolean
      */
     public function clearByPrefix($prefix)
@@ -224,8 +225,6 @@ class Filesystem extends AbstractAdapter implements
             . str_repeat(\DIRECTORY_SEPARATOR . $nsPrefix . '*', $options->getDirLevel())
             . \DIRECTORY_SEPARATOR . $nsPrefix . $prefix . '*';
         $glob = new GlobIterator($path, $flags);
-        $time = time();
-        $ttl  = $options->getTtl();
 
         ErrorHandler::start();
         foreach ($glob as $pathname) {
@@ -314,8 +313,6 @@ class Filesystem extends AbstractAdapter implements
             . str_repeat(\DIRECTORY_SEPARATOR . $prefix . '*', $options->getDirLevel())
             . \DIRECTORY_SEPARATOR . $prefix . '*.tag';
         $glob = new GlobIterator($path, $flags);
-        $time = time();
-        $ttl  = $options->getTtl();
 
         foreach ($glob as $pathname) {
             $diff = array_diff($tags, explode("\n", $this->getFileContent($pathname)));
@@ -383,6 +380,7 @@ class Filesystem extends AbstractAdapter implements
     /**
      * Get total space in bytes
      *
+     * @throws Exception\RuntimeException
      * @return int|float
      */
     public function getTotalSpace()
@@ -419,6 +417,7 @@ class Filesystem extends AbstractAdapter implements
     /**
      * Get available space in bytes
      *
+     * @throws Exception\RuntimeException
      * @return int|float
      */
     public function getAvailableSpace()
@@ -610,7 +609,6 @@ class Filesystem extends AbstractAdapter implements
      * Internal method to test if an item exists.
      *
      * @param  string $normalizedKey
-     * @param  array  $normalizedOptions
      * @return boolean
      * @throws Exception\ExceptionInterface
      */
@@ -660,6 +658,7 @@ class Filesystem extends AbstractAdapter implements
      * Get metadatas
      *
      * @param array $keys
+     * @param array $options
      * @return array Associative array of keys and metadata
      */
     public function getMetadatas(array $keys, array $options = array())
@@ -879,7 +878,6 @@ class Filesystem extends AbstractAdapter implements
      */
     protected function internalSetItem(& $normalizedKey, & $value)
     {
-        $options  = $this->getOptions();
         $filespec = $this->getFileSpec($normalizedKey);
         $this->prepareDirectoryStructure($filespec);
 
@@ -898,7 +896,6 @@ class Filesystem extends AbstractAdapter implements
      */
     protected function internalSetItems(array & $normalizedKeyValuePairs)
     {
-        $baseOptions = $this->getOptions();
         $oldUmask    = null;
 
         // create an associated array of files and contents to write
@@ -1027,7 +1024,7 @@ class Filesystem extends AbstractAdapter implements
     /**
      * Internal method to reset lifetime of an item
      *
-     * @param  string $key
+     * @param  string $normalizedKey
      * @return boolean
      * @throws Exception\ExceptionInterface
      */

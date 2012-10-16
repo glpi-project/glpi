@@ -52,9 +52,8 @@ class CallbackHandler
     /**
      * Constructor
      *
-     * @param  string                       $event    Event to which slot is subscribed
      * @param  string|array|object|callable $callback PHP callback
-     * @param  array                        $options  Options used by the callback handler (e.g., priority)
+     * @param  array                        $metadata  Callback metadata
      */
     public function __construct($callback, array $metadata = array())
     {
@@ -73,6 +72,7 @@ class CallbackHandler
      * to registering the callback.
      *
      * @param  callable $callback
+     * @throws Exception\InvalidCallbackException
      * @return void
      */
     protected function registerCallback($callback)

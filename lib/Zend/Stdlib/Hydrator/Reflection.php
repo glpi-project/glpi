@@ -12,7 +12,6 @@ namespace Zend\Stdlib\Hydrator;
 
 use ReflectionClass;
 use Zend\Stdlib\Exception;
-use Zend\Stdlib\Hydrator\HydratorInterface;
 
 class Reflection extends AbstractHydrator
 {
@@ -64,7 +63,8 @@ class Reflection extends AbstractHydrator
      * class has not been loaded.
      *
      * @static
-     * @param string|object $object
+     * @param string|object $input
+     * @throws Exception\InvalidArgumentException
      * @return array
      */
     protected static function getReflProperties($input)
@@ -79,7 +79,7 @@ class Reflection extends AbstractHydrator
             $reflClass      = new ReflectionClass($input);
             $reflProperties = $reflClass->getProperties();
 
-            foreach ($reflProperties as $key => $property) {
+            foreach ($reflProperties as $property) {
                 $property->setAccessible(true);
                 self::$reflProperties[$input][$property->getName()] = $property;
             }

@@ -12,12 +12,10 @@ namespace Zend\Cache\Storage\Adapter;
 
 use ArrayObject;
 use Memcached as MemcachedResource;
-use MemcachedException;
 use stdClass;
 use Traversable;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
-use Zend\Cache\Storage\CallbackEvent;
 use Zend\Cache\Storage\Capabilities;
 use Zend\Cache\Storage\Event;
 use Zend\Cache\Storage\FlushableInterface;
@@ -303,7 +301,7 @@ class Memcached extends AbstractAdapter implements
             throw $this->getExceptionByResultCode($this->memcached->getResultCode());
         }
 
-        foreach ($result as $key => & $value) {
+        foreach ($result as & $value) {
             $value = array();
         }
 

@@ -262,7 +262,8 @@ class ModuleAutoloader implements SplAutoloader
      * registerPaths
      *
      * @param array|Traversable $paths
-     * @return ModuleLoader
+     * @throws \InvalidArgumentException
+     * @return ModuleAutoloader
      */
     public function registerPaths($paths)
     {
@@ -289,8 +290,9 @@ class ModuleAutoloader implements SplAutoloader
      * registerPath
      *
      * @param string $path
-     * @param string $moduleName
-     * @return ModuleLoader
+     * @param bool|string $moduleName
+     * @throws \InvalidArgumentException
+     * @return ModuleAutoloader
      */
     public function registerPath($path, $moduleName = false)
     {
@@ -339,6 +341,7 @@ class ModuleAutoloader implements SplAutoloader
      * Normalize a path for insertion in the stack
      *
      * @param  string $path
+     * @param  bool   $trailingSlash Whether trailing slash should be included
      * @return string
      */
     public static function normalizePath($path, $trailingSlash = true)

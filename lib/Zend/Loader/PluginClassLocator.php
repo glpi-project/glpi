@@ -10,6 +10,8 @@
 
 namespace Zend\Loader;
 
+use Traversable;
+
 /**
  * Plugin class locator interface
  *
@@ -42,4 +44,3 @@ interface PluginClassLocator extends ShortNameLocator, \IteratorAggregate
      */
     public function getRegisteredPlugins();
 }
-

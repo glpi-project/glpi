@@ -36,7 +36,7 @@ class ClearExpiredByFactor extends AbstractPlugin
      *
      * @param  EventManagerInterface $events
      * @param  int                   $priority
-     * @return ClearByFactor
+     * @return ClearExpiredByFactor
      * @throws Exception\LogicException
      */
     public function attach(EventManagerInterface $events, $priority = 1)
@@ -62,7 +62,7 @@ class ClearExpiredByFactor extends AbstractPlugin
      * Detach
      *
      * @param  EventManagerInterface $events
-     * @return ClearByFactor
+     * @return ClearExpiredByFactor
      * @throws Exception\LogicException
      */
     public function detach(EventManagerInterface $events)

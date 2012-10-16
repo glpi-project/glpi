@@ -36,12 +36,8 @@ class AdapterPluginManager extends AbstractPluginManager
         'filesystem'     => 'Zend\Cache\Storage\Adapter\Filesystem',
         'memcached'      => 'Zend\Cache\Storage\Adapter\Memcached',
         'memory'         => 'Zend\Cache\Storage\Adapter\Memory',
-        'sysvshm'        => 'Zend\Cache\Storage\Adapter\SystemVShm',
-        'systemvshm'     => 'Zend\Cache\Storage\Adapter\SystemVShm',
-        'sqlite'         => 'Zend\Cache\Storage\Adapter\Sqlite',
         'dba'            => 'Zend\Cache\Storage\Adapter\Dba',
         'wincache'       => 'Zend\Cache\Storage\Adapter\WinCache',
-        'xcache'         => 'Zend\Cache\Storage\Adapter\XCache',
         'zendserverdisk' => 'Zend\Cache\Storage\Adapter\ZendServerDisk',
         'zendservershm'  => 'Zend\Cache\Storage\Adapter\ZendServerShm',
     );

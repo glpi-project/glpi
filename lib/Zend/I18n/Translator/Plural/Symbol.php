@@ -131,6 +131,7 @@ class Symbol
     /**
      * Get null denotation.
      *
+     * @throws Exception\ParseException
      * @return Symbol
      */
     public function getNullDenotation()
@@ -150,6 +151,7 @@ class Symbol
      * Get left denotation.
      *
      * @param  Symbol $left
+     * @throws Exception\ParseException
      * @return Symbol
      */
     public function getLeftDenotation($left)

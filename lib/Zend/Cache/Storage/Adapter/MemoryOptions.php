@@ -80,6 +80,7 @@ class MemoryOptions extends AdapterOptions
      * Normalized a given value of memory limit into the number of bytes
      *
      * @param string|int $value
+     * @throws Exception\InvalidArgumentException
      * @return int
      */
     protected function normalizeMemoryLimit($value)

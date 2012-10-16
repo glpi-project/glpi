@@ -395,6 +395,7 @@ class Translator
         if ($message === '') {
             return '';
         }
+
         if (!isset($this->messages[$textDomain][$locale])) {
             $this->loadMessages($textDomain, $locale);
         }
@@ -486,6 +487,7 @@ class Translator
      *
      * @param  string $textDomain
      * @param  string $locale
+     * @throws Exception\RuntimeException
      * @return void
      */
     protected function loadMessages($textDomain, $locale)
@@ -496,11 +498,13 @@ class Translator
 
         if (null !== ($cache = $this->getCache())) {
             $cacheId = 'Zend_I18n_Translator_Messages_' . md5($textDomain . $locale);
+
             if (null !== ($result = $cache->getItem($cacheId))) {
                 $this->messages[$textDomain][$locale] = $result;
                 return;
             }
         }
+
         // Try to load from remote sources
         if (isset($this->remote[$textDomain])) {
             foreach ($this->remote[$textDomain] as $loaderType) {
@@ -532,7 +536,8 @@ class Translator
                 }
             }
         }
-        // Load concrete files, may override those loaded from patterns
+
+        // Try to load from concrete files
         foreach (array($locale, '*') as $currentLocale) {
             if (!isset($this->files[$textDomain][$currentLocale])) {
                 continue;
@@ -548,11 +553,9 @@ class Translator
             $this->messages[$textDomain][$locale] = $loader->load($locale, $file['filename']);
 
             unset($this->files[$textDomain][$currentLocale]);
-            /// GLPI Update if return cache is not set : already fix on Zend git
-            /// https://github.com/zendframework/zf2/commit/9f445a1877bf0a421e65de25613bd86123b9a825#library/Zend/I18n/Translator/Translator.php
-//             return;
             goto cache;
         }
+
         // Cache the loaded text domain
         cache:
         if ($cache !== null) {

@@ -286,8 +286,6 @@ class Parser
      */
     protected function getNextToken()
     {
-        $token = array();
-
         while ($this->string[$this->currentPos] === ' ' || $this->string[$this->currentPos] === "\t") {
             $this->currentPos++;
         }

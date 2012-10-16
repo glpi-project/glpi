@@ -40,6 +40,7 @@ abstract class AbstractOptions implements ParameterObjectInterface
 
     /**
      * @param  array|Traversable $options
+     * @throws Exception\InvalidArgumentException
      * @return void
      */
     public function setFromArray($options)
@@ -80,6 +81,7 @@ abstract class AbstractOptions implements ParameterObjectInterface
      * @see ParameterObject::__set()
      * @param string $key
      * @param mixed $value
+     * @throws Exception\BadMethodCallException
      * @return void
      */
     public function __set($key, $value)
@@ -100,6 +102,7 @@ abstract class AbstractOptions implements ParameterObjectInterface
     /**
      * @see ParameterObject::__get()
      * @param string $key
+     * @throws Exception\BadMethodCallException
      * @return mixed
      */
     public function __get($key)

@@ -172,6 +172,7 @@ abstract class ArrayUtils
      *
      * @param  array|Traversable  $iterator     The array or Traversable object to convert
      * @param  bool               $recursive    Recursively check all nested structures
+     * @throws Exception\InvalidArgumentException if $iterator is not an array or a Traversable object
      * @return array
      */
     public static function iteratorToArray($iterator, $recursive = true)

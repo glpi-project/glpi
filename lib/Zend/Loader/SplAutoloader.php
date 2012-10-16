@@ -10,6 +10,8 @@
 
 namespace Zend\Loader;
 
+use Traversable;
+
 if (interface_exists('Zend\Loader\SplAutoloader')) return;
 
 /**
@@ -25,7 +27,7 @@ interface SplAutoloader
      *
      * Allow configuration of the autoloader via the constructor.
      *
-     * @param  null|array|\Traversable $options
+     * @param  null|array|Traversable $options
      */
     public function __construct($options = null);
 

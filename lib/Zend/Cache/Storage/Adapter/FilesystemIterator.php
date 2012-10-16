@@ -74,7 +74,7 @@ class FilesystemIterator implements IteratorInterface
     /**
      * Get storage instance
      *
-     * @return StorageInterface
+     * @return Filesystem
      */
     public function getStorage()
     {
