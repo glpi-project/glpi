@@ -566,6 +566,8 @@ class Session {
 //          = apc_fetch($key);
 
       } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
+         // TODO : use xcache adapter of Zend when available (2.1)
+         // see http://framework.zend.com/issues/browse/ZF2-543
          $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
          if (@xcache_isset($key)) {
             $TRANSLATE = unserialize(xcache_get($key));
@@ -581,13 +583,14 @@ class Session {
 //                                                'locale'         => $trytoload,
 //                                                'disableNotices' => true)); // no warning for empty languages
 
-//          if (function_exists('apc_fetch')) { // Save to APC cache
+         if (function_exists('apc_fetch')) { // Save to APC cache
 //             $tmp = apc_store($key, $TRANSLATE);
-// 
-//          } else if (function_exists('xcache_get') && !isCommandLine()) { // Save to XCache
-//             $tmp = xcache_set($key, serialize($TRANSLATE));
-//          }
-//       }
+               // Zend do the job
+
+         } else if (function_exists('xcache_get') && !isCommandLine()) { // Save to XCache
+            $tmp = xcache_set($key, serialize($TRANSLATE));
+         }
+      }
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
