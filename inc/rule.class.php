@@ -1551,7 +1551,9 @@ class Rule extends CommonDBTM {
    function getCriteriaValue($ID, $condition, $value) {
       global $LANG;
 
-      if (!in_array($condition, array(self::PATTERN_IS,
+      if (!in_array($condition, array(self::PATTERN_DOES_NOT_EXISTS,
+                                      self::PATTERN_EXISTS,
+                                      self::PATTERN_IS,
                                       self::PATTERN_IS_NOT,
                                       self::PATTERN_UNDER,
                                       self::PATTERN_NOT_UNDER))) {
