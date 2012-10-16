@@ -169,7 +169,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       if ($item === false) {
          if ($mustBeAttached) {
-            Session::addMessageAfterRedirect(__('Cannot do action on child item: it must be attach'), INFO, true);
+            //TODO : maybe review string
+            Session::addMessageAfterRedirect(__('Cannot do action on item: it must be attach'), INFO, true);
             return false;
          }
          return true;
@@ -193,8 +194,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       if ($previous_itemtype !== $item->getType() || $previous_items_id != $item->getID()) {
          if ((!$item->canUpdate()) || (!$item->canUpdateItem())) {
-            //TRANS: %1$s is the type of action : 'add', 'update ' or 'delete'
-            Session::addMessageAfterRedirect(__('Cannot do action on child item: not enough right on the item'), INFO, true);
+            //TODO : maybe review string
+            Session::addMessageAfterRedirect(__('Cannot do action on item: not enough right on the item'), INFO, true);
             return false;
          }
       }

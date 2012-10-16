@@ -440,7 +440,7 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('warning')."'>";
+      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('Warning')."'>";
       echo "<br><br><span class='b'>" . __('Item not found') . "</span></div>";
       self::nullFooter();
       exit ();
@@ -628,7 +628,7 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('warning')."'";
+      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('Warning')."'";
       echo "><br><br><span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
