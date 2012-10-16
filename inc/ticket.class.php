@@ -699,16 +699,10 @@ class Ticket extends CommonITILObject {
 
       //// check mandatory fields
       // First get ticket template associated : entity and type/category
-      $tt = new TicketTemplate();
-
       if (isset($input['entities_id'])) {
          $entid = $input['entities_id'];
       } else {
          $entid = $this->fields['entities_id'];
-      }
-      if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entid)) {
-         // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);
       }
 
       if (isset($input['type'])) {
@@ -723,26 +717,7 @@ class Ticket extends CommonITILObject {
          $categid = $this->fields['itilcategories_id'];
       }
 
-      if ($type && $categid) {
-         $categ = new ITILCategory();
-         if ($categ->getFromDB($categid)) {
-            $field = '';
-            switch ($type) {
-               case self::INCIDENT_TYPE :
-                  $field = 'tickettemplates_id_incident';
-                  break;
-
-               case self::DEMAND_TYPE :
-                  $field = 'tickettemplates_id_demand';
-                  break;
-            }
-
-            if (!empty($field) && $categ->fields[$field]) {
-               // with type and categ
-               $tt->getFromDBWithDatas($categ->fields[$field], true);
-            }
-         }
-      }
+      $tt = $this->getTicketTemplateToUse(0, $type, $categid, $entid);
 
       if (count($tt->mandatory)) {
          $mandatory_missing = array();
@@ -3181,58 +3156,9 @@ class Ticket extends CommonITILObject {
 
 
       // Load ticket template if available :
-      $tt = new TicketTemplate();
-      $template_loaded = false;
-
-      $field = '';
-      if ($values['type']
-          && $values['itilcategories_id']) {
-         $categ = new ITILCategory();
-         if ($categ->getFromDB($values['itilcategories_id'])) {
-            switch ($values['type']) {
-               case self::INCIDENT_TYPE :
-                  $field = 'tickettemplates_id_incident';
-                  break;
-
-               case self::DEMAND_TYPE :
-                  $field = 'tickettemplates_id_demand';
-                  break;
-            }
-
-            if (!empty($field) && $categ->fields[$field]) {
-               // without type and categ
-               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
-                  $template_loaded = true;
-               }
-            }
-         }
-      }
-
-      if (!$template_loaded) {
-         // load default profile one if not already loaded
-         if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
-            && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
-            // with type and categ
-            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'], true)) {
-               $template_loaded = true;
-            }
-         }
-      }
-      if (!$template_loaded) {
-         // Load default entity one if not loaded
-         if ($template_id = Entity::getUsedConfig('tickettemplates_id',
-                                                $_SESSION["glpiactive_entity"])) {
-            // with type and categ
-            if ($tt->getFromDBWithDatas($template_id, true)) {
-                $template_loaded = true;
-            }
-         }
-      }
-
-      if ($ticket_template) {
-         // with type and categ
-         $tt->getFromDBWithDatas($ticket_template, true);
-      }
+      $tt = $this->getTicketTemplateToUse($ticket_template, $values['type'],
+                                          $values['itilcategories_id'],
+                                          $_SESSION["glpiactive_entity"]);
 
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
@@ -3493,7 +3419,75 @@ class Ticket extends CommonITILObject {
                     'type'                      => $type);
 
    }
+   /**
+   * Get ticket template to use
+   * Use force_template first, then try on template define for type and category
+   * then use default template of active profile of connected user and then use default entity one
+   * @param $force_template integer tickettemplate_id to used (case of preview for example)
+   * @param $type integer type of the ticket
+   * @param $itilcategories_id integer ticket category
+   *
+   * @since version 0.84
+   *
+   * @return ticket template object
+   **/
+   function getTicketTemplateToUse($force_template = 0, $type = 0, $itilcategories_id = 0, $entities_id = -1) {
+      // Load ticket template if available :
+      $tt = new TicketTemplate();
+      $template_loaded = false;
 
+      if ($force_template) {
+         // with type and categ
+         if ($tt->getFromDBWithDatas($force_template, true)) {
+            $template_loaded = true;
+         }
+      }
+
+      if (!$template_loaded && $type && $itilcategories_id) {
+         $categ = new ITILCategory();
+         if ($categ->getFromDB($itilcategories_id)) {
+            $field = '';
+            switch ($type) {
+               case self::INCIDENT_TYPE :
+                  $field = 'tickettemplates_id_incident';
+                  break;
+
+               case self::DEMAND_TYPE :
+                  $field = 'tickettemplates_id_demand';
+                  break;
+            }
+
+            if (!empty($field) && $categ->fields[$field]) {
+               // without type and categ
+               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                  $template_loaded = true;
+               }
+            }
+         }
+      }
+
+      if (!$template_loaded) {
+         // load default profile one if not already loaded
+         if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
+            && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
+            // with type and categ
+            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'], true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+
+      if (!$template_loaded && $entities_id > 0) {
+         // load default entity one if not already loaded
+         if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entities_id)) {
+            // with type and categ
+            if ($tt->getFromDBWithDatas($template_id, true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+      return $tt;
+   }
 
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI;
@@ -3557,60 +3551,14 @@ class Ticket extends CommonITILObject {
                                                  Ticket::INCIDENT_TYPE);
       }
 
-      // Load ticket template if available :
-      $tt = new TicketTemplate();
-      $template_loaded = false;
-
-
-
-      if ($values['type'] && $values['itilcategories_id']) {
-         $categ = new ITILCategory();
-         if ($categ->getFromDB($values['itilcategories_id'])) {
-            $field = '';
-            switch ($values['type']) {
-               case self::INCIDENT_TYPE :
-                  $field = 'tickettemplates_id_incident';
-                  break;
-
-               case self::DEMAND_TYPE :
-                  $field = 'tickettemplates_id_demand';
-                  break;
-            }
-
-            if (!empty($field) && $categ->fields[$field]) {
-               // without type and categ
-               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
-                  $template_loaded = true;
-               }
-            }
-         }
-      }
-
-      if (!$template_loaded) {
-         // load default profile one if not already loaded
-         if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
-            && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
-            // with type and categ
-            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'], true)) {
-               $template_loaded = true;
-            }
-         }
-      }
-
-      if (!$template_loaded) {
-         // load default entity one if not already loaded
-         if ($template_id = Entity::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
-            // with type and categ
-            if ($tt->getFromDBWithDatas($template_id, true)) {
-               $template_loaded = true;
-            }
-         }
+      if (!isset($options['template_preview'])) {
+         $options['template_preview'] = 0;
       }
       
-      if (isset($options['template_preview'])) {
-         // with type and categ
-         $tt->getFromDBWithDatas($options['template_preview'], true);
-      }
+      // Load ticket template if available :
+      $tt = $this->getTicketTemplateToUse($options['template_preview'], $values['type'],
+         $values['itilcategories_id'], $values['entities_id']);
+
 
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
