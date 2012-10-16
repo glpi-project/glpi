@@ -657,7 +657,7 @@ class NetworkName extends FQDNLabel {
       if (!$item->can($ID, 'r')) {
          return false;
       }
-      
+
       $rand = mt_rand();
 
       if ($item->getType() == 'NetworkPort' && $item->canUpdateItem()) {
@@ -679,7 +679,7 @@ class NetworkName extends FQDNLabel {
          _e('Not associated');
          echo "</td><td class='left'>";
          self::dropdown(array('name'      => 'addressID',
-                              'condition' => '`items_id`=0'));
+                              'condition' => '`items_id`<=0'));
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button','Associate').
                       "' class='submit'>";
@@ -693,7 +693,6 @@ class NetworkName extends FQDNLabel {
          echo "</div>\n";
       }
 
-      
       $table_options = array('createRow' => true);
 
       if (($item->getType() == 'FQDN')
