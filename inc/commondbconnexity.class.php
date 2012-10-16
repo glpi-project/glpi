@@ -159,22 +159,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $items_id       the name of the field containing the id of the item
     * @param $mustBeAttached true if we cannot create a CommonDBConnexity that is not attached
     *                        (cf. first check)
-    * @param $type_of_check  the type of the check (ie. : 'add' or 'update' to define a smarter
-    *                        message in case of check failure
     *
     * @result false if we cannot do the action (problem of rights), the item if we can load it,
     *         or true if we cannot load the item (and the element should not be attached
     **/
-   function checkInputForAllPrepareInput(array $input, $itemtype, $items_id, $mustBeAttached,
-                                         $type_of_check) {
+   function checkInputForAllPrepareInput(array $input, $itemtype, $items_id, $mustBeAttached) {
 
       $item = static::getItemFromArray($itemtype, $items_id, $input);
 
       if ($item === false) {
          if ($mustBeAttached) {
-            //TRANS: %1$s is the type of action : 'add', 'update ' or 'delete'
-            Session::addMessageAfterRedirect(sprintf(__('Cannot %1$s item: it must be attach'),
-                                                     $type_of_check), INFO, true);
+            Session::addMessageAfterRedirect(__('Cannot do action on child item: it must be attach'), INFO, true);
             return false;
          }
          return true;
@@ -199,8 +194,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       if ($previous_itemtype !== $item->getType() || $previous_items_id != $item->getID()) {
          if ((!$item->canUpdate()) || (!$item->canUpdateItem())) {
             //TRANS: %1$s is the type of action : 'add', 'update ' or 'delete'
-            Session::addMessageAfterRedirect(sprintf(__('Cannot %1$s item: not enough right on the item'),
-                                                     $type_of_check), INFO, true);
+            Session::addMessageAfterRedirect(__('Cannot do action on child item: not enough right on the item'), INFO, true);
             return false;
          }
       }
