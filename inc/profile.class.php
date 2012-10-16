@@ -47,7 +47,8 @@ class Profile extends CommonDBTM {
                                           'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
                                           'show_group_hardware', 'show_group_ticket',
-                                          'ticketrecurrent', 'tickettemplate', 'ticket_cost',
+                                          'ticketrecurrent', 
+                                          'tickettemplates_id', 'ticket_cost',
                                           'update_own_followups', 'validate_ticket');
 
 
@@ -531,6 +532,18 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Default ticket template')."</td><td>";
+      // Only root entity ones and recursive
+      $options = array('value'     => $this->fields["tickettemplates_id"],
+                       'entity'    => 0,
+                       'condition' => '`is_recursive` = 1');
+
+      TicketTemplate::dropdown($options);
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;";
+      echo "</td></tr>\n";
+      
+      echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";
       Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
       echo "</td>";
@@ -784,7 +797,14 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Add a task to all tickets')."</td><td>";
       Dropdown::showYesNo("global_add_tasks", $this->fields["global_add_tasks"]);
       echo "</td>";
-      echo "<td>&nbsp;</td><td>&nbsp;</td>";
+      echo "<td>".__('Default ticket template')."</td><td>";
+      // Only root entity ones and recursive
+      $options = array('value'     => $this->fields["tickettemplates_id"],
+                       'entity'    => 0,
+                       'condition' => '`is_recursive` = 1');
+
+      TicketTemplate::dropdown($options);
+      echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -1621,6 +1641,12 @@ class Profile extends CommonDBTM {
       $tab[102]['name']          = __('Create a ticket');
       $tab[102]['datatype']      = 'bool';
 
+      $tab[108]['table']         = 'glpi_tickettemplates';
+      $tab[108]['field']         = 'name';
+      $tab[108]['name']          = __('Default ticket template');
+      $tab[108]['datatype']      = 'dropdown';
+      $tab[108]['condition']     = '`entities_id` = 0 AND `is_recursive` = 1';
+      
       $tab[103]['table']         = $this->getTable();
       $tab[103]['field']         = 'tickettemplate';
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
