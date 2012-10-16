@@ -1239,7 +1239,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
          echo "<tr><th class='red'>";
          echo "<img class='center' src='".$CFG_GLPI["root_doc"]."/pics/warning.png'
-                alt='".__('warning')."'>&nbsp;".
+                alt='".__('Warning')."'>&nbsp;".
              __('Warning: The request exceeds the limit of the directory. The results are only partial.');
          echo "</th></tr></table><div>";
       }

@@ -89,7 +89,7 @@ if (isset($_POST['add'])) {
 
    } else {
       echo "<div class='center'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".__s('warning')."'><br>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".__s('Warning')."'><br>";
       Html::displayMessageAfterRedirect();
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>".
             __('Back')."</a></div>";
