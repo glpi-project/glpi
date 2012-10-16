@@ -550,11 +550,20 @@ class Session {
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
          $newfile = "/locales/en_GB.mo";
       }
-      $TRANSLATE = NULL;
+
+      $TRANSLATE = new Zend\I18n\Translator\Translator;
 
       if (function_exists('apc_fetch')) { // Try from APC cache
-         $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-         $TRANSLATE = apc_fetch($key);
+//          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
+         $cache = Zend\Cache\StorageFactory::factory(array(
+            'adapter' => 'apc',
+            'plugins' => array(
+               'exception_handler' => array('throw_exceptions' => false),
+            ),
+         ));
+         $TRANSLATE->setCache($cache);
+
+//          = apc_fetch($key);
 
       } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
          $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
@@ -564,8 +573,7 @@ class Session {
       }
 
       // New localization system :
-      if (!$TRANSLATE) {
-         $TRANSLATE = new Zend\I18n\Translator\Translator;
+//       if (!$TRANSLATE) {
          $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
       
 //          $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
@@ -573,13 +581,13 @@ class Session {
 //                                                'locale'         => $trytoload,
 //                                                'disableNotices' => true)); // no warning for empty languages
 
-         if (function_exists('apc_fetch')) { // Save to APC cache
-            $tmp = apc_store($key, $TRANSLATE);
-
-         } else if (function_exists('xcache_get') && !isCommandLine()) { // Save to XCache
-            $tmp = xcache_set($key, serialize($TRANSLATE));
-         }
-      }
+//          if (function_exists('apc_fetch')) { // Save to APC cache
+//             $tmp = apc_store($key, $TRANSLATE);
+// 
+//          } else if (function_exists('xcache_get') && !isCommandLine()) { // Save to XCache
+//             $tmp = xcache_set($key, serialize($TRANSLATE));
+//          }
+//       }
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
