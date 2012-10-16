@@ -565,10 +565,13 @@ class Session {
 
       // New localization system :
       if (!$TRANSLATE) {
-         $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
-                                               'content'        => GLPI_ROOT.$newfile,
-                                               'locale'         => $trytoload,
-                                               'disableNotices' => true)); // no warning for empty languages
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
+         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
+      
+//          $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
+//                                                'content'        => GLPI_ROOT.$newfile,
+//                                                'locale'         => $trytoload,
+//                                                'disableNotices' => true)); // no warning for empty languages
 
          if (function_exists('apc_fetch')) { // Save to APC cache
             $tmp = apc_store($key, $TRANSLATE);
