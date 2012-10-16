@@ -1166,7 +1166,7 @@ class Reminder extends CommonDBTM {
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
-      echo "<tr><td class='tab_bg_2' width='100px'>";
+      echo "<tr class='tab_bg_2'><td width='100px'>";
 
       $types = array( 'Group', 'Profile', 'User', 'Entity');
 
@@ -1197,7 +1197,7 @@ class Reminder extends CommonDBTM {
       if (count($this->users)) {
          foreach ($this->users as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
@@ -1218,7 +1218,7 @@ class Reminder extends CommonDBTM {
       if (count($this->groups)) {
          foreach ($this->groups as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
@@ -1250,7 +1250,7 @@ class Reminder extends CommonDBTM {
       if (count($this->entities)) {
          foreach ($this->entities as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
@@ -1278,7 +1278,7 @@ class Reminder extends CommonDBTM {
       if (count($this->profiles)) {
          foreach ($this->profiles as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
@@ -1307,7 +1307,7 @@ class Reminder extends CommonDBTM {
       }
 
       if ($canedit) {
-         echo "<tr><td colspan='3'>";
+         echo "<tr class='tab_bg_2'><td colspan='3'>";
          echo "</td></tr>";
       }
       echo "</table>";
