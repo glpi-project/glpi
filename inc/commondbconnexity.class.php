@@ -37,9 +37,39 @@ if (!defined('GLPI_ROOT')) {
 
 class CommonDBConnexityItemNotFound extends Exception {}
 
-/// Common DataBase Connexity Table Manager Class
-/// This class factorize code for CommonDBChild and CommonDBRelation
-/// @since 0.84
+/**
+ * Common DataBase Connexity Table Manager Class
+ * This class factorize code for CommonDBChild and CommonDBRelation
+ * Several elements are covered by both classes since 0.84 :
+ * - Check:  all can* methods (canCreate, canUpdate, canViewItem, canDeleteItem ...) are
+ *           defined. Now, to create, update or delete a connexity (CommonDBChild or
+ *           CommonDBRelation) the user must have at least update right on its parent(s) item(s)
+ *           (item(s) defined by $itemtype* and $items_id*).
+ * - Update: when we try to update an attached element, we check if we change its parent item(s).
+ *           If we change its parent(s), then we check if we can delete the item with previous
+ *           parent(s) (cf. "check" before) AND we can create the item with the new parent(s).
+ * - Entity: Entity is automatically setted or updated when setting or changing an attached item.
+ *           Thus, you don't have any more to worry about entities.
+ * - Log:    when we create, update or delete an item, we update its parent(s)'s histories to
+ *           notify them of the creation, update or deletion
+ * - Flying items : some items can be on the stock. For instance, before beeing plugged inside a
+ *                  computer, an Item_DeviceProcessor can be without any parent. It is now possible
+ *                  to define such items and transfer them from parent to parent.
+ *
+ * Several remarks are introduced by these behaviours. First, each method that is overrided in an
+ * inherited class MUST call its parent method. Otherwise standard behaviour won't work. Moreover,
+ * due to implementation, if you define the canCreate method, you must also define canUpdate and
+ * canDelete methods. Acutally, conversely to default behaviour of canUpdate and
+ * canDelete defined by CommonDBTM, ones defined by CommonDBChild and CommonDBRelation don't call
+ * canCreate. Thus, something forbidden by canCreate can be done by canUpdate or canCreate.
+ *
+ * But the main benefit of this factorization, is that we can remove a lot of method. You only have
+ * to define class specific controls (ie. : specific Session::haveRight or specific
+ * prepareInputFor*).
+ *
+ * @TODO : may have to update the "Update" documentation before.
+ * @since 0.84
+**/
 abstract class CommonDBConnexity extends CommonDBTM {
 
    const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
