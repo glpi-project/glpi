@@ -551,8 +551,8 @@ class Session {
          $newfile = "/locales/en_GB.mo";
       }
 
-      $TRANSLATE = new Zend\I18n\Translator\Translator;
-
+      $TRANSLATE = null;
+      
       if (function_exists('apc_fetch')) { // Try from APC cache
 //          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
          $cache = Zend\Cache\StorageFactory::factory(array(
@@ -561,9 +561,9 @@ class Session {
                'exception_handler' => array('throw_exceptions' => false),
             ),
          ));
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
          $TRANSLATE->setCache($cache);
-
-//          = apc_fetch($key);
+         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
          // TODO : use xcache adapter of Zend when available (2.1)
@@ -572,24 +572,14 @@ class Session {
          if (@xcache_isset($key)) {
             $TRANSLATE = unserialize(xcache_get($key));
          }
-      }
-
-      // New localization system :
-//       if (!$TRANSLATE) {
-         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-      
-//          $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
-//                                                'content'        => GLPI_ROOT.$newfile,
-//                                                'locale'         => $trytoload,
-//                                                'disableNotices' => true)); // no warning for empty languages
-
-         if (function_exists('apc_fetch')) { // Save to APC cache
-//             $tmp = apc_store($key, $TRANSLATE);
-               // Zend do the job
-
-         } else if (function_exists('xcache_get') && !isCommandLine()) { // Save to XCache
-            $tmp = xcache_set($key, serialize($TRANSLATE));
+         if (!$TRANSLATE) {
+            $TRANSLATE = new Zend\I18n\Translator\Translator;
+            $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
          }
+         $tmp = xcache_set($key, serialize($TRANSLATE));
+      } else {
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
+         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
       }
 
       // Load plugin dicts
