@@ -369,6 +369,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
+      // True if item changed
       if (parent::prepareInputForUpdateForConnexity($input, array(static::$itemtype, static::$items_id))) {
 
          if (!is_array($input)) {
@@ -385,6 +386,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
          } else {
             // TODO : study what to do if we switch from an item that has an entity to another one
             // that don't have any entity
+            // MoYo : think set to 0 / 0 (default values)
+            //$input['entities_id']  = 0;
+            //$input['is_recursive'] = 0;
          }
       }
 
