@@ -1241,7 +1241,7 @@ class Reminder extends CommonDBTM {
                   }
                }
                echo "</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
@@ -1269,7 +1269,7 @@ class Reminder extends CommonDBTM {
                   echo " <span class='b'>&nbsp;(R)</span>";
                }
                echo "</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
@@ -1301,7 +1301,7 @@ class Reminder extends CommonDBTM {
                   }
                }
                echo "</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
