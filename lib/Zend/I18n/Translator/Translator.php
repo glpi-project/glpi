@@ -496,13 +496,11 @@ class Translator
 
         if (null !== ($cache = $this->getCache())) {
             $cacheId = 'Zend_I18n_Translator_Messages_' . md5($textDomain . $locale);
-
             if (null !== ($result = $cache->getItem($cacheId))) {
                 $this->messages[$textDomain][$locale] = $result;
                 return;
             }
         }
-
         // Try to load from remote sources
         if (isset($this->remote[$textDomain])) {
             foreach ($this->remote[$textDomain] as $loaderType) {
@@ -513,7 +511,7 @@ class Translator
                 }
 
                 $this->messages[$textDomain][$locale] = $loader->load($locale, $textDomain);
-                return;
+                goto cache;
             }
         }
 
@@ -530,7 +528,7 @@ class Translator
                     }
 
                     $this->messages[$textDomain][$locale] = $loader->load($locale, $filename);
-                    return;
+                    goto cache;
                 }
             }
         }
@@ -550,10 +548,13 @@ class Translator
             $this->messages[$textDomain][$locale] = $loader->load($locale, $file['filename']);
 
             unset($this->files[$textDomain][$currentLocale]);
-            return;
+            /// GLPI Update if return cache is not set : already fix on Zend git
+            /// https://github.com/zendframework/zf2/commit/9f445a1877bf0a421e65de25613bd86123b9a825#library/Zend/I18n/Translator/Translator.php
+//             return;
+            goto cache;
         }
-
         // Cache the loaded text domain
+        cache:
         if ($cache !== null) {
             $cache->setItem($cacheId, $this->messages[$textDomain][$locale]);
         }
