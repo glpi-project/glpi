@@ -86,6 +86,7 @@ class AdapterOptions extends AbstractOptions
      * Set key pattern
      *
      * @param  null|string $keyPattern
+     * @throws Exception\InvalidArgumentException
      * @return AdapterOptions
      */
     public function setKeyPattern($keyPattern)

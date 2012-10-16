@@ -32,6 +32,7 @@ class Message implements MessageInterface
      *
      * @param  string|int|array|Traversable $spec
      * @param  mixed $value
+     * @throws Exception\InvalidArgumentException
      * @return Message
      */
     public function setMetadata($spec, $value = null)
@@ -57,6 +58,7 @@ class Message implements MessageInterface
      *
      * @param  null|string|int $key
      * @param  null|mixed $default
+     * @throws Exception\InvalidArgumentException
      * @return mixed
      */
     public function getMetadata($key = null, $default = null)

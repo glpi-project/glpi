@@ -156,7 +156,7 @@ class Capabilities
     /**
      * Constructor
      *
-     * @param Adapter           $adapter
+     * @param StorageInterface  $storage
      * @param stdClass          $marker
      * @param array             $capabilities
      * @param null|Capabilities $baseCapabilities
@@ -179,7 +179,7 @@ class Capabilities
     /**
      * Get the storage adapter
      *
-     * @return Adapter
+     * @return StorageInterface
      */
     public function getAdapter()
     {
@@ -210,6 +210,7 @@ class Capabilities
      *
      * @param  stdClass $marker
      * @param  array $datatypes
+     * @throws Exception\InvalidArgumentException
      * @return Capabilities Fluent interface
      */
     public function setSupportedDatatypes(stdClass $marker, array $datatypes)
@@ -244,7 +245,7 @@ class Capabilities
         // add missing datatypes as not supported
         $missingTypes = array_diff($allTypes, array_keys($datatypes));
         foreach ($missingTypes as $type) {
-            $datatypes[type] = false;
+            $datatypes[$type] = false;
         }
 
         return $this->setCapability($marker, 'supportedDatatypes', $datatypes);
@@ -265,6 +266,7 @@ class Capabilities
      *
      * @param  stdClass $marker
      * @param  string[] $metadata
+     * @throws Exception\InvalidArgumentException
      * @return Capabilities Fluent interface
      */
     public function setSupportedMetadata(stdClass $marker, array $metadata)
@@ -292,6 +294,7 @@ class Capabilities
      *
      * @param  stdClass $marker
      * @param  int $minTtl
+     * @throws Exception\InvalidArgumentException
      * @return Capabilities Fluent interface
      */
     public function setMinTtl(stdClass $marker, $minTtl)
@@ -318,6 +321,7 @@ class Capabilities
      *
      * @param  stdClass $marker
      * @param  int $maxTtl
+     * @throws Exception\InvalidArgumentException
      * @return Capabilities Fluent interface
      */
     public function setMaxTtl(stdClass $marker, $maxTtl)
@@ -367,6 +371,7 @@ class Capabilities
      *
      * @param  stdClass $marker
      * @param  float $ttlPrecision
+     * @throws Exception\InvalidArgumentException
      * @return Capabilities Fluent interface
      */
     public function setTtlPrecision(stdClass $marker, $ttlPrecision)
@@ -437,6 +442,7 @@ class Capabilities
      *
      * @param  stdClass $marker
      * @param  int $maxKeyLength
+     * @throws Exception\InvalidArgumentException
      * @return Capabilities Fluent interface
      */
     public function setMaxKeyLength(stdClass $marker, $maxKeyLength)
@@ -514,7 +520,7 @@ class Capabilities
      * Change a capability
      *
      * @param  stdClass $marker
-     * @param  string $name
+     * @param  string $property
      * @param  mixed $value
      * @return Capabilities Fluent interface
      * @throws Exception\InvalidArgumentException

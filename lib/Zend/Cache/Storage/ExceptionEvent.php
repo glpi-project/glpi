@@ -39,11 +39,11 @@ class ExceptionEvent extends PostEvent
      *
      * Accept a target and its parameters.
      *
-     * @param  string      $name
-     * @param  Adapter     $storage
+     * @param  string $name
+     * @param  StorageInterface $storage
      * @param  ArrayObject $params
-     * @param  mixed       $result
-     * @param  Exception   $exception
+     * @param  mixed $result
+     * @param  Exception $exception
      */
     public function __construct($name, StorageInterface $storage, ArrayObject $params, & $result, Exception $exception)
     {

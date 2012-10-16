@@ -21,7 +21,7 @@ interface PatternInterface
      * Set pattern options
      *
      * @param  PatternOptions $options
-     * @return Pattern
+     * @return PatternInterface
      */
     public function setOptions(PatternOptions $options);
 

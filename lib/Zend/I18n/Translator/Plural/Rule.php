@@ -47,7 +47,7 @@ class Rule
      *
      * @param  integer $numPlurals
      * @param  array   $ast
-     * @return void
+     * @return Rule
      */
     protected function __construct($numPlurals, array $ast)
     {
@@ -177,6 +177,7 @@ class Rule
      * Create a new rule from a string.
      *
      * @param  string $string
+     * @throws Exception\ParseException
      * @return Rule
      */
     public static function fromString($string)

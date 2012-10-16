@@ -10,6 +10,7 @@
 
 namespace Zend\Cache\Storage\Adapter;
 
+use Traversable;
 use Zend\Cache\Exception;
 
 /**
@@ -106,7 +107,7 @@ class FilesystemOptions extends AdapterOptions
      * Constructor
      *
      * @param  array|Traversable|null $options
-     * @return AbstractOptions
+     * @return FilesystemOptions
      * @throws Exception\InvalidArgumentException
      */
     public function __construct($options = null)

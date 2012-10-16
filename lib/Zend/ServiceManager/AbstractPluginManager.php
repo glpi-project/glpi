@@ -40,7 +40,9 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
     protected $autoAddInvokableClass = true;
 
     /**
-     * @var mixed Options to use when creating an instance
+     * Options to use when creating an instance
+     *
+     * @var mixed
      */
     protected $creationOptions = null;
 

@@ -272,6 +272,7 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
     /**
      * Get the inner priority queue instance
      *
+     * @throws \DomainException
      * @return SplPriorityQueue
      */
     protected function getQueue()

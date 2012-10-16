@@ -99,7 +99,7 @@ class DbaOptions extends AdapterOptions
     /**
      *
      *
-     * @param unknown_type $mode
+     * @param string $mode
      * @return \Zend\Cache\Storage\Adapter\DbaOptions
      */
     public function setMode($mode)

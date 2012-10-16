@@ -218,7 +218,6 @@ class Serializer extends AbstractPlugin
         }
 
         $failedKeys = $storage->setItems($keyValuePairs);
-        $result     = array();
         foreach ($failedKeys as $failedKey) {
             unset($keyValuePairs[$failedKey]);
         }

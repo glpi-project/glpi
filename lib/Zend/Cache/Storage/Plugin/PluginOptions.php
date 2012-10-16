@@ -105,7 +105,8 @@ class PluginOptions extends AbstractOptions
      * Used by:
      * - ExceptionHandler
      *
-     * @param  callable ExceptionCallback
+     * @param  callable $exceptionCallback
+     * @throws Exception\InvalidArgumentException
      * @return PluginOptions
      */
     public function setExceptionCallback($exceptionCallback)
@@ -187,6 +188,7 @@ class PluginOptions extends AbstractOptions
      * - Serializer
      *
      * @param  string|SerializerAdapter $serializer
+     * @throws Exception\InvalidArgumentException
      * @return Serializer
      */
     public function setSerializer($serializer)

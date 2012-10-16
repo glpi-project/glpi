@@ -49,7 +49,7 @@ class CaptureCache extends AbstractPattern
      *
      * @param string      $content
      * @param null|string $pageId
-     * @throws Exception\RuntimeException
+     * @throws Exception\LogicException
      */
     public function set($content, $pageId = null)
     {
@@ -74,6 +74,7 @@ class CaptureCache extends AbstractPattern
      *
      * @param  null|string $pageId
      * @return bool|string
+     * @throws Exception\LogicException
      * @throws Exception\RuntimeException
      */
     public function get($pageId = null)
@@ -108,6 +109,7 @@ class CaptureCache extends AbstractPattern
      * Checks if a cache with given id exists
      *
      * @param  null|string $pageId
+     * @throws Exception\LogicException
      * @return boolean
      */
     public function has($pageId = null)
@@ -132,6 +134,7 @@ class CaptureCache extends AbstractPattern
      * Remove from cache
      *
      * @param  null|string $pageId
+     * @throws Exception\LogicException
      * @throws Exception\RuntimeException
      * @return boolean
      */
@@ -169,6 +172,7 @@ class CaptureCache extends AbstractPattern
      * Clear cached pages matching glob pattern
      *
      * @param string $pattern
+     * @throws Exception\LogicException
      */
     public function clearByGlob($pattern = '**')
     {
@@ -191,6 +195,7 @@ class CaptureCache extends AbstractPattern
     /**
      * Determine the page to save from the request
      *
+     * @throws Exception\RuntimeException
      * @return string
      */
     protected function detectPageId()

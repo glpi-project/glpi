@@ -41,7 +41,7 @@ class ZendServerDisk extends AbstractZendServer implements
      * Constructor
      *
      * @param  null|array|\Traversable|AdapterOptions $options
-     * @throws Exception\ExceptionInterface
+     * @throws Exception\ExtensionNotLoadedException
      */
     public function __construct($options = array())
     {
@@ -84,6 +84,7 @@ class ZendServerDisk extends AbstractZendServer implements
     /**
      * Get total space in bytes
      *
+     * @throws Exception\RuntimeException
      * @return int|float
      */
     public function getTotalSpace()
@@ -106,6 +107,7 @@ class ZendServerDisk extends AbstractZendServer implements
     /**
      * Get available space in bytes
      *
+     * @throws Exception\RuntimeException
      * @return int|float
      */
     public function getAvailableSpace()

@@ -77,6 +77,7 @@ class StandardAutoloader implements SplAutoloader
      * </code>
      *
      * @param  array|\Traversable $options
+     * @throws Exception\InvalidArgumentException
      * @return StandardAutoloader
      */
     public function setOptions($options)
@@ -144,7 +145,7 @@ class StandardAutoloader implements SplAutoloader
      */
     public function registerNamespace($namespace, $directory)
     {
-        $namespace = rtrim($namespace, self::NS_SEPARATOR). self::NS_SEPARATOR;
+        $namespace = rtrim($namespace, self::NS_SEPARATOR) . self::NS_SEPARATOR;
         $this->namespaces[$namespace] = $this->normalizeDirectory($directory);
         return $this;
     }
@@ -153,6 +154,7 @@ class StandardAutoloader implements SplAutoloader
      * Register many namespace/directory pairs at once
      *
      * @param  array $namespaces
+     * @throws Exception\InvalidArgumentException
      * @return StandardAutoloader
      */
     public function registerNamespaces($namespaces)
@@ -186,6 +188,7 @@ class StandardAutoloader implements SplAutoloader
      * Register many namespace/directory pairs at once
      *
      * @param  array $prefixes
+     * @throws Exception\InvalidArgumentException
      * @return StandardAutoloader
      */
     public function registerPrefixes($prefixes)
@@ -279,7 +282,7 @@ class StandardAutoloader implements SplAutoloader
             require_once __DIR__ . '/Exception/InvalidArgumentException.php';
             throw new Exception\InvalidArgumentException();
         }
-         
+
         // Fallback autoloading
         if ($type === self::ACT_AS_FALLBACK) {
             // create filename

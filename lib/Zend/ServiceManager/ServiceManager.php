@@ -10,6 +10,7 @@
 
 namespace Zend\ServiceManager;
 
+use Closure;
 use ReflectionClass;
 
 class ServiceManager implements ServiceLocatorInterface
@@ -40,7 +41,7 @@ class ServiceManager implements ServiceLocatorInterface
     protected $invokableClasses = array();
 
     /**
-     * @var string|callable|Closure|InstanceFactoryInterface[]
+     * @var string|callable|Closure|FactoryInterface[]
      */
     protected $factories = array();
 
@@ -231,8 +232,9 @@ class ServiceManager implements ServiceLocatorInterface
     /**
      * @param  string                           $name
      * @param  string|FactoryInterface|callable $factory
-     * @param  bool                          $shared
+     * @param  bool                             $shared
      * @return ServiceManager
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\InvalidServiceNameException
      */
     public function setFactory($name, $factory, $shared = true)
@@ -299,6 +301,7 @@ class ServiceManager implements ServiceLocatorInterface
 
     /**
      * @param  callable|InitializerInterface $initializer
+     * @param  bool                          $topOfStack
      * @return ServiceManager
      * @throws Exception\InvalidArgumentException
      */
@@ -375,8 +378,9 @@ class ServiceManager implements ServiceLocatorInterface
     /**
      * Retrieve a registered instance
      *
-     * @param  string  $cName
+     * @param  string  $name
      * @param  bool    $usePeeringServiceManagers
+     * @throws Exception\ServiceNotFoundException
      * @return object|array
      */
     public function get($name, $usePeeringServiceManagers = true)
@@ -436,8 +440,8 @@ class ServiceManager implements ServiceLocatorInterface
     /**
      * @param  string|array $name
      * @return false|object
+     * @throws Exception\ServiceNotFoundException
      * @throws Exception\ServiceNotCreatedException
-     * @throws Exception\InvalidServiceNameException
      */
     public function create($name)
     {
@@ -488,6 +492,7 @@ class ServiceManager implements ServiceLocatorInterface
      * Determine if we can create an instance.
      *
      * @param  string|array $name
+     * @param  bool         $checkAbstractFactories
      * @return bool
      */
     public function canCreate($name, $checkAbstractFactories = true)
@@ -666,6 +671,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @param  string   $cName
      * @param  string   $rName
      * @throws Exception\ServiceNotCreatedException
+     * @throws Exception\ServiceNotFoundException
      * @throws Exception\CircularDependencyFoundException
      * @return object
      */
@@ -730,7 +736,7 @@ class ServiceManager implements ServiceLocatorInterface
      * Allows to override the canonical names lookup map with predefined
      * values.
      *
-     * @return array $canonicalNames
+     * @param array $canonicalNames
      * @return ServiceManager
      */
     public function setCanonicalNames($canonicalNames)
@@ -762,7 +768,7 @@ class ServiceManager implements ServiceLocatorInterface
      * @param  string $canonicalName
      * @param  string $requestedName
      * @return null|\stdClass
-     * @throws Exception\ServiceNotCreatedException If resolved class does not exist
+     * @throws Exception\ServiceNotFoundException If resolved class does not exist
      */
     protected function createFromInvokable($canonicalName, $requestedName)
     {

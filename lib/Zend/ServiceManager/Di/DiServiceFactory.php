@@ -87,7 +87,7 @@ class DiServiceFactory extends Di implements FactoryInterface
      * @param string $name
      * @param array $params
      * @return object
-     * @throws Exception\InvalidServiceNameException
+     * @throws Exception\ServiceNotFoundException
      */
     public function get($name, array $params = array())
     {
