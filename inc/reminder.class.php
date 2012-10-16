@@ -1149,7 +1149,7 @@ class Reminder extends CommonDBTM {
          echo "<input type='hidden' name='reminders_id' value='$ID'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
-         echo "<tr><td class='tab_bg_2' width='100px'>";
+         echo "<tr class='tab_bg_2'><td width='100px'>";
 
          $types = array('Entity', 'Group', 'Profile', 'User');
 
@@ -1194,7 +1194,7 @@ class Reminder extends CommonDBTM {
       if (count($this->users)) {
          foreach ($this->users as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]'
@@ -1212,7 +1212,7 @@ class Reminder extends CommonDBTM {
       if (count($this->groups)) {
          foreach ($this->groups as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]'
@@ -1235,7 +1235,7 @@ class Reminder extends CommonDBTM {
                   }
                }
                echo "<td>".$entname."</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
@@ -1244,7 +1244,7 @@ class Reminder extends CommonDBTM {
       if (count($this->entities)) {
          foreach ($this->entities as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]'
@@ -1260,7 +1260,7 @@ class Reminder extends CommonDBTM {
                                      "<span class='b'>(".__('R').")</span>");
                }
                echo "<td>".$entname."</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
@@ -1269,7 +1269,7 @@ class Reminder extends CommonDBTM {
       if (count($this->profiles)) {
          foreach ($this->profiles as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]'
@@ -1291,7 +1291,7 @@ class Reminder extends CommonDBTM {
                   }
                }
                echo "<td>".$entname."</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
