@@ -347,12 +347,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
-      $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
-                                                   static::$mustBeAttached);
-
-      if ($item === false) {
-         return false;
-      }
+      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
       // Set its entity according to the item, if it should
       if (($item instanceof CommonDBTM)
@@ -374,25 +369,23 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
-      foreach (array(static::$itemtype, static::$items_id) as $field_name) {
-         if (!isset($input[$field_name]) && isset($this->fields[$field_name])) {
-            $input[$field_name] = $this->fields[$field_name];
+      if (parent::prepareInputForUpdateForConnexity($input, array(static::$itemtype, static::$items_id))) {
+
+         if (!is_array($input)) {
+            return false;
          }
-      }
 
-      $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
-                                                   static::$mustBeAttached);
+         // If the item has changed, then we must adapt $this to its entity characteristics
+         $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
 
-      if ($item === false) {
-         return false;
-      }
-
-      /// TODO : must we apply this filter for the update ?
-      // If the entity is inherited from the item, then set it
-      if (($item instanceof CommonDBTM)
-          && $item->isEntityForwardTo(get_called_class())) {
-         $input['entities_id']  = $item->getEntityID();
-         $input['is_recursive'] = intval($item->isRecursive());
+         if (($item instanceof CommonDBTM)
+             && $item->isEntityForwardTo(get_called_class())) {
+            $input['entities_id']  = $item->getEntityID();
+            $input['is_recursive'] = intval($item->isRecursive());
+         } else {
+            // TODO : study what to do if we switch from an item that has an entity to another one
+            // that don't have any entity
+         }
       }
 
       return parent::prepareInputForUpdate($input);

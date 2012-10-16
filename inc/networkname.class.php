@@ -54,7 +54,7 @@ class NetworkName extends FQDNLabel {
 
    static public $checkParentRights     = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
-   static public $mustBeAttached = false;
+   static public $mustBeAttached        = false;
 
    static function canCreate() {
 
