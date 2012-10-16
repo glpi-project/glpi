@@ -211,8 +211,7 @@ class UserEmail  extends CommonDBChild {
    function prepareInputForAdd($input) {
 
       // Check email validity
-      if (!isset($input['email']) || empty($input['email'])
-          || !isset($input['users_id'])|| empty($input['users_id'])) {
+      if (!isset($input['email']) || empty($input['email'])) {
          return false;
       }
 
