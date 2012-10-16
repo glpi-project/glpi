@@ -399,11 +399,13 @@ class Reminder extends CommonDBTM {
       if (Session::haveRight("reminder_public","r")) {
          switch ($item->getType()) {
             case 'Reminder' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return array(1 => self::createTabEntry($LANG['reminder'][2],
-                                                         $item->countVisibilities()));
+               if ($item->canUpdate()) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     return array(1 => self::createTabEntry($LANG['reminder'][2],
+                                                            $item->countVisibilities()));
+                  }
+                  return array(1 => $LANG['reminder'][2]);
                }
-               return array(1 => $LANG['reminder'][2]);
          }
       }
       return '';
