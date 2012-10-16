@@ -242,6 +242,28 @@ class TicketTemplate extends CommonDropdown {
       return $tab;
    }
 
+   function getSimplifiedInterfaceFields() {
+      $ticket = new Ticket();
+      $fields = array($ticket->getSearchOptionIDByField('field', 'name',
+                                                       'glpi_tickets'),
+                     $ticket->getSearchOptionIDByField('field', 'content',
+                                                       'glpi_tickets'),
+                     $ticket->getSearchOptionIDByField('field', 'urgency',
+                                                       'glpi_tickets'),
+                     $ticket->getSearchOptionIDByField('field', 'completename',
+                                                       'glpi_locations'),
+                     $ticket->getSearchOptionIDByField('field', 'itemtype',
+                                                       'glpi_tickets'),
+                     $ticket->getSearchOptionIDByField('field', 'completename',
+                                                  'glpi_itilcategories'),
+                     $ticket->getSearchOptionIDByField('field', 'type',
+                                                  'glpi_tickets'),
+                     $ticket->getSearchOptionIDByField('field', 'items_id',
+                                                  'glpi_tickets')
+      );
+
+      return $fields;
+   }
 
    function defineTabs($options=array()) {
 
