@@ -258,6 +258,7 @@ switch ($current_version) {
    case "0.83.3" :
    case "0.83.4" :
    case "0.83.5" :
+   case "0.83.6" :
    case GLPI_VERSION :
       break;
 
