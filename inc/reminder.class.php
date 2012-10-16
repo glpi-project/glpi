@@ -713,10 +713,8 @@ class Reminder extends CommonDBTM {
 
       $interv  = array();
 
-      if (!isset($options['begin'])
-          || !isset($options['begin'])
-          || !isset($options['begin'])
-          || !isset($options['end'])) {
+      if (!isset($options['begin']) || ($options['begin'] == 'NULL')
+          || !isset($options['end']) || ($options['end'] == 'NULL')) {
          return $interv;
       }
 
