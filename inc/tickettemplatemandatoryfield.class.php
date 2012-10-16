@@ -161,7 +161,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return $fields;
    }
 
-
+   
    /**
     * Print the mandatory fields
     *
@@ -184,6 +184,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $ttm     = new self();
       $used    = $ttm->getMandatoryFields($ID);
       $fields  = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
+      $simplified_fields = $tt->getSimplifiedInterfaceFields();
+      $both_interfaces = sprintf('%1$s + %2$s', __('Simplified interface'), __('Standard interface'));
 
       $rand    = mt_rand();
 
@@ -211,7 +213,16 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
-            Dropdown::showFromArray('num', $fields, array('used' => $used));
+
+            $select_fields = $fields;
+            foreach ($select_fields as $key => $val) {
+               if (in_array($key, $simplified_fields)) {
+                  $select_fields[$key] = sprintf('%1$s (%2$s)', $val, $both_interfaces);
+               } else {
+                  $select_fields[$key] = sprintf('%1$s (%2$s)', $val, __('Standard interface'));
+               }
+            }
+            Dropdown::showFromArray('num', $select_fields, array('used' => $used));
             echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
                          "\" class='submit'>";
@@ -230,7 +241,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             Html::showMassiveActions(__CLASS__, $massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>";
+         echo "<tr><th colspan='3'>";
          echo self::getTypeName($DB->numrows($result));
          echo "</th></tr>";
          if ($numrows) {
@@ -239,6 +250,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
             }
             echo "<th>".__('Name')."</th>";
+            echo "<th>".__("Profile's interface")."</th>";
             echo "</tr>";
 
             foreach ($mandatoryfields as $data) {
@@ -247,6 +259,13 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                   echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
                }
                echo "<td>".$fields[$data['num']]."</td>";
+               echo "<td>";
+               if (in_array($data['num'], $simplified_fields)) {
+                  echo $both_interfaces;
+               } else {
+                  _e('Standard interface');
+               }
+               echo "</td>";
                echo "</tr>";
             }
 
