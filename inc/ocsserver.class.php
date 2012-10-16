@@ -2822,7 +2822,7 @@ class OcsServer extends CommonDBTM {
             }
 
             //Show preview form only in import and in multi-entity mode
-            if (!$tolinked && Session::isMultiEntitiesMode()) {
+            if (!$tolinked) {
                echo "<div class='firstbloc'>";
                echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode'
                       action='$target'>\n";
