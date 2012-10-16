@@ -255,6 +255,7 @@ switch ($current_version) {
    case "0.83.31" :
    case "0.83.4" :
    case "0.83.5" :
+   case "0.83.6" :
       include("../install/update_0831_084.php");
       update0831to084();
 
