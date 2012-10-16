@@ -1560,7 +1560,12 @@ class Rule extends CommonDBTM {
 
             switch ($crit['type']) {
                case "dropdown" :
-                  return Dropdown::getDropdownName($crit["table"], $value);
+                  $tmp = Dropdown::getDropdownName($crit["table"], $value);
+                  // return empty string to be able to check if set
+                  if ($tmp == '&nbsp;') {
+                     return '';
+                  }
+                  return $tmp;
 
                case "dropdown_assign" :
                case "dropdown_users" :
