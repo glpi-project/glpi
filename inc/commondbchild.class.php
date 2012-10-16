@@ -384,11 +384,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
             $input['entities_id']  = $item->getEntityID();
             $input['is_recursive'] = intval($item->isRecursive());
          } else {
-            // TODO : study what to do if we switch from an item that has an entity to another one
-            // that don't have any entity
-            // MoYo : think set to 0 / 0 (default values)
-            //$input['entities_id']  = 0;
-            //$input['is_recursive'] = 0;
+            // No entity link : set default values 
+            $input['entities_id']  = 0;
+            $input['is_recursive'] = 0;
          }
       }
 
