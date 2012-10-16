@@ -149,58 +149,48 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @brief Factorization of prepareInputForAdd, prepareInputForUpdate ...
-    * Two checks are performed : 1°) do we try to create or update a CommonDBConnexity that is not
-    * attached although it must ? 2°) if we change the item on which we attach the
-    * CommonDBConnexity, are we sure that we have Update right on the new item ?
+    * Factorization of prepareInputForUpdate for CommonDBRelation and CommonDBChild. Just check if
+    * we can change the item
     *
-    * @param $input  (array) the $input parameter of prepareInputForAdd or preprareInputForUpdate
-    * @param $itemtype       the name of the field containing the type of the item
-    * @param $items_id       the name of the field containing the id of the item
-    * @param $mustBeAttached true if we cannot create a CommonDBConnexity that is not attached
-    *                        (cf. first check)
+    * @warning if the update is not possible (right problem), then $input become false
     *
-    * @result false if we cannot do the action (problem of rights), the item if we can load it,
-    *         or true if we cannot load the item (and the element should not be attached
+    * @param $input (array, maybe altered) the new values for the current item
+    * @param $fields (array)               list of fields that define the attached items
+    *
+    * @result true if the attached item has changed, false if the attached items has not changed
     **/
-   function checkInputForAllPrepareInput(array $input, $itemtype, $items_id, $mustBeAttached) {
+   function prepareInputForUpdateForConnexity(array &$input, array $fields) {
 
-      $item = static::getItemFromArray($itemtype, $items_id, $input);
+      // Merge both arrays to ensure all the fields are defined for the following checks
+      $input = array_merge($this->fields, $input);
 
-      if ($item === false) {
-         if ($mustBeAttached) {
-            //TODO : maybe review string
-            Session::addMessageAfterRedirect(__('Cannot do action on item: it must be attach'), INFO, true);
-            return false;
+      foreach ($fields as $field_name) {
+         if ((isset($this->fields[$field_name]))
+             && ($input[$field_name] != $this->fields[$field_name])) {
+
+            $new_item = clone $this;
+            // TODO : choose between both solutions :
+            // Solution 1 : If we cannot create the new item or delete the old item,
+            // then we cannot update the item
+            unset($new_item->fields);
+            if ((!$new_item->can(-1, 'w', $input)) || (!$this->can($this->getID(), 'd'))) {
+               Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+                                                INFO, true);
+               $input = false;
+            }
+            return true;
+
+            // Solution 2 : simple check ! Can we update the item with new values ?
+            if (!$new_item->can($input['id'], 'w')) {
+               Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+                                                INFO, true);
+               $input = false;
+            }
+            return true;
          }
-         return true;
-      }
+     }
 
-      if (preg_match('/^itemtype/', $itemtype)) {
-         if (isset($this->fields[$itemtype])) {
-            $previous_itemtype = $this->fields[$itemtype];
-         } else {
-            $previous_itemtype = '';
-         }
-      } else {
-         $previous_itemtype = $itemtype;
-      }
-
-      if (isset($this->fields[$items_id])) {
-         $previous_items_id = $this->fields[$items_id];
-      } else {
-         $previous_items_id = -1;
-      }
-
-      if ($previous_itemtype !== $item->getType() || $previous_items_id != $item->getID()) {
-         if ((!$item->canUpdate()) || (!$item->canUpdateItem())) {
-            //TODO : maybe review string
-            Session::addMessageAfterRedirect(__('Cannot do action on item: not enough right on the item'), INFO, true);
-            return false;
-         }
-      }
-
-      return $item;
+      return false;
    }
 
 
