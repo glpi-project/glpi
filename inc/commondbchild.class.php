@@ -348,7 +348,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
-                                                   static::$mustBeAttached, 'add');
+                                                   static::$mustBeAttached);
 
       if ($item === false) {
          return false;
@@ -381,7 +381,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       $item = static::checkInputForAllPrepareInput($input, static::$itemtype, static::$items_id,
-                                                   static::$mustBeAttached, 'update');
+                                                   static::$mustBeAttached);
 
       if ($item === false) {
          return false;
