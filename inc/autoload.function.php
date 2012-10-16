@@ -76,13 +76,14 @@ function isPluginItemType($classname) {
  * For translation
  *
  * @param $str : string
+ * @param $domain : string domain used (default is glpi, may be plugin name) 
  *
  * @return translated string
 **/
-function __($str) {
+function __($str, $domain='glpi') {
    global $TRANSLATE;
 
-   $trans = $TRANSLATE->_($str);
+   $trans = $TRANSLATE->translate($str, $domain);
    // Wrong call when plural defined
    if (is_array($trans)) {
       return $trans[0];
@@ -95,11 +96,12 @@ function __($str) {
  * For translation
  *
  * @param $str    string
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
 **/
-function __s($str) {
-   return htmlentities(__($str), ENT_QUOTES, 'UTF-8');
+function __s($str, $domain='glpi') {
+   return htmlentities(__($str, $domain), ENT_QUOTES, 'UTF-8');
 }
 
 
@@ -110,11 +112,12 @@ function __s($str) {
  *
  * @param $ctx string    context
  * @param $str string   to translate
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
 **/
-function _sx($ctx, $str) {
-   return htmlentities(_x($ctx, $str), ENT_QUOTES, 'UTF-8');
+function _sx($ctx, $str, $domain='glpi') {
+   return htmlentities(_x($ctx, $str, $domain), ENT_QUOTES, 'UTF-8');
 }
 
 
@@ -122,11 +125,12 @@ function _sx($ctx, $str) {
  * to delete echo in translation
  *
  * @param $str : string
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return echo string
 **/
-function _e($str) {
-   echo __($str);
+function _e($str, $domain='glpi') {
+   echo __($str, $domain);
 }
 
 
@@ -136,13 +140,14 @@ function _e($str) {
  * @param $sing      string in singular
  * @param $plural    string in plural
  * @param $nb               to select singular or plurial
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return translated string
 **/
-function _n($sing, $plural, $nb) {
+function _n($sing, $plural, $nb, $domain='glpi') {
    global $TRANSLATE;
 
-   return $TRANSLATE->plural($sing, $plural, $nb);
+   return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
 }
 
 
@@ -154,13 +159,14 @@ function _n($sing, $plural, $nb) {
  * @param $sing      string in singular
  * @param $plural    string in plural
  * @param $nb               to select singular or plurial
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
 **/
-function _sn($sing, $plural, $nb) {
+function _sn($sing, $plural, $nb, $domain='glpi') {
    global $TRANSLATE;
 
-   return htmlentities($TRANSLATE->plural($sing, $plural, $nb), ENT_QUOTES, 'UTF-8');
+   return htmlentities(_n($sing, $plural, $nb, $domain), ENT_QUOTES, 'UTF-8');
 }
 
 
@@ -169,14 +175,15 @@ function _sn($sing, $plural, $nb) {
  *
  * @param $ctx string   context
  * @param $str string   to translate
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return string
 **/
-function _x($ctx, $str) {
+function _x($ctx, $str, $domain='glpi') {
 
    // simulate pgettext
    $msg   = $ctx."\004".$str;
-   $trans = __($msg);
+   $trans = __($msg, $domain);
 
    if ($trans == $msg) {
       // No translation
@@ -191,14 +198,15 @@ function _x($ctx, $str) {
  *
  * @param $ctx string   context
  * @param $str string   to translated
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return string
 **/
-function _ex($ctx, $str) {
+function _ex($ctx, $str, $domain='glpi') {
 
    // simulate pgettext
    $msg   = $ctx."\004".$str;
-   $trans = __($msg);
+   $trans = __($msg, $domain);
 
    if ($trans == $msg) {
       // No translation
@@ -215,15 +223,16 @@ function _ex($ctx, $str) {
  * @param $sing      string   in singular
  * @param $plural    string   in plural
  * @param $nb                 to select singular or plurial
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return string
 **/
-function _nx($ctx, $sing, $plural, $nb) {
+function _nx($ctx, $sing, $plural, $nb, $domain='glpi') {
 
    // simulate pgettext
    $singmsg    = $ctx."\004".$sing;
    $pluralmsg  = $ctx."\004".$plural;
-   $trans      = _n($singmsg, $pluralmsg, $nb);
+   $trans      = _n($singmsg, $pluralmsg, $nb, $domain);
 
    if ($trans == $singmsg) {
       // No translation
@@ -281,15 +290,15 @@ function glpi_autoload($classname) {
          return true;
       }
       // Is Zend class ?
-      if (preg_match('/^Zend/',$classname,$matches)) {
-         if (GLPI_ZEND_PATH) {
-            set_include_path(GLPI_ZEND_PATH . PATH_SEPARATOR . get_include_path());
-         }
-         require_once("Zend/Loader.php");
-
-         Zend_Loader::loadClass($classname);
-         return true;
-      }
+//       if (preg_match('/^Zend/',$classname,$matches)) {
+//          if (GLPI_ZEND_PATH) {
+//             set_include_path(GLPI_ZEND_PATH . PATH_SEPARATOR . get_include_path());
+//          }
+//          require_once("Zend/Loader.php");
+// 
+//          Zend_Loader::loadClass($classname);
+//          return true;
+//       }
 
       // Do not try to load phpcas using GLPI autoload
       if (preg_match('/^CAS_.*/', $classname)) {
@@ -316,7 +325,16 @@ function glpi_autoload($classname) {
    }
 }
 
+require_once (GLPI_ROOT . '/lib/Zend/Loader/ClassMapAutoloader.php');
+$loader = new Zend\Loader\ClassMapAutoloader();
+// Register the class map:
+$loader->registerAutoloadMap(GLPI_ROOT . '/lib/Zend/autoload_classmap.php');
+// Register with spl_autoload:
+$loader->register();
+
+// SimplePie autoloader
 spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
+
 // Use spl autoload to allow stackable autoload.
 spl_autoload_register('glpi_autoload');
 
