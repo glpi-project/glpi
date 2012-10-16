@@ -1,0 +1,24 @@
+{
+    "name": "zendframework/zend-cache",
+    "description": "provides a generic way to cache any data",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf2",
+        "cache"
+    ],
+    "autoload": {
+        "psr-0": {
+            "Zend\\Cache": ""
+        }
+    },
+    "target-dir": "Zend/Cache",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zend-stdlib": "self.version",
+        "zendframework/zend-servicemanager": "self.version",
+        "zendframework/zend-eventmanager": "self.version"
+    },
+    "suggest": {
+        "zendframework/zend-log": "Zend\\Log component"
+    }
+}
