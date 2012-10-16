@@ -188,7 +188,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             return true;
          }
-     }
+      }
 
       return false;
    }
