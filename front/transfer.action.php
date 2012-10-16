@@ -48,16 +48,15 @@ if (isset($_POST['transfer'])) {
       }
       $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
       unset($_SESSION['glpitransfer_list']);
-      echo "<span class='b'>".__('Operation successful')."<br>";
-      echo "<a href='central.php'>".__('Back')."</a></span>";
+      echo "<div class='b center'>".__('Operation successful')."<br>";
+      echo "<a href='central.php'>".__('Back')."</a></div>";
       Html::footer();
       exit();
    }
 } else if (isset($_POST['clear'])) {
    unset($_SESSION['glpitransfer_list']);
-   echo "<div class='center'>";
-   echo "<span class='b'>".__('Operation successful')."<br>";
-   echo "<a href='central.php'>".__('Back')."</span></a>";
+   echo "<div class='b center'>".__('Operation successful')."<br>";
+   echo "<a href='central.php'>".__('Back')."</a></div>";
    echo "</div>";
    Html::footer();
    exit();

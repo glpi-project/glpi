@@ -3201,14 +3201,12 @@ class Transfer extends CommonDBTM {
       Dropdown::showFromArray('clean_contract', $clean, $params);
       echo "</td></tr>";
 
-      if (Session::haveRight("transfer", "w")) {
-         if ($edit_form) {
-            $this->showFormButtons($options);
-            $this->addDivForTabs();
-         } else {
-            echo "</table></div>";
-            Html::closeForm();
-         }
+      if ($edit_form) {
+         $this->showFormButtons($options);
+         $this->addDivForTabs();
+      } else {
+         echo "</table></div>";
+         Html::closeForm();
       }
    }
 
