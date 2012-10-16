@@ -446,7 +446,6 @@ if ($item instanceof CommonTreeDropdown) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
              size='1'";
 
-toolbox::logDebug($_POST);
       if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
          echo " onChange='".stripslashes($_POST["on_change"])."'";
       }
