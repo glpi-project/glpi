@@ -3182,13 +3182,7 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
-
-      // First load default entity one
-      if ($template_id = Entity::getUsedConfig('tickettemplates_id',
-                                               $_SESSION["glpiactive_entity"])) {
-         // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);
-      }
+      $template_loaded = false;
 
       $field = '';
       if ($values['type']
@@ -3207,7 +3201,30 @@ class Ticket extends CommonITILObject {
 
             if (!empty($field) && $categ->fields[$field]) {
                // without type and categ
-               $tt->getFromDBWithDatas($categ->fields[$field], false);
+               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                  $template_loaded = true;
+               }
+            }
+         }
+      }
+
+      if (!$template_loaded) {
+         // load default profile one if not already loaded
+         if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
+            && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
+            // with type and categ
+            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'], true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+      if (!$template_loaded) {
+         // Load default entity one if not loaded
+         if ($template_id = Entity::getUsedConfig('tickettemplates_id',
+                                                $_SESSION["glpiactive_entity"])) {
+            // with type and categ
+            if ($tt->getFromDBWithDatas($template_id, true)) {
+                $template_loaded = true;
             }
          }
       }
@@ -3542,12 +3559,8 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
+      $template_loaded = false;
 
-      // First load default entity one
-      if ($template_id = Entity::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
-         // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);
-      }
 
 
       if ($values['type'] && $values['itilcategories_id']) {
@@ -3566,11 +3579,34 @@ class Ticket extends CommonITILObject {
 
             if (!empty($field) && $categ->fields[$field]) {
                // without type and categ
-               $tt->getFromDBWithDatas($categ->fields[$field], false);
+               if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                  $template_loaded = true;
+               }
             }
          }
       }
 
+      if (!$template_loaded) {
+         // load default profile one if not already loaded
+         if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
+            && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
+            // with type and categ
+            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'], true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+
+      if (!$template_loaded) {
+         // load default entity one if not already loaded
+         if ($template_id = Entity::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
+            // with type and categ
+            if ($tt->getFromDBWithDatas($template_id, true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+      
       if (isset($options['template_preview'])) {
          // with type and categ
          $tt->getFromDBWithDatas($options['template_preview'], true);
