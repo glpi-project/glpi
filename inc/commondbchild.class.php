@@ -347,14 +347,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
-      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
-
-      // Set its entity according to the item, if it should
-      if (($item instanceof CommonDBTM)
-          && $item->isEntityForwardTo(get_called_class())) {
-         $input['entities_id']  = $item->getEntityID();
-         $input['is_recursive'] = intval($item->isRecursive());
-      }
+      // Set the item to allow parent::prepareinputforupdate to get the right item ...
+      $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
+                                                        $input);
 
       return parent::prepareInputForAdd($input);
    }
@@ -369,25 +364,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
+      $complete_input = $input;
       // True if item changed
-      if (parent::prepareInputForUpdateForConnexity($input, array(static::$itemtype, static::$items_id))) {
+      if (parent::prepareInputForUpdateForConnexity($complete_input, array(static::$itemtype,
+                                                                           static::$items_id))) {
 
-         if (!is_array($input)) {
+         if (!is_array($complete_input)) {
             return false;
          }
 
-         // If the item has changed, then we must adapt $this to its entity characteristics
-         $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+         // Set the item to allow parent::prepareinputforupdate to get the right item ...
+         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
+                                                           $complete_input);
 
-         if (($item instanceof CommonDBTM)
-             && $item->isEntityForwardTo(get_called_class())) {
-            $input['entities_id']  = $item->getEntityID();
-            $input['is_recursive'] = intval($item->isRecursive());
-         } else {
-            // No entity link : set default values 
-            $input['entities_id']  = 0;
-            $input['is_recursive'] = 0;
-         }
+      } else {
+         $this->itemToGetEntity = false;
       }
 
       return parent::prepareInputForUpdate($input);
