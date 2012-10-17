@@ -77,7 +77,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
    static public $canDeleteOnItemClean = true;
-   static public $forceEntitySetting   = true;
+   static public $forceEntitySetting   = false;
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
