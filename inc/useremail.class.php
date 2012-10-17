@@ -224,7 +224,7 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function getHistoryName_for_item() {
+   function getHistoryName_for_item($case) {
       return addslashes($this->fields['email']);
    }
 
