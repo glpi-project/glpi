@@ -106,6 +106,7 @@ class Reservation extends CommonDBChild {
          $item = $_POST['_item'];
       }
 
+      // TODO : $this->getFromDB is already done by CommonDBTM::update()
       $this->getFromDB($input["id"]);
       // Save fields
       $oldfields             = $this->fields;

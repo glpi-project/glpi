@@ -121,25 +121,20 @@ class Computer_Item extends CommonDBRelation{
    function prepareInputForAdd($input) {
       global $DB, $CFG_GLPI;
 
-      if (!$item = getItemForItemtype($input['itemtype'])) {
+      $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
+      if (!($item instanceof CommonDBTM)
+          || (($item->getField('is_global') == 0)
+              && ($this->countForItem($item) > 0))) {
          return false;
       }
 
-      if (!$item->getFromDB($input['items_id'])) {
+      $comp = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
+      if (!($item instanceof CommonDBTM)
+          || (self::countForAll($comp, $item) >0)) {
+         // no duplicates
          return false;
       }
-      if (($item->getField('is_global') == 0)
-          && ($this->countForItem($item) > 0)) {
-            return false;
-      }
-      $comp = new Computer();
-      if (!$comp->getFromDB($input['computers_id'])) {
-         return false;
-      }
-      // no duplicates
-      if (self::countForAll($comp, $item) >0) {
-         return false;
-      }
+
       if (!$item->getField('is_global') ) {
          // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
          $updates = array();

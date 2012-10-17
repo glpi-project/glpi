@@ -59,18 +59,6 @@ class Calendar_Holiday extends CommonDBRelation {
    }
 
 
-   function prepareInputForAdd($input) {
-
-      if (!isset($input['holidays_id'])
-          || !isset($input['calendars_id'])
-          || ($input['calendars_id'] <= 0)
-          || ($input['holidays_id'] <= 0)) {
-         return false;
-      }
-      return parent::prepareInputForAdd($input);
-   }
-
-
    /**
     * Show holidays for a calendar
     *

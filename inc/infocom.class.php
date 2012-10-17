@@ -357,9 +357,7 @@ class Infocom extends CommonDBChild {
    **/
    function prepareInputForUpdate($input) {
 
-      $infocom = new self();
-      $infocom->getFromDB($input['id']);
-
+      // TODO: Check because I replaced creation of a cloned infocom by $this
       if (isset($input['warranty_duration'])) {
          $input['_warranty_duration'] = $this->fields['warranty_duration'];
       }
@@ -367,11 +365,11 @@ class Infocom extends CommonDBChild {
 
       //Check if one or more dates needs to be updated
       foreach (self::getAutoManagemendDatesFields() as $key => $field) {
-         $result = Entity::getUsedConfig($key, $infocom->fields['entities_id']);
+         $result = Entity::getUsedConfig($key, $this->fields['entities_id']);
 
          //Only update date if it's empty in DB. Otherwise do nothing
          if (($result > 0)
-             && !isset($infocom->fields[$field])) {
+             && !isset($this->fields[$field])) {
             self::autofillDates($input, $field, $result);
          }
       }

@@ -58,9 +58,8 @@ class Change_Item extends CommonDBRelation{
 
    function prepareInputForAdd($input) {
 
-      if (empty($input['itemtype'])
-          || empty($input['items_id']) || ($input['items_id'] == 0)
-          || empty($input['changes_id']) || ($input['changes_id'] == 0)) {
+      // Well, if I remember my PHP: empty(0) == true ...
+      if (empty($input['changes_id']) || ($input['changes_id'] == 0)) {
          return false;
       }
 

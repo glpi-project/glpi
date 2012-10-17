@@ -40,11 +40,13 @@ class Document_Item extends CommonDBRelation{
 
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Document';
-   static public $items_id_1 = 'documents_id';
+   static public $itemtype_1    = 'Document';
+   static public $items_id_1    = 'documents_id';
+   static public $take_entity_1 = false ;
 
-   static public $itemtype_2 = 'itemtype';
-   static public $items_id_2 = 'items_id';
+   static public $itemtype_2    = 'itemtype';
+   static public $items_id_2    = 'items_id';
+   static public $take_entity_2 = true ;
 
 
    /**
@@ -60,11 +62,8 @@ class Document_Item extends CommonDBRelation{
 
    function prepareInputForAdd($input) {
 
-      if (empty($input['itemtype'])
-          || ((empty($input['items_id']) || ($input['items_id'] == 0))
-              && ($input['itemtype'] != 'Entity'))
-          || empty($input['documents_id'])
-          || ($input['documents_id'] == 0)) {
+      if ((empty($input['items_id']) || ($input['items_id'] == 0))
+          && ($input['itemtype'] != 'Entity')) {
          return false;
       }
 
@@ -73,6 +72,7 @@ class Document_Item extends CommonDBRelation{
           && ($input['items_id'] == $input['documents_id'])) {
          return false;
       }
+
       // Avoid duplicate entry
       $restrict = "`documents_id` = '".$input['documents_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
@@ -81,17 +81,6 @@ class Document_Item extends CommonDBRelation{
          return false;
       }
 
-      // Set default entities_id and is_recursive if not set.
-      if (!isset($input['entities_id'])) {
-         if (($item = getItemForItemtype($input['itemtype']))
-             && $item->getFromDB($input['items_id'])) {
-            $input['entities_id']  = $item->getEntityID();
-            $input['is_recursive'] = 0;
-            if ($item->isField('is_recursive')) {
-               $input['is_recursive'] = $item->getField('is_recursive');
-            }
-         }
-      }
       return parent::prepareInputForAdd($input);
    }
 
