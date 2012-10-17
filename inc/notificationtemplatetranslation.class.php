@@ -239,11 +239,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function prepareInputForAdd($input) {
-      return parent::prepareInputForAdd(self::cleanContentHtml($input));
-   }
-
-
    /**
     * @param $input  array
    */
@@ -261,6 +256,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
          $input['content_text'] = $txt;
       }
       return $input;
+   }
+
+
+   function prepareInputForAdd($input) {
+      return parent::prepareInputForAdd(self::cleanContentHtml($input));
    }
 
 

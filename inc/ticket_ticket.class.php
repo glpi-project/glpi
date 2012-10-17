@@ -161,12 +161,8 @@ class Ticket_Ticket extends CommonDBRelation {
       $input['tickets_id_1'] = Toolbox::cleanInteger($input['tickets_id_1']);
       $input['tickets_id_2'] = Toolbox::cleanInteger($input['tickets_id_2']);
 
-      $ticket = new Ticket();
-      if (!isset($input['tickets_id_1'])
-          || !isset($input['tickets_id_2'])
-          || ($input['tickets_id_2'] == $input['tickets_id_1'])
-          || !$ticket->getFromDB($input['tickets_id_1'])
-          || !$ticket->getFromDB($input['tickets_id_2'])) {
+      // Check of existance of rights on both Ticket(s) is done by the parent
+      if ($input['tickets_id_2'] == $input['tickets_id_1']) {
          return false;
       }
 

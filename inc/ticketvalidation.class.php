@@ -173,22 +173,10 @@ class TicketValidation  extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      // Not attached to tickets -> not added
-      if (!isset($input['tickets_id']) || ($input['tickets_id'] <= 0)) {
-         return false;
-      }
-
 /*       if ($job->fields["status"] == CommonITILObject::SOLVED
                   || $job->fields["status"] == CommonITILObject::CLOSED) {
             return false;
          }*/
-
-      if (!isset($input['entities_id'])) { // Massive modif case
-         $job = new Ticket();
-         $job->getFromDB($input["tickets_id"]);
-
-         $input['entities_id'] = $job->fields["entities_id"];
-      }
 
       $input["users_id"] = 0;
       if (!isset($input['_auto_update'])) {

@@ -75,12 +75,9 @@ class Profile_User extends CommonDBRelation {
 
    function prepareInputForAdd($input) {
 
-      if (!isset($input['profiles_id'])
-          || ($input['profiles_id'] <= 0)
-          || !isset($input['entities_id'])
-          || ($input['entities_id'] < 0)
-          || !isset($input['users_id'])
-          || ($input['users_id'] < 0)) {
+      // TODO: check if the entities should not be inherited from the profile or the user
+      if (!isset($input['entities_id'])
+          || ($input['entities_id'] < 0)) {
 
          Session::addMessageAfterRedirect(__('No selected element or badly defined operation'),
                                           false, ERROR);

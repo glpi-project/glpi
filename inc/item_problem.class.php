@@ -64,14 +64,6 @@ class Item_Problem extends CommonDBRelation{
    **/
    function prepareInputForAdd($input) {
 
-      if (empty($input['itemtype'])
-          || empty($input['items_id'])
-          || ($input['items_id'] == 0)
-          || empty($input['problems_id'])
-          || ($input['problems_id'] == 0)) {
-         return false;
-      }
-
       // Avoid duplicate entry
       $restrict = " `problems_id` = '".$input['problems_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
