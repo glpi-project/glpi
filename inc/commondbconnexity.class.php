@@ -77,6 +77,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
    static public $canDeleteOnItemClean = true;
+   static public $forceEntitySetting   = true;
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
@@ -224,6 +225,53 @@ abstract class CommonDBConnexity extends CommonDBTM {
       return false;
    }
 
+
+   function prepareInputForAdd($input) {
+
+      // Only CommoDBRelation or CommonDBChild can call this method.
+      // So we don't have to check $input validity
+
+      if (($this->itemToGetEntity instanceof CommonDBTM)
+          && $this->itemToGetEntity->isEntityForwardTo(get_called_class())
+          && ((!isset($input['entities_id'])) || static::$forceEntitySetting)) {
+
+         $input['entities_id']  = $this->itemToGetEntity->getEntityID();
+         $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
+
+      } else {
+         // No entity link : set default values
+         $input['entities_id']  = 0;
+         $input['is_recursive'] = 0;
+      }
+
+      unset($this->itemToGetEntity);
+
+      return parent::prepareInputForAdd($input);
+   }
+
+
+   function prepareInputForUpdate($input) {
+
+      // Only CommoDBRelation or CommonDBChild can call this method.
+      // So we don't have to check $input validity
+
+      if (($this->itemToGetEntity instanceof CommonDBTM)
+          && $this->itemToGetEntity->isEntityForwardTo(get_called_class())
+          && ((!isset($input['entities_id'])) || static::$forceEntitySetting)) {
+
+         $input['entities_id']  = $this->itemToGetEntity->getEntityID();
+         $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
+
+      } else {
+         // No entity link : set default values
+         $input['entities_id']  = 0;
+         $input['is_recursive'] = 0;
+      }
+
+      unset($this->itemToGetEntity);
+
+      return parent::prepareInputForUpdate($input);
+   }
 
    /**
     * Factorization of canCreate, canView, canUpate and canDelete. It checks the ability to

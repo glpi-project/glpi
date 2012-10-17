@@ -504,19 +504,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          return false;
       }
 
+      // Set the item to allow parent::prepareinputforupdate to get the right item ...
+      $this->itemToGetEntity = false;
       if (static::$take_entity_1) {
-         $item = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
+         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1, static::$items_id_1,
+                                                           $input);
       } elseif (static::$take_entity_2) {
-         $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
-      } else {
-         $item = false;
-      }
-
-      // Set its entity according to the item, if it should
-      if (($item instanceof CommonDBTM)
-          && $item->isEntityForwardTo(get_called_class())) {
-         $input['entities_id']  = $item->getEntityID();
-         $input['is_recursive'] = intval($item->isRecursive());
+         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
+                                                           $input);
       }
 
       return parent::prepareInputForAdd($input);
@@ -532,31 +527,27 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          return false;
       }
 
-      if (parent::prepareInputForUpdateForConnexity($input, array(static::$itemtype_1,
-                                                                  static::$items_id_1,
-                                                                  static::$itemtype_2,
-                                                                  static::$items_id_2))) {
+      $complete_input = $input;
+      // True if item changed
+      if (parent::prepareInputForUpdateForConnexity($complete_input, array(static::$itemtype_1,
+                                                                           static::$items_id_1,
+                                                                           static::$itemtype_2,
+                                                                           static::$items_id_2))) {
 
-         if (!is_array($input)) {
+         if (!is_array($complete_input)) {
             return false;
          }
 
+         // Set the item to allow parent::prepareinputforupdate to get the right item ...
+         $this->itemToGetEntity = false;
          if (static::$take_entity_1) {
-            $item = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
+            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1,
+                                                              static::$items_id_1,
+                                                              $complete_input);
          } elseif (static::$take_entity_2) {
-            $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
-         } else {
-            $item = false;
-         }
-
-         if (($item instanceof CommonDBTM)
-             && $item->isEntityForwardTo(get_called_class())) {
-            $input['entities_id']  = $item->getEntityID();
-            $input['is_recursive'] = intval($item->isRecursive());
-         } else {
-            // No entity link : set default values
-            $input['entities_id']  = 0;
-            $input['is_recursive'] = 0;
+            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2,
+                                                              static::$items_id_2,
+                                                              $complete_input);
          }
       }
 
