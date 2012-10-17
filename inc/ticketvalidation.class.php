@@ -193,6 +193,8 @@ class TicketValidation  extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
+      // TODO : try to use CommonDBChild facility to log the history
+
       $job      = new Ticket();
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"])) {

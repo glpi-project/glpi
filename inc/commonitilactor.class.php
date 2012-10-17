@@ -225,9 +225,9 @@ abstract class CommonITILActor extends CommonDBRelation {
          $donotif = false;
       }
 
-      $item = new static::$itemtype_1();
+      $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 
-      if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
+      if ($item instanceof CommonDBTM) {
          if (($item->countSuppliers(CommonITILActor::ASSIGN) == 0)
              && ($item->countUsers(CommonITILActor::ASSIGN) == 0)
              && ($item->countGroups(CommonITILActor::ASSIGN) == 0)
