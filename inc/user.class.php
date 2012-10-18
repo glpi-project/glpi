@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 // And Marco Gaiarin for ldap features
 
@@ -1112,6 +1112,9 @@ class User extends CommonDBTM {
 
          $fields  = AuthLDAP::getSyncFields($ldap_method);
 
+         //Hook to allow plugin to request more attributes from ldap
+         $fields = Plugin::doHookFunction("retrieve_more_field_from_ldap", $fields);
+
          $fields  = array_filter($fields);
          $f       = array_values($fields);
 
@@ -1260,8 +1263,11 @@ class User extends CommonDBTM {
                }
             }
 
+            // Add ldap result to data send to the hook
+            $this->fields['_ldap_result'] = $v;
             //Hook to retrieve more information for ldap
             $this->fields = Plugin::doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+            unset($this->fields['_ldap_result']);
          }
          return true;
       }
