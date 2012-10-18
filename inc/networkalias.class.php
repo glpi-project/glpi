@@ -123,7 +123,10 @@ class NetworkAlias extends FQDNLabel {
                            'name'         => 'fqdns_id',
                            'entity'       => $this->getEntityID(),
                            'displaywith'  => array('view')));
-      echo "</td><td></td>";
+      echo "</td>";
+      echo "<td>".__('Comments')."</td>";
+      echo "<td><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td>\n";
       echo "</tr>\n";
 
       $this->showFormButtons($options);
