@@ -3615,7 +3615,7 @@ class Ticket extends CommonITILObject {
 
 
 
-      if (!isset($options['template_preview'])) {
+      if (!$options['template_preview']) {
          $this->showTabs($options);
       }
 
@@ -3631,7 +3631,7 @@ class Ticket extends CommonITILObject {
                              && ($this->numberOfFollowups() == 0)
                              && ($this->numberOfTasks() == 0));
 
-      if (!isset($options['template_preview'])) {
+      if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
                 $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
       }
@@ -4303,7 +4303,7 @@ class Ticket extends CommonITILObject {
            || $canupdate_descr
            || Session::haveRight("assign_ticket","1")
            || Session::haveRight("steal_ticket","1"))
-          && !isset($options['template_preview'])) {
+          && !$options['template_preview']) {
 
          echo "<tr class='tab_bg_1'>";
 
@@ -4350,7 +4350,7 @@ class Ticket extends CommonITILObject {
 
       echo "</div>";
 
-      if (!isset($options['template_preview'])) {
+      if (!$options['template_preview']) {
          Html::closeForm();
          $this->addDivForTabs();
       }
