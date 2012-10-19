@@ -1156,8 +1156,15 @@ class User extends CommonDBTM {
                   case "email2" :
                   case "email3" :
                   case "email4" :
-                     if (!empty($v[0][$e][0])) {
-                        $this->fields["_emails"][] = addslashes($v[0][$e][0]);
+                     // Manage multivaluable fields
+                     if (!empty($v[0][$e])) {
+                        foreach ($v[0][$e] as $km => $m) {
+                           if(!preg_match('/count/',$km)) {
+                              $this->fields["_emails"][] = addslashes($m);
+                           }
+                        }
+                        // Only get them once if duplicated
+                        $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                      }
                      break;
 
