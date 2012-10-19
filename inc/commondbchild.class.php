@@ -496,8 +496,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (($item !== false) && $item->dohistory) {
          $changes[0] = '0';
-         $changes[1] = $this->getHistoryName_for_item('delete');
-         $changes[2] = '';
+         if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
+            $changes[1] = '';
+            $changes[2] = $this->getHistoryName_for_item('delete');
+         } else {
+            $changes[1] = $this->getHistoryName_for_item('delete');
+            $changes[2] = '';
+         }
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       static::$log_history_delete);
       }
