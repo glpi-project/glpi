@@ -16,4 +16,5 @@ namespace Zend\ServiceManager\Exception;
  * @subpackage Exception
  */
 class CircularDependencyFoundException extends RuntimeException
-{}
+{
+}

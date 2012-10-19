@@ -12,6 +12,10 @@ namespace Zend\Stdlib;
 
 use ArrayObject;
 
+/**
+ * @category   Zend
+ * @package    Zend_Stdlib
+ */
 class Parameters extends ArrayObject implements ParametersInterface
 {
     /**
@@ -106,7 +110,7 @@ class Parameters extends ArrayObject implements ParametersInterface
     /**
      * @param string $name
      * @param mixed $value
-     * @return $this
+     * @return Parameters
      */
     public function set($name, $value)
     {

@@ -498,6 +498,10 @@ class EventManager implements EventManagerInterface
         }
 
         $identifiers     = $this->getIdentifiers();
+        //Add wildcard id to the search, if not already added
+        if (!in_array('*', $identifiers)) {
+            $identifiers[] = '*';
+        }
         $sharedListeners = array();
 
         foreach ($identifiers as $id) {

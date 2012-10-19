@@ -147,7 +147,7 @@ class PluginClassLoader implements PluginClassLocator
     /**
      * Unregister a short name lookup
      *
-     * @param mixed $shortName
+     * @param  mixed $shortName
      * @return PluginClassLoader
      */
     public function unregisterPlugin($shortName)

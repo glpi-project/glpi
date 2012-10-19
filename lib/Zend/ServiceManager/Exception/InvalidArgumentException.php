@@ -15,6 +15,6 @@ namespace Zend\ServiceManager\Exception;
  * @package    Zend_ServiceManager
  * @subpackage Exception
  */
-class InvalidArgumentException extends \InvalidArgumentException implements
-    ExceptionInterface
-{}
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+{
+}

@@ -10,6 +10,10 @@
 
 namespace Zend\Stdlib;
 
+/**
+ * @category   Zend
+ * @package    Zend_Stdlib
+ */
 class Response extends Message implements ResponseInterface
 {
     // generic response implementation

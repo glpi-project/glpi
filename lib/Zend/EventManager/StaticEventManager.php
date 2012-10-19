@@ -10,7 +10,6 @@
 
 namespace Zend\EventManager;
 
-use Zend\Stdlib\CallbackHandler;
 
 /**
  * Static version of EventManager

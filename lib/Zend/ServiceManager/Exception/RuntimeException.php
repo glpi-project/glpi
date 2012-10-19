@@ -16,4 +16,5 @@ namespace Zend\ServiceManager\Exception;
  * @subpackage Exception
  */
 class RuntimeException extends \RuntimeException implements ExceptionInterface
-{}
+{
+}

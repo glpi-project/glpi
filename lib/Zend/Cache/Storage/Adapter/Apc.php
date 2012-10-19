@@ -11,7 +11,6 @@
 namespace Zend\Cache\Storage\Adapter;
 
 use APCIterator as BaseApcIterator;
-use ArrayObject;
 use stdClass;
 use Traversable;
 use Zend\Cache\Exception;

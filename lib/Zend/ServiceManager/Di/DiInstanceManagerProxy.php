@@ -26,6 +26,8 @@ class DiInstanceManagerProxy extends DiInstanceManager
     protected $serviceLocator = null;
 
     /**
+     * Constructor
+     *
      * @param DiInstanceManager $diInstanceManager
      * @param ServiceLocatorInterface $serviceLocator
      */
@@ -43,6 +45,8 @@ class DiInstanceManagerProxy extends DiInstanceManager
     }
 
     /**
+     * Determine if we have a shared instance by class or alias
+     *
      * @param $classOrAlias
      * @return bool
      */
@@ -52,6 +56,8 @@ class DiInstanceManagerProxy extends DiInstanceManager
     }
 
     /**
+     * Get shared instance
+     *
      * @param $classOrAlias
      * @return mixed
      */

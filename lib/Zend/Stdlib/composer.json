@@ -8,7 +8,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Zend\\Stdlib": ""
+            "Zend\\Stdlib\\": ""
         }
     },
     "target-dir": "Zend/Stdlib",

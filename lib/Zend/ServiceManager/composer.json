@@ -8,7 +8,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Zend\\ServiceManager": ""
+            "Zend\\ServiceManager\\": ""
         }
     },
     "target-dir": "Zend/ServiceManager",

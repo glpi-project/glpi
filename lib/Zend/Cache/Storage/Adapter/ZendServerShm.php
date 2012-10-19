@@ -10,7 +10,6 @@
 
 namespace Zend\Cache\Storage\Adapter;
 
-use ArrayObject;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\ClearByNamespaceInterface;
 use Zend\Cache\Storage\FlushableInterface;
@@ -111,7 +110,7 @@ class ZendServerShm extends AbstractZendServer implements
      */
     protected function zdcFetch($internalKey)
     {
-        return zend_shm_cache_fetch((string)$internalKey);
+        return zend_shm_cache_fetch((string) $internalKey);
     }
 
     /**

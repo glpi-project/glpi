@@ -33,6 +33,8 @@ class DiServiceInitializer extends Di implements InitializerInterface
     protected $serviceLocator = null;
 
     /**
+     * Constructor
+     *
      * @param \Zend\Di\Di $di
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @param null|DiInstanceManagerProxy $diImProxy
@@ -45,6 +47,8 @@ class DiServiceInitializer extends Di implements InitializerInterface
     }
 
     /**
+     * Initialize
+     *
      * @param $instance
      * @param ServiceLocatorInterface $serviceLocator
      * @throws \Exception

@@ -10,6 +10,10 @@
 
 namespace Zend\Stdlib;
 
+/**
+ * @category   Zend
+ * @package    Zend_Stdlib
+ */
 class Request extends Message implements RequestInterface
 {
     // generic request implementation

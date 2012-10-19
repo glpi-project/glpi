@@ -10,8 +10,23 @@
 
 namespace Zend\ServiceManager;
 
+/**
+ * @category Zend
+ * @package  Zend_ServiceManager
+ */
 interface ServiceLocatorAwareInterface
 {
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator);
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
     public function getServiceLocator();
 }

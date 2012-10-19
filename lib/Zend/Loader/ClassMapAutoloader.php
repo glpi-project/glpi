@@ -195,7 +195,7 @@ class ClassMapAutoloader implements SplAutoloader
      * Resolve the real_path() to a file within a phar.
      *
      * @see https://bugs.php.net/bug.php?id=52769
-     * @param string $path
+     * @param  string $path
      * @return string
      */
     public static function realPharPath($path)

@@ -11,7 +11,6 @@
 namespace Zend\Cache\Pattern;
 
 use Zend\Cache\Exception;
-use Zend\Cache\StorageFactory;
 use Zend\Stdlib\ErrorHandler;
 
 /**

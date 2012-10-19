@@ -101,6 +101,10 @@ class SharedEventManager implements SharedEventManagerInterface
     public function getEvents($id)
     {
         if (!array_key_exists($id, $this->identifiers)) {
+            //Check if there are any id wildcards listeners
+            if ('*' != $id && array_key_exists('*', $this->identifiers)) {
+                return $this->identifiers['*']->getEvents();
+            }
             return false;
         }
         return $this->identifiers[$id]->getEvents();
