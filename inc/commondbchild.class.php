@@ -442,8 +442,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (!isset($items_for_log['previous'])) {
 
-         echo __FILE__." ".__LINE__."<br>\n";
-
          // Haven't updated the connexity relation
          $oldvalues = $this->oldvalues;
          unset($oldvalues[static::$itemtype]);
@@ -461,8 +459,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       } else {
          // Have updated the connexity relation
-
-         echo __FILE__." ".__LINE__."<br>\n";
 
          $prevItem = $items_for_log['previous'];
          $newItem  = $items_for_log['new'];
@@ -483,8 +479,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
                          static::$log_history_add);
          }
       }
-      echo __FILE__." ".__LINE__."<br>\n";
-      exit();
   }
 
    /**
