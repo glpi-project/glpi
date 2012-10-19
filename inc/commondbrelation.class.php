@@ -557,6 +557,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Get the history name of first item
     *
+    * @TODO add ability to define specifically which field has been updated
+    *
     * @param $item the other item (ie. : $item2)
     *
     * @return (string) the name of the entry for the database (ie. : correctly slashed)
@@ -568,6 +570,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
    /**
     * Get the history name of second item
+    *
+    * @TODO add ability to define specifically which field has been updated
     *
     * @param $item the other item (ie. : $item1)
     *
