@@ -73,7 +73,7 @@ class StorageFactory
             $adapterOptions = array_merge($adapterOptions, $cfg['options']);
         }
 
-        $adapter = static::adapterFactory((string)$adapterName, $adapterOptions);
+        $adapter = static::adapterFactory((string) $adapterName, $adapterOptions);
 
         // add plugins
         if (isset($cfg['plugins'])) {

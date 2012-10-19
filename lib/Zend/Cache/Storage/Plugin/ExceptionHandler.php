@@ -10,7 +10,6 @@
 
 namespace Zend\Cache\Storage\Plugin;
 
-use Traversable;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\ExceptionEvent;
 use Zend\EventManager\EventManagerInterface;

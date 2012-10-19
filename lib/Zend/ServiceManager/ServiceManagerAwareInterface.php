@@ -10,7 +10,16 @@
 
 namespace Zend\ServiceManager;
 
+/**
+ * @category Zend
+ * @package  Zend_ServiceManager
+ */
 interface ServiceManagerAwareInterface
 {
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
     public function setServiceManager(ServiceManager $serviceManager);
 }

@@ -11,10 +11,11 @@
 namespace Zend\Stdlib\Exception;
 
 /**
- * logic exception
+ * Logic exception
  *
  * @category   Zend
  * @package    Zend_Stdlib
+ * @subpackage Exception
  */
 class LogicException extends \LogicException implements ExceptionInterface
 {

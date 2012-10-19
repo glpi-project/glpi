@@ -10,7 +10,6 @@
 
 namespace Zend\EventManager;
 
-use ArrayObject;
 use Zend\Stdlib\CallbackHandler;
 use Zend\Stdlib\PriorityQueue;
 

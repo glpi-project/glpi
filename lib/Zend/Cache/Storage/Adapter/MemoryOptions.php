@@ -66,7 +66,7 @@ class MemoryOptions extends AdapterOptions
             // By default use half of PHP's memory limit if possible
             $memoryLimit = $this->normalizeMemoryLimit(ini_get('memory_limit'));
             if ($memoryLimit >= 0) {
-                $this->memoryLimit = (int)($memoryLimit / 2);
+                $this->memoryLimit = (int) ($memoryLimit / 2);
             } else {
                 // disable memory limit
                 $this->memoryLimit = 0;
@@ -86,7 +86,7 @@ class MemoryOptions extends AdapterOptions
     protected function normalizeMemoryLimit($value)
     {
         if (is_numeric($value)) {
-            return (int)$value;
+            return (int) $value;
         }
 
         if (!preg_match('/(\-?\d+)\s*(\w*)/', ini_get('memory_limit'), $matches)) {

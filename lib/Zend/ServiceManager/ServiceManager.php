@@ -13,6 +13,10 @@ namespace Zend\ServiceManager;
 use Closure;
 use ReflectionClass;
 
+/**
+ * @category Zend
+ * @package  Zend_ServiceManager
+ */
 class ServiceManager implements ServiceLocatorInterface
 {
 
@@ -105,6 +109,8 @@ class ServiceManager implements ServiceLocatorInterface
     protected $canonicalNamesReplacements = array('-' => '', '_' => '', ' ' => '', '\\' => '', '/' => '');
 
     /**
+     * Constructor
+     *
      * @param ConfigInterface $config
      */
     public function __construct(ConfigInterface $config = null)
@@ -115,6 +121,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Set allow override
+     *
      * @param $allowOverride
      * @return ServiceManager
      */
@@ -125,6 +133,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Get allow override
+     *
      * @return bool
      */
     public function getAllowOverride()
@@ -162,6 +172,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Set throw exceptions in create
+     *
      * @param  bool $throwExceptionInCreate
      * @return ServiceManager
      */
@@ -172,6 +184,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Get throw exceptions in create
+     *
      * @return bool
      */
     public function getThrowExceptionInCreate()
@@ -202,6 +216,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Set invokable class
+     *
      * @param  string  $name
      * @param  string  $invokableClass
      * @param  bool $shared
@@ -230,6 +246,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Set factory
+     *
      * @param  string                           $name
      * @param  string|FactoryInterface|callable $factory
      * @param  bool                             $shared
@@ -265,6 +283,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Add abstract factory
+     *
      * @param  AbstractFactoryInterface|string $factory
      * @param  bool                            $topOfStack
      * @return ServiceManager
@@ -300,6 +320,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Add initializer
+     *
      * @param  callable|InitializerInterface $initializer
      * @param  bool                          $topOfStack
      * @return ServiceManager
@@ -363,7 +385,11 @@ class ServiceManager implements ServiceLocatorInterface
     {
         $cName = $this->canonicalizeName($name);
 
-        if (!isset($this->invokableClasses[$cName]) && !isset($this->factories[$cName])) {
+        if (
+            !isset($this->invokableClasses[$cName])
+            && !isset($this->factories[$cName])
+            && !$this->canCreateFromAbstractFactory($cName, $name)
+        ) {
             throw new Exception\ServiceNotFoundException(sprintf(
                 '%s: A service by the name "%s" was not found and could not be marked as shared',
                 __METHOD__,
@@ -438,6 +464,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Create an instance
+     *
      * @param  string|array $name
      * @return false|object
      * @throws Exception\ServiceNotFoundException
@@ -609,6 +637,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Determine if we have an alias
+     *
      * @param  string $alias
      * @return bool
      */
@@ -619,6 +649,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Create scoped service manager
+     *
      * @param  string $peering
      * @return ServiceManager
      */
@@ -653,6 +685,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Canonicalize name
+     *
      * @param  string $name
      * @return string
      */
@@ -667,6 +701,8 @@ class ServiceManager implements ServiceLocatorInterface
     }
 
     /**
+     * Create service via callback
+     *
      * @param  callable $callable
      * @param  string   $cName
      * @param  string   $rName
@@ -779,7 +815,7 @@ class ServiceManager implements ServiceLocatorInterface
                 __METHOD__,
                 $canonicalName,
                 ($requestedName ? '(alias: ' . $requestedName . ')' : ''),
-                $canonicalName
+                $invokable
             ));
         }
         $instance = new $invokable;
@@ -838,12 +874,16 @@ class ServiceManager implements ServiceLocatorInterface
             }
             try {
                 $this->pendingAbstractFactoryRequests[get_class($abstractFactory)] = $requestedName;
-                $instance = $this->createServiceViaCallback(
-                    array($abstractFactory, 'createServiceWithName'),
-                    $canonicalName,
-                    $requestedName
-                );
-                unset($this->pendingAbstractFactoryRequests[get_class($abstractFactory)]);
+                if ($abstractFactory->canCreateServiceWithName($this, $canonicalName, $requestedName)) {
+                    $instance = $this->createServiceViaCallback(
+                        array($abstractFactory, 'createServiceWithName'),
+                        $canonicalName,
+                        $requestedName
+                    );
+                    unset($this->pendingAbstractFactoryRequests[get_class($abstractFactory)]);
+                } else {
+                    $instance = false;
+                }
             } catch (\Exception $e) {
                 unset($this->pendingAbstractFactoryRequests[get_class($abstractFactory)]);
                 throw new Exception\ServiceNotCreatedException(

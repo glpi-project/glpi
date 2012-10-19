@@ -13,7 +13,18 @@ namespace Zend\Stdlib;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
 
+/**
+ * @category   Zend
+ * @package    Zend_Stdlib
+ */
 interface DispatchableInterface
 {
+    /**
+     * Dispatch a request
+     *
+     * @param Request $request
+     * @param null|Response $response
+     * @return Response|mixed
+     */
     public function dispatch(Request $request, Response $response = null);
 }

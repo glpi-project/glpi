@@ -12,7 +12,18 @@ namespace Zend\ServiceManager;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+/**
+ * @category Zend
+ * @package  Zend_ServiceManager
+ */
 interface InitializerInterface
 {
+    /**
+     * Initialize
+     *
+     * @param $instance
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
     public function initialize($instance, ServiceLocatorInterface $serviceLocator);
 }

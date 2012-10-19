@@ -11,7 +11,6 @@
 namespace Zend\Cache\Storage\Plugin;
 
 use stdClass;
-use Traversable;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\Capabilities;
 use Zend\Cache\Storage\Event;

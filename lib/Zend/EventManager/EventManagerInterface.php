@@ -10,7 +10,6 @@
 
 namespace Zend\EventManager;
 
-use ArrayObject;
 use Traversable;
 use Zend\Stdlib\CallbackHandler;
 

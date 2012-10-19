@@ -8,7 +8,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Zend\\EventManager": ""
+            "Zend\\EventManager\\": ""
         }
     },
     "target-dir": "Zend/EventManager",

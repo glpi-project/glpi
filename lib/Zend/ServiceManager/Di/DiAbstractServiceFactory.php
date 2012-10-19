@@ -17,6 +17,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class DiAbstractServiceFactory extends DiServiceFactory implements AbstractFactoryInterface
 {
     /**
+     * Constructor
+     *
      * @param \Zend\Di\Di $di
      * @param null|string|\Zend\Di\InstanceManager $useServiceLocator
      */

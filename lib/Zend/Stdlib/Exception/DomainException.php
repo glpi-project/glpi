@@ -10,6 +10,13 @@
 
 namespace Zend\Stdlib\Exception;
 
+/**
+ * Domain exception
+ *
+ * @category   Zend
+ * @package    Zend_Stdlib
+ * @subpackage Exception
+ */
 class DomainException extends \DomainException implements ExceptionInterface
 {
 }

@@ -271,8 +271,8 @@ class StandardAutoloader implements SplAutoloader
     /**
      * Load a class, based on its type (namespaced or prefixed)
      *
-     * @param string $class
-     * @param string $type
+     * @param  string $class
+     * @param  string $type
      * @return bool|string
      * @throws Exception\InvalidArgumentException
      */

@@ -10,7 +10,17 @@
 
 namespace Zend\ServiceManager;
 
+/**
+ * @category Zend
+ * @package  Zend_ServiceManager
+ */
 interface ConfigInterface
 {
+    /**
+     * Configure service manager
+     *
+     * @param ServiceManager $serviceManager
+     * @return void
+     */
     public function configureServiceManager(ServiceManager $serviceManager);
 }

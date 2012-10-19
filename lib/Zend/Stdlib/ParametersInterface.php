@@ -19,24 +19,72 @@ use Traversable;
  * Basically, an ArrayObject. You could simply define something like:
  *     class QueryParams extends ArrayObject implements Parameters {}
  * and have 90% of the functionality
+ *
+ * @category   Zend
+ * @package    Zend_Stdlib
  */
 interface ParametersInterface extends ArrayAccess, Countable, Serializable, Traversable
 {
+    /**
+     * Constructor
+     *
+     * @param array $values
+     */
     public function __construct(array $values = null);
 
-    /* Allow deserialization from standard array */
+    /**
+     * From array
+     *
+     * Allow deserialization from standard array
+     *
+     * @param array $values
+     * @return mixed
+     */
     public function fromArray(array $values);
 
-    /* Allow deserialization from raw body; e.g., for PUT requests */
+    /**
+     * From string
+     *
+     * Allow deserialization from raw body; e.g., for PUT requests
+     *
+     * @param $string
+     * @return mixed
+     */
     public function fromString($string);
 
-    /* Allow serialization back to standard array */
+    /**
+     * To array
+     *
+     * Allow serialization back to standard array
+     *
+     * @return mixed
+     */
     public function toArray();
 
-    /* Allow serialization to query format; e.g., for PUT or POST requests */
+    /**
+     * To string
+     *
+     * Allow serialization to query format; e.g., for PUT or POST requests
+     *
+     * @return mixed
+     */
     public function toString();
 
+    /**
+     * Get
+     *
+     * @param string $name
+     * @param mixed|null $default
+     * @return mixed
+     */
     public function get($name, $default = null);
 
+    /**
+     * Set
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return ParametersInterface
+     */
     public function set($name, $value);
 }
