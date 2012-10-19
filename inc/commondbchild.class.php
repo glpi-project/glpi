@@ -38,20 +38,21 @@ if (!defined('GLPI_ROOT')) {
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBChild extends CommonDBConnexity {
 
-  // Mapping between DB fields
+   // Mapping between DB fields
+   // * definition
    static public $itemtype; // Class name or field name (start with itemtype) for link to Parent
    static public $items_id; // Field name
-
-   static public $checkParentRights = self::HAVE_SAME_RIGHT_ON_ITEM;
+   // * rights
+   static public $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
+   static public $mustBeAttached     = true;
+   // * log
+   static public $log_history_add    = Log::HISTORY_ADD_SUBITEM;
+   static public $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
+   static public $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
 
    // Make an history of the changes -
    // if true, will write a event in the history of parent for add/delete
    public $dohistory = false;
-
-   /// Drop the element if it is not attached to an item
-   /// since version 0.84
-   static public $mustBeAttached = true;
-
 
    /**
     * @since version 0.84
@@ -388,6 +389,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Get the history name of item
     *
+    * @TODO add ability to define specifically which field has been updated
+    *
     * @param $item the other item (ie. : $item1)
     *
     * @return (string) the name of the entry for the database (ie. : correctly slashed)
@@ -415,7 +418,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $changes[1] = "";
          $changes[2] = $this->getHistoryName_for_item('add');
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                      Log::HISTORY_ADD_SUBITEM);
+                      static::$log_history_add);
       }
    }
 
@@ -439,6 +442,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (!isset($items_for_log['previous'])) {
 
+         echo __FILE__." ".__LINE__."<br>\n";
+
          // Haven't updated the connexity relation
          $oldvalues = $this->oldvalues;
          unset($oldvalues[static::$itemtype]);
@@ -450,12 +455,14 @@ abstract class CommonDBChild extends CommonDBConnexity {
                $changes[1] = $this->getHistoryName_for_item('update values previous');
                $changes[2] = $this->getHistoryName_for_item('update values next');
                Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                            Log::HISTORY_UPDATE_SUBITEM);
+                            static::$log_history_update);
             }
          }
 
       } else {
          // Have updated the connexity relation
+
+         echo __FILE__." ".__LINE__."<br>\n";
 
          $prevItem = $items_for_log['previous'];
          $newItem  = $items_for_log['new'];
@@ -465,7 +472,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
             $changes[1] = $this->getHistoryName_for_item('update item previous');
             $changes[2] = '';
             Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
-                         Log::HISTORY_DELETE_SUBITEM);
+                         static::$log_history_delete);
          }
 
          if (($newItem !== false) && $newItem->dohistory) {
@@ -473,9 +480,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             $changes[1] = '';
             $changes[2] = $this->getHistoryName_for_item('update item next');
             Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
-                         Log::HISTORY_ADD_SUBITEM);
+                         static::$log_history_add);
          }
       }
+      echo __FILE__." ".__LINE__."<br>\n";
+      exit();
   }
 
    /**
@@ -496,7 +505,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $changes[1] = $this->getHistoryName_for_item('delete');
          $changes[2] = '';
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                      Log::HISTORY_DELETE_SUBITEM);
+                      static::$log_history_delete);
       }
    }
 
