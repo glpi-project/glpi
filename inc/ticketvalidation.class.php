@@ -47,6 +47,10 @@ class TicketValidation  extends CommonDBChild {
    static public $itemtype = 'Ticket';
    static public $items_id = 'tickets_id';
 
+   static public $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+   static public $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+   static public $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -193,8 +197,6 @@ class TicketValidation  extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
-      // TODO : try to use CommonDBChild facility to log the history
-
       $job      = new Ticket();
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"])) {
@@ -238,15 +240,8 @@ class TicketValidation  extends CommonDBChild {
                                                 false, ERROR);
             }
          }
-         // Add log entry in the ticket
-         $changes[0] = 0;
-         $changes[1] = '';
-         //TRANS: %s is the username
-         $changes[2] = sprintf(__('Approval request send to %s'),
-                               getUserName($this->fields["users_id_validate"]));
-         Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                      Log::HISTORY_LOG_SIMPLE_MESSAGE);
       }
+      parent::post_addItem();
    }
 
 
@@ -289,9 +284,10 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
-   // TODO CommonDBConnexity : check how to centralize the history
    function post_updateItem($history=1) {
       global $CFG_GLPI;
+
+      /// TODO : $mailsend don't seems to be used
 
       $job      = new Ticket();
       $mailsend = false;
@@ -307,27 +303,6 @@ class TicketValidation  extends CommonDBChild {
                               'validation_status' => $this->fields["status"]);
             $mailsend = NotificationEvent::raiseEvent('validation_answer', $job, $options);
          }
-         // Add log entry in the ticket
-         $changes[0] = 0;
-         $changes[1] = '';
-
-         switch ($this->fields["status"]) {
-            case 'accepted' :
-               //TRANS: %s is the username
-               $changes[2] = sprintf(__('Approval granted by %s'),
-                                     getUserName($this->fields["users_id_validate"]));
-               break;
-
-            case 'rejected' :
-            default :
-               //TRANS: %s is the username
-               $changes[2] = sprintf(__('Update the approval request to %s'),
-                                     getUserName($this->fields["users_id_validate"]));
-               break;
-
-         }
-         Log::history($this->getField('tickets_id'), 'Ticket',  $changes, $this->getType(),
-                      Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
          // Set global validation to accepted to define one
          if (($job->fields['global_validation'] == 'waiting')
@@ -339,22 +314,34 @@ class TicketValidation  extends CommonDBChild {
             $job->update($input);
          }
       }
+      parent::post_updateItem($history);
    }
 
 
-   function post_deleteFromDB() {
+   function getHistoryName_for_item($case) {
 
-      // Add log entry in the ticket
-      $changes[0] = 0;
-      $changes[1] = '';
-      //TRANS: %s is the username
-      $changes[2] = sprintf(__('Cancel the approval request to %s'),
-                            getUserName($this->fields["users_id_validate"]));
+      $username = getUserName($this->fields["users_id_validate"]);
+      switch ($case) {
+         case 'add':
+            return sprintf(__('Approval request send to %s'), $username);
+            break;
 
-      Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                   Log::HISTORY_LOG_SIMPLE_MESSAGE);
+         case 'update values next':
+            if ($this->fields["status"] == 'accepted') {
+               //TRANS: %s is the username
+               return sprintf(__('Approval granted by %s'), $username);
+            } else {
+               //TRANS: %s is the username
+               return sprintf(__('Update the approval request to %s'), $username);
+            }
+            break;
+
+         case 'delete':
+            return sprintf(__('Cancel the approval request to %s'), $username);
+            break;
+      }
+      return '';
    }
-
 
    /**
     * get the Ticket validation status list
