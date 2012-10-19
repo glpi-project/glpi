@@ -1347,8 +1347,17 @@ class Html {
          $menu['utils']['content']['report']['page']     = '/front/report.php';
       }
 
-      if (TableExists('glpi_networkportmigrations')
-          && (countElementsInTable('glpi_networkportmigrations') > 0)) {
+      if (!isset($_SESSION['glpishowmigrationcleaner'])) {
+
+         if (TableExists('glpi_networkportmigrations')
+             && (countElementsInTable('glpi_networkportmigrations') > 0)) {
+	    $_SESSION['glpishowmigrationcleaner'] = true;
+	 } else {
+	    $_SESSION['glpishowmigrationcleaner'] = false;
+         }
+      }
+
+      if ($_SESSION['glpishowmigrationcleaner']) {
          $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
          $menu['utils']['content']['migration']['page']     = '/front/migration_cleaner.php';
 
@@ -1359,8 +1368,7 @@ class Html {
          $menu['utils']['content']['migration']['options']['networkportmigration']['links']['search']
                                                 = '/front/networkportmigration.php';
 
-      }
-
+      } 
 
       // PLUGINS
       if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
