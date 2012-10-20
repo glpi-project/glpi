@@ -560,6 +560,13 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @TODO add ability to define specifically which field has been updated
     *
     * @param $item the other item (ie. : $item2)
+    * @param $case :
+    *              - 'add' when this CommonDBChild is added (to and item)
+    *              - 'update values previous' old values of the CommonDBChild itself
+    *              - 'update values next' next values of the CommonDBChild itself
+    *              - 'update item previous' transfert : this is removed from the old item
+    *              - 'update item next' transfert : this is added to the new item
+    *              - 'delete' when this CommonDBChild is remove (from an item)
     *
     * @return (string) the name of the entry for the database (ie. : correctly slashed)
    **/
@@ -574,6 +581,13 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @TODO add ability to define specifically which field has been updated
     *
     * @param $item the other item (ie. : $item1)
+    * @param $case :
+    *              - 'add' when this CommonDBChild is added (to and item)
+    *              - 'update values previous' old values of the CommonDBChild itself
+    *              - 'update values next' next values of the CommonDBChild itself
+    *              - 'update item previous' transfert : this is removed from the old item
+    *              - 'update item next' transfert : this is added to the new item
+    *              - 'delete' when this CommonDBChild is remove (from an item)
     *
     * @return (string) the name of the entry for the database (ie. : correctly slashed)
    **/
