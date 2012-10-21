@@ -35,7 +35,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class CommonDBConnexityItemNotFound extends Exception {}
+
+/**
+ * @since version 0.84
+**/
+class CommonDBConnexityItemNotFound extends Exception {
+
+}
+
+
+
+
 
 /**
  * Common DataBase Connexity Table Manager Class

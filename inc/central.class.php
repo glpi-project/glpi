@@ -201,12 +201,13 @@ class Central extends CommonGLPI {
       echo "</table></td></tr></table>";
    }
 
+
    /**
     * Show the central RSS view
+    *
+    * @since version 0.84
    **/
    static function showRSSView() {
-      global $DB;
-
 
       echo "<table class='tab_cadre_central'>";
 
@@ -221,7 +222,7 @@ class Central extends CommonGLPI {
       echo "</td></tr>";
       echo "</table>";
    }
-   
+
 
    /**
     * Show the central group view

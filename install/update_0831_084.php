@@ -208,11 +208,11 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
 function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    global $DB, $migration;
 
-   $ADDTODISPLAYPREF['FQDN']        = array(11);
-   $ADDTODISPLAYPREF['WifiNetwork'] = array(10);
+   $ADDTODISPLAYPREF['FQDN']                 = array(11);
+   $ADDTODISPLAYPREF['WifiNetwork']          = array(10);
    $ADDTODISPLAYPREF['NetworkPortMigration'] = array();
-   $ADDTODISPLAYPREF['IPNetwork'] = array(14, 10, 11, 12, 13);
-   $ADDTODISPLAYPREF['NetworkName'] = array(12, 13);
+   $ADDTODISPLAYPREF['IPNetwork']            = array(14, 10, 11, 12, 13);
+   $ADDTODISPLAYPREF['NetworkName']          = array(12, 13);
 
    $optionIndex = 10;
    foreach (NetworkPortMigration::getMotives() as $key => $name) {
@@ -233,7 +233,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             unset($ADDTODISPLAYPREF['NetworkPortMigration']);
          }
 
-         $migration->displayWarning('Network Framework already migrated : nothing to be done !',
+         $migration->displayWarning('Network Framework already migrated: nothing to be done !',
                                     false);
 
          return;
@@ -1407,7 +1407,7 @@ function update0831to084() {
    if ($migration->addField("glpi_computers_softwareversions", "entities_id", "integer")) {
       $migration->migrationOneTable('glpi_computers_softwareversions');
 
-      $entities    = getAllDatasFromTable('glpi_entities');
+      $entities = getAllDatasFromTable('glpi_entities');
 
       foreach ($entities as $entID => $val) {
          $query3 = "UPDATE `glpi_computers_softwareversions`
@@ -1422,19 +1422,15 @@ function update0831to084() {
       $migration->addKey("glpi_computers_softwareversions",
                          array('entities_id', 'is_template', 'is_deleted'),
                          'computers_info');
-      $migration->addKey("glpi_computers_softwareversions",
-                         'is_template');
-      $migration->addKey("glpi_computers_softwareversions",
-                         'is_deleted');
+      $migration->addKey("glpi_computers_softwareversions", 'is_template');
+      $migration->addKey("glpi_computers_softwareversions", 'is_deleted');
    }
 
 
    /// create new index for search
-   $migration->addKey("glpi_softwarelicenses",
-                        array('softwares_id', 'expire'),
-                        'softwares_id_expire');
-   $migration->dropKey("glpi_softwarelicenses",
-                        'softwares_id');
+   $migration->addKey("glpi_softwarelicenses", array('softwares_id', 'expire'),
+                      'softwares_id_expire');
+   $migration->dropKey("glpi_softwarelicenses", 'softwares_id');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
@@ -1839,8 +1835,10 @@ function update0831to084() {
 
    $migration->addField("glpi_configs", "notification_to_myself", "bool");
    $migration->addField("glpi_configs", 'duedateok_color', "string", array('value' => '#06ff00'));
-   $migration->addField("glpi_configs", 'duedatewarning_color', "string", array('value' => '#ffb800'));
-   $migration->addField("glpi_configs", 'duedatecritical_color', "string", array('value' => '#ff0000'));
+   $migration->addField("glpi_configs", 'duedatewarning_color', "string",
+                        array('value' => '#ffb800'));
+   $migration->addField("glpi_configs", 'duedatecritical_color', "string",
+                        array('value' => '#ff0000'));
    $migration->addField("glpi_configs", 'duedatewarning_less', "integer", array('value' => 20));
    $migration->addField("glpi_configs", 'duedatecritical_less',"integer", array('value' => 5));
    $migration->addField("glpi_configs", 'duedatewarning_unit', "string", array('value' => '%'));
@@ -2192,7 +2190,7 @@ function update0831to084() {
                                 'is_recursive'  => 1,
                                 'is_active'     => 0,
                                 'match'         => 'AND',
-                                'name'           => 'Ticket location from item'),
+                                'name'          => 'Ticket location from item'),
                           array(array('criteria'   => 'locations_id',
                                       'condition'  => Rule::PATTERN_DOES_NOT_EXISTS,
                                       'pattern'    => 1),
@@ -2248,7 +2246,7 @@ function update0831to084() {
 
    // add rights to delete all validation
    $migration->addField('glpi_profiles', 'delete_validations',
-                        'char', array('value' => 0,
+                        'char', array('value'  => 0,
                                       'update' => 'delete_ticket'));
 
    // add rights to manage public rssfeed

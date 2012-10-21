@@ -174,6 +174,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return boolean
    **/
    function canChildItem($methodItem, $methodNotItem) {
+
       try {
          return static::canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
                                          static::$itemtype, static::$items_id, $item);

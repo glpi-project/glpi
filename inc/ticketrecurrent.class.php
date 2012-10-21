@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -306,12 +306,13 @@ class TicketRecurrent extends CommonDropdown {
     *
     * @return datetime next creation date
    **/
-   function computeNextCreationDate($begin_date, $end_date, $periodicity, $create_before, $calendars_id){
+   function computeNextCreationDate($begin_date, $end_date, $periodicity, $create_before,
+                                    $calendars_id){
 
       if (empty($begin_date)) {
          return 'NULL';
       }
-      if (!empty($end_date) && $end_date<>'NULL') {
+      if (!empty($end_date) && ($end_date <> 'NULL')) {
          if (strtotime($begin_date) < time()) {
             return 'NULL';
          }

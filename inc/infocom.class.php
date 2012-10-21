@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -62,24 +62,34 @@ class Infocom extends CommonDBChild {
 
 
    static function canCreate() {
+
       return (Session::haveRight('infocom', 'w')
               && parent::canCreate());
    }
 
 
    static function canView() {
+
       return (Session::haveRight('infocom', 'r')
               && parent::canView());
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function canUpdate() {
+
       return (Session::haveRight('infocom', 'w')
               && parent::canUpdate());
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function canDelete() {
+
       return (Session::haveRight('infocom', 'w')
               && parent::canDelete());
    }

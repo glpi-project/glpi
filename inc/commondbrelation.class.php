@@ -563,9 +563,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Get the history name of first item
     *
+    * @since version 0.84
+    *
     * @TODO add ability to define specifically which field has been updated
     *
-    * @param $item the other item (ie. : $item2)
+    * @param $item    CommonDBTM object   the other item (ie. : $item2)
     * @param $case :
     *              - 'add' when this CommonDBChild is added (to and item)
     *              - 'update values previous' old values of the CommonDBChild itself
@@ -583,6 +585,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
    /**
     * Get the history name of second item
+    *
+    * @since version 0.84
     *
     * @TODO add ability to define specifically which field has been updated
     *

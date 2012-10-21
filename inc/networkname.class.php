@@ -56,6 +56,8 @@ class NetworkName extends FQDNLabel {
 
    static public $mustBeAttached        = false;
 
+
+
    static function canCreate() {
 
       return (Session::haveRight('internet', 'w')
@@ -149,7 +151,7 @@ class NetworkName extends FQDNLabel {
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) != 0) {
-         $lastItem = $recursiveItems[count($recursiveItems) - 1];
+         $lastItem               = $recursiveItems[count($recursiveItems) - 1];
          $options['entities_id'] = $lastItem->getField('entities_id');
       }
 

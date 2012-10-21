@@ -65,15 +65,26 @@ class NetworkPort extends CommonDBChild {
               && parent::canView());
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    static function canUpdate() {
+
       return (Session::haveRight('networking','w')
               && parent::canUpdate());
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    static function canDelete() {
+
       return (Session::haveRight('networking','w')
               && parent::canDelete());
    }
+
 
    function getForbiddenStandardMassiveAction() {
 

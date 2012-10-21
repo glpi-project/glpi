@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -161,6 +160,7 @@ if (!defined("GLPI_SIMPLEPIE_PATH")) {
    # if SimplePie installed, use (in config_path.php)
    # define("GLPI_SIMPLEPIE_PATH", "/usr/share/php/simplepie");  // if not in standard include_path
 }
+
 // Default phpCAS installation dir
 if (!defined("GLPI_PHPCAS")) {
    define("GLPI_PHPCAS", GLPI_ROOT . "/lib/phpcas/CAS.php");

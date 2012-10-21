@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -286,6 +286,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function canCreate() {
 
       return (Session::haveRight("reservation_helpdesk", "1")
@@ -293,6 +296,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function canView() {
 
       return (Session::haveRight("reservation_central", "r")
@@ -300,6 +306,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function canUpdate() {
 
       return (Session::haveRight("reservation_central", "w")
@@ -307,6 +316,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    static function canDelete() {
 
       return (Session::haveRight("reservation_central", "w")
@@ -314,7 +326,10 @@ class Reservation extends CommonDBChild {
    }
 
 
-   // Overload canChildItem to make specific checks
+   /**
+    * Overload canChildItem to make specific checks
+    * @since version 0.84
+   **/
    function canChildItem($methodItem, $methodNotItem) {
 
       if (!parent::canChildItem($methodItem, $methodNotItem)) {
@@ -681,13 +696,14 @@ class Reservation extends CommonDBChild {
       $rand_begin = Html::showDateTimeFormItem("resa[begin]", $resa->fields["begin"], -1, false);
       echo "</td></tr>\n";
       $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
-                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
-      
+                             /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
+
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
-      $rand = Dropdown::showTimeStamp("resa[_duration]", array('min'        => 0,
-                                                               'max'        => 24*HOUR_TIMESTAMP,
-                                                               'value'      => $default_delay,
-                                                               'emptylabel' => __('Specify an end date')));
+      $rand = Dropdown::showTimeStamp("resa[_duration]",
+                                      array('min'        => 0,
+                                            'max'        => 24*HOUR_TIMESTAMP,
+                                            'value'      => $default_delay,
+                                            'emptylabel' => __('Specify an end date')));
       echo "<br><div id='date_end$rand'></div>";
       $params = array('duration'     => '__VALUE__',
                       'end'          => $resa->fields["end"],
@@ -718,7 +734,7 @@ class Reservation extends CommonDBChild {
          Ajax::updateItemOnSelectEvent("resaperiod$rand", "resaperiodcontent$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", $params);
          echo "<br><div id='resaperiodcontent$rand'></div>";
-         
+
 //         Dropdown::showInteger('periodicity_times', 1, 1, 60);
          echo "</td></tr>\n";
       }
@@ -750,21 +766,24 @@ class Reservation extends CommonDBChild {
       echo "</div>\n";
    }
 
+
    /**
     * compute periodicities for reservation
     *
-    * @param $options  periodicity parameters : must contain : type (day/week/month), end 
-    * @param $begin   begin of the initial reservation
-    * @param $end   begin of the initial reservation
+    * @since version 0.84
+    *
+    * @param $begin             begin of the initial reservation
+    * @param $end               begin of the initial reservation
+    * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
    **/
-   static function computePeriodicities ($begin, $end, $options = array()){
+   static function computePeriodicities ($begin, $end, $options=array()){
       $toadd = array();
 
       if (isset($options['type']) && isset($options['end'])) {
          $begin_time = strtotime($begin);
-         $end_time = strtotime($end);
+         $end_time   = strtotime($end);
          $repeat_end = strtotime($options['end'].' 00:00:00');
-//          print_r($options);
+
          switch ($options['type']) {
             case 'day' :
                $begin_time += DAY_TIMESTAMP;
@@ -775,6 +794,7 @@ class Reservation extends CommonDBChild {
                   $end_time   += DAY_TIMESTAMP;
                }
                break;
+
             case 'week' :
                $dates = array();
 
@@ -785,10 +805,10 @@ class Reservation extends CommonDBChild {
                } else {
                   if (is_array($options['days'])) {
                      $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
-                     $end_hour =   $end_time - strtotime(date('Y-m-d', $end_time));
+                     $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
                      foreach ($options['days'] as $day => $val) {
                         $dates[] = array('begin' => strtotime("next $day", $begin_time)+$begin_hour,
-                                          'end'   => strtotime("next $day", $end_time)+$end_hour);
+                                         'end'   => strtotime("next $day", $end_time)+$end_hour);
                      }
                   }
                }
@@ -813,31 +833,37 @@ class Reservation extends CommonDBChild {
                         $calc_begin_time = strtotime("+$i month", $begin_time);
                         $calc_end_time   = strtotime("+$i month", $end_time);
                         while ($calc_begin_time < $repeat_end) {
-                           $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date('Y-m-d H:i:s', $calc_end_time);
+                           $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date('Y-m-d H:i:s',
+                                                                                $calc_end_time);
                            $i++;
                            $calc_begin_time = strtotime("+$i month", $begin_time);
                            $calc_end_time   = strtotime("+$i month", $end_time);
                         }
                         break;
+
                      case 'day':
                         $dayofweek = date('l',$begin_time);
-                        
-                        $i=1;
+
+                        $i               = 1;
                         $calc_begin_time = strtotime("+$i month", $begin_time);
                         $calc_end_time   = strtotime("+$i month", $end_time);
-                        $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
-                        $end_hour =   $end_time - strtotime(date('Y-m-d', $end_time));
+                        $begin_hour      = $begin_time- strtotime(date('Y-m-d', $begin_time));
+                        $end_hour        = $end_time - strtotime(date('Y-m-d', $end_time));
 
-                        $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time) + $begin_hour;
+                        $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
+                                           + $begin_hour;
                         $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
-                        
+
                         while ($calc_begin_time < $repeat_end) {
-                           $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date('Y-m-d H:i:s', $calc_end_time);
+                           $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date('Y-m-d H:i:s',
+                                                                                $calc_end_time);
                            $i++;
                            $calc_begin_time = strtotime("+$i month", $begin_time);
                            $calc_end_time   = strtotime("+$i month", $end_time);
-                           $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time) + $begin_hour;
-                           $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
+                           $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
+                                              + $begin_hour;
+                           $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
+                                              + $end_hour;
                         }
                         break;
                   }
@@ -851,7 +877,8 @@ class Reservation extends CommonDBChild {
 
       return $toadd;
    }
-   
+
+
    /**
     * Display for reservation
     *

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -222,22 +222,22 @@ function getPlural($string) {
    $rules = array(//'singular' => 'plural'
                   /// TODO : real singular is criterion and plural criteria.
                   /// Need to update class / tables names
-                  'criterias$'   =>'criterias',// Special case (criterias) when getPLural is called on already plural form
-                  'ch$'          =>'ches',
-                  'ches$'        =>'ches',
-                  'sh$'          =>'shes',
-                  'shes$'        =>'shes',
-                  'sses$'        => 'sses', // Case like addresses
-                  'ss$'          => 'sses', // Special case (addresses) when getSingular is called on already singular form
-                  'uses$'        => 'uses', // Case like statuses
-                  'us$'          => 'uses', // Case like status
-                  '([^aeiou])y$' => '\1ies', // special case : category (but not key)
-                  '([^aeiou])ies$' => '\1ies', // special case : category (but not key)
-                  '([aeiou]{2})ses$' => '\1ses', // Case like aliases
-                  '([aeiou]{2})s$'   => '\1ses', // Case like aliases
-                  'x$'           =>'xes',
+                  'criterias$'         =>'criterias',// Special case (criterias) when getPLural is called on already plural form
+                  'ch$'                =>'ches',
+                  'ches$'              =>'ches',
+                  'sh$'                =>'shes',
+                  'shes$'              =>'shes',
+                  'sses$'              => 'sses', // Case like addresses
+                  'ss$'                => 'sses', // Special case (addresses) when getSingular is called on already singular form
+                  'uses$'              => 'uses', // Case like statuses
+                  'us$'                => 'uses', // Case like status
+                  '([^aeiou])y$'       => '\1ies', // special case : category (but not key)
+                  '([^aeiou])ies$'     => '\1ies', // special case : category (but not key)
+                  '([aeiou]{2})ses$'   => '\1ses', // Case like aliases
+                  '([aeiou]{2})s$'     => '\1ses', // Case like aliases
+                  'x$'                 =>'xes',
 //                   's$'           =>'ses',
-                  '([^s])$'      => '\1s',   // Add at the end if not exists
+                  '([^s])$'            => '\1s',   // Add at the end if not exists
                   );
 
    foreach ($rules as $singular => $plural) {

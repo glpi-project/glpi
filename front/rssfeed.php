@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief 
+* @brief
+* @since version 0.84
 */
 
 define('GLPI_ROOT', '..');
