@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -116,7 +116,8 @@ class Config extends CommonDBTM {
          if (empty($input["proxy_passwd"])) {
             unset($input["proxy_passwd"]);
          } else {
-            $input["proxy_passwd"] = Toolbox::encrypt(stripslashes($input["proxy_passwd"]), GLPIKEY);
+            $input["proxy_passwd"] = Toolbox::encrypt(stripslashes($input["proxy_passwd"]),
+                                                      GLPIKEY);
          }
       }
 
@@ -258,15 +259,13 @@ class Config extends CommonDBTM {
          echo "<td>". __("Don't use dynamic display if the number of items is less than")."</td><td>";
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
                                array(0 => __('Never')));
-         echo "</td><td>".
-               __('Buffer time for dynamic search in dropdowns').
-              "</td><td>";
-         Dropdown::showNumber('ajax_buffertime_load', array('value' => $CFG_GLPI["ajax_buffertime_load"],
-                                                            'min'   => 0,
-                                                            'max'   => 5000,
-                                                            'step'  => 100,
-                                                            'unit'  => 'millisecond',
-                                                            ));
+         echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
+         Dropdown::showNumber('ajax_buffertime_load',
+                              array('value' => $CFG_GLPI["ajax_buffertime_load"],
+                                    'min'   => 0,
+                                    'max'   => 5000,
+                                    'step'  => 100,
+                                    'unit'  => 'millisecond'));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
@@ -485,7 +484,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update_auth' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update_auth' class='submit' value=\""._sx('button', 'Save').
+           "\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -612,7 +612,8 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Keep tickets when purging hardware in the inventory') . "</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
-      echo "</td><td>".__('Show personnal information in new ticket form (simplified interface)')."</td><td>";
+      echo "</td><td>".__('Show personnal information in new ticket form (simplified interface)');
+      echo "</td><td>";
       Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref']);
       echo "</td></tr>";
 
@@ -685,7 +686,8 @@ class Config extends CommonDBTM {
                                               'name'  => "_matrix_${urgency}_${impact}"));
                echo "</td>";
             } else {
-               echo "<td><input type='hidden' name='_matrix_${urgency}_${impact}' value='$pri'></td>";
+               echo "<td><input type='hidden' name='_matrix_${urgency}_${impact}' value='$pri'>
+                     </td>";
             }
          }
          echo "</tr>\n";
@@ -921,13 +923,15 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'>".
            "<td>".__('OK state color')."</td>";
       echo "<td bgcolor='".$data['duedateok_color']."'>";
-      echo "<input name='duedateok_color' size='7' value='".$data['duedateok_color']."' type='text'/>";
+      echo "<input name='duedateok_color' size='7' value='".$data['duedateok_color']."'
+             type='text'/>";
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Warning state color')."</td>";
       echo "<td bgcolor='".$data['duedatewarning_color']."'>";
-      echo "<input name='duedatewarning_color' size='7' value='".$data['duedatewarning_color']."' type='text'/>";
+      echo "<input name='duedatewarning_color' size='7' value='".$data['duedatewarning_color']."'
+             type='text'/>";
       echo "</td>";
       echo "<td>".__('Warning state threshold')."</td>";
       echo "<td>";
@@ -935,25 +939,28 @@ class Config extends CommonDBTM {
       $elements = array('%' => '%',
                        'hours' => _n('Hour', 'Hours', 2),
                        'days' => _n('Day', 'Days', 2));
-      Dropdown::showFromArray("duedatewarning_unit", $elements, array('value'=>$data['duedatewarning_unit']));
+      Dropdown::showFromArray("duedatewarning_unit", $elements,
+                              array('value' => $data['duedatewarning_unit']));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('Critical state color')."</td>";
       echo "<td bgcolor='".$data['duedatecritical_color']."'>";
-      echo "<input name='duedatecritical_color' size='7' value='".$data['duedatecritical_color']."' type='text'/>";
+      echo "<input name='duedatecritical_color' size='7' value='".$data['duedatecritical_color']."'
+             type='text'/>";
       echo "</td>";
       echo "<td>".__('Critical state threshold')."</td>";
       echo "<td>";
-      Dropdown::showNumber("duedatecritical_less", array('value'=>$data['duedatecritical_less']))." ";
-      $elements = array('%' => '%',
+      Dropdown::showNumber("duedatecritical_less", array('value' => $data['duedatecritical_less']));
+      echo "&nbsp;";
+      $elements = array('%'    => '%',
                        'hours' => _n('Hour', 'Hours', 2),
-                       'days' => _n('Day', 'Days', 2));
-      Dropdown::showFromArray("duedatecritical_unit", $elements, array('value'=>$data['duedatecritical_unit']));
-      echo "</td>";
-      echo "</tr>";
-      
+                       'days'  => _n('Day', 'Days', 2));
+      Dropdown::showFromArray("duedatecritical_unit", $elements,
+                              array('value' => $data['duedatecritical_unit']));
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
       echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
@@ -1334,7 +1341,8 @@ class Config extends CommonDBTM {
    static function getLanguage($lang) {
       global $CFG_GLPI;
 
-      // Search in order : ID or extjs dico or tinymce dico / native lang / english name / extjs dico / tinymce dico
+      // Search in order : ID or extjs dico or tinymce dico / native lang / english name
+      //                   / extjs dico / tinymce dico
       // ID  or extjs dico or tinymce dico
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
          if ((strcasecmp($lang,$ID) == 0)
@@ -1556,7 +1564,8 @@ class Config extends CommonDBTM {
             } else {
                echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\"
-                          title=\"".__s('A file and a directory have be created and deleted - Perfect!')."\">".
+                          title=\"".
+                          __s('A file and a directory have be created and deleted - Perfect!')."\">".
                     "</td></tr>";
             }
          }
