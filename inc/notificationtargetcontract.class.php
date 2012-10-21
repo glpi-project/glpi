@@ -151,7 +151,7 @@ class NotificationTargetContract extends NotificationTarget {
 
 
       //Tags without lang
-      $tags = array('contract.url'       => sprintf(__('%1$s: %2$s'), __('Contract'), __('URL')));
+      $tags = array('contract.url' => sprintf(__('%1$s: %2$s'), __('Contract'), __('URL')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

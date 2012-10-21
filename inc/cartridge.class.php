@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 
@@ -463,9 +463,10 @@ class Cartridge extends CommonDBChild {
          if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $actions = array('delete'            => _x('button', 'Delete permanently'),
-                             'activate_infocoms' => __('Enable the financial and administrative information'),
-                             'restore'           => __('Back to stock'));
+            $actions = array('delete'  => _x('button', 'Delete permanently'),
+                             'activate_infocoms'
+                                       => __('Enable the financial and administrative information'),
+                             'restore' => __('Back to stock'));
             $paramsma = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
                               'rand'             => $rand);
@@ -703,7 +704,7 @@ class Cartridge extends CommonDBChild {
          if (!$old) {
             $actions = array('uninstall' => __('End of life'));
          } else {
-            $actions = array('delete'    => _x('button', 'Delete permanently'));
+            $actions = array('delete' => _x('button', 'Delete permanently'));
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
@@ -737,12 +738,12 @@ class Cartridge extends CommonDBChild {
       $nb_pages_printed = 0;
 
       while ($data = $DB->fetch_assoc($result)) {
-         $cart_id  = $data["id"];
-         $date_in  = Html::convDate($data["date_in"]);
-         $date_use = Html::convDate($data["date_use"]);
-         $date_out = Html::convDate($data["date_out"]);
+         $cart_id    = $data["id"];
+         $date_in    = Html::convDate($data["date_in"]);
+         $date_use   = Html::convDate($data["date_use"]);
+         $date_out   = Html::convDate($data["date_out"]);
          $viewitemjs = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCartridge".$data['id'].
-                         "$rand();\"" : '');
+                        "$rand();\"" : '');
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          if ($canedit) {
             echo "<td width='10'>";
@@ -768,10 +769,7 @@ class Cartridge extends CommonDBChild {
          printf(__('%1$s - %2$s'), $data["type"], $data["ref"]);
          echo "</a></td>";
          echo "<td class='center' $viewitemjs>".$date_in."</td>";
-         echo "<td class='center' $viewitemjs>";
-
-         echo $date_use;
-         echo '</td>';
+         echo "<td class='center' $viewitemjs>".$date_use."</td>";
 
          $tmp_dbeg       = explode("-", $data["date_in"]);
          $tmp_dend       = explode("-", $data["date_use"]);
@@ -780,8 +778,7 @@ class Cartridge extends CommonDBChild {
                            - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
          $stock_time    += $stock_time_tmp;
          if ($old != 0) {
-            echo "<td class='center' $viewitemjs>";
-            echo $date_out;
+            echo "<td class='center' $viewitemjs>".$date_out;
 
             $tmp_dbeg      = explode("-", $data["date_use"]);
             $tmp_dend      = explode("-", $data["date_out"]);

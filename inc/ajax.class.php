@@ -334,13 +334,12 @@ class Ajax {
     * @param $display      boolean  display or get string (default true)
    **/
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                     $events=array("change"), $minsize=-1,
-                                     $buffertime = -1,
+                                     $events=array("change"), $minsize=-1, $buffertime=-1,
                                      $forceloadfor=array(), $display=true) {
 
       $output  = "<script type='text/javascript'>";
-      $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters,
-                                    $events, $minsize, $buffertime, $forceloadfor, false);
+      $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events,
+                                               $minsize, $buffertime, $forceloadfor, false);
       $output .=  "</script>";
       if ($display) {
          echo $output;
@@ -381,7 +380,8 @@ class Ajax {
     *
    **/
    static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                              $minsize=-1, $buffertime = -1, $forceloadfor=array(), $display=true) {
+                                              $minsize=-1, $buffertime=-1, $forceloadfor=array(),
+                                              $display=true) {
       global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
@@ -396,7 +396,8 @@ class Ajax {
       }
 
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
-                                     array("dblclick", "keyup"),  $minsize, $buffertime, $forceloadfor, $display);
+                                     array("dblclick", "keyup"),  $minsize, $buffertime,
+                                     $forceloadfor, $display);
    }
 
 
@@ -414,8 +415,7 @@ class Ajax {
     * @param $display      boolean  display or get string (default true)
    **/
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
-                                           $events=array("change"), $minsize = -1,
-                                           $buffertime = -1,
+                                           $events=array("change"), $minsize = -1, $buffertime=-1,
                                            $forceloadfor=array(), $display=true) {
 
       if (is_array($toobserve)) {
@@ -470,7 +470,8 @@ class Ajax {
     *
     * @param $options array of options
     *  - toupdate : array / Update a specific item on select change on dropdown
-    *               (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
+    *               (need value_fieldname, to_update,
+    *                url (@see Ajax::updateItemOnSelectEvent for information)
     *                and may have moreparams)
    **/
    static function commonDropdownUpdateItem($options) {
