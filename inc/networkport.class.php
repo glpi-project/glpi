@@ -1071,53 +1071,53 @@ class NetworkPort extends CommonDBChild {
 
    function getSearchOptions() {
 
-      $tab                     = array();
-      $tab['common']           = __('Characteristics');
+      $tab                      = array();
+      $tab['common']            = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['type']          = 'text';
-      $tab[1]['massiveaction'] = false;
-      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['table']          = $this->getTable();
+      $tab[1]['field']          = 'name';
+      $tab[1]['name']           = __('Name');
+      $tab[1]['type']           = 'text';
+      $tab[1]['massiveaction']  = false;
+      $tab[1]['datatype']       = 'itemlink';
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'number';
+      $tab[2]['table']          = $this->getTable();
+      $tab[2]['field']          = 'id';
+      $tab[2]['name']           = __('ID');
+      $tab[2]['massiveaction']  = false;
+      $tab[2]['datatype']       = 'number';
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'logical_number';
-      $tab[3]['name']          = __('Port number');
-      $tab[3]['datatype']      = 'integer';
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'logical_number';
+      $tab[3]['name']           = __('Port number');
+      $tab[3]['datatype']       = 'integer';
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'mac';
-      $tab[4]['name']          = __('MAC address');
-      $tab[4]['datatype']      = 'mac';
+      $tab[4]['table']          = $this->getTable();
+      $tab[4]['field']          = 'mac';
+      $tab[4]['name']           = __('MAC address');
+      $tab[4]['datatype']       = 'mac';
 
-      $tab[9]['table']         = 'glpi_netpoints';
-      $tab[9]['field']         = 'name';
-      $tab[9]['name']          = _n('Network outlet', 'Network outlets', 1);
-      $tab[9]['datatype']      = 'dropdown';
+      $tab[9]['table']          = 'glpi_netpoints';
+      $tab[9]['field']          = 'name';
+      $tab[9]['name']           = _n('Network outlet', 'Network outlets', 1);
+      $tab[9]['datatype']       = 'dropdown';
 
-      $tab[16]['table']        = $this->getTable();
-      $tab[16]['field']        = 'comment';
-      $tab[16]['name']         = __('Comments');
-      $tab[16]['datatype']     = 'text';
+      $tab[16]['table']         = $this->getTable();
+      $tab[16]['field']         = 'comment';
+      $tab[16]['name']          = __('Comments');
+      $tab[16]['datatype']      = 'text';
 
-      $tab[20]['table']        = $this->getTable();
-      $tab[20]['field']        = 'itemtype';
-      $tab[20]['name']         = __('Type');
-      $tab[20]['datatype']     = 'itemtype';
-      $tab[20]['massiveation'] = false;
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'itemtype';
+      $tab[20]['name']          = __('Type');
+      $tab[20]['datatype']      = 'itemtype';
+      $tab[20]['massiveaction'] = false;
 
-      $tab[21]['table']        = $this->getTable();
-      $tab[21]['field']        = 'items_id';
-      $tab[21]['name']         = __('ID');
-      $tab[21]['datatype']     = 'integer';
-      $tab[21]['massiveation'] = false;
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'items_id';
+      $tab[21]['name']          = __('ID');
+      $tab[21]['datatype']      = 'integer';
+      $tab[21]['massiveaction'] = false;
 
       return $tab;
    }
