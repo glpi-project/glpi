@@ -1027,8 +1027,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @since version 0.84
     *
     * @see CommonDBRelation::getHistoryNameForItem2
-    *
-    * @param unknown_type $case
    **/
    function getHistoryNameForItem2(CommonDBTM $item) { // ie. the software
 
