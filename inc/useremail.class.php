@@ -221,9 +221,17 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function getHistoryName_for_item($case) {
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBChild::getHistoryNameForItem
+    *
+    * @param unknown_type $case
+   */
+   function getHistoryNameForItem($case) {
       return addslashes($this->fields['email']);
    }
+
 
    function post_updateItem($history=1) {
       global $DB;

@@ -318,30 +318,34 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
-   function getHistoryName_for_item($case) {
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBChild::getHistoryNameForItem
+    *
+    * @param unknown_type $case
+   **/
+   function getHistoryNameForItem($case) {
 
       $username = getUserName($this->fields["users_id_validate"]);
       switch ($case) {
          case 'add':
             return sprintf(__('Approval request send to %s'), $username);
-            break;
 
          case 'update values next':
             if ($this->fields["status"] == 'accepted') {
                //TRANS: %s is the username
                return sprintf(__('Approval granted by %s'), $username);
-            } else {
-               //TRANS: %s is the username
-               return sprintf(__('Update the approval request to %s'), $username);
             }
-            break;
+            //TRANS: %s is the username
+            return sprintf(__('Update the approval request to %s'), $username);
 
          case 'delete':
             return sprintf(__('Cancel the approval request to %s'), $username);
-            break;
       }
       return '';
    }
+
 
    /**
     * get the Ticket validation status list
