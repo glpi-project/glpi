@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -237,7 +237,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                 || $device2->can($device2->fields["id"], 'w')) {
                echo "&nbsp;";
                Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Disconnect'),
-                                 array('id' => $relations_id));
+                                    array('id' => $relations_id));
             }
 
          } else {

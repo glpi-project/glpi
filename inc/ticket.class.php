@@ -824,7 +824,8 @@ class Ticket extends CommonITILObject {
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
                        sprintf(__('%1$s updates the item %2$s'),
-                               (is_numeric(Session::getLoginUserID(false))?$_SESSION["glpiname"]:'cron'),
+                               (is_numeric(Session::getLoginUserID(false))?$_SESSION["glpiname"]
+                                                                          :'cron'),
                                $this->fields['id']));
          }
       }
@@ -857,7 +858,8 @@ class Ticket extends CommonITILObject {
    function pre_updateInDB() {
 
       // takeintoaccount :
-      //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
+      //     - update done by someone who have update right
+      //       see also updatedatemod used by ticketfollowup updates
       if (($this->fields['takeintoaccount_delay_stat'] == 0)
           && (Session::haveRight("global_add_tasks", "1")
               || Session::haveRight("global_add_followups", "1")
@@ -1426,7 +1428,7 @@ class Ticket extends CommonITILObject {
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
          Session::addMessageAfterRedirect(sprintf(__('%1$s (%2$s)'),
-                                                  __('Your ticket has been registered, its treatment is in progress.'),
+                              __('Your ticket has been registered, its treatment is in progress.'),
                                                   sprintf(__('%1$s: %2$s'), __('Ticket'),
                                                           "<a href='".$CFG_GLPI["root_doc"].
                                                             "/front/ticket.form.php?id=".
@@ -2132,9 +2134,11 @@ class Ticket extends CommonITILObject {
       $tab[29]['forcegroupby']      = true;
       $tab[29]['massiveaction']     = false;
       $tab[29]['joinparams']        = array('beforejoin'
-                                             => array('table'      => 'glpi_ticketfollowups',
-                                                      'joinparams' => array('jointype'  => 'child',
-                                                                            'condition' => $followup_condition)));
+                                             => array('table'
+                                                       => 'glpi_ticketfollowups',
+                                                      'joinparams'
+                                                       => array('jointype'  => 'child',
+                                                                'condition' => $followup_condition)));
 
       $tab[91]['table']             = 'glpi_ticketfollowups';
       $tab[91]['field']             = 'is_private';
@@ -2154,9 +2158,11 @@ class Ticket extends CommonITILObject {
       $tab[93]['forcegroupby']      = true;
       $tab[93]['massiveaction']     = false;
       $tab[93]['joinparams']        = array('beforejoin'
-                                             => array('table'      => 'glpi_ticketfollowups',
-                                                      'joinparams' => array('jointype'  => 'child',
-                                                                            'condition' => $followup_condition)));
+                                             => array('table'
+                                                       => 'glpi_ticketfollowups',
+                                                      'joinparams'
+                                                       => array('jointype'  => 'child',
+                                                                'condition' => $followup_condition)));
 
 
       $tab += $this->getSearchOptionsStats();
@@ -2902,10 +2908,12 @@ class Ticket extends CommonITILObject {
 
       } else {
          echo "<div id='tracking_all_devices'>";
-         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_ALL_HARDWARE)) {
+         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
+                                                                     self::HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
             if ($users_id
-                && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_MY_HARDWARE)) {
+                && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
+                                                                           self::HELPDESK_MY_HARDWARE)) {
                echo __('Or complete search')."&nbsp;";
             }
 
@@ -3554,7 +3562,7 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $options['template_preview'] = 0;
       }
-      
+
       // Load ticket template if available :
       $tt = $this->getTicketTemplateToUse($options['template_preview'], $values['type'],
          $values['itilcategories_id'], $values['entities_id']);
@@ -5219,7 +5227,8 @@ class Ticket extends CommonITILObject {
          // Fourth Column
          $fourth_col = "";
 
-         if (isset($job->users[CommonITILActor::REQUESTER]) && count($job->users[CommonITILActor::REQUESTER])) {
+         if (isset($job->users[CommonITILActor::REQUESTER])
+             && count($job->users[CommonITILActor::REQUESTER])) {
             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                $userdata    = getUserName($d["users_id"], 2);
                $fourth_col .= sprintf(__('%1$s %2$s'),
@@ -5231,7 +5240,8 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         if (isset($job->groups[CommonITILActor::REQUESTER]) && count($job->groups[CommonITILActor::REQUESTER])) {
+         if (isset($job->groups[CommonITILActor::REQUESTER])
+             && count($job->groups[CommonITILActor::REQUESTER])) {
             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
                $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                $fourth_col .= "<br>";
@@ -5243,7 +5253,8 @@ class Ticket extends CommonITILObject {
          // Fifth column
          $fifth_col = "";
 
-         if (isset($job->users[CommonITILActor::ASSIGN]) && count($job->users[CommonITILActor::ASSIGN])) {
+         if (isset($job->users[CommonITILActor::ASSIGN])
+             && count($job->users[CommonITILActor::ASSIGN])) {
             foreach ($job->users[CommonITILActor::ASSIGN] as $d) {
                $userdata   = getUserName($d["users_id"], 2);
                $fifth_col .= sprintf(__('%1$s %2$s'),
@@ -5255,7 +5266,8 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         if (isset($job->groups[CommonITILActor::ASSIGN]) && count($job->groups[CommonITILActor::ASSIGN])) {
+         if (isset($job->groups[CommonITILActor::ASSIGN])
+             && count($job->groups[CommonITILActor::ASSIGN])) {
             foreach ($job->groups[CommonITILActor::ASSIGN] as $d) {
                $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                $fifth_col .= "<br>";
@@ -5263,7 +5275,8 @@ class Ticket extends CommonITILObject {
          }
 
 
-         if (isset($job->suppliers[CommonITILActor::ASSIGN]) && count($job->suppliers[CommonITILActor::ASSIGN])) {
+         if (isset($job->suppliers[CommonITILActor::ASSIGN])
+             && count($job->suppliers[CommonITILActor::ASSIGN])) {
             foreach ($job->suppliers[CommonITILActor::ASSIGN] as $d) {
                $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
                $fifth_col .= "<br>";
@@ -5341,7 +5354,8 @@ class Ticket extends CommonITILObject {
          echo Search::showEndLine($output_type);
 
       } else {
-         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
       }
    }
 
@@ -5370,7 +5384,8 @@ class Ticket extends CommonITILObject {
                                                                $job->fields["id"])."</td>";
          echo "<td class='center'>";
 
-         if (isset($job->users[CommonITILActor::REQUESTER]) && count($job->users[CommonITILActor::REQUESTER])) {
+         if (isset($job->users[CommonITILActor::REQUESTER])
+             && count($job->users[CommonITILActor::REQUESTER])) {
             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
@@ -5390,7 +5405,8 @@ class Ticket extends CommonITILObject {
          }
 
 
-         if (isset($job->groups[CommonITILActor::REQUESTER]) && count($job->groups[CommonITILActor::REQUESTER])) {
+         if (isset($job->groups[CommonITILActor::REQUESTER])
+             && count($job->groups[CommonITILActor::REQUESTER])) {
             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
                echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                echo "<br>";
@@ -5439,7 +5455,8 @@ class Ticket extends CommonITILObject {
          // Finish Line
          echo "</tr>";
       } else {
-         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
       }
    }
 

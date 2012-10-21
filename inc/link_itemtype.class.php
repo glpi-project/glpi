@@ -64,8 +64,8 @@ class Link_Itemtype extends CommonDBChild {
 
       $links_id = $link->getField('id');
 
-      $canedit = $link->can($links_id, 'w');
-      $rand    = mt_rand();
+      $canedit  = $link->can($links_id, 'w');
+      $rand     = mt_rand();
 
       if (!Session::haveRight("link","r")
           || !$link->can($links_id, 'r')) {

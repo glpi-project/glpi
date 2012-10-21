@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -391,11 +391,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
-                                 'specific_actions' => array('move_license' => _x('button', 'Move'),
-                                                             'purge'        => _x('button', 'Delete permanently')));
+                                 'specific_actions' => array('move_license'
+                                                                     => _x('button', 'Move'),
+                                                             'purge' => _x('button',
+                                                                           'Delete permanently')));
                // Options to update license
-               $paramsma['extraparams']['options']['move']['used']         = array($searchID);
-               $paramsma['extraparams']['options']['move']['softwares_id'] = $license->fields['softwares_id'];
+               $paramsma['extraparams']['options']['move']['used'] = array($searchID);
+               $paramsma['extraparams']['options']['move']['softwares_id']
+                                                                   = $license->fields['softwares_id'];
 
                Html::showMassiveActions(__CLASS__, $paramsma);
             }

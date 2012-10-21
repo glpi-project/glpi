@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -38,11 +38,12 @@ if (!defined('GLPI_ROOT')) {
 class Problem_Ticket extends CommonDBRelation{
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'Problem';
-   static public $items_id_1          = 'problems_id';
+   static public $itemtype_1   = 'Problem';
+   static public $items_id_1   = 'problems_id';
 
-   static public $itemtype_2          = 'Ticket';
-   static public $items_id_2          = 'tickets_id';
+   static public $itemtype_2   = 'Ticket';
+   static public $items_id_2   = 'tickets_id';
+
 
    /**
     * @since version 0.84
