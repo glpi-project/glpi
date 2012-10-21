@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -53,8 +52,6 @@ class UserEmail  extends CommonDBChild {
    static function getTypeName($nb=0) {
       return _n('Email', 'Emails', $nb);
    }
-
-
 
 
    /**

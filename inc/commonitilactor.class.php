@@ -129,6 +129,9 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function canDeleteItem() {
 
       return (parent::canDeleteItem()

@@ -3809,7 +3809,7 @@ class Search {
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
 
          case "glpi_tickets.due_date" :
-            if ($ID <> 151 && !empty($data[$NAME.$num])
+            if (($ID <> 151) && !empty($data[$NAME.$num])
                 && ($data[$NAME.$num.'_2'] != CommonITILObject::WAITING)
                 && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
                return " class='tab_bg_2_2' ";
@@ -4210,8 +4210,8 @@ class Search {
                if (empty($data[$NAME.$num])) {
                   return '';
                }
-               if ($data[$NAME.$num.'_2'] == Ticket::SOLVED
-                  || $data[$NAME.$num.'_2'] == Ticket::CLOSED) {
+               if (($data[$NAME.$num.'_2'] == Ticket::SOLVED)
+                   || ($data[$NAME.$num.'_2'] == Ticket::CLOSED)) {
                   return $data[$NAME.$num];
                }
                $ticket = new Ticket();
@@ -4220,21 +4220,28 @@ class Search {
                if ($ticket->fields['slas_id'] != 0) { // Have SLA
                   $sla = new SLA();
                   $sla->getFromDB($ticket->fields['slas_id']);
-                  $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'], date('Y-m-d H:i:s'));
-                  $totaltime = $sla->getActiveTimeBetween($ticket->fields['date'], $data[$NAME.$num]);
-                  $percentage = round((100 * $currenttime) / $totaltime);
+                  $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'],
+                                                            date('Y-m-d H:i:s'));
+                  $totaltime   = $sla->getActiveTimeBetween($ticket->fields['date'],
+                                                            $data[$NAME.$num]);
+                  $percentage  = round((100 * $currenttime) / $totaltime);
                } else {
-                  $calendars_id = Entity::getUsedConfig('calendars_id', $ticket->fields['entities_id']);
+                  $calendars_id = Entity::getUsedConfig('calendars_id',
+                                                        $ticket->fields['entities_id']);
                   if ($calendars_id != 0) { // Ticket entity have calendar
                      $calendar = new Calendar();
                      $calendar->getFromDB($calendars_id);
-                     $currenttime = $calendar->getActiveTimeBetween($ticket->fields['date'], date('Y-m-d H:i:s'));
-                     $totaltime = $calendar->getActiveTimeBetween($ticket->fields['date'], $data[$NAME.$num]);
-                     $percentage = round((100 * $currenttime) / $totaltime);
+                     $currenttime = $calendar->getActiveTimeBetween($ticket->fields['date'],
+                                                                    date('Y-m-d H:i:s'));
+                     $totaltime   = $calendar->getActiveTimeBetween($ticket->fields['date'],
+                                                                    $data[$NAME.$num]);
+                     $percentage  = round((100 * $currenttime) / $totaltime);
                   } else { // No calendar
-                     $currenttime = strtotime(date('Y-m-d H:i:s')) - strtotime($ticket->fields['date']);
-                     $totaltime = strtotime($data[$NAME.$num]) - strtotime($ticket->fields['date']);
-                     $percentage = round((100 * $currenttime) / $totaltime);
+                     $currenttime = strtotime(date('Y-m-d H:i:s'))
+                                                - strtotime($ticket->fields['date']);
+                     $totaltime   = strtotime($data[$NAME.$num])
+                                                - strtotime($ticket->fields['date']);
+                     $percentage  = round((100 * $currenttime) / $totaltime);
                   }
                }
                if ($percentage > 100) {
@@ -4244,24 +4251,24 @@ class Search {
 
                if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                   $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
-                  $less_warn = (100 - $percentage);
+                  $less_warn       = (100 - $percentage);
                } else if ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
                   $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
-                  $less_warn = ($totaltime - $currenttime);
+                  $less_warn       = ($totaltime - $currenttime);
                } else if ($_SESSION['glpiduedatewarning_unit'] == 'day') {
                   $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
-                  $less_warn = ($totaltime - $currenttime);
+                  $less_warn       = ($totaltime - $currenttime);
                }
 
                if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                   $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
-                  $less_crit = (100 - $percentage);
+                  $less_crit       = (100 - $percentage);
                } else if ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
                   $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
-                  $less_crit = ($totaltime - $currenttime);
+                  $less_crit       = ($totaltime - $currenttime);
                } else if ($_SESSION['glpiduedatecritical_unit'] == 'day') {
                   $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
-                  $less_crit = ($totaltime - $currenttime);
+                  $less_crit       = ($totaltime - $currenttime);
                }
 
                $color = $_SESSION['glpiduedateok_color'];
@@ -4272,9 +4279,11 @@ class Search {
                }
 
                //Calculate bar progress
-               $out = "<div class='center' style='background-color: #ffffff; width: 100%;border: 1px solid #9BA563;' >";
+               $out  = "<div class='center' style='background-color: #ffffff; width: 100%;
+                         border: 1px solid #9BA563;' >";
                $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
-               $out .= "<div class='center' style='background-color: ".$color."; width: ".$percentage."%; height: 12px' ></div>";
+               $out .= "<div class='center' style='background-color: ".$color.";
+                         width: ".$percentage."%; height: 12px' ></div>";
                $out .= "</div>";
                return $out;
             }

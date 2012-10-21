@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -56,18 +56,21 @@ class NetworkPortMigration extends CommonDBChild {
 
 
    static function canUpdate() {
+
       return (Session::haveRight('networking','w')
               && parent::canUpdate());
    }
 
 
    static function canView() {
+
       return (Session::haveRight('networking','r')
               && parent::canView());
    }
 
 
    static function canDelete() {
+
       return (Session::haveRight('networking','w')
               && parent::canDelete());
    }

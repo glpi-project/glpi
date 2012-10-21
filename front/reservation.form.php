@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 define('GLPI_ROOT', '..');
@@ -80,9 +80,9 @@ if (isset($_POST["update"])) {
    if (isset($_POST['resa']["end"])) {
       // Compute dates to add.
       $dates_to_add[$_POST['resa']["begin"]] = $_POST['resa']["end"];
-      
+
       if (isset($_POST['periodicity']) && is_array($_POST['periodicity'])
-         && isset($_POST['periodicity']['type']) && !empty($_POST['periodicity']['type'])) {
+          && isset($_POST['periodicity']['type']) && !empty($_POST['periodicity']['type'])) {
          // Compute others dates to add.
          $dates_to_add += Reservation::computePeriodicities($_POST['resa']["begin"],
                                                             $_POST['resa']["end"],
@@ -91,9 +91,12 @@ if (isset($_POST["update"])) {
    }
    // Sort dates
    ksort($dates_to_add);
-   if (count($dates_to_add) && count($_POST['items']) && isset($_POST['users_id'])) {
+   if (count($dates_to_add)
+       && count($_POST['items'])
+       && isset($_POST['users_id'])) {
+
       foreach ($_POST['items'] as $reservationitems_id) {
-         $input = array();
+         $input                        = array();
          $input['reservationitems_id'] = $reservationitems_id;
          if (count($dates_to_add)) {
             $input['group'] = $rr->getUniqueGroupFor($reservationitems_id);
@@ -102,9 +105,9 @@ if (isset($_POST["update"])) {
             $input['begin']    = $begin;
             $input['end']      = $end;
             $input['users_id'] = $_POST['users_id'];
-            
+
             if (Session::haveRight("reservation_central","w")
-               || (Session::getLoginUserID() === $input["users_id"])) {
+                || (Session::getLoginUserID() === $input["users_id"])) {
                unset($rr->fields["id"]);
                if ($newID = $rr->add($input)) {
                   Event::log($reservationitems_id, "reservation", 4, "inventory",
@@ -133,12 +136,12 @@ if (isset($_POST["update"])) {
 //          list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
 //          $end    = $_POST["end"];
 //          $to_add = 1;
-// 
+//
 //          if ($_POST["periodicity"] == "week") {
 //             $to_add = 7;
 //          }
 //          $_POST['_target'] = $_SERVER['PHP_SELF'];
-// 
+//
 //          $_POST['_ok'] = true;
 //          if ($times > 1 ) {
 //             $_POST['group'] = $rr->getUniqueGroupFor($reservationitems_id);
@@ -147,7 +150,7 @@ if (isset($_POST["update"])) {
 //          for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
 //             $_POST["begin"]  = date('Y-m-d H:i:s', strtotime($begin." +".($i*$to_add)." day"));
 //             $_POST["end"]    = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));
-// 
+//
 //             if (Session::haveRight("reservation_central","w")
 //                || (Session::getLoginUserID() === $_POST["users_id"])) {
 //                unset($rr->fields["id"]);

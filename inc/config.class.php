@@ -256,7 +256,8 @@ class Config extends CommonDBTM {
 
       if ($CFG_GLPI["use_ajax"]) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>". __("Don't use dynamic display if the number of items is less than")."</td><td>";
+         echo "<td>". __("Don't use dynamic display if the number of items is less than")."</td>
+               <td>";
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
                                array(0 => __('Never')));
          echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
@@ -394,7 +395,8 @@ class Config extends CommonDBTM {
       }
 
       echo "<br><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".__('Automatically update of the elements related to the computers');
+      echo "<tr>";
+      echo "<th colspan='4'>".__('Automatically update of the elements related to the computers');
       echo "</th><th colspan='2'>".__('Unit management')."</th></tr>";
 
       echo "<tr><th>&nbsp;</th>";
@@ -924,31 +926,31 @@ class Config extends CommonDBTM {
            "<td>".__('OK state color')."</td>";
       echo "<td bgcolor='".$data['duedateok_color']."'>";
       echo "<input name='duedateok_color' size='7' value='".$data['duedateok_color']."'
-             type='text'/>";
+             type='text'>";
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Warning state color')."</td>";
       echo "<td bgcolor='".$data['duedatewarning_color']."'>";
       echo "<input name='duedatewarning_color' size='7' value='".$data['duedatewarning_color']."'
-             type='text'/>";
+             type='text'>";
       echo "</td>";
       echo "<td>".__('Warning state threshold')."</td>";
       echo "<td>";
-      Dropdown::showNumber("duedatewarning_less", array('value'=>$data['duedatewarning_less']))." ";
-      $elements = array('%' => '%',
-                       'hours' => _n('Hour', 'Hours', 2),
-                       'days' => _n('Day', 'Days', 2));
+      Dropdown::showNumber("duedatewarning_less", array('value' => $data['duedatewarning_less']));
+      $elements = array('%'     => '%',
+                        'hours' => _n('Hour', 'Hours', 2),
+                        'days'  => _n('Day', 'Days', 2));
+      echo "&nbsp;";
       Dropdown::showFromArray("duedatewarning_unit", $elements,
                               array('value' => $data['duedatewarning_unit']));
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('Critical state color')."</td>";
       echo "<td bgcolor='".$data['duedatecritical_color']."'>";
       echo "<input name='duedatecritical_color' size='7' value='".$data['duedatecritical_color']."'
-             type='text'/>";
+             type='text'>";
       echo "</td>";
       echo "<td>".__('Critical state threshold')."</td>";
       echo "<td>";

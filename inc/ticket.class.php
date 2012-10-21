@@ -1035,12 +1035,12 @@ class Ticket extends CommonITILObject {
                      if (isset($input[$key])) {
                         // If content is also predefined need to be different from predefined value
                         if (($key == 'content')
-                           && isset($tt->predefined['content'])) {
+                            && isset($tt->predefined['content'])) {
                            // Clean new lines to be fix encoding
                            if (strcmp(preg_replace("/\r?\n/", "",
-                                                      Html::cleanPostForTextArea($input[$key])),
-                                       preg_replace("/\r?\n/", "",
-                                                      $tt->predefined['content'])) == 0) {
+                                                   Html::cleanPostForTextArea($input[$key])),
+                                      preg_replace("/\r?\n/", "",
+                                                   $tt->predefined['content'])) == 0) {
                               $mandatory_missing[$key] = $fieldsname[$val];
                            }
                         }
@@ -1890,11 +1890,11 @@ class Ticket extends CommonITILObject {
       $tab[18]['maybefuture']       = true;
       $tab[18]['massiveaction']     = false;
 
-      $tab[151]['table']             = $this->getTable();
-      $tab[151]['field']             = 'due_date';
-      $tab[151]['name']              = __('Due date progression');
-      $tab[151]['massiveaction']     = false;
-      $tab[151]['nosearch']          = true;
+      $tab[151]['table']            = $this->getTable();
+      $tab[151]['field']            = 'due_date';
+      $tab[151]['name']             = __('Due date progression');
+      $tab[151]['massiveaction']    = false;
+      $tab[151]['nosearch']         = true;
 
       $tab[82]['table']             = $this->getTable();
       $tab[82]['field']             = 'is_late';
@@ -2104,7 +2104,7 @@ class Ticket extends CommonITILObject {
       $followup_condition = '';
       if (!Session::haveRight('show_full_ticket', 1)) {
          $followup_condition = "AND (`NEWTABLE`.`is_private` = '0'
-                                 OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+                                     OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
       $tab[25]['table']             = 'glpi_ticketfollowups';

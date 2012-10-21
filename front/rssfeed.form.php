@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief 
+* @brief
+* @since version 0.84
 */
 
 define('GLPI_ROOT', '..');
@@ -45,7 +46,8 @@ if (isset($_POST["add"])) {
 
    $newID = $rssfeed->add($_POST);
    Event::log($newID, "rssfeed", 4, "tools",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rssfeed->fields["name"]));
+              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
+                      $rssfeed->fields["name"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/rssfeed.form.php?id=".$newID);
 
 } else if (isset($_POST["delete"])) {

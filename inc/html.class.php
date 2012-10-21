@@ -1306,7 +1306,7 @@ class Html {
       $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
 
-      $menu['utils']['content']['rssfeed']['title']        = _n('RSS feed', 'RSS feeds', 2);
+      $menu['utils']['content']['rssfeed']['title']           = _n('RSS feed', 'RSS feeds', 2);
       $menu['utils']['content']['rssfeed']['page']            = '/front/rssfeed.php';
       $menu['utils']['content']['rssfeed']['links']['search'] = '/front/rssfeed.php';
       $menu['utils']['content']['rssfeed']['links']['add']    = '/front/rssfeed.form.php';
@@ -1368,7 +1368,7 @@ class Html {
          $menu['utils']['content']['migration']['options']['networkportmigration']['links']['search']
                                                 = '/front/networkportmigration.php';
 
-      } 
+      }
 
       // PLUGINS
       if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {

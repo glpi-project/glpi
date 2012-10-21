@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -60,10 +60,13 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Don't create a Contract_Item on contract that is alreay max used
     * Was previously done (until 0.83.*) by Contract_Item::can()
+    *
     * @see CommonDBRelation::canCreateItem()
+    *
     * @since version 0.84
    **/
    function canCreateItem() {
+
       // Try to load the contract
       $contract = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
       if ($contract === false) {
@@ -72,7 +75,7 @@ class Contract_Item extends CommonDBRelation{
       if (($contract->fields['max_links_allowed'] > 0)
           && (countElementsInTable($this->getTable(),
                                    "`contracts_id`='".$this->input['contracts_id']."'")
-              >= $contract->fields['max_links_allowed'])) {
+                >= $contract->fields['max_links_allowed'])) {
          return false;
       }
 

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -588,7 +588,8 @@ class Software extends CommonDBTM {
       $tab[163]['datatype']      = 'number';
       $tab[163]['massiveaction'] = false;
       $tab[163]['joinparams']    = array('jointype'  => 'child',
-                                         'condition' => 'AND (NEWTABLE.`expire` IS NULL OR NEWTABLE.`expire` > NOW())');
+                                         'condition' => 'AND (NEWTABLE.`expire` IS NULL
+                                                              OR NEWTABLE.`expire` > NOW())');
 
       $tab[164]['table']         = 'glpi_softwarelicensetypes';
       $tab[164]['field']         = 'name';
