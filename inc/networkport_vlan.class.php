@@ -28,28 +28,35 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
+
+
 class NetworkPort_Vlan extends CommonDBRelation {
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'NetworkPort';
-   static public $items_id_1 = 'networkports_id';
+   static public $itemtype_1          = 'NetworkPort';
+   static public $items_id_1          = 'networkports_id';
 
-   static public $itemtype_2 = 'Vlan';
-   static public $items_id_2 = 'vlans_id';
-   static public $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+   static public $itemtype_2          = 'Vlan';
+   static public $items_id_2          = 'vlans_id';
+   static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
+
+   /**
+    * @since version 0.84
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    /**
     * Get search function for the class
@@ -90,9 +97,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
    /**
-    * @param $port
+    * @param $port   NetworkPort object
    **/
-   static function showForNetworkPort (NetworkPort $port) {
+   static function showForNetworkPort(NetworkPort $port) {
       global $DB, $CFG_GLPI;
 
       $ID = $port->getID();
@@ -101,7 +108,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       }
 
       $canedit = $port->can($ID, 'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $query = "SELECT `glpi_networkports_vlans`.id as assocID,
                        `glpi_networkports_vlans`.tagged ,
@@ -116,7 +123,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $used   = array();
       if ($number = $DB->numrows($result)) {
          while ($line = $DB->fetch_assoc($result)) {
-            $used[$line["id"]] = $line["id"];
+            $used[$line["id"]]       = $line["id"];
             $vlans[$line["assocID"]] = $line;
          }
       }
@@ -130,12 +137,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "<tr><td class='right'>";
          echo "<input type='hidden' name='networkports_id' value='$ID'>";
          Vlan::dropdown(array('used' => $used));
-         echo "</td><td class='right'>";
-         echo __('Tagged')."</td><td  class='left'>";
-         echo "<input type='checkbox' name='tagged' value='1'>";
-         echo "</td><td>";
-         echo "<input type='submit' name='add' value='"._sx('button','Associate').
-                      "' class='submit'>";
+         echo "</td>";
+         echo "<td class='right'>".__('Tagged')."</td>";
+         echo "<td class='left'><input type='checkbox' name='tagged' value='1'></td>";
+         echo "<td><input type='submit' name='add' value='"._sx('button','Associate').
+                    "' class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table>\n";
@@ -174,7 +180,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
          echo "<td class='center b'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name."</a>";
+               <a href='".$CFG_GLPI["root_doc"]."/front/vlan.form.php?id=".$data["id"]."'>".$name.
+              "</a>";
          echo "</td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
          echo "</td><td class='center'>".Dropdown::getYesNo($data["tagged"])."</td>";
@@ -184,7 +191,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }

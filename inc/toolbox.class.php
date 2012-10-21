@@ -860,14 +860,13 @@ class Toolbox {
 
       if (!function_exists('ctype_digit')) {
          echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __("GLPI can't work correctly without the ctype functions").
-               "></td>";
+                    __("GLPI can't work correctly without the ctype functions")."></td>";
          $error = 2;
 
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-               __s('The functionality is found - Perfect!')."\" title=\"".
-               __s('The functionality is found - Perfect!')."\"></td>";
+                    __s('The functionality is found - Perfect!')."\" title=\"".
+                    __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
 
@@ -876,7 +875,7 @@ class Toolbox {
 
       if (!function_exists('json_encode') || !function_exists('json_decode')) {
          echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __("GLPI can't work correctly without the json_encode and json_decode functions").
+                    __("GLPI can't work correctly without the json_encode and json_decode functions").
                "></td>";
          $error = 2;
 
@@ -1640,9 +1639,11 @@ class Toolbox {
                         }
 
                         if ($valid) {
-                           Html::redirect($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"].
+                                          "/plugins/$plugin/$page?id=$id&$forcetab");
                         } else {
-                           Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"].
+                                          "/front/helpdesk.public.php?$forcetab");
                         }
                         break;
 
@@ -1705,7 +1706,8 @@ class Toolbox {
                         }
 
                         if ($valid) {
-                           Html::redirect($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"].
+                                          "/plugins/$plugin/$page?id=$id&$forcetab");
                         } else {
                            Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                         }

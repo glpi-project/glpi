@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -416,8 +416,10 @@ class NetworkPortInstantiation extends CommonDBChild {
 </script>\n";
 
             if (count($deviceNames) > 0) {
-               $options = array('value'     => $this->fields['items_devicenetworkcards_id'],
-                                'on_change' => 'updateNetworkPortForm(this.options[this.selectedIndex].value)');
+               $options = array('value'
+                                 => $this->fields['items_devicenetworkcards_id'],
+                                'on_change'
+                                 => 'updateNetworkPortForm(this.options[this.selectedIndex].value)');
                Dropdown::showFromArray('items_devicenetworkcards_id', $deviceNames, $options);
             } else {
                 _e('No network card available');

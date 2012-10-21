@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief 
+* @brief
+* @since version 0.84
 */
 
 define('GLPI_ROOT', '..');
@@ -54,7 +55,7 @@ if (isset($_POST["add"])) {
    }
 
    if (!isset($_POST["several"])) {
-      $np->check(-1,'w',$_POST);
+      $np->check(-1, 'w', $_POST);
       $np->splitInputForElements($_POST);
       $newID = $np->add($_POST);
       $np->updateDependencies(1);
@@ -77,10 +78,10 @@ if (isset($_POST["add"])) {
             $add = "0";
          }
          $input["logical_number"] = $i;
-         $input["name"] = $_POST["name"].$add.$i;
+         $input["name"]           = $_POST["name"].$add.$i;
          unset($np->fields["id"]);
 
-         if ($np->can(-1,'w',$input)) {
+         if ($np->can(-1, 'w', $input)) {
             $np->splitInputForElements($input);
             $np->add($input);
             $np->updateDependencies(1);
@@ -93,7 +94,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["delete"])) {
-   $np->check($_POST['id'],'d');
+   $np->check($_POST['id'], 'd');
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
@@ -105,7 +106,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
 } else if (isset($_POST["update"])) {
-   $np->check($_POST['id'],'w');
+   $np->check($_POST['id'], 'w');
 
    $np->splitInputForElements($_POST);
    $np->update($_POST);
@@ -116,7 +117,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["disconnect"])) {
-   $nn->check($_POST['id'],'d');
+   $nn->check($_POST['id'], 'd');
 
    if (isset($_POST["id"])) {
       $nn->delete($_POST);

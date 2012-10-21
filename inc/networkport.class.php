@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -821,11 +821,11 @@ class NetworkPort extends CommonDBChild {
       $this->displayRecursiveItems($recursiveItems, 'Type');
       echo "&nbsp;:</td>\n<td>";
 
-      // Need these to update informations
+      // Need these to update information
       echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
       echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       echo "<input type='hidden' name='instantiation_type' value='" .
-               $this->fields["instantiation_type"]."'>\n";
+             $this->fields["instantiation_type"]."'>\n";
 
       $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td>\n";

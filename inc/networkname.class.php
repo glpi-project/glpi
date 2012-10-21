@@ -28,7 +28,7 @@
 */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -98,6 +98,7 @@ class NetworkName extends FQDNLabel {
       return $ong;
    }
 
+
    /**
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
@@ -129,6 +130,8 @@ class NetworkName extends FQDNLabel {
       }
       return $res;
    }
+
+
    /**
     * Print the network name form
     *
@@ -374,8 +377,8 @@ class NetworkName extends FQDNLabel {
 
       $networkName = new self();
       return $networkName->update(array('id'       => $networkNameID,
-                                 'items_id' => $items_id,
-                                 'itemtype' => $itemtype));
+                                        'items_id' => $items_id,
+                                        'itemtype' => $itemtype));
    }
 
 
@@ -496,9 +499,10 @@ class NetworkName extends FQDNLabel {
 
       $column_name = __CLASS__;
       if (isset($options['massiveactionnetworkname'])
-         && $options['massiveactionnetworkname']) {
+          && $options['massiveactionnetworkname']) {
           $delete_all_column = $base->addHeader('delete',
-                                                Html::getCheckAllAsCheckbox('mass'.__CLASS__.$options['rand']),
+                                                Html::getCheckAllAsCheckbox('mass'.__CLASS__.
+                                                                            $options['rand']),
                                                 $super, $father);
           $delete_all_column->setHTMLClass('center');
       }
@@ -614,9 +618,9 @@ class NetworkName extends FQDNLabel {
 
             if (isset($options['massiveactionnetworkname'])
                && $options['massiveactionnetworkname']) {
-               $header              = $row->getGroup()->getHeaderByName('Internet', 'delete');
-               $cell_value = Html::getMassiveActionCheckBox(__CLASS__, $line["id"]);
-               $delete_cell           = $row->addCell($header, $cell_value, $father);
+               $header      = $row->getGroup()->getHeaderByName('Internet', 'delete');
+               $cell_value  = Html::getMassiveActionCheckBox(__CLASS__, $line["id"]);
+               $delete_cell = $row->addCell($header, $cell_value, $father);
             }
 
             $internetName = $address->getInternetName();
@@ -660,7 +664,8 @@ class NetworkName extends FQDNLabel {
 
       $rand = mt_rand();
 
-      if ($item->getType() == 'NetworkPort' && $item->canUpdateItem()) {
+      if (($item->getType() == 'NetworkPort')
+          && $item->canUpdateItem()) {
 
          $items_id = $item->getID();
          $itemtype = $item->getType();
@@ -682,7 +687,7 @@ class NetworkName extends FQDNLabel {
                               'condition' => '`items_id`<=0'));
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button','Associate').
-                      "' class='submit'>";
+                "' class='submit'>";
          echo "</td><td class='right' width='30%'>";
          echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
          echo __('Create a new network name')."</a>";
@@ -727,12 +732,12 @@ class NetworkName extends FQDNLabel {
          $canedit = $item->canUpdateItem();
       }
 
-      $table_options['canedit']    = false;
-      $table_options['rand']       = $rand;
+      $table_options['canedit']                  = false;
+      $table_options['rand']                     = $rand;
       $table_options['massiveactionnetworkname'] = $canedit;
-      $table                       = new HTMLTableMain();
-      $column                      = $table->addHeader('Internet', self::getTypeName(2));
-      $t_group                     = $table->createGroup('Main', '');
+      $table                                     = new HTMLTableMain();
+      $column                                    = $table->addHeader('Internet', self::getTypeName(2));
+      $t_group                                   = $table->createGroup('Main', '');
 
       self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
 
@@ -767,8 +772,9 @@ class NetworkName extends FQDNLabel {
                                                    $item->getTypeName(1), $item->getName()));
             if ($canedit && $number) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $paramsma = array('num_displayed' => $number,
-                                 'specific_actions' => array('purge' => _x('button', 'Delete permanently'),
+               $paramsma = array('num_displayed'    => $number,
+                                 'specific_actions' => array('purge'    => _x('button',
+                                                                              'Delete permanently'),
                                                              'unaffect' => __('Dissociate')));
                Html::showMassiveActions(__CLASS__, $paramsma);
             }

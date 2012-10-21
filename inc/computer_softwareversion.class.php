@@ -432,8 +432,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
-                                 'specific_actions' => array('move_version' => _x('button', 'Move'),
-                                                             'purge'        => _x('button', 'Delete permanently')));
+                                 'specific_actions' => array('move_version'
+                                                                     => _x('button', 'Move'),
+                                                             'purge' => _x('button',
+                                                                           'Delete permanently')));
                // Options to update version
                $paramsma['extraparams']['options']['move']['softwares_id'] = $softwares_id;
                if ($crit=='softwares_id') {

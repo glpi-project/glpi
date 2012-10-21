@@ -298,31 +298,31 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
     *
     * @param $method
-    * @param $forceCheckBoth boolean force check both items
+    * @param $forceCheckBoth boolean force check both items(false by default)
     *
     * @return boolean
    **/
-   static function canRelation($method, $forceCheckBoth = false) {
+   static function canRelation($method, $forceCheckBoth=false) {
 
       $can1 = static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
-                                    static::$items_id_1);
+                                   static::$items_id_1);
       $can2 = static::canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
-                                    static::$items_id_2);
+                                   static::$items_id_2);
 
       /// Check only one if SAME RIGHT for both items and not force checkBoth
-      if ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
-         && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)
-         && !$forceCheckBoth) {
+      if (((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
+           && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights))
+          && !$forceCheckBoth) {
          if ($can1) {
             // Can view the second one ?
             if (!static::canConnexity($method, static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_2,
-                                static::$items_id_2)) {
+                                      static::$items_id_2)) {
                return false;
             }
          } else if ($can2) {
             // Can view the first one ?
             if (!static::canConnexity($method, static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_1,
-                                static::$items_id_1)) {
+                                      static::$items_id_1)) {
                return false;
             }
          } else {
@@ -341,16 +341,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param $method
     * @param $methodNotItem
-    * @param $check_entity      (true by default)
-    * @param $forceCheckBoth boolean force check both items
+    * @param $check_entity            (true by default)
+    * @param $forceCheckBoth boolean  force check both items (false by default)
     *
     * @return boolean
    **/
-   function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth = false) {
+   function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth=false) {
 
       $OneWriteIsEnough = (!$forceCheckBoth
-                           && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights
-                           && static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights);
+                           && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
+                           && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights));
 
       try {
          $item1 = NULL;
@@ -470,7 +470,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canCreateItem() {
-      return $this->canRelationItem('canUpdateItem', 'canUpdate', true, static::$checkAlwaysBothItems);
+
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', true,
+                                    static::$checkAlwaysBothItems);
    }
 
 
@@ -486,7 +488,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canUpdateItem() {
-      return $this->canRelationItem('canUpdateItem', 'canUpdate', true, static::$checkAlwaysBothItems);
+
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', true,
+                                    static::$checkAlwaysBothItems);
    }
 
 
@@ -494,7 +498,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    function canDeleteItem() {
-      return $this->canRelationItem('canUpdateItem', 'canUpdate', false, static::$checkAlwaysBothItems);
+
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', false,
+                                    static::$checkAlwaysBothItems);
    }
 
 

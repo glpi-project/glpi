@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
@@ -2264,14 +2264,14 @@ function update0831to084() {
              FROM `glpi_calendars_holidays`
              WHERE `glpi_calendars_holidays`.`calendars_id`
                      NOT IN (SELECT `glpi_calendars`.`id`
-                               FROM `glpi_calendars`)";
+                             FROM `glpi_calendars`)";
    $DB->queryOrDie($query, "0.84 clean glpi_calendars_holidays");
 
    $query = "DELETE
              FROM `glpi_calendarsegments`
              WHERE `glpi_calendarsegments`.`calendars_id`
                      NOT IN (SELECT `glpi_calendars`.`id`
-                               FROM `glpi_calendars`)";
+                             FROM `glpi_calendars`)";
    $DB->queryOrDie($query, "0.84 clean glpi_calendarsegments");
 
 
