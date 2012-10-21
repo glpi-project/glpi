@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -701,7 +701,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // get again object to reload actors
       $this->loadActors();
-      
+
       // Setting a solution or solution type means the problem is solved
       if ((in_array("solutiontypes_id",$this->updates) && ($this->input["solutiontypes_id"] > 0))
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
@@ -757,7 +757,7 @@ abstract class CommonITILObject extends CommonDBTM {
          unset($this->updates[$key]);
          unset($this->oldvalues['solvedate']);
       }
-      
+
       if (isset($this->input["status"])) {
          if (($this->input["status"] != self::WAITING)
              && ($this->countSuppliers(CommonITILActor::ASSIGN) == 0)
@@ -2103,7 +2103,7 @@ abstract class CommonITILObject extends CommonDBTM {
             break;
 
          case "add_actor" :
-            $types            = array(0                           => Dropdown::EMPTY_VALUE,
+            $types            = array(0                          => Dropdown::EMPTY_VALUE,
                                       CommonITILActor::REQUESTER => __('Requester'),
                                       CommonITILActor::OBSERVER  => __('Watcher'),
                                       CommonITILActor::ASSIGN    => __('Assigned to'));
@@ -2238,12 +2238,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[4]['forcegroupby']  = true;
       $tab[4]['massiveaction'] = false;
       $tab[4]['joinparams']    = array('beforejoin'
-                                       => array('table'
-                                                   => getTableForItemType($this->userlinkclass),
-                                                'joinparams'
-                                                   => array('jointype'  => 'child',
-                                                            'condition' => 'AND NEWTABLE.`type` ' .
-                                                                            '= '.CommonITILActor::REQUESTER)));
+                                        => array('table'
+                                                  => getTableForItemType($this->userlinkclass),
+                                                 'joinparams'
+                                                  => array('jointype'
+                                                            => 'child',
+                                                           'condition'
+                                                            => 'AND NEWTABLE.`type`
+                                                                 = '.CommonITILActor::REQUESTER)));
 
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'completename';
@@ -2253,11 +2255,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[71]['massiveaction'] = false;
       $tab[71]['condition']     = 'is_requester';
       $tab[71]['joinparams']    = array('beforejoin'
-                                        => array('table' => getTableForItemType($this->grouplinkclass),
-                                                 'joinparams'
-                                                    => array('jointype'  => 'child',
-                                                             'condition' => 'AND NEWTABLE.`type` ' .
-                                                                             '= '.CommonITILActor::REQUESTER)));
+                                         => array('table'
+                                                   => getTableForItemType($this->grouplinkclass),
+                                                  'joinparams'
+                                                     => array('jointype'
+                                                               => 'child',
+                                                              'condition'
+                                                               => 'AND NEWTABLE.`type`
+                                                                    = '.CommonITILActor::REQUESTER)));
 
       $tab[22]['table']         = 'glpi_users';
       $tab[22]['field']         = 'name';
@@ -2276,11 +2281,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[66]['forcegroupby']  = true;
       $tab[66]['massiveaction'] = false;
       $tab[66]['joinparams']    = array('beforejoin'
-                                        => array('table' => getTableForItemType($this->userlinkclass),
-                                                 'joinparams'
-                                                   => array('jointype'  => 'child',
-                                                            'condition' => 'AND NEWTABLE.`type` ' .
-                                                                            '= '.CommonITILActor::OBSERVER)));
+                                         => array('table'
+                                                   => getTableForItemType($this->userlinkclass),
+                                                  'joinparams'
+                                                    => array('jointype'
+                                                              => 'child',
+                                                             'condition'
+                                                              => 'AND NEWTABLE.`type`
+                                                                   = '.CommonITILActor::OBSERVER)));
 
       $tab[65]['table']         = 'glpi_groups';
       $tab[65]['field']         = 'completename';
@@ -2290,11 +2298,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[65]['massiveaction'] = false;
       $tab[65]['condition']     = 'is_requester';
       $tab[65]['joinparams']    = array('beforejoin'
-                                        => array('table' => getTableForItemType($this->grouplinkclass),
-                                                 'joinparams'
-                                                   => array('jointype'  => 'child',
-                                                            'condition' => 'AND NEWTABLE.`type` ' .
-                                                                            '= '.CommonITILActor::OBSERVER)));
+                                         => array('table'
+                                                   => getTableForItemType($this->grouplinkclass),
+                                                  'joinparams'
+                                                    => array('jointype'
+                                                              => 'child',
+                                                             'condition'
+                                                              => 'AND NEWTABLE.`type`
+                                                                   = '.CommonITILActor::OBSERVER)));
 
       $tab['assign']            = __('Assigned to');
 
@@ -2306,11 +2317,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[5]['forcegroupby']   = true;
       $tab[5]['massiveaction']  = false;
       $tab[5]['joinparams']     = array('beforejoin'
-                                         => array('table' => getTableForItemType($this->userlinkclass),
+                                         => array('table'
+                                                   => getTableForItemType($this->userlinkclass),
                                                   'joinparams'
-                                                   => array('jointype'  => 'child',
-                                                            'condition' => 'AND NEWTABLE.`type` ' .
-                                                                            '= '.CommonITILActor::ASSIGN)));
+                                                   => array('jointype'
+                                                             => 'child',
+                                                            'condition'
+                                                             => 'AND NEWTABLE.`type`
+                                                                  = '.CommonITILActor::ASSIGN)));
 
       $tab[6]['table']          = 'glpi_suppliers';
       $tab[6]['field']          = 'name';
@@ -2319,11 +2333,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[6]['forcegroupby']   = true;
       $tab[6]['massiveaction']  = false;
       $tab[6]['joinparams']     = array('beforejoin'
-                                         => array('table' => getTableForItemType($this->supplierlinkclass),
+                                         => array('table'
+                                                   => getTableForItemType($this->supplierlinkclass),
                                                   'joinparams'
-                                                   => array('jointype'  => 'child',
-                                                            'condition' => 'AND NEWTABLE.`type` ' .
-                                                                            '= '.CommonITILActor::ASSIGN)));
+                                                   => array('jointype'
+                                                             => 'child',
+                                                            'condition'
+                                                             => 'AND NEWTABLE.`type`
+                                                                  = '.CommonITILActor::ASSIGN)));
 
       $tab[8]['table']          = 'glpi_groups';
       $tab[8]['field']          = 'completename';
@@ -2333,11 +2350,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[8]['massiveaction']  = false;
       $tab[8]['condition']      = 'is_assign';
       $tab[8]['joinparams']     = array('beforejoin'
-                                         => array('table' => getTableForItemType($this->grouplinkclass),
+                                         => array('table'
+                                                   => getTableForItemType($this->grouplinkclass),
                                                   'joinparams'
-                                                   => array('jointype'  => 'child',
-                                                            'condition' => 'AND NEWTABLE.`type` ' .
-                                                                            '= '.CommonITILActor::ASSIGN)));
+                                                   => array('jointype'
+                                                             => 'child',
+                                                            'condition'
+                                                             => 'AND NEWTABLE.`type`
+                                                                  = '.CommonITILActor::ASSIGN)));
 
       $tab['notification']      = _n('Notification', 'Notifications',2);
 
@@ -2347,7 +2367,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[35]['datatype']      = 'bool';
       $tab[35]['massiveaction'] = false;
       $tab[35]['joinparams']    = array('jointype'  => 'child',
-                                        'condition' => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER);
+                                        'condition' => 'AND NEWTABLE.`type`
+                                                            = '.CommonITILActor::REQUESTER);
 
 
       $tab[34]['table']         = getTableForItemType($this->userlinkclass);
@@ -2356,7 +2377,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[34]['datatype']      = 'email';
       $tab[34]['massiveaction'] = false;
       $tab[34]['joinparams']    = array('jointype'  => 'child',
-                                        'condition' => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER);
+                                        'condition' => 'AND NEWTABLE.`type`
+                                                            = '.CommonITILActor::REQUESTER);
 
       return $tab;
    }
@@ -2370,7 +2392,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function getStatusIconURL($status) {
       global $CFG_GLPI;
-      
+
       switch ($status) {
          case self::INCOMING :
             return $CFG_GLPI["root_doc"]."/pics/new.png";
@@ -2525,7 +2547,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($canedit) {
                echo "&nbsp;";
-               Html::showSimpleForm($this->getFormURL(), 'delete_user', _x('button', 'Delete permanently'),
+               Html::showSimpleForm($this->getFormURL(), 'delete_user',
+                                    _x('button', 'Delete permanently'),
                                     array('id'                        => $d['id'],
                                           $this->getForeignKeyField() => $this->fields['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
@@ -2609,7 +2632,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
                       'itemtype'        => $this->getType(),
-                      'allow_email'     => ($type==CommonITILActor::OBSERVER || $type==CommonITILActor::REQUESTER),
+                      'allow_email'     => (($type == CommonITILActor::OBSERVER)
+                                            || $type == CommonITILActor::REQUESTER),
                       'entity_restrict' => $entities_id);
 
       Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
@@ -2687,18 +2711,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       if ($CFG_GLPI['use_mailing']) {
-         $paramscomment = array('value' => '__VALUE__',
-                                'field' => "_users_id_".$typename."_notif",
-                                'allow_email'
-                                        => ($type==CommonITILActor::REQUESTER || $type==CommonITILActor::OBSERVER),
-                                'use_notification'
-                                    => $options["_users_id_".$typename."_notif"]['use_notification']);
+         $paramscomment
+            = array('value' => '__VALUE__',
+                    'field' => "_users_id_".$typename."_notif",
+                    'allow_email'
+                            => (($type == CommonITILActor::REQUESTER)
+                                || ($type == CommonITILActor::OBSERVER)),
+                    'use_notification'
+                            => $options["_users_id_".$typename."_notif"]['use_notification']);
          if (isset($options["_users_id_".$typename."_notif"]['alternative_email'])) {
             $paramscomment['alternative_email']
-                           = $options["_users_id_".$typename."_notif"]['alternative_email'];
+               = $options["_users_id_".$typename."_notif"]['alternative_email'];
          }
 
-         $params['toupdate'] = array('value_fieldname' => 'value',
+         $params['toupdate'] = array('value_fieldname'
+                                                  => 'value',
                                      'to_update'  => "notif_".$typename."_$rand",
                                      'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
                                      'moreparams' => $paramscomment);
@@ -3082,7 +3109,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $params['toupdate'] = array('value_fieldname' => 'value',
                                            'to_update'       => "countgroupassign_$rand",
                                            'url'             => $CFG_GLPI["root_doc"].
-                                                                  "/ajax/ticketassigninformation.php",
+                                                                "/ajax/ticketassigninformation.php",
                                            'moreparams'      => array('groups_id_assign'
                                                                         => '__VALUE__'));
             }

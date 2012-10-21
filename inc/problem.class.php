@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -85,7 +85,8 @@ class Problem extends CommonITILObject {
                   || (Session::haveRight('show_my_problem', 1)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
-                              && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))))));
+                              && $this->haveAGroup(CommonITILActor::ASSIGN,
+                                                   $_SESSION["glpigroups"]))))));
    }
 
 
@@ -117,10 +118,12 @@ class Problem extends CommonITILObject {
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
-                              || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])))
+                              || $this->haveAGroup(CommonITILActor::OBSERVER,
+                                                   $_SESSION["glpigroups"])))
                       || ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
-                              && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))))));
+                              && $this->haveAGroup(CommonITILActor::ASSIGN,
+                                                   $_SESSION["glpigroups"]))))));
    }
 
 
@@ -619,7 +622,7 @@ class Problem extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array(self::INCOMING      => _x('problem', 'New'),
+      $tab = array(self::INCOMING => _x('problem', 'New'),
                    self::ACCEPTED => _x('problem', 'Accepted'),
                    self::ASSIGNED => _x('problem', 'Processing (assigned)'),
                    self::PLANNED  => _x('problem', 'Processing (planned)'),
@@ -714,12 +717,14 @@ class Problem extends CommonITILObject {
          $search_assign   = " 0 = 1 ";
 
          if (count($_SESSION['glpigroups'])) {
-            $groups        = implode("','",$_SESSION['glpigroups']);
-            $search_assign = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
-                                AND `glpi_groups_problems`.`type` = '".CommonITILActor::ASSIGN."')";
+            $groups          = implode("','",$_SESSION['glpigroups']);
+            $search_assign   = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
+                                  AND `glpi_groups_problems`.`type`
+                                        = '".CommonITILActor::ASSIGN."')";
 
             $search_users_id = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
-                                    AND `glpi_groups_problems`.`type` = '".CommonITILActor::REQUESTER."') ";
+                                  AND `glpi_groups_problems`.`type`
+                                        = '".CommonITILActor::REQUESTER."') ";
          }
       }
 
@@ -749,10 +754,10 @@ class Problem extends CommonITILObject {
          default :
             $query .= "WHERE $is_deleted
                              AND ($search_users_id)
-                             AND (`status` IN ('".self::INCOMING."', 
-                                               '".self::ACCEPTED."', 
-                                               '".self::PLANNED."', 
-                                               '".self::ASSIGNED."', 
+                             AND (`status` IN ('".self::INCOMING."',
+                                               '".self::ACCEPTED."',
+                                               '".self::PLANNED."',
+                                               '".self::ASSIGNED."',
                                                '".self::WAITING."'))
                              AND NOT ($search_assign) ".
                              getEntitiesRestrictRequest("AND","glpi_problems");
@@ -1033,7 +1038,8 @@ class Problem extends CommonITILObject {
                                                                $problem->fields["id"])."</td>";
          echo "<td class='center'>";
 
-         if (isset($problem->users[CommonITILActor::REQUESTER]) && count($problem->users[CommonITILActor::REQUESTER])) {
+         if (isset($problem->users[CommonITILActor::REQUESTER])
+             && count($problem->users[CommonITILActor::REQUESTER])) {
             foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
@@ -1080,7 +1086,8 @@ class Problem extends CommonITILObject {
          // Finish Line
          echo "</tr>";
       } else {
-         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No problem in progress.')."</i></td></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No problem in progress.')."</i></td></tr>";
       }
    }
 
@@ -1560,7 +1567,8 @@ class Problem extends CommonITILObject {
          // Fourth Column
          $fourth_col = "";
 
-         if (isset($job->users[CommonITILActor::REQUESTER]) && count($job->users[CommonITILActor::REQUESTER])) {
+         if (isset($job->users[CommonITILActor::REQUESTER])
+             && count($job->users[CommonITILActor::REQUESTER])) {
             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                $userdata    = getUserName($d["users_id"], 2);
                $fourth_col .= "<span class='b'>".$userdata['name']."</span>";
@@ -1571,7 +1579,8 @@ class Problem extends CommonITILObject {
             }
          }
 
-         if (isset($job->groups[CommonITILActor::REQUESTER]) && count($job->groups[CommonITILActor::REQUESTER])) {
+         if (isset($job->groups[CommonITILActor::REQUESTER])
+             && count($job->groups[CommonITILActor::REQUESTER])) {
             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
                $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                $fourth_col .= "<br>";
@@ -1583,7 +1592,8 @@ class Problem extends CommonITILObject {
          // Fifth column
          $fifth_col = "";
 
-         if (isset($job->users[CommonITILActor::ASSIGN]) && count($job->users[CommonITILActor::ASSIGN])) {
+         if (isset($job->users[CommonITILActor::ASSIGN])
+             && count($job->users[CommonITILActor::ASSIGN])) {
             foreach ($job->users[CommonITILActor::ASSIGN] as $d) {
                $userdata = getUserName($d["users_id"], 2);
                $fifth_col .= "<span class='b'>".$userdata['name']."</span>";
@@ -1594,14 +1604,16 @@ class Problem extends CommonITILObject {
             }
          }
 
-         if (isset($job->groups[CommonITILActor::ASSIGN]) && count($job->groups[CommonITILActor::ASSIGN])) {
+         if (isset($job->groups[CommonITILActor::ASSIGN])
+             && count($job->groups[CommonITILActor::ASSIGN])) {
             foreach ($job->groups[CommonITILActor::ASSIGN] as $d) {
                $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                $fifth_col .= "<br>";
             }
          }
 
-         if (isset($job->suppliers[CommonITILActor::ASSIGN]) && count($job->suppliers[CommonITILActor::ASSIGN])) {
+         if (isset($job->suppliers[CommonITILActor::ASSIGN])
+             && count($job->suppliers[CommonITILActor::ASSIGN])) {
             foreach ($job->suppliers[CommonITILActor::ASSIGN] as $d) {
                $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
                $fifth_col .= "<br>";
@@ -1684,9 +1696,10 @@ class Problem extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict                 = "(`glpi_problems_users`.`users_id` = '".$item->getID()."'
-                                          AND `glpi_problems_users`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $restrict   = "(`glpi_problems_users`.`users_id` = '".$item->getID()."'
+                            AND `glpi_problems_users`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order      = '`glpi_problems`.`date_mod` DESC';
+
             $options['reset']         = 'reset';
             $options['field'][0]      = 4; // status
             $options['searchtype'][0] = 'equals';
@@ -1695,9 +1708,10 @@ class Problem extends CommonITILObject {
             break;
 
          case 'Supplier' :
-            $restrict                 = "(`glpi_problems_suppliers`.`suppliers_id` = '".$item->getID()."' ".
-                                       " AND `glpi_problems_suppliers`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $restrict   = "(`glpi_problems_suppliers`.`suppliers_id` = '".$item->getID()."'
+                            AND `glpi_problems_suppliers`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order      = '`glpi_problems`.`date_mod` DESC';
+
             $options['field'][0]      = 6;
             $options['searchtype'][0] = 'equals';
             $options['contains'][0]   = $item->getID();

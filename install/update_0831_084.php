@@ -1045,8 +1045,7 @@ function update0831to084() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s'),
-                                      'ticket and problems status'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'tickets and problems status'));
 
    $status = array ('new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
@@ -1063,10 +1062,13 @@ function update0831to084() {
    foreach (array('glpi_tickets', 'glpi_problems') as $table) {
       // Migrate datas
       foreach ($status as $old => $new) {
-         $query = "UPDATE `$table` SET `status` = '$new' WHERE `status` = '$old'";
+         $query = "UPDATE `$table`
+                   SET `status` = '$new'
+                   WHERE `status` = '$old'";
          $DB->queryOrDie($query, "0.84 status in $table $old to $new");
       }
-      $migration->changeField($table, 'status', 'status', 'integer', array('value' => CommonITILObject::INCOMING));
+      $migration->changeField($table, 'status', 'status', 'integer',
+                              array('value' => CommonITILObject::INCOMING));
    }
 
    // Update glpi_profiles : ticket_status
@@ -1075,7 +1077,7 @@ function update0831to084() {
       foreach ($fields_to_decode as $field) {
          $tab = importArrayFromDB($data[$field]);
          if (is_array($tab)) {
-            $newtab= array();
+            $newtab = array();
             foreach ($tab as $key => $values) {
                foreach ($values as $key2 => $val2) {
                   $newtab[$status[$key]][$status[$key2]] = $val2;
@@ -1083,8 +1085,8 @@ function update0831to084() {
             }
 
             $query  = "UPDATE `glpi_profiles`
-                        SET `$field` = '".addslashes(exportArrayToDB($newtab))."'
-                        WHERE `id` = '".$data['id']."'";
+                       SET `$field` = '".addslashes(exportArrayToDB($newtab))."'
+                       WHERE `id` = '".$data['id']."'";
             $DB->queryOrDie($query, "0.84 migrate $field of glpi_profiles");
          }
       }

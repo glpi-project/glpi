@@ -177,10 +177,10 @@ class TicketValidation  extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-/*       if ($job->fields["status"] == CommonITILObject::SOLVED
-                  || $job->fields["status"] == CommonITILObject::CLOSED) {
-            return false;
-         }*/
+//       if ($job->fields["status"] == CommonITILObject::SOLVED
+//                  || $job->fields["status"] == CommonITILObject::CLOSED) {
+//            return false;
+//         }
 
       $input["users_id"] = 0;
       if (!isset($input['_auto_update'])) {
