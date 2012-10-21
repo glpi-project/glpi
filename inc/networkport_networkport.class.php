@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -39,10 +39,10 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPort_NetworkPort extends CommonDBRelation {
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'NetworkPort';
-   static public $items_id_1 = 'networkports_id_1';
-   static public $itemtype_2 = 'NetworkPort';
-   static public $items_id_2 = 'networkports_id_2';
+   static public $itemtype_1           = 'NetworkPort';
+   static public $items_id_1           = 'networkports_id_1';
+   static public $itemtype_2           = 'NetworkPort';
+   static public $items_id_2           = 'networkports_id_2';
 
    static public $log_history_1_add    = Log::HISTORY_CONNECT_DEVICE;
    static public $log_history_2_add    = Log::HISTORY_CONNECT_DEVICE;
@@ -58,7 +58,6 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
     *
     * @return true if succeed else false
    **/
-
    function getFromDBForNetworkPort($ID) {
 
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`networkports_id_1` = '$ID'
@@ -66,16 +65,19 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 
-   function getHistoryName_for_item1(CommonDBTM $networkPort, $case) {
+   function getHistoryNameForItem1(CommonDBTM $networkPort) {
+
       $item = $networkPort->getItem();
       return addslashes($item->getName() . ' < ' . $networkPort->getName());
    }
 
 
-   function getHistoryName_for_item2(CommonDBTM $networkPort, $case) {
+   function getHistoryNameForItem2(CommonDBTM $networkPort) {
+
       $item = $networkPort->getItem();
       return addslashes($item->getName() . ' < ' . $networkPort->getName());
    }
+
 
    /**
     * Get port opposite port ID
