@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief 
+* @brief
+* @since version 0.84
 */
 
 define('GLPI_ROOT','..');
@@ -50,6 +51,7 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
          Html::showDateFormItem('periodicity[end]', $_POST['end']);
          echo "</td></tr>";
          break;
+
       case 'week' :
          echo "<tr><td>".__('End date').'</td><td>';
          Html::showDateFormItem('periodicity[end]', $_POST['end']);
@@ -67,6 +69,7 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
          }
          echo "</tr>";
          break;
+
       case 'month' :
          echo "<tr><td colspan='2'>";
          echo "<select name='periodicity[subtype]'>";
@@ -76,8 +79,8 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
          echo "</td></tr>";
          echo "<tr><td>".__('End date').'</td><td>';
          Html::showDateFormItem('periodicity[end]', $_POST['end']);
-         echo "</td></tr></table>";
-         
+         echo "</td></tr>";
+
    }
    echo '</table>';
 }
