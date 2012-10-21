@@ -44,9 +44,9 @@ class UserEmail  extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // From CommonDBChild
-   static public $itemtype = 'User';
-   static public $items_id = 'users_id';
-   public $dohistory         = true;
+   static public $itemtype        = 'User';
+   static public $items_id        = 'users_id';
+   public $dohistory              = true;
 
 
    static function getTypeName($nb=0) {
@@ -225,9 +225,7 @@ class UserEmail  extends CommonDBChild {
     * @since version 0.84
     *
     * @see CommonDBChild::getHistoryNameForItem
-    *
-    * @param unknown_type $case
-   */
+   **/
    function getHistoryNameForItem($case) {
       return addslashes($this->fields['email']);
    }

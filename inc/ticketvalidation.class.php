@@ -322,8 +322,6 @@ class TicketValidation  extends CommonDBChild {
     * @since version 0.84
     *
     * @see CommonDBChild::getHistoryNameForItem
-    *
-    * @param unknown_type $case
    **/
    function getHistoryNameForItem($case) {
 
