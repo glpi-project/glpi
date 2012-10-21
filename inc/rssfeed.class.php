@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 // // all that other good stuff.  The feed's information will not be available to SimplePie before
 // // this is called.
 // $success = $feed->init();
-// 
+//
 // // We'll make sure that the right content type and character encoding gets set automatically.
 // // This function will grab the proper character encoding, as well as set the content type to text/html.
 // $feed->handle_content_type();
@@ -72,12 +72,14 @@ class RSSFeed extends CommonDBTM {
 
 
    static function canCreate() {
+
       return (Session::haveRight('rssfeed_public', 'w')
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
    static function canView() {
+
       return (Session::haveRight('rssfeed_public', 'r')
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
@@ -86,7 +88,7 @@ class RSSFeed extends CommonDBTM {
    function canViewItem() {
 
       // Is my rssfeed or is in visibility
-      return ($this->fields['users_id'] == Session::getLoginUserID()
+      return (($this->fields['users_id'] == Session::getLoginUserID())
               || (Session::haveRight('rssfeed_public', 'r')
                   && $this->haveVisibilityAccess()));
    }
@@ -100,7 +102,7 @@ class RSSFeed extends CommonDBTM {
 
    function canUpdateItem() {
 
-      return ($this->fields['users_id'] == Session::getLoginUserID()
+      return (($this->fields['users_id'] == Session::getLoginUserID())
               || (Session::haveRight('rssfeed_public', 'w')
                   && $this->haveVisibilityAccess()));
    }
@@ -124,7 +126,6 @@ class RSSFeed extends CommonDBTM {
 
    /**
     * @see CommonDBTM::cleanDBonPurge()
-    *
    **/
    function cleanDBonPurge() {
 
@@ -140,7 +141,6 @@ class RSSFeed extends CommonDBTM {
 
 
    /**
-    *
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -150,7 +150,7 @@ class RSSFeed extends CommonDBTM {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "deletevisibility":
+         case "deletevisibility" :
             foreach ($input['item'] as $type => $items) {
                if (in_array($type, array('Entity_RSSFeed', 'Group_RSSFeed', 'Profile_RSSFeed',
                                          'RSSFeed_User'))) {
@@ -168,7 +168,6 @@ class RSSFeed extends CommonDBTM {
                   }
                }
             }
-
             break;
 
          default :
@@ -220,7 +219,7 @@ class RSSFeed extends CommonDBTM {
                      return true;
                   }
                   // Restrict to entities
-                  $entities = array($group['entities_id']);
+                  $entities    = array($group['entities_id']);
                   if ($group['is_recursive']) {
                      $entities = getSonsOf('glpi_entities', $group['entities_id']);
                   }
@@ -237,7 +236,7 @@ class RSSFeed extends CommonDBTM {
           && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          foreach ($this->entities as $key => $data) {
             foreach ($data as $entity) {
-               $entities = array($entity['entities_id']);
+               $entities    = array($entity['entities_id']);
                if ($entity['is_recursive']) {
                   $entities = getSonsOf('glpi_entities', $entity['entities_id']);
                }
@@ -259,7 +258,7 @@ class RSSFeed extends CommonDBTM {
                   return true;
                }
                // Restrict to entities
-               $entities = array($profile['entities_id']);
+               $entities    = array($profile['entities_id']);
                if ($profile['is_recursive']) {
                   $entities = getSonsOf('glpi_entities',$profile['entities_id']);
                }
@@ -339,7 +338,7 @@ class RSSFeed extends CommonDBTM {
          $restrict .= " OR (`glpi_groups_rssfeeds`.`groups_id`
                                  IN ('".implode("','",$_SESSION["glpigroups"])."')
                             AND (`glpi_groups_rssfeeds`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_rssfeeds", '', '',
+                                 ".getEntitiesRestrictRequest(" OR", "glpi_groups_rssfeeds", '', '',
                                                               true).")) ";
       }
 
@@ -348,7 +347,7 @@ class RSSFeed extends CommonDBTM {
          $restrict .= " OR (`glpi_profiles_rssfeeds`.`profiles_id`
                                  = '".$_SESSION["glpiactiveprofile"]['id']."'
                             AND (`glpi_profiles_rssfeeds`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_profiles_rssfeeds", '',
+                                 ".getEntitiesRestrictRequest(" OR", "glpi_profiles_rssfeeds", '',
                                                               '', true).")) ";
       }
 
@@ -361,9 +360,8 @@ class RSSFeed extends CommonDBTM {
       return '('.$restrict.')';
    }
 
+
    /**
-    * @since version 0.84
-    *
     * @param $field
     * @param $values
     * @param $options   array
@@ -382,8 +380,6 @@ class RSSFeed extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
-    *
     * @param $field
     * @param $name               (default '')
     * @param $values             (default '')
@@ -403,73 +399,74 @@ class RSSFeed extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+
    function getSearchOptions() {
 
-      $tab                     = array();
-      $tab['common']           = __('Characteristics');
+      $tab                           = array();
+      $tab['common']                 = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['massiveaction'] = false;
-      $tab[1]['forcegroupby']  = true;
+      $tab[1]['table']               = $this->getTable();
+      $tab[1]['field']               = 'name';
+      $tab[1]['name']                = __('Name');
+      $tab[1]['datatype']            = 'itemlink';
+      $tab[1]['massiveaction']       = false;
+      $tab[1]['forcegroupby']        = true;
 
-      $tab[2]['table']         = 'glpi_users';
-      $tab[2]['field']         = 'name';
-      $tab[2]['name']          = __('Creator');
-      $tab[2]['datatype']      = 'dropdown';
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['right']           = 'all';
+      $tab[2]['table']               = 'glpi_users';
+      $tab[2]['field']               = 'name';
+      $tab[2]['name']                = __('Creator');
+      $tab[2]['datatype']            = 'dropdown';
+      $tab[2]['massiveaction']       = false;
+      $tab[2]['right']               = 'all';
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'url';
-      $tab[3]['name']          = __('URL');
-      $tab[3]['datatype']      = 'string';
-      $tab[3]['massiveaction'] = false;
+      $tab[3]['table']               = $this->getTable();
+      $tab[3]['field']               = 'url';
+      $tab[3]['name']                = __('URL');
+      $tab[3]['datatype']            = 'string';
+      $tab[3]['massiveaction']       = false;
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'is_active';
-      $tab[4]['name']          = __('Active');
-      $tab[4]['datatype']      = 'bool';
-      $tab[4]['massiveaction'] = true;
+      $tab[4]['table']               = $this->getTable();
+      $tab[4]['field']               = 'is_active';
+      $tab[4]['name']                = __('Active');
+      $tab[4]['datatype']            = 'bool';
+      $tab[4]['massiveaction']       = true;
 
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'have_error';
-      $tab[6]['name']          = __('Error');
-      $tab[6]['datatype']      = 'bool';
-      $tab[6]['massiveaction'] = true;
+      $tab[6]['table']               = $this->getTable();
+      $tab[6]['field']               = 'have_error';
+      $tab[6]['name']                = __('Error');
+      $tab[6]['datatype']            = 'bool';
+      $tab[6]['massiveaction']       = true;
 
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'max_items';
-      $tab[7]['name']          = __('Number of items displayed');
-      $tab[7]['datatype']      = 'number';
-      $tab[7]['min']           = 1;
-      $tab[7]['max']           = 100;
-      $tab[7]['step']          = 1;
-      $tab[7]['massiveaction'] = true;
+      $tab[7]['table']               = $this->getTable();
+      $tab[7]['field']               = 'max_items';
+      $tab[7]['name']                = __('Number of items displayed');
+      $tab[7]['datatype']            = 'number';
+      $tab[7]['min']                 = 1;
+      $tab[7]['max']                 = 100;
+      $tab[7]['step']                = 1;
+      $tab[7]['massiveaction']       = true;
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']              = $this->getTable();
+      $tab[16]['field']              = 'comment';
+      $tab[16]['name']               = __('Comments');
+      $tab[16]['datatype']           = 'text';
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'refresh_rate';
-      $tab[5]['name']          = __('Refresh rate');
-      $tab[5]['datatype']      = 'timestamp';
-      $tab[5]['min']           = HOUR_TIMESTAMP;
-      $tab[5]['max']           = HOUR_TIMESTAMP;
-      $tab[5]['toadd']         = array(DAY_TIMESTAMP);
+      $tab[5]['table']               = $this->getTable();
+      $tab[5]['field']               = 'refresh_rate';
+      $tab[5]['name']                = __('Refresh rate');
+      $tab[5]['datatype']            = 'timestamp';
+      $tab[5]['min']                 = HOUR_TIMESTAMP;
+      $tab[5]['max']                 = HOUR_TIMESTAMP;
+      $tab[5]['toadd']               = array(DAY_TIMESTAMP);
       $tab[5]['display_emptychoice'] = false;
-      $tab[5]['massiveaction'] = true;
-      $tab[5]['searchtype']    = 'equals';
-      
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[5]['massiveaction']       = true;
+      $tab[5]['searchtype']          = 'equals';
+
+      $tab[19]['table']               = $this->getTable();
+      $tab[19]['field']               = 'date_mod';
+      $tab[19]['name']                = __('Last update');
+      $tab[19]['datatype']            = 'datetime';
+      $tab[19]['massiveaction']       = false;
 
       return $tab;
    }
@@ -484,7 +481,7 @@ class RSSFeed extends CommonDBTM {
          switch ($item->getType()) {
             case 'RSSFeed' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return array(1 => _n('RSS feed', 'RSS feeds', 1),
+                  return array(1 => self::getTypeName(1),
                                2 => self::createTabEntry(__('Targets'),
                                                          $item->countVisibilities()));
                }
@@ -520,7 +517,7 @@ class RSSFeed extends CommonDBTM {
                case 1 :
                   $item->showFeedContent();
                   return true;
-               
+
                case 2 :
                   $item->showVisibility();
                   return true;
@@ -537,13 +534,13 @@ class RSSFeed extends CommonDBTM {
 
       if ($feed = self::getRSSFeed($input['url'])) {
          $input['have_error'] = 0;
-         $input['name'] = addslashes($feed->get_title());
+         $input['name']       = addslashes($feed->get_title());
          if (empty($input['comment'])) {
             $input['comment'] = addslashes($feed->get_description());
          }
       } else {
          $input['have_error'] = 1;
-         $input['name'] = '';
+         $input['name']       = '';
       }
       $input["name"] = trim($input["name"]);
 
@@ -553,13 +550,14 @@ class RSSFeed extends CommonDBTM {
       return $input;
    }
 
+
    function pre_updateInDB() {
 
       // Set new user if initial user have been deleted
       if (($this->fields['users_id'] == 0)
           && ($uid = Session::getLoginUserID())) {
          $this->fields['users_id'] = $uid;
-         $this->updates[]          ="users_id";
+         $this->updates[]          = "users_id";
       }
    }
 
@@ -569,7 +567,7 @@ class RSSFeed extends CommonDBTM {
       $this->fields["name"]         = __('New note');
       $this->fields["users_id"]     = Session::getLoginUserID();
       $this->fields["refresh_rate"] = DAY_TIMESTAMP;
-      $this->fields["max_items"] = 20;
+      $this->fields["max_items"]    = 20;
    }
 
 
@@ -577,12 +575,11 @@ class RSSFeed extends CommonDBTM {
     * Print the rssfeed form
     *
     * @param $ID        integer  Id of the item to print
-    * @param $options   array of possible options:
+    * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-
 
       $this->initForm($ID, $options);
 
@@ -591,11 +588,11 @@ class RSSFeed extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      $rowspan=4;
+      $rowspan = 4;
       if ($this->isNewID($ID)) {
          $rowspan--;
       }
-      
+
       if (!$this->isNewID($ID)) {
          // Force getting feed :
          $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
@@ -612,7 +609,7 @@ class RSSFeed extends CommonDBTM {
                                              'user'   => $this->fields["users_id"]));
          echo "</td><td colspans='2'>&nbsp;</td></tr>\n";
       }
-      
+
       echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='url' size='100' value='".$this->fields["url"]."'>";
@@ -635,27 +632,27 @@ class RSSFeed extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Refresh rate')."</td>";
       echo "<td>";
-      Dropdown::showTimeStamp("resfresh_rate", array('value' => $this->fields["refresh_rate"],
-                                                     'min'   => HOUR_TIMESTAMP,
-                                                     'max'   => HOUR_TIMESTAMP,
-                                                     'toadd' => array(DAY_TIMESTAMP),
-                                                     'display_emptychoice' => false));
+      Dropdown::showTimeStamp("resfresh_rate",
+                              array('value'                => $this->fields["refresh_rate"],
+                                    'min'                  => HOUR_TIMESTAMP,
+                                    'max'                  => HOUR_TIMESTAMP,
+                                    'toadd'                => array(DAY_TIMESTAMP),
+                                    'display_emptychoice'  => false));
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Number of items displayed')."</td>";
       echo "<td>";
-      Dropdown::showNumber("max_items", array('value' => $this->fields["max_items"],
-                                               'min'   => 1,
-                                               'max'   => 100,
-                                               'step'  => 1,
-                                               'display_emptychoice' => false));
+      Dropdown::showNumber("max_items", array('value'                => $this->fields["max_items"],
+                                              'min'                  => 1,
+                                              'max'                  => 100,
+                                              'step'                 => 1,
+                                              'display_emptychoice'  => false));
       echo "</td></tr>\n";
-
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Error retrieving RSS feed')."</td>";
@@ -663,8 +660,7 @@ class RSSFeed extends CommonDBTM {
       echo Dropdown::getYesNo($this->fields['have_error']);
       echo "</td>";
       if ($this->fields['have_error']) {
-         echo "<td>";
-         _e('Founded RSS feeds');
+         echo "<td>".__('Founded RSS feeds');
          echo "</td><td>";
          $this->showDiscoveredFeeds();
          echo "</td>\n";
@@ -678,29 +674,36 @@ class RSSFeed extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Set error field
+    *
+    * @param $error   (false by default
     **/
-   function setError($error = false) {
+   function setError($error=false) {
+
       if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
          return;
       }
+
       // Set error if not set
       if ($error && !$this->fields['have_error']) {
-         $this->update(array('id'    => $this->fields['id'],
+         $this->update(array('id'         => $this->fields['id'],
                              'have_error' => 1));
       }
       // Unset error if set
       if (!$error && $this->fields['have_error']) {
-         $this->update(array('id'    => $this->fields['id'],
+         $this->update(array('id'         => $this->fields['id'],
                              'have_error' => 0));
       }
-
    }
+
+
    /**
     * Show the feed content
     **/
    function showFeedContent() {
+
       if (!$this->canViewItem()) {
          return false;
       }
@@ -726,18 +729,20 @@ class RSSFeed extends CommonDBTM {
             echo "</td><td>";
             $rand = mt_rand();
             echo "<span id='rssitem$rand' class='pointer'>";
-            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 1000);
+            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())),
+                                   1000);
             echo "</span>";
             Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                                         array('applyto' => "rssitem$rand",
-                                               'display' => true));
+                               array('applyto' => "rssitem$rand",
+                                     'display' => true));
             echo "</td></tr>";
          }
          echo "</table>";
-         
+
       }
       echo "</div>";
    }
+
 
    /**
     * Show discovered feeds
@@ -745,43 +750,46 @@ class RSSFeed extends CommonDBTM {
     * @return nothin
     **/
    function showDiscoveredFeeds() {
+
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);
       $feed->enable_cache(false);
-//       echo $this->fields['url'];
       $feed->set_feed_url($this->fields['url']);
       $feed->init();
       $feed->handle_content_type();
+
       if ($feed->error()) {
-//          echo "kk";
          return false;
-      } else {
-         foreach ($feed->get_all_discovered_feeds() as $f){
-            $newurl = $f->url;
-            $newfeed = self::getRSSFeed($newurl);
-            if ($newfeed && !$newfeed->error()) {
-               $link = $newfeed->get_permalink();
-               if (!empty($link)) {
-                  echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
-                  Html::showSimpleForm($this->getFormURL(),'update', _x('button', 'Use'),array('id' => $this->getID(),
-                                                                                     'url' => $newurl));
-                  echo "<br>";
-               }
+      }
+
+      foreach ($feed->get_all_discovered_feeds() as $f){
+         $newurl  = $f->url;
+         $newfeed = self::getRSSFeed($newurl);
+         if ($newfeed && !$newfeed->error()) {
+            $link = $newfeed->get_permalink();
+            if (!empty($link)) {
+               echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
+               Html::showSimpleForm($this->getFormURL(),'update', _x('button', 'Use'),
+                                    array('id'  => $this->getID(),
+                                          'url' => $newurl));
+               echo "<br>";
             }
          }
       }
 
    }
+
+
    /**
     * Get a specific RSS feed
     *
-    * @param $url string/array : URL of the feed or array of URL
-    * @param $cache_duration timestamp : cache duration
+    * @param $url             string/array   URL of the feed or array of URL
+    * @param $cache_duration  timestamp      cache duration (default DAY_TIMESTAMP)
     *
     * @return feed object
-    **/
+   **/
    static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
-   
+
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);
       $feed->set_cache_duration($cache_duration);
@@ -799,26 +807,24 @@ class RSSFeed extends CommonDBTM {
       $feed->handle_content_type();
       if ($feed->error()) {
          return false;
-      } else {
-         return $feed;
       }
+      return $feed;
    }
-   
+
+
    /**
     * Show list for central view
     *
-    * @param $personal boolean : display rssfeeds created by me ? (true by default)
+    * @param $personal boolean   display rssfeeds created by me ? (true by default)
     *
     * @return Nothing (display function)
     **/
    static function showListForCentral($personal=true) {
       global $DB, $CFG_GLPI;
 
-      $users_id = Session::getLoginUserID();
-      $today    = date('Y-m-d');
-      $now      = date('Y-m-d H:i:s');
-
-      $restrict_visibility = "";
+      $users_id             = Session::getLoginUserID();
+      $today                = date('Y-m-d');
+      $now                  = date('Y-m-d H:i:s');
 
       if ($personal) {
 
@@ -831,7 +837,6 @@ class RSSFeed extends CommonDBTM {
                    FROM `glpi_rssfeeds`
                    WHERE `glpi_rssfeeds`.`users_id` = '$users_id'
                          AND `glpi_rssfeeds`.`is_active` = '1'
-                         $restrict_visibility
                    ORDER BY `glpi_rssfeeds`.`name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.php'>".
@@ -853,7 +858,6 @@ class RSSFeed extends CommonDBTM {
                    FROM `glpi_rssfeeds` ".
                    self::addVisibilityJoins()."
                    WHERE $restrict_user
-                         $restrict_visibility
                          AND ".self::addVisibilityRestrict()."
                    ORDER BY `glpi_rssfeeds`.`name`";
 
@@ -865,10 +869,10 @@ class RSSFeed extends CommonDBTM {
          }
       }
 
-      $result = $DB->query($query);
-      $items = array();
+      $result  = $DB->query($query);
+      $items   = array();
       $rssfeed = new self();
-      if ($nb     = $DB->numrows($result)) {
+      if ($nb = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             if ($rssfeed->getFromDB($data['id'])) {
                // Force fetching feeds
@@ -889,8 +893,8 @@ class RSSFeed extends CommonDBTM {
       if (self::canCreate()) {
          echo "<span class='rssfeed_right'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.form.php'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"". __s('Add')."\">".
-              "</a></span>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
+                __s('Add')."\"></a></span>";
       }
 
       echo "</div></th></tr>\n";
@@ -898,7 +902,6 @@ class RSSFeed extends CommonDBTM {
       if ($nb) {
          usort($items, array('SimplePie', 'sort_items'));
          foreach($items as $item) {
-
             echo "<tr><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
@@ -925,15 +928,14 @@ class RSSFeed extends CommonDBTM {
             }
             echo "</div>";
             Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                                       array('applyto' => "rssitem$rand",
-                                             'display' => true));
+                                                                        array('applyto' => "rssitem$rand",
+                                                                              'display' => true));
             echo "</td></tr>";
          }
       }
       echo "</table>\n";
 
    }
-
 
 
    /**
@@ -949,7 +951,8 @@ class RSSFeed extends CommonDBTM {
 
       $rand = mt_rand();
 
-      $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
+      $nb   = count($this->users) + count($this->groups) + count($this->profiles)
+              + count($this->entities);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -960,7 +963,7 @@ class RSSFeed extends CommonDBTM {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
          echo "<tr><td class='tab_bg_2' width='100px'>";
 
-         $types = array('Entity', 'Group', 'Profile', 'User');
+         $types   = array('Entity', 'Group', 'Profile', 'User');
 
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params  = array('type'  => '__VALUE__',
@@ -980,10 +983,12 @@ class RSSFeed extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
-                           'specific_actions' => array('deletevisibility' => _x('button', 'Delete permanently')) );
+                           'specific_actions' => array('deletevisibility' => _x('button',
+                                                                                'Delete permanently')));
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+            $paramsma['confirm']
+               = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
@@ -1027,17 +1032,17 @@ class RSSFeed extends CommonDBTM {
                }
                echo "<td>".__('Group')."</td>";
 
-               $names    = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
-               $entname = printf(__('%1$s %2$s'), $names["name"],
-                                   Html::showToolTip($names["comment"], array('display' => false)));
+               $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               $entname = sprintf(__('%1$s %2$s'), $names["name"],
+                                  Html::showToolTip($names["comment"], array('display' => false)));
                if ($data['entities_id'] >= 0) {
-                  $entname = sprintf(__('%1$s / %2$s'), $entname,
-                                     Dropdown::getDropdownName('glpi_entities',
+                  $entname .= sprintf(__('%1$s / %2$s'), $entname,
+                                      Dropdown::getDropdownName('glpi_entities',
                                                                $data['entities_id']));
                   if ($data['is_recursive']) {
                      //TRANS: R for Recursive
-                     sprintf(__('%1$s %2$s'), $entname,
-                             "<span class='b'>(".__('R').")</span>");
+                     $entname .= sprintf(__('%1$s %2$s'),
+                                         $entname, "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo "<td>".$entname."</td>";
@@ -1053,7 +1058,8 @@ class RSSFeed extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_RSSFeed][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Entity_RSSFeed][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1061,8 +1067,8 @@ class RSSFeed extends CommonDBTM {
                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['is_recursive']) {
-                  $entname = sprintf(__('%1$s %2$s'), $entname,
-                                     "<span class='b'>(".__('R').")</span>");
+                  $entname .= sprintf(__('%1$s %2$s'), $entname,
+                                      "<span class='b'>(".__('R').")</span>");
                }
                echo "<td>".$entname."</td>";
                echo "<tr>";
@@ -1077,7 +1083,8 @@ class RSSFeed extends CommonDBTM {
                echo "<tr>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Profile_RSSFeed][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Profile_RSSFeed][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
@@ -1086,12 +1093,12 @@ class RSSFeed extends CommonDBTM {
                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $entname);
                if ($data['entities_id'] >= 0) {
-                  $entname = sprintf(__('%1$s / %2$s'), $entname,
-                                     Dropdown::getDropdownName('glpi_entities',
-                                                               $data['entities_id']));
+                  $entname .= sprintf(__('%1$s / %2$s'), $entname,
+                                      Dropdown::getDropdownName('glpi_entities',
+                                                                $data['entities_id']));
                   if ($data['is_recursive']) {
-                     $entname = sprintf(__('%1$s %2$s'), $entname,
-                                        "<span class='b'>(".__('R').")</span>");
+                     $entname .= sprintf(__('%1$s %2$s'), $entname,
+                                         "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo "<td>".$entname."</td>";
@@ -1102,7 +1109,7 @@ class RSSFeed extends CommonDBTM {
 
       echo "</table>";
       if ($canedit && $nb) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $paramsma);
          Html::closeForm();
       }
