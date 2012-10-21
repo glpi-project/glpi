@@ -259,7 +259,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       $item = new static::$itemtype_1();
 
       $no_stat_computation = true;
-      if ($this->input['type']==CommonITILActor::ASSIGN) {
+      if ($this->input['type'] == CommonITILActor::ASSIGN) {
          $no_stat_computation = false;
       }
       $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
@@ -268,7 +268,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       if (!isset($this->input['_from_object'])) {
          if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
             if ($item->fields["status"] == CommonITILObject::INCOMING) {
-               $item->update(array('id' => $item->getID(),
+               $item->update(array('id'     => $item->getID(),
                                    'status' => CommonITILObject::ASSIGNED));
             }
          }

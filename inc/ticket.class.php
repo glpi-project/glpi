@@ -1288,7 +1288,7 @@ class Ticket extends CommonITILObject {
 
          $task = new TicketTask();
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"]  ==self::SOLVED)) {
+         if (isset($this->fields["status"]) && ($this->fields["status"]  == self::SOLVED)) {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
@@ -2537,7 +2537,7 @@ class Ticket extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array(self::INCOMING      => _x('ticket', 'New'),
+      $tab = array(self::INCOMING => _x('ticket', 'New'),
                    self::ASSIGNED => __('Processing (assigned)'),
                    self::PLANNED  => __('Processing (planned)'),
                    self::WAITING  => __('Pending'),

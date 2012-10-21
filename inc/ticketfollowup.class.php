@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -335,7 +335,8 @@ class TicketFollowup  extends CommonDBTM {
          $donotif = false;
       }
 
-      $this->input["_job"]->updateDateMod($this->input["tickets_id"], false, $this->input["users_id"]);
+      $this->input["_job"]->updateDateMod($this->input["tickets_id"], false,
+                                          $this->input["users_id"]);
 
       if (isset($this->input["_close"])
           && $this->input["_close"]
@@ -610,7 +611,7 @@ class TicketFollowup  extends CommonDBTM {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         if (($ticket->fields["status"] != CommonITILObject::SOLVED) 
+         if (($ticket->fields["status"] != CommonITILObject::SOLVED)
              && ($ticket->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div class='center firstbloc'>".
                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";

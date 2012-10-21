@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -39,12 +39,12 @@ if (!defined('GLPI_ROOT')) {
 class Change extends CommonITILObject {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory          = true;
 
    // From CommonITIL
-   public $userlinkclass     = 'Change_User';
-   public $grouplinkclass    = 'Change_Group';
-   public $supplierlinkclass = 'Change_Supplier';
+   public $userlinkclass      = 'Change_User';
+   public $grouplinkclass     = 'Change_Group';
+   public $supplierlinkclass  = 'Change_Supplier';
 
 
    const MATRIX_FIELD         = 'priority_matrix';
@@ -85,7 +85,8 @@ class Change extends CommonITILObject {
                   || (Session::haveRight('show_my_change', 1)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
-                              && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))))));
+                              && $this->haveAGroup(CommonITILActor::ASSIGN,
+                                                   $_SESSION["glpigroups"]))))));
    }
 
 
@@ -116,10 +117,12 @@ class Change extends CommonITILObject {
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
-                              || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])))
+                              || $this->haveAGroup(CommonITILActor::OBSERVER,
+                                                   $_SESSION["glpigroups"])))
                       || ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
-                              && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))))));
+                              && $this->haveAGroup(CommonITILActor::ASSIGN,
+                                                   $_SESSION["glpigroups"]))))));
    }
 
 

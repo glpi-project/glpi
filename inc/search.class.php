@@ -26,7 +26,7 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
- 
+
 /** @file
 * @brief
 */
@@ -4279,7 +4279,7 @@ class Search {
                return $out;
             }
             break;
-            
+
          case "glpi_softwarelicenses.number" :
             if ($data[$NAME.$num."_2"] == -1) {
                return __('Unlimited');
@@ -4386,7 +4386,7 @@ class Search {
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
             $out .= 'id='.$data[$NAME.$num."_2"];
             // Force solution tab if solved
-            if ($data[$NAME.$num."_4"]==CommonITILObject::SOLVED) {
+            if ($data[$NAME.$num."_4"] == CommonITILObject::SOLVED) {
                $out .= "&amp;forcetab=Ticket$2";
             }
             $out .= "\">";
