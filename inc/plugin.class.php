@@ -29,7 +29,7 @@
 
 // Based on cacti plugin system
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -152,12 +152,13 @@ class Plugin extends CommonDBTM {
          $TRANSLATE->addTranslationFile('gettext',
                                         $dir.$CFG_GLPI["languages"][$trytoload][1],
                                         $name, $coretrytoload);
-      
+
 //          $TRANSLATE->addTranslation(array('content' => $dir.$CFG_GLPI["languages"][$trytoload][1],
 //                                           'locale'  => $coretrytoload));
          $translation_included = true;
 
-      } else if (!empty($CFG_GLPI["language"]) && file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
+      } else if (!empty($CFG_GLPI["language"])
+                 && file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
          $TRANSLATE->addTranslationFile('gettext',
                                         $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
                                         $name, $coretrytoload);
