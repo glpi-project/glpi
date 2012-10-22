@@ -221,13 +221,12 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBChild::getHistoryNameForItem
-   **/
-   function getHistoryNameForItem($case) {
-      return addslashes($this->fields['email']);
+   function getName($with_comment=0) {
+
+      if (isset($this->fields['email']) && $this->fields['email']) {
+         return $this->fields['email'];
+      }
+      return NOT_AVAILABLE;
    }
 
 
