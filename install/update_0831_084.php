@@ -2256,8 +2256,7 @@ function update0831to084() {
                                       'after'  => 'reminder_public'));
 
    // add ticket templates
-   $migration->addField('glpi_profiles', 'tickettemplates_id',
-                        'integer');
+   $migration->addField('glpi_profiles', 'tickettemplates_id', 'integer');
 
    // Clean unlinked calendar segments and holidays
    $query = "DELETE

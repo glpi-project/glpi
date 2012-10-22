@@ -3477,15 +3477,16 @@ class Ticket extends CommonITILObject {
       if (!$template_loaded) {
          // load default profile one if not already loaded
          if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
-            && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
+             && $_SESSION['glpiactiveprofile']['tickettemplates_id']) {
             // with type and categ
-            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'], true)) {
+            if ($tt->getFromDBWithDatas($_SESSION['glpiactiveprofile']['tickettemplates_id'],
+                                        true)) {
                $template_loaded = true;
             }
          }
       }
 
-      if (!$template_loaded && $entities_id > 0) {
+      if (!$template_loaded && ($entities_id > 0)) {
          // load default entity one if not already loaded
          if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entities_id)) {
             // with type and categ
@@ -3496,6 +3497,7 @@ class Ticket extends CommonITILObject {
       }
       return $tt;
    }
+
 
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI;
@@ -3565,8 +3567,7 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = $this->getTicketTemplateToUse($options['template_preview'], $values['type'],
-         $values['itilcategories_id'], $values['entities_id']);
-
+                                          $values['itilcategories_id'], $values['entities_id']);
 
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {

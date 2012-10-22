@@ -133,14 +133,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @see CommonDBConnexity::getItemFromArray()
     *
-    * @param $itemtype  the name of the field of the type of the item to get
-    * @param $items_id  the name of the field of the id of the item to get
-    * @param $getFromDB (bool) do we have to load the item from the DB ?
-    * @param $getEmpty  (bool) else : do we have to load an empty item ?
+    * @param $itemtype              the name of the field of the type of the item to get
+    * @param $items_id              the name of the field of the id of the item to get
+    * @param $getFromDB   boolean   do we have to load the item from the DB ? (true by default)
+    * @param $getEmpty    boolean   else : do we have to load an empty item ? (true by default)
     *
     * @result the item or false if we cannot load the item
    **/
-   function getConnexityItem($itemtype, $items_id, $getFromDB = true, $getEmpty = true) {
+   function getConnexityItem($itemtype, $items_id, $getFromDB=true, $getEmpty=true) {
       return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB, $getEmpty);
    }
 

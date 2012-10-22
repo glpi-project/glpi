@@ -75,8 +75,8 @@ function isPluginItemType($classname) {
 /**
  * For translation
  *
- * @param $str : string
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $str      string
+ * @param $domain   string domain used (default is glpi, may be plugin name)
  *
  * @return translated string
 **/
@@ -95,8 +95,8 @@ function __($str, $domain='glpi') {
 /**
  * For translation
  *
- * @param $str    string
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $str      string
+ * @param $domain   string domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
 **/
@@ -110,9 +110,9 @@ function __s($str, $domain='glpi') {
  *
  * @since version 0.84
  *
- * @param $ctx string    context
- * @param $str string   to translate
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $ctx       string    context
+ * @param $str       string   to translate
+ * @param $domain    string domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
 **/
@@ -124,8 +124,8 @@ function _sx($ctx, $str, $domain='glpi') {
 /**
  * to delete echo in translation
  *
- * @param $str : string
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $str      string
+ * @param $domain   string domain used (default is glpi, may be plugin name)
  *
  * @return echo string
 **/
@@ -140,7 +140,7 @@ function _e($str, $domain='glpi') {
  * @param $sing      string in singular
  * @param $plural    string in plural
  * @param $nb               to select singular or plurial
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $domain    string domain used (default is glpi, may be plugin name)
  *
  * @return translated string
 **/
@@ -159,7 +159,7 @@ function _n($sing, $plural, $nb, $domain='glpi') {
  * @param $sing      string in singular
  * @param $plural    string in plural
  * @param $nb               to select singular or plurial
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $domain    string domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
 **/
@@ -173,9 +173,9 @@ function _sn($sing, $plural, $nb, $domain='glpi') {
 /**
  * For context in translation
  *
- * @param $ctx string   context
- * @param $str string   to translate
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $ctx       string   context
+ * @param $str       string   to translate
+ * @param $domain    string domain used (default is glpi, may be plugin name)
  *
  * @return string
 **/
@@ -196,9 +196,9 @@ function _x($ctx, $str, $domain='glpi') {
 /**
  * Echo for context in translation
  *
- * @param $ctx string   context
- * @param $str string   to translated
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $ctx       string   context
+ * @param $str       string   to translated
+ * @param $domain    string domain used (default is glpi, may be plugin name)
  *
  * @return string
 **/
@@ -223,7 +223,7 @@ function _ex($ctx, $str, $domain='glpi') {
  * @param $sing      string   in singular
  * @param $plural    string   in plural
  * @param $nb                 to select singular or plurial
- * @param $domain : string domain used (default is glpi, may be plugin name)
+ * @param $domain    string domain used (default is glpi, may be plugin name)
  *
  * @return string
 **/
