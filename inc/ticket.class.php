@@ -3778,7 +3778,7 @@ class Ticket extends CommonITILObject {
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td>";
-            if ($canupdate) {
+         if ($canupdate) {
             echo "<td class='nopadding b'>".$tt->getBeginHiddenFieldText('slas_id');
             printf(__('%1$s%2$s'), __('SLA'), $tt->getMandatoryMark('slas_id'));
             echo $tt->getEndHiddenFieldText('slas_id')."</td>";
@@ -3790,8 +3790,7 @@ class Ticket extends CommonITILObject {
          }
          echo "</tr></table>";
       }
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       if ($ID) {
          echo "<tr class='tab_bg_1'>";
