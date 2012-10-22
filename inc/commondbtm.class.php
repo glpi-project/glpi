@@ -33,8 +33,8 @@ if (!defined('GLPI_ROOT')) {
 
 
 /** @file
-* @brief 
-*/ 
+* @brief
+*/
 
 /**
 *  Common DataBase Table Manager Class - Persistent Object
@@ -1840,11 +1840,12 @@ class CommonDBTM extends CommonGLPI {
             } else {
                echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
                if (!$this->maybeDeleted()) {
-                  echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\"
+                  echo "<input type='submit' name='delete' value=\""._sx('button',
+                                                                         'Delete permanently')."\"
                          class='submit' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
-                  echo "<input type='submit' name='delete' value='" . _sx('button', 'Put in trash') ."'
+                  echo "<input type='submit' name='delete' value='"._sx('button', 'Put in trash')."'
                          class='submit'>";
                }
             }
@@ -2555,8 +2556,7 @@ class CommonDBTM extends CommonGLPI {
       if (count($toadd)) {
          foreach ($toadd as $data) {
          $comment .= sprintf(__('%1$s: %2$s')."<br>",
-                             "<span class='b'>".$data['name'],
-                             "</span>".$data['value']);
+                             "<span class='b'>".$data['name'], "</span>".$data['value']);
          }
       }
 
@@ -2674,7 +2674,7 @@ class CommonDBTM extends CommonGLPI {
                Dropdown::showAllItems("items_id", 0, 0, 1,
                                     $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete permanently')."'>";
+                              _sx('button', 'Delete permanently')."'>";
             } else {
                Contract::dropdown(array('name' => "contracts_id"));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
@@ -3960,7 +3960,8 @@ class CommonDBTM extends CommonGLPI {
                      if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                         $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
                      }
-                     return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
+                     return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link".
+                            "</a>";
                   }
                   return "&nbsp;";
 

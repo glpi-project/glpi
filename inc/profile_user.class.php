@@ -189,7 +189,8 @@ class Profile_User extends CommonDBRelation {
             }
 
             if ($canshowentity) {
-               echo "<a href='".Toolbox::getItemTypeFormURL('Entity')."?id=".$data["entities_id"]."'>";
+               echo "<a href='".Toolbox::getItemTypeFormURL('Entity')."?id=".
+                      $data["entities_id"]."'>";
             }
             echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
@@ -295,7 +296,8 @@ class Profile_User extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('specific_actions' => array('purge' => _x('button', 'Delete permanently')));
+         $paramsma = array('specific_actions' => array('purge' => _x('button',
+                                                                     'Delete permanently')));
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -819,11 +821,11 @@ class Profile_User extends CommonDBRelation {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),
                                                 "profiles_id = '".$item->getID()."'".
-                                                getEntitiesRestrictRequest('AND',
-                                                                           'glpi_profiles_users',
-                                                                           'entities_id',
-                                                                           $_SESSION['glpiactiveentities'],
-                                                                           true));
+                                                 getEntitiesRestrictRequest('AND',
+                                                                            'glpi_profiles_users',
+                                                                            'entities_id',
+                                                                            $_SESSION['glpiactiveentities'],
+                                                                            true));
                   }
                   return self::createTabEntry(_n('User', 'Users', 2), $nb);
                }

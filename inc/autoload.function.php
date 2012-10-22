@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -76,7 +76,7 @@ function isPluginItemType($classname) {
  * For translation
  *
  * @param $str : string
- * @param $domain : string domain used (default is glpi, may be plugin name) 
+ * @param $domain : string domain used (default is glpi, may be plugin name)
  *
  * @return translated string
 **/
@@ -295,7 +295,7 @@ function glpi_autoload($classname) {
 //             set_include_path(GLPI_ZEND_PATH . PATH_SEPARATOR . get_include_path());
 //          }
 //          require_once("Zend/Loader.php");
-// 
+//
 //          Zend_Loader::loadClass($classname);
 //          return true;
 //       }
@@ -338,31 +338,41 @@ spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 // Use spl autoload to allow stackable autoload.
 spl_autoload_register('glpi_autoload');
 
+
+
+
 /**
  * Autoloader class
  *
+ * @since version 0.84
+ *
  * @package SimplePie
  * @subpackage API
- */
+**/
 class SimplePie_Autoloader {
+
+
    /**
-   * Constructor
-   */
+    * Constructor
+   **/
    public function __construct() {
       $this->path = GLPI_SIMPLEPIE_PATH;
    }
 
+
    /**
-   * Autoloader
-   *
-   * @param string $class The name of the class to attempt to load.
-   */
+    * Autoloader
+    *
+    * @param string $class The name of the class to attempt to load.
+   **/
    public function autoload($class) {
+
       // Only load the class if it starts with "SimplePie"
       if (strpos($class, 'SimplePie') !== 0) {
          return;
       }
-      $filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
+      $filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) .
+                  '.php';
       require_once($filename);
    }
 }

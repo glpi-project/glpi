@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -2119,7 +2119,8 @@ class Rule extends CommonDBTM {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
             $paramsma = array('num_displayed'    => $nb,
                               'specific_actions' => array('update' => _x('button', 'Update'),
-                                                          'purge'  => _x('button', 'Delete permanently'),));
+                                                          'purge'  => _x('button',
+                                                                         'Delete permanently')));
             Html::showMassiveActions(get_called_class(), $paramsma);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";

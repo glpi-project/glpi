@@ -738,7 +738,8 @@ class NetworkName extends FQDNLabel {
       $table_options['rand']                     = $rand;
       $table_options['massiveactionnetworkname'] = $canedit;
       $table                                     = new HTMLTableMain();
-      $column                                    = $table->addHeader('Internet', self::getTypeName(2));
+      $column                                    = $table->addHeader('Internet',
+                                                                     self::getTypeName(2));
       $t_group                                   = $table->createGroup('Main', '');
 
       self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);

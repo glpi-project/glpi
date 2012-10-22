@@ -1261,9 +1261,11 @@ class KnowbaseItem extends CommonDBTM {
                       && isset($options['item_items_id'])) {
                      $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                               "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
-                              "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"" ;
+                              "'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
+                              "w.focus();\"" ;
                   } else {
-                     $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".$data["id"]."\" ";
+                     $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".
+                                    $data["id"]."\" ";
                   }
 
                   echo Search::showItem($output_type,
@@ -1289,8 +1291,9 @@ class KnowbaseItem extends CommonDBTM {
 
                $categ = $data["category"];
                if ($output_type == Search::HTML_OUTPUT) {
-                  $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".$data["knowbaseitemcategories_id"].'&amp;forcetab=Knowbase$2';
-                  $categ = "<a href='$cathref'>".$categ.'</a>';
+                  $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".
+                              $data["knowbaseitemcategories_id"].'&amp;forcetab=Knowbase$2';
+                  $categ   = "<a href='$cathref'>".$categ.'</a>';
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
 
@@ -1301,8 +1304,8 @@ class KnowbaseItem extends CommonDBTM {
 
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['item_itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['item_items_id'].
-                               "&amp;forcetab=".$options['item_itemtype']."$2'>".__('Use as a solution').
-                             "</a>";
+                               "&amp;forcetab=".$options['item_itemtype']."$2'>".
+                               __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 
@@ -1400,8 +1403,8 @@ class KnowbaseItem extends CommonDBTM {
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
-                  $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".Html::resume_text($data["name"],80)."</a></td>".
-                  "</tr>";
+                  $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
+                  Html::resume_text($data["name"],80)."</a></td></tr>";
          }
          echo "</table>";
       }
@@ -1495,7 +1498,8 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div class='center'>";
 
       $rand = mt_rand();
-      $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
+      $nb   = count($this->users) + count($this->groups) + count($this->profiles)
+              + count($this->entities);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -1528,11 +1532,14 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $nb,
-                           'specific_actions' => array('deletevisibility' => _sx('button', 'Delete permanently')) );
+         $paramsma = array('num_displayed'
+                              => $nb,
+                           'specific_actions'
+                              => array('deletevisibility' => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+            $paramsma['confirm']
+               = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
@@ -1554,7 +1561,8 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1571,7 +1579,8 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1602,7 +1611,8 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1628,7 +1638,8 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]' value='1'>";
+                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]'
+                         value='1'>";
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
