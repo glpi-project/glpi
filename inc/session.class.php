@@ -552,15 +552,13 @@ class Session {
       }
 
       $TRANSLATE = null;
-      
+
       if (function_exists('apc_fetch')) { // Try from APC cache
 //          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-         $cache = Zend\Cache\StorageFactory::factory(array(
-            'adapter' => 'apc',
-            'plugins' => array(
-               'exception_handler' => array('throw_exceptions' => false),
-            ),
-         ));
+         $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc',
+                                                           'plugins' => array('exception_handler'
+                                                                               => array('throw_exceptions'
+                                                                                         => false))));
          $TRANSLATE = new Zend\I18n\Translator\Translator;
          $TRANSLATE->setCache($cache);
          $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);

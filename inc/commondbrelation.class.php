@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBRelation extends CommonDBConnexity {
 
-   // Item 1 informations
+   // Item 1 information
    // * definition
    static public $itemtype_1; // Type ref or field name (must start with itemtype)
    static public $items_id_1; // Field name
@@ -53,7 +53,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
    static public $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
 
-   // Item 2 informations
+   // Item 2 information
    // * definition
    static public $itemtype_2; // Type ref or field name (must start with itemtype)
    static public $items_id_2; // Field name
@@ -504,6 +504,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $input
+   **/
    function prepareInputForAdd($input) {
 
       if (!is_array($input)) {
@@ -559,6 +564,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       return parent::prepareInputForUpdate($input);
    }
+
 
    /**
     * Get the history name of first item
