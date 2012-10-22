@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -315,7 +315,8 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\"
+                    class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
@@ -337,7 +338,8 @@ class Netpoint extends CommonDropdown {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
-                              'specific_actions' => array('purge' => _x('button', 'Delete permanently')));
+                              'specific_actions' => array('purge' => _x('button',
+                                                                        'Delete permanently')));
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
 

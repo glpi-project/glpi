@@ -696,7 +696,8 @@ class Reservation extends CommonDBChild {
       $rand_begin = Html::showDateTimeFormItem("resa[begin]", $resa->fields["begin"], -1, false);
       echo "</td></tr>\n";
       $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
-                             /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
+                             /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
+                       *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
 
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
       $rand = Dropdown::showTimeStamp("resa[_duration]",
@@ -752,13 +753,15 @@ class Reservation extends CommonDBChild {
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='top center'>";
-         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
+         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\"
+                class='submit'>";
          if ($resa->fields["group"] > 0) {
             echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".
                   __s('Delete all rehearsals');
          }
          echo "</td><td class='top center'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
+                class='submit'>";
          echo "</td></tr>\n";
       }
       echo "</table>";
