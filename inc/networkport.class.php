@@ -278,7 +278,8 @@ class NetworkPort extends CommonDBChild {
       }
       unset($this->input_for_instantiation);
 
-      if (count($this->input_for_NetworkName) > 0) {
+      if ((count($this->input_for_NetworkName) > 0)
+          && (!isset($_POST['several']))){
          if (!empty($this->input_for_NetworkName['name'])
              || !empty($this->input_for_NetworkName['_ipaddresses'])) {
             $network_name = new NetworkName();
@@ -881,7 +882,9 @@ class NetworkPort extends CommonDBChild {
          unset($instantiation);
       }
 
-      NetworkName::showFormForNetworkPort($this->getID());
+      if (!$options['several']) {
+         NetworkName::showFormForNetworkPort($this->getID());
+      }
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
