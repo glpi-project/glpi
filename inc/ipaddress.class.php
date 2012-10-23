@@ -1108,7 +1108,7 @@ class IPAddress extends CommonDBChild {
          $query = implode('UNION ', $queries);
 
          if (($options['order'] == 'ip')
-             || ($options['order'] == 'itemtype')){
+             || ($options['order'] == 'itemtype')) {
             $query .= " ORDER BY binary_0, binary_1, binary_2, binary_3";
          }
 

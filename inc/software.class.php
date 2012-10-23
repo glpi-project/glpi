@@ -395,7 +395,7 @@ class Software extends CommonDBTM {
                   }
                }
             }
-            if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0){
+            if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0) {
                $res['ok'] += count($ids);
             } else {
                $res['ko'] += count($ids);

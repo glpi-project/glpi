@@ -124,7 +124,7 @@ if (isset($_POST["action"])
       $nbko      = $res['ko'];
       $nbnoright = $res['noright'];
    } else {
-      if ($res){
+      if ($res) {
          $nbok++;
       } else {
          $nbko++;

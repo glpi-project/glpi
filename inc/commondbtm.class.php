@@ -1761,7 +1761,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $value     string   value of the field
     *
    **/
-   function canMassiveAction($action, $field, $value){
+   function canMassiveAction($action, $field, $value) {
       return true;
    }
 
@@ -2858,7 +2858,7 @@ class CommonDBTM extends CommonGLPI {
          case "delete" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'d')){
+                  if ($this->can($key,'d')) {
                      if ($this->delete(array("id" => $key))) {
                         $res['ok']++;
                      } else {
@@ -2874,7 +2874,7 @@ class CommonDBTM extends CommonGLPI {
          case "purge" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'d')){
+                  if ($this->can($key,'d')) {
                      if ($this->delete(array("id" => $key), 1)) {
                         $res['ok']++;
                      } else {
@@ -2890,7 +2890,7 @@ class CommonDBTM extends CommonGLPI {
          case "restore" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'d')){
+                  if ($this->can($key,'d')) {
                      if ($this->restore(array("id" => $key))) {
                         $res['ok']++;
                      } else {
@@ -3680,10 +3680,10 @@ class CommonDBTM extends CommonGLPI {
                                                $_SESSION["glpiname"], $message_text));
                         }
                      }
-                     if($fields['action_refuse']) {
+                     if ($fields['action_refuse']) {
                         $result = false;
                      }
-                     if($fields['action_notify']) {
+                     if ($fields['action_notify']) {
                         $params = array('message'     => Html::clean($message_text),
                                         'action_type' => $add,
                                         'action_user' => getUserName(Session::getLoginUserID()),

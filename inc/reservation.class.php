@@ -779,7 +779,7 @@ class Reservation extends CommonDBChild {
     * @param $end               begin of the initial reservation
     * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
    **/
-   static function computePeriodicities ($begin, $end, $options=array()){
+   static function computePeriodicities ($begin, $end, $options=array()) {
       $toadd = array();
 
       if (isset($options['type']) && isset($options['end'])) {

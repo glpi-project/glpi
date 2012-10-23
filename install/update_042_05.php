@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.42 to 0.5
@@ -1297,7 +1297,7 @@ function date_diff050($from, $to) {
  * @param $type item type
  * @param $ID item ID
 **/
-function updateMaintenanceInfos($table, $type, $ID){
+function updateMaintenanceInfos($table, $type, $ID) {
    global $DB;
 
    $elements = array();

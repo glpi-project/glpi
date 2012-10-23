@@ -29,7 +29,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.71.2 to 0.72
@@ -125,7 +125,7 @@ function update0713to072() {
    $date_fields = array('glpi_infocoms.buy_date',
                         'glpi_infocoms.use_date');
 
-   foreach ($date_fields as $tablefield){
+   foreach ($date_fields as $tablefield) {
       list($table,$field) = explode('.', $tablefield);
       if (FieldExists($table, $field, false)) {
          $query = "ALTER TABLE `$table`
@@ -184,7 +184,7 @@ function update0713to072() {
    }
 
    // Create licenses
-   if (!TableExists("glpi_softwarelicenses")){
+   if (!TableExists("glpi_softwarelicenses")) {
       $query = "CREATE TABLE `glpi_softwarelicenses` (
                   `ID` int(11) NOT NULL auto_increment,
                   `sID` int(11) NOT NULL default '0',
@@ -491,7 +491,7 @@ function update0713to072() {
                             AND `type` = '".SOFTWARE_TYPE."'";
 
             if ($result2=$DB->query($query)) {
-               if ($DB->numrows($result2)==0){
+               if ($DB->numrows($result2) == 0) {
                   $query = "INSERT INTO `glpi_display`
                                    (`type` ,`num` ,`rank` ,
                                     `FK_users`)

@@ -126,12 +126,12 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   function canAdminActors(){
+   function canAdminActors() {
       return false;
    }
 
 
-   function canAssign(){
+   function canAssign() {
       return false;
    }
 

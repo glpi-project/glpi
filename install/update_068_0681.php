@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.68 to 0.68.1
@@ -42,7 +42,7 @@ function update068to0681() {
 
    $tables = array("computers", "monitors", "networking", "peripherals", "phones", "printers");
    foreach ($tables as $tbl) {
-      if (isIndex("glpi_".$tbl, "type")){
+      if (isIndex("glpi_".$tbl, "type")) {
          $query = "ALTER TABLE `glpi_$tbl`
                    DROP INDEX `type`";
          $DB->queryOrDie($query, "0.68.1 drop index type glpi_$tbl");

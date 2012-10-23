@@ -1159,7 +1159,7 @@ class User extends CommonDBTM {
                      // Manage multivaluable fields
                      if (!empty($v[0][$e])) {
                         foreach ($v[0][$e] as $km => $m) {
-                           if(!preg_match('/count/',$km)) {
+                           if (!preg_match('/count/',$km)) {
                               $this->fields["_emails"][] = addslashes($m);
                            }
                         }

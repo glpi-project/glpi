@@ -626,7 +626,8 @@ class DBmysql {
        }
        $DB->free_result($result);
 
-       if (!is_null($migration) && method_exists($migration,'displayMessage') ){
+       if (!is_null($migration)
+           && method_exists($migration,'displayMessage') ) {
           $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
        }
 

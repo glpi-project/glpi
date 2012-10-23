@@ -3469,14 +3469,14 @@ class Search {
             foreach ($joinparams['beforejoin'] as $tab) {
                if (isset($tab['table'])) {
                   $intertable = $tab['table'];
-                  if (isset($tab['linkfield'])){
+                  if (isset($tab['linkfield'])) {
                      $interlinkfield = $tab['linkfield'];
                   } else {
                      $interlinkfield = getForeignKeyFieldForTable($intertable);
                   }
 
                   $interjoinparams = array();
-                  if (isset($tab['joinparams'])){
+                  if (isset($tab['joinparams'])) {
                      $interjoinparams = $tab['joinparams'];
                   }
 //                   echo "BEFORE ";

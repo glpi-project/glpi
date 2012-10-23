@@ -167,7 +167,7 @@ class TicketFollowup  extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType() == 'Ticket') {
-         if (Session::haveRight('observe_ticket','1')){
+         if (Session::haveRight('observe_ticket','1')) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(self::getTypeName(2),
                                            countElementsInTable('glpi_ticketfollowups',

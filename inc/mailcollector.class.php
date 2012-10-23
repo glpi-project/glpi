@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -186,7 +186,7 @@ class MailCollector  extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
 
-      if($item->getType() == __CLASS__) {
+      if ($item->getType() == __CLASS__) {
          $item->showGetMessageForm($item->getID());
       }
       return true;

@@ -1165,7 +1165,7 @@ class Dropdown {
     * @param $value   integer   number of item
     * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)
    **/
-   static function getValueWithUnit($value, $unit){
+   static function getValueWithUnit($value, $unit) {
 
       if (strlen($unit) == 0) {
          return $value;
@@ -1321,7 +1321,7 @@ class Dropdown {
          ksort($values);
       }
 
-      foreach ($values as $i => $val){
+      foreach ($values as $i => $val) {
          if (empty($val)) {
             if ($params['inhours']) {
                $day  = 0;

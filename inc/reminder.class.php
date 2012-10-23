@@ -372,7 +372,7 @@ class Reminder extends CommonDBTM {
                                        $this->fields["end"],
                                        array('Reminder' => array($this->fields['id'])));
       }
-      if (in_array("begin",$this->updates)){
+      if (in_array("begin",$this->updates)) {
          PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
                                                $this->fields["begin"]);
       }

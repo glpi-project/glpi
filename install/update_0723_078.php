@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -5167,7 +5167,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
             $newoptions = array();
 
             foreach ($options as $key => $val) {
-               switch ($key){
+               switch ($key) {
                   case "status" :
                      $newoptions['field'][$num]       = 12;
                      $newoptions['searchtype'][$num]  = 'equals';
@@ -5344,7 +5344,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                   case "tosearch" :
                      if (isset($data['search'])) {
                         $search=trim($data['search']);
-                        if (strlen($search)>0){
+                        if (strlen($search) > 0) {
                            $first=false;
                            if (strstr($data['search'],'name')) {
                               $newoptions['field'][$num]       = 1;
@@ -5470,7 +5470,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $ranking = 1;
 
       // No mailcollector : set a default rule
-      if (countElementsInTable('glpi_mailcollectors')==0){
+      if (countElementsInTable('glpi_mailcollectors') == 0) {
             $query = "INSERT INTO `glpi_rules`
                       VALUES (NULL, -1, 'RuleMailCollector', $ranking, 'Root', '', 'OR', 1, NULL,
                               NULL)";
