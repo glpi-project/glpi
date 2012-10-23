@@ -576,8 +576,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item    CommonDBTM object   the other item (ie. : $item2)
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBRelation is added (to and item)
-    *              - 'update values previous' old values of the CommonDBChild itself
-    *              - 'update values next' next values of the CommonDBChild itself
+    *              - 'update values previous' old values of the CommonDBRelation itself
+    *              - 'update values next' next values of the CommonDBRelation itself
     *              - 'update item previous' transfert : this is removed from the old item
     *              - 'update item next' transfert : this is added to the new item
     *              - 'delete' when this CommonDBRelation is remove (from an item)
@@ -599,8 +599,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item the other item (ie. : $item1)
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBRelation is added (to and item)
-    *              - 'update values previous' old values of the CommonDBChild itself
-    *              - 'update values next' next values of the CommonDBChild itself
+    *              - 'update values previous' old values of the CommonDBRelation itself
+    *              - 'update values next' next values of the CommonDBRelation itself
     *              - 'update item previous' transfert : this is removed from the old item
     *              - 'update item next' transfert : this is added to the new item
     *              - 'delete' when this CommonDBRelation is remove (from an item)
