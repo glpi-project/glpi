@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -110,7 +110,7 @@ class Entity extends CommonTreeDropdown {
    function pre_deleteItem() {
 
       // Security do not delete root entity
-      if ($this->input['id'] == 0){
+      if ($this->input['id'] == 0) {
          return false;
       }
       return true;

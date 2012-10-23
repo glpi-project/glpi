@@ -114,7 +114,7 @@ class NetworkName extends FQDNLabel {
          case 'unaffect' :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'w')){
+                  if ($this->can($key,'w')) {
                      if (NetworkName::unaffectAddressByID($key)) {
                         $res['ok']++;
                      } else {

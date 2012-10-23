@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -196,7 +196,7 @@ class Consumable extends CommonDBTM {
                && !empty($input['give_itemtype'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($this->can($key,'w')){
+                     if ($this->can($key,'w')) {
                         if ($this->out($key, $input['give_itemtype'],$input["give_items_id"])) {
                            $res['ok']++;
                         } else {

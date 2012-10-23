@@ -30,7 +30,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.72.1 to 0.72.2
@@ -201,7 +201,7 @@ function update0721to0722() {
                       'to'    => 16);
 
 
-   foreach ($updates as $data){
+   foreach ($updates as $data) {
       $query = "UPDATE `glpi_display`
                 SET `num` = ".$data['to']."
                 WHERE `num` = ".$data['from']."

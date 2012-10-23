@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -603,7 +603,7 @@ class Group_User extends CommonDBRelation{
                         }
                      } else {
                         if ($this->can(-1,'w',$input2)) {
-                           if ($this->add($input2)){
+                           if ($this->add($input2)) {
                               $res['ok']++;
                            } else {
                               $res['ko']++;

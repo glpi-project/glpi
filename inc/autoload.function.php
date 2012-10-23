@@ -309,7 +309,7 @@ function glpi_autoload($classname) {
    }
 
    // No errors for missing classes due to implementation
-   if (!in_array($item,$CFG_GLPI['missingclasses'])){
+   if (!in_array($item,$CFG_GLPI['missingclasses'])) {
       if (file_exists("$dir$item.class.php")) {
          include_once("$dir$item.class.php");
          if (isset($_SESSION['glpi_use_mode'])

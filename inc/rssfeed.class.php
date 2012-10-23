@@ -762,7 +762,7 @@ class RSSFeed extends CommonDBTM {
          return false;
       }
 
-      foreach ($feed->get_all_discovered_feeds() as $f){
+      foreach ($feed->get_all_discovered_feeds() as $f) {
          $newurl  = $f->url;
          $newfeed = self::getRSSFeed($newurl);
          if ($newfeed && !$newfeed->error()) {

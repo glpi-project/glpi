@@ -41,11 +41,11 @@ if (!defined('GLPI_ROOT')) {
 class TicketValidation  extends CommonDBChild {
 
    // From CommonDBTM
-   public $auto_message_on_action = false;
+   public $auto_message_on_action    = false;
 
    // From CommonDBChild
-   static public $itemtype = 'Ticket';
-   static public $items_id = 'tickets_id';
+   static public $itemtype           = 'Ticket';
+   static public $items_id           = 'tickets_id';
 
    static public $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
    static public $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;

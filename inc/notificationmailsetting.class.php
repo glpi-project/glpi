@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -78,7 +78,7 @@ class NotificationMailSetting extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if($item->getType() == __CLASS__) {
+      if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
                $item->showFormMailServerConfig();

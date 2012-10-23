@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -1075,7 +1075,7 @@ class RuleCollection extends CommonDBTM {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item instanceof RuleCollection){
+      if ($item instanceof RuleCollection) {
          $ong = array();
          if ($item->showInheritedTab()) {
             //TRANS: %s is the entity name

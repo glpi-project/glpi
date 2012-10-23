@@ -3371,7 +3371,7 @@ class Html {
     *
     * @return rand value used if displayes else string
    **/
-   static function showDateTimeField($name, $options = array()){
+   static function showDateTimeField($name, $options = array()) {
       global $CFG_GLPI;
 
       $p['value']      = '';
@@ -4440,7 +4440,7 @@ class Html {
          $link .= ' '.$btoption.' ';
       }
       // Do not force class if already defined
-      if(!strstr($btoption, 'class=')) {
+      if (!strstr($btoption, 'class=')) {
          if (empty($btimage)) {
             $link .= " class='vsubmit' ";
          } else {

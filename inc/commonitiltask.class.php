@@ -197,7 +197,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $CFG_GLPI;
 
 
-      if (in_array("begin",$this->updates)){
+      if (in_array("begin",$this->updates)) {
          PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
                                                $this->fields["begin"]);
       }

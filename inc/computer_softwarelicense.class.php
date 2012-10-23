@@ -122,7 +122,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       switch ($input['action']) {
          case "move_license" :
-            if (isset($input['softwarelicenses_id'])){
+            if (isset($input['softwarelicenses_id'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer

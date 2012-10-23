@@ -30,7 +30,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.71.2 to 0.71.3
@@ -46,7 +46,7 @@ function update0712to0713() {
    // Update to longtext for fields which may be very long
    if (FieldExists("glpi_kbitems", "answer", false)) {
 
-      if (isIndex("glpi_kbitems","fulltext")){ // to avoid pb in altering column answer
+      if (isIndex("glpi_kbitems","fulltext")) { // to avoid pb in altering column answer
          $query = "ALTER TABLE `glpi_kbitems`
                    DROP INDEX `fulltext`";
          $DB->queryOrDie($query, "0.71.3 alter kbitem drop index Fulltext");

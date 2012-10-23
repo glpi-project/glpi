@@ -63,22 +63,22 @@ class Problem extends CommonITILObject {
    }
 
 
-   function canAdminActors(){
+   function canAdminActors() {
       return Session::haveRight('edit_all_problem', '1');
    }
 
 
-   function canAssign(){
+   function canAssign() {
       return Session::haveRight('edit_all_problem', '1');
    }
 
 
-   function canAssignToMe(){
+   function canAssignToMe() {
       return Session::haveRight('edit_all_problem', '1');
    }
 
 
-   function canSolve(){
+   function canSolve() {
 
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               && (Session::haveRight("edit_all_problem","1")

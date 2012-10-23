@@ -28,7 +28,7 @@
 */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -952,7 +952,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $network              = new self();
 
       foreach (self::searchNetworksContainingIP($item) as $networks_id) {
-         if ($network->getFromDB($networks_id)){
+         if ($network->getFromDB($networks_id)) {
 
             if ($createRow) {
                $row = $row->createRow();

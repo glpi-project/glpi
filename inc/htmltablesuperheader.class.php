@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -72,9 +72,9 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
    private static function LCM($first, $second) {
 
       $result = $first * $second;
-      while($first > 1){
+      while ($first > 1) {
          $reste = $first % $second;
-         if ($reste == 0 ){
+         if ($reste == 0 ) {
             $result = $result / $second;
             break;  // leave when LCM is found
          }

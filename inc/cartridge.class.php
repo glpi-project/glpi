@@ -121,7 +121,7 @@ class Cartridge extends CommonDBChild {
          case "uninstall" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'w')){
+                  if ($this->can($key,'w')) {
                      if ($this->uninstall($key)) {
                         $res['ok']++;
                      } else {

@@ -99,12 +99,14 @@ class NetworkPortMigration extends CommonDBChild {
 
 
    function post_purgeItem() {
+
       $this->cleanDatabase();
       parent::post_purgeItem();
    }
 
 
    function post_deleteItem() {
+
       $this->cleanDatabase();
       parent::post_deleteItem();
    }

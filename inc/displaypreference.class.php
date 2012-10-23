@@ -74,7 +74,7 @@ class DisplayPreference extends CommonDBTM {
 
       switch ($input['action']) {
          case "delete_for_user" :
-            if (isset($input['users_id'])){
+            if (isset($input['users_id'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer

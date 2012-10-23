@@ -97,17 +97,17 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function canAdminActors(){
+   function canAdminActors() {
       return Session::haveRight('update_ticket', 1);
    }
 
 
-   function canAssign(){
+   function canAssign() {
       return Session::haveRight('assign_ticket', 1);
    }
 
 
-   function canAssignToMe(){
+   function canAssignToMe() {
 
       return (Session::haveRight("steal_ticket","1")
               || (Session::haveRight("own_ticket","1")
@@ -210,7 +210,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonDBTM::canMassiveAction()
    **/
-   function canMassiveAction($action, $field, $value){
+   function canMassiveAction($action, $field, $value) {
 
       switch ($action) {
          case 'update' :

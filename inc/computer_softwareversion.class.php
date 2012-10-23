@@ -118,7 +118,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       switch ($input['action']) {
          case "move_version" :
-            if (isset($input['softwareversions_id'])){
+            if (isset($input['softwareversions_id'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer
@@ -142,7 +142,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             break;
 
          case "install_licenses" :
-            if (isset($input['computers_id'])){
+            if (isset($input['computers_id'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      $params = array('computers_id'       => $input['computers_id'],
