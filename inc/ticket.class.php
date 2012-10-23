@@ -3425,23 +3425,29 @@ class Ticket extends CommonITILObject {
                     'slas_id'                   => 0,
                     '_add_validation'           => 0,
                     'type'                      => $type);
-
    }
+
+
    /**
-   * Get ticket template to use
-   * Use force_template first, then try on template define for type and category
-   * then use default template of active profile of connected user and then use default entity one
-   * @param $force_template integer tickettemplate_id to used (case of preview for example)
-   * @param $type integer type of the ticket
-   * @param $itilcategories_id integer ticket category
-   *
-   * @since version 0.84
-   *
-   * @return ticket template object
+    * Get ticket template to use
+    * Use force_template first, then try on template define for type and category
+    * then use default template of active profile of connected user and then use default entity one
+    *
+    * @param $force_template      integer tickettemplate_id to used (case of preview for example)
+    *                             (default 0)
+    * @param $type                integer type of the ticket (default 0)
+    * @param $itilcategories_id   integer ticket category (default 0)
+    * @param $entities_id         integer (default -1)
+    *
+    * @since version 0.84
+    *
+    * @return ticket template object
    **/
-   function getTicketTemplateToUse($force_template = 0, $type = 0, $itilcategories_id = 0, $entities_id = -1) {
+   function getTicketTemplateToUse($force_template=0, $type=0, $itilcategories_id=0,
+                                   $entities_id=-1) {
+
       // Load ticket template if available :
-      $tt = new TicketTemplate();
+      $tt              = new TicketTemplate();
       $template_loaded = false;
 
       if ($force_template) {
@@ -3451,7 +3457,10 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (!$template_loaded && $type && $itilcategories_id) {
+      if (!$template_loaded
+          && $type
+          && $itilcategories_id) {
+
          $categ = new ITILCategory();
          if ($categ->getFromDB($itilcategories_id)) {
             $field = '';
@@ -3486,7 +3495,9 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (!$template_loaded && ($entities_id > 0)) {
+      if (!$template_loaded
+          && ($entities_id > 0)) {
+
          // load default entity one if not already loaded
          if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entities_id)) {
             // with type and categ

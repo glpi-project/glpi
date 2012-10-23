@@ -1784,6 +1784,7 @@ class Rule extends CommonDBTM {
                      return '';
                   }
                   return $tmp;
+
                case "dropdown_assign" :
                case "dropdown_users" :
                   return getUserName($value);

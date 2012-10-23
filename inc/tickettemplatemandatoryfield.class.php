@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -161,7 +161,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return $fields;
    }
 
-   
+
    /**
     * Print the mandatory fields
     *
@@ -180,14 +180,15 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
          return false;
       }
-      $canedit = $tt->can($ID, "w");
-      $ttm     = new self();
-      $used    = $ttm->getMandatoryFields($ID);
-      $fields  = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
+      $canedit           = $tt->can($ID, "w");
+      $ttm               = new self();
+      $used              = $ttm->getMandatoryFields($ID);
+      $fields            = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
       $simplified_fields = $tt->getSimplifiedInterfaceFields();
-      $both_interfaces = sprintf('%1$s + %2$s', __('Simplified interface'), __('Standard interface'));
+      $both_interfaces   = sprintf('%1$s + %2$s', __('Simplified interface'), __
+                                   ('Standard interface'));
 
-      $rand    = mt_rand();
+      $rand  = mt_rand();
 
       $query = "SELECT `glpi_tickettemplatemandatoryfields`.*
                 FROM `glpi_tickettemplatemandatoryfields`

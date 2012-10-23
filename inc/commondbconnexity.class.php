@@ -236,6 +236,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
    }
 
 
+   /**
+    * @param $input
+   **/
    function prepareInputForAdd($input) {
 
       // Only CommoDBRelation or CommonDBChild can call this method.
@@ -262,6 +265,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
    }
 
 
+   /**
+    * @param $input
+   **/
    function prepareInputForUpdate($input) {
 
       // Only CommoDBRelation or CommonDBChild can call this method.
@@ -286,6 +292,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       return parent::prepareInputForUpdate($input);
    }
+
 
    /**
     * Factorization of canCreate, canView, canUpate and canDelete. It checks the ability to
