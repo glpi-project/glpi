@@ -1028,7 +1028,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @see CommonDBRelation::getHistoryNameForItem2
    **/
-   function getHistoryNameForItem2(CommonDBTM $item) { // ie. the software
+   function getHistoryNameForItem2(CommonDBTM $item, $case) { // ie. the software
 
       $soft = new Software();
       if ($soft->getFromDB($item->fields['softwares_id'])) {
