@@ -539,6 +539,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       $complete_input = $input;
+      $this->itemToGetEntity = false;
       // True if item changed
       if (parent::prepareInputForUpdateForConnexity($complete_input, array(static::$itemtype_1,
                                                                            static::$items_id_1,
@@ -550,7 +551,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
 
          // Set the item to allow parent::prepareinputforupdate to get the right item ...
-         $this->itemToGetEntity = false;
          if (static::$take_entity_1) {
             $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1,
                                                               static::$items_id_1,
