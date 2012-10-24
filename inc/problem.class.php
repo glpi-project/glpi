@@ -291,7 +291,7 @@ class Problem extends CommonITILObject {
    function post_updateItem($history=1) {
       global $CFG_GLPI, $LANG;
 
-      $donotif = false;
+      $donotif = count($this->updates);
 
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
