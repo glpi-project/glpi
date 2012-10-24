@@ -2226,7 +2226,10 @@ class Search {
                            AS ".$NAME."_$num,
                      GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
                            AS ".$NAME."_".$num."_2, ";
-
+         
+         case "glpi_items_problems.count" :
+            return " COUNT(DISTINCT `glpi_items_problems`.`id`) AS ".$NAME."_".$num.", ";
+            
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
                          AS ".$NAME."_$num, ";
