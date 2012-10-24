@@ -102,7 +102,8 @@ class SoftwareVersion extends CommonDBChild {
          $soft->getFromDB($softwares_id);
          // Create item
          $input = array('entities_id'  => $soft->getEntityID(),
-                        'is_recursive' => $soft->isRecursive());
+                        'is_recursive' => $soft->isRecursive(),
+                        'softwares_id' => $softwares_id);
          $this->check(-1, 'w', $input);
       }
 
