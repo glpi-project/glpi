@@ -37,15 +37,22 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (isset($_GET["itemtype"])) {
-   Session::checkRight("networking", "r");
-   Session::checkRight("internet", "r");
-   NetworkPort::showDislayOptions($_GET["itemtype"]);
-   Html::ajaxFooter();
-} else {
+if (!isset($_GET['itemtype'])) {
    Html::displayErrorAndDie("lost");
 }
+$itemtype = $_GET['itemtype'];
+if (!isset($_GET["sub_itemtype"])) {
+   $_GET["sub_itemtype"] = '';
+}
 
+if ($item = getItemForItemtype($itemtype)) {
+   if (isset($_GET['update']) || isset($_GET['reset'])) {
+      $item->updateDisplayOptions($_GET, $_GET["sub_itemtype"]);
+   }
+   $item->checkGlobal('r');
+   $item->showDislayOptions($_GET["sub_itemtype"]);
+   Html::ajaxFooter();
+}
 
 
 ?>
