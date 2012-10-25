@@ -1007,6 +1007,18 @@ function update0831to084() {
    $migration->addField("glpi_slalevels", 'match',
                         "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
+   // Clean observer as recipent of satisfaction survey
+   $query = "DELETE FROM `glpi_notificationtargets`
+               WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
+                     AND `glpi_notificationtargets`.`items_id` = '".Notification::OBSERVER."'
+                     AND `notifications_id` IN (
+                  SELECT `glpi_notifications`.`id`
+                  FROM `glpi_notifications`
+                  WHERE `glpi_notifications`.`itemtype` = 'Ticket'
+                        AND `glpi_notifications`.`event` = 'satisfaction'
+               )";
+   $DB->queryOrDie($query, "0.84 clean targets for satisfaction notification");
+
    if (!TableExists('glpi_blacklists')) {
       $query = "CREATE TABLE `glpi_blacklists` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
