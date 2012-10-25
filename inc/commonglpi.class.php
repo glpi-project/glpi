@@ -617,6 +617,187 @@ class CommonGLPI {
          }
       }
    }
+   
+   /**
+    * Update $_SESSION to set the display options.
+    *
+    * @since version 0.84
+    *
+    * @param $input     array of data to update
+    * @param $sub_itemtype    string sub itemtype if needed
+    *
+    * @return nothing
+   **/
+   static function updateDisplayOptions($input = array(), $sub_itemtype='') {
 
+      $options = static::getAvailableDisplayOptions();
+      if (count($options)) {      
+         if (empty($sub_itemtype)) {
+            $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+         } else {
+            $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+         }
+         // reset
+         if (isset($input['reset'])) {
+            foreach ($options as $option_group_name => $option_group) {
+               foreach ($option_group as $option_name => $attributs) {
+                  $display_options[$option_name] = $attributs['default'];
+               }
+            }
+         } else {
+            foreach ($options as $option_group_name => $option_group) {
+               foreach ($option_group as $option_name => $attributs) {
+                  if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
+                     $display_options[$option_name] = true;
+                  } else {
+                     $display_options[$option_name] = false;
+                  }
+               }
+            }
+         }
+         // Store new display options for user
+         if ($uid = Session::getLoginUserID()) {
+            $user = new User();
+            if ($user->getFromDB($uid)) {
+               $user->update(array('id' => $uid,
+                                 'display_options' => exportArrayToDB($_SESSION['glpi_display_options'])));
+            }
+         }
+
+         echo "<script type='text/javascript' >\n";
+         echo "window.opener.location.reload();";
+         echo "</script>";
+         
+      }
+   }
+
+   /**
+    * Load display options to $_SESSION
+    *
+    * @since version 0.84
+    *
+    * @param $input     array of data to update
+    * @param $sub_itemtype    string sub itemtype if needed
+    *
+    * @return nothing
+   **/
+   static function getDisplayOptions($sub_itemtype='') {
+
+      if (!isset($_SESSION['glpi_display_options'])) {
+         // Load display_options from user table
+         $_SESSION['glpi_display_options'] = array();
+         if ($uid = Session::getLoginUserID()) {
+            $user = new User();
+            if ($user->getFromDB($uid)) {
+               $_SESSION['glpi_display_options'] = importArrayFromDB($user->fields['display_options']);
+            }
+         }
+      }
+      if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
+         $_SESSION['glpi_display_options'][self::getType()] = array();
+      }
+
+      if (!empty($sub_itemtype)) {
+         if (!isset($_SESSION['glpi_display_options'][self::getType()][$sub_itemtype])) {
+            $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = array();
+         }
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+      } else {
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+      }
+      // Load default values if not set
+      $options = static::getAvailableDisplayOptions();
+      if (count($options)) {
+         foreach ($options as $option_group_name => $option_group) {
+            foreach ($option_group as $option_name => $attributs) {
+               if (!isset($display_options[$option_name])) {
+                  $display_options[$option_name] = $attributs['default'];
+               }
+            }
+         }
+      }
+      return $display_options;
+   }
+
+   /**
+    * @since version 0.84
+    *
+    * @param $sub_itemtype string sub_itemtype if needed
+   **/
+   static function showDislayOptions($sub_itemtype = '') {
+      global $CFG_GLPI;
+
+      $options      = static::getAvailableDisplayOptions($sub_itemtype);
+      if (count($options)) {
+         if (empty($sub_itemtype)) {
+            $display_options = $_SESSION['glpi_display_options'][self::getType()];
+         } else {
+            $display_options = $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+         }
+         echo "<div class='center'>";
+         echo "\n<form method='get' action='".$CFG_GLPI['root_doc']."/front/popup.php'>\n";
+         echo "<input type='hidden' name='itemtype' value='NetworkPort'>\n";
+         echo "<input type='hidden' name='sub_itemtype' value='$sub_itemtype'>\n";
+         echo "<table class='tab_cadre'>";
+         echo "<tr><th colspan='2'>".__s('Display options')."</th></tr>\n";
+         echo "<tr><td colspan='2'>";
+         echo "<input type='submit' class='submit' name='reset' value=\"".__('Reset display options')."\">";
+         echo "</td></tr>\n";
+
+         foreach ($options as $option_group_name => $option_group) {
+            if (count($option_group) > 0) {
+               echo "<tr><th colspan='2'>$option_group_name</th></tr>\n";
+               foreach ($option_group as $option_name => $attributs) {
+                  echo "<tr>";
+                  echo "<td>";
+                  echo "<input type='checkbox' name='$option_name' ".
+                        ($display_options[$option_name]?'checked':'').">";
+                  echo "</td>";
+                  echo "<td>".$attributs['name']."</td>";
+                  echo "</tr>\n";
+               }
+            }
+         }
+         echo "<tr><td colspan='2' class='center'>";
+         echo "<input type='submit' class='submit' name='update' value=\""._sx('button','Save')."\">";
+         echo "</td></tr>\n";
+         echo "</table>";
+         echo "</form>";
+
+         echo "</div>";
+      }
+   }
+   
+   /**
+    * Get available display options array
+    *
+    * @since version 0.84
+    *
+    * @return all the options
+   **/
+   static function getAvailableDisplayOptions() {
+
+      return array();
+   }
+   /**
+    * Get link for display options
+    *
+    * @since version 0.84
+    * @param $sub_itemtype string sub itemtype if needed for display options
+    * @return link
+   **/
+   static function getDisplayOptionsLink($sub_itemtype = '') {
+      global $CFG_GLPI;
+      
+      $link ="<img alt=\"".__s('Display options')."\" title=\"";
+      $link .= __s('Display options')."\" src='";
+      $link .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+      $link .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
+      $link .= "/front/popup.php?popup=display_options&amp;itemtype=".static::getType()."&amp;";
+      $link .= "sub_itemtype=$sub_itemtype' ,'glpipopup', 'height=500, width=600, top=100,";
+      $link .= "left=100, scrollbars=yes'); w.focus();\">";
+
+      return $link;
+   }
 }
 ?>
