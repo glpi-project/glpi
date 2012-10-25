@@ -1826,7 +1826,6 @@ class Ticket extends CommonITILObject {
       $tab[1]['name']               =  __('Title');
       $tab[1]['searchtype']         = 'contains';
       $tab[1]['datatype']           = 'itemlink';
-      $tab[1]['forcegroupby']       = true;
       $tab[1]['massiveaction']      = false;
 
       $tab[21]['table']             = $this->getTable();

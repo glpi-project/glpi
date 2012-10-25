@@ -778,7 +778,6 @@ class TicketValidation  extends CommonDBChild {
       $tab[1]['field']           = 'comment_submission';
       $tab[1]['name']            = __('Request comments');
       $tab[1]['datatype']        = 'text';
-      $tab[1]['forcegroupby']    = true;
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'comment_validation';
