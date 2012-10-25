@@ -115,7 +115,11 @@ class NotificationTarget extends CommonDBChild {
       asort($this->notification_targets);
    }
 
-
+   // Temproray hack for this class
+   static function getTable() {
+      return 'glpi_notificationtargets';
+   }
+   
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
