@@ -2341,6 +2341,8 @@ class Search {
          case "glpi_ticketfollowups.count" :
          case "glpi_tickettasks.count" :
          case "glpi_tickets_tickets.count" :
+         case "glpi_items_problems.count" :
+         case "glpi_problems_tickets.count" :
             return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
@@ -2364,9 +2366,6 @@ class Search {
                                  AS ".$NAME."_".$num."_2,
                      $ADDITONALFIELDS";
          
-         case "glpi_items_problems.count" :
-            return " COUNT(DISTINCT `glpi_items_problems`.`id`) AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
                                   AS ".$NAME."_$num, ";

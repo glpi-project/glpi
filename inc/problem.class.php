@@ -606,7 +606,18 @@ class Problem extends CommonITILObject {
       $tab[24]['massiveaction'] = false;
 
       $tab += $this->getSearchOptionsStats();
+      
+      $tab['ticket']           = Ticket::getTypeName(2);
 
+      $tab[141]['table']         = 'glpi_problems_tickets';
+      $tab[141]['field']         = 'count';
+      $tab[141]['name']          = __('Number of tickets');
+      $tab[141]['forcegroupby']  = true;
+      $tab[141]['usehaving']     = true;
+      $tab[141]['datatype']      = 'number';
+      $tab[141]['massiveaction'] = false;
+      $tab[141]['joinparams']    = array('jointype' => 'child');
+      
       return $tab;
    }
 

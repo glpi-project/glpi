@@ -2355,6 +2355,18 @@ class Ticket extends CommonITILObject {
          $tab[44]['forcegroupby']   = true;
          $tab[44]['massiveaction']  = false;
          $tab[44]['joinparams']     = array('jointype'  => 'child');
+         
+         $tab['problem']           = Problem::getTypeName(2);
+
+         $tab[141]['table']         = 'glpi_problems_tickets';
+         $tab[141]['field']         = 'count';
+         $tab[141]['name']          = __('Number of problems');
+         $tab[141]['forcegroupby']  = true;
+         $tab[141]['usehaving']     = true;
+         $tab[141]['datatype']      = 'number';
+         $tab[141]['massiveaction'] = false;
+         $tab[141]['joinparams']    = array('jointype' => 'child');
+
       }
 
       // Filter search fields for helpdesk
