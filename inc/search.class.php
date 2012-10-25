@@ -4554,10 +4554,16 @@ class Search {
             case "email" :
                $split = explode('$$$$', $data[$NAME.$num]);
                $out   = '';
+               $count_display = 0;
                foreach ($split as $val) {
+                  $split2 = self::explodeWithID("$$", $val);
+                  if ($count_display) {
+                     $out .= "<br>";
+                  }
+                  $count_display++;
                   if (!empty($val)) {
                      $out .= (empty($out)?'':'<br>');
-                     $out .= "<a href='mailto:$val'>$val</a>";
+                     $out .= "<a href='mailto:$split2[0]'>$split2[0]</a>";
                   }
                }
                return (empty($out) ? "&nbsp;" : $out);
