@@ -959,6 +959,8 @@ function update0831to084() {
    $migration->addField("glpi_users", 'duedatewarning_unit', "string");
    $migration->addField("glpi_users", 'duedatecritical_unit', "string");
 
+   $migration->addField("glpi_users", 'display_options', "text");
+
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 
