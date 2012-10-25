@@ -66,10 +66,9 @@ abstract class CommonITILActor extends CommonDBRelation {
     *
     * @param $input  array of data to be added
     *
-    * @see CommonDBRelation::mustRelation2Exists()
+    * @see CommonDBRelation::isAttach2Valid()
    **/
-   function mustRelation2Exists(Array &$input) {
-
+   function isAttach2Valid(Array &$input) {
       // Anonymous user (only email) as requester or observer
       if (isset($input['users_id'])
           && ($input['users_id'] == 0)
@@ -77,9 +76,9 @@ abstract class CommonITILActor extends CommonDBRelation {
           && !empty($input['alternative_email'])
           && isset($input['type'])
           && ($input['type'] != CommonITILActor::ASSIGN)) {
-         return false;
+         return true;
       }
-      return true;
+      return false;
    }
 
 

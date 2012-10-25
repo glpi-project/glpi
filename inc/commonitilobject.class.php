@@ -547,7 +547,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
                         $input['_itil_requester']['alternative_email'] = '';
                         Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
-                     }
+                     }                  
+
                      if ((isset($input['_itil_requester']['alternative_email'])
                           && $input['_itil_requester']['alternative_email'])
                          || ($input['_itil_requester']['users_id'] > 0)) {
