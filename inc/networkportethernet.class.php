@@ -82,7 +82,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    static function getInstantiationNetworkPortDisplayOptions() {
 
-      return array('ethernet_opposite' => array('name'    => __('the opposite link'),
+      return array('ethernet_opposite' => array('name'    => __('Opposite link'),
                                                 'default' => false));
    }
 

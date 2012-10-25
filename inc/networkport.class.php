@@ -489,7 +489,7 @@ class NetworkPort extends CommonDBChild {
    }
 
    /**
-    * @since v ersion 0.84
+    * @since version 0.84
     *
     * @param $sub_itemtype string sub_itemtype if needed
    **/
@@ -518,7 +518,7 @@ class NetworkPort extends CommonDBChild {
             echo "<tr><th colspan='2'>$option_group_name</th></tr>\n";
             foreach ($option_group as $option_name => $attributs) {
                echo "<tr>";
-               echo "<td>".$display_options[$option_name];
+               echo "<td>";
                echo "<input type='checkbox' name='$option_name' ".
                      ($display_options[$option_name]?'checked':'').">";
                echo "</td>";
