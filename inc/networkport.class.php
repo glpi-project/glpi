@@ -445,6 +445,15 @@ class NetworkPort extends CommonDBChild {
             }
          }
       }
+      // Store new display options for user
+      if ($uid = Session::getLoginUserID()) {
+         $user = new User();
+         if ($user->getFromDB($uid)) {
+            $user->update(array('id' => $uid,
+                                'display_options' => exportArrayToDB($_SESSION['glpi_display_options'])));
+         }
+      }
+
       echo "<script type='text/javascript' >\n";
       echo "window.opener.location.reload();";
       echo "</script>";
@@ -461,8 +470,16 @@ class NetworkPort extends CommonDBChild {
     * @return nothing
    **/
    static function getDisplayOptions($sub_itemtype='') {
+   
       if (!isset($_SESSION['glpi_display_options'])) {
+         // Load display_options from user table
          $_SESSION['glpi_display_options'] = array();
+         if ($uid = Session::getLoginUserID()) {
+            $user = new User();
+            if ($user->getFromDB($uid)) {
+               $_SESSION['glpi_display_options'] = importArrayFromDB($user->fields['display_options']);
+            }
+         }
       }
       if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
          $_SESSION['glpi_display_options'][self::getType()] = array();

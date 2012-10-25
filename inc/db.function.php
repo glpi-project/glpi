@@ -1481,7 +1481,7 @@ function importArrayFromDB($DATA) {
 
    $TAB = json_decode($DATA,true);
 
-   // Use olf scheme to decode
+   // Use old scheme to decode
    if (!is_array($TAB)) {
       $TAB = array();
 
