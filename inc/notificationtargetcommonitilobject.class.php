@@ -582,14 +582,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.description##"]  = $item->getField('content');
 
       $datas["##$objettype.id##"]           = sprintf("%07d", $item->getField("id"));
-      $datas["##$objettype.url##"]          = urldecode($CFG_GLPI["url_base"].
-                                                        "/index.php?redirect=".$objettype."_".
-                                                        $item->getField("id"));
+      $datas["##$objettype.url##"]          = $this->formatURL($options['additionnaloption']['usertype'],
+                                                $objettype."_".$item->getField("id"));
 
-      $datas["##$objettype.urlapprove##"]   = urldecode($CFG_GLPI["url_base"].
-                                                        "/index.php?redirect=".$objettype."_".
-                                                        $item->getField("id")."_".
+
+      $datas["##$objettype.urlapprove##"]   = $this->formatURL($options['additionnaloption']['usertype'],
+                                                $objettype."_".$item->getField("id")."_".
                                                         $item->getType().'$2');
+
 
       $entity = new Entity();
       if ($entity->getFromDB($this->getEntity())) {

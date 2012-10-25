@@ -75,11 +75,14 @@ class NotificationTarget extends CommonDBChild {
    var $options                     = array();
    var $raiseevent                  = '';
 
-   const NO_OPTION                  = 0;
    const TAG_LANGUAGE               = 'lang';
    const TAG_VALUE                  = 'tag';
    const TAG_FOR_ALL_EVENTS         = 0;
 
+
+   const ANONYMOUS_USER             = 0;
+   const GLPI_USER                  = 1;
+   const EXTERNAL_USER              = 2;
 
    /**
     * @param $entity          (default '')
@@ -440,10 +443,10 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $data
     *
-    * @return NO_OPTION
+    * @return empty array
    **/
    function addAdditionnalUserInfo(array $data) {
-      return self::NO_OPTION;
+      return array();
    }
 
 
@@ -463,6 +466,10 @@ class NotificationTarget extends CommonDBChild {
 
       $new_mail = trim(Toolbox::strtolower($data['email']));
       $new_lang = '';
+      // Default USER TYPE is ANONYMOUS
+      $notificationoption = array('usertype' => self::ANONYMOUS_USER);
+
+
       if (isset($data['language'])) {
          $new_lang = trim($data['language']);
       }
@@ -490,8 +497,23 @@ class NotificationTarget extends CommonDBChild {
             $username = formatUserName(0, $user->getField('name'), $user->getField('realname'),
                                        $user->getField('firstname'), 0, 0, true);
          }
+         // It is a GLPI user :
+         $notificationoption['usertype'] = self::GLPI_USER;
+         if (Auth::isAlternateAuth($user->fields['authtype'])
+            || ($user->fields['authtype'] == Auth::NOT_YET_AUTHENTIFIED
+               && Auth::isAlternateAuth(Auth::checkAlternateAuthSystems()) 
+               )) {
+            $notificationoption['usertype'] = self::EXTERNAL_USER;
+         }
       }
-      $notificationoption = $this->addAdditionnalUserInfo($data);
+      
+      // Pass user type as argument ? forced for specific cases
+      if (isset($data['usertype'])) {
+         $notificationoption['usertype'] = $data['usertype'];
+      }
+      
+      $notificationoption = array_merge($this->addAdditionnalUserInfo($data),
+                                       $notificationoption);
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail)
              && !isset($this->target[$new_mail])) {
@@ -504,11 +526,39 @@ class NotificationTarget extends CommonDBChild {
             if (isset($data['users_id']) && $data['users_id']) {
                $param['users_id'] = $data['users_id'];
             }
+
             $this->target[$new_mail] = $param;
          }
       }
    }
 
+   function getDefaultUserType() {
+      if (Auth::isAlternateAuth(Auth::checkAlternateAuthSystems())) {
+         return self::EXTERNAL_USER;
+      } else {
+         return self::GLPI_USER;
+      }
+   }
+   
+   function formatURL($usertype, $redirect) {
+      global $CFG_GLPI;
+      switch ($usertype) {
+         case self::EXTERNAL_USER :
+            return urldecode($CFG_GLPI["url_base"].
+                       "/index.php?redirect=$redirect");
+            break;
+            
+         case self::ANONYMOUS_USER :
+            // No URL
+            return '';
+            break;
+            
+         case self::GLPI_USER :
+            return urldecode($CFG_GLPI["url_base"].
+                       "/index.php?redirect=$redirect&noAUTO=1");
+            break;
+      }
+   }
 
    /**
     * Get GLPI's global administrator email
@@ -518,7 +568,8 @@ class NotificationTarget extends CommonDBChild {
 
       $this->addToAddressesList(array("email"    => $CFG_GLPI["admin_email"],
                                       "name"     => $CFG_GLPI["admin_email_name"],
-                                      "language" => $CFG_GLPI["language"]));
+                                      "language" => $CFG_GLPI["language"],
+                                      'usertype' => self::getDefaultUserType()));
    }
 
 
@@ -546,6 +597,7 @@ class NotificationTarget extends CommonDBChild {
          $data['language'] = $CFG_GLPI['language'];
          $data['email']    = $row['admin_email'];
          $data['name']     = $row['admin_email_name'];
+         $data['usertype'] = self::getDefaultUserType();
          $this->addToAddressesList($data);
       }
    }
@@ -581,7 +633,7 @@ class NotificationTarget extends CommonDBChild {
 
    function getDistinctUserSql() {
 
-      return  "SELECT DISTINCT `glpi_users`.id AS users_id,
+      return  "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                `glpi_users`.`language` AS language";
    }
 

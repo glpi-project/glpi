@@ -62,11 +62,16 @@ class NotificationTargetUser extends NotificationTarget {
          case Notification::USER_TYPE :
             switch ($data['items_id']) {
                case Notification::USER :
+                  $usertype = self::GLPI_USER;
+                  if ($this->obj->fields['authtype'] != Auth::DB_GLPI) {
+                     $usertype = self::EXTERNAL_USER;
+                  }
                   // Send to user without any check on profile / entity
                   // Do not set users_id
                   $data = array('name'     => $this->obj->getName(),
                                 'email'    => $this->obj->getDefaultEmail(),
-                                'language' => $this->obj->getField('language'));
+                                'language' => $this->obj->getField('language'),
+                                'usertype' => $usertype);
                   $this->addToAddressesList($data);
          }
       }
