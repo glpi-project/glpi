@@ -467,7 +467,7 @@ class Auth {
 
             //if LDAP enabled too, get user's infos from LDAP
             if (Toolbox::canUseLdap()) {
-               $ldaservers = array();
+               $ldapservers = array();
                //User has already authenticate, at least once : it's ldap server if filled
                if (isset($this->user->fields["auths_id"])
                    && ($this->user->fields["auths_id"] > 0)) {

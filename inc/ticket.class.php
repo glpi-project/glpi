@@ -605,7 +605,6 @@ class Ticket extends CommonITILObject {
           && !isset($input['priority'])) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
-
       // Security checks
       if (!Session::isCron()
           && !Session::haveRight("assign_ticket","1")) {

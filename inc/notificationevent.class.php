@@ -123,7 +123,7 @@ class NotificationEvent extends CommonDBTM {
                   as $data) {
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id = '.$data['id']);
-
+   
             $notificationtarget->clearAddressesList();
 
             //Process more infos (for example for tickets)
@@ -143,10 +143,9 @@ class NotificationEvent extends CommonDBTM {
                // Not cron see my pref
                $notify_me = $_SESSION['glpinotification_to_myself'];
             }
-
+            
             //Foreach notification targets
             foreach ($targets as $target) {
-
                //Get all users affected by this notification
                $notificationtarget->getAddressesByTarget($target,$options);
 
@@ -161,13 +160,11 @@ class NotificationEvent extends CommonDBTM {
                            unset($email_notprocessed[$users_infos['language']]
                                                     [$users_infos['email']]);
                         }
-
-                        if ($template->getTemplateByLanguage($notificationtarget, $users_infos,
+                        if ($tid = $template->getTemplateByLanguage($notificationtarget, $users_infos,
                                                              $event, $options)) {
-
                            //Send notification to the user
                            if ($label == '') {
-                              Notification::send($template->getDataToSend($notificationtarget,
+                              Notification::send($template->getDataToSend($notificationtarget, $tid,
                                                                           $users_infos, $options));
                            } else {
                               $notificationtarget->getFromDB($target['id']);

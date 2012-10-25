@@ -77,7 +77,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       // Private object and no right to see private items : do not send
       if ($this->isPrivate()
-          && ($infos['additionnaloption'] == 0)) {
+          && (!isset($infos['additionnaloption']['show_private'])
+               || !$infos['additionnaloption']['show_private'])) {
          return false;
       }
       return true;
@@ -143,8 +144,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       global $DB;
 
       if (!isset($data['id'])) {
-         return 0;
+         return array('show_private' => 0);
       }
+      
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_profiles_users`
                 WHERE `users_id`='".$data['id']."' ".
@@ -154,9 +156,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $result = $DB->query($query);
 
       if ($DB->result($result,0,'cpt')) {
-         return 1;
+         return array('show_private' => 1);
       }
-      return 0;
+      return array('show_private' => 0);
    }
 
 
@@ -230,10 +232,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas["##ticket.costmaterial"]      = $item->getField('cost_material');
       $datas["##ticket.costtime"]          = $item->getField('cost_time');
 
-      $datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
-                                                       "/index.php?redirect=ticket_".
-                                                       $item->getField("id")."_TicketValidation$1");
 
+      $datas['##ticket.urlvalidation##']   = $this->formatURL($options['additionnaloption']['usertype'],
+                                                "ticket_".$item->getField("id")."_TicketValidation$1");
       $datas['##ticket.globalvalidation##']
                                  = TicketValidation::getStatus($item->getField('global_validation'));
       $datas['##ticket.type##']  = Ticket::getTicketTypeName($item->getField('type'));
@@ -353,8 +354,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   $tmp                          = array();
                   $tmp['##linkedticket.id##']   = $data['tickets_id'];
                   $tmp['##linkedticket.link##'] = Ticket_Ticket::getLinkName($data['link']);
-                  $tmp['##linkedticket.url##']  = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                            "?redirect=ticket_".$data['tickets_id']);
+                  $tmp['##linkedticket.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                                   "ticket_".$data['tickets_id']);
 
 
                   $tmp['##linkedticket.title##']   = $linkedticket->getField('name');
@@ -378,8 +379,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   $tmp['##problem.id##']     = $data['problems_id'];
                   $tmp['##problem.date##']   = $problem->getField('date');
                   $tmp['##problem.title##']  = $problem->getField('name');
-                  $tmp['##problem.url##']    = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                         "?redirect=problem_".$data['problems_id']);
+                  $tmp['##problem.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                                "problem_".$data['problems_id']);
                   $tmp['##problem.content##'] = $problem->getField('content');
 
                   $datas['problems'][] = $tmp;
@@ -390,7 +391,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.numberofproblems##'] = count($datas['problems']);
 
          $restrict = "`tickets_id`='".$item->getField('id')."'";
-         if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
+         if (!isset($options['additionnaloption']['show_private'])
+            || !$options['additionnaloption']['show_private']) {
             $restrict .= " AND `is_private` = '0'";
          }
          $restrict .= " ORDER BY `date` DESC, `id` ASC";
@@ -498,8 +500,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             // internal inquest
             if ($inquest->fields['type'] == 1) {
                $datas['##ticket.urlsatisfaction##']
-                           = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                                       $item->getField("id").'_Ticket$3');
+                           = $this->formatURL($options['additionnaloption']['usertype'],
+                                              "ticket_".$item->getField("id").'_Ticket$3');
             // external inquest
             } else if ($inquest->fields['type'] == 2) {
                $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);

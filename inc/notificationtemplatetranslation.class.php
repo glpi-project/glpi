@@ -476,10 +476,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
          $template->resetComputedTemplates();
          $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
+         if ($tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
 
-         if ($template->getTemplateByLanguage($target, $infos, $event, $options)) {
-
-            $data = $template->templates_by_languages[NotificationTarget::NO_OPTION][$_SESSION['glpilanguage']];
+            $data = $template->templates_by_languages[$tid];
 
             echo "<tr><th colspan='2'>".__('Subject')."</th></tr>";
             echo "<tr class='tab_bg_2 b'><td colspan='2'>".$data['subject']."</td></tr>";
