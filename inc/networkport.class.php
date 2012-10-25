@@ -375,31 +375,19 @@ class NetworkPort extends CommonDBChild {
    function resetConnections($ID) {
    }
 
-
    /**
-    * Update $_SESSION to set the display options of NetworkPort. If the $_GET variable is not
-    * defined, then, set it to default value.
+    * Get available display options array
     *
     * @since version 0.84
     *
-    * Is called by the popup to get the links to update and by the showForItem to set initial
-    * values, if neccesary
-    *
-    * @param $itemtype     string    the type of the item we wan't to set the display options
-    * @param $setLinks     boolean   do we update the options to add the link ?
-    * @param $link_options string    the fields to add to the link (for instance, itemtype and so on)
-    *                                (default '')
-    *
-    * @return all the options + the links if ($setLinks == true)
+    * @return all the options
    **/
-   static function updateAndGetDisplayOptions($itemtype, $setLinks, $link_options='') {
-
-      $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
+   static function getAvailableDisplayOptions() {
 
       $options[__('Global displays')]
-         =  array('characteristics' => array('name'    => __('characteristics'),
+         =  array('characteristics' => array('name'    => __('Characteristics'),
                                              'default' => true),
-                  'internet'        => array('name'    => __('internet information'),
+                  'internet'        => array('name'    => __('Internet information'),
                                              'default' => true));
       $options[__('Common options')]
          = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
@@ -417,54 +405,134 @@ class NetworkPort extends CommonDBChild {
          $portTypeName           = $portType::getTypeName(0);
          $options[$portTypeName] = $portType::getInstantiationNetworkPortDisplayOptions();
       }
+      return $options;
+   }
+   
+   /**
+    * Update $_SESSION to set the display options of NetworkPort.
+    *
+    * @since version 0.84
+    *
+    * @param $input     array of data to update
+    * @param $sub_itemtype    string sub itemtype if needed
+    *
+    * @return nothing 
+   **/
+   static function updateDisplayOptions($input = array(), $sub_itemtype='') {
 
-      foreach ($options as $option_group_name => $option_group) {
-         foreach ($option_group as $option_name => $attributs) {
-            if (isset($_GET['display_'.$option_name])) {
-               $display_options[$option_name] = ($_GET['display_'.$option_name] == 'true');
-            } else if (!isset($display_options[$option_name])) {
+      if (empty($sub_itemtype)) {
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+      } else {
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+      }
+
+      $options = self::getAvailableDisplayOptions();
+      // reset
+      if (isset($input['reset'])) {
+         foreach ($options as $option_group_name => $option_group) {
+            foreach ($option_group as $option_name => $attributs) {
                $display_options[$option_name] = $attributs['default'];
             }
-
-            if ($setLinks) {
-               $optionLink = "<a href='".$_SERVER["PHP_SELF"]."?display_".$option_name.'=';
-               if ($display_options[$option_name]) {
-                  $optionLink .= 'false';
-                  $content     = sprintf(__('Hide %s'), $attributs['name']);
+         }
+      } else {
+         foreach ($options as $option_group_name => $option_group) {
+            foreach ($option_group as $option_name => $attributs) {
+               if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
+                  $display_options[$option_name] = true;
                } else {
-                  $optionLink .= 'true';
-                  $content     = sprintf(__('Show %s'), $attributs['name']);
+                  $display_options[$option_name] = false;
                }
-               $optionLink .= "&amp;$link_options'>$content</a>";
-
-               $options[$option_group_name][$option_name]['link'] = $optionLink;
             }
          }
       }
-
-      return $options;
+      echo "<script type='text/javascript' >\n";
+      echo "window.opener.location.reload();";
+      echo "</script>";
+      }
+   
+   /**
+    * Load display options to $_SESSION
+    *
+    * @since version 0.84
+    *
+    * @param $input     array of data to update
+    * @param $sub_itemtype    string sub itemtype if needed
+    *
+    * @return nothing
+   **/
+   static function getDisplayOptions($sub_itemtype='') {
+      if (!isset($_SESSION['glpi_display_options'])) {
+         $_SESSION['glpi_display_options'] = array();
+      }
+      if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
+         $_SESSION['glpi_display_options'][self::getType()] = array();
+      }
+   
+      if (!empty($sub_itemtype)) {
+         if (!isset($_SESSION['glpi_display_options'][self::getType()][$sub_itemtype])) {
+            $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = array();
+         }
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+      } else {
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+      }
+      // Load default values if not set
+      $options = self::getAvailableDisplayOptions();
+      foreach ($options as $option_group_name => $option_group) {
+         foreach ($option_group as $option_name => $attributs) {
+            if (!isset($display_options[$option_name])) {
+               $display_options[$option_name] = $attributs['default'];
+            }
+         }
+      }
+      return $display_options;
    }
-
 
    /**
     * @since v ersion 0.84
     *
-    * @param $itemtype
+    * @param $sub_itemtype string sub_itemtype if needed
    **/
-   static function showDislayOptions($itemtype) {
+   static function showDislayOptions($sub_itemtype = '') {
+      global $CFG_GLPI;
 
-      if (isset($_GET['reset'])) {
-         $_GET['glpi_NetworkPort_display_options'][$itemtype] = array();
+      $options      = self::getAvailableDisplayOptions($sub_itemtype);
+
+      if (empty($sub_itemtype)) {
+         $display_options = $_SESSION['glpi_display_options'][self::getType()];
+      } else {
+         $display_options = $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
       }
-
-      $link_options = "itemtype=$itemtype&amp;popup=networkport_display_options&amp;update_origin";
-      $options      = self::updateAndGetDisplayOptions($itemtype, true, $link_options);
-
-      if (isset($_GET['update_origin'])) {
-         Ajax::refreshPopupTab();
-      }
-
       echo "<div class='center'>";
+      echo "\n<form method='get' action='".$CFG_GLPI['root_doc']."/front/popup.php'>\n";
+      echo "<input type='hidden' name='itemtype' value='NetworkPort'>\n";
+      echo "<input type='hidden' name='sub_itemtype' value='$sub_itemtype'>\n";
+      echo "<table class='tab_cadre'>";
+      echo "<tr><th colspan='2'>".__s('Network ports display options')."</th></tr>\n";
+      echo "<tr><td colspan='2'>";
+      echo "<input type='submit' class='submit' name='reset' value=\"".__('Reset display options')."\">";
+      echo "</td></tr>\n";
+
+      foreach ($options as $option_group_name => $option_group) {
+         if (count($option_group) > 0) {
+            echo "<tr><th colspan='2'>$option_group_name</th></tr>\n";
+            foreach ($option_group as $option_name => $attributs) {
+               echo "<tr>";
+               echo "<td>".$display_options[$option_name];
+               echo "<input type='checkbox' name='$option_name' ".
+                     ($display_options[$option_name]?'checked':'').">";
+               echo "</td>";
+               echo "<td>".$attributs['name']."</td>";
+               echo "</tr>\n";
+            }
+         }
+      }
+      echo "<tr><td colspan='2' class='center'>";
+      echo "<input type='submit' class='submit' name='update' value=\""._sx('button','Save')."\">";
+      echo "</td></tr>\n";
+      echo "</table>";
+      echo "</form>";
+/*
       echo "<table class='tab_cadre'>";
       echo "<tr><th>".__s('Network ports display options')."</th></tr>\n";
 
@@ -481,7 +549,7 @@ class NetworkPort extends CommonDBChild {
          }
       }
 
-      echo "</table>";
+      echo "</table>";*/
       echo "</div>";
    }
 
@@ -565,21 +633,7 @@ class NetworkPort extends CommonDBChild {
          $porttypes[] = '';
       }
 
-      // Create the table display options
-      if (!isset($_SESSION['glpi_NetworkPort_display_options'])) {
-         $_SESSION['glpi_NetworkPort_display_options'] = array();
-      }
-
-      if (!isset($_SESSION['glpi_NetworkPort_display_options'][$itemtype])) {
-         $_SESSION['glpi_NetworkPort_display_options'][$itemtype] = array();
-      }
-
-      self::updateAndGetDisplayOptions($itemtype, false);
-
-      // Use an intermediate variable to don't bring this long string.
-      // That is also usefull for the instantiations !
-      $display_options = &$_SESSION['glpi_NetworkPort_display_options'][$itemtype];
-
+      $display_options = self::getDisplayOptions($itemtype);
       $table           = new HTMLTableMain();
       $number_port     = self::countForItem($item);
       $table_options   = array('canedit'         => $canedit,
@@ -593,8 +647,8 @@ class NetworkPort extends CommonDBChild {
       $table_namelink .= __s('Network ports display options')."\" src='";
       $table_namelink .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
       $table_namelink .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
-      $table_namelink .= "/front/popup.php?popup=networkport_display_options&amp;";
-      $table_namelink .= "itemtype=$itemtype' ,'glpipopup', 'height=400, width=600, top=100,";
+      $table_namelink .= "/front/popup.php?popup=display_options&amp;itemtype=NetworkPort&amp;";
+      $table_namelink .= "sub_itemtype=$itemtype' ,'glpipopup', 'height=500, width=600, top=100,";
       $table_namelink .= "left=100, scrollbars=yes'); w.focus();\">";
 
       $table_name = sprintf(__('%1$s - %2$s'), $table_name, $table_namelink);
