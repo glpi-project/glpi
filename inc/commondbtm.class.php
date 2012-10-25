@@ -4185,8 +4185,8 @@ class CommonDBTM extends CommonGLPI {
                return Dropdown::showTimeStamp($name, $options);
 
             case "itemlink" :
-               // Same as dropdown id table != table of item
-               if ($searchoptions['table'] == $this->getTable()) {
+               // Do not use dropdown if wanted to select string value instead of ID
+               if (isset($options['itemlink_as_string']) && $options['itemlink_as_string']) {
                   break;
                }
 
