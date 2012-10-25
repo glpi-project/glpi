@@ -116,7 +116,7 @@ if ($_POST['all']==0) {
 if (isset($_POST['value'])) {
    $default_value = getUserName($_POST['value']);
 
-   if (!empty($output) && ($output != "&nbsp;")) {
+   if (!empty($default_value) && ($default_value != "&nbsp;")) {
       echo "<option selected value='".$_POST['value']."'>".$default_value."</option>";
    }
 }
