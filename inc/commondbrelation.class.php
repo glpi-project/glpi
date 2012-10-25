@@ -281,7 +281,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * Must we chech than the item, for relation 2, exists
+    * Specific check for check attach for relation 2
     *
     * @since version 0.84
     *
@@ -289,10 +289,22 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return boolean
     */
-   function mustRelation2Exists(Array &$input) {
-      return true;
+   function isAttach2Valid(Array &$input) {
+      return false;
    }
 
+   /**
+    * Specific check for check attach for relation 1
+    *
+    * @since version 0.84
+    *
+    * @param $input Array of data to be added
+    *
+    * @return boolean
+    */
+   function isAttach1Valid(Array &$input) {
+      return false;
+   }
 
    /**
     * @since version 0.84
@@ -349,8 +361,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth=false) {
 
       $OneWriteIsEnough = (!$forceCheckBoth
-                           && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-                           && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights));
+                           && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
+                              || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
 
       try {
          $item1 = NULL;
@@ -362,7 +374,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                              static::$items_id_1, $item1);
          }
       } catch (CommonDBConnexityItemNotFound $e) {
-         if (static::$mustBeAttached_1) {
+         if (static::$mustBeAttached_1 && !static::isAttach1Valid($this->fields)) {
             return false;
          }
          $can1         = true;
@@ -380,7 +392,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                              static::$items_id_2, $item2);
          }
       } catch (CommonDBConnexityItemNotFound $e) {
-         if (static::$mustBeAttached_2) {
+         if (static::$mustBeAttached_2 && !static::isAttach2Valid($this->fields)) {
             return false;
          }
          $can2         = true;
@@ -388,6 +400,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $check_entity = false; // If no item, then, we cannot check entities
       }
 
+      
       if ($OneWriteIsEnough) {
          if ((!$can1 && !$can2)
              || ($can1 && !$view2)
@@ -524,7 +537,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
                                                            $input);
       }
-
       return parent::prepareInputForAdd($input);
    }
 
