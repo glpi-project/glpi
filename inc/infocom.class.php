@@ -243,11 +243,11 @@ class Infocom extends CommonDBChild {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
-      // TODO : I don't understand : if the item is not defined, then we validate the element ?
-      if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
-         $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
-         $input['alert'] = Entity::getUsedConfig('default_infocom_alert', $item->getEntityID());
-         return parent::prepareInputForAdd($input);
+      if ($this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
+         if ($item = static::getItemFromArray(static::$itemtype, static::$items_id, $input)) {
+            $input['alert'] = Entity::getUsedConfig('default_infocom_alert', $item->getEntityID());
+            return parent::prepareInputForAdd($input);
+         }
       }
 
       return false;
