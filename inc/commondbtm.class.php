@@ -2577,13 +2577,15 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getName($with_comment=0) {
 
-      $toadd = "";
-      if ($with_comment) {
-         $toadd = "&nbsp;".$this->getComments();
-      }
-
       if (isset($this->fields["name"]) && (strlen($this->fields["name"]) != 0)) {
-         return $this->fields["name"].$toadd;
+         $toadd = "";
+         if ($with_comment) {
+            $toadd = $this->getComments();
+         }
+         if (!empty($toadd)) {
+            return sprintf(__('%1$s - %2$s'), $this->fields["name"], $toadd);
+         }
+         return $this->fields["name"];
       }
       return NOT_AVAILABLE;
    }
@@ -2601,20 +2603,20 @@ class CommonDBTM extends CommonGLPI {
    function getNameID($with_comment=0, $forceid=false) {
       global $CFG_GLPI;
 
-      $toadd = "";
-      if ($with_comment) {
-         $comments = $this->getComments();
-         if (!empty($comments)) {
-            $toadd = sprintf(__('%1$s - %2$s'), $toadd, $comments);
-         }
-      }
-
       if ($forceid
           || $_SESSION['glpiis_ids_visible']) {
-         //TRANS: %1$s is a name, %2$d is ID, %3$s is comments
-         return sprintf(__('%1$s (%2$d) %3$s'), $this->getName(), $this->getField('id'), $toadd);
+         $toadd = "";
+         if ($with_comment) {
+            $toadd = $this->getComments();
+         }
+         //TRANS: %1$s is a name, %2$d is ID
+         $name = sprintf(__('%1$s (%2$d)'), $this->getName(), $this->getField('id'));
+         if (!empty($toadd)) {
+            return sprintf(__('%1$s - %2$s'), $name, $toadd);
+         }
+         return $name;
       }
-      return $this->getName().$toadd;
+      return $this->getName($with_comment);
    }
 
 
