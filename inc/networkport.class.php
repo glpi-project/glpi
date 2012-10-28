@@ -92,8 +92,20 @@ class NetworkPort extends CommonDBChild {
       $forbidden[] = 'update';
       return $forbidden;
    }
-
-
+   
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getPreAdditionalInfosForName
+   **/
+   function getPreAdditionalInfosForName() {
+   
+      if ($item = $this->getItem()) {
+         return $item->getName() . ' <';
+      }
+      return '';
+   }
+   
    /**
     * \brief get the list of available network port type.
     *

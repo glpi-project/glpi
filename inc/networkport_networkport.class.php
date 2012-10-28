@@ -65,18 +65,6 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 
-   function getHistoryNameForItem1(CommonDBTM $networkPort, $case) {
-
-      $item = $networkPort->getItem();
-      return $item->getName() . ' < ' . $networkPort->getName();
-   }
-
-
-   function getHistoryNameForItem2(CommonDBTM $networkPort, $case) {
-
-      $item = $networkPort->getItem();
-      return $item->getName() . ' < ' . $networkPort->getName();
-   }
 
 
    /**

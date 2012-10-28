@@ -71,7 +71,20 @@ class SoftwareVersion extends CommonDBChild {
       return $ong;
    }
 
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getPreAdditionalInfosForName
+   **/
+   function getPreAdditionalInfosForName() {
 
+      $soft = new Software();
+      if ($soft->getFromDB($this->fields['softwares_id'])) {
+         return $soft->getName();
+      }
+      return '';
+   }
+   
    /**
     * Print the Software / version form
     *
