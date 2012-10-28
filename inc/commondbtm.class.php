@@ -824,31 +824,34 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $with_comment                Display comments (default 0)
     * @param $additional_options  string  additional options to add to <a>
+    * @see CommonDBTM::getName
+    * @param $options array of options
+    *    - comments     : boolean / display comments
+    *    - complete     : boolean / display completename instead of name
+    *    - additional   : boolean / display aditionals information
+    *    - linkoption   : string  / additional options to add to <a>
     *
     * @return string : HTML link
    **/
-   function getLink($with_comment=0, $additional_options='') {
-      global $CFG_GLPI;
+   function getLink($options = array()) {
+      $p['linkoption'] = '';
 
+      if (isset($options['linkoption'])) {
+         $p['linkoption'] = $options['linkoption'];
+      }
+   
       if (!isset($this->fields['id'])) {
          return '';
       }
 
-      if ($this->no_form_page) {
-         return $this->getNameID($with_comment);
-
-      }
-      $link_item = $this->getFormURL();
-
-      if (!$this->can($this->fields['id'],'r')) {
-         return $this->getNameID($with_comment);
+      if ($this->no_form_page
+         || !$this->can($this->fields['id'],'r')) {
+         return $this->getNameID($options);
       }
 
-      $link  = $link_item;
-      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
-      $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
+      $link = $this->getLinkURL();
 
-      return "<a $additional_options href='$link'>".$this->getNameID($with_comment)."</a>";
+      return "<a ".$p['linkoption']." href='$link'>".$this->getNameID($options)."</a>";
 
    }
 
@@ -2567,56 +2570,134 @@ class CommonDBTM extends CommonGLPI {
       return $comment;
    }
 
+   /**
+   * Get field used for name
+   **/
+   function getNameField() {
+      return 'name';
+   }
+
+   /**
+   * Get field used for completename
+   **/
+   function getCompleteNameField() {
+      return 'completename';
+   }
 
    /**
     * Get The Name of the Object
     *
-    * @param $with_comment    add comments to name (default 0)
-    *
+    * @param $options array of options
+    *    - comments     : boolean / display comments
+    *    - complete     : boolean / display completename instead of name
+    *    - additional   : boolean / display aditionals information
     * @return String: name of the object in the current language
+    * @see CommonDBTM::getNameField
+    * @see CommonDBTM::getCompleteNameField
    **/
-   function getName($with_comment=0) {
+   function getName($options = array()) {
 
-      if (isset($this->fields["name"]) && (strlen($this->fields["name"]) != 0)) {
-         $toadd = "";
-         if ($with_comment) {
-            $toadd = $this->getComments();
+      $p['comments']   = false;
+      $p['complete']   = false;
+      $p['additional'] = false;
+
+      if (is_array($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
          }
-         if (!empty($toadd)) {
-            return sprintf(__('%1$s - %2$s'), $this->fields["name"], $toadd);
+      }
+      $field = $this->getNameField();
+
+      if ($p['complete'] && isset($this->fields[$this->getCompleteNameField()])) {
+         $field = $this->getCompleteNameField();
+      }
+
+      if (isset($this->fields[$field]) && (strlen($this->fields[$field]) != 0)) {
+         $name = $this->fields[$field];
+         if ($p['additional']) {
+            $pre = $this->getPreAdditionalInfosForName();
+            if (!empty($pre)) {
+               $name = sprintf(__('%1$s %2$s'), $pre, $name);
+            }
+            $post = $this->getPostAdditionalInfosForName();
+            if (!empty($post)) {
+               $name = sprintf(__('%1$s %2$s'), $name, $post);
+            }
          }
-         return $this->fields["name"];
+         if ($p['comments']) {
+            $comment = $this->getComments();
+            if (!empty($comment)) {
+               $name = sprintf(__('%1$s - %2$s'), $name, $comment);
+            }
+         }
+         return $name;
       }
       return NOT_AVAILABLE;
    }
+   
+   /**
+    * Get additionals information to add before nam
+    *
+    * @return String: string to add
+   **/
+   function getPreAdditionalInfosForName() {
+      return '';
+   }
 
-
+   /**
+    * Get additionals information to add before nam
+    *
+    * @return String: string to add
+   **/
+   function getPostAdditionalInfosForName() {
+      return '';
+   }
+   
    /**
     * Get The Name of the Object with the ID if the config is set
     * Should Not be overloaded (overload getName() instead)
     *
-    * @param $with_comment             add comments to name (default 0)
-    * @param $forceid         boolean  override config and display item's ID (false by default)
+    * @see CommonDBTM::getName
+    * @param $options array of options
+    *    - comments     : boolean / display comments
+    *    - complete     : boolean / display completename instead of name
+    *    - additional   : boolean / display aditionals information
+    *    - forceid      : boolean  override config and display item's ID (false by default)
     *
     * @return String: name of the object in the current language
    **/
-   function getNameID($with_comment=0, $forceid=false) {
+   function getNameID($options = array()) {
       global $CFG_GLPI;
+      
+      $p['forceid'] = false;
+      $p['comments'] = false;
 
-      if ($forceid
-          || $_SESSION['glpiis_ids_visible']) {
-         $toadd = "";
-         if ($with_comment) {
-            $toadd = $this->getComments();
+      if (is_array($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
          }
+      }
+      
+      if ($p['forceid']
+          || $_SESSION['glpiis_ids_visible']) {
+         $addcomment = $p['comments'];
+         
+         // unset comment 
+         $p['comments'] = false;
+         $name = $this->getName($p);
+         
          //TRANS: %1$s is a name, %2$d is ID
-         $name = sprintf(__('%1$s (%2$d)'), $this->getName(), $this->getField('id'));
-         if (!empty($toadd)) {
-            return sprintf(__('%1$s - %2$s'), $name, $toadd);
+         $name = sprintf(__('%1$s (%2$d)'), $name, $this->getField('id'));
+         
+         if ($addcomment) {
+            $comment = $this->getComments();
+            if (!empty($comment)) {
+               $name = sprintf(__('%1$s - %2$s'), $name, $toadd);
+            }
          }
          return $name;
       }
-      return $this->getName($with_comment);
+      return $this->getName($options);
    }
 
 
@@ -3533,7 +3614,7 @@ class CommonDBTM extends CommonGLPI {
 
          $double_text = '';
          if ($item->canView() && $item->canViewItem()) {
-            $double_text = $item->getLink(0,"target='_blank'");
+            $double_text = $item->getLink(array('linkoption' => "target='_blank'"));
          }
 
          foreach ($this->getUnicityFieldsToDisplayInErrorMessage() as $key => $value) {

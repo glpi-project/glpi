@@ -62,30 +62,13 @@ class ConsumableItem extends CommonDBTM {
 
 
    /**
-    * Get The Name + Ref of the Object
-    *
-    * @param $with_comment add comments to name (default 0)
-    *
-    * @return String: name of the object in the current language
+    * @see CommonDBTM::getPosteAdditionalInfosForName
    **/
-   function getName($with_comment=0) {
-
-      $toadd = "";
-      if ($with_comment) {
-         $toadd = "&nbsp;".$this->getComments();
+   function getPostAdditionalInfosForName() {
+      if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
+         return '- '.$this->fields["ref"];
       }
-
-      if (isset($this->fields["name"]) && !empty($this->fields["name"])) {
-         $name = $this->fields["name"];
-
-         if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
-            $name .= " - ".$this->fields["ref"];
-         }
-
-         return $name.$toadd;
-      }
-
-      return NOT_AVAILABLE;
+      return '';
    }
 
 

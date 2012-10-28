@@ -4066,7 +4066,7 @@ class Ticket extends CommonITILObject {
                 && $this->fields["items_id"]) {
 
                 if ($item->can($this->fields["items_id"],'r')) {
-                  printf(__('%1$s - %2$s'), $item->getTypeName(), $item->getLink(true));
+                  printf(__('%1$s - %2$s'), $item->getTypeName(), $item->getLink(array('comments' => true)));
                } else {
                   printf(__('%1$s - %2$s'),  $item->getTypeName(), $item->getNameID());
                }
@@ -5531,7 +5531,7 @@ class Ticket extends CommonITILObject {
                echo "<tr class='tab_bg_2'>";
                echo "<td>".__('Assign equipment')."</td>";
 
-               echo "<td>".$item->getLink(true)."</td>";
+               echo "<td>".$item->getLink(array('comments' => true))."</td>";
                echo "</tr>";
             }
          }

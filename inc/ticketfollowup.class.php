@@ -401,8 +401,15 @@ class TicketFollowup  extends CommonDBTM {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($with_comment=0) {
+   function getName($options = array()) {
+      $p['comments']   = false;
 
+      if (is_array($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      
       if (!isset($this->fields['requesttypes_id'])) {
          return NOT_AVAILABLE;
       }
@@ -413,7 +420,7 @@ class TicketFollowup  extends CommonDBTM {
          $name = $this->getTypeName();
       }
 
-      if ($with_comment) {
+      if ($p['comments']) {
          $name = sprintf(__('%1$s (%2$s)'), $name,
                          sprintf(__('%1$s - %2$s'), Html::convDateTime($this->fields['date']),
                                  sprintf(__('%1$s - %2$s'), getUserName($this->fields['users_id']),

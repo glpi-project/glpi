@@ -178,7 +178,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if ($link_computer = self::findVirtualMachine($this->fields)) {
          $computer = new Computer();
          if ($computer->getFromDB($link_computer)) {
-            echo $computer->getLink(true);
+            echo $computer->getLink(array('comments' => true));
          } else {
             echo NOT_AVAILABLE;
          }

@@ -786,16 +786,23 @@ class Profile_User extends CommonDBRelation {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($with_comment=0) {
+   function getName($options = array()) {
 
-            //TRANS: D for Dynamic
-      $dyn = ", ".__('D');
-            //TRANS: R for Recursive
-      $rec = ", ".__('R');
-      return Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']).', '.
-             Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
-             (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic'] ? $dyn : '').
-             (isset($this->fields['is_recursive']) && $this->fields['is_recursive'] ? $rec : '');
+      $name = sprintf(__('%1$s, %2$s'),
+                      Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']),
+                      Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
+
+      if (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic']) {
+         //TRANS: D for Dynamic
+         $dyn = __('D');
+         $name = sprintf(__('%1$s, %2$s'), $name, $dyn);
+      }
+      if (isset($this->fields['is_recursive']) && $this->fields['is_recursive']) {
+         //TRANS: R for Recursive
+         $rec = __('R');
+         $name = sprintf(__('%1$s, %2$s'), $name, $rec);
+      }
+      return $name;
    }
 
 

@@ -486,7 +486,7 @@ class Group_User extends CommonDBRelation{
             if ($tree) {
                echo "</td><td>";
                if ($tmpgrp->getFromDB($data['groups_id'])) {
-                  echo $tmpgrp->getLink(true);
+                  echo $tmpgrp->getLink(array('comments' => true));
                }
             }
             echo "</td><td class='center'>";

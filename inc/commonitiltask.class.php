@@ -377,8 +377,15 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($with_comment=0) {
+   function getName($options = array()) {
+      $p['comments']   = false;
 
+      if (is_array($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      
       if (!isset($this->fields['taskcategories_id'])) {
          return NOT_AVAILABLE;
       }
@@ -390,7 +397,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $name = $this->getTypeName(1);
       }
 
-      if ($with_comment) {
+      if ($p['comments']) {
          $addname  = Html::convDateTime($this->fields['date']);
          $addname = sprintf(__('%1$s, %2$s'), $addname, getUserName($this->fields['users_id']));
          // Manage private case
