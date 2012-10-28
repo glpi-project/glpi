@@ -75,11 +75,12 @@ class RuleAction extends CommonDBChild {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($with_comment=0) {
+   function getName($options = array()) {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
          return Html::clean($rule->getMinimalActionText($this->fields));
       }
+      return NOT_AVAILABLE;
    }
 
 

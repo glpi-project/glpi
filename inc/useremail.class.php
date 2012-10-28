@@ -220,15 +220,9 @@ class UserEmail  extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-
-   function getName($with_comment=0) {
-
-      if (isset($this->fields['email']) && $this->fields['email']) {
-         return $this->fields['email'];
-      }
-      return NOT_AVAILABLE;
+   function getNameField() {
+      return 'email';
    }
-
 
    function post_updateItem($history=1) {
       global $DB;

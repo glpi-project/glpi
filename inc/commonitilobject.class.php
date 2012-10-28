@@ -1967,7 +1967,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $k = $d['groups_id'];
             echo "$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
-               echo $group->getLink($showgrouplink);
+               echo $group->getLink(array('comments' => $showgrouplink));
             }
             if ($canedit) {
                echo "&nbsp;";
@@ -2008,7 +2008,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $k = $d['suppliers_id'];
             echo "$suppliericon&nbsp;";
             if ($supplier->getFromDB($k)) {
-               echo $supplier->getLink($showsupplierlink);
+               echo $supplier->getLink(array('comments' => $showsupplierlink));
             }
             if ($canedit) {
                echo "&nbsp;";
@@ -3233,7 +3233,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $before = "";
                $after  = "";
                if ($link) {
-                  return $item->getLink(1);
+                  return $item->getLink(array('comments' => true));
                }
                return $item->getNameID();
             }

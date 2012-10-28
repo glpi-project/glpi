@@ -933,13 +933,9 @@ class User extends CommonDBTM {
 
 
    /**
-    * Get the name of the current user
-    *
-    * @param $with_comment add comments to name (not used for this type) (default 0)
-    *
-    * @return string containing name of the user
+    * @see CommonDBTM::getName()
    **/
-   function getName($with_comment=0) {
+   function getName($options = array()) {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
          return formatUserName($this->fields["id"],

@@ -93,23 +93,9 @@ abstract class CommonDevice extends CommonDropdown {
       Html::header($this->getTypeName(1), '', "config", "device", get_class($this));
    }
 
-
-   /**
-    * @param $with_comment (default 0)
-   **/
-   function getName($with_comment=0) {
-
-      $toadd = "";
-      if ($with_comment) {
-         $toadd = sprintf(__('%1$s - %2$s'), $toadd, $this->getComments());
-      }
-
-      if (isset($this->fields['designation']) && !empty($this->fields['designation'])) {
-         return $this->fields['designation'].$toadd;
-      }
-      return NOT_AVAILABLE;
+   function getNameField() {
+      return 'designation';
    }
-
 
    /**
     * @since version 0.84

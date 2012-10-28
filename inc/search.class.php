@@ -4365,7 +4365,7 @@ class Search {
             if (!empty($data[$NAME.$num."_2"])
                 && ($item = getItemForItemtype($data[$NAME.$num."_2"]))) {
                if ($item->getFromDB($data[$NAME.$num])) {
-                  return $item->getLink(true);
+                  return $item->getLink(array('comments' => true));
                }
             }
             return '&nbsp;';

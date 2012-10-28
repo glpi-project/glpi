@@ -403,7 +403,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return (string) the name of the entry for the database (ie. : correctly slashed)
    **/
    function getHistoryNameForItem($case) {
-      return $this->getNameID(false, true);
+      return $this->getNameID(array('forceid'    => true,
+                                    'additional' => true));
    }
 
 

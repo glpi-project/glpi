@@ -717,18 +717,18 @@ class Group extends CommonTreeDropdown {
                       value='1'>";
             }
             echo "</td><td>".$item->getTypeName(1);
-            echo "</td><td>".$item->getLink(1);
+            echo "</td><td>".$item->getLink(array('comments' => true));
             echo "</td><td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID());
             if ($tree || $user) {
                echo "</td><td>";
                if ($grp = $item->getField($field)) {
                   if ($group->getFromDB($grp)) {
-                     echo $group->getLink(true);
+                     echo $group->getLink(array('comments' => true));
                   }
 
                } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
                   if ($tuser->getFromDB($usr)) {
-                     echo $tuser->getLink(true);
+                     echo $tuser->getLink(array('comments' => true));
                   }
                }
             }
