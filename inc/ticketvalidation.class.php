@@ -323,7 +323,7 @@ class TicketValidation  extends CommonDBChild {
     *
     * @see CommonDBChild::getHistoryNameForItem
    **/
-   function getHistoryNameForItem($item, $case) {
+   function getHistoryNameForItem(CommonDBTM $item, $case) {
 
       $username = getUserName($this->fields["users_id_validate"]);
       switch ($case) {
