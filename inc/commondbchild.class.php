@@ -292,7 +292,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return $item->isEntityAssign();
       }
 
-      return -1;
+      return false;
    }
 
 
