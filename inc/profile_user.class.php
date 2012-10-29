@@ -55,7 +55,8 @@ class Profile_User extends CommonDBRelation {
 
   static public $log_history_1_add    = Log::HISTORY_ADD_SUBITEM;
   static public $log_history_1_delete = Log::HISTORY_DELETE_SUBITEM;
-
+  static public $disableAutoEntityForwarding      = true;
+   
 
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object

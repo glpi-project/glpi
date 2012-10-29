@@ -259,7 +259,7 @@ class TicketCost extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
-//       echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
+
       Html::autocompletionTextField($this,'name');
       echo "</td>";
       echo "<td>".__('Begin date')."</td>";

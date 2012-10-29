@@ -350,8 +350,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
       $this->itemToGetEntity = false;
 
-      // Only manage if EntityAssign
-      if ($this->isEntityAssign()) {
+      if ($this->tryEntityForwarding()) {
          // Set the item to allow parent::prepareinputforadd to get the right item ...
          $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
                                                            $input);
@@ -371,6 +370,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       $complete_input = $input;
+      $this->itemToGetEntity = false;
       // True if item changed
       if (parent::prepareInputForUpdateForConnexity($complete_input, array(static::$itemtype,
                                                                            static::$items_id))) {
@@ -379,13 +379,12 @@ abstract class CommonDBChild extends CommonDBConnexity {
             return false;
          }
 
-         // Set the item to allow parent::prepareinputforupdate to get the right item ...
-         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
-                                                           $complete_input);
-
-      } else {
-         $this->itemToGetEntity = false;
-      }
+         if ($this->tryEntityForwarding()) {
+            // Set the item to allow parent::prepareinputforupdate to get the right item ...
+            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
+                                                            $complete_input);
+         }
+      } 
 
       return parent::prepareInputForUpdate($input);
    }
