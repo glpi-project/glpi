@@ -348,10 +348,14 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if (!is_array($input)) {
          return false;
       }
+      $this->itemToGetEntity = false;
 
-      // Set the item to allow parent::prepareinputforupdate to get the right item ...
-      $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
-                                                        $input);
+      // Only manage if EntityAssign
+      if ($this->isEntityAssign()) {
+         // Set the item to allow parent::prepareinputforadd to get the right item ...
+         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
+                                                           $input);
+      }
 
       return parent::prepareInputForAdd($input);
    }
