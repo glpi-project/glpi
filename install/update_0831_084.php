@@ -1378,6 +1378,14 @@ function update0831to084() {
    // add ticket templates
    $migration->addField('glpi_profiles', 'tickettemplates_id', 'integer');
 
+   // Drop not needed fields
+   $migration->dropField('glpi_tickettemplatepredefinedfields', 'entities_id');
+   $migration->dropField('glpi_tickettemplatepredefinedfields', 'is_recursive');
+   $migration->dropField('glpi_tickettemplatemandatoryfields', 'entities_id');
+   $migration->dropField('glpi_tickettemplatemandatoryfields', 'is_recursive');
+   $migration->dropField('glpi_tickettemplatehiddenfields', 'entities_id');
+   $migration->dropField('glpi_tickettemplatehiddenfields', 'is_recursive');
+   
    // Clean unlinked calendar segments and holidays
    $query = "DELETE
              FROM `glpi_calendars_holidays`
