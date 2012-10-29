@@ -1416,8 +1416,8 @@ function generate_entity($ID_entity) {
    // glpi_users
    $FIRST["users_sadmin"] = getMaxItem("glpi_users")+1;
    $user                  = new User();
-   $pu                    = new Profile_User();
    $gu                    = new Group_User();
+
    for ($i=0 ; $i<$MAX['users_sadmin'] ; $i++) {
       $users_id = $user->add(array('name'               => "sadmin$i-$ID_entity",
                                    'password'           => "sadmin$i",
@@ -1434,10 +1434,6 @@ function generate_entity($ID_entity) {
                                    '_entities_id'       => $ID_entity,
                                    '_is_recursive'      => 1
                                    ));
-//       $pu->add(array('users_id'     => $users_id,
-//                      'profiles_id'  => 4,
-//                      'entities_id'  => $ID_entity,
-//                      'is_recursive' => 1 ));
 
       $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups'])));
@@ -1465,11 +1461,6 @@ function generate_entity($ID_entity) {
                                    '_profiles_id'       => 3,
                                    '_entities_id'       => $ID_entity,
                                    '_is_recursive'      => 1));
-
-//       $pu->add(array('users_id'     => $users_id,
-//                      'profiles_id'  => 3,
-//                      'entities_id'  => $ID_entity,
-//                      'is_recursive' => 1 ));
 
       $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
@@ -1501,11 +1492,6 @@ function generate_entity($ID_entity) {
                                    '_entities_id'       => $ID_entity,
                                    '_is_recursive'      => 1));
 
-//       $pu->add(array('users_id'     => $users_id,
-//                      'profiles_id'  => 2,
-//                      'entities_id'  => $ID_entity,
-//                      'is_recursive' => 1 ));
-
       $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups'])));
 
@@ -1531,11 +1517,6 @@ function generate_entity($ID_entity) {
                                    '_profiles_id'       => 1,
                                    '_entities_id'       => $ID_entity,
                                    '_is_recursive'      => 1));
-
-//       $pu->add(array('users_id'     => $users_id,
-//                      'profiles_id'  => 1,
-//                      'entities_id'  => $ID_entity,
-//                      'is_recursive' => 1 ));
 
       $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups'])));
