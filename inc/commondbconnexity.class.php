@@ -244,8 +244,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
       // Only CommoDBRelation or CommonDBChild can call this method.
       // So we don't have to check $input validity
 
-      // TODO: What about also setting is_template and is_deleted (for Computer_SoftwareVersion)
-
       if (($this->itemToGetEntity instanceof CommonDBTM)
           && $this->itemToGetEntity->isEntityForwardTo(get_called_class())
           && ((!isset($input['entities_id'])) || static::$forceEntitySetting)) {
@@ -272,8 +270,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       // Only CommoDBRelation or CommonDBChild can call this method.
       // So we don't have to check $input validity
-
-      // TODO: What about also setting is_template and is_deleted (for Computer_SoftwareVersion)
 
       if (($this->itemToGetEntity instanceof CommonDBTM)
           && $this->itemToGetEntity->isEntityForwardTo(get_called_class())
