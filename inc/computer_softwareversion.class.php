@@ -72,7 +72,20 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return parent::prepareInputForAdd($input);
    }
 
+   function prepareInputForUpdate($input) {
 
+      // If computer set update is_template / is_deleted infos to ensure data validity
+      if (isset($input['computers_id'])) {
+         // Get template and deleted information from computer
+         $computer = new Computer();
+         if ($computer->getFromDB($input['computers_id'])) {
+            $input['is_template'] = $computer->getField('is_template');
+            $input['is_deleted']  = $computer->getField('is_deleted');
+         }
+      }
+      return parent::prepareInputForUpdate($input);
+   }
+   
    /**
     * @since version 0.84
     *
