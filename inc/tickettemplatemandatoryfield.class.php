@@ -212,8 +212,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a mandatory field')."</th></tr>";
             echo "<tr class='tab_bg_2'><td class='right'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
-            echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
-            echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
 
             $select_fields = $fields;
             foreach ($select_fields as $key => $val) {

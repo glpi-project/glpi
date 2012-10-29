@@ -42,10 +42,6 @@ class TicketTemplate extends CommonDropdown {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('TicketTemplateHiddenField',
-                                               'TicketTemplateMandatoryField',
-                                               'TicketTemplatePredefinedField');
-
    // From CommonDropdown
    public $first_level_menu            = "maintain";
    public $second_level_menu           = "ticket";

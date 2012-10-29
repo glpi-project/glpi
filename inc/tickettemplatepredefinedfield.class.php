@@ -239,8 +239,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a predefined field')."</th></tr>";
             echo "<tr class='tab_bg_2'><td class='right top' width='30%'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
-            echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
-            echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
             $display_fields    += $fields;
 
@@ -258,7 +256,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                                                                   'with_time'          => 1,
                                                                   'with_days'          => 0,
                                                                   'with_specific_date' => 0,
-                                                                  'itemlink_as_string' => 1));
+                                                                  'itemlink_as_string' => 1,
+                                                                  'entity'             => $tt->getEntityID()));
 
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
