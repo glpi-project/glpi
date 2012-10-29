@@ -399,6 +399,7 @@ class CommonDBTM extends CommonGLPI {
 
          }
          $query .= ")";
+
          if ($result=$DB->query($query)) {
             // Already define for entity / insert_id does not work
             if (!isset($this->fields['id'])

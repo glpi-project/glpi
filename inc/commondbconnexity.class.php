@@ -87,7 +87,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
    static public $canDeleteOnItemClean = true;
-   static public $forceEntitySetting   = false;
+   /// Disable auto forwarding information about entities ?
+   static public $disableAutoEntityForwarding      = false;
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
@@ -97,7 +98,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $itemtype the type of the item to look for
     * @param $items_id the id of the item to look for
     *
-    * @result the SQL request of '' if it is not possible
+    * @return the SQL request of '' if it is not possible
     **/
    protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
       return '';
@@ -138,7 +139,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $getFromDB   boolean   do we have to load the item from the DB ? (true by default)
     * @param $getEmpty    boolean   else : do we have to load an empty item ? (true by default)
     *
-    * @result the item or false if we cannot load the item
+    * @return the item or false if we cannot load the item
    **/
    function getConnexityItem($itemtype, $items_id, $getFromDB=true, $getEmpty=true) {
       return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB, $getEmpty);
@@ -154,7 +155,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $getFromDB  boolean do we have to load the item from the DB ? (true by default)
     * @param $getEmpty   boolean else : do we have to load an empty item ? (true by default)
     *
-    * @result the item or false if we cannot load the item
+    * @return the item or false if we cannot load the item
    **/
    static function getItemFromArray($itemtype, $items_id, array $array,
                                     $getFromDB=true, $getEmpty=true) {
@@ -198,7 +199,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $input (array, maybe altered) the new values for the current item
     * @param $fields (array)               list of fields that define the attached items
     *
-    * @result true if the attached item has changed, false if the attached items has not changed
+    * @return true if the attached item has changed, false if the attached items has not changed
     **/
    function prepareInputForUpdateForConnexity(array &$input, array $fields) {
 
@@ -244,25 +245,33 @@ abstract class CommonDBConnexity extends CommonDBTM {
       // Only CommoDBRelation or CommonDBChild can call this method.
       // So we don't have to check $input validity
 
-      if (($this->itemToGetEntity instanceof CommonDBTM)
-          && $this->itemToGetEntity->isEntityForwardTo(get_called_class())
-          && ((!isset($input['entities_id'])) || static::$forceEntitySetting)) {
+      if ($this->tryEntityForwarding() && (!isset($input['entities_id']))) {
+         if (($this->itemToGetEntity instanceof CommonDBTM)
+            && $this->itemToGetEntity->isEntityForwardTo(get_called_class())) {
 
-         $input['entities_id']  = $this->itemToGetEntity->getEntityID();
-         $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
+            $input['entities_id']  = $this->itemToGetEntity->getEntityID();
+            $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
 
-      } else {
-         // No entity link : set default values
-         $input['entities_id']  = 0;
-         $input['is_recursive'] = 0;
+         } else {
+            // No entity link : set default values
+            $input['entities_id']  = 0;
+            $input['is_recursive'] = 0;
+         }
       }
-
       unset($this->itemToGetEntity);
 
       return parent::prepareInputForAdd($input);
    }
 
-
+   /**
+    * Is auto entityForwarding needed ?
+    *
+    * @return boolean
+    **/
+   function tryEntityForwarding() {
+      return (!static::$disableAutoEntityForwarding && $this->isEntityAssign());
+   }
+   
    /**
     * @param $input
    **/
@@ -271,19 +280,19 @@ abstract class CommonDBConnexity extends CommonDBTM {
       // Only CommoDBRelation or CommonDBChild can call this method.
       // So we don't have to check $input validity
 
-      if (($this->itemToGetEntity instanceof CommonDBTM)
-          && $this->itemToGetEntity->isEntityForwardTo(get_called_class())
-          && ((!isset($input['entities_id'])) || static::$forceEntitySetting)) {
+      if ($this->tryEntityForwarding() && (!isset($input['entities_id']))) {
+         if (($this->itemToGetEntity instanceof CommonDBTM)
+            && $this->itemToGetEntity->isEntityForwardTo(get_called_class())) {
 
-         $input['entities_id']  = $this->itemToGetEntity->getEntityID();
-         $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
+            $input['entities_id']  = $this->itemToGetEntity->getEntityID();
+            $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
 
-      } else {
-         // No entity link : set default values
-         $input['entities_id']  = 0;
-         $input['is_recursive'] = 0;
+         } else {
+            // No entity link : set default values
+            $input['entities_id']  = 0;
+            $input['is_recursive'] = 0;
+         }
       }
-
       unset($this->itemToGetEntity);
 
       return parent::prepareInputForUpdate($input);
@@ -307,7 +316,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $itemtype   the name of the field of the type of the item to get
     * @param $items_id   the name of the field of the id of the item to get
     *
-    * @result true if we have absolute right to create the current connexity
+    * @return true if we have absolute right to create the current connexity
    **/
    static function canConnexity($method, $item_right, $itemtype, $items_id) {
       if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
@@ -336,7 +345,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $items_id      the name of the field of the id of the item to get
     * @param &$item         the item concerned by the item (default NULL)
     *
-    * @result true if we have absolute right to create the current connexity
+    * @return true if we have absolute right to create the current connexity
    **/
    function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
                              &$item=NULL) {
@@ -374,7 +383,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $itemtype      the name of the field of the type of the item to get
     * @param $items_id      the name of the field of the id of the item to get
     *
-    * @result array containing "previous" (if exists) and "new". Beware that both can be equal
+    * @return array containing "previous" (if exists) and "new". Beware that both can be equal
     *         to false
    **/
    function getItemsForLog($itemtype, $items_id) {

@@ -528,15 +528,18 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          return false;
       }
 
-      // Set the item to allow parent::prepareinputforupdate to get the right item ...
       $this->itemToGetEntity = false;
-      if (static::$take_entity_1) {
-         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1, static::$items_id_1,
-                                                           $input);
-      } elseif (static::$take_entity_2) {
-         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
-                                                           $input);
+      if ($this->tryEntityForwarding()) {
+         // Set the item to allow parent::prepareinputforadd to get the right item ...
+         if (static::$take_entity_1) {
+            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1, static::$items_id_1,
+                                                            $input);
+         } elseif (static::$take_entity_2) {
+            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
+                                                            $input);
+         }
       }
+      
       return parent::prepareInputForAdd($input);
    }
 
@@ -561,16 +564,17 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          if (!is_array($complete_input)) {
             return false;
          }
-
-         // Set the item to allow parent::prepareinputforupdate to get the right item ...
-         if (static::$take_entity_1) {
-            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1,
-                                                              static::$items_id_1,
-                                                              $complete_input);
-         } elseif (static::$take_entity_2) {
-            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2,
-                                                              static::$items_id_2,
-                                                              $complete_input);
+         if ($this->tryEntityForwarding()) {
+            // Set the item to allow parent::prepareinputforupdate to get the right item ...
+            if (static::$take_entity_1) {
+               $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1,
+                                                               static::$items_id_1,
+                                                               $complete_input);
+            } elseif (static::$take_entity_2) {
+               $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2,
+                                                               static::$items_id_2,
+                                                               $complete_input);
+            }
          }
       }
 
