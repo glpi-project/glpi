@@ -55,8 +55,8 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_infocoms' => 'budgets_id'),
 
                   "glpi_calendars"
-                        => array('glpi_calendarsegments'   => 'calendars_id',
-                                 'glpi_calendars_holidays' => 'calendars_id',
+                        => array('_glpi_calendarsegments'   => 'calendars_id',
+                                 '_glpi_calendars_holidays' => 'calendars_id',
                                  'glpi_slas'               => 'calendars_id',
                                  'glpi_entities'           => 'calendars_id',),
 
@@ -228,9 +228,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_taskcategories'                  => 'entities_id',
                                  'glpi_ticketrecurrents'                => 'entities_id',
                                  'glpi_tickettemplates'                 => 'entities_id',
-                                 '_glpi_tickettemplatehiddenfields'     => 'entities_id',
-                                 '_glpi_tickettemplatemandatoryfields'  => 'entities_id',
-                                 '_glpi_tickettemplatepredefinedfields' => 'entities_id',
                                  'glpi_tickets'                         => 'entities_id',
                                  '_glpi_ticketvalidations'              => 'entities_id',
                                  'glpi_users'                           => 'entities_id'),
