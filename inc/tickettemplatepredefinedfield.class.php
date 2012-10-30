@@ -39,8 +39,6 @@ if (!defined('GLPI_ROOT')) {
 /// since version 0.83
 class TicketTemplatePredefinedField extends CommonDBChild {
 
-   /// TODO delete items_id if itemtype is deleted
-
    // From CommonDBChild
    static public $itemtype  = 'TicketTemplate';
    static public $items_id  = 'tickettemplates_id';

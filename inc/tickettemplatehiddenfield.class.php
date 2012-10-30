@@ -39,7 +39,6 @@ if (!defined('GLPI_ROOT')) {
 /// since version 0.83
 class TicketTemplateHiddenField extends CommonDBChild {
 
-   /// TODO delete items_id if itemtype is deleted
 
    // From CommonDBChild
    static public $itemtype  = 'TicketTemplate';
@@ -102,7 +101,6 @@ class TicketTemplateHiddenField extends CommonDBChild {
       self::showForTicketTemplate($item, $withtemplate);
       return true;
    }
-
 
    function post_purgeItem() {
       global $DB;
