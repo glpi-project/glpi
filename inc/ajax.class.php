@@ -157,8 +157,8 @@ class Ajax {
    **/
    static function refreshPopupMainWindow() {
 
-      // TODO : $_SESSION["glpipopup"]["rand"] is not use here. Do we really need this check ?
-      // Moyo : think yes permit to be sure that we are in a popup
+      // $_SESSION["glpipopup"]["rand"] is not use here but do check to be sure that
+      // we are in popup
       if (isset($_SESSION["glpipopup"]["rand"])) {
          echo "<script type='text/javascript' >\n";
          echo "window.opener.location.reload(true)";
