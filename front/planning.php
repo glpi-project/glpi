@@ -69,10 +69,51 @@ if (isset($_GET['checkavailability'])) {
 } else if (isset($_GET['genical'])) {
    if (isset($_GET['token'])) {
       // Check user token
-      /// TODO : complex : check if the request is valid : rights on uID / gID ?
       $user = new User();
       if ($user->getFromDBByToken($_GET['token'])) {
-         Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["itemtype"]);
+         //// check if the request is valid : rights on uID / gID
+         // First check mine : user then groups
+         $ismine = false;
+         if ($user->getID() == $_GET["uID"]) {
+            $ismine = true;
+         }
+         // Check groups if have right to see
+         if (!$ismine) {
+            $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_group_planning');
+            $groups = Group_User::getUserGroups($user->getID());
+            foreach ($groups as $group) {
+               if ($_GET["gID"] == $group['id']
+                  && in_array($group['entities_id'], $entities)) {
+                  $ismine = true;
+               }
+            }
+         }
+         $canview = false;
+         // If not mine check global right
+         if (!$ismine) {
+            // First check user
+            $entities     = Profile_User::getUserEntitiesForRight($user->getID(), 'show_all_planning');
+            if ($_GET["uID"]) {
+               $userentities = Profile_User::getUserEntities($user->getID());
+               $intersect = array_intersect($entities, $userentities);
+               if (count($intersect)) {
+                  $canview = true;
+               }
+            }
+            // Else check group
+            if (!$canview && $_GET['gID']) {
+               $group = new Group();
+               if ($group->getFromDB($_GET['gID'])) {
+                  if (in_array($group->getEntityID(), $entities)) {
+                     $canview = true;
+                  }
+               }
+            }
+         }
+         
+         if ($ismine || $canview) {
+            Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["itemtype"]);
+         }
       }
    }
 } else {
