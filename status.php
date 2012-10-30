@@ -127,6 +127,7 @@ if (($ok_master || $ok_slave )
       echo "Check IMAP servers:";
 
       foreach ($imap_methods as $method) {
+         echo " ".$method['name'];
          $param = Toolbox::parseMailServerConnectString($method['connect_string'], true);
          if ($param['ssl'] === true) {
             $host = 'ssl://'.$host;
@@ -147,12 +148,12 @@ if (($ok_master || $ok_slave )
       }
 
    } else {
-      echo "No LDAP server\n";
+      echo "No IMAP server\n";
    }
 
    // Check CAS
    if (!empty($CFG_GLPI["cas_host"])) {
-      echo "Check CAS server:";
+      echo "CAS_SERVER";
    
       $url = $CFG_GLPI["cas_host"];
       if (!empty($CFG_GLPI["cas_port"])) {
@@ -167,10 +168,34 @@ if (($ok_master || $ok_slave )
          $ok = false;
       }
       echo "\n";      
+   } else {
+      echo "No CAS server\n";
    }
 
-   /// TODO  Check mailcollectors
-   
+   /// Check mailcollectors
+   $mailcollectors = getAllDatasFromTable('glpi_mailcollectors', '`is_active`=1');
+   if (count($mailcollectors)) {
+      echo "Check mail collectors:";
+      $mailcol = new MailCollector();
+      foreach ($mailcollectors as $mc) {
+         echo " ".$mc['name'];
+         if ($mailcol->getFromDB($mc['id'])) {
+            $mailcol->connect();
+            if ($mailcol->marubox) {
+               echo "_OK";
+            } else {
+               echo "_PROBLEM";
+               $ok = false;
+            }
+            echo "\n";
+            $mailcol->close_mailbox();
+         }
+      }
+
+   } else {
+      echo "No mail collector\n";
+   }
+
    // hook for plugin
    $param = array('ok' => $ok);
    Plugin::doHook("status", $param);
