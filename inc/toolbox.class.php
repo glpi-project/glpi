@@ -1778,7 +1778,88 @@ class Toolbox {
       return $val;
    }
 
+   /**
+    * Parse imap open connect string
+    *
+    * @param $value string: connect string
+    * @param $forceport boolean: force compute port if not set
+    *
+    * @return array of parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
+    *         norsh, secure and debug) : options are empty if not set and options have boolean values if set
+   **/
+   static function parseMailServerConnectString($value, $forceport = false) {
+      $tab = array();
+      if (strstr($value,":")) {
+         $tab['address'] = str_replace("{", "", preg_replace("/:.*/", "", $value));
+         $tab['port'] = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
 
+      } else {
+         if (strstr($value,"/")) {
+            $tab['address'] = str_replace("{", "", preg_replace("/\/.*/", "", $value));
+         } else {
+            $tab['address'] = str_replace("{", "", preg_replace("/}.*/", "", $value));
+         }
+         $tab['port'] = "";
+      }
+      $tab['mailbox'] = preg_replace("/.*}/", "", $value);
+
+      $tab['type'] = '';
+      if (strstr($value,"/imap")) {
+         $tab['type'] = 'imap';
+      } else if (strstr($value,"/pop")) {
+         $tab['type'] = 'pop';
+      }
+      $tab['ssl'] = false;
+      if (strstr($value,"/ssl")) {
+         $tab['ssl'] = true;
+      }
+
+      if ($forceport && empty($tab['port'])) {
+         if ($tab['type'] == 'pop') {
+            if ($tab['ssl']) {
+               $tab['port'] = 110;
+            } else {
+               $tab['port'] = 995;
+            }
+         }
+         if ($tab['type'] = 'imap') {
+            if ($tab['ssl']) {
+               $tab['port'] = 993;
+            } else {
+               $tab['port'] = 143;
+            }
+         }
+      }
+      $tab['tls'] = '';
+      if (strstr($value,"/tls")) {
+         $tab['tls'] = true;
+      }
+      if (strstr($value,"/notls")) {
+         $tab['tls'] = false;
+      }
+      $tab['validate-cert'] = '';
+      if (strstr($value,"/validate-cert")) {
+         $tab['validate-cert'] = true;
+      }
+      if (strstr($value,"/novalidate-cert")) {
+         $tab['validate-cert'] = false;
+      }
+      $tab['norsh'] = '';
+      if (strstr($value,"/norsh")) {
+         $tab['norsh'] = true;
+      }
+      $tab['secure'] = '';
+      if (strstr($value,"/secure")) {
+         $tab['secure'] = true;
+      }
+      $tab['debug'] = '';
+      if (strstr($value,"/debug")) {
+         $tab['debug'] = true;
+      }
+
+      return $tab;
+   }
+   
    /**
     * @param $value
    **/
@@ -1788,78 +1869,67 @@ class Toolbox {
          return false;
       }
 
-      if (strstr($value,":")) {
-         $addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
-         $port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
-
-      } else {
-         if (strstr($value,"/")) {
-            $addr = str_replace("{", "", preg_replace("/\/.*/", "", $value));
-         } else {
-            $addr = str_replace("{", "", preg_replace("/}.*/", "", $value));
-         }
-         $port = "";
-      }
-      $mailbox = preg_replace("/.*}/", "", $value);
-
+      $tab = Toolbox::parseMailServerConnectString($value);
+      
+      print_r($tab);
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$addr. "\"></td></tr>\n";
+      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\"></td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
       echo "<select name='server_type'>";
       echo "<option value=''>&nbsp;</option>\n";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/imap' ".(strstr($value,"/imap") ?" selected ":"").">".__('IMAP').
+      echo "<option value='/imap' ".($tab['type'] == 'imap' ?" selected ":"").">".__('IMAP').
            "</option>\n";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/pop' ".(strstr($value,"/pop") ? " selected " : "").">".__('POP').
+      echo "<option value='/pop' ".($tab['type'] == 'pop' ? " selected " : "").">".__('POP').
            "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_ssl'>";
       echo "<option value=''>&nbsp;</option>\n";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/ssl' " .(strstr($value,"/ssl") ? " selected " : "").">".__('SSL').
+      echo "<option value='/ssl' " .($tab['ssl'] === true ? " selected " : "").">".__('SSL').
            "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_tls'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/tls' ".(strstr($value,"/tls") ? " selected " : "").">";
+      echo "<option value='/tls' ".($tab['tls'] === true? " selected " : "").">";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo __('TLS')."</option>\n";
-      echo "<option value='/notls' ".(strstr($value,"/notls")?" selected ":"").">";
+      echo "<option value='/notls' ".($tab['tls'] === false?" selected ":"").">";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo __('NO-TLS')."</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_cert'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/novalidate-cert' ".(strstr($value,"/novalidate-cert")?" selected ":"");
+      echo "<option value='/novalidate-cert' ".($tab['validate-cert'] === true?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('NO-VALIDATE-CERT')."</option>\n";
-      echo "<option value='/validate-cert' " .(strstr($value,"/validate-cert")?" selected ":"");
+      echo "<option value='/validate-cert' " .($tab['validate-cert'] === false?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('VALIDATE-CERT')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_rsh'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/norsh' ".(strstr($value,"/norsh")?" selected ":"");
+      echo "<option value='/norsh' ".($tab['norsh'] === true?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('NORSH')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_secure'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/secure' ".(strstr($value,"/secure")?" selected ":"");
+      echo "<option value='/secure' ".($tab['secure'] === true?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('SECURE')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_debug'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/debug' ".(strstr($value,"/debug")?" selected ":"");
+      echo "<option value='/debug' ".($tab['debug'] === true?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('DEBUG')."</option>\n";
       echo "</select>\n";
@@ -1868,12 +1938,12 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
-      echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $mailbox . "\" >";
+      echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
       echo "</td></tr>\n";
 
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
-      echo "<td><input size='10' type='text' name='server_port' value='$port'></td></tr>\n";
+      echo "<td><input size='10' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
       if (empty($value)) {
          $value = "&nbsp;";
       }
