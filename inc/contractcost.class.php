@@ -193,29 +193,13 @@ class ContractCost extends CommonDBChild {
    **/
    function showForm($ID, $options=array()) {
 
-      if (isset($options['parent']) && !empty($options['parent'])) {
-         $contract = $options['parent'];
-      }
-
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array('contracts_id' => $contract->getField('id'),
-                        'entities_id'  => $contract->getEntityID());
-         $this->check(-1,'w',$input);
+         $options['contracts_id'] = $options['parent']->getField('id');
+         $this->check(-1,'w',$options);
          $this->initBasedOnPrevious();
-      }
-
-      if ($ID > 0) {
-         $contracts_id = $this->fields["contracts_id"];
-      } else {
-         $contracts_id = $options['parent']->fields["id"];
-      }
-
-      $contract = new Contract();
-      if (!$contract->getFromDB($contracts_id)) {
-         return false;
       }
 
       $this->showFormHeader($options);

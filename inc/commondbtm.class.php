@@ -917,7 +917,17 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
-
+   /**
+    * Add needed information to $input (example entities_id)
+    *
+    * @param $input datas used to add the item
+    * @since version 0.84
+    * @return the modified $input array
+   **/
+   function addNeededInfoToInput($input) {
+      return $input;
+   }
+   
    /**
     * Prepare input datas for adding the item
     *
@@ -2132,6 +2142,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if (is_array($input)) {
+            $input = $this->addNeededInfoToInput($input);
             // Copy input field to allow getEntityID() to work
             // from entites_id field or from parent item ref
             foreach ($input as $key => $val) {

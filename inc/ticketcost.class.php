@@ -237,9 +237,8 @@ class TicketCost extends CommonDBChild {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array('tickets_id' => $ticket->getField('id'),
-                        'entities_id' =>$ticket->getEntityID());
-         $this->check(-1,'w',$input);
+         $options['tickets_id'] = $ticket->getField('id');
+         $this->check(-1,'w',$options);
          $this->initBasedOnPrevious();
       }
 

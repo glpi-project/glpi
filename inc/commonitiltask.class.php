@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/// TODO extends it from CommonDBChild
 abstract class CommonITILTask  extends CommonDBTM {
 
 
@@ -869,8 +870,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array($fkfield => $item->getField('id'));
-         $this->check(-1,'w',$input);
+         $options[$fkfield] = $item->getField('id');
+         $this->check(-1,'w',$options);
       }
 
       $canplan = Session::haveRight("show_planning", "1");

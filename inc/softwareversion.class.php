@@ -99,25 +99,16 @@ class SoftwareVersion extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      $softwares_id = -1;
-      if (isset($options['softwares_id'])) {
-         $softwares_id = $options['softwares_id'];
-      }
-
       if (!Session::haveRight("software","r")) {
          return false;
       }
 
       if ($ID > 0) {
          $this->check($ID,'r');
+         $softwares_id = $this->fields['softwares_id'];
       } else {
-         $soft = new Software();
-         $soft->getFromDB($softwares_id);
-         // Create item
-         $input = array('entities_id'  => $soft->getEntityID(),
-                        'is_recursive' => $soft->isRecursive(),
-                        'softwares_id' => $softwares_id);
-         $this->check(-1, 'w', $input);
+         $softwares_id = $options['softwares_id'];
+         $this->check(-1, 'w', $options);
       }
 
       $this->showTabs($options);
@@ -125,9 +116,7 @@ class SoftwareVersion extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', 2)."</td>";
       echo "<td>";
-      if ($ID > 0) {
-         $softwares_id = $this->fields["softwares_id"];
-      } else {
+      if ($this->isNewID($ID)) {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
       }
       echo "<a href='software.form.php?id=".$softwares_id."'>".

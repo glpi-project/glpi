@@ -339,7 +339,33 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return false;
    }
 
+   /**
+    * @since version 0.84
+   **/
+   function addNeededInfoToInput($input) {
+      // is entity missing and forwarding on ?
+      if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
+         // Merge both arrays to ensure all the fields are defined for the following checks
+         $completeinput = array_merge($this->fields, $input);
+         // Set the item to allow parent::prepareinputforadd to get the right item ...
+         if ($itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
+                                                           $completeinput)) {
+            if (($itemToGetEntity instanceof CommonDBTM)
+               && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
 
+               $input['entities_id']  = $itemToGetEntity->getEntityID();
+               $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
+
+            } else {
+               // No entity link : set default values
+               $input['entities_id']  = 0;
+               $input['is_recursive'] = 0;
+            }
+         }
+      }
+      return $input;
+   }
+   
    /**
     * @since version 0.84
    **/
@@ -348,15 +374,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if (!is_array($input)) {
          return false;
       }
-      $this->itemToGetEntity = false;
-
-      if ($this->tryEntityForwarding()) {
-         // Set the item to allow parent::prepareinputforadd to get the right item ...
-         $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
-                                                           $input);
-      }
-
-      return parent::prepareInputForAdd($input);
+      return $this->addNeededInfoToInput($input);
    }
 
 
@@ -369,24 +387,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return false;
       }
 
-      $complete_input = $input;
-      $this->itemToGetEntity = false;
       // True if item changed
-      if (parent::prepareInputForUpdateForConnexity($complete_input, array(static::$itemtype,
-                                                                           static::$items_id))) {
-
-         if (!is_array($complete_input)) {
-            return false;
-         }
-
-         if ($this->tryEntityForwarding()) {
-            // Set the item to allow parent::prepareinputforupdate to get the right item ...
-            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
-                                                            $complete_input);
-         }
+      if (!parent::checkAttachedItemChangesAllowed($input, array(static::$itemtype,
+                                                                 static::$items_id))) {
+         return false;
       } 
 
-      return parent::prepareInputForUpdate($input);
+      return parent::addNeededInfoToInput($input);
    }
 
 
