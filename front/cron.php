@@ -63,7 +63,6 @@ if (!isCommandLine()) {
    CronTask::launch(CronTask::MODE_INTERNAL);
 
 } else if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
-   // TODO Warning : command line is cron.php 1 2 3 4 : will produce cron.php 10 !
    // Parse command line options
 
    $mode = CronTask::MODE_EXTERNAL; // when taskname given, will allow --force
@@ -73,6 +72,8 @@ if (!isCommandLine()) {
       } else if (is_numeric($_SERVER['argv'][$i])) {
          // Number of tasks
          CronTask::launch(CronTask::MODE_EXTERNAL, intval($_SERVER['argv'][$i]));
+         // Only check first parameter when numeric is passed
+         break;
       } else {
          // Task name
          CronTask::launch($mode, $CFG_GLPI['cron_limit'], $_SERVER['argv'][$i]);
