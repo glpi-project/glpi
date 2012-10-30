@@ -2492,7 +2492,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getComments() {
 
-      /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
       $toadd   = array();
       if ($this->isField('completename')) {
