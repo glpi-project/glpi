@@ -301,7 +301,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get an Object ID by its MAC address (only if one result is found in the entity)
     *
-    * @param $value  the ip address
+    * @param $value  the mac address
     * @param $entity the entity to look for
     *
     * @return an array containing the object ID
