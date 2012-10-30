@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// TicketFollowup class
+/// TODO extends it from CommonDBChild
 class TicketFollowup  extends CommonDBTM {
 
 
@@ -512,7 +513,7 @@ class TicketFollowup  extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array('tickets_id' => $ticket->getField('id'));
+         $options['tickets_id'] = $ticket->getField('id');
          $this->check(-1,'w',$input);
       }
 

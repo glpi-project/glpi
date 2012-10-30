@@ -682,15 +682,9 @@ class TicketValidation  extends CommonDBChild {
 
       if ($ID > 0) {
          $this->check($ID,'w');
-         $tickets_id = $this->fields["tickets_id"];
       } else {
-         $tickets_id = $options['parent']->fields["id"];
-         $param      = array('tickets_id' => $tickets_id);
-         $this->check(-1,'w', $param);
-      }
-      $ticket = new Ticket();
-      if (!$ticket->getFromDB($tickets_id)) {
-         return false;
+         $options['tickets_id'] = $options['parent']->fields["id"];;
+         $this->check(-1,'w', $options);
       }
       // No update validation is answer set
       $validation_admin = (($this->fields["users_id"] == Session::getLoginUserID())

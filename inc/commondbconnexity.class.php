@@ -196,12 +196,12 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @warning if the update is not possible (right problem), then $input become false
     *
-    * @param $input (array, maybe altered) the new values for the current item
+    * @param $input (array) the new values for the current item
     * @param $fields (array)               list of fields that define the attached items
     *
     * @return true if the attached item has changed, false if the attached items has not changed
     **/
-   function prepareInputForUpdateForConnexity(array &$input, array $fields) {
+   function checkAttachedItemChangesAllowed(array $input, array $fields) {
 
       // Merge both arrays to ensure all the fields are defined for the following checks
       $input = array_merge($this->fields, $input);
@@ -219,48 +219,19 @@ abstract class CommonDBConnexity extends CommonDBTM {
             if ((!$new_item->can(-1, 'w', $input)) || (!$this->can($this->getID(), 'd'))) {
                Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
                                                 INFO, true);
-               $input = false;
+               return false;
             }
-            return true;
 
             // Solution 2 : simple check ! Can we update the item with new values ?
             if (!$new_item->can($input['id'], 'w')) {
                Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
                                                 INFO, true);
-               $input = false;
+               return false;
             }
-            return true;
          }
       }
 
-      return false;
-   }
-
-
-   /**
-    * @param $input
-   **/
-   function prepareInputForAdd($input) {
-
-      // Only CommoDBRelation or CommonDBChild can call this method.
-      // So we don't have to check $input validity
-
-      if ($this->tryEntityForwarding() && (!isset($input['entities_id']))) {
-         if (($this->itemToGetEntity instanceof CommonDBTM)
-            && $this->itemToGetEntity->isEntityForwardTo(get_called_class())) {
-
-            $input['entities_id']  = $this->itemToGetEntity->getEntityID();
-            $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
-
-         } else {
-            // No entity link : set default values
-            $input['entities_id']  = 0;
-            $input['is_recursive'] = 0;
-         }
-      }
-      unset($this->itemToGetEntity);
-
-      return parent::prepareInputForAdd($input);
+      return true;
    }
 
    /**
@@ -270,32 +241,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
     **/
    function tryEntityForwarding() {
       return (!static::$disableAutoEntityForwarding && $this->isEntityAssign());
-   }
-   
-   /**
-    * @param $input
-   **/
-   function prepareInputForUpdate($input) {
-
-      // Only CommoDBRelation or CommonDBChild can call this method.
-      // So we don't have to check $input validity
-
-      if ($this->tryEntityForwarding() && (!isset($input['entities_id']))) {
-         if (($this->itemToGetEntity instanceof CommonDBTM)
-            && $this->itemToGetEntity->isEntityForwardTo(get_called_class())) {
-
-            $input['entities_id']  = $this->itemToGetEntity->getEntityID();
-            $input['is_recursive'] = intval($this->itemToGetEntity->isRecursive());
-
-         } else {
-            // No entity link : set default values
-            $input['entities_id']  = 0;
-            $input['is_recursive'] = 0;
-         }
-      }
-      unset($this->itemToGetEntity);
-
-      return parent::prepareInputForUpdate($input);
    }
 
 

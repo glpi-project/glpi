@@ -516,7 +516,41 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                     static::$checkAlwaysBothItems);
    }
 
+   /**
+    * @since version 0.84
+   **/
+   function addNeededInfoToInput($input) {
+      // is entity missing and forwarding on ?
+      if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
+         // Merge both arrays to ensure all the fields are defined for the following checks
+         $completeinput = array_merge($this->fields, $input);
+         
+         $itemToGetEntity = false;
+         // Set the item to allow parent::prepareinputforadd to get the right item ...
+         if (static::$take_entity_1) {
+            $itemToGetEntity = static::getItemFromArray(static::$itemtype_1, static::$items_id_1,
+                                                            $completeinput);
+         } elseif (static::$take_entity_2) {
+            $itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
+                                                            $completeinput);
+         }
+         
+         // Set the item to allow parent::prepareinputforadd to get the right item ...
+         if (($itemToGetEntity instanceof CommonDBTM)
+            && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
 
+            $input['entities_id']  = $itemToGetEntity->getEntityID();
+            $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
+
+         } else {
+            // No entity link : set default values
+            $input['entities_id']  = 0;
+            $input['is_recursive'] = 0;
+         }
+      }
+      return $input;
+   }
+   
    /**
     * @since version 0.84
     *
@@ -527,20 +561,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if (!is_array($input)) {
          return false;
       }
-
-      $this->itemToGetEntity = false;
-      if ($this->tryEntityForwarding()) {
-         // Set the item to allow parent::prepareinputforadd to get the right item ...
-         if (static::$take_entity_1) {
-            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1, static::$items_id_1,
-                                                            $input);
-         } elseif (static::$take_entity_2) {
-            $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
-                                                            $input);
-         }
-      }
       
-      return parent::prepareInputForAdd($input);
+      return $this->addNeededInfoToInput($input);
    }
 
 
@@ -553,32 +575,15 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          return false;
       }
 
-      $complete_input = $input;
-      $this->itemToGetEntity = false;
       // True if item changed
-      if (parent::prepareInputForUpdateForConnexity($complete_input, array(static::$itemtype_1,
-                                                                           static::$items_id_1,
-                                                                           static::$itemtype_2,
-                                                                           static::$items_id_2))) {
-
-         if (!is_array($complete_input)) {
-            return false;
-         }
-         if ($this->tryEntityForwarding()) {
-            // Set the item to allow parent::prepareinputforupdate to get the right item ...
-            if (static::$take_entity_1) {
-               $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_1,
-                                                               static::$items_id_1,
-                                                               $complete_input);
-            } elseif (static::$take_entity_2) {
-               $this->itemToGetEntity = static::getItemFromArray(static::$itemtype_2,
-                                                               static::$items_id_2,
-                                                               $complete_input);
-            }
-         }
+      if (!parent::checkAttachedItemChangesAllowed($input, array(static::$itemtype_1,
+                                                                 static::$items_id_1,
+                                                                 static::$itemtype_2,
+                                                                 static::$items_id_2))) {
+         return false;
       }
 
-      return parent::prepareInputForUpdate($input);
+      return parent::addNeededInfoToInput($input);
    }
 
 

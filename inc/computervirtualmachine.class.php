@@ -102,11 +102,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      $computers_id = -1;
-      if (isset($options['computers_id'])) {
-        $computers_id = $options['computers_id'];
-      }
-
       if (!Session::haveRight("computer","w")) {
         return false;
       }
@@ -117,21 +112,16 @@ class ComputerVirtualMachine extends CommonDBChild {
          $this->check($ID,'r');
          $comp->getFromDB($this->fields['computers_id']);
       } else {
-         $comp->getFromDB($computers_id);
          // Create item
-         $input                  = array('entities_id'  => $comp->getEntityID(),
-                                         'computers_id' => $computers_id);
-         $options['entities_id'] = $comp->getEntityID();
-         $this->check(-1, 'w', $input);
+         $this->check(-1, 'w', $options);
+         $comp->getFromDB($options['computers_id']);
       }
 
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      if ($ID > 0) {
-        $computers_id = $this->fields["computers_id"];
-      } else {
-         echo "<input type='hidden' name='computers_id' value='$computers_id'>";
+      if ($this->isNewID($ID)) {
+         echo "<input type='hidden' name='computers_id' value='".$options['computers_id']."'>";
       }
 
       echo "<tr class='tab_bg_1'>";
