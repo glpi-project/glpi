@@ -267,9 +267,10 @@ function getSingular($string) {
                   'uses$'             => 'us', // Case like statuses
                   'us$'               => 'us', // Case like status
                   '([aeiou]{2})ses$'  => '\1s', // Case like aliases
-                  'lias$'             => 'lias', // Special case (aliases) when getSingular is called on already singular form
-                  '([^aeiou])ies$'     => '\1y', // special case : category
-                  '([^aeiou])y$'       => '\1y', // special case : category
+                  'lias$'             > 'lias', // Special case (aliases) when getSingular is called on already singular form
+                  '([^aeiou])ies$'    => '\1y', // special case : category
+                  '([^aeiou])y$'      => '\1y', // special case : category
+                  'xes$'              =>'x',
                   's$'                => ''); // Add at the end if not exists
 
    foreach ($rules as  $plural => $singular) {
