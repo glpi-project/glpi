@@ -1482,6 +1482,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $ldap_users    = array();
+      $user_infos    = array();
       $limitexceeded = false;
 
       // we prevent some delay...
@@ -1509,7 +1510,6 @@ class AuthLDAP extends CommonDBTM {
                                                                $values['end_date']);
             $filter           = "(&$filter $filter_timestamp)";
          }
-         // TODO $user_infos not initialized
          $result = self::searchForUsers($ds, $values, $filter, $attrs, $limitexceeded,
                                         $user_infos, $ldap_users, $config_ldap);
          if (!$result) {
