@@ -1379,7 +1379,7 @@ class Profile extends CommonDBTM {
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
 
-      $tab['inventory']          = __('Tools');
+      $tab['inventory']          = __('Assets');
 
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'computer';
@@ -1877,6 +1877,11 @@ class Profile extends CommonDBTM {
       $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', 2);
       $tab[64]['datatype']       = 'right';
 
+      $tab[120]['table']          = $this->getTable();
+      $tab[120]['field']          = 'rssfeed_public';
+      $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', 2);
+      $tab[120]['datatype']       = 'right';
+      
       return $tab;
    }
 
