@@ -98,26 +98,22 @@ if (($ok_master || $ok_slave )
     && DBConnection::establishDBConnection(false, false, false)) {
 
    // Check Auth connections
-   $auth = new Auth();
-   $auth->getAuthMethods();
-   $ldap_methods = $auth->authtypes["ldap"];
+   $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');
 
    if (count($ldap_methods)) {
       echo "Check LDAP servers:";
 
       foreach ($ldap_methods as $method) {
-         if ($method['is_active']) {
-            echo " ".$method['name'];
-            if (AuthLDAP::tryToConnectToServer($method, $method["rootdn"],
-                                               Toolbox::decrypt($method["rootdn_passwd"],
-                                               GLPIKEY))) {
-               echo "_OK";
-            } else {
-               echo "_PROBLEM";
-               $ok = false;
-            }
-            echo "\n";
+         echo " ".$method['name'];
+         if (AuthLDAP::tryToConnectToServer($method, $method["rootdn"],
+                                             Toolbox::decrypt($method["rootdn_passwd"],
+                                             GLPIKEY))) {
+            echo "_OK";
+         } else {
+            echo "_PROBLEM";
+            $ok = false;
          }
+         echo "\n";
       }
 
    } else {
@@ -128,8 +124,12 @@ if (($ok_master || $ok_slave )
 
    // TODO check CAS url / check url using socket ?
 
-   // TODO hook for plugin
-
+   // hook for plugin
+   $param = array('ok' => $ok);
+   Plugin::doHook("status", $param);
+   if (isset($param['ok'])) {
+      $ok = $param['ok'];
+   }
 }
 
 echo "\n";
