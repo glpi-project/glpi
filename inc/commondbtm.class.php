@@ -1984,8 +1984,6 @@ class CommonDBTM extends CommonGLPI {
          if ($this->isField("entities_id")) {
             //The object type can be assigned to an entity
             if ($this->isEntityAssign()) {
-               // TODO CommonDBChild must not use current entity, but parent entity
-
                if (isset($params['entities_id'])) {
                   $entity = $this->fields['entities_id'] = $params['entities_id'];
 
