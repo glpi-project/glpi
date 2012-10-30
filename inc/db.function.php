@@ -220,8 +220,6 @@ function getItemForItemtype($itemtype) {
 function getPlural($string) {
 
    $rules = array(//'singular' => 'plural'
-                  /// TODO : real singular is criterion and plural criteria.
-                  /// Need to update class / tables names
                   'criterias$'         =>'criterias',// Special case (criterias) when getPLural is called on already plural form
                   'ch$'                =>'ches',
                   'ches$'              =>'ches',
