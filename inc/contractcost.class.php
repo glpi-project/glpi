@@ -206,9 +206,7 @@ class ContractCost extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      echo "<input type='hidden' name='contracts_id' value='".$contract->fields['id']."'>";
-      echo "<input type='hidden' name='entities_id' value='".$contract->fields['entities_id']."'>";
-      echo "<input type='hidden' name='is_recursive' value='".$contract->fields['is_recursive']."'>";
+      echo "<input type='hidden' name='contracts_id' value='".$this->fields['contracts_id']."'>";
       Html::autocompletionTextField($this,'name');
       echo "</td>";
       echo "<td>".__('Cost')."</td>";
