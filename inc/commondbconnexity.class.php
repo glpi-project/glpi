@@ -59,6 +59,7 @@ class CommonDBConnexityItemNotFound extends Exception {
  *           parent(s) (cf. "check" before) AND we can create the item with the new parent(s).
  * - Entity: Entity is automatically setted or updated when setting or changing an attached item.
  *           Thus, you don't have any more to worry about entities.
+ *            (May be disable using $disableAutoEntityForwarding)
  * - Log:    when we create, update or delete an item, we update its parent(s)'s histories to
  *           notify them of the creation, update or deletion
  * - Flying items : some items can be on the stock. For instance, before beeing plugged inside a
@@ -77,7 +78,6 @@ class CommonDBConnexityItemNotFound extends Exception {
  * their methods (for instance: call parent::prepareInputForAdd($input) if you define
  * prepareInputForAdd). You can find an example with UserEmail::prepareInputForAdd($input).
  *
- * @TODO : may have to update the "Update" documentation regarding TODO below
  * @since 0.84
 **/
 abstract class CommonDBConnexity extends CommonDBTM {
@@ -212,7 +212,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
             $new_item = clone $this;
 
-            // TODO : choose between both solutions :
             // Solution 1 : If we cannot create the new item or delete the old item,
             // then we cannot update the item
             unset($new_item->fields);
@@ -223,11 +222,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
 
             // Solution 2 : simple check ! Can we update the item with new values ?
-            if (!$new_item->can($input['id'], 'w')) {
-               Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-                                                INFO, true);
-               return false;
-            }
+//             if (!$new_item->can($input['id'], 'w')) {
+//                Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+//                                                 INFO, true);
+//                return false;
+//             }
          }
       }
 

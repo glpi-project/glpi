@@ -53,7 +53,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    // Make an history of the changes -
    // if true, will write a event in the history of parent for add/delete
    public $dohistory = false;
-
+   
    /**
     * @since version 0.84
     *
@@ -399,8 +399,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    /**
     * Get the history name of item
-    *
-    * @TODO add ability to define specifically which field has been updated
     *
     * @param $item the other item
     * @param $case : can be overwrite by object
