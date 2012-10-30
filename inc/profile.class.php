@@ -1747,6 +1747,11 @@ class Profile extends CommonDBTM {
       $tab[81]['name']           = __('Delete all followups');
       $tab[81]['datatype']       = 'bool';
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'delete_validations';
+      $tab[121]['name']           = _('Delete all validations');
+      $tab[121]['datatype']       = 'bool';
+      
       $tab[85]['table']          = $this->getTable();
       $tab[85]['field']          = 'statistic';
       $tab[85]['name']           = __('Statistics');
