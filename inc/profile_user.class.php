@@ -615,7 +615,45 @@ class Profile_User extends CommonDBRelation {
       return array();
    }
 
+   /**
+    * Get entities for which a user have a right
+    *
+    * @param $user_ID         user ID
+    * @param $is_recursive    check also using recursive rights (true by default)
+    * @param $right           right to check (1 or read or write)
+    *
+    * @return array of entities ID
+   **/
+   static function getUserEntitiesForRight($user_ID, $right, $is_recursive=true) {
+      global $DB;
 
+      $query = "SELECT DISTINCT `glpi_profiles_users`.`entities_id`,
+                                `glpi_profiles_users`.`is_recursive`
+                FROM `glpi_profiles_users`
+                INNER JOIN `glpi_profiles`
+                  ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
+                WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
+                  AND `glpi_profiles`.`$right` IN ('1','r','w')";
+      $result = $DB->query($query);
+
+      if ($DB->numrows($result) > 0) {
+         $entities = array();
+
+         while ($data = $DB->fetch_assoc($result)) {
+            if ($data['is_recursive'] && $is_recursive) {
+               $tab      = getSonsOf('glpi_entities', $data['entities_id']);
+               $entities = array_merge($tab, $entities);
+            } else {
+               $entities[] = $data['entities_id'];
+            }
+         }
+
+         return array_unique($entities);
+      }
+
+      return array();
+   }
+   
    /**
     * Get user profiles (no entity association, use sqlfilter if needed)
     *
