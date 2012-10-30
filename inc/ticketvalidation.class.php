@@ -287,10 +287,8 @@ class TicketValidation  extends CommonDBChild {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      /// TODO : $mailsend don't seems to be used
 
       $job      = new Ticket();
-      $mailsend = false;
 
       $donotif = $CFG_GLPI["use_mailing"];
       if (isset($this->input['_disablenotif'])) {
@@ -301,7 +299,7 @@ class TicketValidation  extends CommonDBChild {
          if (count($this->updates) && $donotif) {
             $options  = array('validation_id'     => $this->fields["id"],
                               'validation_status' => $this->fields["status"]);
-            $mailsend = NotificationEvent::raiseEvent('validation_answer', $job, $options);
+            NotificationEvent::raiseEvent('validation_answer', $job, $options);
          }
 
          // Set global validation to accepted to define one
