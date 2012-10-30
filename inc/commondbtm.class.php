@@ -3380,6 +3380,8 @@ class CommonDBTM extends CommonGLPI {
     * @return nothing display the dropdown
    **/
    static function dropdown($options=array()) {
+      /// TODO try to revert usage : Dropdown::show calling this function
+      /// TODO use this function instead of Dropdown::show
       return Dropdown::show(get_called_class(), $options);
    }
 
