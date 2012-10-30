@@ -46,6 +46,7 @@ class Profile extends CommonDBTM {
                                           'faq', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
+                                          'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
                                           'ticketrecurrent', 
                                           'tickettemplates_id', 'ticket_cost',
@@ -599,7 +600,10 @@ class Profile extends CommonDBTM {
       self::dropdownRight("reminder_public", array('value'   => $this->fields["reminder_public"],
                                                    'nowrite' => true));
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
+      self::dropdownRight("rssfeed_public", array('value'   => $this->fields["rssfeed_public"],
+                                                  'nowrite' => true));
+      echo "</td>";
       echo "</td></tr>\n";
 
       if ($canedit) {
@@ -703,11 +707,11 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Tools')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Item notes')."</td><td>";
-      self::dropdownRight("notes", array('value' => $this->fields["notes"]));
-      echo "</td>";
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
       self::dropdownRight("reminder_public", array('value' => $this->fields["reminder_public"]));
+      echo "</td>";
+      echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
+      self::dropdownRight("rssfeed_public", array('value' => $this->fields["rssfeed_public"]));
       echo "</td>";
       echo "<td>"._n('Public bookmark', 'Public bookmarks', 2)."</td><td>";
       self::dropdownRight("bookmark_public", array('value' => $this->fields["bookmark_public"]));
@@ -736,7 +740,13 @@ class Profile extends CommonDBTM {
       self::dropdownRight("reservation_central",
                           array('value' => $this->fields["reservation_central"]));
       echo "</td></tr>\n";
-
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Item notes')."</td><td>";
+      self::dropdownRight("notes", array('value' => $this->fields["notes"]));
+      echo "</td>";
+      echo "<td colspan='4'>";
+      echo "</td></tr>";
+      
       if ($canedit
           && $closeform) {
          echo "<tr class='tab_bg_1'>";
