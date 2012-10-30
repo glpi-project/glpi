@@ -132,7 +132,6 @@ if (isset($_GET['create_ticket'])) {
       echo "<tr><td>&nbsp;</td></tr>";
    }
 
-   /// TODO add RSS feeds
    echo "</table>";
    echo "</td>";
    echo "</tr></table>";
