@@ -247,7 +247,6 @@ class Problem extends CommonITILObject {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
-      /// TODO add stats
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -322,7 +321,7 @@ class Problem extends CommonITILObject {
          NotificationEvent::raiseEvent($mailtype, $this);
       }
 
-      /// TODO auto solve tickets ?
+      /// TODO auto solve tickets ? issue #3605
    }
 
 

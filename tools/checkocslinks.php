@@ -31,6 +31,8 @@
 * @brief
 */
 
+/// TODO move it to ocs plugin
+
 // Ensure current directory when run from crontab
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 

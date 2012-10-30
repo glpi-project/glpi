@@ -342,8 +342,10 @@ class Planning extends CommonGLPI {
                "<span style='font-size:10px'>".__('Ical')."</span></a>";
          echo "<br>";
 
-         // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-         echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
+         $url = parse_url($CFG_GLPI["url_base"]);
+         
+         echo "<a target='_blank' href=\"webcal://".$url['host'].
+               (isset($url['path'])?$url['path']:'').
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
                "&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
