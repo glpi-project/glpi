@@ -48,16 +48,26 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
 
    // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_netpoints`.`name` AS prise, `glpi_networkports`.`name` AS port,
-                    `glpi_networkports`.`ip`, `glpi_networkports`.`mac`,
+                    `glpi_ipaddresses`.`name` as ip,
+                    `glpi_networkports`.`mac`,
                     `glpi_networkports`.`id` AS IDport, `glpi_locations`.`id`,
                     `glpi_locations`.`completename`
              FROM `glpi_locations`
              INNER JOIN `glpi_netpoints`
-                  ON `glpi_netpoints`.`locations_id` = `glpi_locations`.`id`
+                  ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`)
+             INNER JOIN `glpi_networkportethernets`
+                  ON (`glpi_networkportethernets`.`netpoints_id` = `glpi_netpoints`.`id`)
              INNER JOIN `glpi_networkports`
-                  ON `glpi_networkports`.`netpoints_id` = `glpi_netpoints`.`id`
+                  ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`networkports_id`)
+             LEFT JOIN `glpi_networknames`
+                  ON (`glpi_networknames`.`itemtype` = 'NetworkPort'
+                     AND `glpi_networkports`.`id` = `glpi_networknames`.`items_id`)
+             LEFT JOIN `glpi_ipaddresses`
+                  ON (`glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                     AND `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`)
              WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"])."
                    AND `glpi_networkports`.`itemtype` = 'NetworkEquipment'
+                   
              ORDER BY `glpi_locations`.`completename`, `glpi_networkports`.`name`";
 
    $result = $DB->query($query);
@@ -94,9 +104,11 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
                }
             }
 
-            $ip2      = $np->fields['ip'];
             $mac2     = $np->fields['mac'];
             $portordi = $np->fields['name'];
+            // TODO get IPs from opposite network port
+            $ip2      = '';
+            
          }
 
          $ip  = $ligne['ip'];
