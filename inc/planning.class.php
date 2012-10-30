@@ -472,9 +472,6 @@ class Planning extends CommonGLPI {
             $begin_act  = $end_time;
             $end_act    = $begin_time;
 
-            /// TODO : review system if 2 independent task from :10 -> :20 + :40 -> :50
-            /// Will view not available from :10 to :50
-            /// So do not display text for the moment
             reset($interv);
             while ($data = current($interv)) {
                if (($data["begin"] >= $begin_time)
@@ -517,8 +514,18 @@ class Planning extends CommonGLPI {
                }
             }
             if ($begin_act < $end_act) {
-               // Activity in hour
-               echo "<td class='notavailable'>&nbsp;</td>";
+               if ($begin_act <= $begin_time
+                  && $end_act >= $end_time) {
+                  // Activity in quarter
+                  echo "<td class='partialavailable'>&nbsp;</td>";
+               } else {
+                  // Not all the quarter
+                  if ($begin_act <= $begin_time) {
+                     echo "<td class='partialavailableend'>&nbsp;</td>";
+                  } else {
+                     echo "<td class='partialavailablebegin'>&nbsp;</td>";
+                  }
+               }
             } else {
                // No activity
                echo "<td class='available'>&nbsp;</td>";

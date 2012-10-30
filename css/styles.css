@@ -990,10 +990,21 @@ a.icon_nav_move:hover img {
    background-color: red;
 }
 
-.partialavailable {
-   background-color: pink;
+.partialavailableend {
+   background-image: -webkit-linear-gradient(left, red 50%, green  0%);
+   background-image: -moz-linear-gradient(left, red 50%, green  0%);
+   background-image: -ms-linear-gradient(left, red 50%, green  0%);
+   background-image: -o-linear-gradient(left, red 50%, green  0%);
+   background-image: linear-gradient(left, red 50%, green  0%);
 }
 
+.partialavailablebegin {
+   background-image: -webkit-linear-gradient(left, green 50%, red  0%);
+   background-image: -moz-linear-gradient(left, green 50%, red  0%);
+   background-image: -ms-linear-gradient(left, green 50%, red  0%);
+   background-image: -o-linear-gradient(left, green 50%, red  0%);
+   background-image: linear-gradient(left, green 50%, red  0%);
+}
 
 /* ################--------------- Menu navigation  ---------------#################### */
 
