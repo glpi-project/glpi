@@ -111,12 +111,12 @@ class Netpoint extends CommonDropdown {
     * @param $locations_id       default location ID for search (default -1)
     * @param $display_comment    display the comment near the dropdown (default 1)
     * @param $entity_restrict    Restrict to a defined entity(default -1)
-    * @param $devtype            (default -1)
+    * @param $devtype            (default '')
     *
     * @return nothing (display the select box)
    **/
    static function dropdownNetpoint($myname, $value=0, $locations_id=-1, $display_comment=1,
-                                    $entity_restrict=-1, $devtype=-1) {
+                                    $entity_restrict=-1, $devtype='') {
       global $CFG_GLPI;
 
       $rand          = mt_rand();
@@ -160,7 +160,7 @@ class Netpoint extends CommonDropdown {
                       'comment'         => $display_comment,
                       'rand'            => $rand,
                       'entity_restrict' => $entity_restrict,
-                      'devtype'         => $devtype,);
+                      'devtype'         => $devtype);
 
       $default = "<select name='$myname'><option value='$value'>$name</option></select>";
       Ajax::dropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
