@@ -3449,14 +3449,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       /// TODO : assign_to_ticket to assign_to_itil
       // Plugin case
-      if (isPluginItemType($itemtype)) {
-         /// TODO maybe only check plugin of itemtype ?
+      if ($plug = isPluginItemType($itemtype)) {
          //If it's not a core's type, then check plugins
          $types = array();
          if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
-            foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-               $types = Plugin::doOneHook($plugin, 'AssignToTicket', $types);
-            }
+            $types = Plugin::doOneHook($plug['plugin'], 'AssignToTicket', $types);
             if (array_key_exists($itemtype,$types)) {
                return true;
             }
