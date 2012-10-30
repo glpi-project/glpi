@@ -40,7 +40,7 @@ class Session {
 
    // GLPI MODE
    const NORMAL_MODE       = 0;
-   const TRANSLATION_MODE  = 1;
+   const TRANSLATION_MODE  = 1; // no more used
    const DEBUG_MODE        = 2;
 
 
@@ -553,7 +553,7 @@ class Session {
 
       $TRANSLATE = null;
 
-      // Test if pac is enable with special check for cli
+      // Test if apc is enable with special check for cli
       if ((ini_get('apc.enabled') && !isCommandLine()) ||
             ini_get('apc.enable_cli') ) { // Try from APC cache
 //          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
@@ -591,7 +591,7 @@ class Session {
          }
       }
 
-      /// TODO delete TRANSLATION_MODE or find another solution for gettext
+      // TRANSLATION_MODE deleted : maybe find another solution ?
       // Debug display lang element with item
 //       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
 //          foreach ($LANG as $module => $tab) {

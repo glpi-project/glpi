@@ -1914,7 +1914,7 @@ class User extends CommonDBTM {
         if (Session::haveRight("config", "w")) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
-            $modes[Session::TRANSLATION_MODE] = __('Translation');
+            //$modes[Session::TRANSLATION_MODE] = __('Translation');
             $modes[Session::DEBUG_MODE]       = __('Debug');
             Dropdown::showFromArray('use_mode', $modes, array('value' => $this->fields["use_mode"]));
          } else {
