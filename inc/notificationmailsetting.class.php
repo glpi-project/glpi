@@ -141,9 +141,7 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td>";
 
       if ($CFG_GLPI['use_mailing']) {
-         echo "<td >" . __('URL of the application') . "</td>";
-         echo "<td><input type='text' name='url_base' size='40' value='".$CFG_GLPI["url_base"]."'>";
-         echo "</td></tr>";
+         echo "<td colspan='2'></td></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Administrator email') . "</td>";
