@@ -94,7 +94,6 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 }
 
 // Reestablished DB connection
-//TODO : OCS move it into the ocsinventoryng plugin
 if (($ok_master || $ok_slave )
     && DBConnection::establishDBConnection(false, false, false)) {
 
