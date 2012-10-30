@@ -732,10 +732,10 @@ function update0782to080() {
          $DB->queryOrDie($query, "0.80 add ticket satisfaction notification");
          $notifid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtargets`
-                          (`id`, `notifications_id`, `type`, `items_id`)
-                   VALUES (NULL, $notifid, 1, 3)";
-         $DB->queryOrDie($query, "0.80 add ticket satisfaction notification target");
+//          $query = "INSERT INTO `glpi_notificationtargets`
+//                           (`id`, `notifications_id`, `type`, `items_id`)
+//                    VALUES (NULL, $notifid, 1, 3)";
+//          $DB->queryOrDie($query, "0.80 add ticket satisfaction notification target");
       }
    }
 
@@ -1094,10 +1094,10 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 add computer not unique notification");
       $notifid = $DB->insert_id();
 
-      $query = "INSERT INTO `glpi_notificationtargets`
-                       (`notifications_id`, `type`, `items_id`)
-                VALUES ($notifid, 1, 19);";
-      $DB->queryOrDie($query, "0.80 add computer not unique notification target");
+//       $query = "INSERT INTO `glpi_notificationtargets`
+//                        (`notifications_id`, `type`, `items_id`)
+//                 VALUES ($notifid, 1, 19);";
+//       $DB->queryOrDie($query, "0.80 add computer not unique notification target");
       }
    }
 
