@@ -710,7 +710,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                $changes[0] = 0;
                $changes[1] = addslashes($value);
                $changes[2] = addslashes($this->fields[$field]);
-
+               /// TODO clean management of it
                if ($new1 && $new1->dohistory
                    && static::$logs_for_itemtype_1) {
                   Log::history($new1->getID(), $new1->getType(), $changes,
