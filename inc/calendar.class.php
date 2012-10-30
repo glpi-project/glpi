@@ -207,11 +207,6 @@ class Calendar extends CommonDropdown {
       $DB->query($query2);
    }
 
-   // TODO : override it : only check link item (SLA / entity) but not calendars_holidays and calendarsegments
-//    function isUsed() {
-//    }
-
-
    /**
     * is an holiday day ?
     *
