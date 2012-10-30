@@ -418,8 +418,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($check_entity && static::$check_entity_coherency) {
 
          // If one of both extremity is not valid => not allowed !
-         // TODO : we may check this in all case, not only when checking coherency
-         // MoYo : I think only for add and update purpose. When viewing or deleting this check is not needed.
+         // (default is only to check on create and update not for view and delete)
          if ((!$item1 instanceof CommonDBTM)
              || (!$item2 instanceof CommonDBTM)) {
             return false;
