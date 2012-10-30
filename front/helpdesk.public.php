@@ -107,6 +107,11 @@ if (isset($_GET['create_ticket'])) {
       echo "</td></tr>";
    }
 
+   if (Session::haveRight("rssfeed_public","r")) {
+      echo "<tr><td class='top' width='450px'>";
+      RSSFeed::showListForCentral(false);
+      echo "</td></tr>";
+   }
    echo "</table></td>";
 
    echo "<td class='top' width='450px'><br>";
