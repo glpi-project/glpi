@@ -149,10 +149,28 @@ if (($ok_master || $ok_slave )
    } else {
       echo "No LDAP server\n";
    }
-   // TODO Check mail server : cannot open a mail connexion / only ping server ?
 
-   // TODO check CAS url / check url using socket ?
+   // Check CAS
+   if (!empty($CFG_GLPI["cas_host"])) {
+      echo "Check CAS server:";
+   
+      $url = $CFG_GLPI["cas_host"];
+      if (!empty($CFG_GLPI["cas_port"])) {
+         $url.=':'.intval($CFG_GLPI["cas_port"]);
+      }
+      $url.=$CFG_GLPI["cas_uri"];
+      $data = Toolbox::getURLContent($url);
+      if (!empty($data)) {
+         echo "_OK";
+      } else {
+         echo "_PROBLEM";
+         $ok = false;
+      }
+      echo "\n";      
+   }
 
+   /// TODO  Check mailcollectors
+   
    // hook for plugin
    $param = array('ok' => $ok);
    Plugin::doHook("status", $param);

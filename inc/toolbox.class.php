@@ -1426,20 +1426,32 @@ class Toolbox {
 
       $content = "";
       $taburl  = parse_url($url);
+   
       // Connection directe
       if (empty($CFG_GLPI["proxy_name"])) {
-         if ($fp = @fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
+         $hostscheme = '';
+         $defaultport = 80;
+         // Manage standard HTTPS port : scheme detection or port 443
+         if ((isset($taburl["scheme"]) && $taburl["scheme"]=='https')
+            || (isset($taburl["port"]) && $taburl["port"]=='443')) {
+            $hostscheme = 'ssl://';
+            $defaultport = 443;
+         }
+         if ($fp = @fsockopen($hostscheme.$taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : $defaultport),
                             $errno, $errstr, 1)) {
-
+               
             if (isset($taburl["path"]) && ($taburl["path"] != '/')) {
+               $toget = $taburl["path"];
+               if (isset($taburl["query"])) {
+                  $toget.='?'.$taburl["query"];
+               }
                // retrieve path + args
-               $request = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
+               $request = "GET $toget HTTP/1.1\r\n";
             } else {
                $request = "GET / HTTP/1.1\r\n";
             }
 
             $request .= "Host: ".$taburl["host"]."\r\n";
-
          } else {
             if (isset($msgerr)) {
                //TRANS: %s is the error string
@@ -1471,6 +1483,7 @@ class Toolbox {
 
       $request .= "User-Agent: GLPI/".trim($CFG_GLPI["version"])."\r\n";
       $request .= "Connection: Close\r\n\r\n";
+      
       fwrite($fp, $request);
 
       $header = true ;
@@ -1493,7 +1506,6 @@ class Toolbox {
                         // Redirect to another host
                         return (self::getURLContent($desturl, $errstr, $rec+1));
                      }
-
                      // redirect to same host
                      return (self::getURLContent((isset($taburl['scheme'])?$taburl['scheme']:'http').
                                                  "://".$taburl['host'].
@@ -1871,7 +1883,6 @@ class Toolbox {
 
       $tab = Toolbox::parseMailServerConnectString($value);
       
-      print_r($tab);
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
       echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\"></td></tr>\n";
 
