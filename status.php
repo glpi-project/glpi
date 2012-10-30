@@ -97,7 +97,7 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 if (($ok_master || $ok_slave )
     && DBConnection::establishDBConnection(false, false, false)) {
 
-   // Check Auth connections
+   // Check LDAP Auth connections
    $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');
 
    if (count($ldap_methods)) {
@@ -120,6 +120,35 @@ if (($ok_master || $ok_slave )
       echo "No LDAP server\n";
    }
 
+   // Check IMAP Auth connections
+   $imap_methods = getAllDatasFromTable('glpi_authmails', '`is_active`=1');
+
+   if (count($imap_methods)) {
+      echo "Check IMAP servers:";
+
+      foreach ($imap_methods as $method) {
+         $param = Toolbox::parseMailServerConnectString($method['connect_string'], true);
+         if ($param['ssl'] === true) {
+            $host = 'ssl://'.$host;
+         } else {
+            if ($param['tls'] === true) {
+               $host = 'tls://'.$host;
+            }
+         }
+         if ($fp = @fsockopen($host, $param['port'],
+                            $errno, $errstr, 1)) {
+            echo "_OK";
+         } else {
+            echo "_PROBLEM";
+            $ok = false;
+         }
+         fclose($fp);
+         echo "\n";
+      }
+
+   } else {
+      echo "No LDAP server\n";
+   }
    // TODO Check mail server : cannot open a mail connexion / only ping server ?
 
    // TODO check CAS url / check url using socket ?
