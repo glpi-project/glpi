@@ -553,7 +553,9 @@ class Session {
 
       $TRANSLATE = null;
 
-      if (function_exists('apc_fetch')) { // Try from APC cache
+      // Test if pac is enable with special check for cli
+      if ((ini_get('apc.enabled') && !isCommandLine()) ||
+            ini_get('apc.enable_cli') ) { // Try from APC cache
 //          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc',
                                                            'plugins' => array('exception_handler'
