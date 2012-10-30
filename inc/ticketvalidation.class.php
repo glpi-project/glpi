@@ -686,6 +686,7 @@ class TicketValidation  extends CommonDBChild {
          $options['tickets_id'] = $options['parent']->fields["id"];;
          $this->check(-1,'w', $options);
       }
+
       // No update validation is answer set
       $validation_admin = (($this->fields["users_id"] == Session::getLoginUserID())
                           && static::canCreate()
@@ -699,15 +700,14 @@ class TicketValidation  extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Approval requester')."</td>";
          echo "<td>";
-         echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
-         echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
+         echo "<input type='hidden' name='tickets_id' value='".$this->fields['tickets_id']."'>";
          echo getUserName($this->fields["users_id"]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
          User::dropdown(array('name'   => "users_id_validate",
-                              'entity' => $ticket->fields['entities_id'],
+                              'entity' => $this->getEntityID(),
                               'right'  => 'validate_ticket',
                               'value'  => $this->fields["users_id_validate"]));
          echo "</td></tr>";
