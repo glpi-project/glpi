@@ -319,6 +319,22 @@ abstract class CommonDBConnexity extends CommonDBTM {
       return true;
    }
 
+   /**
+    * @since version 0.84
+    *
+    * Get the change values for history when only the fields of the CommonDBChild are updated
+    * @warning can be call as many time as fields are updated
+    *
+    * @param $field the name of the field that has changed
+    *
+    * @return array as the third parameter of Log::history() method or false if we don't want to
+    *         log for the given field
+   **/
+   function getHistoryChangeWhenUpdateField($field) {
+      return array('0',
+                   addslashes($this->oldvalues[$field]),
+                   addslashes($this->fields[$field]));
+   }
 
    /**
     * Factorized method to search difference when updating a connexity : return both previous
