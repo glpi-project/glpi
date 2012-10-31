@@ -365,7 +365,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
       return $input;
    }
-   
+
    /**
     * @since version 0.84
    **/
@@ -391,7 +391,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if (!parent::checkAttachedItemChangesAllowed($input, array(static::$itemtype,
                                                                  static::$items_id))) {
          return false;
-      } 
+      }
 
       return parent::addNeededInfoToInput($input);
    }
@@ -403,8 +403,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param $item the other item
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBChild is added (to and item)
-    *              - 'update values previous' old values of the CommonDBChild itself
-    *              - 'update values next' next values of the CommonDBChild itself
     *              - 'update item previous' transfert : this is removed from the old item
     *              - 'update item next' transfert : this is added to the new item
     *              - 'delete' when this CommonDBChild is remove (from an item)
@@ -457,24 +455,24 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
 
-      if (!isset($items_for_log['previous'])) {
 
-         // Haven't updated the connexity relation
-         $oldvalues = $this->oldvalues;
-         unset($oldvalues[static::$itemtype]);
-         unset($oldvalues[static::$items_id]);
-         if (count($oldvalues) > 0) {
-            $item = $items_for_log['new'];
-            if (($item !== false) && $item->dohistory) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getHistoryNameForItem($item, 'update values previous'));
-               $changes[2] = addslashes($this->getHistoryNameForItem($item, 'update values next'));
-               Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                            static::$log_history_update);
+      // Whatever case : we log the changes
+      $oldvalues = $this->oldvalues;
+      unset($oldvalues[static::$itemtype]);
+      unset($oldvalues[static::$items_id]);
+      $item = $items_for_log['new'];
+      if (($item !== false) && $item->dohistory) {
+         foreach ($oldvalues as $field => $value) {
+            $changes = $this->getHistoryChangeWhenUpdateField($field);
+            if ((!is_array($changes)) || (count($changes) != 3)) {
+               continue;
             }
+            Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
+                         static::$log_history_update);
          }
+      }
 
-      } else {
+      if (isset($items_for_log['previous'])) {
          // Have updated the connexity relation
 
          $prevItem = $items_for_log['previous'];

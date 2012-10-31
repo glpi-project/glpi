@@ -594,8 +594,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item    CommonDBTM object   the other item (ie. : $item2)
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBRelation is added (to and item)
-    *              - 'update values previous' old values of the CommonDBRelation itself
-    *              - 'update values next' next values of the CommonDBRelation itself
     *              - 'update item previous' transfert : this is removed from the old item
     *              - 'update item next' transfert : this is added to the new item
     *              - 'delete' when this CommonDBRelation is remove (from an item)
@@ -616,8 +614,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item the other item (ie. : $item1)
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBRelation is added (to and item)
-    *              - 'update values previous' old values of the CommonDBRelation itself
-    *              - 'update values next' next values of the CommonDBRelation itself
     *              - 'update item previous' transfert : this is removed from the old item
     *              - 'update item next' transfert : this is added to the new item
     *              - 'delete' when this CommonDBRelation is remove (from an item)
@@ -698,23 +694,22 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          unset($oldvalues[static::$items_id_1]);
          unset($oldvalues[static::$itemtype_2]);
          unset($oldvalues[static::$items_id_2]);
-         if (count($oldvalues) > 0) {
-            foreach ($oldvalues as $field => $value) {
-               $changes[0] = 0;
-               $changes[1] = addslashes($value);
-               $changes[2] = addslashes($this->fields[$field]);
-               /// TODO clean management of it
-               if ($new1 && $new1->dohistory
-                   && static::$logs_for_itemtype_1) {
-                  Log::history($new1->getID(), $new1->getType(), $changes,
-                               get_called_class().'#'.$field, static::$log_history_1_update);
-               }
-               if ($new2 && $new2->dohistory
-                   && static::$logs_for_itemtype_2) {
-                  Log::history($new2->getID(), $new2->getType(), $changes,
-                               get_called_class().'#'.$field, static::$log_history_2_update);
-               }
 
+         foreach ($oldvalues as $field => $value) {
+            $changes = $this->getHistoryChangeWhenUpdateField($field);
+            if ((!is_array($changes)) || (count($changes) != 3)) {
+               continue;
+            }
+            /// TODO clean management of it
+            if ($new1 && $new1->dohistory
+                && static::$logs_for_itemtype_1) {
+               Log::history($new1->getID(), $new1->getType(), $changes,
+                            get_called_class().'#'.$field, static::$log_history_1_update);
+            }
+            if ($new2 && $new2->dohistory
+                && static::$logs_for_itemtype_2) {
+               Log::history($new2->getID(), $new2->getType(), $changes,
+                            get_called_class().'#'.$field, static::$log_history_2_update);
             }
          }
 

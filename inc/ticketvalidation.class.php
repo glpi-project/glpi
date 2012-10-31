@@ -316,6 +316,28 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBConnexity::getHistoryChangeWhenUpdateField
+   **/
+   function getHistoryChangeWhenUpdateField($field) {
+      if ($field == 'status') {
+         $username = getUserName($this->fields["users_id_validate"]);
+         $result = array('0', '', '');
+         if ($this->fields["status"] == 'accepted') {
+            //TRANS: %s is the username
+            $result[2] = sprintf(__('Approval granted by %s'), $username);
+         } else {
+            //TRANS: %s is the username
+            $result[2] = sprintf(__('Update the approval request to %s'), $username);
+         }
+         return $result;
+      }
+      return false;
+   }
+
    /**
     * @since version 0.84
     *
@@ -327,14 +349,6 @@ class TicketValidation  extends CommonDBChild {
       switch ($case) {
          case 'add':
             return sprintf(__('Approval request send to %s'), $username);
-
-         case 'update values next':
-            if ($this->fields["status"] == 'accepted') {
-               //TRANS: %s is the username
-               return sprintf(__('Approval granted by %s'), $username);
-            }
-            //TRANS: %s is the username
-            return sprintf(__('Update the approval request to %s'), $username);
 
          case 'delete':
             return sprintf(__('Cancel the approval request to %s'), $username);
