@@ -565,18 +565,18 @@ class Session {
          $TRANSLATE->setCache($cache);
          $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
-      } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
-         // TODO : use xcache adapter of Zend when available (2.1)
-         // see http://framework.zend.com/issues/browse/ZF2-543
-         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-         if (@xcache_isset($key)) {
-            $TRANSLATE = unserialize(xcache_get($key));
-         }
-         if (!$TRANSLATE) {
-            $TRANSLATE = new Zend\I18n\Translator\Translator;
-            $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-         }
-         $tmp = xcache_set($key, serialize($TRANSLATE));
+//      } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
+//         // TODO : use xcache adapter of Zend when available (2.1)
+//         // see http://framework.zend.com/issues/browse/ZF2-543
+//         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
+//         if (@xcache_isset($key)) {
+//            $TRANSLATE = unserialize(xcache_get($key));
+//         }
+//         if (!$TRANSLATE) {
+//            $TRANSLATE = new Zend\I18n\Translator\Translator;
+//            $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
+//         }
+//         $tmp = xcache_set($key, serialize($TRANSLATE));
       } else {
          $TRANSLATE = new Zend\I18n\Translator\Translator;
          $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
