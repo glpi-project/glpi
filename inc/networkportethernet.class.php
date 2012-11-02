@@ -133,12 +133,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       if (!empty($this->fields['speed'])) {
          $row->addCell($row->getHeaderByName('Instantiation', 'speed'),
-                       $this->fields["speed"], $father);
+                       self::getPortSpeed($this->fields["speed"]), $father);
       }
 
       if (!empty($this->fields['type'])) {
          $row->addCell($row->getHeaderByName('Instantiation', 'type'),
-                       $this->fields["type"], $father);
+                       self::getPortTypeName($this->fields["type"]), $father);
       }
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
@@ -401,11 +401,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    **/
    static function getPortSpeed($val=NULL) {
 
-      $tmp = array(0     => "",
-                   10    => 10,
-                   100   => 100,
-                   1000  => 1000,
-                   10000 => 10000);
+      $tmp = array(0     => '',
+                   10    => __('10 Mbit/s'),
+                   100   => __('100 MBit/s'),
+                   1000  => __('1 GBit/s'),
+                   10000 => __('10 GBit/s'));
 
       if (is_null($val)) {
          return $tmp;

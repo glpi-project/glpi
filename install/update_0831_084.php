@@ -2119,7 +2119,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
                   `netpoints_id` int(11) NOT NULL DEFAULT '0',
                   `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT '' COMMENT 'T, LX, SX',
-                  `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
+                  `speed` int(11) NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `card` (`items_devicenetworkcards_id`),
