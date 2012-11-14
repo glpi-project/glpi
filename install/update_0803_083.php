@@ -902,8 +902,8 @@ function update0803to083() {
    // check unicity for users email : unset rule and display warning
    foreach ($DB->request("glpi_fieldunicities",
                          "`itemtype` = 'User' AND `fields` LIKE '%email%'") as $data) {
-      $query = "UPDATE `glpi_fieldunicities `
-                SET `is_active` = 0
+      $query = "UPDATE `glpi_fieldunicities`
+                SET `is_active` = '0'
                 WHERE `id` = '".$data['id']."'";
       $DB->query($query);
       echo "<div class='red'><p>A unicity check use email for users. ";
