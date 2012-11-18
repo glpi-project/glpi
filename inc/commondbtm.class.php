@@ -2695,8 +2695,8 @@ class CommonDBTM extends CommonGLPI {
          $p['comments'] = false;
          $name = $this->getName($p);
          
-         //TRANS: %1$s is a name, %2$d is ID
-         $name = sprintf(__('%1$s (%2$d)'), $name, $this->getField('id'));
+         //TRANS: %1$s is a name, %2$s is ID
+         $name = sprintf(__('%1$s (%2$s)'), $name, $this->getField('id'));
          
          if ($addcomment) {
             $comment = $this->getComments();
