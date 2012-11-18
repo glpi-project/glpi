@@ -401,11 +401,14 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    **/
    static function getPortSpeed($val=NULL) {
 
+      
       $tmp = array(0     => '',
-                   10    => __('10 Mbit/s'),
-                   100   => __('100 MBit/s'),
-                   1000  => __('1 GBit/s'),
-                   10000 => __('10 GBit/s'));
+                   //TRANS: %d is the speed
+                   10    => sprintf(__('%d Mbit/s'),10),
+                   100   => sprintf(__('%d Mbit/s'),100),
+                   //TRANS: %d is the speed
+                   1000  => sprintf(__('%d Gbit/s'),1),
+                   10000 => sprintf(__('%d Gbit/s'),10),
 
       if (is_null($val)) {
          return $tmp;
