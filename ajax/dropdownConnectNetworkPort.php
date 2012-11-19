@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: dropdownConnectEthernetPort.php 19451 2012-10-09 12:42:51Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
@@ -46,24 +46,32 @@ if (class_exists($_POST["itemtype"])
     && isset($_POST["item"])) {
    $table = getTableForItemType($_POST["itemtype"]);
 
+   if ($_POST['instantiation_type'] == 'NetworkPortEthernet') {
+      $npname_field = "`glpi_netpoints`.`name`";
+      $JOINS = "LEFT JOIN `glpi_networkportethernets`
+                  ON (`glpi_networkportethernets`.`id` = `glpi_networkports`.`id`)
+                LEFT JOIN `glpi_netpoints`
+                  ON (`glpi_netpoints`.`id`=`glpi_networkportethernets`.`netpoints_id`)";
+   } else {
+      $npname_field = "''";
+      $JOINS = "";
+   }
+
    $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
                              `glpi_networkports`.`id` AS did,
                              `$table`.`name` AS cname,
                              `glpi_networkports`.`name` AS nname,
-                             `glpi_netpoints`.`name` AS npname
+                             $npname_field AS npname
              FROM `$table`
              LEFT JOIN `glpi_networkports`
                ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
                    AND `glpi_networkports`.`itemtype` = '".$_POST["itemtype"]."'
                    AND `glpi_networkports`.`items_id` = `$table`.`id`
-                   AND `glpi_networkports`.`instantiation_type` = 'NetworkPortEthernet')
-             LEFT JOIN `glpi_networkportethernets`
-               ON (`glpi_networkportethernets`.`id` = `glpi_networkports`.`id`)
+                   AND `glpi_networkports`.`instantiation_type` = '" . $_POST['instantiation_type'] . "')
              LEFT JOIN `glpi_networkports_networkports`
                ON (`glpi_networkports_networkports`.`networkports_id_1` = `glpi_networkports`.`id`
                    OR `glpi_networkports_networkports`.`networkports_id_2`=`glpi_networkports`.`id`)
-             LEFT JOIN `glpi_netpoints`
-               ON (`glpi_netpoints`.`id`=`glpi_networkportethernets`.`netpoints_id`)
+             $JOINS
              WHERE `glpi_networkports_networkports`.`id` IS NULL
                    AND `glpi_networkports`.`id` IS NOT NULL
                    AND `glpi_networkports`.`id` <> '".$_POST['networkports_id']."'

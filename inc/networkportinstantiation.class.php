@@ -120,6 +120,8 @@ class NetworkPortInstantiation extends CommonDBChild {
                    'vlans'         => array('name'    => __('VLAN'),
                                             'default' => false),
                    'virtual_ports' => array('name'    => __('Virtual ports'),
+                                            'default' => false),
+                   'port_opposite' => array('name'    => __('Opposite link'),
                                             'default' => false));
    }
 
@@ -162,6 +164,52 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       return NULL;
+   }
+
+
+  /**
+   * @see NetworkPortInstantiation::getInstantiationHTMLTable()
+  **/
+   function getInstantiationHTMLTableWithPeer(NetworkPort $netport, HTMLTableRow $row,
+                                              HTMLTableCell $father=NULL, array $options=array()) {
+
+      $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
+                                        'parameters' => array(clone $netport)));
+
+      $oppositePort = NetworkPort_NetworkPort::getOpposite($netport);
+      if ($oppositePort !== false) {
+
+         $opposite_options            = $options;
+         $opposite_options['canedit'] = false;
+         $display_options             = $options['display_options'];
+
+         if ($display_options['port_opposite']) {
+            $cell          = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                           __('Local network port'));
+
+            $opposite_cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                           $connect_cell_value);
+            $opposite_cell->setAttributForTheRow(array('class' => 'htmltable_upper_separation_cell'));
+
+            $oppositeInstantiationPort = $oppositePort->getInstantiation();
+            if ($oppositeInstantiationPort !== false) {
+               $oppositeInstantiationPort->getPeerInstantiationHTMLTable($oppositePort, $row,
+                                                                         $opposite_cell,
+                                                                         $opposite_options);
+            }
+
+         } else {
+            $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                  $connect_cell_value);
+          }
+
+      } else {
+         $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                               $connect_cell_value);
+      }
+
+      $this->getPeerInstantiationHTMLTable($netport, $row, $cell, $options);
+      return $cell;
    }
 
 
@@ -643,5 +691,152 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                          $itemtype) {
    }
 
+
+   /**
+    * Display a connection of a networking port
+    *
+    * @param $netport      to be displayed
+    * @param $edit         boolean permit to edit ? (false by default)
+   **/
+   static function showConnection($netport, $edit=false) {
+
+      $ID      = $netport->fields["id"];
+      if (empty($ID)) {
+         return false;
+      }
+
+      $device1 = $netport->getItem();
+
+      if (!$device1->can($device1->getID(), 'r')) {
+         return false;
+      }
+      $canedit      = $device1->can($device1->fields["id"], 'w');
+      $relations_id = 0;
+      $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
+
+      if ($oppositePort !== false) {
+         $device2 = $oppositePort->getItem();
+
+         if ($device2->can($device2->fields["id"], 'r')) {
+            $networklink = $oppositePort->getLink();
+            $tooltip     = Html::showToolTip($oppositePort->fields['comment'],
+                                             array('display' => false));
+            $netlink     = sprintf(__('%1$s %2$s'),
+                                   "<span class='b'>".$networklink."</span>\n", $tooltip);
+            //TRANS: %1$s and %2$s are links
+            echo "&nbsp;". sprintf(__('%1$s on %2$s'), $netlink,
+                                   "<span class='b'>".$device2->getLink()."</span>");
+            if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
+               echo "<br>(". Dropdown::getDropdownName("glpi_entities",
+                                                       $device2->getEntityID()) .")";
+            }
+
+            // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+            if ($canedit
+                || $device2->can($device2->fields["id"], 'w')) {
+               echo "&nbsp;";
+               Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Disconnect'),
+                                    array('id' => $relations_id));
+            }
+
+         } else {
+            if (rtrim($oppositePort->fields["name"]) != "") {
+               $netname = $oppositePort->fields["name"];
+            } else {
+               $netname = __('Without name');
+            }
+            printf(__('%1$s on %2$s'), "<span class='b'>".$netname."</span>",
+                   "<span class='b'>".$device2->getName()."</span>");
+            echo "<br>(" .Dropdown::getDropdownName("glpi_entities",
+                                                    $device2->getEntityID()) .")";
+         }
+
+      } else {
+         echo "<div id='not_connected_display$ID'>" . __('Not connected.') . "</div>";
+         if ($canedit) {
+            if (!$device1->isTemplate()) {
+               if ($edit) {
+                  self::dropdownConnect($ID,
+                                        array('name'        => 'NetworkPortConnect_networkports_id_2',
+                                              'entity'      => $device1->fields["entities_id"],
+                                              'entity_sons' => $device1->isRecursive()));
+               } else {
+                  echo "<a href=\"".$netport->getFormURL()."?id=$ID\">". __('Connect')."</a>";
+               }
+            } else {
+               echo "&nbsp;";
+            }
+         }
+      }
+   }
+
+
+   /**
+    * Make a select box for  connected port
+    *
+    * @param $ID                 ID of the current port to connect
+    * @param $options   array of possible options
+    *    - name : string / name of the select (default is networkports_id)
+    *    - comments : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - entity_sons : boolean / if entity restrict specified auto select its sons
+    *                   only available if entity is a single value not an array (default false)
+    *
+    * @return nothing (print out an HTML select box)
+   **/
+   static function dropdownConnect($ID, $options=array()) {
+      global $CFG_GLPI;
+
+      $p['name']        = 'networkports_id';
+      $p['comments']    = 1;
+      $p['entity']      = -1;
+      $p['entity_sons'] = false;
+
+     if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      // Manage entity_sons
+      if (!($p['entity'] < 0) && $p['entity_sons']) {
+         if (is_array($p['entity'])) {
+            _e('entity_sons options are not available with array of entity');
+         } else {
+            $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
+         }
+      }
+
+      $rand = mt_rand();
+      echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
+      echo "<select name='NetworkPortConnect_itemtype' id='itemtype$rand'>";
+      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
+
+      foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
+         if ($item = getItemForItemtype($itemtype)) {
+            echo "<option value='".$itemtype."'>".$item->getTypeName(1)."</option>";
+         } else {
+            unset($CFG_GLPI["networkport_types"][$key]);
+         }
+      }
+      echo "</select>";
+
+      $params = array('itemtype'           => '__VALUE__',
+                      'entity_restrict'    => $p['entity'],
+                      'networkports_id'    => $ID,
+                      'comments'           => $p['comments'],
+                      'myname'             => $p['name'],
+                      'instantiation_type' => get_called_class());
+
+      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+                                    $CFG_GLPI["root_doc"].
+                                       "/ajax/dropdownConnectNetworkPortDeviceType.php",
+                                    $params);
+
+      echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
+
+      return $rand;
+   }
 }
 ?>
