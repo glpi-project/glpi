@@ -54,7 +54,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
                                              HTMLTableHeader $father=NULL,
                                              array $options=array()) {
 
-      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
+      $header          = $group->addHeader('Connected', __('Connected to'), $super);
+
+      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
       return NULL;
    }
 
@@ -62,8 +64,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
-   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=NULL, array $options=array()) {
+   protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                                    HTMLTableCell $father = NULL,
+                                                    array $options=array()) {
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
       return NULL;
@@ -71,13 +74,28 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 
+  /**
+   * @see NetworkPortInstantiation::getInstantiationHTMLTable()
+  **/
+   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                      HTMLTableCell $father=NULL, array $options=array()) {
+
+      return parent::getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
+   }
+
+
    /**
     * @see NetworkPortInstantiation::showInstantiationForm()
-   */
+   **/
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
       echo "<tr class='tab_bg_1'>";
       $this->showMacField($netport, $options);
+
+      echo "<td>".__('Connected to').'</td><td>';
+      self::showConnection($netport, true);
+      echo "</td>";
+
       echo "</tr>";
    }
 

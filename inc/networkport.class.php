@@ -419,7 +419,7 @@ class NetworkPort extends CommonDBChild {
       }
       return $options;
    }
-   
+
 
    /**
     * Show ports for an item

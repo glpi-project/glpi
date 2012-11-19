@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: dropdownConnectEthernetPortDeviceType.php 19451 2012-10-09 12:42:51Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
@@ -51,14 +51,16 @@ if (class_exists($_POST["itemtype"])) {
                      'rand'            => $rand,
                      'myname'          => "items",
                      'entity_restrict' => $_POST["entity_restrict"],
-                     'update_item'     => array('value_fieldname' => 'item',
-                                                'to_update'       => "results_item_$rand",
-                                                'url' => $CFG_GLPI["root_doc"].
-                                                            "/ajax/dropdownConnectEthernetPort.php",
-                                                'moreparams'      => array('networkports_id'
-                                                                              => $_POST['networkports_id'],
-                                                'itemtype'        => $_POST['itemtype'],
-                                                'myname'          => $_POST['myname'])));
+                     'condition'       => "(`id` in (SELECT `items_id` FROM `glpi_networkports` WHERE `itemtype` = '".$_POST["itemtype"]."' AND `instantiation_type` = '".$_POST['instantiation_type']."'))",
+                     'update_item'     =>
+                       array('value_fieldname' => 'item',
+                             'to_update'       => "results_item_$rand",
+                             'url' => $CFG_GLPI["root_doc"]. "/ajax/dropdownConnectNetworkPort.php",
+                             'moreparams'      =>
+                               array('networkports_id'    => $_POST['networkports_id'],
+                                     'itemtype'           => $_POST['itemtype'],
+                                     'myname'             => $_POST['myname'],
+                                     'instantiation_type' => $_POST['instantiation_type'])));
 
    $default = "<select name='NetworkPortConnect_item'><option value='0'>".Dropdown::EMPTY_VALUE."</option>".
               "</select>\n";
