@@ -111,7 +111,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
       // Check item 2 type
-      $condition_id_2 = "`".static::$items_id_2."` = 'items_id'";
+      $condition_id_2 = "`".static::$items_id_2."` = '$items_id'";
       $fields[]       = "`".static::$items_id_2."` as items_id_2";
       if (preg_match('/^itemtype/', static::$itemtype_2)) {
          $fields[]    = "`".static::$itemtype_2."` AS itemtype_2";
