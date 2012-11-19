@@ -106,17 +106,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
-  /**
-    * Get HTMLTable row for a given ethernet network port and a given extremity
-    *
-    * @param $netport         NetworkPort object
-    * @param $row             HTMLTableRow object
-    * @param $father          HTMLTableCell object : the given extremity
-    * @param $options   array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *       - 'withtemplate' : integer withtemplate param
-    *
-    * @return the father cell for the Internet Informations ...
+   /**
+    * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                                     HTMLTableCell $father = NULL,

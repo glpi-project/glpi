@@ -167,9 +167,44 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
-  /**
-   * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-  **/
+   /**
+    * Get HTMLTable row for a given network port and a given extremity when two ports are
+    * existing on a link (NetworkPort_NetworkPort).
+    *
+    * @param $netport         NetworkPort object (contains item)
+    * @param $row             HTMLTableRow object
+    * @param $father          HTMLTableHeader object (default NULL)
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
+    *       - 'withtemplate' : integer withtemplate param
+    *
+    * @return the father cell for the Internet Informations ...
+   **/
+   protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
+                                                    HTMLTableCell $father = NULL,
+                                                    array $options=array()) {
+
+      self::getInstantiationHTMLTable($netport, $row, $father, $options);
+      return NULL;
+
+   }
+
+
+   /**
+    * Replacement of NetworkPortInstantiation::getInstantiationHTMLTable() method when two ports
+    * share the same link (NetworkPort_NetworkPort). Used, for instance by Dialup and Ethernet.
+    *
+    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
+    *
+    * @param $netport         NetworkPort object (contains item)
+    * @param $row             HTMLTableRow object
+    * @param $father          HTMLTableHeader object (default NULL)
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
+    *       - 'withtemplate' : integer withtemplate param
+    *
+    * @return the father cell for the Internet Informations ...
+   **/
    function getInstantiationHTMLTableWithPeer(NetworkPort $netport, HTMLTableRow $row,
                                               HTMLTableCell $father=NULL, array $options=array()) {
 
