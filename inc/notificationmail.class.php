@@ -236,8 +236,10 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       $mmail->AddAddress($options['to'], $options['toname']);
 
-      $mmail->MessageID = "<GLPI-".$options["items_id"].".".time().".".rand(). "@".php_uname('n').">";
-
+      if (!empty($options['messageid'])) {
+         $mmail->MessageID = "<".$options['messageid'].">";
+      }
+      
       $messageerror = __('Error in sending the email');
 
       if (!$mmail->Send()) {

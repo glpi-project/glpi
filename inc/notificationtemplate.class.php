@@ -482,6 +482,7 @@ class NotificationTemplate extends CommonDBTM {
       $mailing_options['fromname']    = $sender['name'];
       $mailing_options['replyto']     = $replyto['email'];
       $mailing_options['replytoname'] = $replyto['name'];
+      $mailing_options['messageid']   = $target->getMessageID();
 
       $template_data    = $this->templates_by_languages[$tid];
       $mailing_options['subject']      = $template_data['subject'];
