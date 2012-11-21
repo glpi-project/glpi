@@ -1150,7 +1150,9 @@ class Ticket extends CommonITILObject {
       }
 
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
-
+      // Recompute default values based on values computed by rules
+      $input = $this->computeDefaultValuesForAdd($input);
+      
       if (isset($input['_users_id_requester'])
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector

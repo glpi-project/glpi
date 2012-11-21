@@ -893,32 +893,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 
-      if (!isset($input["status"])) {
-         $input["status"] = "new";
-      }
 
-      if (!isset($input["date"]) || empty($input["date"])) {
-         $input["date"] = $_SESSION["glpi_currenttime"];
-      }
-
-      if (isset($input["status"]) && in_array($input["status"],
-                                              $this->getSolvedStatusArray())) {
-         if (isset($input["date"])) {
-            $input["solvedate"] = $input["date"];
-         } else {
-            $input["solvedate"] = $_SESSION["glpi_currenttime"];
-         }
-      }
-
-      if (isset($input["status"]) && in_array($input["status"],
-                                              $this->getClosedStatusArray())) {
-         if (isset($input["date"])) {
-            $input["closedate"] = $input["date"];
-         } else {
-            $input["closedate"] = $_SESSION["glpi_currenttime"];
-         }
-         $input['solvedate'] = $input["closedate"];
-      }
 
       // No name set name
       if (empty($input["name"])) {
@@ -947,6 +922,40 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["status"] = "assign";
       }
 
+      $input = $this->computeDefaultValuesForAdd($input);
+
+      return $input;
+   }
+
+   /// Compute default values for Add (to be passed in prepareInputForAdd before and after rules if needed)
+   function computeDefaultValuesForAdd($input) {
+      if (!isset($input["status"])) {
+         $input["status"] = "new";
+      }
+
+      if (!isset($input["date"]) || empty($input["date"])) {
+         $input["date"] = $_SESSION["glpi_currenttime"];
+      }
+
+      if (isset($input["status"]) && in_array($input["status"],
+                                              $this->getSolvedStatusArray())) {
+         if (isset($input["date"])) {
+            $input["solvedate"] = $input["date"];
+         } else {
+            $input["solvedate"] = $_SESSION["glpi_currenttime"];
+         }
+      }
+
+      if (isset($input["status"]) && in_array($input["status"],
+                                              $this->getClosedStatusArray())) {
+         if (isset($input["date"])) {
+            $input["closedate"] = $input["date"];
+         } else {
+            $input["closedate"] = $_SESSION["glpi_currenttime"];
+         }
+         $input['solvedate'] = $input["closedate"];
+      }
+      
       // Set begin waiting time if status is waiting
       if (isset($input["status"]) && $input["status"]=="waiting") {
          $input['begin_waiting_date'] = $input['date'];
@@ -954,8 +963,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $input;
    }
-
-
+   
    function post_addItem() {
 
       // Add document if needed, without notification
