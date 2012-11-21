@@ -189,6 +189,10 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::PATTERN_UNDER :
+            // If criteria begin with _ strip it
+            if ($criteria[0] == '_') {
+               $criteria = substr($criteria, 1);
+            }
             $table  = getTableNameForForeignKeyField($criteria);
             $values = getSonsOf($table, $pattern);
             if (isset($values[$field])) {
@@ -197,6 +201,10 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::PATTERN_NOT_UNDER :
+            // If criteria begin with _ strip it
+            if ($criteria[0] == '_') {
+               $criteria = substr($criteria, 1);
+            }
             $table  = getTableNameForForeignKeyField($criteria);
             $values = getSonsOf($table, $pattern);
             if (isset($values[$field])) {
