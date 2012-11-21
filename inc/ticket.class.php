@@ -2576,7 +2576,9 @@ class Ticket extends CommonITILObject {
                   } else {
                      $group_where .= " OR ";
                   }
-                  $group_where .= " `groups_id` = '".$data["groups_id"]."' ";
+                  $a_groups = getAncestorsOf("glpi_groups", $data["groups_id"]);
+                  $a_groups[$data["groups_id"]] = $data["groups_id"];
+                  $group_where .= " `groups_id` IN (".implode(',', $a_groups).") ";
                }
 
                $tmp_device = "";
