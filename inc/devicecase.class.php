@@ -47,7 +47,7 @@ class DeviceCase extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'devicecasetypes_id',
-                                     'label' => __('Size'),
+                                     'label' => __('Type'),
                                      'type'  => 'dropdownValue')));
    }
 
@@ -58,7 +58,7 @@ class DeviceCase extends CommonDevice {
 
       $tab[12]['table']    = 'glpi_devicecasetypes';
       $tab[12]['field']    = 'name';
-      $tab[12]['name']     = __('Size');
+      $tab[12]['name']     = __('Type');
       $tab[12]['datatype'] = 'dropdown';
 
       return $tab;
