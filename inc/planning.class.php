@@ -925,7 +925,7 @@ class Planning {
       
       if ($dotz) {
          $tz = date_default_timezone_get();
-         $v->setProperty( "w-wr-timezone", $tz );
+         $v->setProperty( "X-WR-TIMEZONE", $tz );
          $xprops = array( "X-LIC-LOCATION" => $tz );
          iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
       }
@@ -935,7 +935,6 @@ class Planning {
       } else {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
-
       
       $v->setProperty( "method", "PUBLISH" );
       $v->setProperty( "version", "2.0" );
