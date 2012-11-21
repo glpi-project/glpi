@@ -2976,7 +2976,7 @@ class Search {
                   }
                   $add_minus = '';
                   if (isset($searchopt[$ID]["datafields"][3])) {
-                     $add_minus = "-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
+                     $add_minus = "-`$table`.`".$searchopt[$ID]["datafields"][3]."`";
                   }
 
                   $date_computation = "ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
