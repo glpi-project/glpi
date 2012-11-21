@@ -95,6 +95,11 @@ function getTableNameForForeignKeyField($fkname) {
    if (strpos($fkname,'_id') === false) {
       return "";
    }
+   // If $fkname begin with _ strip it
+   if ($fkname[0] == '_') {
+      $fkname = substr($fkname, 1);
+   }
+
    return "glpi_".preg_replace("/_id.*/", "", $fkname);
 }
 
