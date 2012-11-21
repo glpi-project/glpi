@@ -66,7 +66,44 @@ class Problem_Ticket extends CommonDBRelation{
       return parent::getSearchOptions();
    }
 
+   function post_addItem() {
+      global $CFG_GLPI;
+      
+      $donotif = $CFG_GLPI["use_mailing"];
 
+      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+         $donotif = false;
+      }
+      if ($donotif) {
+         $problem = new Problem();
+         if ($problem->getFromDB($this->input["problems_id"])) {
+            $options = array();
+            NotificationEvent::raiseEvent("update", $problem, $options);
+         }
+      }
+
+      parent::post_addItem();
+   }
+
+   function post_deleteFromDB() {
+      global $CFG_GLPI;
+
+      $donotif = $CFG_GLPI["use_mailing"];
+
+      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+         $donotif = false;
+      }
+      if ($donotif) {
+         $problem = new Problem();
+         if ($problem->getFromDB($this->fields["problems_id"])) {
+            $options = array();
+            NotificationEvent::raiseEvent("update", $problem, $options);
+         }
+      }
+
+      parent::post_deleteFromDB();
+   }
+   
    /**
     * Show tickets for a problem
     *

@@ -356,13 +356,15 @@ class Problem extends CommonITILObject {
          if ($ticket->getFromDB($this->input['_tickets_id'])) {
             $pt = new Problem_Ticket();
             $pt->add(array('tickets_id'  => $this->input['_tickets_id'],
-                           'problems_id' => $this->fields['id']));
+                           'problems_id' => $this->fields['id'],
+                           '_no_notif'   => true));
 
             if (!empty($ticket->fields['itemtype']) && $ticket->fields['items_id']>0) {
                $it = new Item_Problem();
                $it->add(array('problems_id' => $this->fields['id'],
                               'itemtype'    => $ticket->fields['itemtype'],
-                              'items_id'    => $ticket->fields['items_id']));
+                              'items_id'    => $ticket->fields['items_id'],
+                              '_no_notif'   => true));
             }
          }
       }
