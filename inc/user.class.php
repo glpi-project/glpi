@@ -3075,9 +3075,11 @@ class User extends CommonDBTM {
    static function getOrImportByEmail($email='') {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `users_id` AS id
+      $query = "SELECT `users_id` as id
                 FROM `glpi_useremails`
-                WHERE `email` = '$email'";
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
+                WHERE `glpi_useremails`.`email` = '$email'
+                ORDER BY `glpi_users`.`is_active`  DESC";
       $result = $DB->query($query);
 
       //User still exists in DB
