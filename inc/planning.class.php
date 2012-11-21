@@ -990,6 +990,11 @@ class Planning extends CommonGLPI {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
 
+      $tz = date_default_timezone_get();
+      $v->setProperty( "w-wr-timezone", $tz );
+      $xprops = array( "X-LIC-LOCATION" => $tz );
+      iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
+         
       $v->setProperty( "method", "PUBLISH" );
       $v->setProperty( "version", "2.0" );
       $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
