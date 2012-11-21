@@ -2974,9 +2974,14 @@ class Search {
                   if (isset($searchopt[$ID]['delayunit'])) {
                      $delay_unit = $searchopt[$ID]['delayunit'];
                   }
+                  $add_minus = '';
+                  if (isset($searchopt[$ID]["datafields"][3])) {
+                     $add_minus = "-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
+                  }
+
                   $date_computation = "ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
-                                               INTERVAL `$table`.".$searchopt[$ID]["datafields"][2]."
-                                               $delay_unit)";
+                                               INTERVAL (`$table`.".$searchopt[$ID]["datafields"][2]."
+                                               $add_minus) $delay_unit)";
                }
                if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link ($date_computation ".$SEARCH.') ';
