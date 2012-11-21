@@ -54,7 +54,7 @@ class DeviceCase extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'devicecasetypes_id',
-                                     'label' => $LANG['device_case'][0],
+                                     'label' => $LANG['common'][17],
                                      'type'  => 'dropdownValue')));
    }
 
@@ -66,7 +66,7 @@ class DeviceCase extends CommonDevice {
 
       $tab[12]['table'] = 'glpi_devicecasetypes';
       $tab[12]['field'] = 'name';
-      $tab[12]['name']  = $LANG['device_case'][0];
+      $tab[12]['name']  = $LANG['common'][17];
 
       return $tab;
    }
@@ -82,7 +82,7 @@ class DeviceCase extends CommonDevice {
 
       $data['label'] = $data['value'] = array();
       if ($this->fields["devicecasetypes_id"]) {
-         $data['label'][] = $LANG['device_case'][0];
+         $data['label'][] = $$LANG['common'][17];
          $data['value'][] = Dropdown::getDropdownName("glpi_devicecasetypes",
                                                       $this->fields["devicecasetypes_id"]);
       }
