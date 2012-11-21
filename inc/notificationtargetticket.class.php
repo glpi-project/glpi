@@ -91,7 +91,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       return parent::getSubjectPrefix();
    }
 
-
+   function getMessageID() {
+      return "GLPI-".$this->obj->getField('id').".".time().".".rand(). "@".php_uname('n');
+   }
+   
    function addAdditionnalInfosForTarget() {
       global $DB;
 

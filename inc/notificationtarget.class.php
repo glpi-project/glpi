@@ -116,8 +116,12 @@ class NotificationTarget extends CommonDBChild {
       return "[$perso_tag] ";
 
    }
-
-
+   
+   /// Return message id for notification
+   function getMessageID() {
+      return "";
+   }
+   
    static function getTypeName($nb=0) {
       global $LANG;
 

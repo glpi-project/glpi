@@ -443,6 +443,7 @@ class NotificationTemplate extends CommonDBTM {
       $mailing_options['fromname']    = $sender['name'];
       $mailing_options['replyto']     = $replyto['email'];
       $mailing_options['replytoname'] = $replyto['name'];
+      $mailing_options['messageid']   = $target->getMessageID();
 
       if (isset($user_infos['additionnaloption'])) {
          $additionnaloption =  $user_infos['additionnaloption'];
