@@ -38,14 +38,14 @@ if (isset($_POST["update"])) {
 
    $item->update($_POST);
 
-   Event::log($_POST["id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "slas", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    Html::back();
 
 } else if (isset($_POST["add"])) {
    $item->check(-1, 'w', $_POST);
 
    if ($item->add($_POST)) {
-      Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+      Event::log($_POST["slas_id"], "slas", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
    Html::back();
 
@@ -59,13 +59,13 @@ if (isset($_POST["update"])) {
             }
          }
       }
-      Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["slas_id"], "slas", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
    } else if (isset($_POST['id'])) {
       $item->check($_POST['id'], 'd');
       $ok = $item->delete($_POST);
       if ($ok) {
-         Event::log($_POST["id"], "slas", 4, "config",
+         Event::log($_POST["id"], "slas", 4, "setup",
                     $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$item->getField('name'));
       }
       $item->redirectToList();
