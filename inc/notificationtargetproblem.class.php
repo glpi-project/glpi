@@ -92,7 +92,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          }
 
          $datas['##problem.numberoftickets##'] = 0;
-         if (!empty($datas['problems'])) {
+         if (!empty($datas['tickets'])) {
             $datas['##problem.numberoftickets##'] = count($datas['tickets']);
          }
 
