@@ -1033,6 +1033,32 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 
+      // No name set name
+      if (empty($input["name"])) {
+         $input["name"] = preg_replace('/\r\n/',' ',$input['content']);
+         $input["name"] = preg_replace('/\n/',' ',$input['name']);
+         // For mailcollector
+         $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
+         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
+         $input["name"] = Toolbox::substr($input['name'],0,70);
+      }
+
+
+      // Set default dropdown
+      $dropdown_fields = array('entities_id', 'itilcategories_id');
+      foreach ($dropdown_fields as $field ) {
+         if (!isset($input[$field])) {
+            $input[$field] = 0;
+         }
+      }
+
+      $input = $this->computeDefaultValuesForAdd($input);
+
+      return $input;
+   }
+
+   /// Compute default values for Add (to be passed in prepareInputForAdd before and after rules if needed)
+   function computeDefaultValuesForAdd($input) {
       if (!isset($input["status"])) {
          $input["status"] = self::INCOMING;
       }
@@ -1060,25 +1086,6 @@ abstract class CommonITILObject extends CommonDBTM {
          $input['solvedate'] = $input["closedate"];
       }
 
-      // No name set name
-      if (empty($input["name"])) {
-         $input["name"] = preg_replace('/\r\n/',' ',$input['content']);
-         $input["name"] = preg_replace('/\n/',' ',$input['name']);
-         // For mailcollector
-         $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
-         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
-         $input["name"] = Toolbox::substr($input['name'],0,70);
-      }
-
-
-      // Set default dropdown
-      $dropdown_fields = array('entities_id', 'itilcategories_id');
-      foreach ($dropdown_fields as $field ) {
-         if (!isset($input[$field])) {
-            $input[$field] = 0;
-         }
-      }
-
       // Set begin waiting time if status is waiting
       if (isset($input["status"]) && ($input["status"] == self::WAITING)) {
          $input['begin_waiting_date'] = $input['date'];
@@ -1086,8 +1093,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $input;
    }
-
-
+   
    function post_addItem() {
 
       // Add document if needed, without notification
