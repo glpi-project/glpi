@@ -991,7 +991,7 @@ class Planning extends CommonGLPI {
       }
 
       $tz = date_default_timezone_get();
-      $v->setProperty( "w-wr-timezone", $tz );
+      $v->setProperty( "X-WR-TIMEZONE", $tz );
       $xprops = array( "X-LIC-LOCATION" => $tz );
       iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
          
