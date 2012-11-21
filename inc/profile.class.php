@@ -357,7 +357,7 @@ class Profile extends CommonDBTM {
                   break;
 
                default :
-                  $query .= " AND (`glpi_profiles`.`$key` IS NULL OR `glpi_profiles`.`$key` = '') ";
+                  $query .= " AND (`glpi_profiles`.`$key` IS NULL OR `glpi_profiles`.`$key` IN ('0', '')) ";
             }
          }
       }
