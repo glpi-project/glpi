@@ -342,17 +342,17 @@ class Toolbox {
     * @see clean_cross_side_scripting_deep
    **/
    static function unclean_html_cross_side_scripting_deep($value) {
-
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
-
       $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'),
                                             $value)
                                 : (is_null($value) ? NULL : str_replace($out,$in,$value));
 
       include_once(GLPI_HTMLAWED);
 
-      $value = htmLawed($value, array('safe'=>1));
+      $config = array('safe'=>1);
+      $config["elements"] = "*+iframe";
+      $value = htmLawed($value, $config);
 
       return $value;
    }
