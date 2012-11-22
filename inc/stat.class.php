@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -1429,7 +1429,7 @@ class Stat {
          echo Search::showHeader($output_type, $end_display-$start+1, 2, 1);
          $header_num = 1;
          echo Search::showNewLine($output_type);
-         echo Search::showHeaderItem($output_type, _('Associated element'), $header_num);
+         echo Search::showHeaderItem($output_type, __('Associated element'), $header_num);
          if ($view_entities) {
             echo Search::showHeaderItem($output_type, __('Entity'), $header_num);
          }
