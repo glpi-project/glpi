@@ -2357,8 +2357,8 @@ class Ticket extends CommonITILObject {
          $tab[44]['forcegroupby']   = true;
          $tab[44]['massiveaction']  = false;
          $tab[44]['joinparams']     = array('jointype'  => 'child');
-         
-         $tab['problem']           = Problem::getTypeName(2);
+
+         $tab['problem']            = Problem::getTypeName(2);
 
          $tab[141]['table']         = 'glpi_problems_tickets';
          $tab[141]['field']         = 'count';
@@ -2706,7 +2706,7 @@ class Ticket extends CommonITILObject {
                   }
                   $a_groups = getAncestorsOf("glpi_groups", $data["groups_id"]);
                   $a_groups[$data["groups_id"]] = $data["groups_id"];
-                  $group_where .= " `groups_id` IN (".implode(',', $a_groups).") ";                  
+                  $group_where .= " `groups_id` IN (".implode(',', $a_groups).") ";
                }
 
                $tmp_device = "";

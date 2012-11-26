@@ -92,20 +92,20 @@ class NetworkPort extends CommonDBChild {
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    /**
     * @since version 0.84
     *
     * @see CommonDBTM::getPreAdditionalInfosForName
    **/
    function getPreAdditionalInfosForName() {
-   
+
       if ($item = $this->getItem()) {
          return $item->getName() . ' <';
       }
       return '';
    }
-   
+
    /**
     * \brief get the list of available network port type.
     *
@@ -387,6 +387,7 @@ class NetworkPort extends CommonDBChild {
    function resetConnections($ID) {
    }
 
+
    /**
     * Get available display options array
     *
@@ -518,8 +519,8 @@ class NetworkPort extends CommonDBChild {
 
       if (($withtemplate != 2)
           && $canedit) {
-         $c_checkbox = $table->addHeader('checkbox',Html::getCheckAllAsCheckbox('mass'.__CLASS__.
-                                                                                $rand));
+         $c_checkbox = $table->addHeader('checkbox',
+                                         Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand));
       } else {
          $c_checkbox = NULL;
       }

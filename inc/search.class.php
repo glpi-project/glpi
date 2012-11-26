@@ -2365,7 +2365,7 @@ class Search {
                      GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
                                  AS ".$NAME."_".$num."_2,
                      $ADDITONALFIELDS";
-         
+
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
                                   AS ".$NAME."_$num, ";
@@ -4556,8 +4556,8 @@ class Search {
                return Html::timestampToString($data[$NAME.$num],$withseconds);
 
             case "email" :
-               $split = explode('$$$$', $data[$NAME.$num]);
-               $out   = '';
+               $split         = explode('$$$$', $data[$NAME.$num]);
+               $out           = '';
                $count_display = 0;
                foreach ($split as $val) {
                   $split2 = self::explodeWithID("$$", $val);

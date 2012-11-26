@@ -616,7 +616,7 @@ function update0831to084() {
       }
    }
 
-   
+
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'contract and ticket costs'));
 
@@ -1007,30 +1007,28 @@ function update0831to084() {
    $migration->addField("glpi_slalevels", 'match',
                         "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
-   // Clean observer as recipent of satisfaction survey
+   // Clean observer as recipient of satisfaction survey
    $query = "DELETE FROM `glpi_notificationtargets`
-               WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
-                     AND `glpi_notificationtargets`.`items_id` = '".Notification::OBSERVER."'
-                     AND `notifications_id` IN (
-                  SELECT `glpi_notifications`.`id`
-                  FROM `glpi_notifications`
-                  WHERE `glpi_notifications`.`itemtype` = 'Ticket'
-                        AND `glpi_notifications`.`event` = 'satisfaction'
-               )";
+             WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
+                   AND `glpi_notificationtargets`.`items_id` = '".Notification::OBSERVER."'
+                   AND `notifications_id` IN (SELECT `glpi_notifications`.`id`
+                                              FROM `glpi_notifications`
+                                              WHERE `glpi_notifications`.`itemtype` = 'Ticket'
+                                                    AND `glpi_notifications`.`event` = 'satisfaction')";
+
    $DB->queryOrDie($query, "0.84 clean targets for satisfaction notification");
-   
-   // Clean user as recipent of Item not unique
+
+   // Clean user as recipient of item not unique
    $query = "DELETE FROM `glpi_notificationtargets`
-               WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
-                     AND `glpi_notificationtargets`.`items_id` = '".Notification::USER."'
-                     AND `notifications_id` IN (
-                  SELECT `glpi_notifications`.`id`
-                  FROM `glpi_notifications`
-                  WHERE `glpi_notifications`.`itemtype` = 'FieldUnicity'
-                        AND `glpi_notifications`.`event` = 'refuse'
-               )";
-   $DB->queryOrDie($query, "0.84 clean targets for satisfaction notification");
-   
+             WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
+                   AND `glpi_notificationtargets`.`items_id` = '".Notification::USER."'
+                   AND `notifications_id` IN (SELECT `glpi_notifications`.`id`
+                                              FROM `glpi_notifications`
+                                              WHERE `glpi_notifications`.`itemtype` = 'FieldUnicity'
+                                                    AND `glpi_notifications`.`event` = 'refuse')";
+
+   $DB->queryOrDie($query, "0.84 clean targets for fieldunicity notification");
+
    if (!TableExists('glpi_blacklists')) {
       $query = "CREATE TABLE `glpi_blacklists` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1397,7 +1395,7 @@ function update0831to084() {
    $migration->dropField('glpi_tickettemplatemandatoryfields', 'is_recursive');
    $migration->dropField('glpi_tickettemplatehiddenfields', 'entities_id');
    $migration->dropField('glpi_tickettemplatehiddenfields', 'is_recursive');
-   
+
    // Clean unlinked calendar segments and holidays
    $query = "DELETE
              FROM `glpi_calendars_holidays`
@@ -1415,24 +1413,15 @@ function update0831to084() {
 
 
    // Add keys for serial, otherserial and uuid
-   $newindexes = array(
-                    'serial' => array('glpi_computers',
-                                      'glpi_items_deviceharddrives',
-                                      'glpi_items_devicememories',
-                                      'glpi_items_deviceprocessors',
-                                      'glpi_monitors',
-                                      'glpi_networkequipments',
-                                      'glpi_peripherals',
-                                      'glpi_phones',
-                                      'glpi_printers',),
-                     'otherserial' => array('glpi_computers',
-                                      'glpi_monitors',
-                                      'glpi_networkequipments',
-                                      'glpi_peripherals',
-                                      'glpi_phones',
-                                      'glpi_printers',),
-                     'uuid' => array('glpi_computers', 'glpi_computervirtualmachines'),
-                    );                  
+   $newindexes = array('serial'      => array('glpi_computers', 'glpi_items_deviceharddrives',
+                                              'glpi_items_devicememories',
+                                              'glpi_items_deviceprocessors', 'glpi_monitors',
+                                              'glpi_networkequipments', 'glpi_peripherals',
+                                              'glpi_phones', 'glpi_printers'),
+                       'otherserial' => array('glpi_computers', 'glpi_monitors',
+                                              'glpi_networkequipments', 'glpi_peripherals',
+                                              'glpi_phones', 'glpi_printers'),
+                       'uuid'        => array('glpi_computers', 'glpi_computervirtualmachines'));
    foreach ($newindexes as $field => $tables) {
       foreach ($tables as $table) {
          $migration->addKey($table, $field);
@@ -1502,16 +1491,27 @@ function update0831to084() {
 }
 
 
+/**
+ * @param $origin
+ * @param $id
+ * @param $itemtype
+ * @param $items_id
+ * @param $error
+**/
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
    global $migration_log_file;
 
    if ($migration_log_file) {
       fwrite($migration_log_file,
-             $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
+             $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "]: " . $error . "\n");
    }
 }
 
 
+/**
+ * @param $msg
+ * @param $andDisplay
+**/
 function logMessage($msg, $andDisplay) {
    global $migration, $migration_log_file;
 
@@ -1525,6 +1525,14 @@ function logMessage($msg, $andDisplay) {
 }
 
 
+/**
+ * @param $itemtype
+ * @param $items_id
+ * @param $main_items_id
+ * @param $main_itemtype
+ * @param $entities_id
+ * @param $IP
+**/
 function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_itemtype,
                                    $entities_id, $IP) {
    global $migration;
@@ -1574,8 +1582,7 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
 
    } else { // Don't add the NetworkName if the address is not valid
       addNetworkPortMigrationError($items_id, 'invalid_address');
-      logNetworkPortError('invalid IP address', $items_id, $main_itemtype,
-                          $main_items_id, "$IP");
+      logNetworkPortError('invalid IP address', $items_id, $main_itemtype, $main_items_id, "$IP");
    }
 
    unset($IPaddress);
@@ -1583,10 +1590,16 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
 }
 
 
+/**
+ * @param $port
+ * @param $fields
+ * @param $setNetworkCard
+**/
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    global $DB, $migration;
 
-   $query = "SELECT `origin_glpi_networkports`.`name`, `origin_glpi_networkports`.`id`,
+   $query = "SELECT `origin_glpi_networkports`.`name`,
+                    `origin_glpi_networkports`.`id`,
                     `origin_glpi_networkports`.`mac`, ";
 
    $addleftjoin         = '';
@@ -1624,7 +1637,6 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
          unset($portInformation['networkinterface']);
       }
 
-
       foreach ($fields as $field) {
          $input[$field] = $portInformation[$field];
       }
@@ -1642,7 +1654,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
          if ($DB->numrows($result) > 0) {
             $set_first = ($DB->numrows($result) == 1);
             while ($link = $DB->fetch_assoc($result)) {
-               if (($set_first) || ($link['name'] == $portInformation['name'])) {
+               if ($set_first || ($link['name'] == $portInformation['name'])) {
                   $input['items_devicenetworkcards_id'] = $link['link_id'];
                   break;
                }
@@ -1654,6 +1666,10 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
 }
 
 
+/**
+ * @param $networkports_id
+ * @param $motive
+**/
 function addNetworkPortMigrationError($networkports_id, $motive) {
    global $DB;
 
@@ -1675,7 +1691,9 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
 
 /**
  * Update all Network Organisation
- **/
+ *
+ * @param $ADDTODISPLAYPREF
+**/
 function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    global $DB, $migration;
 
@@ -1759,7 +1777,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `fqdn` (`fqdn`),
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      //TRANS: %1$s is the title of the update, %2$s is the DB error
+
       $DB->queryOrDie($query, "0.84 create glpi_fqdns");
 
       $fqdn = new FQDN();
@@ -1869,6 +1887,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `gateway` (`gateway_0`, `gateway_1`, `gateway_2`, `gateway_3`),
                   KEY `name` (`name`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_ipnetworks");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
@@ -1897,16 +1916,16 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          }
 
          $networkDefinition = "$address/$netmask";
-         $networkName   = $networkDefinition . (empty($gateway) ? "" : " - ".$gateway);
+         $networkName       = $networkDefinition . (empty($gateway) ? "" : " - ".$gateway);
 
-         $input         = array('entities_id'   => $entities_id,
-                                'name'          => $networkName,
-                                'network'       => $networkDefinition,
-                                'gateway'       => $gateway,
-                                'ipnetworks_id' => 0,
-                                'addressable'   => 1,
-                                'completename'  => $networkName,
-                                'level'         => 1);
+         $input             = array('entities_id'   => $entities_id,
+                                    'name'          => $networkName,
+                                    'network'       => $networkDefinition,
+                                    'gateway'       => $gateway,
+                                    'ipnetworks_id' => 0,
+                                    'addressable'   => 1,
+                                    'completename'  => $networkName,
+                                    'level'         => 1);
 
          $preparedInput = $network->prepareInput($input);
 
@@ -1964,6 +1983,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `item` (`itemtype`, `items_id`),
                   KEY `fqdns_id` (`fqdns_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networknames");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
@@ -1998,6 +2018,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `name` (`name`),
                   KEY `networknames_id` (`networknames_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkaliases");
    }
 
@@ -2015,6 +2036,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `ipnetworks_id` (`ipnetworks_id`),
                   KEY `ipaddresses_id` (`ipaddresses_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
       $DB->queryOrDie($query, "0.84 create glpi_ipaddresses_ipnetworks");
    }
 
@@ -2085,7 +2107,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $migration->dropField('glpi_networkequipments', $field);
    }
 
-   //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Index mac field and transform address mac to lower'));
 
@@ -2095,7 +2116,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
 
    $migration->addKey('glpi_networkports', 'mac');
 
-   //TRANS: %s is the name of the table
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Update migration of interfaces errors'));
 
@@ -2127,12 +2147,12 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `type` (`type`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
       ///TODO add type T SX LX
-      updateNetworkPortInstantiation($port, array('`netpoints_id`' => 'netpoints_id'),
-                                     true);
+      updateNetworkPortInstantiation($port, array('`netpoints_id`' => 'netpoints_id'), true);
    }
 
    //TRANS: %s is the name of the table
@@ -2158,6 +2178,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `version` (`version`),
                   KEY `mode` (`mode`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkportwifis");
 
       $port = new NetworkPortWifi();
@@ -2175,6 +2196,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkportlocals");
 
       $port = new NetworkPortLocal();
@@ -2192,6 +2214,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkportdialups");
 
       $port = new NetworkPortDialup();
@@ -2212,6 +2235,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
       // Transform NetworkEquipment local MAC address as a networkport that aggregates all ports
@@ -2298,6 +2322,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `networkports_id_alias` (`networkports_id_alias`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
       $DB->queryOrDie($query, "0.84 create glpi_networkportaliases");
 
       // New element, so, we don't need to create items
@@ -2381,8 +2406,8 @@ function migrateComputerDevice($deviceType, $new_specif=NULL, $new_specif_type=N
 
    if (!empty($new_specif) && !empty($new_specif_type)) {
       $migration->changeField($table, 'specificity', $new_specif, $new_specif_type);
-      $migration->changeField($device_table, 'specif_default',
-                              $new_specif.'_default', $new_specif_type);
+      $migration->changeField($device_table, 'specif_default', $new_specif.'_default',
+                              $new_specif_type);
 
       // Update the log ...
       $query = "UPDATE `glpi_logs`

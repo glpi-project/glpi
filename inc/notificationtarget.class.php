@@ -115,11 +115,13 @@ class NotificationTarget extends CommonDBChild {
       asort($this->notification_targets);
    }
 
-   // Temproray hack for this class
+
+   // Temporary hack for this class since 0.84
    static function getTable() {
       return 'glpi_notificationtargets';
    }
-   
+
+
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
@@ -161,7 +163,7 @@ class NotificationTarget extends CommonDBChild {
    function getMessageID() {
       return "";
    }
-   
+
    static function getTypeName($nb=0) {
       return _n('Recipient', 'Recipients', $nb);
    }
@@ -512,20 +514,19 @@ class NotificationTarget extends CommonDBChild {
          // It is a GLPI user :
          $notificationoption['usertype'] = self::GLPI_USER;
          if (Auth::isAlternateAuth($user->fields['authtype'])
-            || ($user->fields['authtype'] == Auth::NOT_YET_AUTHENTIFIED
-               && Auth::isAlternateAuth(Auth::checkAlternateAuthSystems()) 
-               )) {
+             || (($user->fields['authtype'] == Auth::NOT_YET_AUTHENTIFIED)
+                 && Auth::isAlternateAuth(Auth::checkAlternateAuthSystems()))) {
             $notificationoption['usertype'] = self::EXTERNAL_USER;
          }
       }
-      
+
       // Pass user type as argument ? forced for specific cases
       if (isset($data['usertype'])) {
          $notificationoption['usertype'] = $data['usertype'];
       }
-      
+
       $notificationoption = array_merge($this->addAdditionnalUserInfo($data),
-                                       $notificationoption);
+                                        $notificationoption);
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail)
              && !isset($this->target[$new_mail])) {
@@ -544,33 +545,41 @@ class NotificationTarget extends CommonDBChild {
       }
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function getDefaultUserType() {
+
       if (Auth::isAlternateAuth(Auth::checkAlternateAuthSystems())) {
          return self::EXTERNAL_USER;
-      } else {
-         return self::GLPI_USER;
       }
+      return self::GLPI_USER;
    }
-   
+
+
+   /**
+    * @since version 0.84
+    *
+    * @param $usertype
+    * @param $redirect
+   **/
    function formatURL($usertype, $redirect) {
       global $CFG_GLPI;
+
       switch ($usertype) {
          case self::EXTERNAL_USER :
-            return urldecode($CFG_GLPI["url_base"].
-                       "/index.php?redirect=$redirect");
-            break;
-            
+            return urldecode($CFG_GLPI["url_base"]."/index.php?redirect=$redirect");
+
          case self::ANONYMOUS_USER :
             // No URL
             return '';
-            break;
-            
+
          case self::GLPI_USER :
-            return urldecode($CFG_GLPI["url_base"].
-                       "/index.php?redirect=$redirect&noAUTO=1");
-            break;
+            return urldecode($CFG_GLPI["url_base"]."/index.php?redirect=$redirect&noAUTO=1");
       }
    }
+
 
    /**
     * Get GLPI's global administrator email

@@ -78,7 +78,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Private object and no right to see private items : do not send
       if ($this->isPrivate()
           && (!isset($infos['additionnaloption']['show_private'])
-               || !$infos['additionnaloption']['show_private'])) {
+              || !$infos['additionnaloption']['show_private'])) {
          return false;
       }
       return true;
@@ -105,7 +105,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getMessageID() {
       return "GLPI-".$this->obj->getField('id').".".time().".".rand(). "@".php_uname('n');
    }
-   
+
    function addAdditionnalInfosForTarget() {
       global $DB;
 
@@ -149,7 +149,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if (!isset($data['id'])) {
          return array('show_private' => 0);
       }
-      
+
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_profiles_users`
                 WHERE `users_id`='".$data['id']."' ".
@@ -236,17 +236,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas["##ticket.costtime"]          = $item->getField('cost_time');
 
 
-      $datas['##ticket.urlvalidation##']   = $this->formatURL($options['additionnaloption']['usertype'],
-                                                "ticket_".$item->getField("id")."_TicketValidation$1");
+      $datas['##ticket.urlvalidation##']
+                        = $this->formatURL($options['additionnaloption']['usertype'],
+                                           "ticket_".$item->getField("id")."_TicketValidation$1");
       $datas['##ticket.globalvalidation##']
-                                 = TicketValidation::getStatus($item->getField('global_validation'));
-      $datas['##ticket.type##']  = Ticket::getTicketTypeName($item->getField('type'));
+                        = TicketValidation::getStatus($item->getField('global_validation'));
+      $datas['##ticket.type##']
+                        = Ticket::getTicketTypeName($item->getField('type'));
       $datas['##ticket.requesttype##']
-                                 = Dropdown::getDropdownName('glpi_requesttypes',
-                                                             $item->getField('requesttypes_id'));
+                        = Dropdown::getDropdownName('glpi_requesttypes',
+                                                    $item->getField('requesttypes_id'));
 
-      $autoclose_value = Entity::getUsedConfig('autoclose_delay', $this->getEntity(), '',
-                                               Entity::CONFIG_NEVER);
+      $autoclose_value  = Entity::getUsedConfig('autoclose_delay', $this->getEntity(), '',
+                                                Entity::CONFIG_NEVER);
 
       $datas['##ticket.autoclose##']             = __('Never');
       $datas['##lang.ticket.autoclosewarning##'] = "";
@@ -395,7 +397,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $restrict = "`tickets_id`='".$item->getField('id')."'";
          if (!isset($options['additionnaloption']['show_private'])
-            || !$options['additionnaloption']['show_private']) {
+             || !$options['additionnaloption']['show_private']) {
             $restrict .= " AND `is_private` = '0'";
          }
          $restrict .= " ORDER BY `date` DESC, `id` ASC";

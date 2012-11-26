@@ -69,13 +69,11 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @see CommonDBRelation::isAttach2Valid()
    **/
    function isAttach2Valid(Array &$input) {
+
       // Anonymous user (only email) as requester or observer
-      if (isset($input['users_id'])
-          && ($input['users_id'] == 0)
-          && isset($input['alternative_email'])
-          && !empty($input['alternative_email'])
-          && isset($input['type'])
-          && ($input['type'] != CommonITILActor::ASSIGN)) {
+      if (isset($input['users_id']) && ($input['users_id'] == 0)
+          && isset($input['alternative_email']) && !empty($input['alternative_email'])
+          && isset($input['type']) && ($input['type'] != CommonITILActor::ASSIGN)) {
          return true;
       }
       return false;

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -123,7 +123,7 @@ class NotificationEvent extends CommonDBTM {
                   as $data) {
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id = '.$data['id']);
-   
+
             $notificationtarget->clearAddressesList();
 
             //Process more infos (for example for tickets)
@@ -143,7 +143,7 @@ class NotificationEvent extends CommonDBTM {
                // Not cron see my pref
                $notify_me = $_SESSION['glpinotification_to_myself'];
             }
-            
+
             //Foreach notification targets
             foreach ($targets as $target) {
                //Get all users affected by this notification
@@ -161,7 +161,7 @@ class NotificationEvent extends CommonDBTM {
                                                     [$users_infos['email']]);
                         }
                         if ($tid = $template->getTemplateByLanguage($notificationtarget, $users_infos,
-                                                             $event, $options)) {
+                                                                    $event, $options)) {
                            //Send notification to the user
                            if ($label == '') {
                               Notification::send($template->getDataToSend($notificationtarget, $tid,
