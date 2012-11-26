@@ -194,6 +194,7 @@ class NotificationTemplate extends CommonDBTM {
     * @param $user_infos   array
     * @param $event
     * @param $options      array
+    *
     * @return id of the template in templates_by_languages / false if computation failed
    **/
    function getTemplateByLanguage(NotificationTarget $target, $user_infos=array(), $event,
@@ -293,9 +294,8 @@ class NotificationTemplate extends CommonDBTM {
       }
       if (isset($this->templates_by_languages[$tid])) {
          return $tid;
-      } else {
-         return false;
       }
+      return false;
    }
 
 
@@ -462,8 +462,8 @@ class NotificationTemplate extends CommonDBTM {
 
 
    /**
-    * @param $target             NotificationTarget object
-    * @param $tid             string template computed id 
+    * @param $target              NotificationTarget object
+    * @param $tid          string template computed id
     * @param $user_infos   array
     * @param $options      array
    **/

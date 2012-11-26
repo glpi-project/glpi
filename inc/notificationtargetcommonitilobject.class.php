@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -580,14 +580,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.title##"]        = $item->getField('name');
       $datas["##$objettype.content##"]      = $item->getField('content');
       $datas["##$objettype.description##"]  = $item->getField('content');
-
       $datas["##$objettype.id##"]           = sprintf("%07d", $item->getField("id"));
-      $datas["##$objettype.url##"]          = $this->formatURL($options['additionnaloption']['usertype'],
-                                                $objettype."_".$item->getField("id"));
 
+      $datas["##$objettype.url##"]
+                           = $this->formatURL($options['additionnaloption']['usertype'],
+                                              $objettype."_".$item->getField("id"));
 
-      $datas["##$objettype.urlapprove##"]   = $this->formatURL($options['additionnaloption']['usertype'],
-                                                $objettype."_".$item->getField("id")."_".
+      $datas["##$objettype.urlapprove##"]
+                           = $this->formatURL($options['additionnaloption']['usertype'],
+                                              $objettype."_".$item->getField("id")."_".
                                                         $item->getType().'$2');
 
 

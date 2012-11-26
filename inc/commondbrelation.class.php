@@ -288,10 +288,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $input Array of data to be added
     *
     * @return boolean
-    */
+   **/
    function isAttach2Valid(Array &$input) {
       return false;
    }
+
 
    /**
     * Specific check for check attach for relation 1
@@ -301,10 +302,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $input Array of data to be added
     *
     * @return boolean
-    */
+   **/
    function isAttach1Valid(Array &$input) {
       return false;
    }
+
 
    /**
     * @since version 0.84
@@ -362,7 +364,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       $OneWriteIsEnough = (!$forceCheckBoth
                            && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-                              || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
+                               || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
 
       try {
          $item1 = NULL;
@@ -400,7 +402,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $check_entity = false; // If no item, then, we cannot check entities
       }
 
-      
+
       if ($OneWriteIsEnough) {
          if ((!$can1 && !$can2)
              || ($can1 && !$view2)
@@ -523,7 +525,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
          // Merge both arrays to ensure all the fields are defined for the following checks
          $completeinput = array_merge($this->fields, $input);
-         
+
          $itemToGetEntity = false;
          // Set the item to allow parent::prepareinputforadd to get the right item ...
          if (static::$take_entity_1) {
@@ -533,7 +535,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             $itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
                                                             $completeinput);
          }
-         
+
          // Set the item to allow parent::prepareinputforadd to get the right item ...
          if (($itemToGetEntity instanceof CommonDBTM)
             && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
@@ -549,7 +551,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       return $input;
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -560,7 +562,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if (!is_array($input)) {
          return false;
       }
-      
+
       return $this->addNeededInfoToInput($input);
    }
 

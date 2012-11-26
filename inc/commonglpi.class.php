@@ -580,7 +580,6 @@ class CommonGLPI {
    }
 
 
-
    /**
     * @param $options   array
    **/
@@ -617,21 +616,22 @@ class CommonGLPI {
          }
       }
    }
-   
+
+
    /**
     * Update $_SESSION to set the display options.
     *
     * @since version 0.84
     *
-    * @param $input     array of data to update
-    * @param $sub_itemtype    string sub itemtype if needed
+    * @param $input         array   of data to update
+    * @param $sub_itemtype  string  sub itemtype if needed (default '')
     *
     * @return nothing
    **/
-   static function updateDisplayOptions($input = array(), $sub_itemtype='') {
+   static function updateDisplayOptions($input=array(), $sub_itemtype='') {
 
       $options = static::getAvailableDisplayOptions();
-      if (count($options)) {      
+      if (count($options)) {
          if (empty($sub_itemtype)) {
             $display_options = &$_SESSION['glpi_display_options'][self::getType()];
          } else {
@@ -660,24 +660,25 @@ class CommonGLPI {
             $user = new User();
             if ($user->getFromDB($uid)) {
                $user->update(array('id' => $uid,
-                                 'display_options' => exportArrayToDB($_SESSION['glpi_display_options'])));
+                                   'display_options'
+                                        => exportArrayToDB($_SESSION['glpi_display_options'])));
             }
          }
 
          echo "<script type='text/javascript' >\n";
          echo "window.opener.location.reload();";
          echo "</script>";
-         
+
       }
    }
+
 
    /**
     * Load display options to $_SESSION
     *
     * @since version 0.84
     *
-    * @param $input     array of data to update
-    * @param $sub_itemtype    string sub itemtype if needed
+    * @param $sub_itemtype  string   sub itemtype if needed
     *
     * @return nothing
    **/
@@ -719,12 +720,14 @@ class CommonGLPI {
       return $display_options;
    }
 
+
+
    /**
     * @since version 0.84
     *
-    * @param $sub_itemtype string sub_itemtype if needed
+    * @param $sub_itemtype string sub_itemtype if needed (default '')
    **/
-   static function showDislayOptions($sub_itemtype = '') {
+   static function showDislayOptions($sub_itemtype='') {
       global $CFG_GLPI;
 
       $options      = static::getAvailableDisplayOptions($sub_itemtype);
@@ -741,7 +744,8 @@ class CommonGLPI {
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>".__s('Display options')."</th></tr>\n";
          echo "<tr><td colspan='2'>";
-         echo "<input type='submit' class='submit' name='reset' value=\"".__('Reset display options')."\">";
+         echo "<input type='submit' class='submit' name='reset' value=\"".
+                __('Reset display options')."\">";
          echo "</td></tr>\n";
 
          foreach ($options as $option_group_name => $option_group) {
@@ -767,7 +771,8 @@ class CommonGLPI {
          echo "</div>";
       }
    }
-   
+
+
    /**
     * Get available display options array
     *
@@ -788,7 +793,7 @@ class CommonGLPI {
    **/
    static function getDisplayOptionsLink($sub_itemtype = '') {
       global $CFG_GLPI;
-      
+
       $link ="<img alt=\"".__s('Display options')."\" title=\"";
       $link .= __s('Display options')."\" src='";
       $link .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
