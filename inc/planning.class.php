@@ -1006,9 +1006,17 @@ class Planning {
             }
 
             if (isset($val["content"])) {
-               $vevent->setProperty( "description", Html::clean($val["content"]) );
+               $text = $val["content"];
+               // be sure to replace nl by \r\n
+               $text = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $text);
+               $text = Html::clean($text);
+               $vevent->setProperty( "description", $text );
             } else if (isset($val["name"])) {
-               $vevent->setProperty( "description", $val["name"] );
+               $text = $val["name"];
+               // be sure to replace nl by \r\n
+               $text = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $text);
+               $text = Html::clean($text);
+               $vevent->setProperty( "description", $text );
             }
 
             if (isset($val["tickets_id"])) {
