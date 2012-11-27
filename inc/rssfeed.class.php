@@ -550,7 +550,21 @@ class RSSFeed extends CommonDBTM {
       return $input;
    }
 
+   /**
+    * @see CommonDBTM::prepareInputForAdd()
+   **/
+   function prepareInputForUpdate($input) {
 
+      if (empty($input['name']) && isset($input['url'])
+         && $feed = self::getRSSFeed($input['url'])) {
+         $input['name']       = addslashes($feed->get_title());
+         if (empty($input['comment'])) {
+            $input['comment'] = addslashes($feed->get_description());
+         }
+      }
+      return $input;
+   }
+   
    function pre_updateInDB() {
 
       // Set new user if initial user have been deleted
