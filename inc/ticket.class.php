@@ -3043,7 +3043,7 @@ class Ticket extends CommonITILObject {
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
          $opt['searchtype'][0] = 'equals';
-         $opt['contains'][0]   = self::WAITING;
+         $opt['contains'][0]   = 'waiting';
          $opt['link'][0]       = 'AND';
 
          $opt['field'][1]      = 59; // validation aprobator
@@ -4494,7 +4494,8 @@ class Ticket extends CommonITILObject {
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = '".self::WAITING."' ".
+                              AND `glpi_ticketvalidations`.`status` = 'waiting'
+                              AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."')) ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
@@ -4653,14 +4654,18 @@ class Ticket extends CommonITILObject {
                case "tovalidate" :
                   $options['field'][0]      = 55; // validation status
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = self::WAITING;
-                  $options['link'][0]        = 'AND';
+                  $options['contains'][0]   = 'waiting';
+                  $options['link'][0]       = 'AND';
 
                   $options['field'][1]      = 59; // validation aprobator
                   $options['searchtype'][1] = 'equals';
                   $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]       = 'AND';
-
+                  
+                  $options['field'][2]      = 12; // validation aprobator
+                  $options['searchtype'][2] = 'equals';
+                  $options['contains'][2]   = self::CLOSED;
+                  $options['link'][2]       = 'AND NOT';
                   $forcetab                 = 'TicketValidation$1';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
