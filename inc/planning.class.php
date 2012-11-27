@@ -918,26 +918,29 @@ class Planning {
       include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
       $v = new vcalendar();
 
+      $v->setProperty( "version", "2.0" );
+
+
       $dotz = true;
       if( substr( phpversion(), 0, 3 ) < '5.2' ) {
          $dotz = false;
       }
-      
+
       if ($dotz) {
          $tz = date_default_timezone_get();
          $v->setProperty( "X-WR-TIMEZONE", $tz );
          $xprops = array( "X-LIC-LOCATION" => $tz );
          iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
       }
-      
+
       if (!empty( $CFG_GLPI["version"])) {
          $v->setConfig( 'unique_id', "GLPI-Planning-".trim($CFG_GLPI["version"]) );
       } else {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
       
+
       $v->setProperty( "method", "PUBLISH" );
-      $v->setProperty( "version", "2.0" );
       $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
       $v->setProperty( "calscale", "GREGORIAN" );
       $interv = array();
@@ -992,7 +995,7 @@ class Planning {
             $vevent->setProperty( "dstamp", $val["begin"].(!$dotz?'Z':'') );
             $vevent->setProperty( "dtstart", $val["begin"].(!$dotz?'Z':'') );
             $vevent->setProperty( "dtend", $val["end"].(!$dotz?'Z':'') );
-
+            
             if (isset($val["tickets_id"])) {
                $vevent->setProperty("summary",
                                     $LANG['planning'][8]." #".$val["tickets_id"]." ".

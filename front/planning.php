@@ -52,20 +52,7 @@ if (!isset($_GET["usertype"])) {
    $_GET["usertype"] = "user";
 }
 
-switch ($_GET["usertype"]) {
-   case "user" :
-      $_GET['gID'] = 0;
-      break;
 
-   case "group" :
-      $_GET['uID'] = 0;
-      break;
-
-   case "user_group" :
-      $_GET['gID'] = "mine";
-      $_GET['uID'] = Session::getLoginUserID();      
-      break;
-}
 
 if (isset($_REQUEST['checkavailability'])) {
    Html::popHeader($LANG['common'][75]);
@@ -91,6 +78,20 @@ if (isset($_REQUEST['checkavailability'])) {
       }
    }
 } else {
+   switch ($_GET["usertype"]) {
+      case "user" :
+         $_GET['gID'] = 0;
+         break;
+
+      case "group" :
+         $_GET['uID'] = 0;
+         break;
+
+      case "user_group" :
+         $_GET['gID'] = "mine";
+         $_GET['uID'] = Session::getLoginUserID();
+         break;
+   }
    Html::header(Toolbox::ucfirst($LANG['log'][16]), $_SERVER['PHP_SELF'], "maintain", "planning");
 
    Session::checkSeveralRightsOr(array('show_all_planning' => '1',
