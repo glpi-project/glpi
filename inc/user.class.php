@@ -351,14 +351,19 @@ class User extends CommonDBTM {
     * Retrieve an item from the database using its email
     *
     * @param $email user email
+    * @param $condition string add condition    
     *
     * @return true if succeed else false
    **/
-   function getFromDBbyEmail($email) {
+   function getFromDBbyEmail($email, $condition) {
 
-      return $this->getFromDBByQuery("LEFT JOIN `glpi_useremails`
+      $request = "LEFT JOIN `glpi_useremails`
                                        ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
-                                      WHERE `glpi_useremails`.`email` = '$email'");
+                                      WHERE `glpi_useremails`.`email` = '$email'";
+      if (!empty($condition)) {
+         $request .= " AND $condition";
+      }
+      return $this->getFromDBByQuery($request);
    }
 
 
@@ -3275,7 +3280,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       echo "<div class='center'>";
-      if ($this->getFromDBbyEmail($input['email'])) {
+      if ($this->getFromDBbyEmail($input['email'], "`glpi_users`.`is_active` AND NOT `glpi_users`.`is_deleted`")) {
          if (($this->fields["authtype"]== Auth::DB_GLPI)
              || !Auth::useAuthExt()) {
 
@@ -3325,7 +3330,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       echo "<div class='center'>";
-      if ($this->getFromDBbyEmail($email)) {
+      if ($this->getFromDBbyEmail($email, "`glpi_users`.`is_active` AND NOT `glpi_users`.`is_deleted`")) {
 
          // Send token if auth DB or not external auth defined
          if (($this->fields["authtype"] == Auth::DB_GLPI)
