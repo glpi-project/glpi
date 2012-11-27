@@ -82,7 +82,7 @@ class DeviceCase extends CommonDevice {
 
       $data['label'] = $data['value'] = array();
       if ($this->fields["devicecasetypes_id"]) {
-         $data['label'][] = $$LANG['common'][17];
+         $data['label'][] = $LANG['common'][17];
          $data['value'][] = Dropdown::getDropdownName("glpi_devicecasetypes",
                                                       $this->fields["devicecasetypes_id"]);
       }
