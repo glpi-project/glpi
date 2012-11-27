@@ -364,28 +364,38 @@ class User extends CommonDBTM {
     * Retrieve an item from the database using its email
     *
     * @param $email user email
+    * @param $condition string add condition
     *
     * @return true if succeed else false
    **/
-   function getFromDBbyEmail($email) {
+   function getFromDBbyEmail($email, $condition='') {
       global $DB;
 
       if (empty($email)) {
          return false;
       }
 
-      $query = "SELECT `users_id`
-                FROM `glpi_useremails`
-                WHERE `email` = '$email'";
 
+      $query = "SELECT `".$this->getTable()."`.*
+                FROM `".$this->getTable()."`
+                LEFT JOIN `glpi_useremails`
+                  ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
+                  WHERE `glpi_useremails`.`email` = '$email'";
+      if (!empty($condition)) {
+         $query .= " AND $condition";
+      }
+      
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $data = $DB->fetch_assoc($result);
-         return $this->getFromDB($data['users_id']);
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         }
       }
       return false;
+
    }
 
 
@@ -2891,7 +2901,7 @@ class User extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       echo "<div class='center'>";
-      if ($this->getFromDBbyEmail($input['email'])) {
+      if ($this->getFromDBbyEmail($input['email'], "`glpi_users`.`is_active` AND NOT `glpi_users`.`is_deleted`")) {
          if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
 
             if ($input['password_forget_token']==$this->fields['password_forget_token']
@@ -2940,7 +2950,7 @@ class User extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       echo "<div class='center'>";
-      if ($this->getFromDBbyEmail($email)) {
+      if ($this->getFromDBbyEmail($email, "`glpi_users`.`is_active` AND NOT `glpi_users`.`is_deleted`")) {
 
          // Send token if auth DB or not external auth defined
          if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
