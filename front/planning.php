@@ -112,7 +112,7 @@ if (isset($_GET['checkavailability'])) {
          }
          
          if ($ismine || $canview) {
-            Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["itemtype"]);
+            Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["limititemtype"]);
          }
       }
    }
