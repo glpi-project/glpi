@@ -4326,7 +4326,8 @@ class Ticket extends CommonITILObject {
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = 'waiting' ".
+                              AND `glpi_ticketvalidations`.`status` = 'waiting' 
+                              AND `glpi_tickets`.`status` NOT IN ('closed') ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
@@ -4490,6 +4491,11 @@ class Ticket extends CommonITILObject {
                   $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]        = 'AND';
 
+                  $options['field'][2]      = 12; // validation aprobator
+                  $options['searchtype'][2] = 'equals';
+                  $options['contains'][2]   = 'closed';
+                  $options['link'][2]       = 'AND NOT';
+                  
                   $forcetab = 'TicketValidation$1';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
