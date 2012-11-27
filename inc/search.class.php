@@ -2960,7 +2960,7 @@ class Search {
                      $tocheck = $item->getProcessStatusArray();
                      break;
 
-                case 'notclosed' :
+                  case 'notclosed' :
                      $tocheck = $item->getAllStatusArray();
                      foreach ($item->getClosedStatusArray() as $status) {
                         if (isset($tocheck[$status])) {
