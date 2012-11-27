@@ -183,7 +183,10 @@ class TicketValidation  extends CommonDBChild {
 //         }
 
       $input["users_id"] = 0;
-      if (!isset($input['_auto_update'])) {
+      // Only set requester on manual action
+      if (!isset($input['_auto_import'])
+         && !isset($input['_auto_update'])
+         && !Session::isCron()) {
          $input["users_id"] = Session::getLoginUserID();
       }
 
