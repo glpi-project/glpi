@@ -187,7 +187,7 @@ $CFG_GLPI["state_types"]                  = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer');
 
-$CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
+$CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', /*'Change',*/ 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
@@ -271,7 +271,7 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
                                                   'RuleTicketCollection');
 
 // Items which can planned something
-$CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', 'Reminder',
+$CFG_GLPI['planning_types']               = array(/*'ChangeTask', */'ProblemTask', 'Reminder',
                                                   'TicketTask');
 
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
