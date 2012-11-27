@@ -239,8 +239,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
 
          if ($np2->fields["itemtype"] != 'NetworkEquipment'
              && $np1->fields["itemtype"] == 'NetworkEquipment') {
-            $npnet = $np2;
-            $npdev = $np1;
+            $npnet = $np1;
+            $npdev = $np2;
          }
 
          if ($npnet && $npdev ) {
