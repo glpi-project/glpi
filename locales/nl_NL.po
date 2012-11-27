@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-11-27 16:54+0100\n"
-"PO-Revision-Date: 2012-11-27 15:55+0000\n"
+"POT-Creation-Date: 2012-11-27 18:11+0100\n"
+"PO-Revision-Date: 2012-11-27 17:12+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/GLPI/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
@@ -479,7 +479,7 @@ msgstr "Beschikbaarheid"
 #: inc/reminder.class.php:954 inc/reservation.class.php:682
 #: inc/reservation.class.php:1076 inc/reservation.class.php:1124
 #: inc/reservation.class.php:1187 inc/reservation.class.php:1242
-#: inc/rssfeed.class.php:619 inc/ticket.class.php:3829
+#: inc/rssfeed.class.php:633 inc/ticket.class.php:3829
 msgid "By"
 msgstr "Door"
 
@@ -630,7 +630,7 @@ msgstr ""
 #: inc/problem.class.php:1460 inc/profile.class.php:1151
 #: inc/profile.class.php:1627 inc/profile_user.class.php:171
 #: inc/profile_user.class.php:806 inc/reminder.class.php:1254
-#: inc/reservationitem.class.php:207 inc/rssfeed.class.php:1065
+#: inc/reservationitem.class.php:207 inc/rssfeed.class.php:1079
 #: inc/rule.class.php:275 inc/rulecollection.class.php:421
 #: inc/ruledictionnarysoftware.class.php:145
 #: inc/ruledictionnarysoftware.class.php:178
@@ -704,7 +704,7 @@ msgstr "Geldige TAGS"
 #: inc/notificationtargetticket.class.php:717
 #: inc/notificationtargetticket.class.php:726
 #: inc/notificationtargetuser.class.php:118 inc/rssfeed.class.php:424
-#: inc/rssfeed.class.php:613
+#: inc/rssfeed.class.php:627
 msgid "URL"
 msgstr "URL"
 
@@ -901,7 +901,7 @@ msgstr ""
 #: inc/knowbaseitem.class.php:734 inc/knowbaseitem.class.php:1538
 #: inc/netpoint.class.php:342 inc/networkname.class.php:780
 #: inc/profile_user.class.php:301 inc/reminder.class.php:1175
-#: inc/reservation.class.php:756 inc/rssfeed.class.php:987
+#: inc/reservation.class.php:756 inc/rssfeed.class.php:1001
 #: inc/rule.class.php:2124 inc/ticket.class.php:3771 inc/ticket.class.php:4362
 #: inc/ticket_ticket.class.php:113 inc/transfer.class.php:3031
 #: inc/transfer.class.php:3036 inc/transfer.class.php:3053
@@ -1248,10 +1248,10 @@ msgstr ""
 #: inc/reminder.class.php:1225 inc/reminder.class.php:1233
 #: inc/reminder.class.php:1257 inc/reminder.class.php:1259
 #: inc/reminder.class.php:1283 inc/reminder.class.php:1289
-#: inc/reservation.class.php:482 inc/rssfeed.class.php:1036
-#: inc/rssfeed.class.php:1044 inc/rssfeed.class.php:1068
-#: inc/rssfeed.class.php:1070 inc/rssfeed.class.php:1094
-#: inc/rssfeed.class.php:1100 inc/rule.class.php:1279 inc/rule.class.php:1290
+#: inc/reservation.class.php:482 inc/rssfeed.class.php:1050
+#: inc/rssfeed.class.php:1058 inc/rssfeed.class.php:1082
+#: inc/rssfeed.class.php:1084 inc/rssfeed.class.php:1108
+#: inc/rssfeed.class.php:1114 inc/rule.class.php:1279 inc/rule.class.php:1290
 #: inc/search.class.php:1232 inc/search.class.php:1236
 #: inc/search.class.php:1241 inc/search.class.php:1286
 #: inc/search.class.php:1287 inc/search.class.php:1293
@@ -1475,7 +1475,7 @@ msgstr[1] ""
 #: inc/peripheral.class.php:183 inc/peripheral.class.php:396
 #: inc/phone.class.php:180 inc/phone.class.php:424 inc/printer.class.php:284
 #: inc/printer.class.php:550 inc/reminder.class.php:1189
-#: inc/rssfeed.class.php:1002 inc/ruledictionnarycomputertype.class.php:54
+#: inc/rssfeed.class.php:1016 inc/ruledictionnarycomputertype.class.php:54
 #: inc/ruledictionnarycomputertype.class.php:67
 #: inc/ruledictionnarymonitortype.class.php:57
 #: inc/ruledictionnarymonitortype.class.php:70
@@ -2089,7 +2089,7 @@ msgstr "Lijst van hardware onder contract"
 #: inc/phone.class.php:410 inc/plugin.class.php:345 inc/printer.class.php:264
 #: inc/printer.class.php:536 inc/profile.class.php:471
 #: inc/profile.class.php:1350 inc/reservationitem.class.php:148
-#: inc/rssfeed.class.php:410 inc/rssfeed.class.php:605 inc/rule.class.php:242
+#: inc/rssfeed.class.php:410 inc/rssfeed.class.php:619 inc/rule.class.php:242
 #: inc/rule.class.php:371 inc/rule.class.php:2071
 #: inc/rulecollection.class.php:416 inc/rulecriteria.class.php:106
 #: inc/ruledictionnaryprinter.class.php:120
@@ -2675,7 +2675,7 @@ msgstr[1] "Leveranciers"
 #: inc/profile_user.class.php:308 inc/profile_user.class.php:455
 #: inc/profile_user.class.php:798 inc/profile_user.class.php:860
 #: inc/profile_user.class.php:876 inc/reminder.class.php:1204
-#: inc/reservationitem.class.php:174 inc/rssfeed.class.php:1016
+#: inc/reservationitem.class.php:174 inc/rssfeed.class.php:1030
 #: inc/rulemailcollector.class.php:151 inc/search.class.php:5061
 #: inc/software.class.php:245 inc/software.class.php:475
 #: inc/ticketfollowup.class.php:764 inc/user.class.php:51
@@ -2724,7 +2724,7 @@ msgstr ""
 #: inc/phone.class.php:470 inc/planning.class.php:63 inc/printer.class.php:365
 #: inc/printer.class.php:591 inc/profile.class.php:1143
 #: inc/profile.class.php:1622 inc/reminder.class.php:1222
-#: inc/reservationitem.class.php:181 inc/rssfeed.class.php:1033
+#: inc/reservationitem.class.php:181 inc/rssfeed.class.php:1047
 #: inc/rulemailcollector.class.php:152 inc/search.class.php:5065
 #: inc/software.class.php:253 inc/software.class.php:481
 #: inc/user.class.php:2236 inc/user.class.php:3041
@@ -2771,7 +2771,7 @@ msgstr "Impact"
 #: inc/user.class.php:2334
 msgctxt "person"
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: front/stat.graph.php:204 front/stat.tracking.php:90
 #: inc/change.class.php:567 inc/commonitilobject.class.php:3314
@@ -3324,7 +3324,7 @@ msgstr "Standaard server"
 #: inc/mailcollector.class.php:225 inc/mailcollector.class.php:312
 #: inc/notification.class.php:138 inc/notification.class.php:284
 #: inc/notificationtarget.class.php:1190 inc/reservationitem.class.php:141
-#: inc/rssfeed.class.php:430 inc/rssfeed.class.php:631 inc/rule.class.php:265
+#: inc/rssfeed.class.php:430 inc/rssfeed.class.php:645 inc/rule.class.php:265
 #: inc/rule.class.php:385 inc/rule.class.php:2136
 #: inc/rulecollection.class.php:418 inc/ruleright.class.php:325
 #: inc/slalevel.class.php:125 inc/slalevel.class.php:157
@@ -3411,7 +3411,7 @@ msgstr "Login-veld"
 #: inc/reservation.class.php:1125 inc/reservation.class.php:1188
 #: inc/reservation.class.php:1243 inc/reservationitem.class.php:136
 #: inc/reservationitem.class.php:168 inc/reservationitem.class.php:303
-#: inc/rssfeed.class.php:451 inc/rssfeed.class.php:624 inc/rule.class.php:270
+#: inc/rssfeed.class.php:451 inc/rssfeed.class.php:638 inc/rule.class.php:270
 #: inc/rule.class.php:391 inc/ruledictionnaryprinter.class.php:128
 #: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5056
 #: inc/sla.class.php:151 inc/sla.class.php:219 inc/software.class.php:239
@@ -3558,21 +3558,6 @@ msgstr "Voornaam"
 #: inc/authldap.class.php:751 inc/user.class.php:1613 inc/user.class.php:2311
 msgid "Administrative number"
 msgstr "Administratief nummer"
-
-#: inc/authldap.class.php:762 inc/authldap.class.php:947
-#: inc/authldap.class.php:2737
-msgid "2"
-msgstr ""
-
-#: inc/authldap.class.php:767 inc/authldap.class.php:953
-#: inc/authldap.class.php:2739
-msgid "3"
-msgstr ""
-
-#: inc/authldap.class.php:770 inc/authldap.class.php:959
-#: inc/authldap.class.php:2741
-msgid "4"
-msgstr ""
 
 #: inc/authldap.class.php:777 inc/authldap.class.php:912
 #: inc/authldap.class.php:2745 inc/contact.class.php:168
@@ -3764,7 +3749,9 @@ msgstr "Hoofd"
 
 #: inc/authldap.class.php:3049
 msgid "Replicate"
-msgstr "Repliceer"
+msgid_plural "Replicates"
+msgstr[0] ""
+msgstr[1] "Repliceer"
 
 #: inc/authldapreplicate.class.php:91
 msgid "Add a LDAP directory replica"
@@ -4773,8 +4760,8 @@ msgstr ""
 #: inc/html.class.php:2229 inc/html.class.php:2230 inc/html.class.php:2716
 #: inc/html.class.php:2717 inc/infocom.class.php:668
 #: inc/netpoint.class.php:174 inc/reminder.class.php:1087
-#: inc/reminder.class.php:1088 inc/rssfeed.class.php:896
-#: inc/rssfeed.class.php:897 inc/ticket.class.php:4310
+#: inc/reminder.class.php:1088 inc/rssfeed.class.php:910
+#: inc/rssfeed.class.php:911 inc/ticket.class.php:4310
 #: inc/ticket.class.php:4408 inc/ticket.class.php:4409
 #: inc/ticket.class.php:4841 inc/useremail.class.php:198
 msgid "Add"
@@ -8387,8 +8374,8 @@ msgstr "Verplaatsen"
 #: inc/ipnetwork.class.php:961 inc/knowbaseitem.class.php:1592
 #: inc/knowbaseitem.class.php:1651
 #: inc/notificationtargetcontract.class.php:142 inc/reminder.class.php:1228
-#: inc/reminder.class.php:1285 inc/rssfeed.class.php:1039
-#: inc/rssfeed.class.php:1096 inc/search.class.php:1318
+#: inc/reminder.class.php:1285 inc/rssfeed.class.php:1053
+#: inc/rssfeed.class.php:1110 inc/search.class.php:1318
 #: inc/stat.class.php:1360
 #, php-format
 msgid "%1$s / %2$s"
@@ -8525,7 +8512,7 @@ msgstr[1] ""
 #: inc/notificationtarget.class.php:315 inc/notificationtarget.class.php:707
 #: inc/profile.class.php:80 inc/profile_user.class.php:328
 #: inc/profile_user.class.php:453 inc/profile_user.class.php:821
-#: inc/reminder.class.php:1279 inc/rssfeed.class.php:1090
+#: inc/reminder.class.php:1279 inc/rssfeed.class.php:1104
 #: inc/ruleright.class.php:106 inc/ruleright.class.php:317
 #: inc/rulerightcollection.class.php:158 inc/user.class.php:1643
 #: inc/user.class.php:2063 inc/user.class.php:2294 inc/user.class.php:2324
@@ -9151,12 +9138,12 @@ msgid "Views"
 msgstr "Overzicht(en)"
 
 #: inc/knowbaseitem.class.php:1510 inc/reminder.class.php:1151
-#: inc/rssfeed.class.php:963
+#: inc/rssfeed.class.php:977
 msgid "Add a target"
 msgstr "voeg een doel toe"
 
 #: inc/knowbaseitem.class.php:1542 inc/reminder.class.php:1178
-#: inc/rssfeed.class.php:991
+#: inc/rssfeed.class.php:1005
 msgid ""
 "Caution! You are not the author of this element. Delete targets can result "
 "in loss of access to that element."
@@ -9164,7 +9151,7 @@ msgstr "Opgelet u bent niet de auteru van dit element. De verwijdering kan voor 
 
 #: inc/knowbaseitem.class.php:1554 inc/notificationevent.class.php:216
 #: inc/notificationtarget.class.php:168 inc/notificationtarget.class.php:255
-#: inc/reminder.class.php:1190 inc/rssfeed.class.php:1003
+#: inc/reminder.class.php:1190 inc/rssfeed.class.php:1017
 msgid "Recipient"
 msgid_plural "Recipients"
 msgstr[0] "Ontvanger"
@@ -9176,8 +9163,8 @@ msgstr[1] "Ontvangers"
 #: inc/profile_user.class.php:378 inc/profile_user.class.php:534
 #: inc/profile_user.class.php:841 inc/reminder.class.php:1234
 #: inc/reminder.class.php:1260 inc/reminder.class.php:1290
-#: inc/rssfeed.class.php:1045 inc/rssfeed.class.php:1071
-#: inc/rssfeed.class.php:1101 inc/rule.class.php:1290
+#: inc/rssfeed.class.php:1059 inc/rssfeed.class.php:1085
+#: inc/rssfeed.class.php:1115 inc/rule.class.php:1290
 #: inc/search.class.php:3961 inc/search.class.php:3990
 msgid "R"
 msgstr ""
@@ -10964,8 +10951,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/profile.class.php:603 inc/profile.class.php:713
-#: inc/profile.class.php:1887 inc/rssfeed.class.php:866
-#: inc/rssfeed.class.php:868
+#: inc/profile.class.php:1887 inc/rssfeed.class.php:880
+#: inc/rssfeed.class.php:882
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
 msgstr[0] ""
@@ -11267,7 +11254,7 @@ msgstr ""
 msgid "Planning end date"
 msgstr ""
 
-#: inc/reminder.class.php:641 inc/rssfeed.class.php:567
+#: inc/reminder.class.php:641 inc/rssfeed.class.php:581
 msgid "New note"
 msgstr "Nieuwe notitie"
 
@@ -11493,28 +11480,28 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: inc/rssfeed.class.php:442 inc/rssfeed.class.php:648
+#: inc/rssfeed.class.php:442 inc/rssfeed.class.php:662
 msgid "Number of items displayed"
 msgstr ""
 
-#: inc/rssfeed.class.php:456 inc/rssfeed.class.php:637
+#: inc/rssfeed.class.php:456 inc/rssfeed.class.php:651
 msgid "Refresh rate"
 msgstr ""
 
-#: inc/rssfeed.class.php:658 inc/rssfeed.class.php:713
+#: inc/rssfeed.class.php:672 inc/rssfeed.class.php:727
 msgid "Error retrieving RSS feed"
 msgstr ""
 
-#: inc/rssfeed.class.php:663
+#: inc/rssfeed.class.php:677
 msgid "Founded RSS feeds"
 msgstr ""
 
-#: inc/rssfeed.class.php:772
+#: inc/rssfeed.class.php:786
 msgctxt "button"
 msgid "Use"
 msgstr ""
 
-#: inc/rssfeed.class.php:843
+#: inc/rssfeed.class.php:857
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feeds"
 msgstr[0] ""
