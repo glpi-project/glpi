@@ -566,7 +566,11 @@ class Auth {
             }
          } else {
              if ($this->user_present) {
-               $input = Toolbox::addslashes_deep($this->user->fields);
+               // First stripslashes to avoid double slashes
+               $input = Toolbox::stripslashes_deep($this->user->fields);
+               // Then ensure addslashes
+               $input = Toolbox::addslashes_deep($input);
+               
                // update user and Blank PWD to clean old database for the external auth
                $this->user->update($input);
                if ($this->extauth) {
@@ -574,7 +578,11 @@ class Auth {
                }
             } else if ($CFG_GLPI["is_users_auto_add"]) {
                // Auto add user
-               $input = Toolbox::addslashes_deep($this->user->fields);
+               // First stripslashes to avoid double slashes
+               $input = Toolbox::stripslashes_deep($this->user->fields);
+               // Then ensure addslashes
+               $input = Toolbox::addslashes_deep($input);
+
                unset ($this->user->fields);
                $this->user->add($input);
             } else {
