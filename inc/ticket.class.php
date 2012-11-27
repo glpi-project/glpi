@@ -1393,10 +1393,16 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["_rule_process"])) {
             $values['_rule_process'] = $this->input["_rule_process"];
          }
+         // if auto_import, tranfert it for validation
+         if (isset($this->input['_auto_import'])) {
+            $values['_auto_import'] = $this->input['_auto_import'];
+         }
          $values['_ticket_add'] = true;
+         
          // Cron or rule process of hability to do
          if (!is_numeric(Session::getLoginUserID(false))
              || isset($this->input["_rule_process"])
+             || isset($this->input["_auto_import"])
              || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 

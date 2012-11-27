@@ -181,10 +181,13 @@ class TicketValidation  extends CommonDBChild {
       }
 
       $input["users_id"] = 0;
-      if (!isset($input['_auto_update'])) {
+      // Only set requester on manual action
+      if (!isset($input['_auto_import'])
+         && !isset($input['_auto_update'])
+         && is_numeric(Session::getLoginUserID(false))) {
          $input["users_id"] = Session::getLoginUserID();
       }
-
+      
       $input["submission_date"] = $_SESSION["glpi_currenttime"];
       $input["status"]          = 'waiting';
 
