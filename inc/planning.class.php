@@ -928,6 +928,7 @@ class Planning {
 
       if ($dotz) {
          $tz = date_default_timezone_get();
+         $v->setConfig( 'TZID', $tz );
          $v->setProperty( "X-WR-TIMEZONE", $tz );
          $xprops = array( "X-LIC-LOCATION" => $tz );
          iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
