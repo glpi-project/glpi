@@ -239,7 +239,7 @@ class Problem extends CommonITILObject {
       // show related tickets and changes
       $ong['empty'] = $this->getTypeName(1);
       $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Change', $ong, $options);
+//       $this->addStandardTab('Change', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
