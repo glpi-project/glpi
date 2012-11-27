@@ -1614,7 +1614,7 @@ class User extends CommonDBTM {
       Html::autocompletionTextField($this, "registration_number");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Title') . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . _x('person','Title') . "&nbsp;:</td><td>";
       UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
       echo "</td></tr>";
 
@@ -2331,7 +2331,7 @@ class User extends CommonDBTM {
 
       $tab[81]['table']                = 'glpi_usertitles';
       $tab[81]['field']                = 'name';
-      $tab[81]['name']                 = __('Title');
+      $tab[81]['name']                 = _x('person','Title');
       $tab[81]['datatype']             = 'dropdown';
 
       $tab[82]['table']                = 'glpi_usercategories';
