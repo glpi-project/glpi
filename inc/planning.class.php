@@ -991,12 +991,15 @@ class Planning extends CommonGLPI {
       }
 
       $tz = date_default_timezone_get();
+      $v->setConfig( 'TZID', $tz );
+
+      $v->setProperty( "method", "PUBLISH" );
+      $v->setProperty( "version", "2.0" );
+
       $v->setProperty( "X-WR-TIMEZONE", $tz );
       $xprops = array( "X-LIC-LOCATION" => $tz );
       iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
          
-      $v->setProperty( "method", "PUBLISH" );
-      $v->setProperty( "version", "2.0" );
       $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
       $v->setProperty( "calscale", "GREGORIAN" );
       $interv = array();
