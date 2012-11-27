@@ -193,7 +193,7 @@ switch($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Title'),
+      $title   = sprintf(__('%1$s: %2$s'), _x('person','Title'),
                          Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
 

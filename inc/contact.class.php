@@ -212,7 +212,7 @@ class Contact extends CommonDBTM{
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Title') . "</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . _x('person','Title') . "</td><td>";
       UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
       if ($ID > 0) {
@@ -366,7 +366,7 @@ class Contact extends CommonDBTM{
 
       $tab[81]['table']         = 'glpi_usertitles';
       $tab[81]['field']         = 'name';
-      $tab[81]['name']          = __('Title');
+      $tab[81]['name']          = _x('person','Title');
       $tab[81]['datatype']      = 'dropdown';
 
       $tab[8]['table']          = 'glpi_suppliers';

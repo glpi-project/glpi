@@ -79,7 +79,7 @@ $requester = array('user'               => array('title' => __('Requester')),
                    'users_id_recipient' => array('title' => __('Writer')),
                    'group'              => array('title' => __('Group')),
                    'group_tree'         => array('title' => __('Group tree')),
-                   'usertitles_id'      => array('title' => __('Title')),
+                   'usertitles_id'      => array('title' => _x('person','Title')),
                    'usercategories_id'  => array('title' => __('Category')));
 
 $caract    = array('itilcategories_id'   => array('title' => __('Category')),

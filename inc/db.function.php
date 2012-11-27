@@ -1209,7 +1209,7 @@ function getUserName($ID, $link=0) {
             }
 
             if ($data["usertitles_id"] > 0) {
-               $comments[] = array('name'  => __('Title'),
+               $comments[] = array('name'  => _x('person','Title'),
                                    'value' => Dropdown::getDropdownName("glpi_usertitles",
                                                                      $data["usertitles_id"]));
             }
