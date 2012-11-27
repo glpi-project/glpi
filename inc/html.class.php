@@ -795,6 +795,8 @@ class Html {
 
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
+      // No frame to avoid click-jacking
+      header('x-frame-options:DENY');
       // Send extra expires header
       self::header_nocache();
 
