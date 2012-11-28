@@ -50,6 +50,31 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
+   function prepareInput($input) {
+
+      if ($input['speed'] == 'speed_other_value') {
+         $speed = self::transformPortSpeed($input['speed_other_value'], false);
+         if ($speed === false) {
+            unset($input['speed']);
+         } else {
+            $input['speed'] = $speed;
+         }
+      }
+
+      return $input;
+   }
+
+
+   function prepareInputForAdd($input) {
+      return parent::prepareInputForAdd($this->prepareInput($input));
+   }
+
+
+   function prepareInputForUpdate($input) {
+      return parent::prepareInputForUpdate($this->prepareInput($input));
+   }
+
+
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
       if (!$options['several']) {
@@ -65,8 +90,17 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                               array('value' => $this->fields['type']));
       echo "</td>";
       echo "<td>" . __('Ethernet port speed') . "</td><td>\n";
-      Dropdown::showFromArray('speed', self::getPortSpeed(),
-                              array('value' => $this->fields['speed']));
+
+      $standard_speeds = self::getPortSpeed();
+      if (!isset($standard_speeds[$this->fields['speed']])) {
+         $speed = self::transformPortSpeed($this->fields['speed'], true);
+      } else {
+         $speed = true;
+      }
+
+      Dropdown::showFromArray('speed', $standard_speeds,
+                              array('value' => $this->fields['speed'],
+                                    'other' => $speed));
       echo "</td>";
       echo "</tr>\n";
 
@@ -194,6 +228,51 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    /**
+    * Transform a port speed from string to integerer and vice-versa
+    *
+    * @param $val       port speed (integer or string)
+    * @param $to_string (boolean) true if we must transform the speed to string
+    *
+    * @return integer or string (regarding what is requested)
+   **/
+   static function transformPortSpeed($val, $to_string) {
+
+      if ($to_string) {
+         if (($val % 1000) == 0) {
+            //TRANS: %d is the speed
+            return sprintf(__('%d Gbit/s'), $val / 1000);
+         }
+
+         if ((($val % 100) == 0) && ($val > 1000)) {
+            $val /= 100;
+            //TRANS: %f is the speed
+            return sprintf(__('%.1f Gbit/s'), $val / 10);
+         }
+
+         //TRANS: %d is the speed
+         return sprintf(__('%d Mbit/s'), $val);
+      } else {
+         $val = preg_replace( '/\s+/', '', strtolower($val));
+
+         $number = sscanf($val, "%f%s", $speed, $unit);
+         if ($number != 2) {
+            return false;
+         }
+
+         if ($unit == 'mbit/s') {
+            return (int)$speed;
+         }
+
+         if ($unit == 'gbit/s') {
+            return (int)($speed * 1000);
+         }
+
+         return false;
+      }
+   }
+
+
+   /**
     * Get the possible value for Ethernet port speed
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
@@ -216,7 +295,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       if (isset($tmp[$val])) {
          return $tmp[$val];
       }
-      return NOT_AVAILABLE;
+      return self::transformPortSpeed($val, true);
    }
 
 
