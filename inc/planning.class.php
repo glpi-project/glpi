@@ -343,8 +343,14 @@ class Planning extends CommonGLPI {
          echo "<br>";
 
          $url = parse_url($CFG_GLPI["url_base"]);
-         
-         echo "<a target='_blank' href=\"webcal://".$url['host'].
+         $port = 80;
+         if (isset($url['port'])) {
+            $port = $url['port'];
+         } else if (isset($url['scheme']) && $url["scheme"]=='https') {
+            $port = 443;
+         }
+
+         echo "<a target='_blank' href=\"webcal://".$url['host'].':'.$port.
                (isset($url['path'])?$url['path']:'').
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
                "&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype&amp;token=".
