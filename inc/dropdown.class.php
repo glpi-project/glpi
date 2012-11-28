@@ -1460,6 +1460,8 @@ class Dropdown {
     *    - size            : integer / number of rows for the select (default = 1)
     *    - mark_unmark_all : add buttons to select or deselect all options (only for multiple)
     *    - display         : boolean / display or return string
+    *    - other           : boolean or string if not false, then we can use an "other" value
+    *                        if it is a string, then the default value will be this string
     *    - rand            : specific rand if needed (default is generated one)
     *
     * Permit to use optgroup defining items in arrays
@@ -1479,6 +1481,7 @@ class Dropdown {
       $param['size']            = 1;
       $param['mark_unmark_all'] = false;
       $param['display']         = true;
+      $param['other']           = false;
       $param['rand']            = mt_rand();
 
       if (is_array($options) && count($options)) {
@@ -1488,6 +1491,20 @@ class Dropdown {
          }
          foreach ($options as $key => $val) {
             $param[$key] = $val;
+         }
+      }
+
+      if ($param['other'] !== false) {
+         $other_select_option = $name . '_other_value';
+         $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
+
+         // If $param['other'] is a string, then we must highlight "other" option
+         if (is_string($param['other'])) {
+            if (!$param["multiple"]) {
+               $param['values'] = array($other_select_option);
+            } else {
+               $param['values'][] = $other_select_option;
+            }
          }
       }
 
@@ -1551,15 +1568,35 @@ class Dropdown {
             }
          }
 
+         if ($param['other'] !== false) {
+            $output .= "<option value='$other_select_option'";
+            if (is_string($param['other'])) {
+               $output .= " selected";
+            }
+            $output .= ">".__('Other ...')."</option>";
+         }
+
          $output .= "</select>";
+         if ($param['other'] !== false) {
+            $output .= "<input name='$other_select_option' id='$other_select_option' type='text'";
+            if (is_string($param['other'])) {
+               $output .= " value=\"" . $param['other'] . "\"";
+            } else {
+               $output .= " style=\"display: none\"";
+            }
+            $output .= ">";
+         }
+
          if ($param['mark_unmark_all'] && $param['multiple']) {
             $output .= "<br>\n";
-            $output .= "<input type='button' onclick=\"markSelect('$field_id')\" value='";
+            $output .= "<input type='button' onclick=\"selectAllOptions('$field_id')\" value='";
             $output .= __('Select all options')."'>";
-            $output .= "<input type='button' onclick=\"unMarkSelect('$field_id')\" value='";
+            $output .= "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value='";
             $output .=  __('Deselect all options')."'>";
          }
+
       }
+
       if ($param['display']) {
          echo $output;
          return $param['rand'];

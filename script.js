@@ -440,11 +440,11 @@ function toggleCheckboxes( container_id ) {
 
 
 /**
- * marks all option inside the given select
+ * select all option inside the given select
  *
  * @param    select_id    DOM select id
 **/
-function markSelect(select_id) {
+function selectAllOptions(select_id) {
 
    var options = document.getElementById(select_id).getElementsByTagName('option');
    for (var j=0 ; j<options.length ; j++ ) {
@@ -455,11 +455,29 @@ function markSelect(select_id) {
 
 
 /**
- * marks all option inside the given select
+ * display "other" text input field in case of selecting "other" option
+ *
+ * @param    select_object     DOM select object
+ * @param    other_option_name the name of both the option and the text input field
+**/
+function displayOtherSelectOptions(select_object, other_option_name) {
+
+   var SelIndex = select_object.selectedIndex;
+   if (select_object.options[select_object.selectedIndex].value == other_option_name) {
+      document.getElementById(other_option_name).style.display = "inline";
+   } else {
+      document.getElementById(other_option_name).style.display = "none";
+   }
+   return true;
+}
+
+
+/**
+ * unselect all option inside the given select
  *
  * @param    select_id    DOM select id
 **/
-function unMarkSelect(select_id) {
+function unselectAllOptions(select_id) {
 
    var options = document.getElementById(select_id).getElementsByTagName('option');
    for (var j=0 ; j<options.length ; j++ ) {
