@@ -243,6 +243,10 @@ class Planning {
       echo "</td>\n";
 
       if ($uID || $gID) {
+         $port = 80;
+         if (isset($_SERVER['SERVER_PORT'])) {
+            $port = $_SERVER['SERVER_PORT'];
+         }
 
          echo "<td>";
          echo "<a target='_blank'
@@ -254,7 +258,7 @@ class Planning {
          echo "<br>";
    
          // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-         echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
+         echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].':'.$port.$CFG_GLPI["root_doc"].
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
                "&amp;usertype=".$usertype."&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
