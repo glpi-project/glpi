@@ -494,9 +494,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          $ASSIGN .= ") AND ";
       }
 
-      $addrestrict = '';
+      $addrestrict = getEntitiesRestrictRequest("AND", $parentitem->getTable());
       if ($parentitem->maybeDeleted()) {
-         $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
+         $addrestrict .= 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
       }
       
       $query = "SELECT `".$item->getTable()."`.*
