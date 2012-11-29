@@ -2101,7 +2101,8 @@ class User extends CommonDBTM {
       $tab[60]['massiveaction'] = false;
       $tab[60]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_tickets_users',
-                                                  'joinparams' => array('jointype' => 'child')));
+                                                  'joinparams' => array('jointype'  => 'child',
+                                                                        'condition' => 'AND NEWTABLE.`type` = '.Ticket::REQUESTER)));
 
       $tab[61]['table']         = 'glpi_tickets';
       $tab[61]['field']         = 'count';
