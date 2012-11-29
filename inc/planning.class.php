@@ -264,6 +264,7 @@ class Planning extends CommonGLPI {
             if (!Session::haveRight("show_group_planning","1")) {
                exit();
             }
+            $gID='mine';
             break;
 
          case 'users' :
@@ -353,7 +354,9 @@ class Planning extends CommonGLPI {
          echo "<a target='_blank' href=\"webcal://".$url['host'].':'.$port.
                (isset($url['path'])?$url['path']:'').
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-               "&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype&amp;token=".
+               "&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype".
+               "&amp;entity=".$_SESSION["glpiactive_entity"].
+               "&amp;recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
                __s('webcal:// synchronization')."\">";
          echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
