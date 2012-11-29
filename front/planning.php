@@ -78,13 +78,17 @@ if (isset($_GET['checkavailability'])) {
             $ismine = true;
          }
          // Check groups if have right to see
-         if (!$ismine) {
-            $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_group_planning');
-            $groups = Group_User::getUserGroups($user->getID());
-            foreach ($groups as $group) {
-               if ($_GET["gID"] == $group['id']
-                  && in_array($group['entities_id'], $entities)) {
-                  $ismine = true;
+         if (!$ismine && $_GET["gID"]!=0) {
+            if ($_GET["gID"] == 'mine') {
+               $ismine = true;
+            } else {
+               $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_group_planning');
+               $groups = Group_User::getUserGroups($user->getID());
+               foreach ($groups as $group) {
+                  if ($_GET["gID"] == $group['id']
+                     && in_array($group['entities_id'], $entities)) {
+                     $ismine = true;
+                  }
                }
             }
          }
