@@ -315,6 +315,7 @@ class Session {
          }
          // Active entity loading
          $_SESSION["glpiactive_entity"]           = $active;
+         $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
          $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName("glpi_entities", $active);
          $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
          if ($is_recursive) {

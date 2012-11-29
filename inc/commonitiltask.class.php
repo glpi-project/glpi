@@ -460,30 +460,30 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($who_group==="mine") {
          if (count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
-            $ASSIGN = "`users_id_tech` IN (SELECT DISTINCT `users_id`
+            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT DISTINCT `users_id`
                                       FROM `glpi_groups_users`
                                       WHERE `groups_id` IN ('$groups'))
                                             AND ";
          } else { // Only personal ones
-            $ASSIGN = "`users_id_tech` = '$who'
+            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
                        AND ";
          }
 
       } else {
          if ($who>0) {
-            $ASSIGN = "`users_id_tech` = '$who'
+            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
                        AND ";
          }
 
          if ($who_group>0) {
-            $ASSIGN = "`users_id_tech` IN (SELECT `users_id`
+            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT `users_id`
                                       FROM `glpi_groups_users`
                                       WHERE `groups_id` = '$who_group')
                                             AND ";
          }
       }
       if (empty($ASSIGN)) {
-         $ASSIGN = "`users_id_tech` IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
+         $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
                                    FROM `glpi_profiles`
                                    LEFT JOIN `glpi_profiles_users`
                                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
@@ -494,12 +494,20 @@ abstract class CommonITILTask  extends CommonDBTM {
          $ASSIGN .= ") AND ";
       }
 
-      $query = "SELECT *
+      $addrestrict = '';
+      if ($parentitem->maybeDeleted()) {
+         $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
+      }
+      
+      $query = "SELECT `".$item->getTable()."`.*
                 FROM `".$item->getTable()."`
+                INNER JOIN `".$parentitem->getTable()."`
+                  ON (`".$parentitem->getTable()."`.`id` = `".$item->getTable()."`.`".$parentitem->getForeignKeyField()."`)
                 WHERE $ASSIGN
-                      '$begin' < `end`
-                      AND '$end' > `begin`
-                ORDER BY `begin`";
+                      '$begin' < `".$item->getTable()."`.`end`
+                      AND '$end' > `".$item->getTable()."`.`begin`
+                      $addrestrict
+                ORDER BY `".$item->getTable()."`.`begin`";
 
       $result = $DB->query($query);
 

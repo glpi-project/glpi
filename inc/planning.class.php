@@ -260,7 +260,8 @@ class Planning {
          // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
          echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].':'.$port.$CFG_GLPI["root_doc"].
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-               "&amp;usertype=".$usertype."&amp;token=".
+               "&amp;usertype=".$usertype."&amp;entity=".$_SESSION["glpiactive_entity"].
+               "&amp;recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
                $LANG['planning'][13]."\">";
          echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
@@ -990,6 +991,8 @@ class Planning {
             $vevent = new vevent(); //initiate EVENT
             if (isset($val["tickettasks_id"])) {
                $vevent->setProperty("uid", "Job#".$val["tickettasks_id"]);
+            } else if (isset($val["problemtasks_id"])) {
+               $vevent->setProperty("uid", "Problem".$val["tickettasks_id"]);
             } else if (isset($val["reminders_id"])) {
                $vevent->setProperty("uid", "Event#".$val["reminders_id"]);
             } else if (isset($val['planningID'])) { // Specify the ID (for plugins)
