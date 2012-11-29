@@ -159,9 +159,13 @@ class Problem_Ticket extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='8'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
+         $condition = "`glpi_tickets`.`status` NOT IN ('".implode("', '",
+                                                                  array_merge(Ticket::getSolvedStatusArray(),
+                                                                              Ticket::getClosedStatusArray()))."')";         
          Dropdown::show('Ticket', array('used'        => $used,
                                         'entity'      => $problem->getEntityID(),
-                                        'entity_sons' => $problem->isRecursive()));
+                                        'entity_sons' => $problem->isRecursive(),
+                                        'condition'   => $condition));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
@@ -233,8 +237,12 @@ class Problem_Ticket extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='7'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Dropdown::show('Problem', array('used'   => $used,
-                                         'entity' => $ticket->getEntityID()));
+         $condition = "`glpi_problems`.`status` NOT IN ('".implode("', '",
+                                                                  array_merge(Problem::getSolvedStatusArray(),
+                                                                              Problem::getClosedStatusArray()))."')";
+         Dropdown::show('Problem', array('used'      => $used,
+                                         'entity'    => $ticket->getEntityID(),
+                                         'condition' => $condition));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
