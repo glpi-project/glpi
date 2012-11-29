@@ -66,6 +66,19 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
+} else if (isset($_POST["unaffect"])) {
+   $nn->check($_POST['id'], 'w');
+   $nn->unaffectAddressByID($_POST['id']);
+   Event::log($_POST["id"], "networkname", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+   if ($node = getItemForItemtype($nn->fields["itemtype"])) {
+      if ($node->can($nn->fields["items_id"], 'r')) {
+         Html::redirect($node->getLinkURL());
+      }
+   }
+   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
+
 } else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
    $nn->check($_POST['addressID'],'w');
 

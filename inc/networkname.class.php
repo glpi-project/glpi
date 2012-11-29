@@ -170,6 +170,10 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
+      if (count($recursiveItems) > 0) {
+         echo " - <input type='submit' name='unaffect' value=\"" .
+              __s('Dissociate') . "\" class='submit'>";
+      }
       echo "</td>\n";
       echo "<td>" . __('Name') . "</td><td>\n";
       Html::autocompletionTextField($this, "name");
@@ -446,7 +450,9 @@ class NetworkName extends FQDNLabel {
        // If the networkname is defined, we must be able to edit it. So we make a link
       if ($name->getID() > 0) {
          echo "<a href='".$name->getLinkURL()."'>".$name->getTypeName(1)."</a>";
-         echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'>\n";
+         echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'> - \n";
+         Html::showSimpleForm($name->getFormURL(), 'unaffect', __s('Dissociate'),
+                              array('id' => $name->getID()));
       } else {
          echo $name->getTypeName(1);
       }

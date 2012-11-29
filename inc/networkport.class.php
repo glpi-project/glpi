@@ -292,12 +292,33 @@ class NetworkPort extends CommonDBChild {
 
       if ((count($this->input_for_NetworkName) > 0)
           && (!isset($_POST['several']))) {
-         if (!empty($this->input_for_NetworkName['name'])
-             || !empty($this->input_for_NetworkName['_ipaddresses'])) {
-            $network_name = new NetworkName();
-            if (isset($this->input_for_NetworkName['id'])) {
-               $network_name->update($this->input_for_NetworkName, $history);
+
+         // Check to see if the NetworkName is empty
+         $empty_networkName = empty($this->input_for_NetworkName['name'])
+                              && empty($this->input_for_NetworkName['fqdns_id']);
+         if (($empty_networkName) && is_array($this->input_for_NetworkName['_ipaddresses'])) {
+            foreach ($this->input_for_NetworkName['_ipaddresses'] as $ip_address) {
+               if (!empty($ip_address)) {
+                  $empty_networkName = false;
+                  break;
+               }
+            }
+         }
+
+         $network_name = new NetworkName();
+         if (isset($this->input_for_NetworkName['id'])) {
+
+            if ($empty_networkName) {
+               // If the NetworkName is empty, then delete it !
+               $network_name->delete($this->input_for_NetworkName, $history);
             } else {
+               // Else, update it
+               $network_name->update($this->input_for_NetworkName, $history);
+            }
+
+         } else {
+
+            if (!$empty_networkName) { // Only create a NetworkName if it is not empty
                $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
                $this->input_for_NetworkName['items_id'] = $this->getID();
                $network_name->add($this->input_for_NetworkName, $history);
@@ -305,6 +326,7 @@ class NetworkPort extends CommonDBChild {
          }
       }
       unset($this->input_for_NetworkName);
+
       if (count($this->input_for_NetworkPortConnect) > 0) {
          if (isset($this->input_for_NetworkPortConnect['networkports_id_1'])
              && isset($this->input_for_NetworkPortConnect['networkports_id_2'])
