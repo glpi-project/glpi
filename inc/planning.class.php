@@ -919,7 +919,7 @@ class Planning {
    static function generateIcal($who,$who_group) {
       global $CFG_GLPI, $LANG;
 
-      if ($who==0 && $who_group==0) {
+      if ($who===0 && $who_group===0) {
          return false;
       }
 
