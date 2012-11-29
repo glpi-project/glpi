@@ -81,8 +81,8 @@ if (isset($_GET['checkavailability'])) {
             $ismine = true;
          }
          // Check groups if have right to see
-         if (!$ismine && $_GET["gID"]!=0) {
-            if ($_GET["gID"] == 'mine') {
+         if (!$ismine && $_GET["gID"]!==0) {
+            if ($_GET["gID"] === 'mine') {
                $ismine = true;
             } else {
                $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_group_planning');
@@ -95,6 +95,7 @@ if (isset($_GET['checkavailability'])) {
                }
             }
          }
+         
          $canview = false;
          // If not mine check global right
          if (!$ismine) {
