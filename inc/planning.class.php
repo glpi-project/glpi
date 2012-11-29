@@ -251,17 +251,20 @@ class Planning {
          echo "<td>";
          echo "<a target='_blank'
                href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
-                     "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;token=".
+                     "&amp;gID=".$gID."&amp;usertype=".$usertype.
+                     "&amp;entities_id=".$_SESSION["glpiactive_entity"].
+                     "&amp;is_recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
                      User::getPersonalToken(Session::getLoginUserID(true))."\"
                      title=\"".$LANG['planning'][12]."\">".
                "<span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
          echo "<br>";
-   
+
+         
          // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
          echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].':'.$port.$CFG_GLPI["root_doc"].
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-               "&amp;usertype=".$usertype."&amp;entity=".$_SESSION["glpiactive_entity"].
-               "&amp;recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
+               "&amp;usertype=".$usertype."&amp;entities_id=".$_SESSION["glpiactive_entity"].
+               "&amp;is_recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
                $LANG['planning'][13]."\">";
          echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";

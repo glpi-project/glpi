@@ -58,7 +58,8 @@ $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 // Load Language file
 Session::loadLanguage();
 
-if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+if (isset($_SESSION['glpi_use_mode'])
+   && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
    $SQL_TOTAL_REQUEST=0;
    $DEBUG_SQL["queries"]=array();
    $DEBUG_SQL["errors"]=array();

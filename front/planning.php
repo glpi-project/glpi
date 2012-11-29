@@ -74,6 +74,10 @@ if (isset($_REQUEST['checkavailability'])) {
       /// TODO : complex : check if the request is valid : rights on uID / gID ?
       $user = new User();
       if ($user->getFromDBByToken($_GET['token'])) {
+         if (isset($_GET['entities_id']) && isset($_GET['is_recursive'])) {
+            $user->loadMinimalSession($_GET['entities_id'], $_GET['is_recursive']);
+         }
+
          Planning::generateIcal($_GET["uID"], $_GET["gID"]);
       }
    }
