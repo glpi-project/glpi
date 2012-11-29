@@ -338,6 +338,8 @@ class Planning extends CommonGLPI {
          echo "<a target='_blank'
                 href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
                  "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype".
+                 "&amp;entities_id=".$_SESSION["glpiactive_entity"].
+                 "&amp;is_recursive=".$_SESSION["glpiactive_entity_recursive"].
                  "&amp;token=".User::getPersonalToken(Session::getLoginUserID(true))."\"
                  title=\"".__s('Download the planning in Ical format')."\">".
                "<span style='font-size:10px'>".__('Ical')."</span></a>";

@@ -71,6 +71,9 @@ if (isset($_GET['checkavailability'])) {
       // Check user token
       $user = new User();
       if ($user->getFromDBByToken($_GET['token'])) {
+         if (isset($_GET['entities_id']) && isset($_GET['is_recursive'])) {
+            $user->loadMinimalSession($_GET['entities_id'], $_GET['is_recursive']);
+         }
          //// check if the request is valid : rights on uID / gID
          // First check mine : user then groups
          $ismine = false;
