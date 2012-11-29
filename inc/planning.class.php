@@ -995,7 +995,7 @@ class Planning {
             if (isset($val["tickettasks_id"])) {
                $vevent->setProperty("uid", "Job#".$val["tickettasks_id"]);
             } else if (isset($val["problemtasks_id"])) {
-               $vevent->setProperty("uid", "Problem".$val["tickettasks_id"]);
+               $vevent->setProperty("uid", "Problem".$val["problemtasks_id"]);
             } else if (isset($val["reminders_id"])) {
                $vevent->setProperty("uid", "Event#".$val["reminders_id"]);
             } else if (isset($val['planningID'])) { // Specify the ID (for plugins)
