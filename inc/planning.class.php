@@ -357,8 +357,8 @@ class Planning extends CommonGLPI {
                (isset($url['path'])?$url['path']:'').
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
                "&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype".
-               "&amp;entity=".$_SESSION["glpiactive_entity"].
-               "&amp;recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
+               "&amp;entities_id=".$_SESSION["glpiactive_entity"].
+               "&amp;is_recursive=".$_SESSION["glpiactive_entity_recursive"]."&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
                __s('webcal:// synchronization')."\">";
          echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
@@ -987,11 +987,10 @@ class Planning extends CommonGLPI {
    static function generateIcal($who, $who_group, $limititemtype='') {
       global $CFG_GLPI;
 
-      if (($who == 0)
-          && ($who_group == 0)) {
+      if (($who === 0)
+          && ($who_group === 0)) {
          return false;
       }
-
       include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
       $v = new vcalendar();
 
