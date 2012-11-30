@@ -174,7 +174,7 @@ class HTMLTableRow extends HTMLTableEntity {
          } else {
             $options = array();
          }
-         echo "\t\t<tr>\n";
+         echo "\t\t<tr class='tab_bg_1'>\n";
          foreach ($headers as $header) {
             $header_name = $header->getCompositeName();
             if (isset($this->cells[$header_name])) {

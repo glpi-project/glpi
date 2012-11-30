@@ -686,7 +686,7 @@ class NetworkName extends FQDNLabel {
 //          echo "<tr><td class='center'>";
 //          echo "</td></tr>\n";
 
-         echo "<tr><td class='right'>";
+         echo "<tr class='tab_bg_1'><td class='right'>";
          echo "<input type='hidden' name='items_id' value='$items_id'>\n";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
          _e('Not associated');

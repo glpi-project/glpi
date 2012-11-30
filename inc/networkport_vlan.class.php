@@ -134,7 +134,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "<table class='tab_cadre_fixe'>\n";
          echo "<tr><th colspan='4'>".__('Associate a VLAN')."</th></tr>";
 
-         echo "<tr><td class='right'>";
+         echo "<tr class='tab_bg_1'><td class='right'>";
          echo "<input type='hidden' name='networkports_id' value='$ID'>";
          Vlan::dropdown(array('used' => $used));
          echo "</td>";

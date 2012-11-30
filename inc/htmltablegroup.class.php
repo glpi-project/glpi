@@ -224,7 +224,7 @@ class HTMLTableGroup extends HTMLTableBase {
             }
             $currentNumberOfSubRow = $row->getNumberOfSubRows();
             if (($previousNumberOfSubRows * $currentNumberOfSubRow) > 1) {
-               echo "\t<tbody><tr><td colspan='$totalNumberOfColumn'><hr></td></tr></tbody>\n";
+               echo "\t<tbody><tr class='tab_bg_1'><td colspan='$totalNumberOfColumn'><hr></td></tr></tbody>\n";
             }
             $row->displayRow($this->ordered_headers);
             $previousNumberOfSubRows = $currentNumberOfSubRow;

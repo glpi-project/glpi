@@ -183,7 +183,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         echo "<table class='tab_cadre_fixe'><tr><td>";
+         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
          echo __('Add a new component')."</td><td class=left width='70%'>";
          Dropdown::showAllItems('devices_id', '', 0, -1, $devtypes, false, false, 'devicetype');
          echo "</td><td>";
