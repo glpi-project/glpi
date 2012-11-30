@@ -498,7 +498,7 @@ class RSSFeed extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('RSSFeed', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
    }
@@ -603,9 +603,6 @@ class RSSFeed extends CommonDBTM {
       $this->showFormHeader($options);
 
       $rowspan = 4;
-      if ($this->isNewID($ID)) {
-         $rowspan--;
-      }
 
       if (!$this->isNewID($ID)) {
          // Force getting feed :
@@ -621,7 +618,7 @@ class RSSFeed extends CommonDBTM {
          Html::autocompletionTextField($this, "name",
                                        array('entity' => -1,
                                              'user'   => $this->fields["users_id"]));
-         echo "</td><td colspans='2'>&nbsp;</td></tr>\n";
+         echo "</td><td colspan ='2'>&nbsp;</td></tr>\n";
       }
 
       echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
@@ -732,7 +729,7 @@ class RSSFeed extends CommonDBTM {
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
          foreach($feed->get_items(0,$this->fields['max_items']) as $item) {
             $link = $item->get_permalink();
-            echo "<tr><td>";
+            echo "<tr class='tab_bg_1'><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
             if (!is_null($link)) {
@@ -916,7 +913,7 @@ class RSSFeed extends CommonDBTM {
       if ($nb) {
          usort($items, array('SimplePie', 'sort_items'));
          foreach($items as $item) {
-            echo "<tr><td>";
+            echo "<tr class='tab_bg_1'><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
             $link = $item->feed->get_permalink();
@@ -975,7 +972,7 @@ class RSSFeed extends CommonDBTM {
          echo "<input type='hidden' name='rssfeeds_id' value='$ID'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
-         echo "<tr><td class='tab_bg_2' width='100px'>";
+         echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
 
          $types   = array('Entity', 'Group', 'Profile', 'User');
 
@@ -1021,7 +1018,7 @@ class RSSFeed extends CommonDBTM {
       if (count($this->users)) {
          foreach ($this->users as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[RSSFeed_User][".$data["id"]."]' value='1' >";
@@ -1038,7 +1035,7 @@ class RSSFeed extends CommonDBTM {
       if (count($this->groups)) {
          foreach ($this->groups as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Group_RSSFeed][".$data["id"]."]' value='1'>";
@@ -1069,7 +1066,7 @@ class RSSFeed extends CommonDBTM {
       if (count($this->entities)) {
          foreach ($this->entities as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Entity_RSSFeed][".$data["id"]."]'
@@ -1094,7 +1091,7 @@ class RSSFeed extends CommonDBTM {
       if (count($this->profiles)) {
          foreach ($this->profiles as $key => $val) {
             foreach ($val as $data) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
                   echo "<input type='checkbox' name='item[Profile_RSSFeed][".$data["id"]."]'
