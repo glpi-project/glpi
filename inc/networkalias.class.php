@@ -118,7 +118,7 @@ class NetworkAlias extends FQDNLabel {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".FQDN::getTypeName()."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
                      array('value'        => $this->fields["fqdns_id"],
@@ -300,7 +300,7 @@ class NetworkAlias extends FQDNLabel {
          $showviewjs = ($canedit
                         ? "style='cursor:pointer' onClick=\"viewEditAlias".$data['id']."$rand();\""
                         : '');
-         echo "<tr>";
+         echo "<tr class='tab_bg_1'>";
          if ($canedit) {
             echo "<td>";
             Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
