@@ -782,6 +782,8 @@ class Reminder extends CommonDBTM {
                                                'items_id' => $ID));
          }
          echo "</td>";
+      } else {
+         echo "<td colspan='2'></td>";
       }
       echo "</tr>\n";
 
