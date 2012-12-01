@@ -2576,28 +2576,37 @@ class CommonDBTM extends CommonGLPI {
       return $comment;
    }
 
+
    /**
-   * Get field used for name
+    * @since version 0.84
+    *
+    * Get field used for name
    **/
    function getNameField() {
       return 'name';
    }
 
+
    /**
-   * Get field used for completename
+    * @since version 0.84
+    *
+    * Get field used for completename
    **/
    function getCompleteNameField() {
       return 'completename';
    }
 
+
    /**
-    * Get The Name of the Object
+    * Get the name of the object
     *
     * @param $options array of options
     *    - comments     : boolean / display comments
     *    - complete     : boolean / display completename instead of name
     *    - additional   : boolean / display aditionals information
+    *
     * @return String: name of the object in the current language
+    *
     * @see CommonDBTM::getNameField
     * @see CommonDBTM::getCompleteNameField
    **/
@@ -2641,8 +2650,11 @@ class CommonDBTM extends CommonGLPI {
       return NOT_AVAILABLE;
    }
 
+
    /**
-    * Get additionals information to add before nam
+    * Get additionals information to add before name
+    *
+    * @since version 0.84
     *
     * @return String: string to add
    **/
@@ -2651,7 +2663,9 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Get additionals information to add before nam
+    * Get additionals information to add after name
+    *
+    * @since version 0.84
     *
     * @return String: string to add
    **/
@@ -2659,11 +2673,13 @@ class CommonDBTM extends CommonGLPI {
       return '';
    }
 
+
    /**
-    * Get The Name of the Object with the ID if the config is set
+    * Get the name of the object with the ID if the config is set
     * Should Not be overloaded (overload getName() instead)
     *
     * @see CommonDBTM::getName
+    *
     * @param $options array of options
     *    - comments     : boolean / display comments
     *    - complete     : boolean / display completename instead of name
@@ -2672,7 +2688,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return String: name of the object in the current language
    **/
-   function getNameID($options = array()) {
+   function getNameID($options=array()) {
       global $CFG_GLPI;
 
       $p['forceid'] = false;
@@ -2698,7 +2714,7 @@ class CommonDBTM extends CommonGLPI {
          if ($addcomment) {
             $comment = $this->getComments();
             if (!empty($comment)) {
-               $name = sprintf(__('%1$s - %2$s'), $name, $toadd);
+               $name = sprintf(__('%1$s - %2$s'), $name, $comment);
             }
          }
          return $name;
