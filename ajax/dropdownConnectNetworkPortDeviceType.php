@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief 
+ * @since version 0.84
+* @brief
 */
 
 define('GLPI_ROOT','..');
@@ -41,8 +42,8 @@ Session::checkRight("networking", "w");
 
 // Make a select box
 if (class_exists($_POST["itemtype"])) {
-   $table = getTableForItemType($_POST["itemtype"]);
-   $rand  = mt_rand();
+   $table    = getTableForItemType($_POST["itemtype"]);
+   $rand     = mt_rand();
 
    $use_ajax = true;
    $paramsconnectpdt
@@ -51,18 +52,29 @@ if (class_exists($_POST["itemtype"])) {
                      'rand'            => $rand,
                      'myname'          => "items",
                      'entity_restrict' => $_POST["entity_restrict"],
-                     'condition'       => "(`id` in (SELECT `items_id` FROM `glpi_networkports` WHERE `itemtype` = '".$_POST["itemtype"]."' AND `instantiation_type` = '".$_POST['instantiation_type']."'))",
-                     'update_item'     =>
-                       array('value_fieldname' => 'item',
-                             'to_update'       => "results_item_$rand",
-                             'url' => $CFG_GLPI["root_doc"]. "/ajax/dropdownConnectNetworkPort.php",
-                             'moreparams'      =>
-                               array('networkports_id'    => $_POST['networkports_id'],
-                                     'itemtype'           => $_POST['itemtype'],
-                                     'myname'             => $_POST['myname'],
-                                     'instantiation_type' => $_POST['instantiation_type'])));
+                     'condition'       => "(`id` in (SELECT `items_id`
+                                                     FROM `glpi_networkports`
+                                                     WHERE `itemtype` = '".$_POST["itemtype"]."'
+                                                           AND `instantiation_type`
+                                                                = '".$_POST['instantiation_type']."'))",
+                     'update_item'     => array('value_fieldname'
+                                                      => 'item',
+                                                'to_update'
+                                                      => "results_item_$rand",
+                                                'url' => $CFG_GLPI["root_doc"].
+                                                           "/ajax/dropdownConnectNetworkPort.php",
+                                                'moreparams'
+                                                      => array('networkports_id'
+                                                                  => $_POST['networkports_id'],
+                                                               'itemtype'
+                                                                  => $_POST['itemtype'],
+                                                               'myname'
+                                                                  => $_POST['myname'],
+                                                               'instantiation_type'
+                                                                  => $_POST['instantiation_type'])));
 
-   $default = "<select name='NetworkPortConnect_item'><option value='0'>".Dropdown::EMPTY_VALUE."</option>".
+   $default = "<select name='NetworkPortConnect_item'>".
+               "<option value='0'>".Dropdown::EMPTY_VALUE."</option>".
               "</select>\n";
    Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $paramsconnectpdt, $default, $rand);
 

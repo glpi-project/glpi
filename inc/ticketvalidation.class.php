@@ -290,9 +290,7 @@ class TicketValidation  extends CommonDBChild {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-
-      $job      = new Ticket();
-
+      $job     = new Ticket();
       $donotif = $CFG_GLPI["use_mailing"];
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
@@ -319,16 +317,16 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
-
    /**
     * @since version 0.84
     *
     * @see CommonDBConnexity::getHistoryChangeWhenUpdateField
    **/
    function getHistoryChangeWhenUpdateField($field) {
+
       if ($field == 'status') {
          $username = getUserName($this->fields["users_id_validate"]);
-         $result = array('0', '', '');
+         $result   = array('0', '', '');
          if ($this->fields["status"] == 'accepted') {
             //TRANS: %s is the username
             $result[2] = sprintf(__('Approval granted by %s'), $username);
@@ -340,6 +338,7 @@ class TicketValidation  extends CommonDBChild {
       }
       return false;
    }
+
 
    /**
     * @since version 0.84

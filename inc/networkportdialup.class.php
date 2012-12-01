@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -54,7 +54,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
                                              HTMLTableHeader $father=NULL,
                                              array $options=array()) {
 
-      $header          = $group->addHeader('Connected', __('Connected to'), $super);
+      $header = $group->addHeader('Connected', __('Connected to'), $super);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
       return NULL;

@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief 
+ * @since version 0.84
+* @brief
 */
 
 $AJAX_INCLUDE = 1;
@@ -54,7 +55,7 @@ if (class_exists($_POST["itemtype"])
                   ON (`glpi_netpoints`.`id`=`glpi_networkportethernets`.`netpoints_id`)";
    } else {
       $npname_field = "''";
-      $JOINS = "";
+      $JOINS        = "";
    }
 
    $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
@@ -67,7 +68,7 @@ if (class_exists($_POST["itemtype"])
                ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
                    AND `glpi_networkports`.`itemtype` = '".$_POST["itemtype"]."'
                    AND `glpi_networkports`.`items_id` = `$table`.`id`
-                   AND `glpi_networkports`.`instantiation_type` = '" . $_POST['instantiation_type'] . "')
+                   AND `glpi_networkports`.`instantiation_type` = '".$_POST['instantiation_type']."')
              LEFT JOIN `glpi_networkports_networkports`
                ON (`glpi_networkports_networkports`.`networkports_id_1` = `glpi_networkports`.`id`
                    OR `glpi_networkports_networkports`.`networkports_id_2`=`glpi_networkports`.`id`)
@@ -104,7 +105,7 @@ if (class_exists($_POST["itemtype"])
          }
          $ID = $data['did'];
 
-         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+         if ($_SESSION["glpiis_ids_visible"] || empty($output) || empty($output_long)) {
             $output      = sprintf(__('%1$s (%2$s)'), $output, $ID);
             $output_long = sprintf(__('%1$s (%2$s)'), $output_long, $ID);
          }
