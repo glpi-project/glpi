@@ -57,8 +57,8 @@ $RELATION = array("glpi_authldaps"
                   "glpi_calendars"
                         => array('_glpi_calendarsegments'   => 'calendars_id',
                                  '_glpi_calendars_holidays' => 'calendars_id',
-                                 'glpi_slas'               => 'calendars_id',
-                                 'glpi_entities'           => 'calendars_id',),
+                                 'glpi_slas'                => 'calendars_id',
+                                 'glpi_entities'            => 'calendars_id',),
 
                   "glpi_cartridgeitems"
                         => array('glpi_cartridges'                   => 'cartridgeitems_id',
@@ -75,7 +75,7 @@ $RELATION = array("glpi_authldaps"
 //                                  'glpi_changes_tickets'   => 'changes_id',
 //                                  'glpi_changes_users'     => 'changes_id',
 //                                  'glpi_changetasks'       => 'changes_id'),
-// 
+//
 //                   "glpi_changetasks"
 //                         => array('glpi_changetasks'   => 'changetasks_id'),
 

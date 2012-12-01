@@ -358,7 +358,7 @@ class Toolbox {
                                 : (is_null($value) ? NULL : str_replace($out,$in,$value));
 
       include_once(GLPI_HTMLAWED);
-      
+
       $config = array('safe'=>1);
       $config["elements"] = "*+iframe";
       $value = htmLawed($value, $config);
@@ -1344,7 +1344,7 @@ class Toolbox {
 
 
       $filename = "/ajax/common.tabs.php";
-      
+
       /// To keep for plugins
       /// TODO drop also for plugins.
       /// MoYo : test to drop it : plugin dev ?
@@ -1430,24 +1430,25 @@ class Toolbox {
 
       $content = "";
       $taburl  = parse_url($url);
-   
+
       // Connection directe
       if (empty($CFG_GLPI["proxy_name"])) {
-         $hostscheme = '';
+         $hostscheme  = '';
          $defaultport = 80;
          // Manage standard HTTPS port : scheme detection or port 443
          if ((isset($taburl["scheme"]) && $taburl["scheme"]=='https')
             || (isset($taburl["port"]) && $taburl["port"]=='443')) {
-            $hostscheme = 'ssl://';
+            $hostscheme  = 'ssl://';
             $defaultport = 443;
          }
-         if ($fp = @fsockopen($hostscheme.$taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : $defaultport),
-                            $errno, $errstr, 1)) {
-               
+         if ($fp = @fsockopen($hostscheme.$taburl["host"],
+                              (isset($taburl["port"]) ? $taburl["port"] : $defaultport),
+                              $errno, $errstr, 1)) {
+
             if (isset($taburl["path"]) && ($taburl["path"] != '/')) {
                $toget = $taburl["path"];
                if (isset($taburl["query"])) {
-                  $toget.='?'.$taburl["query"];
+                  $toget .= '?'.$taburl["query"];
                }
                // retrieve path + args
                $request = "GET $toget HTTP/1.1\r\n";
@@ -1487,7 +1488,7 @@ class Toolbox {
 
       $request .= "User-Agent: GLPI/".trim($CFG_GLPI["version"])."\r\n";
       $request .= "Connection: Close\r\n\r\n";
-      
+
       fwrite($fp, $request);
 
       $header = true ;
@@ -1797,17 +1798,21 @@ class Toolbox {
    /**
     * Parse imap open connect string
     *
+    * @since version 0.84
+    *
     * @param $value string: connect string
-    * @param $forceport boolean: force compute port if not set
+    * @param $forceport boolean: force compute port if not set (false by default)
     *
     * @return array of parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
-    *         norsh, secure and debug) : options are empty if not set and options have boolean values if set
+    *         norsh, secure and debug) : options are empty if not set
+    *                                    and options have boolean values if set
    **/
-   static function parseMailServerConnectString($value, $forceport = false) {
+   static function parseMailServerConnectString($value, $forceport=false) {
+
       $tab = array();
       if (strstr($value,":")) {
          $tab['address'] = str_replace("{", "", preg_replace("/:.*/", "", $value));
-         $tab['port'] = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
+         $tab['port']    = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
 
       } else {
          if (strstr($value,"/")) {
@@ -1819,7 +1824,7 @@ class Toolbox {
       }
       $tab['mailbox'] = preg_replace("/.*}/", "", $value);
 
-      $tab['type'] = '';
+      $tab['type']    = '';
       if (strstr($value,"/imap")) {
          $tab['type'] = 'imap';
       } else if (strstr($value,"/pop")) {
@@ -1875,7 +1880,8 @@ class Toolbox {
 
       return $tab;
    }
-   
+
+
    /**
     * @param $value
    **/
@@ -1886,65 +1892,66 @@ class Toolbox {
       }
 
       $tab = Toolbox::parseMailServerConnectString($value);
-      
+
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\"></td></tr>\n";
+      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
       echo "<select name='server_type'>";
       echo "<option value=''>&nbsp;</option>\n";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/imap' ".($tab['type'] == 'imap' ?" selected ":"").">".__('IMAP').
+      echo "<option value='/imap' ".(($tab['type'] == 'imap') ?" selected ":"").">".__('IMAP').
            "</option>\n";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/pop' ".($tab['type'] == 'pop' ? " selected " : "").">".__('POP').
+      echo "<option value='/pop' ".(($tab['type'] == 'pop') ? " selected " : "").">".__('POP').
            "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_ssl'>";
       echo "<option value=''>&nbsp;</option>\n";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/ssl' " .($tab['ssl'] === true ? " selected " : "").">".__('SSL').
+      echo "<option value='/ssl' " .(($tab['ssl'] === true) ? " selected " : "").">".__('SSL').
            "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_tls'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/tls' ".($tab['tls'] === true? " selected " : "").">";
+      echo "<option value='/tls' ".(($tab['tls'] === true) ? " selected " : "").">";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo __('TLS')."</option>\n";
-      echo "<option value='/notls' ".($tab['tls'] === false?" selected ":"").">";
+      echo "<option value='/notls' ".(($tab['tls'] === false) ?" selected ":"").">";
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo __('NO-TLS')."</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_cert'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/novalidate-cert' ".($tab['validate-cert'] === true?" selected ":"");
+      echo "<option value='/novalidate-cert' ".(($tab['validate-cert'] === true) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('NO-VALIDATE-CERT')."</option>\n";
-      echo "<option value='/validate-cert' " .($tab['validate-cert'] === false?" selected ":"");
+      echo "<option value='/validate-cert' " .(($tab['validate-cert'] === false) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('VALIDATE-CERT')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_rsh'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/norsh' ".($tab['norsh'] === true?" selected ":"");
+      echo "<option value='/norsh' ".(($tab['norsh'] === true) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('NORSH')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_secure'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/secure' ".($tab['secure'] === true?" selected ":"");
+      echo "<option value='/secure' ".(($tab['secure'] === true) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('SECURE')."</option>\n";
       echo "</select>\n";
 
       echo "<select name='server_debug'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/debug' ".($tab['debug'] === true?" selected ":"");
+      echo "<option value='/debug' ".(($tab['debug'] === true) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('DEBUG')."</option>\n";
       echo "</select>\n";

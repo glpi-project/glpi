@@ -1158,9 +1158,9 @@ function getUserName($ID, $link=0) {
    }
 
    if ($ID) {
-      $query = "SELECT *
-                FROM `glpi_users`
-                WHERE `id` = '$ID'";
+      $query  = "SELECT *
+                 FROM `glpi_users`
+                 WHERE `id` = '$ID'";
       $result = $DB->query($query);
 
       if ($link == 2) {
@@ -1178,15 +1178,15 @@ function getUserName($ID, $link=0) {
             $user["name"]    = $username;
             $user["link"]    = $CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
             $user['comment'] = '';
-            
-            $comments = array();
-            $comments[] = array('name'  => __('Name'),
-                                'value' => $username);
-            $comments[] = array('name'  => __('Login'),
-                                'value' => $data["name"]);
+
+            $comments        = array();
+            $comments[]      = array('name'  => __('Name'),
+                                     'value' => $username);
+            $comments[]      = array('name'  => __('Login'),
+                                     'value' => $data["name"]);
 
 
-            $email = UserEmail::getDefaultForUser($ID);
+            $email           = UserEmail::getDefaultForUser($ID);
             if (!empty($email)) {
                $comments[] = array('name'  => __('Email'),
                                    'value' => $email);
@@ -1205,24 +1205,24 @@ function getUserName($ID, $link=0) {
             if ($data["locations_id"] > 0) {
                $comments[] = array('name'  => __('Location'),
                                    'value' => Dropdown::getDropdownName("glpi_locations",
-                                                                     $data["locations_id"]));
+                                                                        $data["locations_id"]));
             }
 
             if ($data["usertitles_id"] > 0) {
                $comments[] = array('name'  => _x('person','Title'),
                                    'value' => Dropdown::getDropdownName("glpi_usertitles",
-                                                                     $data["usertitles_id"]));
+                                                                        $data["usertitles_id"]));
             }
 
             if ($data["usercategories_id"] > 0) {
                $comments[] = array('name'  => __('Category'),
                                    'value' => Dropdown::getDropdownName("glpi_usercategories",
-                                                                     $data["usercategories_id"]));
+                                                                        $data["usercategories_id"]));
             }
             if (count($comments)) {
                foreach ($comments as $data) {
                $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                   "<span class='b'>".$data['name'], "</span>".$data['value']);
+                                   "<span class='b'>".$data['name']."</span>", $data['value']);
                }
             }
          } else {

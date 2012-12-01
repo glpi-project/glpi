@@ -914,16 +914,20 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
    /**
     * Add needed information to $input (example entities_id)
     *
     * @param $input datas used to add the item
+    *
     * @since version 0.84
+    *
     * @return the modified $input array
    **/
    function addNeededInfoToInput($input) {
       return $input;
    }
+
 
    /**
     * Prepare input datas for adding the item

@@ -694,7 +694,6 @@ class TicketValidation  extends CommonDBChild {
     **/
    function showForm($ID, $options=array()) {
 
-
       if ($ID > 0) {
          $this->check($ID,'w');
       } else {

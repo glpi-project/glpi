@@ -339,19 +339,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return false;
    }
 
+
    /**
     * @since version 0.84
    **/
    function addNeededInfoToInput($input) {
+
       // is entity missing and forwarding on ?
       if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
          // Merge both arrays to ensure all the fields are defined for the following checks
          $completeinput = array_merge($this->fields, $input);
          // Set the item to allow parent::prepareinputforadd to get the right item ...
          if ($itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
-                                                           $completeinput)) {
+                                                         $completeinput)) {
             if (($itemToGetEntity instanceof CommonDBTM)
-               && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
+                && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
 
                $input['entities_id']  = $itemToGetEntity->getEntityID();
                $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
@@ -365,6 +367,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
       return $input;
    }
+
 
    /**
     * @since version 0.84

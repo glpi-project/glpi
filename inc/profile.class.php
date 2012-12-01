@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -44,12 +44,10 @@ class Profile extends CommonDBTM {
    static public $helpdesk_rights = array('add_followups', 'create_ticket',
                                           'create_ticket_on_login', 'create_validation',
                                           'faq', 'helpdesk_hardware', 'helpdesk_item_type',
-                                          'observe_ticket', 'password_update',
-                                          'reminder_public', 'reservation_helpdesk',
-                                          'rssfeed_public',
+                                          'observe_ticket', 'password_update', 'reminder_public',
+                                          'reservation_helpdesk', 'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
-                                          'ticketrecurrent', 
-                                          'tickettemplates_id', 'ticket_cost',
+                                          'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
                                           'update_own_followups', 'validate_ticket');
 
 
@@ -543,7 +541,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='2'>&nbsp;";
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";
       Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
@@ -746,7 +744,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='4'>";
       echo "</td></tr>";
-      
+
       if ($canedit
           && $closeform) {
          echo "<tr class='tab_bg_1'>";
@@ -1079,7 +1077,7 @@ class Profile extends CommonDBTM {
 //          echo "<td class='center'>$label</td>";
 //       }
 //       echo "</tr>\n";
-// 
+//
 //       foreach ($tabstatus as $from => $label) {
 //          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
 //          foreach ($tabstatus as $dest => $label) {
@@ -1656,7 +1654,7 @@ class Profile extends CommonDBTM {
       $tab[108]['name']          = __('Default ticket template');
       $tab[108]['datatype']      = 'dropdown';
       $tab[108]['condition']     = '`entities_id` = 0 AND `is_recursive` = 1';
-      
+
       $tab[103]['table']         = $this->getTable();
       $tab[103]['field']         = 'tickettemplate';
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
@@ -1849,17 +1847,17 @@ class Profile extends CommonDBTM {
 //       $tab[111]['nosearch']      = true;
 //       $tab[111]['datatype']      = 'text';
 //       $tab[111]['massiveaction'] = false;
-// 
+//
 //       $tab[115]['table']         = $this->getTable();
 //       $tab[115]['field']         = 'show_my_change';
 //       $tab[115]['name']          =__('See changes (author)');
 //       $tab[115]['datatype']      = 'bool';
-// 
+//
 //       $tab[116]['table']         = $this->getTable();
 //       $tab[116]['field']         = 'show_all_change';
 //       $tab[116]['name']          = __('See all changes');
 //       $tab[116]['datatype']      = 'bool';
-// 
+//
 //       $tab[117]['table']         = $this->getTable();
 //       $tab[117]['field']         = 'edit_all_change';
 //       $tab[117]['name']          = __('Update all changes');
@@ -1886,7 +1884,7 @@ class Profile extends CommonDBTM {
       $tab[120]['field']          = 'rssfeed_public';
       $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', 2);
       $tab[120]['datatype']       = 'right';
-      
+
       return $tab;
    }
 
