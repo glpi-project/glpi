@@ -220,9 +220,18 @@ class UserEmail  extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getNameField
+    *
+    * @return string
+   **/
    function getNameField() {
       return 'email';
    }
+
 
    function post_updateItem($history=1) {
       global $DB;

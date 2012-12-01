@@ -4076,7 +4076,8 @@ class Ticket extends CommonITILObject {
                 && $this->fields["items_id"]) {
 
                 if ($item->can($this->fields["items_id"],'r')) {
-                  printf(__('%1$s - %2$s'), $item->getTypeName(), $item->getLink(array('comments' => true)));
+                  printf(__('%1$s - %2$s'), $item->getTypeName(),
+                         $item->getLink(array('comments' => true)));
                } else {
                   printf(__('%1$s - %2$s'),  $item->getTypeName(), $item->getNameID());
                }
@@ -4661,7 +4662,7 @@ class Ticket extends CommonITILObject {
                   $options['searchtype'][1] = 'equals';
                   $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]       = 'AND';
-                  
+
                   $options['field'][2]      = 12; // validation aprobator
                   $options['searchtype'][2] = 'equals';
                   $options['contains'][2]   = 'old';

@@ -378,15 +378,16 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($options = array()) {
-      $p['comments']   = false;
+   function getName($options=array()) {
+
+      $p['comments'] = false;
 
       if (is_array($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
       }
-      
+
       if (!isset($this->fields['taskcategories_id'])) {
          return NOT_AVAILABLE;
       }
@@ -546,16 +547,16 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                              $_SESSION["glpiactive_entity"], 1).")
                      AND ";
       }
-      
+
       $addrestrict = getEntitiesRestrictRequest("AND", $parentitem->getTable());
       if ($parentitem->maybeDeleted()) {
          $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
       }
-      
+
       $query = "SELECT `".$item->getTable()."`.*
                 FROM `".$item->getTable()."`
                 INNER JOIN `".$parentitem->getTable()."`
-                  ON (`".$parentitem->getTable()."`.`id` = `".$item->getTable()."`.`".$parentitem->getForeignKeyField()."`)                
+                  ON (`".$parentitem->getTable()."`.`id` = `".$item->getTable()."`.`".$parentitem->getForeignKeyField()."`)
                 WHERE $ASSIGN
                       '$begin' < `".$item->getTable()."`.`end`
                       AND '$end' > `".$item->getTable()."`.`begin`

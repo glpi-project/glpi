@@ -402,7 +402,8 @@ class TicketFollowup  extends CommonDBTM {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($options = array()) {
+   function getName($options=array()) {
+
       $p['comments']   = false;
 
       if (is_array($options)) {
@@ -410,7 +411,7 @@ class TicketFollowup  extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-      
+
       if (!isset($this->fields['requesttypes_id'])) {
          return NOT_AVAILABLE;
       }

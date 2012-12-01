@@ -56,7 +56,7 @@ class Profile_User extends CommonDBRelation {
   static public $log_history_1_add    = Log::HISTORY_ADD_SUBITEM;
   static public $log_history_1_delete = Log::HISTORY_DELETE_SUBITEM;
   static public $disableAutoEntityForwarding      = true;
-   
+
 
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
@@ -653,7 +653,7 @@ class Profile_User extends CommonDBRelation {
 
       return array();
    }
-   
+
    /**
     * Get user profiles (no entity association, use sqlfilter if needed)
     *
@@ -825,7 +825,7 @@ class Profile_User extends CommonDBRelation {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($options = array()) {
+   function getName($options=array()) {
 
       $name = sprintf(__('%1$s, %2$s'),
                       Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']),
@@ -833,12 +833,12 @@ class Profile_User extends CommonDBRelation {
 
       if (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic']) {
          //TRANS: D for Dynamic
-         $dyn = __('D');
+         $dyn  = __('D');
          $name = sprintf(__('%1$s, %2$s'), $name, $dyn);
       }
       if (isset($this->fields['is_recursive']) && $this->fields['is_recursive']) {
          //TRANS: R for Recursive
-         $rec = __('R');
+         $rec  = __('R');
          $name = sprintf(__('%1$s, %2$s'), $name, $rec);
       }
       return $name;

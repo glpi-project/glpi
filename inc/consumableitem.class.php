@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -62,9 +62,12 @@ class ConsumableItem extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::getPosteAdditionalInfosForName
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getPostAdditionalInfosForName
    **/
    function getPostAdditionalInfosForName() {
+
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
          return '- '.$this->fields["ref"];
       }
