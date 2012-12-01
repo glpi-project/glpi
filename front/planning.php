@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 define('GLPI_ROOT', '..');
@@ -74,36 +74,37 @@ if (isset($_GET['checkavailability'])) {
          if (isset($_GET['entities_id']) && isset($_GET['is_recursive'])) {
             $user->loadMinimalSession($_GET['entities_id'], $_GET['is_recursive']);
          }
-         //// check if the request is valid : rights on uID / gID
+         //// check if the request is valid: rights on uID / gID
          // First check mine : user then groups
          $ismine = false;
          if ($user->getID() == $_GET["uID"]) {
             $ismine = true;
          }
          // Check groups if have right to see
-         if (!$ismine && $_GET["gID"]!==0) {
+         if (!$ismine && ($_GET["gID"] !== 0)) {
             if ($_GET["gID"] === 'mine') {
                $ismine = true;
             } else {
-               $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_group_planning');
-               $groups = Group_User::getUserGroups($user->getID());
+               $entities = Profile_User::getUserEntitiesForRight($user->getID(),
+                                                                 'show_group_planning');
+               $groups   = Group_User::getUserGroups($user->getID());
                foreach ($groups as $group) {
-                  if ($_GET["gID"] == $group['id']
-                     && in_array($group['entities_id'], $entities)) {
+                  if (($_GET["gID"] == $group['id'])
+                      && in_array($group['entities_id'], $entities)) {
                      $ismine = true;
                   }
                }
             }
          }
-         
+
          $canview = false;
          // If not mine check global right
          if (!$ismine) {
             // First check user
-            $entities     = Profile_User::getUserEntitiesForRight($user->getID(), 'show_all_planning');
+            $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_all_planning');
             if ($_GET["uID"]) {
                $userentities = Profile_User::getUserEntities($user->getID());
-               $intersect = array_intersect($entities, $userentities);
+               $intersect    = array_intersect($entities, $userentities);
                if (count($intersect)) {
                   $canview = true;
                }
@@ -118,7 +119,7 @@ if (isset($_GET['checkavailability'])) {
                }
             }
          }
-         
+
          if ($ismine || $canview) {
             Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["limititemtype"]);
          }

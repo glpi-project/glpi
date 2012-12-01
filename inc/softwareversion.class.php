@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -71,6 +71,7 @@ class SoftwareVersion extends CommonDBChild {
       return $ong;
    }
 
+
    /**
     * @since version 0.84
     *
@@ -84,7 +85,8 @@ class SoftwareVersion extends CommonDBChild {
       }
       return '';
    }
-   
+
+
    /**
     * Print the Software / version form
     *

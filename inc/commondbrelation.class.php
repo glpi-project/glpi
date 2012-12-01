@@ -517,10 +517,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                     static::$checkAlwaysBothItems);
    }
 
+
    /**
     * @since version 0.84
    **/
    function addNeededInfoToInput($input) {
+
       // is entity missing and forwarding on ?
       if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
          // Merge both arrays to ensure all the fields are defined for the following checks
@@ -530,10 +532,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          // Set the item to allow parent::prepareinputforadd to get the right item ...
          if (static::$take_entity_1) {
             $itemToGetEntity = static::getItemFromArray(static::$itemtype_1, static::$items_id_1,
-                                                            $completeinput);
-         } elseif (static::$take_entity_2) {
+                                                        $completeinput);
+         } else if (static::$take_entity_2) {
             $itemToGetEntity = static::getItemFromArray(static::$itemtype_2, static::$items_id_2,
-                                                            $completeinput);
+                                                        $completeinput);
          }
 
          // Set the item to allow parent::prepareinputforadd to get the right item ...
@@ -551,6 +553,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       return $input;
    }
+
 
    /**
     * @since version 0.84

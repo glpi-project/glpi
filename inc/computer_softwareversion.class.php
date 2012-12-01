@@ -72,6 +72,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return parent::prepareInputForAdd($input);
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function prepareInputForUpdate($input) {
 
       // If computer set update is_template / is_deleted infos to ensure data validity
@@ -85,7 +89,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       return parent::prepareInputForUpdate($input);
    }
-   
+
+
    /**
     * @since version 0.84
     *

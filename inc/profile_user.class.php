@@ -53,9 +53,9 @@ class Profile_User extends CommonDBRelation {
    static public $logs_for_itemtype_1 = true;
    static public $logs_for_itemtype_2 = false;
 
-  static public $log_history_1_add    = Log::HISTORY_ADD_SUBITEM;
-  static public $log_history_1_delete = Log::HISTORY_DELETE_SUBITEM;
-  static public $disableAutoEntityForwarding      = true;
+  static public $log_history_1_add             = Log::HISTORY_ADD_SUBITEM;
+  static public $log_history_1_delete          = Log::HISTORY_DELETE_SUBITEM;
+  static public $disableAutoEntityForwarding   = true;
 
 
    function maybeRecursive() {
@@ -615,12 +615,15 @@ class Profile_User extends CommonDBRelation {
       return array();
    }
 
+
    /**
     * Get entities for which a user have a right
     *
-    * @param $user_ID         user ID
-    * @param $is_recursive    check also using recursive rights (true by default)
-    * @param $right           right to check (1 or read or write)
+    * @since version 0.84
+    *
+    * @param $user_ID         integer   user ID
+    * @param $right                     right to check (1 or read or write)
+    * @param $is_recursive              check also using recursive rights (true by default)
     *
     * @return array of entities ID
    **/
@@ -633,7 +636,7 @@ class Profile_User extends CommonDBRelation {
                 INNER JOIN `glpi_profiles`
                   ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
                 WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
-                  AND `glpi_profiles`.`$right` IN ('1','r','w')";
+                      AND `glpi_profiles`.`$right` IN ('1','r','w')";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
@@ -653,6 +656,7 @@ class Profile_User extends CommonDBRelation {
 
       return array();
    }
+
 
    /**
     * Get user profiles (no entity association, use sqlfilter if needed)

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
@@ -106,8 +106,8 @@ if (($ok_master || $ok_slave )
       foreach ($ldap_methods as $method) {
          echo " ".$method['name'];
          if (AuthLDAP::tryToConnectToServer($method, $method["rootdn"],
-                                             Toolbox::decrypt($method["rootdn_passwd"],
-                                             GLPIKEY))) {
+                                            Toolbox::decrypt($method["rootdn_passwd"],
+                                            GLPIKEY))) {
             echo "_OK";
          } else {
             echo "_PROBLEM";
@@ -154,12 +154,12 @@ if (($ok_master || $ok_slave )
    // Check CAS
    if (!empty($CFG_GLPI["cas_host"])) {
       echo "CAS_SERVER";
-   
+
       $url = $CFG_GLPI["cas_host"];
       if (!empty($CFG_GLPI["cas_port"])) {
-         $url.=':'.intval($CFG_GLPI["cas_port"]);
+         $url .= ':'.intval($CFG_GLPI["cas_port"]);
       }
-      $url.=$CFG_GLPI["cas_uri"];
+      $url .= $CFG_GLPI["cas_uri"];
       $data = Toolbox::getURLContent($url);
       if (!empty($data)) {
          echo "_OK";
@@ -167,7 +167,7 @@ if (($ok_master || $ok_slave )
          echo "_PROBLEM";
          $ok = false;
       }
-      echo "\n";      
+      echo "\n";
    } else {
       echo "No CAS server\n";
    }

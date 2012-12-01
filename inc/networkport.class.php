@@ -93,6 +93,7 @@ class NetworkPort extends CommonDBChild {
       return $forbidden;
    }
 
+
    /**
     * @since version 0.84
     *
@@ -105,6 +106,7 @@ class NetworkPort extends CommonDBChild {
       }
       return '';
    }
+
 
    /**
     * \brief get the list of available network port type.

@@ -61,13 +61,12 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
                   ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`networkports_id`)
              LEFT JOIN `glpi_networknames`
                   ON (`glpi_networknames`.`itemtype` = 'NetworkPort'
-                     AND `glpi_networkports`.`id` = `glpi_networknames`.`items_id`)
+                      AND `glpi_networkports`.`id` = `glpi_networknames`.`items_id`)
              LEFT JOIN `glpi_ipaddresses`
                   ON (`glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                     AND `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`)
+                      AND `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`)
              WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"])."
                    AND `glpi_networkports`.`itemtype` = 'NetworkEquipment'
-                   
              ORDER BY `glpi_locations`.`completename`, `glpi_networkports`.`name`";
 
    $result = $DB->query($query);
@@ -108,7 +107,7 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
             $portordi = $np->fields['name'];
             // TODO get IPs from opposite network port
             $ip2      = '';
-            
+
          }
 
          $ip  = $ligne['ip'];

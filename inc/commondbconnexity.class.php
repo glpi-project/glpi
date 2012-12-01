@@ -86,9 +86,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
    const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
-   static public $canDeleteOnItemClean = true;
+   static public $canDeleteOnItemClean          = true;
    /// Disable auto forwarding information about entities ?
-   static public $disableAutoEntityForwarding      = false;
+   static public $disableAutoEntityForwarding   = false;
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
@@ -196,8 +196,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @warning if the update is not possible (right problem), then $input become false
     *
-    * @param $input (array) the new values for the current item
-    * @param $fields (array)               list of fields that define the attached items
+    * @param $input   array   the new values for the current item
+    * @param $fields  array   list of fields that define the attached items
     *
     * @return true if the attached item has changed, false if the attached items has not changed
     **/
@@ -263,6 +263,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @return true if we have absolute right to create the current connexity
    **/
    static function canConnexity($method, $item_right, $itemtype, $items_id) {
+
       if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
           &&(!preg_match('/^itemtype/', $itemtype))) {
          if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
