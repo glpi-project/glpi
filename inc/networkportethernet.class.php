@@ -151,11 +151,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       if (!empty($this->fields['speed'])) {
          $row->addCell($row->getHeaderByName('Instantiation', 'speed'),
+               // TODO Webmyster: getPortSpeed add only 1 parameter
                        self::getPortSpeed($this->fields["speed"]), $father);
       }
 
       if (!empty($this->fields['type'])) {
          $row->addCell($row->getHeaderByName('Instantiation', 'type'),
+               // TODO Webmyster: getPortTypeName add only 1 parameter
                        self::getPortTypeName($this->fields["type"]), $father);
       }
 
