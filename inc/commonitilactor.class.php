@@ -245,7 +245,7 @@ abstract class CommonITILActor extends CommonDBRelation {
                if (isset($this->fields['users_id'])) {
                   $options = array('_old_user' => $this->fields);
                }
-               NotificationEvent::raiseEvent("update", $item, $options);
+               NotificationEvent::raiseEvent("delete", $item, $options);
             }
          }
 
