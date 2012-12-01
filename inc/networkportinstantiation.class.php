@@ -837,7 +837,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       // Manage entity_sons
       if (!($p['entity'] < 0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
-            _e('entity_sons options are not available with array of entity');
+            _e('entity_sons options are not available with array of entities');
          } else {
             $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
          }
