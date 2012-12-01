@@ -320,6 +320,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       return true;
    }
 
+
    /**
     * @since version 0.84
     *
@@ -332,10 +333,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *         log for the given field
    **/
    function getHistoryChangeWhenUpdateField($field) {
-      return array('0',
-                   addslashes($this->oldvalues[$field]),
-                   addslashes($this->fields[$field]));
+
+      return array('0', addslashes($this->oldvalues[$field]), addslashes($this->fields[$field]));
    }
+
 
    /**
     * Factorized method to search difference when updating a connexity : return both previous

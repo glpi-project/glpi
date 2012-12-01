@@ -735,7 +735,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    **/
    static function showConnection($netport, $edit=false) {
 
-      $ID      = $netport->fields["id"];
+      $ID = $netport->fields["id"];
       if (empty($ID)) {
          return false;
       }
@@ -810,7 +810,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Make a select box for  connected port
     *
     * @param $ID                 ID of the current port to connect
-    * @param $options   array of possible options
+    * @param $options   array    of possible options:
     *    - name : string / name of the select (default is networkports_id)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities
