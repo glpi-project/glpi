@@ -144,7 +144,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father = NULL,
+                                                    HTMLTableCell $father=NULL,
                                                     array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
