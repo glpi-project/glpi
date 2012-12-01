@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 define('GLPI_ROOT','..');
@@ -63,8 +63,8 @@ if (isset($_POST["itemtype"])
                                     $paramstrackingdt);
 
    echo "<span id='results_ID$rand'>";
-   echo "<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
-   echo "</span>\n";
+   echo "<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE."</option>";
+   echo "</select></span>\n";
 
 }
 ?>
