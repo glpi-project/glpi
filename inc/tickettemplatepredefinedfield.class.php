@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -66,7 +66,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     *
     * @since version 0.84
    **/
-   function getName($options = array()) {
+   function getName($options=array()) {
 
       $tt     = new TicketTemplate();
       $fields = $tt->getAllowedFieldsNames(true);

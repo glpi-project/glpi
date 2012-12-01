@@ -53,7 +53,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    // Make an history of the changes -
    // if true, will write a event in the history of parent for add/delete
    public $dohistory = false;
-   
+
    /**
     * @since version 0.84
     *
@@ -410,6 +410,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return (string) the name of the entry for the database (ie. : correctly slashed)
    **/
    function getHistoryNameForItem(CommonDBTM $item, $case) {
+
       return $this->getNameID(array('forceid'    => true,
                                     'additional' => true));
    }

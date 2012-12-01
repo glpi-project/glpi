@@ -93,9 +93,18 @@ abstract class CommonDevice extends CommonDropdown {
       Html::header($this->getTypeName(1), '', "config", "device", get_class($this));
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getNameField
+    *
+    * @return string
+   **/
    function getNameField() {
       return 'designation';
    }
+
 
    /**
     * @since version 0.84

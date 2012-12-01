@@ -823,9 +823,6 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the link to an item
     *
-    * @param $with_comment                Display comments (default 0)
-    * @param $additional_options  string  additional options to add to <a>
-    * @see CommonDBTM::getName
     * @param $options array of options
     *    - comments     : boolean / display comments
     *    - complete     : boolean / display completename instead of name
@@ -834,26 +831,26 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return string : HTML link
    **/
-   function getLink($options = array()) {
+   function getLink($options=array()) {
+
       $p['linkoption'] = '';
 
       if (isset($options['linkoption'])) {
          $p['linkoption'] = $options['linkoption'];
       }
-   
+
       if (!isset($this->fields['id'])) {
          return '';
       }
 
       if ($this->no_form_page
-         || !$this->can($this->fields['id'],'r')) {
+          || !$this->can($this->fields['id'],'r')) {
          return $this->getNameID($options);
       }
 
       $link = $this->getLinkURL();
 
       return "<a ".$p['linkoption']." href='$link'>".$this->getNameID($options)."</a>";
-
    }
 
 
@@ -927,7 +924,7 @@ class CommonDBTM extends CommonGLPI {
    function addNeededInfoToInput($input) {
       return $input;
    }
-   
+
    /**
     * Prepare input datas for adding the item
     *
@@ -2643,7 +2640,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return NOT_AVAILABLE;
    }
-   
+
    /**
     * Get additionals information to add before nam
     *
@@ -2661,7 +2658,7 @@ class CommonDBTM extends CommonGLPI {
    function getPostAdditionalInfosForName() {
       return '';
    }
-   
+
    /**
     * Get The Name of the Object with the ID if the config is set
     * Should Not be overloaded (overload getName() instead)
@@ -2677,7 +2674,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getNameID($options = array()) {
       global $CFG_GLPI;
-      
+
       $p['forceid'] = false;
       $p['comments'] = false;
 
@@ -2686,18 +2683,18 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $val;
          }
       }
-      
+
       if ($p['forceid']
           || $_SESSION['glpiis_ids_visible']) {
          $addcomment = $p['comments'];
-         
-         // unset comment 
+
+         // unset comment
          $p['comments'] = false;
          $name = $this->getName($p);
-         
+
          //TRANS: %1$s is a name, %2$s is ID
          $name = sprintf(__('%1$s (%2$s)'), $name, $this->getField('id'));
-         
+
          if ($addcomment) {
             $comment = $this->getComments();
             if (!empty($comment)) {

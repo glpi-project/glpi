@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -76,7 +76,7 @@ class RuleCriteria extends CommonDBChild {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($options = array()) {
+   function getName($options=array()) {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
          return Html::clean($rule->getMinimalCriteriaText($this->fields));

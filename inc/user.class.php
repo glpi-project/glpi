@@ -384,7 +384,7 @@ class User extends CommonDBTM {
     * Retrieve an item from the database using its email
     *
     * @param $email user email
-    * @param $condition string add condition    
+    * @param $condition string add condition
     *
     * @return true if succeed else false
    **/
@@ -572,7 +572,7 @@ class User extends CommonDBTM {
             } else {
                $affectation["is_recursive"] = 0;
             }
-            
+
             $affectation["profiles_id"]  = $profile;
             $affectation["users_id"]     = $this->fields["id"];
             $right                       = new Profile_User();
@@ -977,7 +977,7 @@ class User extends CommonDBTM {
    /**
     * @see CommonDBTM::getName()
    **/
-   function getName($options = array()) {
+   function getName($options=array()) {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
          return formatUserName($this->fields["id"],
