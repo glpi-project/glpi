@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -525,9 +525,10 @@ class Planning extends CommonGLPI {
                }
             }
             if ($begin_act < $end_act) {
-               if ($begin_act <= $begin_time
-                  && $end_act >= $end_time) {
+               if (($begin_act <= $begin_time)
+                   && ($end_act >= $end_time)) {
                   // Activity in quarter
+                  // TODO Moyo: style deleted in commit 19652
                   echo "<td class='partialavailable'>&nbsp;</td>";
                } else {
                   // Not all the quarter
@@ -1009,7 +1010,7 @@ class Planning extends CommonGLPI {
       $v->setProperty( "X-WR-TIMEZONE", $tz );
       $xprops = array( "X-LIC-LOCATION" => $tz );
       iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
-         
+
       $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
       $v->setProperty( "calscale", "GREGORIAN" );
       $interv = array();
