@@ -2709,9 +2709,9 @@ class Ticket extends CommonITILObject {
                   } else {
                      $group_where .= " OR ";
                   }
-                  $a_groups = getAncestorsOf("glpi_groups", $data["groups_id"]);
+                  $a_groups                     = getAncestorsOf("glpi_groups", $data["groups_id"]);
                   $a_groups[$data["groups_id"]] = $data["groups_id"];
-                  $group_where .= " `groups_id` IN (".implode(',', $a_groups).") ";
+                  $group_where                 .= " `groups_id` IN (".implode(',', $a_groups).") ";
                }
 
                $tmp_device = "";
@@ -4496,7 +4496,8 @@ class Ticket extends CommonITILObject {
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
                               AND `glpi_ticketvalidations`.`status` = 'waiting'
-                              AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."', '".self::SOLVED."')) ".
+                              AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
+                                                                   '".self::SOLVED."')) ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 

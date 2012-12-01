@@ -1001,7 +1001,7 @@ class Planning extends CommonGLPI {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
 
-      $tz = date_default_timezone_get();
+      $tz     = date_default_timezone_get();
       $v->setConfig( 'TZID', $tz );
 
       $v->setProperty( "method", "PUBLISH" );

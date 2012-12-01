@@ -547,7 +547,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                         $input['_itil_requester']['alternative_email'] = '';
                         Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
-                     }                  
+                     }
 
                      if ((isset($input['_itil_requester']['alternative_email'])
                           && $input['_itil_requester']['alternative_email'])
@@ -1059,8 +1059,18 @@ abstract class CommonITILObject extends CommonDBTM {
       return $input;
    }
 
-   /// Compute default values for Add (to be passed in prepareInputForAdd before and after rules if needed)
+   /**
+    * Compute default values for Add
+    * (to be passed in prepareInputForAdd before and after rules if needed)
+    *
+    * @since version 0.84
+    *
+    * @param $input
+    *
+    * @return string
+   **/
    function computeDefaultValuesForAdd($input) {
+
       if (!isset($input["status"])) {
          $input["status"] = self::INCOMING;
       }
@@ -1069,8 +1079,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
 
-      if (isset($input["status"]) && in_array($input["status"],
-                                              $this->getSolvedStatusArray())) {
+      if (isset($input["status"]) && in_array($input["status"], $this->getSolvedStatusArray())) {
          if (isset($input["date"])) {
             $input["solvedate"] = $input["date"];
          } else {
@@ -1078,8 +1087,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if (isset($input["status"]) && in_array($input["status"],
-                                              $this->getClosedStatusArray())) {
+      if (isset($input["status"]) && in_array($input["status"], $this->getClosedStatusArray())) {
          if (isset($input["date"])) {
             $input["closedate"] = $input["date"];
          } else {
@@ -1095,7 +1103,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $input;
    }
-   
+
+
    function post_addItem() {
 
       // Add document if needed, without notification

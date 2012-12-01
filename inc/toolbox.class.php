@@ -359,9 +359,9 @@ class Toolbox {
 
       include_once(GLPI_HTMLAWED);
 
-      $config = array('safe'=>1);
+      $config             = array('safe'=>1);
       $config["elements"] = "*+iframe";
-      $value = htmLawed($value, $config);
+      $value              = htmLawed($value, $config);
 
       return $value;
    }
