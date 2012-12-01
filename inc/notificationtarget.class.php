@@ -159,10 +159,15 @@ class NotificationTarget extends CommonDBChild {
 
    }
 
-   /// Return message id for notification
+   /**
+    * @since version 0.84
+    *
+    * @return message id for notification
+   **/
    function getMessageID() {
       return "";
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Recipient', 'Recipients', $nb);

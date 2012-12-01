@@ -181,7 +181,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father = NULL,
+                                                    HTMLTableCell $father=NULL,
                                                     array $options=array()) {
 
       self::getInstantiationHTMLTable($netport, $row, $father, $options);
