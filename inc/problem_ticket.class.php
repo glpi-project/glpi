@@ -70,6 +70,10 @@ class Problem_Ticket extends CommonDBRelation{
       return parent::getSearchOptions();
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function post_addItem() {
       global $CFG_GLPI;
 
@@ -82,13 +86,17 @@ class Problem_Ticket extends CommonDBRelation{
          $problem = new Problem();
          if ($problem->getFromDB($this->input["problems_id"])) {
             $options = array();
-            NotificationEvent::raiseEvent("update", $problem, $options);
+            NotificationEvent::raiseEvent("new", $problem, $options);
          }
       }
 
       parent::post_addItem();
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
@@ -101,13 +109,14 @@ class Problem_Ticket extends CommonDBRelation{
          $problem = new Problem();
          if ($problem->getFromDB($this->fields["problems_id"])) {
             $options = array();
-            NotificationEvent::raiseEvent("update", $problem, $options);
+            NotificationEvent::raiseEvent("delete", $problem, $options);
          }
       }
 
       parent::post_deleteFromDB();
    }
-   
+
+
    /**
     * Show tickets for a problem
     *
