@@ -5334,7 +5334,7 @@ class Ticket extends CommonITILObject {
                   $sixth_col .= $item->getTypeName();
                   $sixth_col .= "<br><span class='b'>";
                   if ($item->canView()) {
-                     $sixth_col .= $item->getLink($output_type==Search::HTML_OUTPUT);
+                     $sixth_col .= $item->getLink(array('linkoption' => $output_type==Search::HTML_OUTPUT));
                   } else {
                      $sixth_col .= $item->getNameID();
                   }
