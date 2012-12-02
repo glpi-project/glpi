@@ -2035,7 +2035,7 @@ class CommonDBTM extends CommonGLPI {
          _e('New item');
       } else {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         echo  sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       }
       $entityname = '';
       if (isset($this->fields["entities_id"])
