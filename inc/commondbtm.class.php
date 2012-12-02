@@ -2018,7 +2018,7 @@ class CommonDBTM extends CommonGLPI {
 
       echo "<tr class='headerRow'><th colspan='".$params['colspan']."'>";
 
-      $entiyname = '';
+      $name = '';
       if (!empty($params['withtemplate']) && ($params['withtemplate'] == 2)
           && !$this->isNewID($ID)) {
 
@@ -2035,15 +2035,14 @@ class CommonDBTM extends CommonGLPI {
          _e('New item');
       } else {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         $entiyname = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         echo  sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       }
+      $entityname = '';
       if (isset($this->fields["entities_id"])
           && Session::isMultiEntitiesMode()
           && $this->isEntityAssign()) {
-         printf(__('%1$s (%2$s)'), $entiyname,
-                 Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]));
+         $entityname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
       }
-
 
       echo "</th><th colspan='".$params['colspan']."'>";
       if (get_class($this) == 'Entity') {
@@ -2052,7 +2051,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
-               echo "<table class='tab_format'></tr><td>".$entiyname."</td>".
+               echo "<table class='tab_format'></tr><td>".$entityname."</td>".
                     "<td class='right'>".__('Child entities')."</td><td>";
 
                if ($params['canedit']) {
@@ -2080,11 +2079,11 @@ class CommonDBTM extends CommonGLPI {
                }
                echo "</td><tr></table>";
             } else {
-               echo $entiyname;
+               echo $entityname;
                echo "<input type='hidden' name='is_recursive' value='0'>";
             }
          } else {
-            echo $entiyname;
+            echo $entityname;
          }
       }
       echo "</th></tr>\n";

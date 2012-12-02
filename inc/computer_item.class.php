@@ -513,6 +513,7 @@ class Computer_Item extends CommonDBRelation{
 
          foreach ($datas as $data) {
             $linkname = $data["name"];
+            $itemtype = $data['assoc_itemtype'];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
