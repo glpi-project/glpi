@@ -515,9 +515,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT DISTINCT `users_id`
-                                           FROM `glpi_groups_users`
-                                           WHERE `groups_id` IN ('$groups'))
-                                                 AND ";
+                                                                   FROM `glpi_groups_users`
+                                                                   WHERE `groups_id` IN ('$groups'))
+                                                                         AND ";
          } else { // Only personal ones
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
                        AND ";
@@ -531,9 +531,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          if ($who_group > 0) {
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT `users_id`
-                                           FROM `glpi_groups_users`
-                                           WHERE `groups_id` = '$who_group')
-                                                 AND ";
+                                                                   FROM `glpi_groups_users`
+                                                                   WHERE `groups_id` = '$who_group')
+                                                                         AND ";
          }
       }
       if (empty($ASSIGN)) {

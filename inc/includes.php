@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -64,7 +64,7 @@ $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 Session::loadLanguage();
 
 if (isset($_SESSION['glpi_use_mode'])
-    && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+    && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
    $SQL_TOTAL_REQUEST    = 0;
    $DEBUG_SQL["queries"] = array();
    $DEBUG_SQL["errors"]  = array();

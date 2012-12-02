@@ -264,7 +264,7 @@ class Planning extends CommonGLPI {
             if (!Session::haveRight("show_group_planning","1")) {
                exit();
             }
-            $gID='mine';
+            $gID = 'mine';
             break;
 
          case 'users' :
@@ -349,7 +349,7 @@ class Planning extends CommonGLPI {
          $port = 80;
          if (isset($url['port'])) {
             $port = $url['port'];
-         } else if (isset($url['scheme']) && $url["scheme"]=='https') {
+         } else if (isset($url['scheme']) && ($url["scheme"] == 'https')) {
             $port = 443;
          }
 

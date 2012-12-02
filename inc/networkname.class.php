@@ -171,8 +171,8 @@ class NetworkName extends FQDNLabel {
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
       if (count($recursiveItems) > 0) {
-         echo " - <input type='submit' name='unaffect' value=\"" .
-              __s('Dissociate') . "\" class='submit'>";
+         echo " - <input type='submit' name='unaffect' value=\"" . __s('Dissociate') .
+                   "\" class='submit'>";
       }
       echo "</td>\n";
       echo "<td>" . __('Name') . "</td><td>\n";

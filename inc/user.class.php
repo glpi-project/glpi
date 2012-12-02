@@ -147,13 +147,15 @@ class User extends CommonDBTM {
       if ($CFG_GLPI['show_count_on_tabs'] == -1) {
          $this->fields['show_count_on_tabs'] = 0;
       }
-
    }
+
 
    /**
     * Load minimal session for user
+    *
     * @param $entities_id : entity to use
     * @param $is_recursive : load recursive entity
+    *
     * @since version 0.83.7
    **/
    function loadMinimalSession($entities_id, $is_recursive) {
@@ -162,8 +164,8 @@ class User extends CommonDBTM {
       if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
          Session::destroy();
          Session::start();
-         $_SESSION["glpiID"] = $this->fields['id'];
-         $_SESSION["glpi_use_mode"] = Session::NORMAL_MODE;
+         $_SESSION["glpiID"]                      = $this->fields['id'];
+         $_SESSION["glpi_use_mode"]               = Session::NORMAL_MODE;
          $_SESSION["glpiactive_entity"]           = $entities_id;
          $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
          if ($is_recursive) {
@@ -183,6 +185,7 @@ class User extends CommonDBTM {
          Session::loadLanguage();
       }
    }
+
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -2392,9 +2395,14 @@ class User extends CommonDBTM {
       $tab[60]['datatype']             = 'number';
       $tab[60]['massiveaction']        = false;
       $tab[60]['joinparams']           = array('beforejoin'
-                                               => array('table'      => 'glpi_tickets_users',
-                                                        'joinparams' => array('jointype'  => 'child',
-                                                                              'condition' => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER)));
+                                               => array('table'
+                                                         => 'glpi_tickets_users',
+                                                        'joinparams'
+                                                         => array('jointype'
+                                                                   => 'child',
+                                                                  'condition'
+                                                                   => 'AND NEWTABLE.`type`
+                                                                        = '.CommonITILActor::REQUESTER)));
 
       $tab[61]['table']                = 'glpi_tickets';
       $tab[61]['field']                = 'count';

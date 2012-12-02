@@ -262,7 +262,7 @@ class Problem_Ticket extends CommonDBRelation{
                                                                               Problem::getClosedStatusArray()))."')";
          Problem::dropdown(array('used'      => $used,
                                  'entity'    => $ticket->getEntityID(),
-                                 'condition' =>$condition));
+                                 'condition' => $condition));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td><td>";
