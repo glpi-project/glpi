@@ -52,11 +52,13 @@ if (class_exists($_POST["itemtype"])) {
                      'rand'            => $rand,
                      'myname'          => "items",
                      'entity_restrict' => $_POST["entity_restrict"],
-                     'condition'       => "(`id` in (SELECT `items_id`
-                                                     FROM `glpi_networkports`
-                                                     WHERE `itemtype` = '".$_POST["itemtype"]."'
-                                                           AND `instantiation_type`
-                                                                = '".$_POST['instantiation_type']."'))",
+                     // Beware: '\n' inside condition is transformed to 'n' in SQL request
+                     //         so don't cut this SQL request !
+                     'condition'       => "(`id` in (SELECT `items_id`".
+                                                    "FROM `glpi_networkports`".
+                                                    "WHERE `itemtype` = '".$_POST["itemtype"]."'".
+                                                          "AND `instantiation_type`".
+                                                               "= '".$_POST['instantiation_type']."'))",
                      'update_item'     => array('value_fieldname'
                                                       => 'item',
                                                 'to_update'
