@@ -2483,7 +2483,7 @@ function generate_entity($ID_entity) {
 
       // Ajout d'un telephhone avec l'ordi
       $telID = $phone->add(array('entities_id'           => $ID_entity,
-                                 'name'                  => "monitor $i-$ID_entity",
+                                 'name'                  => "phone $i-$ID_entity",
                                  'serial'                => Toolbox::getRandomString(10),
                                  'otherserial'           => Toolbox::getRandomString(10),
                                  'contact'               => "contact $i",
@@ -2501,7 +2501,7 @@ function generate_entity($ID_entity) {
                                  'phonetypes_id'         => mt_rand(1,$MAX['type_phones']),
                                  'phonemodels_id'        => mt_rand(1,$MAX['model_phones']),
                                  'manufacturers_id'      => mt_rand(1,$MAX['manufacturer']),
-                                 'notepad'               => "notes monitor $i",
+                                 'notepad'               => "notes phone $i",
                                  'users_id'              => $userID,
                                  'groups_id'             => $groupID,
                                  'states_id'             => (mt_rand(0,100)<$percent['state']
