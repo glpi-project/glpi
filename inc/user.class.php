@@ -1948,7 +1948,7 @@ class User extends CommonDBTM {
          echo "</td></tr>";
 
 
-         echo "<tr><td>" . __('Location') . "</td><td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
          $entities = Profile_User::getUserEntities($ID, true);
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $entities));
