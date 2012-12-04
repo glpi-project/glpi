@@ -662,6 +662,8 @@ class Transfer extends CommonDBTM {
                    FROM `glpi_tickets`
                    LEFT JOIN `glpi_suppliers_tickets`
                          ON (`glpi_suppliers_tickets`.`tickets_id` = `glpi_tickets`.`id`)
+                   LEFT JOIN `glpi_suppliers`
+                         ON (`glpi_suppliers`.`id` = `glpi_suppliers_tickets`.`suppliers_id`)
                    WHERE `glpi_suppliers_tickets`.`suppliers_id` > '0'
                          AND `glpi_tickets`.`id` IN ".$this->item_search['Ticket'];
 
