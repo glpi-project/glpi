@@ -198,7 +198,8 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
-      echo "<td >" . __('URL of the application') . "</td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('URL of the application') . "</td>";
       echo "<td colspan='3'><input type='text' name='url_base' size='80' value='".$CFG_GLPI["url_base"]."'>";
       echo "</td></tr>";
 
