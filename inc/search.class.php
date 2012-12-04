@@ -2425,7 +2425,6 @@ class Search {
 
          case "glpi_softwarelicenses.serial" :
          case "glpi_softwarelicenses.otherserial" :
-         case "glpi_softwarelicenses.expire" :
          case "glpi_softwarelicenses.comment" :
          case "glpi_softwareversions.comment" :
             if ($meta) {
