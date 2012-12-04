@@ -83,6 +83,8 @@ function update0831to084() {
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
    $migration->addField('glpi_mailcollectors', 'use_kerberos', 'bool', array('value' => 0));
+   $migration->addField("glpi_mailcollectors", 'errors', "integer");
+   $migration->addField("glpi_mailcollectors", 'use_mail_date', "bool", array('value' => 0));
 
    // Password security
    $migration->addField('glpi_configs', 'use_password_security', 'bool');
@@ -1375,6 +1377,17 @@ function update0831to084() {
 
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 
+   // split validation rights in both
+
+   $migration->changeField('glpi_profiles', 'validate_ticket', 'validate_request', 'char');
+   $migration->changeField('glpi_profiles', 'create_validation', 'create_request_validation', 'char');
+   $migration->migrationOneTable('glpi_profiles');
+   
+   $migration->addField('glpi_profiles', 'validate_incident',
+                        'char', array('update' => 'validate_request'));
+   $migration->addField('glpi_profiles', 'create_incident_validation',
+                        'char', array('update' => 'create_request_validation'));
+                                      
    // add rights to delete all validation
    $migration->addField('glpi_profiles', 'delete_validations',
                         'char', array('value'  => 0,
