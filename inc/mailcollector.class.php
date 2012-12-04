@@ -228,20 +228,6 @@ class MailCollector  extends CommonDBTM {
 
       Toolbox::showMailServerConfig($this->fields["host"]);
 
-      if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-         echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
-         echo "<td>";
-         Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
-         echo "</td></tr>\n";
-      }
-
-      echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
-      echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
-      echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
-      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
       Html::autocompletionTextField($this, "login");
@@ -254,12 +240,36 @@ class MailCollector  extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
+      
+      if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
+         echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
+         echo "<td>";
+         Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
+         echo "</td></tr>\n";
+      }
+      
+
+      
+      echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
+      echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
+      echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
+      echo "</td></tr>\n";
+
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='200px'> ". __('Maximum size of each file imported by the mails receiver').
            "</td><td>";
       self::showMaxFilesize('filesize_max', $this->fields["filesize_max"]);
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . __('Use mail date, instead of collect one') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("use_mail_date", $this->fields["use_mail_date"]);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -591,6 +601,11 @@ class MailCollector  extends CommonDBTM {
       // For RuleTickets
       $tkt['_mailgate']    = $options['mailgates_id'];
 
+
+      // Use mail date if define
+      if ($this->fields['use_mail_date']) {
+         $tkt['date'] = $head['date'];
+      }
       // Detect if it is a mail reply
       $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
 
@@ -960,6 +975,7 @@ class MailCollector  extends CommonDBTM {
       $mail_header  = imap_header($this->marubox, $mid);
       $sender       = $mail_header->from[0];
       $to           = $mail_header->to[0];
+      $date         = date("Y-m-d H:i:s", strtotime($mail_header->date));
 
       $mail_details = array();
 
@@ -990,7 +1006,8 @@ class MailCollector  extends CommonDBTM {
                                'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
-                               'ccs'        => $ccs);
+                               'ccs'        => $ccs,
+                               'date'       => $date);
 
          if (isset($mail_header->references)) {
             $mail_details['references'] = $mail_header->references;
@@ -1065,7 +1082,7 @@ class MailCollector  extends CommonDBTM {
 
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
-                  if ((strtoupper($param->attribute) == 'CHARSET')
+                  if ((strtoupper($param->attriitle) == 'CHARSET')
                       && function_exists('mb_convert_encoding')
                       && (strtoupper($param->value) != 'UTF-8')) {
 
@@ -1324,7 +1341,6 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
-
       if ($folder) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
