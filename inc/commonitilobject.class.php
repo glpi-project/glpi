@@ -685,7 +685,9 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       }
-
+      
+      $this->addAdditionalActors();
+      
       // set last updater if interactive user
       if (!Session::isCron()) {
          $input['users_id_lastupdater'] = Session::getLoginUserID();
@@ -1217,7 +1219,28 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      // Additional groups actors
+
+      // Additional actors
+      $this->addAdditionalActors();
+ 
+   }
+
+   private function addAdditionalActors() {
+      $useractors = NULL;
+      // Add user groups linked to ITIL objects
+      if (!empty($this->userlinkclass)) {
+         $useractors = new $this->userlinkclass();
+      }
+      $groupactors = NULL;
+      if (!empty($this->grouplinkclass)) {
+         $groupactors = new $this->grouplinkclass();
+      }
+      $supplieractors = NULL;
+      if (!empty($this->supplierlinkclass)) {
+         $supplieractors = new $this->supplierlinkclass();
+      }
+   
+     // Additional groups actors
       if (!is_null($groupactors)) {
          // Requesters
          if (isset($this->input['_additional_groups_requesters'])
@@ -1349,8 +1372,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
    }
-
-
+   
    /**
     * add files (from $_FILES) to an ITIL object
     * create document if needed
