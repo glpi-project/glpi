@@ -222,6 +222,12 @@ class MailCollector  extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
 
+      if ($this->fields['errors']) {
+         echo "<tr class='tab_bg_1_2'><td>".__('Connection errors')."</td><td>";
+         echo $this->fields['errors'];
+         echo "</td></tr>";
+      }
+
       echo "<tr class='tab_bg_1'><td>".__('Active')."</td><td>";
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
@@ -360,6 +366,11 @@ class MailCollector  extends CommonDBTM {
       $tab[21]['name']           = __('Refused mail archive folder (optional)');
       $tab[21]['datatype']       = 'string';
 
+      $tab[22]['table']           = $this->getTable();
+      $tab[22]['field']           = 'errors';
+      $tab[22]['name']            = __('Number of connection errors');
+      $tab[22]['datatype']        = 'integer';
+      
       return $tab;
    }
 
@@ -902,6 +913,16 @@ class MailCollector  extends CommonDBTM {
                                      Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                      CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
 
+      }
+      // Reset errors
+      if ($this->marubox) {
+         if ($this->fields['errors'] > 0) {
+            $this->update(array('id'     => $this->getID(),
+                                'errors' => 0));
+         }
+      } else {
+            $this->update(array('id'     => $this->getID(),
+                                'errors' => ($this->fields['errors']+1)));
       }
    }
 
@@ -1495,12 +1516,29 @@ class MailCollector  extends CommonDBTM {
   function title() {
       global $CFG_GLPI;
 
+      $buttons = array();
       if (countElementsInTable($this->getTable())) {
-         $buttons = array();
          $buttons["notimportedemail.php"] = __('List of not imported emails');
-         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png",
-                            __('List of not imported emails'), '', $buttons);
       }
+
+      $errors = getAllDatasFromTable($this->getTable(), '`errors` > 0');
+      $message = '';
+      if (count($errors)) {
+         $servers = array();
+         foreach ($errors as $data) {
+            $this->getFromDB($data['id']);
+            $servers[] = $this->getLink();
+         }
+         
+         $message = sprintf(__('Receivers in error: %s'),
+                               implode(" ", $servers));
+      }
+
+      if (count($buttons)) {
+         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png",
+                            _n('Receiver', 'Receivers', 2), $message, $buttons);
+      }
+
    }
 
 

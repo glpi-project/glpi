@@ -155,7 +155,7 @@ class Central extends CommonGLPI {
             $accouts = array();
             foreach ($logins as $login) {
                $user->getFromDBbyName($login);
-               $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a>";
+               $accounts[] = $user->getLink();
             }
             $message = sprintf(__('For security reasons, please change the password for the default users: %s'),
                                implode(" ", $accounts));
