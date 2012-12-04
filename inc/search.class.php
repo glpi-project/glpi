@@ -4163,7 +4163,28 @@ class Search {
                }
                return $out;
 
+         case "glpi_problems.count" :
+            if (($data[$NAME.$num] > 0)
+                && Session::haveRight("show_all_problem","1")) {
+               if ($itemtype == 'ITILCategory') {
+                  $options['field'][0]      = 7;
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = $data['id'];
+                  $options['link'][0]       = 'AND';
+               }
 
+               $options['reset'] = 'reset';
+
+               $out  = "<a id='problem$itemtype".$data['id']."' ";
+               $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                             Toolbox::append_params($options, '&amp;')."\">";
+               $out .= $data[$NAME.$num]."</a>";
+
+            } else {
+               $out = $data[$NAME.$num];
+            }
+            return $out;
+            
          case "glpi_tickets.count" :
             if (($data[$NAME.$num] > 0)
                 && Session::haveRight("show_all_ticket","1")) {
@@ -4183,6 +4204,12 @@ class Search {
                   $options['searchtype'][2] = 'equals';
                   $options['contains'][2]   = $data['id'];
                   $options['link'][2]       = 'OR';
+
+               } else if ($itemtype == 'ITILCategory') {
+                  $options['field'][0]      = 7;
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = $data['id'];
+                  $options['link'][0]       = 'AND';
 
                } else {
                   $options['field'][0]       = 12;
