@@ -46,10 +46,13 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 
 if (isset($_POST["update"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
+   Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    if (Session::haveRight("reservation_central","w")
        || (Session::getLoginUserID() === $_POST["users_id"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item']   = key($_POST["items"]);
+      $_POST['begin']   = $_POST['resa']["begin"];
+      $_POST['end']     = $_POST['resa']["end"];
       if ($rr->update($_POST)) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                         $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
