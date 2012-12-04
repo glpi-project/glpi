@@ -1802,16 +1802,16 @@ $LANG['rulesengine'][154]="is empty in GLPI"; // en_GB string to be translated
 $LANG['rulesengine'][155]="Link with computer"; // en_GB string to be translated
 
 $LANG['satisfaction'][0]="Rahulolu"; 
-$LANG['satisfaction'][1]="Satisfaction with the solution of the ticket"; // en_GB string to be translated
+$LANG['satisfaction'][1]="Hinda teate lahendamist"; 
 $LANG['satisfaction'][2]="Uuringuid pole teostatud"; 
 $LANG['satisfaction'][3]="Rahulolu"; 
-$LANG['satisfaction'][4]="Response date to the satisfaction survey"; // en_GB string to be translated
+$LANG['satisfaction'][4]="Rahulolu-uuringule vastatud"; 
 $LANG['satisfaction'][6]="Creation date of the satisfaction survey"; // en_GB string to be translated
 $LANG['satisfaction'][7]="Rahulolu"; 
 $LANG['satisfaction'][8]="Comments to the satisfaction survey"; // en_GB string to be translated
 $LANG['satisfaction'][9]="Internal survey"; // en_GB string to be translated
 $LANG['satisfaction'][10]="External survey"; // en_GB string to be translated
-$LANG['satisfaction'][12]="Invitation to fill out the survey"; // en_GB string to be translated
+$LANG['satisfaction'][12]="Palun anna tagasisidet kuidas oled rahul teate lahendamisega"; 
 $LANG['satisfaction'][13]="Avatud"; 
 $LANG['satisfaction'][14]="Vastatud"; 
 
