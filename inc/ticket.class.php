@@ -3508,6 +3508,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // If template loaded from type and category do not check after
+      if ($template_loaded) {
+         return $tt;
+      }
+
       if (!$template_loaded) {
          // load default profile one if not already loaded
          if (isset($_SESSION['glpiactiveprofile']['tickettemplates_id'])
@@ -3528,6 +3533,43 @@ class Ticket extends CommonITILObject {
             // with type and categ
             if ($tt->getFromDBWithDatas($template_id, true)) {
                $template_loaded = true;
+            }
+         }
+      }
+   
+      // Check if profile / entity set type and category and try to load template for these values
+      if ($template_loaded) { // template loaded for profile or entity
+         $newtype = $type;
+         $newitilcategories_id = $itilcategories_id;
+         // Get predefined values for ticket template
+         if (isset($tt->predefined['itilcategories_id']) && $tt->predefined['itilcategories_id']){
+            $newitilcategories_id = $tt->predefined['itilcategories_id'];
+         }
+         if (isset($tt->predefined['type']) && $tt->predefined['type']){
+            $newtype = $tt->predefined['type'];
+         }
+         if ($newtype
+            && $newitilcategories_id) {
+
+            $categ = new ITILCategory();
+            if ($categ->getFromDB($newitilcategories_id)) {
+               $field = '';
+               switch ($newtype) {
+                  case self::INCIDENT_TYPE :
+                     $field = 'tickettemplates_id_incident';
+                     break;
+
+                  case self::DEMAND_TYPE :
+                     $field = 'tickettemplates_id_demand';
+                     break;
+               }
+
+               if (!empty($field) && $categ->fields[$field]) {
+                  // without type and categ
+                  if ($tt->getFromDBWithDatas($categ->fields[$field], false)) {
+                     $template_loaded = true;
+                  }
+               }
             }
          }
       }
