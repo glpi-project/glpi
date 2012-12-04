@@ -2051,8 +2051,8 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
-               echo "<table class='tab_format'></tr><td>".$entityname."</td>".
-                    "<td class='right'>".__('Child entities')."</td><td>";
+               echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>".
+                    "<th class='right'>".__('Child entities')."</th><th>";
 
                if ($params['canedit']) {
                   if (!$this->can($ID,'recursive')) {
@@ -2077,7 +2077,7 @@ class CommonDBTM extends CommonGLPI {
                } else {
                   echo Dropdown::getYesNo($this->fields["is_recursive"]);
                }
-               echo "</td><tr></table>";
+               echo "</th></tr></table>";
             } else {
                echo $entityname;
                echo "<input type='hidden' name='is_recursive' value='0'>";
