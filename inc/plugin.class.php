@@ -153,8 +153,6 @@ class Plugin extends CommonDBTM {
                                         $dir.$CFG_GLPI["languages"][$trytoload][1],
                                         $name, $coretrytoload);
 
-//          $TRANSLATE->addTranslation(array('content' => $dir.$CFG_GLPI["languages"][$trytoload][1],
-//                                           'locale'  => $coretrytoload));
          $translation_included = true;
 
       } else if (!empty($CFG_GLPI["language"])
@@ -162,24 +160,17 @@ class Plugin extends CommonDBTM {
          $TRANSLATE->addTranslationFile('gettext',
                                         $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
                                         $name, $coretrytoload);
-//          $TRANSLATE->addTranslation(array('content'
-//                                              => $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
-//                                           'locale'  => $coretrytoload));
          $translation_included = true;
       } else if (file_exists($dir."en_GB.mo")) {
          $TRANSLATE->addTranslationFile('gettext',
                                         $dir."en_GB.mo",
                                         $name, $coretrytoload);
-//          $TRANSLATE->addTranslation(array('content' => $dir."en_GB.mo",
-//                                           'locale'  => $coretrytoload));
          $translation_included = true;
 
       } else if (file_exists($dir."fr_FR.mo")) {
          $TRANSLATE->addTranslationFile('gettext',
                                         $dir."fr_FR.mo",
                                         $name, $coretrytoload);
-//          $TRANSLATE->addTranslation(array('content' => $dir."fr_FR.mo",
-//                                           'locale'  => $coretrytoload));
          $translation_included = true;
       }
 
