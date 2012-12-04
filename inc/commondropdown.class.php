@@ -396,7 +396,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
                            // Delete old
                            if ($newid > 0) {
-                              // delete with purge for dropdown with trash (Budget)
+                              // delete with purge for dropdown with dustbin (Budget)
                               $this->delete(array('id'        => $key,
                                                 '_replace_by' => $newid), 1);
                            }

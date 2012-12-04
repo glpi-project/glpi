@@ -607,7 +607,7 @@ class Change extends CommonITILObject {
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
                    self::CLOSED        => _x('change', 'Closed'),
-//                   'abandoned'     => __('Abandonned'), // managed using trash ?
+//                   'abandoned'     => __('Abandonned'), // managed using dustbin ?
    );
 
       if ($withmetaforsearch) {

@@ -1369,7 +1369,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Restore an item trashed in the database.
+    * Restore an item put in the dustbin in the database.
     *
     * @param $input     array    the _POST vars returned by the item form when press restore
     * @param $history   boolean  do history log ? (default 1)
@@ -1860,7 +1860,7 @@ class CommonDBTM extends CommonGLPI {
                          class='submit' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
-                  echo "<input type='submit' name='delete' value='"._sx('button', 'Put in trash')."'
+                  echo "<input type='submit' name='delete' value='"._sx('button', 'Put in dustbin')."'
                          class='submit'>";
                }
             }
@@ -3301,7 +3301,7 @@ class CommonDBTM extends CommonGLPI {
          // No delete for entities and tracking of not have right
          if ($isadmin) {
             if ($this->maybeDeleted()) {
-               $actions['delete'] = _x('button', 'Put in trash');
+               $actions['delete'] = _x('button', 'Put in dustbin');
             } else {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
@@ -3659,9 +3659,9 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          }
-         // Add information on item in trash
+         // Add information on item in dustbin
          if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-            $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the trash'));
+            $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the dustbin'));
          }
 
          $message_text .= "<br>[$double_text]";
@@ -3818,7 +3818,7 @@ class CommonDBTM extends CommonGLPI {
     * Clean all infos which match some criteria
     *
     * @param $crit   array    of criteria (ex array('is_active'=>'1'))
-    * @param $force  boolean  force purge not on put in trash (default 0)
+    * @param $force  boolean  force purge not on put in dustbin (default 0)
    **/
    function deleteByCriteria($crit=array(), $force=0) {
       global $DB;

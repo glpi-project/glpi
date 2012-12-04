@@ -3186,7 +3186,7 @@ class User extends CommonDBTM {
          case 0 :
             break;
 
-         //Put user in trash
+         //Put user in dustbin
          case 1 :
             $myuser->delete($tmp);
             break;

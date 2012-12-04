@@ -100,7 +100,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
       echo "<td class='tab_bg_2 center'>" .
-            __('Warning! This operation can put merged software in the trash.<br>Sure to notify your users.').
+            __('Warning! This operation can put merged software in the dustbin.<br>Sure to notify your users.').
            "</td></tr>\n";
       echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" .
@@ -143,7 +143,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                  LEFT JOIN `glpi_manufacturers`
                      ON (`glpi_manufacturers`.`id` = `glpi_softwares`.`manufacturers_id`)";
 
-         // Do not replay on trash and templates
+         // Do not replay on dustbin and templates
          $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
                         AND `glpi_softwares`.`is_template` = '0' ";
 
@@ -278,7 +278,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
     * @param $entity                working entity ID
     * @param $name                  softwrae name
     * @param $manufacturer          manufacturer name
-    * @param &$soft_ids       array containing replay software need to be trashed
+    * @param &$soft_ids       array containing replay software need to be dustbined
    **/
    function replayDictionnaryOnOneSoftware(array &$new_softs, array $res_rule, $ID, $entity, $name,
                                            $manufacturer, array &$soft_ids) {
@@ -317,7 +317,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
          //New software not already present in this entity
          if (!isset($new_softs[$entity][$new_name])) {
-            // create new software or restore it from trash
+            // create new software or restore it from dustbin
             $new_software_id               = $soft->addOrRestoreFromTrash($new_name, $manufacturer,
                                                                           $entity, '', true);
             $new_softs[$entity][$new_name] = $new_software_id;
@@ -368,7 +368,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    /**
     * Delete a list of softwares
     *
-    * @param $soft_ids array containing replay software need to be trashed
+    * @param $soft_ids array containing replay software need to be dustbined
    **/
    function putOldSoftsInTrash(array $soft_ids) {
       global $DB;
