@@ -142,7 +142,8 @@ class Ticket extends CommonITILObject {
               || Session::haveRight('show_all_ticket','1')
               || Session::haveRight("show_assign_ticket",'1')
               || Session::haveRight("own_ticket",'1')
-              || Session::haveRight('validate_ticket','1')
+              || Session::haveRight('validate_request','1')
+              || Session::haveRight('validate_incident','1')
               || Session::haveRight("show_group_ticket",'1'));
    }
 
@@ -172,7 +173,8 @@ class Ticket extends CommonITILObject {
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
                       || (Session::haveRight('assign_ticket',1)
                           && ($this->fields["status"] == self::INCOMING))))
-              || (Session::haveRight('validate_ticket','1')
+              || ((Session::haveRight('validate_incident','1')
+                  || Session::haveRight('validate_request','1'))
                   && TicketValidation::canValidate($this->fields["id"])));
    }
 
@@ -2046,7 +2048,7 @@ class Ticket extends CommonITILObject {
       $tab[58]['field']             = 'name';
       $tab[58]['name']              = __('Requester');
       $tab[58]['datatype']          = 'itemlink';
-      $tab[58]['right']             = 'all';
+      $tab[58]['right']             = array('create_incident_validation', 'create_request_validation');
       $tab[58]['forcegroupby']      = true;
       $tab[58]['massiveaction']     = false;
       $tab[58]['joinparams']        = array('beforejoin'
@@ -2058,7 +2060,7 @@ class Ticket extends CommonITILObject {
       $tab[59]['linkfield']         = 'users_id_validate';
       $tab[59]['name']              = __('Approver');
       $tab[59]['datatype']          = 'itemlink';
-      $tab[59]['right']             = 'validate_ticket';
+      $tab[59]['right']             = array('validate_request', 'validate_incident');
       $tab[59]['forcegroupby']      = true;
       $tab[59]['massiveaction']     = false;
       $tab[59]['joinparams']        = array('beforejoin'
@@ -2381,8 +2383,10 @@ class Ticket extends CommonITILObject {
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
          $tokeep = array('common');
-         if (Session::haveRight('validate_ticket',1)
-             || Session::haveRight('create_validation',1)) {
+         if (Session::haveRight('validate_request',1)
+             || Session::haveRight('validate_incident',1)
+             || Session::haveRight('create_incident_validation',1)
+             || Session::haveRight('create_request_validation',1)) {
             $tokeep[] = 'validation';
          }
          $keep = false;
@@ -3038,7 +3042,8 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if (Session::haveRight('validate_ticket',1)) {
+      if (Session::haveRight('validate_incident',1)
+            || Session::haveRight('validate_request',1)) {
          $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -4018,10 +4023,20 @@ class Ticket extends CommonITILObject {
       echo "<td>";
       if (!$ID) {
          echo $tt->getBeginHiddenFieldValue('_add_validation');
-         if (Session::haveRight('create_validation',1)) {
+         $validation_right = '';
+         if (($values['type']==self::INCIDENT_TYPE
+               && Session::haveRight('create_incident_validation',1))) {
+            $validation_right = 'validate_incident';
+         }
+         if (($values['type']==self::DEMAND_TYPE
+               && Session::haveRight('create_request_validation',1))) {
+            $validation_right = 'validate_request';
+         }
+               
+         if (!empty($validation_right)) {
             User::dropdown(array('name'   => "_add_validation",
                                  'entity' => $this->fields['entities_id'],
-                                 'right'  => 'validate_ticket',
+                                 'right'  => $validation_right,
                                  'value'  => $values['_add_validation']));
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
@@ -4434,7 +4449,8 @@ class Ticket extends CommonITILObject {
       if (!Session::haveRight("show_all_ticket","1")
           && !Session::haveRight("show_assign_ticket","1")
           && !Session::haveRight("create_ticket","1")
-          && !Session::haveRight("validate_ticket","1")) {
+          && !Session::haveRight("validate_incident","1")
+          && !Session::haveRight("validate_request","1")) {
          return false;
       }
 
