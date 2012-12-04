@@ -368,7 +368,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[22]['table']           = $this->getTable();
       $tab[22]['field']           = 'errors';
-      $tab[22]['name']            = __('Number of connection errors');
+      $tab[22]['name']            = __('Connection errors');
       $tab[22]['datatype']        = 'integer';
       
       return $tab;
