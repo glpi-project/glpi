@@ -1573,7 +1573,7 @@ class Dropdown {
             if (is_string($param['other'])) {
                $output .= " selected";
             }
-            $output .= ">".__('Other ...')."</option>";
+            $output .= ">".__('Other...')."</option>";
          }
 
          $output .= "</select>";
