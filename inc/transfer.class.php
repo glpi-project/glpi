@@ -656,13 +656,13 @@ class Transfer extends CommonDBTM {
             }
          }
          // Ticket Supplier
-         $query = "SELECT DISTINCT `glpi_tickets_suppliers`.`suppliers_id`,
+         $query = "SELECT DISTINCT `glpi_suppliers_tickets`.`suppliers_id`,
                                    `glpi_suppliers`.`is_recursive`,
                                    `glpi_suppliers`.`entities_id`
                    FROM `glpi_tickets`
-                   LEFT JOIN `glpi_tickets_suppliers`
-                         ON (`glpi_tickets_suppliers`.`tickets_id` = `glpi_tickets`.`id`)
-                   WHERE `glpi_tickets_suppliers`.`suppliers_id` > '0'
+                   LEFT JOIN `glpi_suppliers_tickets`
+                         ON (`glpi_suppliers_tickets`.`tickets_id` = `glpi_tickets`.`id`)
+                   WHERE `glpi_suppliers_tickets`.`suppliers_id` > '0'
                          AND `glpi_tickets`.`id` IN ".$this->item_search['Ticket'];
 
          if ($result = $DB->query($query)) {
