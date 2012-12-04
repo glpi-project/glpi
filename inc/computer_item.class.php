@@ -278,7 +278,7 @@ class Computer_Item extends CommonDBRelation{
 //                         $tmp["id"] = $this->fields['items_id'];
 //                         $device->delete($tmp, 1);
 //
-//                      //Put periph in trash
+//                      //Put periph in dustbin
 //                      } else if ($decoConf == "trash") {
 //                         $tmp["id"] = $this->fields['items_id'];
 //                         $device->delete($tmp, 0);

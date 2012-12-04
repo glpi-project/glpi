@@ -4383,7 +4383,7 @@ class Ticket extends CommonITILObject {
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
                   echo "<input type='submit' class='submit' name='delete' value='".
-                         _sx('button', 'Put in trash')."'></td>";
+                         _sx('button', 'Put in dustbin')."'></td>";
                }
 
             } else {

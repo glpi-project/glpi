@@ -3034,7 +3034,7 @@ class Transfer extends CommonDBTM {
                      1 => __('Preserve'));
 
       $clean = array(0 => __('Preserve'),
-                     1 => _x('button', 'Put in trash'),
+                     1 => _x('button', 'Put in dustbin'),
                      2 => _x('button', 'Delete permanently'));
 
       echo "<tr class='tab_bg_1'>";

@@ -71,8 +71,8 @@ Usage : php cleanhistory.php [ --item=# ] [ --type=# ] [ --old=<regex> ] [ --new
       1 : Add device
       2 : Update device          11 : OCS Link
       3 : Delete device          12 : Other (often from plugin)
-      4 : Install software       13 : Delete item (put in trash)
-      5 : Uninstall software     14 : Restore item from trash
+      4 : Install software       13 : Delete item (put in dustbin)
+      5 : Uninstall software     14 : Restore item from dustbin
       6 : Disconnect device      15 : Add relation
       7 : Connect device         16 : Delete relation
       8 : OCS Import             17 : Add sub item
