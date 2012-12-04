@@ -314,7 +314,7 @@ input.save {
 
 } 
 
-a.vsubmit {
+span.vsubmit, a.vsubmit {
    padding: 2px;
    vertical-align: middle;
    cursor:pointer;

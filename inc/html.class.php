@@ -503,7 +503,7 @@ class Html {
       }
 
       if ($ref_title != "") {
-         echo "<td><span class='vsubmit'>".$ref_title."</span></td>";
+         echo "<td><span class='vsubmit'>&nbsp;".$ref_title."&nbsp;</span></td>";
       }
 
       if (is_array($ref_btts) && count($ref_btts)) {
