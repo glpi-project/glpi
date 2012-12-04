@@ -148,7 +148,7 @@ class Dropdown {
           && $params['entity_sons']) {
          if (is_array($params['entity'])) {
             // translation not needed - only for debug
-            $output .= "entity_sons options is not available with array of entity";
+            $output .= "entity_sons options is not available with entity option as array";
          } else {
             $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
          }
