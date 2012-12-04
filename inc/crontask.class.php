@@ -1268,6 +1268,29 @@ class CronTask extends CommonDBTM{
       $tab[16]['name']         = __('Comments');
       $tab[16]['datatype']     = 'text';
 
+      $tab[17]['table']        = $this->getTable();
+      $tab[17]['field']        = 'hourmin';
+      $tab[17]['name']         = __('Begin hour of run period');
+      $tab[17]['datatype']     = 'integer';
+      $tab[17]['min']          = 0;
+      $tab[17]['max']          = 24;
+
+      $tab[18]['table']        = $this->getTable();
+      $tab[18]['field']        = 'hourmax';
+      $tab[18]['name']         = __('End hour of run period');
+      $tab[18]['datatype']     = 'integer';
+      $tab[18]['min']          = 0;
+      $tab[18]['max']          = 24;
+
+      $tab[19]['table']        = $this->getTable();
+      $tab[19]['field']        = 'logs_lifetime';
+      $tab[19]['name']         = __('Number of days this action logs are stored');
+      $tab[19]['datatype']     = 'integer';
+      $tab[19]['min']          = 10;
+      $tab[19]['max']          = 360;
+      $tab[19]['step']         = 10;
+      $tab[19]['toadd']        = array(0 => __('Infinite'));
+
       return $tab;
    }
 
