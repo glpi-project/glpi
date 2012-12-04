@@ -50,8 +50,17 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
    if (!isset($_POST["field"])) {
       $_POST["field"] = key(Rule::getActionsByType($_POST["sub_type"]));
    }
-
-   $randaction = RuleAction::dropdownActions($_POST["sub_type"], "action_type", $_POST["field"]);
+   if (!($item = getItemForItemtype($_POST["sub_type"]))) {
+      exit();
+   }
+   if (!isset($_POST[$item->getRuleIdField()])) {
+      exit();
+   }
+   $ra = getItemForItemtype($item->getRuleActionClass());
+   $used = $ra->getAlreadyUsedForRuleID($_POST[$item->getRuleIdField()], $item->getType());
+   $already_used = in_array($_POST["field"], $used);
+   
+   $randaction = RuleAction::dropdownActions($_POST["sub_type"], "action_type", $_POST["field"], $already_used);
 
    echo "&nbsp;&nbsp;";
    echo "<span id='action_type_span$randaction'>\n";

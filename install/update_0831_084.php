@@ -1010,6 +1010,15 @@ function update0831to084() {
    $migration->addField("glpi_slalevels", 'match',
                         "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
+   $query = "UPDATE `glpi_slalevelactions`
+               SET `action_type` = 'append'
+               WHERE `action_type` = 'assign'
+                  AND `field` IN ('_users_id_requester',  '_groups_id_requester',
+                                  '_users_id_assign',     '_groups_id_assign',
+                                  '_suppliers_id_assign', '_users_id_observer',
+                                  '_groups_id_observer');";
+   $DB->queryOrDie($query, "0.84 update data for SLA actors add");
+   
    // Clean observer as recipient of satisfaction survey
    $query = "DELETE FROM `glpi_notificationtargets`
              WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'

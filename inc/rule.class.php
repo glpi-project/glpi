@@ -103,6 +103,17 @@ class Rule extends CommonDBTM {
       return _n('Rule', 'Rules', $nb);
    }
 
+   function getRuleActionClass () {
+      return $this->ruleactionclass;
+   }
+   
+   function getRuleCriteriaClass () {
+      return $this->rulecriteriaclass;
+   }
+   
+   function getRuleIdField () {
+      return $this->rules_id_field;
+   }   
 
    static function canCreate() {
       return Session::haveRight(static::$right, 'w');
@@ -614,8 +625,9 @@ class Rule extends CommonDBTM {
          echo "<tr class='tab_bg_1 center'>";
          echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
          $rand   = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
-         $params = array('field'    => '__VALUE__',
-                         'sub_type' => $this->getType());
+         $params = array('field'               => '__VALUE__',
+                         'sub_type'            => $this->getType(),
+                         $this->rules_id_field => $rules_id);
 
          Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
                                        $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
@@ -827,6 +839,14 @@ class Rule extends CommonDBTM {
       }
 
       $actions = $this->getAllActions();
+
+      // For each used actions see if several set is available
+      // Force actions to available actions for several
+      foreach ($p['used'] as $key => $ID) {
+         if (isset($actions[$ID]['permitseveral'])) {
+            unset($p['used'][$key]);
+         }
+      }
 
       // Complete used array with duplicate items
       // add duplicates of used items
@@ -1195,10 +1215,20 @@ class Rule extends CommonDBTM {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
-
             switch ($action->fields["action_type"]) {
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
+                  break;
+
+               case "append" :
+                  $actions = $this->getActions();
+                  $value = $action->fields["value"];
+                  if (isset($actions[$action->fields["field"]]["appendtoarray"])
+                     && isset($actions[$action->fields["field"]]["appendtoarrayfield"])) {
+                     $value = $actions[$action->fields["field"]]["appendtoarray"];
+                     $value[$actions[$action->fields["field"]]["appendtoarrayfield"]] = $action->fields["value"];
+                  }
+                  $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                   break;
 
                case "regex_result" :

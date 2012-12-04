@@ -206,7 +206,7 @@ class RuleAction extends CommonDBChild {
                 && !empty($values['rules_id'])
                 && $generic_rule->getFromDB($values['rules_id'])) {
                return self::dropdownActions($generic_rule->fields["sub_type"], $name,
-                                            $values[$field], false);
+                                            $values[$field], false, false);
             }
             break;
 
@@ -279,16 +279,27 @@ class RuleAction extends CommonDBChild {
     * @param $sub_type
     * @param $name
     * @param $value     (default '')
+    * @param $already_used     (default false)
     * @param $display   (true by default)
    **/
-   static function dropdownActions($sub_type, $name, $value='', $display=true) {
+   static function dropdownActions($sub_type, $name, $value='', $already_used = false, $display=true) {
 
       if ($rule = getItemForItemtype($sub_type)) {
          $actions_options = $rule->getAllActions();
 
          $actions         = array("assign");
-         if (isset($actions_options[$value]['force_actions'])) {
-            $actions = $actions_options[$value]['force_actions'];
+         // Manage permit several.
+         if ($already_used) {
+            if (!isset($actions_options[$value]['permitseveral'])) {
+               return false;
+            } else {
+               $actions = $actions_options[$value]['permitseveral'];
+            }
+            
+         } else {
+            if (isset($actions_options[$value]['force_actions'])) {
+               $actions = $actions_options[$value]['force_actions'];
+            }
          }
 
          $elements = array();
@@ -305,6 +316,7 @@ class RuleAction extends CommonDBChild {
    static function getActions() {
 
       return array('assign'              => __('Assign'),
+                   'append'              => __('Add'),
                    'regex_result'        => __('Assign the value from regular expression'),
                    'append_regex_result' => __('Add the result of regular expression'),
                    'affectbyip'          => __('Assign: equipment by IP address'),

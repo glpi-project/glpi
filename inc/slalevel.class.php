@@ -213,6 +213,16 @@ class SlaLevel extends RuleTicket {
       $actions['recall']['name']          = __('Automatic reminders of SLA');
       $actions['recall']['type']          = 'yesonly';
       $actions['recall']['force_actions'] = array('send');
+
+      // Only append actors
+      $actions['_users_id_requester']['force_actions']  = array('append');
+      $actions['_groups_id_requester']['force_actions'] = array('append');
+      $actions['_users_id_assign']['force_actions']     = array('append');
+      $actions['_groups_id_assign']['force_actions']    = array('append');
+      $actions['_suppliers_id_assign']['force_actions'] = array('append');
+      $actions['_users_id_observer']['force_actions']   = array('append');
+      $actions['_groups_id_observer']['force_actions']  = array('append');
+
       return $actions;
    }
 
