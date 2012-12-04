@@ -45,7 +45,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 }
 
 if (isset($_POST["update"])) {
-   list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
+   list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
    if (Session::haveRight("reservation_central","w")
        || (Session::getLoginUserID() === $_POST["users_id"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
