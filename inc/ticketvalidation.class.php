@@ -66,26 +66,32 @@ class TicketValidation  extends CommonDBChild {
 
 
    static function canCreate() {
-      return Session::haveRight('create_validation', 1);
+      return (Session::haveRight('create_request_validation', 1)
+            || Session::haveRight('create_incident_validation', 1));
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('create_validation', 1)
-              || Session::haveRight('validate_ticket', 1));
+      return (Session::haveRight('create_request_validation', 1)
+              || Session::haveRight('create_incident_validation', 1)
+              || Session::haveRight('validate_request', 1)
+              || Session::haveRight('validate_incident', 1));
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('validate_ticket', 1)
-              || Session::haveRight('create_validation', 1));
+      return (Session::haveRight('create_request_validation', 1)
+              || Session::haveRight('create_incident_validation', 1)
+              || Session::haveRight('validate_request', 1)
+              || Session::haveRight('validate_incident', 1));
    }
 
 
    static function canDelete() {
-      return Session::haveRight('create_validation', 1);
+      return (Session::haveRight('create_request_validation', 1)
+              || Session::haveRight('create_incident_validation', 1));
    }
 
 
@@ -113,7 +119,8 @@ class TicketValidation  extends CommonDBChild {
     */
    function canUpdateItem() {
 
-      if (!Session::haveRight('create_validation', 1)
+      if (!Session::haveRight('create_request_validation', 1)
+          && !Session::haveRight('create_incident_validation', 1)
           && ($this->fields["users_id_validate"] != Session::getLoginUserID())) {
          return false;
       }
@@ -143,12 +150,30 @@ class TicketValidation  extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight('create_validation','1')
-          || Session::haveRight('validate_ticket','1')) {
-
+      $hidetab = false;
+      // Hide if no rights on validations
+      if (!Session::haveRight('create_incident_validation','1')
+          && !Session::haveRight('create_request_validation','1')
+          && !Session::haveRight('validate_request','1')
+          && !Session::haveRight('validate_incident','1')) {
+         $hidetab = true;
+         echo "jj";
+      }
+      // No right to create and no validation for current object
+      if (!$hidetab
+          && !Session::haveRight('create_incident_validation','1')
+          && !Session::haveRight('create_request_validation','1')
+          && !self::canValidate($item->getID())) {
+         $hidetab = true;
+      }
+      
+   
+      if (!$hidetab) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";
-            if (!Session::haveRight('create_validation','1')) {
+            // No rights for create only count asign ones
+            if (!Session::haveRight('create_request_validation','1')
+               && !Session::haveRight('create_incident_validation','1')) {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
             }
             return self::createTabEntry(self::getTypeName(2),
@@ -270,7 +295,8 @@ class TicketValidation  extends CommonDBChild {
          $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
                                 'comment_submission', 'submission_date');
 
-      } else if (Session::haveRight('create_validation',1)) { // Update validation request
+      } else if (Session::haveRight('create_incident_validation',1)
+                || Session::haveRight('create_request_validation',1)) { // Update validation request
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
                                 'validation_date');
       }
@@ -556,7 +582,7 @@ class TicketValidation  extends CommonDBChild {
       echo "&nbsp;".__('Approver')."&nbsp;";
       User::dropdown(array('name'   => 'users_id_validate',
                            'entity' => $_SESSION["glpiactive_entity"],
-                           'right'  => 'validate_ticket'));
+                           'right'  => array('validate_request', 'validate_incident')));
 
       echo "<br>".__('Comments')." ";
       echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
@@ -573,13 +599,14 @@ class TicketValidation  extends CommonDBChild {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight('validate_ticket',1)
-          && !Session::haveRight('create_validation',1)) {
+      if (!Session::haveRight('validate_request',1)
+          && !Session::haveRight('validate_incident',1)
+          && !Session::haveRight('create_incident_validation',1)
+          && !Session::haveRight('create_request_validation',1)) {
          return false;
       }
 
       $tID    = $ticket->fields['id'];
-      //$canadd = Session::haveRight("create_validation", "1");
 
       $tmp    = array('tickets_id' => $tID);
       $canadd = $this->can(-1,'w',$tmp);
@@ -710,6 +737,15 @@ class TicketValidation  extends CommonDBChild {
 
       $this->showFormHeader($options);
       if ($validation_admin) {
+         $ticket = new Ticket();
+         $ticket->getFromDB($this->fields['tickets_id']);
+         $validation_right = '';
+         if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
+            $validation_right = 'validate_request';
+         } else {
+            $validation_right = 'validate_incident';
+         }
+         
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Approval requester')."</td>";
          echo "<td>";
@@ -721,7 +757,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<td>";
          User::dropdown(array('name'   => "users_id_validate",
                               'entity' => $this->getEntityID(),
-                              'right'  => 'validate_ticket',
+                              'right'  => $validation_right,
                               'value'  => $this->fields["users_id_validate"]));
          echo "</td></tr>";
 
@@ -811,14 +847,14 @@ class TicketValidation  extends CommonDBChild {
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Approval requester');
       $tab[6]['datatype']        = 'itemlink';
-      $tab[6]['right']           = 'create_validation';
+      $tab[6]['right']           = array('create_incident_validation', 'create_request_validation');
 
       $tab[7]['table']           = 'glpi_users';
       $tab[7]['field']           = 'name';
       $tab[7]['linkfield']       = 'users_id_validate';
       $tab[7]['name']            = __('Approver');
       $tab[7]['datatype']        = 'itemlink';
-      $tab[7]['right']           = 'validate_ticket';
+      $tab[7]['right']           = array('validate_request', 'validate_incident');
 
       return $tab;
    }

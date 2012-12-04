@@ -42,13 +42,14 @@ class Profile extends CommonDBTM {
 
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('add_followups', 'create_ticket',
-                                          'create_ticket_on_login', 'create_validation',
+                                          'create_ticket_on_login', 'create_request_validation',
+                                          'create_incident_validation',
                                           'faq', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update', 'reminder_public',
                                           'reservation_helpdesk', 'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
-                                          'update_own_followups', 'validate_ticket');
+                                          'update_own_followups', 'validate_incident', 'validate_request');
 
 
    /// Common fields used for all profiles type
@@ -572,10 +573,18 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Create a validation request')."</td><td>";
-      Dropdown::showYesNo("create_validation", $this->fields["create_validation"]);
-      echo "<td>".__('Validate a ticket')."</td><td>";
-      Dropdown::showYesNo("validate_ticket", $this->fields["validate_ticket"]);
+      echo "<td>".__('Create a validation request for a request')."</td><td>";
+      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
+      echo "<td>".__('Create a validation request for an incident')."</td><td>";
+      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Validate a request')."</td><td>";
+      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
+      echo "<td>".__('Validate an incident')."</td><td>";
+      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
       echo "</td>";
       echo "</tr>\n";
 
@@ -873,12 +882,19 @@ class Profile extends CommonDBTM {
       echo "/tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Create a validation request')."</td><td>";
-      Dropdown::showYesNo("create_validation", $this->fields["create_validation"]);
-      echo "<td>".__('Validate a ticket')."</td><td>";
-      Dropdown::showYesNo("validate_ticket", $this->fields["validate_ticket"]);
+      echo "<td>".__('Create a validation request for a request')."</td><td>";
+      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
+      echo "<td>".__('Create a validation request for an incident')."</td><td>";
+      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
       echo "</td>";
       echo "<td colspan='2'></td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Validate a request')."</td><td>";
+      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
+      echo "<td>".__('Validate an incident')."</td><td>";
+      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
+      echo "</td>";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Assignment')."</th>";
       echo "</tr>\n";
@@ -1804,14 +1820,24 @@ class Profile extends CommonDBTM {
       $tab[97]['datatype']       = 'bool';
 
       $tab[98]['table']          = $this->getTable();
-      $tab[98]['field']          = 'validate_ticket';
-      $tab[98]['name']           = __('Validate a ticket');
+      $tab[98]['field']          = 'validate_request';
+      $tab[98]['name']           = __('Validate a request');
       $tab[98]['datatype']       = 'bool';
 
+      $tab[123]['table']          = $this->getTable();
+      $tab[123]['field']          = 'validate_incident';
+      $tab[123]['name']           = __('Validate an incident');
+      $tab[123]['datatype']       = 'bool';
+      
       $tab[99]['table']          = $this->getTable();
-      $tab[99]['field']          = 'create_validation';
-      $tab[99]['name']           = __('Create a validation request');
+      $tab[99]['field']          = 'create_request_validation';
+      $tab[99]['name']           = __('Create a validation request for a request');
       $tab[99]['datatype']       = 'bool';
+      
+      $tab[122]['table']          = $this->getTable();
+      $tab[122]['field']          = 'create_incident_validation';
+      $tab[122]['name']           = __('Create a validation request for an incident');
+      $tab[122]['datatype']       = 'bool';
 
       $tab[100]['table']         = $this->getTable();
       $tab[100]['field']         = 'ticket_status';

@@ -470,7 +470,7 @@ class RuleAction extends CommonDBChild {
 
                   case "dropdown_users_validate" :
                      User::dropdown(array('name'   => "value",
-                                          'right'  => 'validate_ticket'));
+                                          'right'  => array('validate_incident', 'validate_request')));
                      $display = true;
                      break;
 
