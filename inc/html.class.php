@@ -4092,7 +4092,7 @@ class Html {
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          elements: '$name',
-         invalid_elements : 'script',
+         valid_elements: '*[*]',
          plugins : 'table,directionality,searchreplace',
          theme : 'advanced',
          entity_encoding : 'numeric', ";
@@ -4104,6 +4104,7 @@ class Html {
          theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
          theme_advanced_buttons3 : ''});";
       echo "</script>";
+//         invalid_elements : 'script',
    }
 
 

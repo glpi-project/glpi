@@ -359,6 +359,15 @@ class Toolbox {
 
       include_once(GLPI_HTMLAWED);
 
+      // revert unclean inside <pre>
+      $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
+      for ($i = 0; $i < $count; ++$i) {
+         $complete = $matches[0][$i];
+         $cleaned  = self::clean_cross_side_scripting_deep($matches[2][$i]);
+         $cleancomplete = $matches[1][$i].$cleaned.$matches[3][$i];;
+         $value = str_replace($complete, $cleancomplete, $value);
+      }
+      
       $config             = array('safe'=>1);
       $config["elements"] = "*+iframe";
       $value              = htmLawed($value, $config);
