@@ -74,6 +74,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /// If both items must be in viewable each other entities
    static public $check_entity_coherency = true;
 
+   // By default, we log each connection/disconnection to the parents
+   var $dohistory = true;
 
 
    /**
@@ -640,11 +642,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function post_addItem() {
 
+      if ((isset($this->input['_no_history'])
+           && ($this->input['_no_history']))
+          || !$this->dohistory) {
+         return;
+      }
+
       $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
       $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
-      if ((!isset($this->input['_no_history']) || !$this->input['_no_history'])
-          && ($item1 !== false)
+      if (($item1 !== false)
           && ($item2 !== false)) {
 
          if ($item1->dohistory && static::$logs_for_itemtype_1) {
@@ -677,6 +684,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function post_updateItem($history=1) {
 
+      if ((isset($this->input['_no_history'])
+           && ($this->input['_no_history']))
+          || !$this->dohistory) {
+         return;
+      }
+
       $items_1 = $this->getItemsForLog(static::$itemtype_1, static::$items_id_1);
       $items_2 = $this->getItemsForLog(static::$itemtype_2, static::$items_id_2);
 
@@ -694,76 +707,73 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $previous2 = $items_2['new'];
       }
 
-      if ((!isset($this->input['_no_history']) || (!$this->input['_no_history']))) {
+      $oldvalues = $this->oldvalues;
+      unset($oldvalues[static::$itemtype_1]);
+      unset($oldvalues[static::$items_id_1]);
+      unset($oldvalues[static::$itemtype_2]);
+      unset($oldvalues[static::$items_id_2]);
 
-         $oldvalues = $this->oldvalues;
-         unset($oldvalues[static::$itemtype_1]);
-         unset($oldvalues[static::$items_id_1]);
-         unset($oldvalues[static::$itemtype_2]);
-         unset($oldvalues[static::$items_id_2]);
-
-         foreach ($oldvalues as $field => $value) {
-            $changes = $this->getHistoryChangeWhenUpdateField($field);
-            if ((!is_array($changes)) || (count($changes) != 3)) {
-               continue;
-            }
-            /// TODO clean management of it
-            if ($new1 && $new1->dohistory
-                && static::$logs_for_itemtype_1) {
-               Log::history($new1->getID(), $new1->getType(), $changes,
-                            get_called_class().'#'.$field, static::$log_history_1_update);
-            }
-            if ($new2 && $new2->dohistory
-                && static::$logs_for_itemtype_2) {
-               Log::history($new2->getID(), $new2->getType(), $changes,
-                            get_called_class().'#'.$field, static::$log_history_2_update);
-            }
+      foreach ($oldvalues as $field => $value) {
+         $changes = $this->getHistoryChangeWhenUpdateField($field);
+         if ((!is_array($changes)) || (count($changes) != 3)) {
+            continue;
          }
-
-         if (isset($items_1['previous']) || isset($items_2['previous'])) {
-
-            if ($previous2
-                && $previous1 && $previous1->dohistory
-                && static::$logs_for_itemtype_1) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getHistoryNameForItem2($previous2, 'update item previous'));
-               $changes[2] = "";
-               Log::history($previous1->getID(), $previous1->getType(), $changes,
-                            $previous2->getType(), static::$log_history_1_delete);
-            }
-
-            if ($previous1
-                && $previous2 && $previous2->dohistory
-                && static::$logs_for_itemtype_2) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getHistoryNameForItem1($previous1, 'update item previous'));
-               $changes[2] = "";
-               Log::history($previous2->getID(), $previous2->getType(), $changes,
-                            $previous1->getType(), static::$log_history_2_delete);
-            }
-
-            if ($new2
-                && $new1 && $new1->dohistory
-                && static::$logs_for_itemtype_1) {
-               $changes[0] = '0';
-               $changes[1] = "";
-               $changes[2] = addslashes($this->getHistoryNameForItem2($new2, 'update item next'));
-               Log::history($new1->getID(), $new1->getType(), $changes,
-                            $new2->getType(), static::$log_history_1_add);
-            }
-
-            if ($new1
-                && $new2 && $new2->dohistory
-                && static::$logs_for_itemtype_2) {
-               $changes[0] = '0';
-               $changes[1] = "";
-               $changes[2] = addslashes($this->getHistoryNameForItem1($new1, 'update item next'));
-               Log::history($new2->getID(), $new2->getType(), $changes,
-                            $new1->getType(), static::$log_history_2_add);
-            }
+         /// TODO clean management of it
+         if ($new1 && $new1->dohistory
+             && static::$logs_for_itemtype_1) {
+            Log::history($new1->getID(), $new1->getType(), $changes,
+                         get_called_class().'#'.$field, static::$log_history_1_update);
+         }
+         if ($new2 && $new2->dohistory
+             && static::$logs_for_itemtype_2) {
+            Log::history($new2->getID(), $new2->getType(), $changes,
+                         get_called_class().'#'.$field, static::$log_history_2_update);
          }
       }
-  }
+
+      if (isset($items_1['previous']) || isset($items_2['previous'])) {
+
+         if ($previous2
+             && $previous1 && $previous1->dohistory
+             && static::$logs_for_itemtype_1) {
+            $changes[0] = '0';
+            $changes[1] = addslashes($this->getHistoryNameForItem2($previous2, 'update item previous'));
+            $changes[2] = "";
+            Log::history($previous1->getID(), $previous1->getType(), $changes,
+                         $previous2->getType(), static::$log_history_1_delete);
+         }
+
+         if ($previous1
+             && $previous2 && $previous2->dohistory
+             && static::$logs_for_itemtype_2) {
+            $changes[0] = '0';
+            $changes[1] = addslashes($this->getHistoryNameForItem1($previous1, 'update item previous'));
+            $changes[2] = "";
+            Log::history($previous2->getID(), $previous2->getType(), $changes,
+                         $previous1->getType(), static::$log_history_2_delete);
+         }
+
+         if ($new2
+             && $new1 && $new1->dohistory
+             && static::$logs_for_itemtype_1) {
+            $changes[0] = '0';
+            $changes[1] = "";
+            $changes[2] = addslashes($this->getHistoryNameForItem2($new2, 'update item next'));
+            Log::history($new1->getID(), $new1->getType(), $changes,
+                         $new2->getType(), static::$log_history_1_add);
+         }
+
+         if ($new1
+             && $new2 && $new2->dohistory
+             && static::$logs_for_itemtype_2) {
+            $changes[0] = '0';
+            $changes[1] = "";
+            $changes[2] = addslashes($this->getHistoryNameForItem1($new1, 'update item next'));
+            Log::history($new2->getID(), $new2->getType(), $changes,
+                         $new1->getType(), static::$log_history_2_add);
+         }
+      }
+   }
 
 
   /**
@@ -775,11 +785,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function post_deleteFromDB() {
 
+      if ((isset($this->input['_no_history'])
+           && ($this->input['_no_history']))
+          || !$this->dohistory) {
+         return;
+      }
+
       $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
       $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
-      if ((!isset($this->input['_no_history']) || !$this->input['_no_history'])
-          && ($item1 !== false)
+      if (($item1 !== false)
           && ($item2 !== false)) {
 
          if ($item1->dohistory
