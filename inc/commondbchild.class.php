@@ -426,7 +426,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function post_addItem() {
 
-      if (isset($this->input['_no_history']) || !$this->dohistory) {
+      if ((isset($this->input['_no_history'])
+           && ($this->input['_no_history']))
+          || !$this->dohistory) {
          return;
       }
 
@@ -453,7 +455,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function post_updateItem($history=1) {
 
-      if (isset($this->input['_no_history']) || !$this->dohistory) {
+      if ((isset($this->input['_no_history'])
+           && ($this->input['_no_history']))
+          || !$this->dohistory) {
          return;
       }
 
@@ -507,7 +511,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function post_deleteFromDB() {
 
-      if (isset($this->input['_no_history']) || !$this->dohistory) {
+      if ((isset($this->input['_no_history'])
+           && ($this->input['_no_history']))
+          || !$this->dohistory) {
          return;
       }
 
