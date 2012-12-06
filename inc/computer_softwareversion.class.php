@@ -63,11 +63,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    function prepareInputForAdd($input) {
 
-      // Get template and deleted information from computer
-      $computer = new Computer();
-      if ($computer->getFromDB($input['computers_id'])) {
-         $input['is_template'] = $computer->getField('is_template');
-         $input['is_deleted']  = $computer->getField('is_deleted');
+      if ((!isset($input['is_template']))
+          || (!isset($input['is_deleted']))) {
+         // Get template and deleted information from computer
+         // If computer set update is_template / is_deleted infos to ensure data validity
+         if (isset($input['computers_id'])) {
+            $computer = new Computer();
+            if ($computer->getFromDB($input['computers_id'])) {
+               $input['is_template'] = $computer->getField('is_template');
+               $input['is_deleted']  = $computer->getField('is_deleted');
+            }
+         }
       }
       return parent::prepareInputForAdd($input);
    }
@@ -78,13 +84,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    **/
    function prepareInputForUpdate($input) {
 
-      // If computer set update is_template / is_deleted infos to ensure data validity
-      if (isset($input['computers_id'])) {
-         // Get template and deleted information from computer
-         $computer = new Computer();
-         if ($computer->getFromDB($input['computers_id'])) {
-            $input['is_template'] = $computer->getField('is_template');
-            $input['is_deleted']  = $computer->getField('is_deleted');
+      if ((!isset($input['is_template']))
+          || (!isset($input['is_deleted']))) {
+         // If computer set update is_template / is_deleted infos to ensure data validity
+         if (isset($input['computers_id'])) {
+            // Get template and deleted information from computer
+            $computer = new Computer();
+            if ($computer->getFromDB($input['computers_id'])) {
+               $input['is_template'] = $computer->getField('is_template');
+               $input['is_deleted']  = $computer->getField('is_deleted');
+            }
          }
       }
       return parent::prepareInputForUpdate($input);
