@@ -491,7 +491,7 @@ class Group extends CommonTreeDropdown {
           && Session::haveRight("user_authtype", "w")
           && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>".__('In users')."</td></tr>";
+         echo "<th colspan='2' class='center'>".__('In users')."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Attribute of the user containing its groups')."</td>";
@@ -506,7 +506,7 @@ class Group extends CommonTreeDropdown {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>".__('In groups')."</td>";
+         echo "<th colspan='2' class='center'>".__('In groups')."</th>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
