@@ -140,7 +140,7 @@ class Group_User extends CommonDBRelation{
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Associate to a group')."</th></tr>";
-         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
          // All entities "edited user" have access
