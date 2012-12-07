@@ -342,35 +342,29 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Restrict monitor management') . "</td>";
+      echo "<td>". __('Enable the financial and administrative information by default')."</td><td>";
+      Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
+      echo "</td><td> " . __('Restrict monitor management') . "</td>";
       echo "<td>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",
                                        $CFG_GLPI["monitors_management_restrict"]);
       echo "</td</tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>". __('Enable the financial and administrative information by default')."</td><td>";
-      Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
+      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
+           "</td><td>";
+      SoftwareCategory::dropdown(array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
+                                       'name'  => "softwarecategories_id_ondelete"));
       echo "</td></td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
-           "</td><td>";
-      SoftwareCategory::dropdown(array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
-                                       'name'  => "softwarecategories_id_ondelete"));
-      echo "</td><td> " . __('Restrict phone management') . "</td><td>";
-      $this->dropdownGlobalManagement ("phones_management_restrict",
-                                       $CFG_GLPI["phones_management_restrict"]);
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_2'>";
       echo "<td>" .__('Beginning of fiscal year') . "</td><td>";
       Html::showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
-      echo "</td><td> " . __('Restrict printer management') . "</td><td>";
-      $this->dropdownGlobalManagement("printers_management_restrict",
-                                      $CFG_GLPI["printers_management_restrict"]);
+      echo "</td><td> " . __('Restrict phone management') . "</td><td>";
+      $this->dropdownGlobalManagement ("phones_management_restrict",
+                                       $CFG_GLPI["phones_management_restrict"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -379,8 +373,9 @@ class Config extends CommonDBTM {
                    1 => __('By entity'));
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
                               array('value' => $CFG_GLPI["use_autoname_by_entity"]));
-      echo "</td></td>";
-      echo "<td colspan='2'>&nbsp;";
+      echo "</td><td> " . __('Restrict printer management') . "</td><td>";
+      $this->dropdownGlobalManagement("printers_management_restrict",
+                                      $CFG_GLPI["printers_management_restrict"]);
       echo "</td></tr>";
 
       echo "</table>";
