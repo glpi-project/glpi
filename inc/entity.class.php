@@ -1774,7 +1774,7 @@ class Entity extends CommonTreeDropdown {
          $inquestconfig = self::getUsedConfig('inquest_config', $entity->fields['entities_id']);
          $inquestrate   = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
                                               'inquest_rate');
-         echo "<tr><td colspan='4' class='green center'>";
+         echo "<tr class='tab_bg_1'><td colspan='4' class='green center'>";
 
          if ($inquestrate == 0) {
             _e('Disabled');
@@ -1810,8 +1810,8 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>";
 
       if ($canedit) {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                   class='submit'>";

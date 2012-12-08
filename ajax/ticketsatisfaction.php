@@ -65,16 +65,16 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td colspan='1'>".__('Rate to trigger survey')."</td>";
-      echo "<td colspan='1'>";
+           "<td>".__('Rate to trigger survey')."</td>";
+      echo "<td>";
       Dropdown::showInteger('inquest_rate', $inquest_rate, 10, 100, 10,
                             array(0      => __('Disabled')),
                             array('unit' => '%'));
       echo "</td></tr>";
 
       if ($max_closedate != '') {
-         echo "<tr class='tab_bg_1'><td colspan='1'>". __('For tickets closed after')."</td>";
-         echo "<td colspan='1'>" . Html::convDateTime($max_closedate)."</td></tr>";
+         echo "<tr class='tab_bg_1'><td>". __('For tickets closed after')."</td>";
+         echo "<td>" . Html::convDateTime($max_closedate)."</td></tr>";
       }
 
       if ($_POST['inquest_config'] == 2) {
@@ -86,7 +86,7 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
                "[TICKETTYPE_NAME] [SOLUTIONTYPE_ID] [SOLUTIONTYPE_NAME] ".
                "[SLA_ID] [SLA_NAME] [SLALEVEL_ID] [SLALEVEL_NAME]</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='1'>" . __('URL') . "</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
          echo "<td>";
          Html::autocompletionTextField($entity, "inquest_URL");
          echo "</td></tr>";
