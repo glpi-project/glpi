@@ -894,7 +894,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
       echo "<td>".__('Validate an incident')."</td><td>";
       Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
-      echo "</td>";
+      echo "<td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Assignment')."</th>";
       echo "</tr>\n";

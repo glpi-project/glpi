@@ -3900,7 +3900,7 @@ class Ticket extends CommonITILObject {
           && (in_array($this->fields["status"], $this->getSolvedStatusArray())
               || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
 
-         echo "<tr>";
+         echo "<tr class='tab_bg_1'>";
          echo "<th width='$colsize1%'>".__('Resolution date')."</th>";
          echo "<td width='$colsize2%'>";
          Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
