@@ -268,7 +268,7 @@ class Profile_User extends CommonDBRelation {
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
-         echo "<tr><td class='tab_bg_2 center'>".__('User')."&nbsp;";
+         echo "<tr class='tab_bg_1'><td class='tab_bg_2 center'>".__('User')."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(array('right' => 'all'));
          echo "</td><td class='tab_bg_2 center'>".self::getTypeName(1)."</td><td>";
