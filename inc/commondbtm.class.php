@@ -882,11 +882,6 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnAddAction() {
       global $CFG_GLPI;
 
-      $link = $this->getFormURL();
-      if (!isset($link)) {
-         return;
-      }
-
       $addMessAfterRedirect = false;
       if (isset($this->input['_add'])) {
          $addMessAfterRedirect = true;
@@ -898,6 +893,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
+         $link = $this->getFormURL();
+         if (!isset($link)) {
+            return;
+         }         
          if (($name = $this->getName()) == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
             $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
@@ -1114,11 +1113,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function addMessageOnUpdateAction() {
 
-      $link = $this->getFormURL();
-      if (!isset($link)) {
-         return;
-      }
-
       $addMessAfterRedirect = false;
 
       if (isset($this->input['_update'])) {
@@ -1131,7 +1125,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-
+         $link = $this->getFormURL();
+         if (!isset($link)) {
+            return;
+         }
          // Do not display quotes
          if (isset($this->fields['name'])) {
             $this->fields['name'] = stripslashes($this->fields['name']);
@@ -1289,11 +1286,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function addMessageOnDeleteAction() {
 
-      $link = $this->getFormURL();
-      if (!isset($link)) {
-         return;
-      }
-
       if (!$this->maybeDeleted()) {
          return;
       }
@@ -1309,7 +1301,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-
+         $link = $this->getFormURL();
+         if (!isset($link)) {
+            return;
+         }
          if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
          } else {
@@ -1327,11 +1322,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function addMessageOnPurgeAction() {
 
-      $link = $this->getFormURL();
-      if (!isset($link)) {
-         return;
-      }
-
       $addMessAfterRedirect = false;
 
       if (isset($this->input['_purge'])
@@ -1345,7 +1335,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-
+         $link = $this->getFormURL();
+         if (!isset($link)) {
+            return;
+         }
          if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
          } else {
@@ -1424,11 +1417,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function addMessageOnRestoreAction() {
 
-      $link = $this->getFormURL();
-      if (!isset($link)) {
-         return;
-      }
-
       $addMessAfterRedirect = false;
       if (isset($this->input['_restore'])) {
          $addMessAfterRedirect = true;
@@ -1440,7 +1428,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-
+         $link = $this->getFormURL();
+         if (!isset($link)) {
+            return;
+         }
          if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
          } else {
