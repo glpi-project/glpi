@@ -81,6 +81,8 @@ class Problem extends CommonITILObject {
    function canSolve() {
 
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
+              // No edition on closed status
+              && !in_array($this->fields['status'], $this->getClosedStatusArray())
               && (Session::haveRight("edit_all_problem","1")
                   || (Session::haveRight('show_my_problem', 1)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
