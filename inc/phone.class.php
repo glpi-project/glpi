@@ -249,6 +249,17 @@ class Phone extends CommonDBTM {
                                        'target'       => $target));
       echo "</td></tr>\n";
 
+      // Display auto inventory informations
+      $rowspan = 7;
+      $inventory_show = false;
+
+      // TODO OCS : use is_dynamic instead of is_ocs_import
+//       if (!empty($ID)
+//           && $this->fields["is_dynamic"]) {
+//          $inventory_show = true;
+//          $rowspan   -= 2;
+//       }
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -256,9 +267,9 @@ class Phone extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='7'>".__('Comments')."</td>";
-      echo "<td rowspan='7'>
-            <textarea cols='45' rows='14' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
+      echo "<td rowspan='$rowspan'>
+            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -297,7 +308,17 @@ class Phone extends CommonDBTM {
       echo "<td>&nbsp;";
       Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
       echo "</td></tr></table>\n";
-      echo "</td></tr>\n";
+      echo "</td>";
+//       if ($inventory_show) {
+//          echo "<td rowspan='2'>";
+//          _e('Automatic inventory');
+//          echo "</td>";
+//          echo "<td rowspan='2'>";
+//          Plugin::doHookFunction("autoinventory_information", $this);
+//          echo "</td>";
+//       }
+
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";

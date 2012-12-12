@@ -373,13 +373,25 @@ class Printer  extends CommonDBTM {
       Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
+
+      // Display auto inventory informations
+      $rowspan = 6;
+      $inventory_show = false;
+
+      // TODO OCS : use is_dynamic instead of is_ocs_import
+//       if (!empty($ID)
+//           && $this->fields["is_dynamic"]) {
+//          $inventory_show = true;
+//          $rowspan   -= 2;
+//       }
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>\n";
       echo "<td>";
       Domain::dropdown(array('value' => $this->fields["domains_id"]));
       echo "</td>";
-      echo "<td rowspan='6'>".__('Comments')."</td>\n";
-      echo "<td rowspan='6'><textarea cols='45' rows='12' name='comment' >".
+      echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
+      echo "<td rowspan='$rowspan'><textarea cols='45' rows='".($rowspan+3)."' name='comment' >".
             $this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
@@ -424,6 +436,16 @@ class Printer  extends CommonDBTM {
       echo "<tr><td>".__('Wifi')."</td><td colspan='3'>";
       Dropdown::showYesNo("have_wifi", $this->fields["have_wifi"]);
       echo "</td></tr></table>\n";
+      echo "</td>";
+//       if ($inventory_show) {
+//          echo "<td rowspan='2'>";
+//          _e('Automatic inventory');
+//          echo "</td>";
+//          echo "<td rowspan='2'>";
+//          Plugin::doHookFunction("autoinventory_information", $this);
+//          echo "</td>";
+//       }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
