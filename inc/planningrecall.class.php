@@ -37,8 +37,11 @@ if (!defined('GLPI_ROOT')) {
 
 // Class PlanningRecall
 // @since version 0.84
-class PlanningRecall extends CommonDBTM {
+class PlanningRecall extends CommonDBChild {
 
+   // From CommonDBChild
+   static public $itemtype        = 'itemtype';
+   static public $items_id        = 'items_id';
 
    static function getTypeName($nb=0) {
       return _n('Planning reminder', 'Planning reminders', $nb);
@@ -106,8 +109,9 @@ class PlanningRecall extends CommonDBTM {
 
       $alert = new Alert();
       $alert->clear($this->getType(), $this->fields['id'], Alert::ACTION);
-   }
 
+      parent::post_updateItem($history);
+   }
 
    /**
     * Manage recall set
