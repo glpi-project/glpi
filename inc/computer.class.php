@@ -500,7 +500,7 @@ class Computer extends CommonDBTM {
 
       echo "</td>";
 
-      // Get OCS Datas :
+      // Display auto inventory informations
       $rowspan = 10;
       $inventory_show = false;
       

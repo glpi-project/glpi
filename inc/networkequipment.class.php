@@ -285,6 +285,17 @@ class NetworkEquipment extends CommonDBTM {
       Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>";
 
+      // Display auto inventory informations
+      $rowspan = 6;
+      $inventory_show = false;
+
+      // TODO OCS : use is_dynamic instead of is_ocs_import
+//       if (!empty($ID)
+//           && $this->fields["is_dynamic"]) {
+//          $inventory_show = true;
+//          $rowspan   -= 3;
+//       }
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -292,9 +303,9 @@ class NetworkEquipment extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='6'>".__('Comments')."</td>";
-      echo "<td rowspan='6'>
-            <textarea cols='45' rows='12' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
+      echo "<td rowspan='$rowspan'>
+            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -311,7 +322,16 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
       echo "<td>";
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
-      echo "</td></tr>";
+      echo "</td>";
+//       if ($inventory_show) {
+//          echo "<td rowspan='3'>";
+//          _e('Automatic inventory');
+//          echo "</td>";
+//          echo "<td rowspan='3'>";
+//          Plugin::doHookFunction("autoinventory_information", $this);
+//          echo "</td>";
+//       }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'))."</td>";

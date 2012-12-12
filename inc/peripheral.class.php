@@ -253,6 +253,17 @@ class Peripheral extends CommonDBTM {
                                        'target'       => $target));
       echo "</td></tr>\n";
 
+      // Display auto inventory informations
+      $rowspan = 3;
+      $inventory_show = false;
+
+      // TODO OCS : use is_dynamic instead of is_ocs_import
+//       if (!empty($ID)
+//           && $this->fields["is_dynamic"]) {
+//          $inventory_show = true;
+//          $rowspan   -= 1;
+//       }
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
@@ -260,9 +271,9 @@ class Peripheral extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`'));
       echo "</td>\n";
-      echo "<td rowspan='3'>".__('Comments')."</td>\n";
-      echo "<td rowspan='3'>
-            <textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
+      echo "<td rowspan='$rowspan'>
+            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -289,7 +300,16 @@ class Peripheral extends CommonDBTM {
          //TRANS: %s is the datetime of insertion
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
-      echo "</td></tr>\n";
+      echo "</td>";
+//       if ($inventory_show) {
+//          echo "<td rowspan='1'>";
+//          _e('Automatic inventory');
+//          echo "</td>";
+//          echo "<td rowspan='1'>";
+//          Plugin::doHookFunction("autoinventory_information", $this);
+//          echo "</td>";
+//       }
+      echo "</tr>\n";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
