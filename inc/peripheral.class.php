@@ -306,7 +306,7 @@ class Peripheral extends CommonDBTM {
 //          _e('Automatic inventory');
 //          echo "</td>";
 //          echo "<td rowspan='1'>";
-//          Plugin::doHookFunction("autoinventory_information", $this);
+//          Plugin::doHook("autoinventory_information", $this);
 //          echo "</td>";
 //       }
       echo "</tr>\n";

@@ -328,7 +328,7 @@ class NetworkEquipment extends CommonDBTM {
 //          _e('Automatic inventory');
 //          echo "</td>";
 //          echo "<td rowspan='3'>";
-//          Plugin::doHookFunction("autoinventory_information", $this);
+//          Plugin::doHook("autoinventory_information", $this);
 //          echo "</td>";
 //       }
       echo "</tr>";
