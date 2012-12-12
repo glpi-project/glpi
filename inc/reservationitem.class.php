@@ -99,12 +99,13 @@ class ReservationItem extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $query2 = "DELETE
-                 FROM `glpi_reservations`
-                 WHERE `reservationitems_id` = '".$this->fields['id']."'";
-      $result2 = $DB->query($query2);
+      $class = new Reservation();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $class = new Alert();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      
    }
 
 

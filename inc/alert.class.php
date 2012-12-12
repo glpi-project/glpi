@@ -78,7 +78,24 @@ class Alert extends CommonDBTM {
       $DB->query($query);
    }
 
+   /**
+    * Clear all alerts  for an item
+    *
+    *@param $itemtype   ID of the type to clear
+    *@param $ID         ID of the item to clear
+    *
+    *@return nothing
+   **/
+   function cleanDBonItemDelete($itemtype, $ID) {
+      global $DB;
 
+      $query = "DELETE
+                FROM `".$this->getTable()."`
+                WHERE `itemtype` = '$itemtype'
+                      AND `items_id` = '$ID'";
+      $DB->query($query);
+   }
+   
    /**
     * @param $options array
    **/

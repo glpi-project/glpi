@@ -78,19 +78,15 @@ class CartridgeItem extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      // Delete cartridges
-      $query = "DELETE
-                FROM `glpi_cartridges`
-                WHERE `cartridgeitems_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $class = new Cartridge();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      // Delete all cartridge assoc
-      $query2 = "DELETE
-                 FROM `glpi_cartridgeitems_printermodels`
-                 WHERE `cartridgeitems_id` = '".$this->fields['id']."'";
-      $result2 = $DB->query($query2);
+      $class = new CartridgeItem_PrinterModel();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      
+      $class = new Alert();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 

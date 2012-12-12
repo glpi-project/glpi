@@ -81,7 +81,14 @@ class SoftwareLicense extends CommonDBTM {
       return $input;
    }
 
+   function cleanDBonPurge() {
 
+      $class = new Alert();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+   }
+
+   
    function post_addItem() {
       global $CFG_GLPI;
 
