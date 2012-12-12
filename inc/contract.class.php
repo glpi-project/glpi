@@ -70,14 +70,17 @@ class Contract extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $cs = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Contract_Supplier();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      $cs = new ContractCost();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new ContractCost();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      $ci = new Contract_Item();
-      $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Contract_Item();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $class = new Alert();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 

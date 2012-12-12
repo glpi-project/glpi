@@ -76,13 +76,12 @@ class ConsumableItem extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      // Delete cartridconsumablesges
-      $query = "DELETE
-                FROM `glpi_consumables`
-                WHERE (`consumableitems_id` = '".$this->fields['id']."')";
-      $DB->query($query);
+      $class = new Consumable();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $class = new Alert();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);     
    }
 
 

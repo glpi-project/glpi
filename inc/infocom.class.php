@@ -402,7 +402,11 @@ class Infocom extends CommonDBChild {
       }
    }
 
-
+   function cleanDBonPurge() {
+      $class = new Alert();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+   }
+   
    /**
     * @param $name
    **/
