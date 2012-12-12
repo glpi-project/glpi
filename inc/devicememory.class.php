@@ -140,5 +140,14 @@ class DeviceMemory extends CommonDevice {
             break;
       }
    }
+   
+   
+   /*
+    * Criteria used for import function
+    */
+   function getImportCriteria() {
+      return array('designation', 'devicememorytypes_id', 'manufacturers_id');
+   }
+
 }
 ?>
