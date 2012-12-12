@@ -501,28 +501,16 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       // Get OCS Datas :
-      $dataocs = array();
       $rowspan = 10;
-      $ocs_show = false;
-/*
- //TODO OCS
+      $inventory_show = false;
+      
+      // TODO OCS : use is_dynamic instead of is_ocs_import
       if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")) {
-
-         $query = "SELECT *
-                   FROM `glpi_ocslinks`
-                   WHERE `computers_id` = '$ID'";
-
-         $result = $DB->query($query);
-         if ($DB->numrows($result) == 1) {
-            $dataocs = $DB->fetch_array($result);
-            $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
-            $ocs_show   = true;
-            $rowspan   -= 4;
-         }
+          && $this->fields["is_ocs_import"]) {
+         $inventory_show = true;
+         $rowspan   -= 4;
       }
-*/
+      
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
@@ -565,22 +553,15 @@ class Computer extends CommonDBTM {
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
       echo "</td>";
-      ///TODO create get_inventory_plugin_information_title and display : manage rowspan based on datas get
-/*
-//TODO OCS
-      if ($ocs_show) {
-         echo "<th colspan='2'>";
 
-      if (Session::haveRight("ocsng","w")
-             && ($ocs_config["ocs_url"] != '')) {
-            echo OcsServer::getComputerLinkToOcsConsole(OcsServer::getByMachineID($ID),
-                                                        $dataocs["ocsid"], __('OCSNG link'));
-         } else {
-            _e('OCSNG link');
-         }
-         echo "</th>";
+      if ($inventory_show) {
+         echo "<td rowspan='4'>";
+         _e('Automatic inventory');
+         echo "</td>";
+         echo "<td rowspan='4'>";
+         Plugin::doHookFunction("autoinventory_information", $this);
+         echo "</td>";
       }
-*/
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -588,41 +569,6 @@ class Computer extends CommonDBTM {
       echo "<td >";
       Html::autocompletionTextField($this, 'uuid');
       echo "</td>";
-      ///TODO create get_inventory_plugin_information and get information to display
-/*   //TODO OCS
-      if ($ocs_show) {
-         echo "<td colspan='2' rowspan='3'>";
-         echo "<table class='format'>";
-         echo "<tr><td>".__('Last OCSNG inventory date')."</td>";
-         echo "<td>".Html::convDateTime($dataocs["last_ocs_update"])."</td></tr>";
-
-         echo "<tr><td>".__('Import date in GLPI')."</td>";
-         echo "<td> ".Html::convDateTime($dataocs["last_update"])."</td></tr>";
-
-         echo "<tr><td>".__('Server')."</td><td>";
-         if (Session::haveRight("ocsng","r")) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
-                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
-         } else {
-            echo OcsServer::getServerNameByID($ID);
-         }
-
-         echo "</td></tr>";
-
-         if ($dataocs["ocs_agent_version"] != NULL) {
-            echo "<tr><td>".__('Agent')."</td><td>".$dataocs["ocs_agent_version"].'</td></tr>';
-         }
-         if (Session::haveRight("sync_ocsng","w")) {
-            echo "</tr><td>".__('Auto update OCSNG')."</td>";
-            echo "<td>";
-            Dropdown::showYesNo("_auto_update_ocs", $dataocs["use_auto_update"]);
-            echo "</td></tr>";
-         }
-
-         echo "</table>";
-         echo "</td>";
-      }
-*/
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
