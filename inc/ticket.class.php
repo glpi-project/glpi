@@ -186,12 +186,13 @@ class Ticket extends CommonITILObject {
    **/
    function canSolve() {
 
-      /// TODO block solution edition on closed status ?
       return ((Session::haveRight("update_ticket","1")
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && self::isAllowedStatus($this->fields['status'], self::SOLVED));
+              && self::isAllowedStatus($this->fields['status'], self::SOLVED)
+              // No edition on closed status
+              && !in_array($this->fields['status'], $this->getClosedStatusArray()));
    }
 
 
@@ -3695,6 +3696,12 @@ class Ticket extends CommonITILObject {
 
       $canupdate                 = Session::haveRight('update_ticket', '1');
       $canpriority               = Session::haveRight('update_priority', '1');
+      $canstatus                 = $canupdate;
+
+      if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+         $canupdate = false;
+      }
+
       $showuserlink              = 0;
       if (Session::haveRight('user','r')) {
          $showuserlink = 1;
@@ -3826,8 +3833,7 @@ class Ticket extends CommonITILObject {
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
-            if (($this->fields['status'] != self::CLOSED)
-                && $canupdate) {
+            if ($canupdate) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText('slas_id');
                echo "<span id='sla_action'>";
@@ -4008,7 +4014,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('status')."</th>";
       echo "<td width='$colsize2%'>";
       echo $tt->getBeginHiddenFieldValue('status');
-      if ($canupdate) {
+      if ($canstatus) {
          self::dropdownStatus(array('value' => $this->fields["status"],
                                     'showtype' => 'allowed'));
       } else {
@@ -4244,6 +4250,7 @@ class Ticket extends CommonITILObject {
 
       echo "</table>";
       if ($ID) {
+         $values['canupdate'] = $canupdate;
          $this->showActorsPartForm($ID, $values);
       }
 

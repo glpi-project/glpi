@@ -2895,7 +2895,15 @@ abstract class CommonITILObject extends CommonDBTM {
             $is_hidden[$f] = true;
          }
       }
-
+      $can_admin      = $this->canAdminActors();
+      $can_assign     = $this->canAssign();
+      $can_assigntome = $this->canAssignToMe();
+      if (isset($options['canupdate']) && !$options['canupdate']) {
+         $can_admin = false;
+         $can_assign = false;
+         $can_assigntome = false;
+      }
+      
       // Manage actors : requester and assign
       echo "<table class='tab_cadre_fixe' id='mainformtable5'>";
       echo "<tr class='tab_bg_1'>";
@@ -2908,7 +2916,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $candeleterequester  = false;
 
       if ($ID
-          && $this->canAdminActors()
+          && $can_admin
           && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])) {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
@@ -2927,7 +2935,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $candeleteobserver   = false;
 
       if ($ID
-          && $this->canAdminActors()
+          && $can_admin
           && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])) {
          $rand_observer = mt_rand();
 
@@ -2938,7 +2946,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          $candeleteobserver = true;
 
-      } else if (($ID > 0)
+      } else if (($ID > 0) && !in_array($this->fields['status'], $this->getClosedStatusArray())
                  && !$is_hidden['_users_id_observer']
                  && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                  && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
@@ -2959,7 +2967,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $rand_assign      = -1;
       $candeleteassign  = false;
       if ($ID
-          && ($this->canAssign() || $this->canAssignToMe())
+          && ($can_assign || $can_assigntome)
           && (!$is_hidden['_users_id_assign']
               || !$is_hidden['_groups_id_assign']
               || !$is_hidden['_suppliers_id_assign'])) {
@@ -2972,7 +2980,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ($ID
-          && $this->canAssign()) {
+          && $can_assign) {
          $candeleteassign = true;
       }
       echo "</th></tr>";
@@ -2988,7 +2996,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Requester
       if (!$ID) {
          $reqdisplay = false;
-         if ($this->canAdminActors()
+         if ($can_admin
              && !$is_hidden['_users_id_requester']) {
             $this->showActorAddFormOnCreate(CommonITILActor::REQUESTER, $options);
             $reqdisplay = true;
@@ -3033,7 +3041,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         if ($this->canAdminActors()
+         if ($can_admin
              && !$is_hidden['_groups_id_requester']) {
             echo self::getActorIcon('group', CommonITILActor::REQUESTER);
             /// For ticket templates : mandatories
@@ -3070,7 +3078,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer
       if (!$ID) {
-         if ($this->canAdminActors()
+         if ($can_admin
              && !$is_hidden['_users_id_observer']) {
             $this->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $options);
             echo '<hr>';
@@ -3089,7 +3097,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         if ($this->canAdminActors()
+         if ($can_admin
              && !$is_hidden['_groups_id_observer']) {
             echo self::getActorIcon('group', CommonITILActor::OBSERVER);
             /// For ticket templates : mandatories
@@ -3124,12 +3132,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Assign User
       if (!$ID) {
-         if ($this->canAssign()
+         if ($can_assign
              && !$is_hidden['_users_id_assign']) {
             $this->showActorAddFormOnCreate(CommonITILActor::ASSIGN, $options);
             echo '<hr>';
 
-         } else if ($this->canAssignToMe()
+         } else if ($can_assigntome
                     && !$is_hidden['_users_id_assign']) {
             echo self::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
@@ -3154,7 +3162,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Assign Groups
       if (!$ID) {
-         if ($this->canAssign()
+         if ($can_assign
              && !$is_hidden['_groups_id_assign']) {
             echo self::getActorIcon('group', CommonITILActor::ASSIGN);
             /// For ticket templates : mandatories
@@ -3207,7 +3215,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Assign Suppliers
       if (!$ID) {
-         if ($this->canAssign()
+         if ($can_assign
              && !$is_hidden['_suppliers_id_assign']) {
             echo self::getActorIcon('supplier', CommonITILActor::ASSIGN);
             /// For ticket templates : mandatories
