@@ -1042,6 +1042,7 @@ class Contract extends CommonDBTM {
                      $message            = sprintf(__('%1$s: %2$s')."<br>\n",
                                                  $data["name"], Html::convDate($real_alert_date));
                      $data['alert_date'] = $real_alert_date;
+                     $data['items'] = Contract_Item::getItemsForContract($data['id'], $entity);
                      $contract_infos[$type][$entity][$data['id']] = $data;
 
                      switch ($type) {
@@ -1060,7 +1061,6 @@ class Contract extends CommonDBTM {
             }
          }
       }
-
       foreach (array('notice'            => Alert::NOTICE,
                      'end'               => Alert::END,
                      'periodicity'       => Alert::PERIODICITY,

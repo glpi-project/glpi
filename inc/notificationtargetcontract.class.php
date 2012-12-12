@@ -99,6 +99,23 @@ class NotificationTargetContract extends NotificationTarget {
 
          $tmp['##contract.url##']    = urldecode($CFG_GLPI["url_base"].
                                                  "/index.php?redirect=contract_".$id);
+         $tmp['##contract.items.number##'] = 0;
+         $tmp['##contract.items##'] = '';
+         if (isset($contract['items']) && count($contract['items'])) {
+            $toadd = array();
+            foreach ($contract['items'] as $itemtype => $item) {
+               if ($type = getItemForItemtype($itemtype)) {
+                  $typename = $type->getTypeName();
+                  foreach ($item as $item_data) {
+                     $toadd[] = sprintf('%1$s - %2$s',$typename, $item_data['name']);
+                  }
+               }
+            }
+            if (count($toadd)) {
+               $tmp["##contract.items##"] = implode(', ',$toadd);
+            }
+         }
+         
          $this->datas['contracts'][] = $tmp;
       }
 
@@ -134,12 +151,14 @@ class NotificationTargetContract extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('contract.action'  => _n('Event', 'Events', 1),
-                    'contract.name'    => __('Name'),
-                    'contract.number'  => _x('phone', 'Number'),
-                    'contract.type'    => __('Type'),
-                    'contract.entity'  => __('Entity'),
-                    'contract.time'    => sprintf(__('%1$s / %2$s'),
+      $tags = array('contract.action'       => _n('Event', 'Events', 1),
+                    'contract.name'         => __('Name'),
+                    'contract.number'       => _x('phone', 'Number'),
+                    'contract.items.number' => _x('quantity', 'Number of items'),
+                    'contract.items'        => __('Device list'),
+                    'contract.type'         => __('Type'),
+                    'contract.entity'       => __('Entity'),
+                    'contract.time'         => sprintf(__('%1$s / %2$s'),
                                                   __('Contract expired since the'),
                                                   __('Contract with notice since the')));
 

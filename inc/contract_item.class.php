@@ -187,7 +187,62 @@ class Contract_Item extends CommonDBRelation{
       return countElementsInTable(array('glpi_contracts_items'), $restrict);
    }
 
+   /**
+    * @param $contract_id   contract ID
+    * @param $entities_id   entity ID 
+    * @return array of items linked to contracts
+   **/
+   static function getItemsForContract($contract_id, $entities_id) {
+      global $DB;
 
+      $items = array();
+      
+      $query = "SELECT DISTINCT `itemtype`
+                FROM `glpi_contracts_items`
+                WHERE `glpi_contracts_items`.`contracts_id` = '$contract_id'
+                ORDER BY `itemtype`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      $data = array();
+      $totalnb = 0;
+      for ($i=0 ; $i<$number ; $i++) {
+         $itemtype = $DB->result($result, $i, "itemtype");
+         if (!($item = getItemForItemtype($itemtype))) {
+            continue;
+         }
+         $itemtable = getTableForItemType($itemtype);
+         $query     = "SELECT `$itemtable`.*,
+                              `glpi_contracts_items`.`id` AS IDD,
+                              `glpi_entities`.`id` AS entity
+                        FROM `glpi_contracts_items`,
+                              `$itemtable`";
+         if ($itemtype != 'Entity') {
+            $query .= " LEFT JOIN `glpi_entities`
+                              ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
+         }
+         $query .= " WHERE `$itemtable`.`id` = `glpi_contracts_items`.`items_id`
+                           AND `glpi_contracts_items`.`itemtype` = '$itemtype'
+                           AND `glpi_contracts_items`.`contracts_id` = '$contract_id'";
+
+         if ($item->maybeTemplate()) {
+            $query .= " AND `$itemtable`.`is_template` = '0'";
+         }
+         $query .= getEntitiesRestrictRequest(" AND",$itemtable, '', $entities_id,
+                                                $item->maybeRecursive())."
+                     ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
+
+         $result_linked = $DB->query($query);
+         $nb            = $DB->numrows($result_linked);
+
+         while ($objdata=$DB->fetch_assoc($result_linked)) {
+            $items[$itemtype][$objdata['id']] = $objdata;
+         }
+      }
+      return $items;
+   }
+   
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
