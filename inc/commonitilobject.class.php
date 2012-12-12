@@ -3392,7 +3392,64 @@ abstract class CommonITILObject extends CommonDBTM {
 
    }
 
+   /**
+    * Form to add a solution to an ITIL object
+    *
+   **/
+   static function showMassiveSolutionForm($entities_id) {
+      global $CFG_GLPI;
 
+      echo "<table class='tab_cadre_fixe'>";
+      echo '<tr><th colspan=4>'.__('Solve tickets').'</th></tr>';
+
+      $rand_template = mt_rand();
+      $rand_text = mt_rand();
+      $rand_type = mt_rand();
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
+
+      SolutionTemplate::dropdown(array('value'    => 0,
+                                       'entity'   => $entities_id,
+                                       'rand'     => $rand_template,
+                                       // Load type and solution from bookmark
+                                       'toupdate'
+                                                => array('value_fieldname'
+                                                                     => 'value',
+                                                   'to_update'  => 'solution'.$rand_text,
+                                                   'url'        => $CFG_GLPI["root_doc"].
+                                                                  "/ajax/solution.php",
+                                                   'moreparams'
+                                                            => array('type_id'
+                                                               => 'dropdown_solutiontypes_id'.
+                                                                     $rand_type))));
+
+      echo "</td><td colspan='2'>&nbsp;";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Solution type')."</td><td>";
+
+      SolutionType::dropdown(array('value'  => 0,
+                                    'rand'   => $rand_type,
+                                    'entity' => $entities_id));
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Description')."</td><td colspan='3'>";
+
+
+      $rand = mt_rand();
+      Html::initEditorSystem("solution$rand");
+
+      echo "<div id='solution$rand_text'>";
+      echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'>".
+            "</textarea></div>";
+
+      echo "</td></tr>";
+
+      echo '</table>';
+
+   }
+   
    /**
     * Update date mod of the ITIL object
     *
