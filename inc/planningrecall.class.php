@@ -349,7 +349,7 @@ class PlanningRecall extends CommonDBChild {
                       FROM `glpi_planningrecalls`
                       LEFT JOIN `glpi_alerts`
                            ON (`glpi_planningrecalls`.`id` = `glpi_alerts`.`items_id`
-                               AND `glpi_alerts`.`itemtype` = 'PlanningReminder'
+                               AND `glpi_alerts`.`itemtype` = 'PlanningRecall'
                                AND `glpi_alerts`.`type`='".Alert::ACTION."')
                       WHERE `glpi_planningrecalls`.`when` IS NOT NULL
                             AND `glpi_planningrecalls`.`when` < NOW()
@@ -357,17 +357,18 @@ class PlanningRecall extends CommonDBChild {
 
       $pr = new self();
       foreach ($DB->request($query) as $data) {
-         $pr->getFromDB($data['id']);
-         if (NotificationEvent::raiseEvent('planningrecall', $pr)) {
+         if ($pr->getFromDB($data['id'])) {
+            if (NotificationEvent::raiseEvent('planningrecall', $pr)) {
 
-            $cron_status         = 1;
-            $task->addVolume(1);
-            $alert               = new Alert();
-            $input["itemtype"]   = __CLASS__;
-            $input["type"]       = Alert::ACTION;
-            $input["items_id"]   = $data['id'];
+               $cron_status         = 1;
+               $task->addVolume(1);
+               $alert               = new Alert();
+               $input["itemtype"]   = __CLASS__;
+               $input["type"]       = Alert::ACTION;
+               $input["items_id"]   = $data['id'];
 
-            $alert->add($input);
+               $alert->add($input);
+            }
          }
       }
       return $cron_status;
