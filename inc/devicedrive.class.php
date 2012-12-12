@@ -139,5 +139,14 @@ class DeviceDrive extends CommonDevice {
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
+   
+   
+   
+   /*
+    * Criteria used for import function
+    */
+   function getImportCriteria() {
+      return array('designation', 'manufacturers_id', 'interfacetypes_id');
+   }
 }
 ?>

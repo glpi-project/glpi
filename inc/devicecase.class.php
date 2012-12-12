@@ -108,5 +108,14 @@ class DeviceCase extends CommonDevice {
             break;
       }
    }
+   
+   
+   
+   /*
+    * Criteria used for import function
+    */
+   function getImportCriteria() {
+      return array('designation', 'manufacturers_id', 'devicecasetypes_id');
+   }
 }
 ?>
