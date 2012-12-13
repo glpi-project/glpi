@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// OCS Rules collection class
+/// Collector Rules collection class
 class RuleMailCollectorCollection extends RuleCollection {
 
    // From RuleCollection
