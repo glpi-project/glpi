@@ -260,11 +260,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             return false;
          }
 
-         if ($unit == 'mbit/s') {
+         if (($unit == 'mbit/s') || ($unit == 'mb/s')) {
             return (int)$speed;
          }
 
-         if ($unit == 'gbit/s') {
+         if (($unit == 'gbit/s') || ($unit == 'gb/s')) {
             return (int)($speed * 1000);
          }
 
