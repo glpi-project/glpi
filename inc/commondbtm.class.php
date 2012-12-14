@@ -1812,11 +1812,11 @@ class CommonDBTM extends CommonGLPI {
          }
          return false;
       }
-      echo "<tr>";
+      echo "<tr class='tab_bg_2'>";
 
       if ($params['withtemplate']
           ||$this->isNewID($ID)) {
-         echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
+         echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
          if ($ID<=0 || $params['withtemplate']==2) {
             echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
@@ -1831,20 +1831,20 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($params['candel']) {
-            echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
+            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
             echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                    class='submit'>";
-            echo "</td></tr><tr>\n";
+            echo "</td></tr><tr class='tab_bg_2'>\n";
 
             if ($this->isDeleted()) {
-               echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
+               echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                echo "<input type='submit' name='restore' value=\""._sx('button','Restore')."\"
                       class='submit'>";
                echo "<span class='very_small_space'><input type='submit' name='purge' value=\"".
                       _sx('button', 'Delete permanently')."\" class='submit'></span>";
 
             } else {
-               echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
+               echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\""._sx('button',
                                                                          'Delete permanently')."\"
@@ -1857,7 +1857,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
          } else {
-            echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
+            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
             echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                    class='submit'>";
          }
@@ -1873,7 +1873,7 @@ class CommonDBTM extends CommonGLPI {
       echo "</tr>\n";
       if ($params['canedit']
           && count($params['addbuttons'])) {
-         echo "<tr>";
+         echo "<tr class='tab_bg_2'>";
          if ((($params['colspan']*2) - count($params['addbuttons'])) > 0) {
             echo "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;".
                  "</td>";
