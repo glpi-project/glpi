@@ -646,7 +646,7 @@ class Computer_Item extends CommonDBRelation{
             }
             echo "<td ".
                   ($comp->getField('is_deleted')?"class='tab_bg_2_2'":"").
-                 ">".$comp->getNameID()."</td>";
+                 ">".$comp->getLink()."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $comp->getField('entities_id'));
             echo "</td>";
