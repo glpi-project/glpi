@@ -95,8 +95,7 @@ class RuleCached extends Rule {
 
       $query = "SELECT *
                 FROM `".$rulecollection->cache_table."`
-                WHERE `".$rulecollection->cache_table."`.`rules_id` = '".$this->fields["id"]."'
-                ORDER BY `name`";
+                WHERE `".$rulecollection->cache_table."`.`rules_id` = '".$this->fields["id"]."'";
 
       $res_count = $DB->query($query);
       $this->showCacheRuleHeader();
