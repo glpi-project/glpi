@@ -250,41 +250,6 @@ class Computer_Item extends CommonDBRelation{
                      $device->update($updates);
                   }
                }
-   /// TODO : manage it on OCS plugin
-//                if (isset($this->input['_ocsservers_id'])) {
-//                   $ocsservers_id = $this->input['_ocsservers_id'];
-//                } else {
-//                   $ocsservers_id = OcsServer::getByMachineID($this->fields['computers_id']);
-//                }
-//
-//                if ($ocsservers_id > 0) {
-//                   //Get OCS configuration
-//                   $ocs_config = OcsServer::getConfig($ocsservers_id);
-//
-//                   //Get the management mode for this device
-//                   $mode    = OcsServer::getDevicesManagementMode($ocs_config,
-//                                                                  $this->fields['itemtype']);
-//                   $decoConf= $ocs_config["deconnection_behavior"];
-//
-//                   //Change status if :
-//                   // 1 : the management mode IS NOT global
-//                   // 2 : a deconnection's status have been defined
-//                   // 3 : unique with serial
-//                   if (($mode >= 2)
-//                       && (strlen($decoConf) > 0)) {
-//
-//                      //Delete periph from glpi
-//                      if ($decoConf == "delete") {
-//                         $tmp["id"] = $this->fields['items_id'];
-//                         $device->delete($tmp, 1);
-//
-//                      //Put periph in dustbin
-//                      } else if ($decoConf == "trash") {
-//                         $tmp["id"] = $this->fields['items_id'];
-//                         $device->delete($tmp, 0);
-//                      }
-//                   }
-//                } // $ocsservers_id>0
             }
          }
       }
