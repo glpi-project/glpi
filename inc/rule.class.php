@@ -1189,11 +1189,12 @@ class Rule extends CommonDBTM {
     *
     * @return output parameters array updated
     */
-   static function executePluginsActions($action, $output, $params) {
+   function executePluginsActions($action, $output, $params) {
       global $PLUGIN_HOOKS;
 
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+			$params['criterias_results'] = $this->criterias_results;
             $output = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
                                                                          'params' => $params,
                                                                          'action' => $action));
