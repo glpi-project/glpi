@@ -45,9 +45,9 @@ class Item_Devices extends CommonDBRelation {
    static public $itemtype_1 = 'itemtype'; // Type ref or field name (must start with itemtype)
    static public $items_id_1 = 'items_id'; // Field name
 
-   static protected $notable = true;
+   static protected $notable            = true;
 
-   static public $logs_for_itemtype_2 = false;
+   static public $logs_for_item_2       = false;
 
    static public $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
    static public $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;

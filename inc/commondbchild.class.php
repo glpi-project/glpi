@@ -46,13 +46,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
    static public $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
    static public $mustBeAttached     = true;
    // * log
+   static public $logs_for_parent    = true;
    static public $log_history_add    = Log::HISTORY_ADD_SUBITEM;
    static public $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
    static public $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
-
-   // Make an history of the changes -
-   // if true, will write a event in the history of parent for add/delete
-   public $dohistory = false;
 
    /**
     * @since version 0.84
@@ -428,7 +425,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if ((isset($this->input['_no_history'])
            && ($this->input['_no_history']))
-          || !$this->dohistory) {
+          || !static::$logs_for_parent) {
          return;
       }
 
@@ -457,7 +454,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if ((isset($this->input['_no_history'])
            && ($this->input['_no_history']))
-          || !$this->dohistory) {
+          || !static::$logs_for_parent) {
          return;
       }
 
@@ -513,7 +510,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if ((isset($this->input['_no_history'])
            && ($this->input['_no_history']))
-          || !$this->dohistory) {
+          || !static::$logs_for_parent) {
          return;
       }
 

@@ -48,7 +48,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM ;
    static public $mustBeAttached_1       = true;
    // * log
-   static public $logs_for_itemtype_1    = true;
+   static public $logs_for_item_1        = true;
    static public $log_history_1_add      = Log::HISTORY_ADD_RELATION;
    static public $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
    static public $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
@@ -63,7 +63,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
    static public $mustBeAttached_2       = true;
    // * log
-   static public $logs_for_itemtype_2    = true;
+   static public $logs_for_item_2        = true;
    static public $log_history_2_add      = Log::HISTORY_ADD_RELATION;
    static public $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
    static public $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
@@ -73,9 +73,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $checkAlwaysBothItems   = false;
    /// If both items must be in viewable each other entities
    static public $check_entity_coherency = true;
-
-   // By default, we log each connection/disconnection to the parents
-   var $dohistory = true;
 
 
    /**
@@ -644,7 +641,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       if ((isset($this->input['_no_history'])
            && ($this->input['_no_history']))
-          || !$this->dohistory) {
+          || ((!static::$logs_for_item_1)
+              && (!static::$logs_for_item_2))) {
          return;
       }
 
@@ -654,7 +652,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if (($item1 !== false)
           && ($item2 !== false)) {
 
-         if ($item1->dohistory && static::$logs_for_itemtype_1) {
+         if ($item1->dohistory && static::$logs_for_item_1) {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem2($item2, 'add'));
@@ -662,7 +660,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                          static::$log_history_1_add);
          }
 
-         if ($item2->dohistory && static::$logs_for_itemtype_2) {
+         if ($item2->dohistory && static::$logs_for_item_2) {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem1($item1, 'add'));
@@ -686,7 +684,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       if ((isset($this->input['_no_history'])
            && ($this->input['_no_history']))
-          || !$this->dohistory) {
+          || ((!static::$logs_for_item_1)
+              && (!static::$logs_for_item_2))) {
          return;
       }
 
@@ -720,12 +719,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
          /// TODO clean management of it
          if ($new1 && $new1->dohistory
-             && static::$logs_for_itemtype_1) {
+             && static::$logs_for_item_1) {
             Log::history($new1->getID(), $new1->getType(), $changes,
                          get_called_class().'#'.$field, static::$log_history_1_update);
          }
          if ($new2 && $new2->dohistory
-             && static::$logs_for_itemtype_2) {
+             && static::$logs_for_item_2) {
             Log::history($new2->getID(), $new2->getType(), $changes,
                          get_called_class().'#'.$field, static::$log_history_2_update);
          }
@@ -735,7 +734,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($previous2
              && $previous1 && $previous1->dohistory
-             && static::$logs_for_itemtype_1) {
+             && static::$logs_for_item_1) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem2($previous2, 'update item previous'));
             $changes[2] = "";
@@ -745,7 +744,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($previous1
              && $previous2 && $previous2->dohistory
-             && static::$logs_for_itemtype_2) {
+             && static::$logs_for_item_2) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem1($previous1, 'update item previous'));
             $changes[2] = "";
@@ -755,7 +754,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($new2
              && $new1 && $new1->dohistory
-             && static::$logs_for_itemtype_1) {
+             && static::$logs_for_item_1) {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem2($new2, 'update item next'));
@@ -765,7 +764,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($new1
              && $new2 && $new2->dohistory
-             && static::$logs_for_itemtype_2) {
+             && static::$logs_for_item_2) {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem1($new1, 'update item next'));
@@ -787,7 +786,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       if ((isset($this->input['_no_history'])
            && ($this->input['_no_history']))
-          || !$this->dohistory) {
+          || ((!static::$logs_for_item_1)
+              && (!static::$logs_for_item_2))) {
          return;
       }
 
@@ -798,7 +798,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
           && ($item2 !== false)) {
 
          if ($item1->dohistory
-             && static::$logs_for_itemtype_1) {
+             && static::$logs_for_item_1) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem2($item2, 'delete'));
             $changes[2] = "";
@@ -807,7 +807,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
 
          if ($item2->dohistory
-             && static::$logs_for_itemtype_2) {
+             && static::$logs_for_item_2) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem1($item1, 'delete'));
             $changes[2] = "";
