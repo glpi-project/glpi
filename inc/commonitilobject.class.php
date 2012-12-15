@@ -896,6 +896,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       // No name set name
+      $input["name"]    = ltrim($input["name"]);
+      $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
          $clean_content = Toolbox::stripslashes_deep($input['content']);
          $input["name"] = preg_replace('/\r\n/',' ',$clean_content);
@@ -957,7 +959,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          $input['solvedate'] = $input["closedate"];
       }
-      
+
       // Set begin waiting time if status is waiting
       if (isset($input["status"]) && $input["status"]=="waiting") {
          $input['begin_waiting_date'] = $input['date'];
@@ -965,7 +967,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $input;
    }
-   
+
    function post_addItem() {
 
       // Add document if needed, without notification
