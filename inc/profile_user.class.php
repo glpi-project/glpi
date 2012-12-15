@@ -50,12 +50,13 @@ class Profile_User extends CommonDBRelation {
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    // Specific log system
-   static public $logs_for_itemtype_1 = true;
-   static public $logs_for_itemtype_2 = false;
+   static public $logs_for_item_2               = false;
+   static public $logs_for_item_1               = true;
+   static public $log_history_1_add             = Log::HISTORY_ADD_SUBITEM;
+   static public $log_history_1_delete          = Log::HISTORY_DELETE_SUBITEM;
 
-  static public $log_history_1_add             = Log::HISTORY_ADD_SUBITEM;
-  static public $log_history_1_delete          = Log::HISTORY_DELETE_SUBITEM;
-  static public $disableAutoEntityForwarding   = true;
+   // Manage Entity properties forwarding
+   static public $disableAutoEntityForwarding   = true;
 
 
    function maybeRecursive() {
