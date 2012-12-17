@@ -1103,7 +1103,7 @@ class MailCollector  extends CommonDBTM {
 
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
-                  if ((strtoupper($param->attriitle) == 'CHARSET')
+                  if ((strtoupper($param->attribute) == 'CHARSET')
                       && function_exists('mb_convert_encoding')
                       && (strtoupper($param->value) != 'UTF-8')) {
 
