@@ -192,7 +192,8 @@ class IPAddress extends CommonDBChild {
       if ((isset($this->oldvalues['binary_0']))
           || (isset($this->oldvalues['binary_1']))
           || (isset($this->oldvalues['binary_2']))
-          || (isset($this->oldvalues['binary_3']))) {
+          || (isset($this->oldvalues['binary_3']))
+          || (isset($this->oldvalues['entities_id']))) {
 
          $link = new IPAddress_IPNetwork();
          $link->cleanDBonItemDelete($this->getType(), $this->getID());
