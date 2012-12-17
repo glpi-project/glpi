@@ -1314,6 +1314,7 @@ class User extends CommonDBTM {
 
             // Add ldap result to data send to the hook
             $this->fields['_ldap_result'] = $v;
+            $this->fields['_ldap_conn']   = $ldap_connection;
             //Hook to retrieve more information for ldap
             $this->fields = Plugin::doHookFunction("retrieve_more_data_from_ldap", $this->fields);
             unset($this->fields['_ldap_result']);
@@ -2582,9 +2583,9 @@ class User extends CommonDBTM {
                   $forcecentral = false;
                }
             }
-            
+
             $where = '('.implode(' OR ', $where);
-            
+
             if ($forcecentral) {
                $where .= " AND `glpi_profiles`.`interface` = 'central' ";
             }
