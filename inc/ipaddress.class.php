@@ -135,6 +135,11 @@ class IPAddress extends CommonDBChild {
 
    function prepareInput($input) {
 
+      // In case of entity transfer, $input['name'] is not defined
+      if ((!isset($input['name'])) && (isset($this->fields['name']))) {
+         $input['name'] = $this->fields['name'];
+      }
+
       $valid = false;
       if ((isset($this->fields['name'])) && ($this->fields['name'] == $input['name'])) {
          // Previous value is the same than current !

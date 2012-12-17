@@ -48,7 +48,7 @@ class NetworkName extends FQDNLabel {
    static public $items_id              = 'items_id';
    public $dohistory                    = true;
 
-   static protected $forward_entity_to  = array('IPAddress');
+   static protected $forward_entity_to  = array('IPAddress', 'NetworkAlias');
 
    static public $canDeleteOnItemClean  = false;
 
