@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
          Html::redirect($node->getLinkURL());
       }
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
+   $nn->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $nn->check($_POST['id'], 'w');
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
          Html::redirect($node->getLinkURL());
       }
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
+   $nn->redirectToList();
 
 } else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
    $nn->check($_POST['addressID'],'w');
