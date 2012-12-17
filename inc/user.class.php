@@ -2572,7 +2572,7 @@ class User extends CommonDBTM {
                $right = array($right);
             }
             $forcecentral = true;
-            $where = array();
+            $where        = array();
             foreach ($right as $r) {
                // Check read or active for rights
                $where[] = " (`glpi_profiles`.`".$r."` IN ('1', 'r', 'w') ".

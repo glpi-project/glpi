@@ -223,9 +223,9 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       if ($this->fields['errors']) {
-         echo "<tr class='tab_bg_1_2'><td>".__('Connection errors')."</td><td>";
-         echo $this->fields['errors'];
-         echo "</td></tr>";
+         echo "<tr class='tab_bg_1_2'><td>".__('Connection errors')."</td>";
+         echo "<td>".$this->fields['errors']."</td>";
+         echo "</tr>";
       }
 
       echo "<tr class='tab_bg_1'><td>".__('Active')."</td><td>";
@@ -233,7 +233,6 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       Toolbox::showMailServerConfig($this->fields["host"]);
-
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
       Html::autocompletionTextField($this, "login");
@@ -244,18 +243,17 @@ class MailCollector  extends CommonDBTM {
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
-      echo "</td>";
-      echo "</tr>";
-      
+      echo "</td></tr>";
+
       if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
          echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
          echo "<td>";
          Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
          echo "</td></tr>\n";
       }
-      
 
-      
+
+
       echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
       echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
       echo "</td></tr>\n";
@@ -370,7 +368,7 @@ class MailCollector  extends CommonDBTM {
       $tab[22]['field']           = 'errors';
       $tab[22]['name']            = __('Connection errors');
       $tab[22]['datatype']        = 'integer';
-      
+
       return $tab;
    }
 
@@ -613,7 +611,7 @@ class MailCollector  extends CommonDBTM {
       $tkt['_mailgate']    = $options['mailgates_id'];
 
 
-      // Use mail date if define
+      // Use mail date if it's defined
       if ($this->fields['use_mail_date']) {
          $tkt['date'] = $head['date'];
       }
@@ -1362,6 +1360,7 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
+
       if ($folder) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
@@ -1521,7 +1520,7 @@ class MailCollector  extends CommonDBTM {
          $buttons["notimportedemail.php"] = __('List of not imported emails');
       }
 
-      $errors = getAllDatasFromTable($this->getTable(), '`errors` > 0');
+      $errors  = getAllDatasFromTable($this->getTable(), '`errors` > 0');
       $message = '';
       if (count($errors)) {
          $servers = array();
@@ -1529,9 +1528,8 @@ class MailCollector  extends CommonDBTM {
             $this->getFromDB($data['id']);
             $servers[] = $this->getLink();
          }
-         
-         $message = sprintf(__('Receivers in error: %s'),
-                               implode(" ", $servers));
+
+         $message = sprintf(__('Receivers in error: %s'), implode(" ", $servers));
       }
 
       if (count($buttons)) {

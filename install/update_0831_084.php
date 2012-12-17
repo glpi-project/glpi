@@ -201,10 +201,10 @@ function update0831to084() {
 
 
 //    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
-// 
+//
 //    $migration->addField('glpi_profiles', 'change_status', "text",
 //                         array('comment' => "json encoded array of from/dest allowed status change"));
-//    
+//
 //    // changes management
 //    if (!TableExists('glpi_changes')) {
 //       $query = "CREATE TABLE `glpi_changes` (
@@ -256,7 +256,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 create glpi_changes");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changes_users')) {
 //       $query = "CREATE TABLE `glpi_changes_users` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -271,7 +271,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changes_users");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changes_groups')) {
 //       $query = "CREATE TABLE `glpi_changes_groups` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -284,7 +284,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changes_groups");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changes_suppliers')) {
 //       $query = "CREATE TABLE `glpi_changes_suppliers` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -297,7 +297,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changes_suppliers");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changes_items')) {
 //       $query = "CREATE TABLE `glpi_changes_items` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -310,7 +310,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changes_items");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changes_tickets')) {
 //       $query = "CREATE TABLE `glpi_changes_tickets` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -322,7 +322,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changes_tickets");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changes_problems')) {
 //       $query = "CREATE TABLE `glpi_changes_problems` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -334,7 +334,7 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changes_problems");
 //    }
-// 
+//
 //    if (!TableExists('glpi_changetasks')) {
 //       $query = "CREATE TABLE `glpi_changetasks` (
 //                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -370,26 +370,26 @@ function update0831to084() {
 //                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 //       $DB->queryOrDie($query, "0.84 add table glpi_changetasks");
 //    }
-// 
+//
 //    /// TODO add changetasktypes table as dropdown
 //    /// TODO review users linked to changetask
 //    /// TODO add display prefs
-// 
+//
 //    $migration->addField("glpi_profiles", "show_my_change", "char",
 //                         array('update'    => "1",
 //                               'condition' => " WHERE `own_ticket` = 1"));
-// 
+//
 //    $migration->addField("glpi_profiles", "show_all_change", "char",
 //                         array('update'    => "1",
 //                               'condition' => " WHERE `show_all_ticket` = 1"));
-// 
+//
 //    $migration->addField("glpi_profiles", "edit_all_change", "char",
 //                         array('update'    => "1",
 //                               'condition' => " WHERE `update_ticket` = 1"));
-// 
+//
 //    $migration->addField('glpi_profiles', 'change_status', "text",
 //                         array('comment' => "json encoded array of from/dest allowed status change"));
-// 
+//
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'Merge entity and entitydatas'));
@@ -1011,14 +1011,14 @@ function update0831to084() {
                         "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
    $query = "UPDATE `glpi_slalevelactions`
-               SET `action_type` = 'append'
-               WHERE `action_type` = 'assign'
-                  AND `field` IN ('_users_id_requester',  '_groups_id_requester',
-                                  '_users_id_assign',     '_groups_id_assign',
-                                  '_suppliers_id_assign', '_users_id_observer',
-                                  '_groups_id_observer');";
+             SET `action_type` = 'append'
+             WHERE `action_type` = 'assign'
+                   AND `field` IN ('_users_id_requester',  '_groups_id_requester',
+                                   '_users_id_assign',     '_groups_id_assign',
+                                   '_suppliers_id_assign', '_users_id_observer',
+                                   '_groups_id_observer');";
    $DB->queryOrDie($query, "0.84 update data for SLA actors add");
-   
+
    // Clean observer as recipient of satisfaction survey
    $query = "DELETE FROM `glpi_notificationtargets`
              WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
@@ -1391,12 +1391,12 @@ function update0831to084() {
    $migration->changeField('glpi_profiles', 'validate_ticket', 'validate_request', 'char');
    $migration->changeField('glpi_profiles', 'create_validation', 'create_request_validation', 'char');
    $migration->migrationOneTable('glpi_profiles');
-   
+
    $migration->addField('glpi_profiles', 'validate_incident',
                         'char', array('update' => 'validate_request'));
    $migration->addField('glpi_profiles', 'create_incident_validation',
                         'char', array('update' => 'create_request_validation'));
-                                      
+
    // add rights to delete all validation
    $migration->addField('glpi_profiles', 'delete_validations',
                         'char', array('value'  => 0,

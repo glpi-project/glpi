@@ -797,7 +797,7 @@ class Html {
       header("Content-Type: text/html; charset=UTF-8");
       // No frame to prevent click-jacking
       header('x-frame-options:DENY');
-      
+
       // Send extra expires header
       self::header_nocache();
 
@@ -1147,8 +1147,8 @@ class Html {
          }
 
 
-         if (Session::haveRight('validate_incident',1)
-            || Session::haveRight('validate_request',1)) {
+         if (Session::haveRight('validate_incident', 1)
+             || Session::haveRight('validate_request', 1)) {
             $opt = array();
             $opt['reset']         = 'reset';
             $opt['field'][0]      = 55; // validation status

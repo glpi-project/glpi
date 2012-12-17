@@ -147,14 +147,15 @@ class RuleTicket extends Rule {
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
                   break;
-                  
+
                case "append" :
                   $actions = $this->getActions();
-                  $value = $action->fields["value"];
+                  $value   = $action->fields["value"];
                   if (isset($actions[$action->fields["field"]]["appendtoarray"])
-                     && isset($actions[$action->fields["field"]]["appendtoarrayfield"])) {
+                      && isset($actions[$action->fields["field"]]["appendtoarrayfield"])) {
                      $value = $actions[$action->fields["field"]]["appendtoarray"];
-                     $value[$actions[$action->fields["field"]]["appendtoarrayfield"]] = $action->fields["value"];
+                     $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
+                            = $action->fields["value"];
                   }
                   $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                   break;
@@ -366,16 +367,15 @@ class RuleTicket extends Rule {
 
    function getActions() {
 
-      $actions                                        = array();
+      $actions                                              = array();
 
-      $actions['itilcategories_id']['name']           = __('Category');
-      $actions['itilcategories_id']['type']           = 'dropdown';
-      $actions['itilcategories_id']['table']          = 'glpi_itilcategories';
+      $actions['itilcategories_id']['name']                 = __('Category');
+      $actions['itilcategories_id']['type']                 = 'dropdown';
+      $actions['itilcategories_id']['table']                = 'glpi_itilcategories';
 
-      $actions['type']['name']                        = __('Type');
-      $actions['type']['table']                       = 'glpi_tickets';
-      $actions['type']['type']                        = 'dropdown_tickettype';
-
+      $actions['type']['name']                              = __('Type');
+      $actions['type']['table']                             = 'glpi_tickets';
+      $actions['type']['type']                              = 'dropdown_tickettype';
 
       $actions['_users_id_requester']['name']               = __('Requester');
       $actions['_users_id_requester']['type']               = 'dropdown_users';
@@ -385,77 +385,77 @@ class RuleTicket extends Rule {
       $actions['_users_id_requester']['appendtoarray']      = array('use_notification' => 1);
       $actions['_users_id_requester']['appendtoarrayfield'] = 'users_id';
 
-      $actions['_groups_id_requester']['name']        = __('Requesters group');
-      $actions['_groups_id_requester']['type']        = 'dropdown';
-      $actions['_groups_id_requester']['table']       = 'glpi_groups';
-      $actions['_groups_id_requester']['force_actions'] = array('assign', 'append');
-      $actions['_groups_id_requester']['permitseveral'] = array('append');
-      $actions['_groups_id_requester']['appendto']      = '_additional_groups_requesters';
-      
+      $actions['_groups_id_requester']['name']              = __('Requesters group');
+      $actions['_groups_id_requester']['type']              = 'dropdown';
+      $actions['_groups_id_requester']['table']             = 'glpi_groups';
+      $actions['_groups_id_requester']['force_actions']     = array('assign', 'append');
+      $actions['_groups_id_requester']['permitseveral']     = array('append');
+      $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 
-      $actions['_users_id_assign']['name']               = __('Technician');
-      $actions['_users_id_assign']['type']               = 'dropdown_assign';
-      $actions['_users_id_assign']['force_actions']      = array('assign', 'append');
-      $actions['_users_id_assign']['permitseveral']      = array('append');
-      $actions['_users_id_assign']['appendto']           = '_additional_assigns';
-      $actions['_users_id_assign']['appendtoarray']      = array('use_notification' => 1);
-      $actions['_users_id_assign']['appendtoarrayfield'] = 'users_id';
 
-      $actions['_groups_id_assign']['table']          = 'glpi_groups';
-      $actions['_groups_id_assign']['name']           = __('Technicians group');
-      $actions['_groups_id_assign']['type']           = 'dropdown';
-      $actions['_groups_id_assign']['condition']      = '`is_assign`';
-      $actions['_groups_id_assign']['force_actions'] = array('assign', 'append');
-      $actions['_groups_id_assign']['permitseveral'] = array('append');
-      $actions['_groups_id_assign']['appendto']      = '_additional_groups_assigns';
+      $actions['_users_id_assign']['name']                  = __('Technician');
+      $actions['_users_id_assign']['type']                  = 'dropdown_assign';
+      $actions['_users_id_assign']['force_actions']         = array('assign', 'append');
+      $actions['_users_id_assign']['permitseveral']         = array('append');
+      $actions['_users_id_assign']['appendto']              = '_additional_assigns';
+      $actions['_users_id_assign']['appendtoarray']         = array('use_notification' => 1);
+      $actions['_users_id_assign']['appendtoarrayfield']    = 'users_id';
 
-      $actions['_suppliers_id_assign']['table']         = 'glpi_suppliers';
-      $actions['_suppliers_id_assign']['name']          = __('Assigned to a supplier');
-      $actions['_suppliers_id_assign']['type']          = 'dropdown';
-      $actions['_suppliers_id_assign']['force_actions'] = array('assign', 'append');
-      $actions['_suppliers_id_assign']['permitseveral'] = array('append');
-      $actions['_suppliers_id_assign']['appendto']      = '_additional_suppliers_assigns';
+      $actions['_groups_id_assign']['table']                = 'glpi_groups';
+      $actions['_groups_id_assign']['name']                 = __('Technicians group');
+      $actions['_groups_id_assign']['type']                 = 'dropdown';
+      $actions['_groups_id_assign']['condition']            = '`is_assign`';
+      $actions['_groups_id_assign']['force_actions']        = array('assign', 'append');
+      $actions['_groups_id_assign']['permitseveral']        = array('append');
+      $actions['_groups_id_assign']['appendto']             = '_additional_groups_assigns';
 
-      $actions['_users_id_observer']['name']               = __('Watcher');
-      $actions['_users_id_observer']['type']               = 'dropdown_users';
-      $actions['_users_id_observer']['force_actions']      = array('assign', 'append');
-      $actions['_users_id_observer']['permitseveral']      = array('append');
-      $actions['_users_id_observer']['appendto']           = '_additional_observers';
-      $actions['_users_id_observer']['appendtoarray']      = array('use_notification' => 1);
-      $actions['_users_id_observer']['appendtoarrayfield'] = 'users_id';
+      $actions['_suppliers_id_assign']['table']             = 'glpi_suppliers';
+      $actions['_suppliers_id_assign']['name']              = __('Assigned to a supplier');
+      $actions['_suppliers_id_assign']['type']              = 'dropdown';
+      $actions['_suppliers_id_assign']['force_actions']     = array('assign', 'append');
+      $actions['_suppliers_id_assign']['permitseveral']     = array('append');
+      $actions['_suppliers_id_assign']['appendto']          = '_additional_suppliers_assigns';
 
-      $actions['_groups_id_observer']['table']        = 'glpi_groups';
-      $actions['_groups_id_observer']['name']         = __('Watchers group');
-      $actions['_groups_id_observer']['type']         = 'dropdown';
-      $actions['_groups_id_observer']['force_actions'] = array('assign', 'append');
-      $actions['_groups_id_observer']['permitseveral'] = array('append');
-      $actions['_groups_id_observer']['appendto']      = '_additional_groups_observers';
+      $actions['_users_id_observer']['name']                = __('Watcher');
+      $actions['_users_id_observer']['type']                = 'dropdown_users';
+      $actions['_users_id_observer']['force_actions']       = array('assign', 'append');
+      $actions['_users_id_observer']['permitseveral']       = array('append');
+      $actions['_users_id_observer']['appendto']            = '_additional_observers';
+      $actions['_users_id_observer']['appendtoarray']       = array('use_notification' => 1);
+      $actions['_users_id_observer']['appendtoarrayfield']  = 'users_id';
 
-      $actions['urgency']['name']                     = __('Urgency');
-      $actions['urgency']['type']                     = 'dropdown_urgency';
+      $actions['_groups_id_observer']['table']              = 'glpi_groups';
+      $actions['_groups_id_observer']['name']               = __('Watchers group');
+      $actions['_groups_id_observer']['type']               = 'dropdown';
+      $actions['_groups_id_observer']['force_actions']      = array('assign', 'append');
+      $actions['_groups_id_observer']['permitseveral']      = array('append');
+      $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';
 
-      $actions['impact']['name']                      = __('Impact');
-      $actions['impact']['type']                      = 'dropdown_impact';
+      $actions['urgency']['name']                           = __('Urgency');
+      $actions['urgency']['type']                           = 'dropdown_urgency';
 
-      $actions['priority']['name']                    = __('Priority');
-      $actions['priority']['type']                    = 'dropdown_priority';
-      $actions['priority']['force_actions']           = array('assign', 'compute');
+      $actions['impact']['name']                            = __('Impact');
+      $actions['impact']['type']                            = 'dropdown_impact';
 
-      $actions['status']['name']                      = __('Status');
-      $actions['status']['type']                      = 'dropdown_status';
+      $actions['priority']['name']                          = __('Priority');
+      $actions['priority']['type']                          = 'dropdown_priority';
+      $actions['priority']['force_actions']                 = array('assign', 'compute');
 
-      $actions['affectobject']['name']                = __('Associated element');
-      $actions['affectobject']['type']                = 'text';
-      $actions['affectobject']['force_actions']       = array('affectbyip', 'affectbyfqdn',
-                                                              'affectbymac');
+      $actions['status']['name']                            = __('Status');
+      $actions['status']['type']                            = 'dropdown_status';
 
-      $actions['slas_id']['table']                    = 'glpi_slas';
-      $actions['slas_id']['name']                     = __('SLA');
-      $actions['slas_id']['type']                     = 'dropdown';
+      $actions['affectobject']['name']                      = __('Associated element');
+      $actions['affectobject']['type']                      = 'text';
+      $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
+                                                                    'affectbymac');
 
-      $actions['users_id_validate']['name']           = __('Send an approval request');
-      $actions['users_id_validate']['type']           = 'dropdown_users_validate';
-      $actions['users_id_validate']['force_actions']  = array('add_validation');
+      $actions['slas_id']['table']                          = 'glpi_slas';
+      $actions['slas_id']['name']                           = __('SLA');
+      $actions['slas_id']['type']                           = 'dropdown';
+
+      $actions['users_id_validate']['name']                 = __('Send an approval request');
+      $actions['users_id_validate']['type']                 = 'dropdown_users_validate';
+      $actions['users_id_validate']['force_actions']        = array('add_validation');
 
       $actions['users_id_validate_requester_supervisor']['name']
                                           = __('Approval request to requesters group supervisor');
@@ -471,10 +471,10 @@ class RuleTicket extends Rule {
       $actions['users_id_validate_assign_supervisor']['force_actions']
                                           = array('add_validation');
 
-      $actions['locations_id']['name']                = __('Location');
-      $actions['locations_id']['type']                = 'dropdown';
-      $actions['locations_id']['table']               = 'glpi_locations';
-      $actions['locations_id']['force_actions']       = array('assign', 'fromuser', 'fromitem');
+      $actions['locations_id']['name']                      = __('Location');
+      $actions['locations_id']['type']                      = 'dropdown';
+      $actions['locations_id']['table']                     = 'glpi_locations';
+      $actions['locations_id']['force_actions']             = array('assign', 'fromuser', 'fromitem');
 
       return $actions;
    }
