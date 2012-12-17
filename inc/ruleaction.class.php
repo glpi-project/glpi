@@ -278,11 +278,12 @@ class RuleAction extends CommonDBChild {
     *
     * @param $sub_type
     * @param $name
-    * @param $value     (default '')
-    * @param $already_used     (default false)
-    * @param $display   (true by default)
+    * @param $value           (default '')
+    * @param $already_used    (default false)
+    * @param $display         (true by default)
    **/
-   static function dropdownActions($sub_type, $name, $value='', $already_used = false, $display=true) {
+   static function dropdownActions($sub_type, $name, $value='', $already_used=false,
+                                   $display=true) {
 
       if ($rule = getItemForItemtype($sub_type)) {
          $actions_options = $rule->getAllActions();
@@ -292,10 +293,9 @@ class RuleAction extends CommonDBChild {
          if ($already_used) {
             if (!isset($actions_options[$value]['permitseveral'])) {
                return false;
-            } else {
-               $actions = $actions_options[$value]['permitseveral'];
             }
-            
+            $actions = $actions_options[$value]['permitseveral'];
+
          } else {
             if (isset($actions_options[$value]['force_actions'])) {
                $actions = $actions_options[$value]['force_actions'];

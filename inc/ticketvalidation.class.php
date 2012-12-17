@@ -66,8 +66,9 @@ class TicketValidation  extends CommonDBChild {
 
 
    static function canCreate() {
+
       return (Session::haveRight('create_request_validation', 1)
-            || Session::haveRight('create_incident_validation', 1));
+              || Session::haveRight('create_incident_validation', 1));
    }
 
 
@@ -157,7 +158,6 @@ class TicketValidation  extends CommonDBChild {
           && !Session::haveRight('validate_request','1')
           && !Session::haveRight('validate_incident','1')) {
          $hidetab = true;
-         echo "jj";
       }
       // No right to create and no validation for current object
       if (!$hidetab
@@ -166,14 +166,14 @@ class TicketValidation  extends CommonDBChild {
           && !self::canValidate($item->getID())) {
          $hidetab = true;
       }
-      
-   
+
+
       if (!$hidetab) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";
             // No rights for create only count asign ones
             if (!Session::haveRight('create_request_validation','1')
-               && !Session::haveRight('create_incident_validation','1')) {
+                && !Session::haveRight('create_incident_validation','1')) {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
             }
             return self::createTabEntry(self::getTypeName(2),
@@ -296,7 +296,7 @@ class TicketValidation  extends CommonDBChild {
                                 'comment_submission', 'submission_date');
 
       } else if (Session::haveRight('create_incident_validation',1)
-                || Session::haveRight('create_request_validation',1)) { // Update validation request
+                 || Session::haveRight('create_request_validation',1)) { // Update validation request
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
                                 'validation_date');
       }
@@ -745,7 +745,7 @@ class TicketValidation  extends CommonDBChild {
          } else {
             $validation_right = 'validate_incident';
          }
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Approval requester')."</td>";
          echo "<td>";

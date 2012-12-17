@@ -2049,7 +2049,8 @@ class Ticket extends CommonITILObject {
       $tab[58]['field']             = 'name';
       $tab[58]['name']              = __('Requester');
       $tab[58]['datatype']          = 'itemlink';
-      $tab[58]['right']             = array('create_incident_validation', 'create_request_validation');
+      $tab[58]['right']             = array('create_incident_validation',
+                                            'create_request_validation');
       $tab[58]['forcegroupby']      = true;
       $tab[58]['massiveaction']     = false;
       $tab[58]['joinparams']        = array('beforejoin'
@@ -2682,7 +2683,8 @@ class Ticket extends CommonITILObject {
                      }
                      $my_devices .= "<option title=\"$output\" value='".$itemtype."_".$data["id"].
                                     "' ".(($my_item == $itemtype."_".$data["id"])?"selected":"").">".
-                                    Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]).
+                                    Toolbox::substr($output, 0,
+                                                    $_SESSION["glpidropdown_chars_limit"]).
                                     "</option>";
 
                      $already_add[$itemtype][] = $data["id"];
@@ -2762,7 +2764,8 @@ class Ticket extends CommonITILObject {
                               }
                               $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                              $data["id"]."' ".
-                                             (($my_item == $itemtype."_".$data["id"])?"selected":"").">".
+                                             (($my_item == $itemtype."_".$data["id"])?"selected"
+                                                                                     :"").">".
                                              Toolbox::substr($output,0,
                                                              $_SESSION["glpidropdown_chars_limit"]).
                                              "</option>";
@@ -2963,7 +2966,8 @@ class Ticket extends CommonITILObject {
                             'myname'          => "items_id",);
 
             Ajax::updateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
+                                          $CFG_GLPI["root_doc"].
+                                             "/ajax/dropdownTrackingDeviceType.php",
                                           $params);
             echo "<span id='results_$myname$rand'>\n";
 
@@ -2981,7 +2985,8 @@ class Ticket extends CommonITILObject {
                   $params['itemtype'] = $itemtype;
                   echo "<script type='text/javascript' >\n";
                   Ajax::updateItemJsCode("results_$myname$rand",
-                                         $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
+                                         $CFG_GLPI["root_doc"].
+                                            "/ajax/dropdownTrackingDeviceType.php",
                                          $params);
                   echo '</script>';
                }
@@ -3537,7 +3542,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-   
+
       // Check if profile / entity set type and category and try to load template for these values
       if ($template_loaded) { // template loaded for profile or entity
          $newtype = $type;
@@ -4072,15 +4077,15 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo $tt->getBeginHiddenFieldValue('_add_validation');
          $validation_right = '';
-         if (($values['type']==self::INCIDENT_TYPE
-               && Session::haveRight('create_incident_validation',1))) {
+         if (($values['type'] == self::INCIDENT_TYPE)
+             && Session::haveRight('create_incident_validation', 1)) {
             $validation_right = 'validate_incident';
          }
-         if (($values['type']==self::DEMAND_TYPE
-               && Session::haveRight('create_request_validation',1))) {
+         if (($values['type'] == self::DEMAND_TYPE)
+             && Session::haveRight('create_request_validation', 1)) {
             $validation_right = 'validate_request';
          }
-               
+
          if (!empty($validation_right)) {
             User::dropdown(array('name'   => "_add_validation",
                                  'entity' => $this->fields['entities_id'],
@@ -4241,7 +4246,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getBeginHiddenFieldValue('locations_id');
       if ($canupdate) {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
-                                 'entity' => $this->fields['entities_id']));
+                                  'entity' => $this->fields['entities_id']));
       } else {
          echo Dropdown::getDropdownName('glpi_locations', $this->fields["locations_id"]);
       }

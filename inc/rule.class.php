@@ -103,17 +103,30 @@ class Rule extends CommonDBTM {
       return _n('Rule', 'Rules', $nb);
    }
 
+
+   /**
+    * @since versin 0.84
+   **/
    function getRuleActionClass () {
       return $this->ruleactionclass;
    }
-   
+
+
+   /**
+    * @since versin 0.84
+   **/
    function getRuleCriteriaClass () {
       return $this->rulecriteriaclass;
    }
-   
+
+
+   /**
+    * @since versin 0.84
+   **/
    function getRuleIdField () {
       return $this->rules_id_field;
-   }   
+   }
+
 
    static function canCreate() {
       return Session::haveRight(static::$right, 'w');
@@ -1194,7 +1207,7 @@ class Rule extends CommonDBTM {
 
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-			$params['criterias_results'] = $this->criterias_results;
+            $params['criterias_results'] = $this->criterias_results;
             $output = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
                                                                          'params' => $params,
                                                                          'action' => $action));
@@ -1223,11 +1236,12 @@ class Rule extends CommonDBTM {
 
                case "append" :
                   $actions = $this->getActions();
-                  $value = $action->fields["value"];
+                  $value   = $action->fields["value"];
                   if (isset($actions[$action->fields["field"]]["appendtoarray"])
-                     && isset($actions[$action->fields["field"]]["appendtoarrayfield"])) {
+                      && isset($actions[$action->fields["field"]]["appendtoarrayfield"])) {
                      $value = $actions[$action->fields["field"]]["appendtoarray"];
-                     $value[$actions[$action->fields["field"]]["appendtoarrayfield"]] = $action->fields["value"];
+                     $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
+                            = $action->fields["value"];
                   }
                   $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                   break;

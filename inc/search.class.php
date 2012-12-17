@@ -2648,8 +2648,8 @@ class Search {
                   }
                }
 
-               if (Session::haveRight('validate_incident',1)
-                  || Session::haveRight('validate_request',1)) {
+               if (Session::haveRight('validate_incident', 1)
+                   || Session::haveRight('validate_request', 1)) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
                                           = '".Session::getLoginUserID()."'";
                }
@@ -3344,8 +3344,8 @@ class Search {
                   }
                }
 
-               if (Session::haveRight('validate_incident',1)
-                  || Session::haveRight('validate_request',1)) {
+               if (Session::haveRight('validate_incident', 1)
+                   || Session::haveRight('validate_request', 1)) {
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
@@ -4183,7 +4183,7 @@ class Search {
                $out = $data[$NAME.$num];
             }
             return $out;
-            
+
          case "glpi_tickets.count" :
             if (($data[$NAME.$num] > 0)
                 && Session::haveRight("show_all_ticket","1")) {
