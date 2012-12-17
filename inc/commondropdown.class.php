@@ -54,7 +54,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * Return Additional Fileds for this type
+    * Return Additional Fields for this type
    **/
    function getAdditionalFields() {
       return array();
@@ -181,7 +181,7 @@ abstract class CommonDropdown extends CommonDBTM {
          if (($field['name'] == 'entities_id')
              && ($ID == 0)) {
             // No display for root entity
-            echo "<tr class='tab_bg_1'><td>&nbsp;</td></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
          }
 
