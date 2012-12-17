@@ -2886,10 +2886,12 @@ class Transfer extends CommonDBTM {
       $np = new NetworkPort();
       $nn = new NetworkPort_NetworkPort();
 
-      $query = "SELECT *
+      $query = "SELECT `glpi_networkports`.*, `glpi_networkportethernets`.`netpoints_id`
                 FROM `glpi_networkports`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '$itemtype'";
+                LEFT JOIN `glpi_networkportethernets`
+                  ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`networkports_id`)
+                WHERE `glpi_networkports`.`items_id` = '$ID'
+                      AND `glpi_networkports`.`itemtype` = '$itemtype'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 0) {
