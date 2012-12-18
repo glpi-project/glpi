@@ -525,7 +525,10 @@ abstract class CommonITILTask  extends CommonDBTM {
             $groups = implode("','",$_SESSION['glpigroups']);
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT DISTINCT `users_id`
                                                                    FROM `glpi_groups_users`
-                                                                   WHERE `groups_id` IN ('$groups'))
+                                                                   INNER JOIN `glpi_groups`
+                                                                     ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
+                                                                   WHERE `glpi_groups_users``groups_id` IN ('$groups')
+                                                                     AND `glpi_groups`.`is_assign`)
                                                                          AND ";
          } else { // Only personal ones
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
@@ -557,7 +560,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                      AND ";
       }
 
-      $addrestrict = getEntitiesRestrictRequest("AND", $parentitem->getTable());
+      $addrestrict = '';
       if ($parentitem->maybeDeleted()) {
          $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
       }
