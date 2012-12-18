@@ -46,7 +46,9 @@ class Group_Reminder extends CommonDBRelation {
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
-
+   var $checks_only_for_itemtype1 = true;
+   var $logs_only_for_itemtype1   = true;
+   
    /**
     * Get groups for a reminder
     *

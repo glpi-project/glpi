@@ -46,7 +46,9 @@ class Reminder_User extends CommonDBRelation {
    public $itemtype_2 = 'User';
    public $items_id_2 = 'users_id';
 
-
+   var $checks_only_for_itemtype1 = true;
+   var $logs_only_for_itemtype1   = true;
+   
    /**
     * Get users for a reminder
     *

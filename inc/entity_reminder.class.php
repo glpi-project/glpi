@@ -46,7 +46,9 @@ class Entity_Reminder extends CommonDBRelation {
    public $itemtype_2 = 'Entity';
    public $items_id_2 = 'entities_id';
 
-
+   var $checks_only_for_itemtype1 = true;
+   var $logs_only_for_itemtype1   = true;
+   
    /**
     * Get entities for a reminder
     *

@@ -46,7 +46,9 @@ class Profile_Reminder extends CommonDBRelation {
    public $itemtype_2 = 'Profile';
    public $items_id_2 = 'profiles_id';
 
-
+   var $checks_only_for_itemtype1 = true;
+   var $logs_only_for_itemtype1   = true;
+   
    /**
     * Get profiles for a reminder
     *
