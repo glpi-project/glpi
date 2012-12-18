@@ -640,8 +640,8 @@ abstract class CommonITILObject extends CommonDBTM {
                         $input['_itil_assign']['_from_object'] = true;
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
-                            || (isset($input['status']) && ($input['status'] == self::INCOMING))) {
+                        if ((!isset($input['status']) && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                            || (isset($input['status']) && (in_array($input['status'], $this->getNewStatusArray())))) {
                            $input['status'] = self::ASSIGNED;
                         }
                      }
@@ -658,8 +658,8 @@ abstract class CommonITILObject extends CommonDBTM {
                         $input['_itil_assign']['_from_object'] = true;
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
-                            || (isset($input['status']) && ($input['status'] == self::INCOMING))) {
+                        if ((!isset($input['status']) && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                            || (isset($input['status']) && (in_array($input['status'], $this->getNewStatusArray())))) {
                            $input['status'] = self::ASSIGNED;
                         }
                      }
@@ -675,8 +675,8 @@ abstract class CommonITILObject extends CommonDBTM {
                         $input['_itil_assign']['_from_object'] = true;
                         $supplieractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status']) && ($this->fields['status'] == self::INCOMING))
-                            || (isset($input['status']) && ($input['status'] == self::INCOMING))) {
+                        if ((!isset($input['status']) && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                            || (isset($input['status']) && (in_array($input['status'], $this->getNewStatusArray())))) {
                            $input['status'] = self::ASSIGNED;
                         }
                      }
@@ -1832,7 +1832,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getClosedStatus() {
+   static function getClosedStatusArray() {
 
       // To be overridden by class
       $tab = array();
@@ -1847,14 +1847,27 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getSolvedStatus() {
+   static function getSolvedStatusArray() {
 
       // To be overridden by class
       $tab = array();
       return $tab;
    }
 
+   /**
+    * Get the ITIL object new status list
+    *
+    * @since version 0.83.8
+    *
+    * @return an array
+   **/
+   static function getNewStatusArray() {
 
+      // To be overridden by class
+      $tab = array();
+      return $tab;
+   }
+   
    /**
     * Get the ITIL object process status list
     *
@@ -3311,6 +3324,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $canedit = $this->canSolve();
       $options = array();
 
+      
       if ($knowbase_id_toload > 0) {
          $kb = new KnowbaseItem();
          if ($kb->getFromDB($knowbase_id_toload)) {

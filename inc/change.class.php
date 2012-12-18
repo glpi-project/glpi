@@ -653,7 +653,17 @@ class Change extends CommonITILObject {
       return $tab;
    }
 
-
+   /**
+    * Get the ITIL object new status list
+    *
+    * @since version 0.83.8
+    *
+    * @return an array
+   **/
+   static function getNewStatusArray() {
+      return array(self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL);
+   }
+   
    /**
     * Get the ITIL object test, qualification or accepted status list
     * To be overridden by class
