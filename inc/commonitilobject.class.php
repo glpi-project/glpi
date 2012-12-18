@@ -1036,6 +1036,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // No name set name
+      $input["name"]    = ltrim($input["name"]);
+      $input['content'] = ltrim($input['content']);      
       if (empty($input["name"])) {
          $clean_content = Toolbox::stripslashes_deep($input['content']);
          $input["name"] = preg_replace('/\r\n/',' ',$clean_content);
