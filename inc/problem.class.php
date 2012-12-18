@@ -334,7 +334,7 @@ class Problem extends CommonITILObject {
       if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
            || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
            || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
-          && ($input["status"] == self::INCOMING)) {
+          && (in_array($input['status'], $this->getNewStatusArray()))) {
 
          $input["status"] = self::ASSIGNED;
       }
@@ -686,7 +686,17 @@ class Problem extends CommonITILObject {
       return $tab;
    }
 
-
+   /**
+    * Get the ITIL object new status list
+    *
+    * @since version 0.83.8
+    *
+    * @return an array
+   **/
+   static function getNewStatusArray() {
+      return array(self::INCOMING, self::ACCEPTED);
+   }
+   
    /**
     * Get the ITIL object assign, plan or accepted status list
     *
