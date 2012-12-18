@@ -443,8 +443,8 @@ function update0803to083() {
       foreach ($DB->request('glpi_ticketplannings') as $data) {
          if ($task->getFromDB($data['tickettasks_id'])) {
             $query = "UPDATE `glpi_tickettasks`
-                      SET `begin` = ".($data['begin']=='NULL'?'NULL':"'".$data['begin']."'").",
-                          `end` = ".($data['end']=='NULL'?'NULL':"'".$data['end']."'").",
+                      SET `begin` = ".(($data['begin']=='NULL' || is_null($data['begin']))?'NULL':"'".$data['begin']."'").",
+                          `end` = ".(($data['end']=='NULL' || is_null($data['end']))?'NULL':"'".$data['end']."'").",
                           `users_id_tech` = '".$data['users_id']."',
                           `state` = '".$data['state']."'
                       WHERE `id` = '".$data['tickettasks_id']."'";
