@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3
+ * @version 1.3.1
  * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -79,12 +79,12 @@ class SimplePie_Misc
 
 	public static function absolutize_url($relative, $base)
 	{
-            // Fix for GLPI : if $iri is false return $relative URL
-            // See https://github.com/simplepie/simplepie/issues/214
-            if ($iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative)) {
-               return $iri->get_uri();
-            }
-            return false;
+		$iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative);
+		if ($iri === false)
+		{
+			return false;
+		}
+		return $iri->get_uri();
 	}
 
 	/**
