@@ -45,6 +45,8 @@ class Profile_Reminder extends CommonDBRelation {
    static public $itemtype_2 = 'Profile';
    static public $items_id_2 = 'profiles_id';
 
+   static public $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $logs_for_item_2        = false;
 
    /**
     * Get profiles for a reminder

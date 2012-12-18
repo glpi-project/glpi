@@ -45,6 +45,8 @@ class Group_Reminder extends CommonDBRelation {
    static public $itemtype_2 = 'Group';
    static public $items_id_2 = 'groups_id';
 
+   static public $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $logs_for_item_2        = false;
 
    /**
     * Get groups for a reminder
