@@ -45,6 +45,8 @@ class Entity_KnowbaseItem extends CommonDBRelation {
    public $items_id_1 = 'knowbaseitems_id';
    public $itemtype_2 = 'Entity';
    public $items_id_2 = 'entities_id';
+   var $checks_only_for_itemtype1 = true;
+   var $logs_only_for_itemtype1   = true;
 
 
    /**

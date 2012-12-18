@@ -45,7 +45,8 @@ class Group_KnowbaseItem extends CommonDBRelation {
    public $items_id_1 = 'knowbaseitems_id';
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
-
+   var $checks_only_for_itemtype1 = true;
+   var $logs_only_for_itemtype1   = true;
 
    /**
     * Get groups for a knowbaseitem
