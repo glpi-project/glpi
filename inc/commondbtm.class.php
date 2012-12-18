@@ -2306,7 +2306,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function isEntityAssign() {
 
-      if (!array_key_exists('id',$this->fields)) {
+      if (!array_key_exists('id', $this->fields)) {
          $this->getEmpty();
       }
       return array_key_exists('entities_id', $this->fields);
