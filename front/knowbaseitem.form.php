@@ -37,11 +37,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["itemtype"])) {
-   $_GET["itemtype"] = "";
+if (!isset($_GET["item_itemtype"])) {
+   $_GET["item_itemtype"] = "";
 }
-if (!isset($_GET["items_id"])) {
-   $_GET["items_id"] = "";
+if (!isset($_GET["item_items_id"])) {
+   $_GET["item_items_id"] = "";
 }
 if (!isset($_GET["modify"])) {
    $_GET["modify"] = "";
@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
    $kb->check(-1,'w');
 
    Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
-   $available_options = array('itemtype', 'items_id');
+   $available_options = array('item_itemtype', 'item_items_id');
    $options           = array();
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
