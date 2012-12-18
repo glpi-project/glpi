@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
       Html::redirect($CFG_GLPI["root_doc"].
-                     "/front/knowbaseitem.form.php?id=new&itemtype=Problem&items_id=". $_POST["id"]);
+                     "/front/knowbaseitem.form.php?id=new&item_itemtype=Problem&item_items_id=". $_POST["id"]);
    } else {
       Html::back();
    }
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
 
-   } else {
+} else {
    Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "problem");
    $problem->showForm($_GET["id"],$_GET);
    Html::footer();
