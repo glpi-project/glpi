@@ -1374,7 +1374,7 @@ class Transfer extends CommonDBTM {
                // create new item (don't check if move possible => clean needed)
                unset($vers->fields['id']);
                $input                 = $vers->fields;
-               unset($vers->fields);
+               $vers->fields = array();
                // entities_id and is_recursive from new software are set in prepareInputForAdd
                $input['softwares_id'] = $newsoftID;
                $newversID             = $vers->add($input);
