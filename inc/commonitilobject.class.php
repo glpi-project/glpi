@@ -1534,7 +1534,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getClosedStatus() {
+   static function getClosedStatusArray() {
       // To be overridden by class
       $tab = array();
 
@@ -1549,7 +1549,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getSolvedStatus() {
+   static function getSolvedStatusArray() {
       // To be overridden by class
       $tab = array();
 
@@ -1563,7 +1563,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getNewStatus() {
+   static function getNewStatusArray() {
       // To be overridden by class
       $tab = array();
 
