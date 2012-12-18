@@ -510,8 +510,8 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $useractors->can(-1,'w',$input['_itil_assign'])) {
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
-                        if ((!isset($input['status']) && $this->fields['status']=='new')
-                            || (isset($input['status']) && $input['status'] == 'new')) {
+                        if ((!isset($input['status']) && in_array($this->fields['status'], $this->getNewStatusArray()))
+                            || (isset($input['status']) && in_array($input['status'], $this->getNewStatusArray()))) {
                            $input['status'] = 'assign';
                         }
                      }
@@ -526,8 +526,8 @@ abstract class CommonITILObject extends CommonDBTM {
                          || $groupactors->can(-1,'w',$input['_itil_assign'])) {
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
-                        if ((!isset($input['status']) && $this->fields['status']=='new')
-                            || (isset($input['status']) && $input['status'] == 'new')) {
+                        if ((!isset($input['status']) && in_array($this->fields['status'], $this->getNewStatusArray()))
+                            || (isset($input['status']) && in_array($input['status'], $this->getNewStatusArray()))) {
                            $input['status'] = 'assign';
                         }
                      }
@@ -560,7 +560,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
-      if ($this->fields['status'] == 'new') {
+      if (in_array($this->fields['status'], $this->getNewStatusArray())) {
          if (in_array("suppliers_id_assign",$this->updates)
              && $this->input["suppliers_id_assign"]>0) {
 
@@ -921,7 +921,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
            || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
            || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
-          && $input["status"]=="new") {
+          && in_array($input['status'], $this->getNewStatusArray())) {
 
          $input["status"] = "assign";
       }
@@ -1556,7 +1556,20 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Get the ITIL object new status list
+    *
+    * @since version 0.83
+    *
+    * @return an array
+   **/
+   static function getNewStatus() {
+      // To be overridden by class
+      $tab = array();
 
+      return $tab;
+   }
+   
    /**
     * Get the ITIL object process status list
     *
