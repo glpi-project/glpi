@@ -1312,6 +1312,17 @@ class Config extends CommonDBTM {
       $pm = new PHPMailer();
       echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
 
+      // EZ component
+      echo "eZ Graph componnent installed :  ".(class_exists('ezcGraph')?'OK':'KO'). "\n";
+
+      // Zend
+      $zv = new Zend\Version\Version;
+      echo "Zend Framework version " . $zv::VERSION . " in (" . realpath(GLPI_ZEND_PATH) . ")\n";
+
+      // SimplePie :
+      $sp = new SimplePie();
+      echo "SimplePie version " . SIMPLEPIE_VERSION . " in (" . realpath(GLPI_SIMPLEPIE_PATH) . ")\n";
+      
       echo "\n</pre></td></tr>";
    }
 
