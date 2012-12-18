@@ -46,6 +46,10 @@ class KnowbaseItem_User extends CommonDBRelation {
    static public $items_id_2 = 'users_id';
 
 
+   static public $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $logs_for_item_2        = false;
+
+
    /**
     * Get users for a knowbaseitem
     *
