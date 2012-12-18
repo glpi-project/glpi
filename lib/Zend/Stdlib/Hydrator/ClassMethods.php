@@ -103,10 +103,10 @@ class ClassMethods extends AbstractHydrator
         };
 
         foreach ($data as $property => $value) {
-            if ($this->underscoreSeparatedKeys) {
-                $property = preg_replace_callback('/(_[a-z])/', $transform, $property);
-            }
             $method = 'set' . ucfirst($property);
+            if ($this->underscoreSeparatedKeys) {
+                $method = preg_replace_callback('/(_[a-z])/', $transform, $method);
+            }
             if (method_exists($object, $method)) {
                 $value = $this->hydrateValue($property, $value);
 

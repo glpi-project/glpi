@@ -55,6 +55,7 @@ return array(
     'Zend\EventManager\Exception\ExceptionInterface'                 => __DIR__ . '/EventManager/Exception/ExceptionInterface.php',
     'Zend\EventManager\Exception\InvalidArgumentException'           => __DIR__ . '/EventManager/Exception/InvalidArgumentException.php',
     'Zend\EventManager\ResponseCollection'                           => __DIR__ . '/EventManager/ResponseCollection.php',
+    'Zend\Version\Version'                                           => __DIR__ . '/Version/Version.php',
     'Zend\Loader\ModuleAutoloader'                                   => __DIR__ . '/Loader/ModuleAutoloader.php',
     'Zend\Loader\PluginClassLocator'                                 => __DIR__ . '/Loader/PluginClassLocator.php',
     'Zend\Loader\PluginClassLoader'                                  => __DIR__ . '/Loader/PluginClassLoader.php',

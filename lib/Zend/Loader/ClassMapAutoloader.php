@@ -134,16 +134,17 @@ class ClassMapAutoloader implements SplAutoloader
     }
 
     /**
-     * Defined by Autoloadable
-     *
-     * @param  string $class
-     * @return void
+     * {@inheritDoc}
      */
     public function autoload($class)
     {
         if (isset($this->map[$class])) {
             require_once $this->map[$class];
+
+            return $class;
         }
+
+        return false;
     }
 
     /**

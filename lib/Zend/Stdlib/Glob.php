@@ -42,9 +42,9 @@ abstract class Glob
     public static function glob($pattern, $flags, $forceFallback = false)
     {
         if (!defined('GLOB_BRACE') || $forceFallback) {
-            return self::fallbackGlob($pattern, $flags);
+            return static::fallbackGlob($pattern, $flags);
         } else {
-            return self::systemGlob($pattern, $flags);
+            return static::systemGlob($pattern, $flags);
         }
     }
 
@@ -92,7 +92,7 @@ abstract class Glob
     protected static function fallbackGlob($pattern, $flags)
     {
         if (!$flags & self::GLOB_BRACE) {
-            return self::systemGlob($pattern, $flags);
+            return static::systemGlob($pattern, $flags);
         }
 
         $flags &= ~self::GLOB_BRACE;
@@ -119,22 +119,22 @@ abstract class Glob
         }
 
         if ($begin === false) {
-            return self::systemGlob($pattern, $flags);
+            return static::systemGlob($pattern, $flags);
         }
 
-        $next = self::nextBraceSub($pattern, $begin + 1, $flags);
+        $next = static::nextBraceSub($pattern, $begin + 1, $flags);
 
         if ($next === null) {
-            return self::systemGlob($pattern, $flags);
+            return static::systemGlob($pattern, $flags);
         }
 
         $rest = $next;
 
         while ($pattern[$rest] !== '}') {
-            $rest = self::nextBraceSub($pattern, $rest + 1, $flags);
+            $rest = static::nextBraceSub($pattern, $rest + 1, $flags);
 
             if ($rest === null) {
-                return self::systemGlob($pattern, $flags);
+                return static::systemGlob($pattern, $flags);
             }
         }
 
@@ -145,7 +145,7 @@ abstract class Glob
                         . substr($pattern, $p, $next - $p)
                         . substr($pattern, $rest + 1);
 
-            $result = self::fallbackGlob($subPattern, $flags | self::GLOB_BRACE);
+            $result = static::fallbackGlob($subPattern, $flags | self::GLOB_BRACE);
 
             if ($result) {
                 $paths = array_merge($paths, $result);
@@ -156,7 +156,7 @@ abstract class Glob
             }
 
             $p    = $next + 1;
-            $next = self::nextBraceSub($pattern, $p, $flags);
+            $next = static::nextBraceSub($pattern, $p, $flags);
         }
 
         return array_unique($paths);
