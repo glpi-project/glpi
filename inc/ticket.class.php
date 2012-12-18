@@ -1031,7 +1031,6 @@ class Ticket extends CommonITILObject {
                      // for title if mandatory (restore initial value)
                      if ($key == 'name') {
                         $input['name']                     = $title;
-                        $_SESSION["helpdeskSaved"]['name'] = $input['name'];
                      }
                      // Check only defined values : Not defined not in form
                      if (isset($input[$key])) {
