@@ -85,7 +85,7 @@ class OutputCache extends AbstractPattern
             throw new Exception\RuntimeException('Output cache not started');
         }
 
-        $output = ob_end_flush();
+        $output = ob_get_flush();
         if ($output === false) {
             throw new Exception\RuntimeException('Output buffering not active');
         }

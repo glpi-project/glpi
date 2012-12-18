@@ -235,7 +235,7 @@ abstract class ArrayUtils
                 if (is_int($key)) {
                     $a[] = $value;
                 } elseif (is_array($value) && is_array($a[$key])) {
-                    $a[$key] = self::merge($a[$key], $value);
+                    $a[$key] = static::merge($a[$key], $value);
                 } else {
                     $a[$key] = $value;
                 }

@@ -5,15 +5,25 @@ Develop: [![Build Status](https://secure.travis-ci.org/zendframework/zf2.png?bra
 
 ## RELEASE INFORMATION
 
-*Zend Framework 2.0.3*
+*Zend Framework 2.0.5*
 
-This is the third maintenance release for the 2.0 series.
+This is the fifth maintenance release for the 2.0 series.
 
-17 Oct 2012
+29 Nov 2012
 
-### UPDATES IN 2.0.3
+### UPDATES IN 2.0.5
 
-Please see CHANGELOG.md.
+*Security Changes*
+
+The classes `Zend\Session\Validator\RemoteAddr` and `Zend\View\Helper\ServerUrl`
+were identified as having incorrect logic for detection of proxy servers. Both
+were updated to provide better detection, as well as more configuration
+surrounding detection. 
+
+For more information on the security fixes, please see
+http://framework.zend.com/security/advisory/ZF2012-04
+
+For all other changes, please see CHANGELOG.md.
 
 ### SYSTEM REQUIREMENTS
 

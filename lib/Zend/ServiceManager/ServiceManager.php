@@ -411,20 +411,16 @@ class ServiceManager implements ServiceLocatorInterface
      */
     public function get($name, $usePeeringServiceManagers = true)
     {
-        $cName = $this->canonicalizeName($name);
-        $rName = $name;
+        $cName   = $this->canonicalizeName($name);
+        $rName   = $name;
+        $isAlias = false;
 
         if ($this->hasAlias($cName)) {
+            $isAlias = true;
+
             do {
                 $cName = $this->aliases[$cName];
             } while ($this->hasAlias($cName));
-
-            if (!$this->has(array($cName, $rName))) {
-                throw new Exception\ServiceNotFoundException(sprintf(
-                    'An alias "%s" was requested but no service could be found.',
-                    $name
-                ));
-            }
         }
 
         if (isset($this->instances[$cName])) {
@@ -447,16 +443,21 @@ class ServiceManager implements ServiceLocatorInterface
 
         // Still no instance? raise an exception
         if (!$instance && !is_array($instance)) {
+            if ($isAlias) {
+                throw new Exception\ServiceNotFoundException(sprintf(
+                    'An alias "%s" was requested but no service could be found.',
+                    $name
+                ));
+            }
+
             throw new Exception\ServiceNotFoundException(sprintf(
                 '%s was unable to fetch or create an instance for %s',
-                    __METHOD__,
-                    $name
-                )
-            );
+                __METHOD__,
+                $name
+            ));
         }
 
-        if ($this->shareByDefault() && (!isset($this->shared[$cName]) || $this->shared[$cName] === true)
-        ) {
+        if ($this->shareByDefault() && (!isset($this->shared[$cName]) || $this->shared[$cName] === true)) {
             $this->instances[$cName] = $instance;
         }
 
@@ -467,7 +468,7 @@ class ServiceManager implements ServiceLocatorInterface
      * Create an instance
      *
      * @param  string|array $name
-     * @return false|object
+     * @return bool|object
      * @throws Exception\ServiceNotFoundException
      * @throws Exception\ServiceNotCreatedException
      */
@@ -591,7 +592,7 @@ class ServiceManager implements ServiceLocatorInterface
         foreach ($this->abstractFactories as $index => $abstractFactory) {
             // Support string abstract factory class names
             if (is_string($abstractFactory) && class_exists($abstractFactory, true)) {
-                $this->abstractFactory[$index] = $abstractFactory = new $abstractFactory();
+                $this->abstractFactories[$index] = $abstractFactory = new $abstractFactory();
             }
 
             if (
@@ -795,6 +796,21 @@ class ServiceManager implements ServiceLocatorInterface
                 return $peeringServiceManager->get($name);
             }
         }
+
+        $name = $this->canonicalizeName($name);
+
+        if ($this->hasAlias($name)) {
+            do {
+                $name = $this->aliases[$name];
+            } while ($this->hasAlias($name));
+        }
+
+        foreach ($this->peeringServiceManagers as $peeringServiceManager) {
+            if ($peeringServiceManager->has($name)) {
+                return $peeringServiceManager->get($name);
+            }
+        }
+
         return null;
     }
 
