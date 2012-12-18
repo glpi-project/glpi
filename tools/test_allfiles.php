@@ -39,7 +39,8 @@ define('GLPI_ROOT', '..');
 $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/ajax/',
               GLPI_ROOT.'/front/',
-              GLPI_ROOT.'/install/');
+              GLPI_ROOT.'/install/',
+	      GLPI_ROOT.'/config/');
 
 foreach($dirs as $dir) {
    if ($handle = opendir($dir)) {
