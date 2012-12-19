@@ -169,7 +169,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       $used = array();
       foreach ($vlans as $data) {
-         echo "<tr>";
+         echo "<tr class='tab_bg_1'>";
          if ($canedit) {
             echo "<td>";
             Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
