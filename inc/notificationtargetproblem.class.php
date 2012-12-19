@@ -221,7 +221,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'problem.numberoftickets'   => __('Number of tickets'),
                     'problem.impacts'           => __('Impacts'),
                     'problem.causes'            => __('Causes'),
-                    'problem.symtoms'           => __('Symptoms'),
+                    'problem.symptoms'           => __('Symptoms'),
                     'item.name'                 => __('Associated item'),
                     'item.serial'               => __('Serial number'),
                     'item.otherserial'          => __('Inventory number'),
