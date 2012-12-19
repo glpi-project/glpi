@@ -64,9 +64,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       // Common ITIL datas
       $datas = parent::getDatasForObject($item, $options, $simple);
 
-      $datas["##problem.impacts"]  = $item->getField('impactcontent');
-      $datas["##problem.causes"]   = $item->getField('causecontent');
-      $datas["##problem.symptoms"] = $item->getField('symptomcontent');
+      $datas["##problem.impacts##"]  = $item->getField('impactcontent');
+      $datas["##problem.causes##"]   = $item->getField('causecontent');
+      $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
 
       // Complex mode : get tasks
       if (!$simple) {
