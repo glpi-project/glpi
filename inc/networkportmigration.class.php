@@ -258,7 +258,7 @@ class NetworkPortMigration extends CommonDBChild {
       }
 
        if ($number_real_errors == 0) {
-         echo "<tr class='tab_bg_1'><th colspan=3>" .
+         echo "<tr class='tab_bg_1'><th colspan='3'>" .
               __('I don\'t understand why this migration error is not deleted.');
          echo "</th><th>";
          Html::showSimpleForm($this->getFormURL(), 'delete', __('You can delete this migration error'),
@@ -266,7 +266,7 @@ class NetworkPortMigration extends CommonDBChild {
          echo "</th></tr>\n";
        } else {
          echo "<tr class='tab_bg_1'><th>" . __('At all events') . "</th>\n";
-         echo "<td colspan=3>";
+         echo "<td colspan='3'>";
          Html::showSimpleForm($this->getFormURL(), 'delete', __('You can delete this migration error'),
                array('id' => $this->getID()));
 
@@ -312,7 +312,9 @@ class NetworkPortMigration extends CommonDBChild {
             _e('Unknown interface');
          }
       }
-      echo "</$interface_cell></tr>\n";
+      echo "</$interface_cell>";
+      echo "<$interface_cell></$interface_cell>";
+      echo "<$interface_cell></$interface_cell></tr>\n";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
