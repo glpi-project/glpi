@@ -61,7 +61,8 @@ class ComputerVirtualMachine extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable('glpi_computervirtualmachines',
-                                                             "computers_id = '".$item->getID()."'"));
+                                                             "computers_id = '".$item->getID()."'
+                                                                 AND `is_deleted`='0'"));
          }
          return self::getTypeName(2);
       }
@@ -272,7 +273,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='spaced center'>";
 
       $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
-                                              "`computers_id` = '$ID'");
+                                              "`computers_id` = '$ID' AND `is_deleted`='0'");
 
       echo "<table class='tab_cadre_fixe'>";
 

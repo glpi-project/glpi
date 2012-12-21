@@ -338,6 +338,8 @@ CREATE TABLE `glpi_computerdisks` (
   `filesystems_id` int(11) NOT NULL DEFAULT '0',
   `totalsize` int(11) NOT NULL DEFAULT '0',
   `freesize` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `device` (`device`),
@@ -346,7 +348,9 @@ CREATE TABLE `glpi_computerdisks` (
   KEY `freesize` (`freesize`),
   KEY `computers_id` (`computers_id`),
   KEY `filesystems_id` (`filesystems_id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -399,6 +403,7 @@ CREATE TABLE `glpi_computers` (
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -421,6 +426,7 @@ CREATE TABLE `glpi_computers` (
   KEY `is_deleted` (`is_deleted`),
   KEY `is_ocs_import` (`is_ocs_import`),
   KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`)
@@ -435,9 +441,13 @@ CREATE TABLE `glpi_computers_items` (
   `items_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (ID)',
   `computers_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`computers_id`),
-  KEY `item` (`itemtype`,`items_id`)
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -465,12 +475,14 @@ CREATE TABLE `glpi_computers_softwareversions` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`computers_id`,`softwareversions_id`),
   KEY `softwareversions_id` (`softwareversions_id`),
   KEY `computers_info` (`entities_id`,`is_template`,`is_deleted`),
   KEY `is_template` (`is_template`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -500,6 +512,8 @@ CREATE TABLE `glpi_computervirtualmachines` (
   `uuid` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `vcpu` int(11) NOT NULL DEFAULT '0',
   `ram` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`computers_id`),
   KEY `entities_id` (`entities_id`),
@@ -508,6 +522,8 @@ CREATE TABLE `glpi_computervirtualmachines` (
   KEY `virtualmachinesystems_id` (`virtualmachinesystems_id`),
   KEY `vcpu` (`vcpu`),
   KEY `ram` (`ram`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `uuid` (`uuid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2070,9 +2086,13 @@ CREATE TABLE `glpi_items_devicecases` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicecases_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicecases_id` (`devicecases_id`)
+  KEY `devicecases_id` (`devicecases_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2084,9 +2104,13 @@ CREATE TABLE `glpi_items_devicecontrols` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicecontrols_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicecontrols_id` (`devicecontrols_id`)
+  KEY `devicecontrols_id` (`devicecontrols_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2098,9 +2122,13 @@ CREATE TABLE `glpi_items_devicedrives` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicedrives_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicedrives_id` (`devicedrives_id`)
+  KEY `devicedrives_id` (`devicedrives_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2113,10 +2141,14 @@ CREATE TABLE `glpi_items_devicegraphiccards` (
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicegraphiccards_id` int(11) NOT NULL DEFAULT '0',
   `memory` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicegraphiccards_id` (`devicegraphiccards_id`),
-  KEY `specificity` (`memory`)
+  KEY `specificity` (`memory`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2130,10 +2162,14 @@ CREATE TABLE `glpi_items_deviceharddrives` (
   `deviceharddrives_id` int(11) NOT NULL DEFAULT '0',
   `capacity` int(11) NOT NULL DEFAULT '0',
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `deviceharddrives_id` (`deviceharddrives_id`),
   KEY `specificity` (`capacity`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2148,10 +2184,14 @@ CREATE TABLE `glpi_items_devicememories` (
   `devicememories_id` int(11) NOT NULL DEFAULT '0',
   `size` int(11) NOT NULL DEFAULT '0',
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicememories_id` (`devicememories_id`),
   KEY `specificity` (`size`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2164,9 +2204,13 @@ CREATE TABLE `glpi_items_devicemotherboards` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicemotherboards_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicemotherboards_id` (`devicemotherboards_id`)
+  KEY `devicemotherboards_id` (`devicemotherboards_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2179,10 +2223,14 @@ CREATE TABLE `glpi_items_devicenetworkcards` (
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
   `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicenetworkcards_id` (`devicenetworkcards_id`),
-  KEY `specificity` (`mac`)
+  KEY `specificity` (`mac`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2194,9 +2242,13 @@ CREATE TABLE `glpi_items_devicepcis` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicepcis_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicepcis_id` (`devicepcis_id`)
+  KEY `devicepcis_id` (`devicepcis_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2208,9 +2260,13 @@ CREATE TABLE `glpi_items_devicepowersupplies` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicepowersupplies_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicepowersupplies_id` (`devicepowersupplies_id`)
+  KEY `devicepowersupplies_id` (`devicepowersupplies_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2224,10 +2280,14 @@ CREATE TABLE `glpi_items_deviceprocessors` (
   `deviceprocessors_id` int(11) NOT NULL DEFAULT '0',
   `frequency` int(11) NOT NULL DEFAULT '0',
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `deviceprocessors_id` (`deviceprocessors_id`),
   KEY `specificity` (`frequency`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2240,9 +2300,13 @@ CREATE TABLE `glpi_items_devicesoundcards` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicesoundcards_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
-  KEY `devicesoundcards_id` (`devicesoundcards_id`)
+  KEY `devicesoundcards_id` (`devicesoundcards_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2653,6 +2717,7 @@ CREATE TABLE `glpi_networkequipments` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -2671,6 +2736,7 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3576,6 +3642,7 @@ CREATE TABLE `glpi_peripherals` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -3592,6 +3659,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3667,6 +3735,7 @@ CREATE TABLE `glpi_phones` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -3684,6 +3753,7 @@ CREATE TABLE `glpi_phones` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3788,6 +3858,7 @@ CREATE TABLE `glpi_printers` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -3807,6 +3878,7 @@ CREATE TABLE `glpi_printers` (
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `last_pages_counter` (`last_pages_counter`),
+  KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

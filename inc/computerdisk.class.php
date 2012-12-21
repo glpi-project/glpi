@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -67,7 +67,8 @@ class ComputerDisk extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable('glpi_computerdisks',
-                                                             "computers_id = '".$item->getID()."'"));
+                                                             "computers_id = '".$item->getID()."'
+                                                                 AND `is_deleted`='0'"));
          }
          return self::getTypeName(2);
       }
@@ -211,7 +212,7 @@ class ComputerDisk extends CommonDBChild {
                 FROM `glpi_computerdisks`
                 LEFT JOIN `glpi_filesystems`
                           ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
-                WHERE (`computers_id` = '$ID')";
+                WHERE (`computers_id` = '$ID' AND `is_deleted`='0')";
 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
