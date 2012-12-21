@@ -455,7 +455,8 @@ class CommonDBTM extends CommonGLPI {
       global $DB, $CFG_GLPI;
 
       if (($force == 1)
-          || !$this->maybeDeleted()) {
+          || !$this->maybeDynamic()
+             || !$this->maybeDeleted()) {
          $this->cleanDBonPurge();
          $this->cleanHistory();
          $this->cleanRelationData();
@@ -896,7 +897,7 @@ class CommonDBTM extends CommonGLPI {
          $link = $this->getFormURL();
          if (!isset($link)) {
             return;
-         }         
+         }
          if (($name = $this->getName()) == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
             $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
@@ -2406,20 +2407,46 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Can the object be dynamic
+    *
+    * @since 0.84
+    * @return boolean
+   **/
+   function maybeDynamic() {
+
+      if (!isset($this->fields['is_dynamic'])) {
+         $this->getEmpty();
+      }
+      return isset($this->fields['is_dynamic']);
+   }
+
+   /**
+    *
+    * Is an object dynamic or not
+    * @since 0.84
+    * @return boolean
+    */
+   function isDynamic() {
+      if ($this->mayBeDynamic()) {
+         return $this->fields['is_dynamic'];
+      } else {
+         return 0;
+      }
+   }
+   
+   /**
     * Is the object may be private
     *
     * @return boolean
-   **/
+    **/
    function maybePrivate() {
-
+   
       if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
       return (array_key_exists('is_private', $this->fields)
-              && array_key_exists('users_id', $this->fields));
+            && array_key_exists('users_id', $this->fields));
    }
-
-
    /**
     * Is the object private
     *

@@ -57,7 +57,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    function maybeDeleted() {
       // deleted information duplicate from computers
-      return false;
+      return true;
    }
 
 
@@ -235,8 +235,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 INNER JOIN `glpi_computers`
                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
                 WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$softwareversions_id'
-                      AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0' " .
+                   AND `glpi_computers`.`is_deleted` = '0'
+                      AND `glpi_computers`.`is_template` = '0'
+                         AND `glpi_computers_softwareversions`.`is_deleted`='0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
 
       $result = $DB->query($query);
@@ -267,7 +268,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                       ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
                 WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
                       AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0' " .
+                      AND `glpi_computers`.`is_template` = '0'
+                      AND `glpi_computers_softwareversions`.`is_deleted`='0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers');
 
       $result = $DB->query($query);
@@ -360,7 +362,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           WHERE `glpi_softwareversions`.`softwares_id` = '$searchID'" .
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
-                                AND `glpi_computers`.`is_template` = '0'";
+                                AND `glpi_computers`.`is_template` = '0'
+                                AND `glpi_softwareversions`.`is_deleted`='0'";
 
       } else {
          //SoftwareVersion ID
@@ -368,12 +371,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           FROM `glpi_computers_softwareversions`
                           INNER JOIN `glpi_computers`
                               ON (`glpi_computers_softwareversions`.`computers_id`
-                                    = `glpi_computers`.`id`)
+                                    = `glpi_computers`.`id`AND `glpi_softwareversions`.`is_deleted`='0')
                           WHERE `glpi_computers_softwareversions`.`softwareversions_id`
                                        = '$searchID'".
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
-                                AND `glpi_computers`.`is_template` = '0'";
+                                AND `glpi_computers`.`is_template` = '0'
+                                AND `glpi_softwareversions`.`is_deleted`='0'";
       }
 
       $number = 0;
@@ -426,6 +430,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                        AND `glpi_computers`.`is_deleted` = '0'
                        AND `glpi_computers`.`is_template` = '0'
+                       AND `glpi_softwareversions`.`is_deleted`='0'
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
