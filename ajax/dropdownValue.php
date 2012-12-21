@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 // Direct access to file
@@ -332,7 +332,7 @@ if ($item instanceof CommonTreeDropdown) {
                            $work_level = -1;
                         }
 
-                     } while ($work_level > 1
+                     } while ($work_level >= 1
                               && (!isset($last_level_displayed[$work_level])
                                   || ($last_level_displayed[$work_level] != $work_parentID)));
 
