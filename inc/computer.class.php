@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -504,9 +504,8 @@ class Computer extends CommonDBTM {
       $rowspan = 10;
       $inventory_show = false;
       
-      // TODO OCS : use is_dynamic instead of is_ocs_import
       if (!empty($ID)
-          && $this->fields["is_ocs_import"]) {
+          && $this->fields["is_dynamic"]) {
          $inventory_show = true;
          $rowspan   -= 4;
       }
