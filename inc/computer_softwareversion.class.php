@@ -54,24 +54,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return _n('Installation', 'Installations', $nb);
    }
 
-
-   function maybeDeleted() {
-      // deleted information duplicate from computers
-      return true;
-   }
-
-
    function prepareInputForAdd($input) {
 
-      if ((!isset($input['is_template']))
-          || (!isset($input['is_deleted']))) {
+      if ((!isset($input['is_template_computer']))
+          || (!isset($input['is_deleted_computer']))) {
          // Get template and deleted information from computer
          // If computer set update is_template / is_deleted infos to ensure data validity
          if (isset($input['computers_id'])) {
             $computer = new Computer();
             if ($computer->getFromDB($input['computers_id'])) {
-               $input['is_template'] = $computer->getField('is_template');
-               $input['is_deleted']  = $computer->getField('is_deleted');
+               $input['is_template_computer'] = $computer->getField('is_template');
+               $input['is_deleted_computer']  = $computer->getField('is_deleted');
             }
          }
       }
@@ -84,15 +77,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    **/
    function prepareInputForUpdate($input) {
 
-      if ((!isset($input['is_template']))
-          || (!isset($input['is_deleted']))) {
+      if ((!isset($input['is_template_computer']))
+          || (!isset($input['is_deleted_computer']))) {
          // If computer set update is_template / is_deleted infos to ensure data validity
          if (isset($input['computers_id'])) {
             // Get template and deleted information from computer
             $computer = new Computer();
             if ($computer->getFromDB($input['computers_id'])) {
-               $input['is_template'] = $computer->getField('is_template');
-               $input['is_deleted']  = $computer->getField('is_deleted');
+               $input['is_template_computer'] = $computer->getField('is_template');
+               $input['is_deleted_computer']  = $computer->getField('is_deleted');
             }
          }
       }
@@ -208,8 +201,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $comp = new Computer();
       if ($comp->getFromDB($computers_id)) {
          $query = "UPDATE `".$this->getTable()."`
-                   SET `is_template` = '".$comp->getField('is_template')."',
-                       `is_deleted` = '".$comp->getField('is_deleted')."'
+                   SET `is_template_computer` = '".$comp->getField('is_template')."',
+                       `is_deleted_computer` = '".$comp->getField('is_deleted')."'
                    WHERE `computers_id` = '$computers_id';";
 
          return $DB->query($query);
@@ -363,7 +356,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'
-                                AND `glpi_softwareversions`.`is_deleted`='0'";
+                                AND `glpi_computers_softwareversions`.`is_deleted`='0'";
 
       } else {
          //SoftwareVersion ID
@@ -371,13 +364,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           FROM `glpi_computers_softwareversions`
                           INNER JOIN `glpi_computers`
                               ON (`glpi_computers_softwareversions`.`computers_id`
-                                    = `glpi_computers`.`id`AND `glpi_softwareversions`.`is_deleted`='0')
+                                    = `glpi_computers`.`id`)
                           WHERE `glpi_computers_softwareversions`.`softwareversions_id`
                                        = '$searchID'".
-                                getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
+                                getEntitiesRestrictRequest(' AND', 'glpi_computers') ." 
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'
-                                AND `glpi_softwareversions`.`is_deleted`='0'";
+                                AND `glpi_computers_softwareversions`.`is_deleted`='0'";
       }
 
       $number = 0;
