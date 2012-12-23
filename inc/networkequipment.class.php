@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -289,12 +289,11 @@ class NetworkEquipment extends CommonDBTM {
       $rowspan = 6;
       $inventory_show = false;
 
-      // TODO OCS : use is_dynamic instead of is_ocs_import
-//       if (!empty($ID)
-//           && $this->fields["is_dynamic"]) {
-//          $inventory_show = true;
-//          $rowspan   -= 3;
-//       }
+       if (!empty($ID)
+           && $this->fields["is_dynamic"]) {
+          $inventory_show = true;
+          $rowspan   -= 3;
+       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";

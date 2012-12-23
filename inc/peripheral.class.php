@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -257,12 +257,11 @@ class Peripheral extends CommonDBTM {
       $rowspan = 3;
       $inventory_show = false;
 
-      // TODO OCS : use is_dynamic instead of is_ocs_import
-//       if (!empty($ID)
-//           && $this->fields["is_dynamic"]) {
-//          $inventory_show = true;
-//          $rowspan   -= 1;
-//       }
+       if (!empty($ID)
+           && $this->fields["is_dynamic"]) {
+          $inventory_show = true;
+          $rowspan   -= 1;
+       }
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";

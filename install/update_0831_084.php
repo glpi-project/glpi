@@ -1405,10 +1405,14 @@ function update0831to084() {
          $migration->addKey($table, 'is_deleted');
       }
    }
-    
+
+   ///For computers, rename is is_ocs_import to is_dynamic
+   $migration->changeField('glpi_computers', 'is_ocs_import', 'is_dynamic', 'bool');
+   
    //Add field is_dynamic
-   $types = array_merge($types, array('glpi_computers', 'glpi_printers', 'glpi_phones', 'glpi_peripherals',
-         'glpi_networkequipments', 'glpi_networkports', 'glpi_monitors'));
+   $types = array_merge($types, array('glpi_printers', 'glpi_phones', 'glpi_peripherals',
+                                      'glpi_networkequipments', 'glpi_networkports',
+                                      'glpi_monitors'));
    foreach($types as $table) {
       if ($migration->addField($table, 'is_dynamic', 'bool')) {
          $migration->migrationOneTable($table);
@@ -2488,11 +2492,6 @@ function migrateComputerLocks(Migration $migration) {
    global $DB;
    $import = array('import_printer' => 'Printer', 'import_monitor' => 'Monitor',
                    'import_peripheral' => 'Peripheral');
-   
-   //Update is_dynamic for all computers present in OCS_glpi_ocslinks
-   $query = "UPDATE `glpi_computers` SET `is_dynamic`='1'
-             WHERE `id` IN (SELECT DISTINCT `computers_id` FROM `OCS_glpi_ocslinks`)";
-   $DB->query($query);
    
    foreach ($import as $field => $itemtype) {
       foreach($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
