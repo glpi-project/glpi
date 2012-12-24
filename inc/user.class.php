@@ -536,8 +536,15 @@ class User extends CommonDBTM {
          $useremail = new UserEmail();
          foreach ($this->input['_useremails'] as $id => $email) {
             $email = trim($email);
-            $useremail->add(array('email'    => $email,
-                                  'users_id' => $this->getID()));
+            $email_input = array('email'    => $email,
+                                 'users_id' => $this->getID());
+            if ((isset($this->input['_default_email']))
+                && ($this->input['_default_email'] == $id)) {
+               $email_input['is_default'] = 1;
+            } else {
+               $email_input['is_default'] = 0;
+            }
+            $useremail->add($email_input);
          }
       }
 
@@ -706,8 +713,15 @@ class User extends CommonDBTM {
                }
 
             } else { // New email
-               $useremail->add(array('email'    => $email,
-                                     'users_id' => $this->getID()));
+               $email_input = array('email'    => $email,
+                                    'users_id' => $this->getID());
+               if ((isset($this->input['_default_email']))
+                   && ($this->input['_default_email'] == $id)) {
+                  $email_input['is_default'] = 1;
+               } else {
+                  $email_input['is_default'] = 0;
+               }
+               $useremail->add($email_input);
             }
          }
       }
@@ -1591,7 +1605,7 @@ class User extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='top'>" . _n('Email','Emails',2);
+      echo "<td>" . _n('Email','Emails',2);
       UserEmail::showAddEmailButton($this);
       echo "</td><td>";
       UserEmail::showForUser($this);

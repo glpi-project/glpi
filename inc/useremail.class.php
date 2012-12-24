@@ -119,6 +119,40 @@ class UserEmail  extends CommonDBChild {
    }
 
 
+   static function getJSCodeToAddForItemChild($field_name, $child_count_js_var) {
+      return "<input title=\'".__s('Default email')."\' type=\'radio\' name=\'_default_email\'" .
+             " value=\'-'+$child_count_js_var+'\'>&nbsp;" .
+             "<input type=\'text\' size=\'30\' ". "name=\'" . $field_name .
+             "[-'+$child_count_js_var+']\'>";
+   }
+
+
+   function showChildForItemForm($canedit, $field_name) {
+
+      if ($this->isNewID($this->getID())) {
+         $value = '';
+      } else {
+         $value = $this->fields['email'];
+      }
+
+      echo "<input title='".__s('Default email')."' type='radio' name='_default_email'
+                value='".$this->getID()."'";
+      if (!$canedit) {
+         echo " disabled";
+      }
+      if ($this->fields['is_default']) {
+         echo " checked";
+      }
+      echo ">&nbsp;";
+      if (!$canedit || $this->fields['is_dynamic']) {
+         echo "<input type='hidden' name='$field_name' value='$value'>";
+         printf(__('%1$s %2$s'), $value, "<span class='b'>(". __('D').")</span>");
+      } else {
+         echo "<input type='text' size=30 name='$field_name' value='$value' >";
+      }
+   }
+
+
    /**
     * Show emails of a user
     *
@@ -127,7 +161,6 @@ class UserEmail  extends CommonDBChild {
     * @return nothing
    **/
    static function showForUser(User $user) {
-      global $DB, $CFG_GLPI;
 
       $users_id = $user->getID();
 
@@ -137,45 +170,7 @@ class UserEmail  extends CommonDBChild {
       }
       $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
 
-      // To be sure not to load bad datas from glpi_useremails table
-      if ($users_id == 0) {
-         $users_id = -99;
-      }
-
-      $count = 0;
-
-      // Display emails
-      foreach ($DB->request("glpi_useremails", array('users_id' => $users_id,
-                                                     'ORDER'    => 'email')) as $data) {
-         if ($count) {
-            echo '<br>';
-         }
-         $count++;
-
-         echo "<input title='".__s('Default email')."' type='radio' name='_default_email'
-                value='".$data['id']."'".
-                ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
-         if (!$canedit || $data['is_dynamic']) {
-            echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
-            printf(__('%1$s %2$s'), $data['email'], "<span class='b'>(". __('D').")</span>");
-         } else {
-            echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
-                   value='".$data['email']."' >";
-         }
-
-         if (!NotificationMail::isUserAddressValid($data['email'])) {
-            echo "<span class='red'>&nbsp;".__('Invalid email address')."</span>";
-         }
-      }
-
-      if ($canedit) {
-         echo "<div id='emailadd$users_id'>";
-         // No email display field
-         if ($count == 0) {
-            echo "<input type='text' size='40' name='_useremails[-100]' value=''>";
-         }
-         echo "</div>";
-      }
+      parent::showChildsForItemForm($user, '_useremails', $canedit);
 
    }
 
@@ -184,7 +179,6 @@ class UserEmail  extends CommonDBChild {
     * @param $user
    **/
    static function showAddEmailButton(User $user) {
-      global $CFG_GLPI;
 
       $users_id = $user->getID();
       if (!$user->can($users_id,'r') && ($users_id != Session::getLoginUserID())) {
@@ -192,16 +186,9 @@ class UserEmail  extends CommonDBChild {
       }
       $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
 
-      if ($canedit) {
+      parent::showAddChildButtonForItemForm($user, '_useremails');
 
-         echo "&nbsp;<script type='text/javascript'>var nbemails=1; </script>";
-         echo "<span id='addemailbutton'><img title=\"".__s('Add')."\" alt=\"".__s('Add').
-               "\" onClick=\"var row = Ext.get('emailadd$users_id');
-                             row.createChild('<input type=\'text\' size=\'40\' ".
-                                               "name=\'_useremails[-'+nbemails+']\'><br>');
-                             nbemails++;\"
-               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
-      }
+      return;
    }
 
 
