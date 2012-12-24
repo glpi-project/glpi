@@ -532,150 +532,181 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * We can add several CommonDBChild to a given Item. In such case, we display a "+" button and
-    * the fields already entered
+    * get the Javascript "code" to add to the form when clicking on "+"
+    *
+    * @since version 0.84
+    *
+    * @see showAddChildButtonForItemForm()
+    *
+    * @param $field_name         the name of the HTML field inside Item's form
+    * @param $child_count_js_var the name of the javascript variable containing current child number
+    *                            of items
+    *
+    * @return (string) the code
+   **/
+   static function getJSCodeToAddForItemChild($field_name, $child_count_js_var) {
+      return "<input type=\'text\' size=\'40\' ". "name=\'" . $field_name .
+             "[-'+$child_count_js_var+']\'>";
+   }
+
+
+   /**
+    * display the field of a given child
+    *
+    * @since version 0.84
+    *
+    * @see showChildsForItemForm()
+    *
+    * @param $canedit     true if we can edit the child
+    * @param $field_name  the name of the HTML field inside Item's form
+    *
+    * @return nothing (display only)
+   **/
+   function showChildForItemForm($canedit, $field_name) {
+
+      if ($this->isNewID($this->getID())) {
+         $value = '';
+      } else {
+         $value = $this->getName();
+      }
+      if ($canedit) {
+         echo "<input type='text' size='40' name='$field_name' value='$value'>";
+      } else {
+         echo "<input type='hidden' name='$field_name' value='$value'>$value" ;
+      }
+   }
+
+
+   /**
+    * We can add several single CommonDBChild to a given Item. In such case, we display a "+"
+    * button and the fields already entered
     * This method display the "+" button
     *
     * @since version 0.84
     *
     * @todo study if we cannot use these methods for the user emails
-    * @see showFieldsForItemForm(CommonDBTM $item, $html_field, $db_field)
+    * @see showChildsForItemForm(CommonDBTM $item, $field_name)
     *
     * @param $item         CommonDBTM object: the item on which to add the current CommenDBChild
-    * @param $html_field   the name of the HTML field inside the Item form
+    * @param $field_name   the name of the HTML field inside Item's form
+    * @param $canedit      (default NULL) NULL to use default behaviour
     *
     * @return nothing (display only)
    **/
-   static function showAddButtonForChildItem(CommonDBTM $item, $html_field) {
+   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit = NULL) {
       global $CFG_GLPI;
 
       $items_id = $item->getID();
 
-      if ($item->isNewItem()) {
-         if (!$item->canCreate()) {
-            return false;
-         }
-         $canedit = $item->canUpdate();
-      } else {
-         if (!$item->can($items_id,'r')) {
-            return false;
-         }
+      if (is_null($canedit)) {
+         if ($item->isNewItem()) {
+            if (!$item->canCreate()) {
+               return false;
+            }
+            $canedit = $item->canUpdate();
+         } else {
+            if (!$item->can($items_id,'r')) {
+               return false;
+            }
 
-         $canedit = $item->can($items_id,"w");
+            $canedit = $item->can($items_id,"w");
+         }
       }
-
-      $lower_name  = strtolower(get_called_class());
-      $nb_item_var = 'nb'.$lower_name.'s';
-      $div_id      = $lower_name."add$items_id";
 
       if ($canedit) {
 
-         echo "&nbsp;<script type='text/javascript'>var $nb_item_var=1; </script>";
+         $lower_name         = strtolower(get_called_class());
+         $child_count_js_var = 'nb'.$lower_name.'s';
+         $div_id             = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
+
+         echo "&nbsp;<script type='text/javascript'>var $child_count_js_var=1; </script>";
          echo "<span id='add".$lower_name."button'>".
               "<img title=\"".__s('Add')."\" alt=\"". __s('Add').
                 "\" onClick=\"var row = Ext.get('$div_id');
-                             row.createChild('<input type=\'text\' size=\'40\' ".
-                "name=\'".$html_field."[-'+$nb_item_var+']\'><br>');
-                            $nb_item_var++;\"
+                             row.createChild('<br>" .
+               static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
+                            $child_count_js_var++;\"
                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
       }
    }
 
 
    /**
-    * We can add several CommonDBChild to a given Item. In such case, we display a "+" button and
-    * the fields already entered.
+    * We can add several single CommonDBChild to a given Item. In such case, we display a "+"
+    * button and the fields already entered.
     * This method display the fields
     *
     * @since version 0.84
     *
     * @todo study if we cannot use these methods for the user emails
-    * @see showAddButtonForChildItem(CommonDBTM $item, $html_field)
+    * @see showAddChildButtonForItemForm()
     *
     * @param $item         CommonDBTM object the item on which to add the current CommenDBChild
-    * @param $html_field                     the name of the HTML field inside the Item form
-    * @param $db_field                       the name of the field inside the CommonDBChild table
-    *                                        to display
+    * @param $field_name   the name of the HTML field inside Item's form
+    * @param $canedit      (default NULL) NULL to use default behaviour
     *
     * @return nothing (display only)
    **/
-   function showFieldsForItemForm(CommonDBTM $item, $html_field, $db_field) {
+   static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = NULL) {
       global $DB, $CFG_GLPI;
 
       $items_id = $item->getID();
 
-      if ($item->isNewItem()) {
-         if (!$item->canCreate()) {
-            return false;
-         }
-         $canedit = $item->canUpdate();
-      } else {
-         if (!$item->can($items_id,'r')) {
-            return false;
-         }
+      if (is_null($canedit)) {
+         if ($item->isNewItem()) {
+            if (!$item->canCreate()) {
+               return false;
+            }
+            $canedit = $item->canUpdate();
+         } else {
+            if (!$item->can($items_id,'r')) {
+               return false;
+            }
 
-         $canedit = $item->can($items_id,"w");
+            $canedit = $item->can($items_id,"w");
+         }
       }
 
-      $lower_name = strtolower($this->getType());
-      $div_id     = $lower_name."add$items_id";
+      $lower_name = strtolower(get_called_class());
+      $div_id     = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
 
      // To be sure not to load bad datas from glpi_itememails table
       if ($items_id == 0) {
          $items_id = -99;
       }
 
-      $query = "SELECT `$db_field`, `".static::getIndexName()."`
-                FROM `" . $this->getTable() . "`
+      $query = "SELECT *
+                FROM `" . static::getTable() . "`
                 WHERE `".static::$items_id."` = '".$item->getID()."'";
 
       if (preg_match('/^itemtype/', static::$itemtype)) {
          $query .= " AND `itemtype` = '".$item->getType()."'";
       }
 
-      $setDefault = $this->isField('is_default');
+
+      $current_item = new static();
 
       $count = 0;
       foreach ($DB->request($query) as $data) {
 
-         $data['is_default'] = 0;
-         $data['is_dynamic'] = 0;
+         $current_item->fields = $data;
 
          if ($count) {
             echo '<br>';
          }
          $count++;
 
-         if ($setDefault) {
-            echo "<input title='" . sprintf(__s('Default %s'), $this->getTypeName(1)) .
-                   "' type='radio' name='_default_email' value='".$data[static::getIndexName()]."'".
-                   ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
-         }
+         $current_item->showChildForItemForm($canedit, $field_name . "[" .
+                                             $current_item->getID() . "]");
 
-         $input_name  = $html_field . "[" . $data[static::getIndexName()] . "]";
-         $input_value = $data[$db_field];
-
-         if (!$canedit
-             || (isset($data['is_dynamic']) && $data['is_dynamic'])) {
-            echo "<input type='hidden' name='$input_name' value='$input_value'>" .$input_value;
-            //TRANS: D for Dynamic
-            echo "<span class='b'>&nbsp;".__('(D)')."</span>";
-         } else {
-            echo "<input type='text' size='40' name='$input_name' value='$input_value'>";
-         }
-
-         /*
-         if (!NotificationMail::isItemAddressValid($data['email'])) {
-            echo "<span class='red'>&nbsp;".__('Invalid email address')."</span>";
-         }
-         */
       }
 
       if ($canedit) {
          echo "<div id='$div_id'>";
-         // No email display field
+         // No Child display field
          if ($count == 0) {
-            echo "<input type='text' size='40' name='".$html_field."[-100]' value=''>";
+            $current_item->getEmpty();
+            $current_item->showChildForItemForm($canedit, $field_name . "[-100]");
          }
          echo "</div>";
       }

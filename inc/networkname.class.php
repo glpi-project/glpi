@@ -195,13 +195,12 @@ class NetworkName extends FQDNLabel {
                            'displaywith' => array('view')));
       echo "</td>\n</tr>\n";
 
-      $address = new IPAddress();
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$address->getTypeName(2);
-      IPAddress::showAddButtonForChildItem($this, '_ipaddresses');
+      echo "<td>".IPAddress::getTypeName(2);
+      IPAddress::showAddChildButtonForItemForm($this, '_ipaddresses');
       echo "</td>";
       echo "<td>";
-      $address->showFieldsForItemForm($this, '_ipaddresses', 'name');
+      IPAddress::showChildsForItemForm($this, '_ipaddresses');
       echo "</td>\n";
 
       echo "<td>".__('Comments')."</td>";
@@ -474,12 +473,11 @@ class NetworkName extends FQDNLabel {
 
       echo "</tr><tr class='tab_bg_1'>\n";
 
-      $address = new IPAddress();
-      echo "<td>".$address->getTypeName(2);
-      $address->showAddButtonForChildItem($name, 'NetworkName__ipaddresses');
+      echo "<td>".IPAddress::getTypeName(2);
+      IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses');
       echo "</td>";
       echo "<td>";
-      $address->showFieldsForItemForm($name, 'NetworkName__ipaddresses', 'name');
+      IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses');
       echo "</td>";
 
       echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
