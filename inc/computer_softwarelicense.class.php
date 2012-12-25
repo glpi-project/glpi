@@ -170,7 +170,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                       ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
                 WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$softwarelicenses_id'
                       AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0' " .
+                      AND `glpi_computers`.`is_template` = '0'
+                      AND `glpi_computers_softwarelicenses`.`is_deleted`='0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
 
       $result = $DB->query($query);
@@ -201,7 +202,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                       ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
                 WHERE `glpi_softwarelicenses`.`softwares_id` = '$softwares_id'
                       AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0' " .
+                      AND `glpi_computers`.`is_template` = '0'
+                      AND `glpi_computers_softwarelicenses`.`is_deleted`='0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers');
 
       $result = $DB->query($query);
@@ -310,7 +312,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$searchID'".
                              getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                              AND `glpi_computers`.`is_deleted` = '0'
-                             AND `glpi_computers`.`is_template` = '0'";
+                             AND `glpi_computers`.`is_template` = '0'
+                             AND `glpi_computers_softwarelicenses`.`is_deleted`='0'";
 
       $number = 0;
       if ($result = $DB->query($query_number)) {
@@ -379,6 +382,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                        AND `glpi_computers`.`is_deleted` = '0'
                        AND `glpi_computers`.`is_template` = '0'
+                       AND `glpi_computers_softwarelicenses`.`is_deleted`='0'
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -392,8 +396,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
                                  'specific_actions' => array('move_license'
-                                                                     => _x('button', 'Move'),
-                                                             'purge' => _x('button',
+                                                                      => _x('button', 'Move'),
+                                                             'delete' => _x('button',
                                                                            'Delete permanently')));
                // Options to update license
                $paramsma['extraparams']['options']['move']['used'] = array($searchID);

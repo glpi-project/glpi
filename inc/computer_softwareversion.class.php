@@ -423,7 +423,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                        AND `glpi_computers`.`is_deleted` = '0'
                        AND `glpi_computers`.`is_template` = '0'
-                       AND `glpi_softwareversions`.`is_deleted`='0'
+                       AND `glpi_computers_softwareversions`.`is_deleted`='0'
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -788,7 +788,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                        = `glpi_softwareversions`.`id`))
                 LEFT JOIN `glpi_states`
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-                WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id' ";
+                WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
+                   AND `glpi_computers_softwarelicenses`.`is_deleted`='0'";
 
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',',$installed).")";
