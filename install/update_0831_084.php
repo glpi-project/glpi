@@ -1394,7 +1394,8 @@ function update0831to084() {
    $migration->migrationOneTable('glpi_computers_softwareversions');
    
    $types = array('glpi_computers_items', 'glpi_computervirtualmachines',
-         'glpi_computers_softwareversions', 'glpi_computerdisks', 'glpi_networkports');
+         'glpi_computers_softwareversions', 'glpi_computerdisks', 'glpi_networkports',
+         'glpi_computers_softwarelicenses');
    foreach (Item_Devices::getDeviceTypes() as $id => $type) {
       $types[] = getTableForItemType($type);
    }

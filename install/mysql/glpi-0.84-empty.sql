@@ -456,10 +456,14 @@ CREATE TABLE `glpi_computers_softwarelicenses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `computers_id` int(11) NOT NULL DEFAULT '0',
   `softwarelicenses_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`computers_id`,`softwarelicenses_id`),
   KEY `computers_id` (`computers_id`),
-  KEY `softwarelicenses_id` (`softwarelicenses_id`)
+  KEY `softwarelicenses_id` (`softwarelicenses_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
