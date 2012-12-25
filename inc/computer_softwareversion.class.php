@@ -367,7 +367,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                     = `glpi_computers`.`id`)
                           WHERE `glpi_computers_softwareversions`.`softwareversions_id`
                                        = '$searchID'".
-                                getEntitiesRestrictRequest(' AND', 'glpi_computers') ." 
+                                getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'
                                 AND `glpi_computers_softwareversions`.`is_deleted`='0'";
@@ -679,6 +679,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_softwares`
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
+                   AND `glpi_computers_softwareversions`.`is_deleted`='0'
                 ORDER BY `softwarecategories_id`, `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
@@ -722,7 +723,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'specific_actions' => array('purge'
+                              'specific_actions' => array('delete'
                                                             => _x('button', 'Delete permanently')));
 
             Html::showMassiveActions(__CLASS__, $paramsma);
@@ -1125,7 +1126,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   return self::createTabEntry(Software::getTypeName(2),
                                               countElementsInTable('glpi_computers_softwareversions',
                                                                    "computers_id
-                                                                        = '".$item->getID()."'"));
+                                                                        = '".$item->getID()."'
+                                                                    AND `is_deleted`='0'"));
                }
                return Software::getTypeName(2);
             }

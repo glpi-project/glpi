@@ -54,7 +54,6 @@ class SoftwareVersion extends CommonDBChild {
    function cleanDBonPurge() {
       global $DB;
 
-      // Delete Installations
       $query2 = "DELETE
                  FROM `glpi_computers_softwareversions`
                  WHERE `softwareversions_id` = '".$this->fields['id']."'";
