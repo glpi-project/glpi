@@ -92,12 +92,16 @@ class FQDN extends CommonDropdown {
          $entityID = $_SESSION['glpiactive_entity'];
       }
 
+      // Should be removed because, there can be several same domains in same entity for instance
+      // when defining different views
+      /*
       if (!self::checkFQDNUnicity($input["fqdn"], (isset($input["id"]) ? $input["id"] : -1),
                                   $entityID)) {
          Session::addMessageAfterRedirect(__('Internet domain already defined in the visible entities'),
                                           false, ERROR);
          return false;
       }
+      */
 
       $input["fqdn"] = strtolower($input["fqdn"]) ;
 
