@@ -117,12 +117,15 @@ implements CAS_Request_RequestInterface
          * Set SSL configuration
         *********************************************************/
         if ($this->caCertPath) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1);
+            if ($this->validateCN) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            } else {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1);
+            }
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
             curl_setopt($ch, CURLOPT_CAINFO, $this->caCertPath);
-            phpCAS::trace('CURL: Set CURLOPT_CAINFO');
+            phpCAS::trace('CURL: Set CURLOPT_CAINFO ' . $this->caCertPath);
         } else {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         }
 

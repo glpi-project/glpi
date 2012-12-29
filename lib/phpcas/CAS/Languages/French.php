@@ -59,7 +59,7 @@ class CAS_Languages_French implements CAS_Languages_LanguageInterface
      */
     public function getAuthenticationWanted()
     {
-        return 'Authentication CAS n�cessaire&nbsp;!';
+        return 'Authentication CAS nécessaire&nbsp;!';
     }
 
     /**
@@ -69,7 +69,7 @@ class CAS_Languages_French implements CAS_Languages_LanguageInterface
      */
     public function getLogout()
     {
-        return 'D�connexion demand�e&nbsp;!';
+        return 'Déconnexion demandée&nbsp;!';
     }
 
     /**
@@ -79,7 +79,7 @@ class CAS_Languages_French implements CAS_Languages_LanguageInterface
      */
     public function getShouldHaveBeenRedirected()
     {
-        return 'Vous auriez du etre redirig�(e) vers le serveur CAS. Cliquez <a href="%s">ici</a> pour continuer.';
+        return 'Vous auriez du etre redirigé(e) vers le serveur CAS. Cliquez <a href="%s">ici</a> pour continuer.';
     }
 
     /**
@@ -99,7 +99,7 @@ class CAS_Languages_French implements CAS_Languages_LanguageInterface
      */
     public function getYouWereNotAuthenticated()
     {
-        return '<p>Vous n\'avez pas �t� authentifi�(e).</p><p>Vous pouvez soumettre votre requete � nouveau en cliquant <a href="%s">ici</a>.</p><p>Si le probl�me persiste, vous pouvez contacter <a href="mailto:%s">l\'administrateur de ce site</a>.</p>';
+        return '<p>Vous n\'avez pas été authentifié(e).</p><p>Vous pouvez soumettre votre requete à nouveau en cliquant <a href="%s">ici</a>.</p><p>Si le problème persiste, vous pouvez contacter <a href="mailto:%s">l\'administrateur de ce site</a>.</p>';
     }
 
     /**
