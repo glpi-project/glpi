@@ -49,7 +49,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getUsingServer()
     {
-        return '��������������� � ������������';
+        return '÷ñçóéìïðïéåßôáé ï åîõðçñåôçôÞò';
     }
 
     /**
@@ -59,7 +59,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getAuthenticationWanted()
     {
-        return '���������� � ����������� CAS!';
+        return 'Áðáéôåßôáé ç ôáõôïðïßçóç CAS!';
     }
 
     /**
@@ -69,7 +69,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getLogout()
     {
-        return '���������� � ���������� ��� CAS!';
+        return 'Áðáéôåßôáé ç áðïóýíäåóç áðü CAS!';
     }
 
     /**
@@ -79,7 +79,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getShouldHaveBeenRedirected()
     {
-        return '�� ������ �� ������ �������������� ���� ����������� CAS. ����� ���� <a href="%s">���</a> ��� �� ����������.';
+        return 'Èá Ýðñåðå íá åß÷áôå áíáêáôåõèõíèåß óôïí åîõðçñåôçôÞ CAS. ÊÜíôå êëßê <a href="%s">åäþ</a> ãéá íá óõíå÷ßóåôå.';
     }
 
     /**
@@ -89,7 +89,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getAuthenticationFailed()
     {
-        return '� ����������� CAS �������!';
+        return 'Ç ôáõôïðïßçóç CAS áðÝôõ÷å!';
     }
 
     /**
@@ -99,7 +99,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getYouWereNotAuthenticated()
     {
-        return '<p>��� ���������������.</p><p>�������� �� ����������������, �������� ���� <a href="%s">���</a>.</p><p>��� �� �������� ���������, ����� �� ����� �� ��� <a href="mailto:%s">�����������</a>.</p>';
+        return '<p>Äåí ôáõôïðïéçèÞêáôå.</p><p>Ìðïñåßôå íá îáíáðñïóðáèÞóåôå, êÜíïíôáò êëßê <a href="%s">åäþ</a>.</p><p>Åáí ôï ðñüâëçìá åðéìåßíåé, åëÜôå óå åðáöÞ ìå ôïí <a href="mailto:%s">äéá÷åéñéóôÞ</a>.</p>';
     }
 
     /**
@@ -109,7 +109,7 @@ class CAS_Languages_Greek implements CAS_Languages_LanguageInterface
      */
     public function getServiceUnavailable()
     {
-        return '� �������� `<b>%s</b>\' ��� ����� ��������� (<b>%s</b>).';
+        return 'Ç õðçñåóßá `<b>%s</b>\' äåí åßíáé äéáèÝóéìç (<b>%s</b>).';
     }
 }
 ?>

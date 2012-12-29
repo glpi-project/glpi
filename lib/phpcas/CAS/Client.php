@@ -190,11 +190,13 @@ class CAS_Client
      */
     public function setLang($lang)
     {
+        phpCAS::traceBegin();
         $obj = new $lang();
         if (!($obj instanceof CAS_Languages_LanguageInterface)) {
             throw new CAS_InvalidArgumentException('$className must implement the CAS_Languages_LanguageInterface');
         }
         $this->_lang = $lang;
+        phpCAS::traceEnd();
     }
     /**
      * Create the language
@@ -783,7 +785,7 @@ class CAS_Client
 
         phpCAS::traceBegin();
 
-        $this->_change_session_id = $changeSessionID; // true : allow to change the session_id(), false session_id won't be change and logout won't be handle because of that
+        $this->_setChangeSessionID($changeSessionID); // true : allow to change the session_id(), false session_id won't be change and logout won't be handle because of that
 
         // skip Session Handling for logout requests and if don't want it'
         if (session_id()=="" && !$this->_isLogoutRequest()) {
@@ -900,11 +902,11 @@ class CAS_Client
     /**
      * Set a parameter whether to allow phpCas to change session_id
      *
-     * @param bool $_change_session_id allow phpCas to change session_id
+     * @param bool $allowed allow phpCas to change session_id
      *
      * @return void
      */
-    private function setChangeSessionID($allowed)
+    private function _setChangeSessionID($allowed)
     {
         $this->_change_session_id = $allowed;
     }
@@ -1128,6 +1130,8 @@ class CAS_Client
         $res = false;
         if ( $this->isAuthenticated() ) {
             phpCAS::trace('user is authenticated');
+            /* The 'auth_checked' variable is removed just in case it's set. */
+            unset($_SESSION['phpCAS']['auth_checked']);
             $res = true;
         } else if (isset($_SESSION['phpCAS']['auth_checked'])) {
             // the previous request has redirected the client to the CAS server
@@ -1309,7 +1313,7 @@ class CAS_Client
 
         if ( $this->_isCallbackMode() ) {
             // Rebroadcast the pgtIou and pgtId to all nodes
-            if ($this->rebroadcast&&!isset($_POST['rebroadcast'])) {
+            if ($this->_rebroadcast&&!isset($_POST['rebroadcast'])) {
                 $this->_rebroadcast(self::PGTIOU);
             }
             $this->_callback();
@@ -1466,7 +1470,7 @@ class CAS_Client
             phpCAS::traceEnd();
             return;
         }
-        if (!$this->_change_session_id && is_null($this->_signoutCallbackFunction)) {
+        if (!$this->getChangeSessionID() && is_null($this->_signoutCallbackFunction)) {
             phpCAS::trace("phpCAS can't handle logout requests if it is not allowed to change session_id.");
         }
         phpCAS::trace("Logout requested");
@@ -1514,7 +1518,7 @@ class CAS_Client
             }
 
             // If phpCAS is managing the session_id, destroy session thanks to session_id.
-            if ($this->_change_session_id) {
+            if ($this->getChangeSessionID()) {
                 $session_id = preg_replace('/[^a-zA-Z0-9\-]/', '', $ticket2logout);
                 phpCAS::trace("Session id: ".$session_id);
 
@@ -1616,7 +1620,15 @@ class CAS_Client
      *
      * @hideinitializer
      */
-    private $_cas_server_ca_cert = '';
+    private $_cas_server_ca_cert = null;
+
+
+    /**
+     * validate CN of the CAS server certificate
+     *
+     * @hideinitializer
+     */
+    private $_cas_server_cn_validate = true;
 
     /**
      * Set to true not to validate the CAS server.
@@ -1629,14 +1641,16 @@ class CAS_Client
     /**
      * Set the CA certificate of the CAS server.
      *
-     * @param string $cert the PEM certificate file name of the CA that emited
+     * @param string $cert        the PEM certificate file name of the CA that emited
      * the cert of the server
+     * @param bool   $validate_cn valiate CN of the CAS server certificate
      *
      * @return void
      */
-    public function setCasServerCACert($cert)
+    public function setCasServerCACert($cert, $validate_cn)
     {
         $this->_cas_server_ca_cert = $cert;
+        $this->_cas_server_cn_validate = $validate_cn;
     }
 
     /**
@@ -1699,7 +1713,6 @@ class CAS_Client
         $arr = preg_split('/\n/', $text_response);
         $this->_setUser(trim($arr[1]));
         $result = true;
-        break;
 
         if ($result) {
             $this->_renameSession($this->getTicket());
@@ -2415,7 +2428,7 @@ class CAS_Client
             phpCAS::error('one of the methods phpCAS::setCasServerCACert() or phpCAS::setNoCasServerValidation() must be called.');
         }
         if ($this->_cas_server_ca_cert != '') {
-            $request->setSslCaCert($this->_cas_server_ca_cert);
+            $request->setSslCaCert($this->_cas_server_ca_cert, $this->_cas_server_cn_validate);
         }
 
         // add extra stuff if SAML
@@ -3085,11 +3098,17 @@ class CAS_Client
             }
         }
         if (!strpos($server_url, ':')) {
-            if ( ($this->_isHttps() && $_SERVER['SERVER_PORT']!=443)
-                || (!$this->_isHttps() && $_SERVER['SERVER_PORT']!=80)
+            if (empty($_SERVER['HTTP_X_FORWARDED_PORT'])) {
+                $server_port = $_SERVER['SERVER_PORT'];
+            } else {
+                $server_port = $_SERVER['HTTP_X_FORWARDED_PORT'];
+            }
+
+            if ( ($this->_isHttps() && $server_port!=443)
+                || (!$this->_isHttps() && $server_port!=80)
             ) {
                 $server_url .= ':';
-                $server_url .= $_SERVER['SERVER_PORT'];
+                $server_url .= $server_port;
             }
         }
         return $server_url;
@@ -3152,7 +3171,7 @@ class CAS_Client
     private function _renameSession($ticket)
     {
         phpCAS::traceBegin();
-        if ($this->_change_session_id) {
+        if ($this->getChangeSessionID()) {
             if (!empty($this->_user)) {
                 $old_session = $_SESSION;
                 session_destroy();
