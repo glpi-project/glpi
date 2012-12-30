@@ -93,7 +93,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $standard_speeds = self::getPortSpeed();
       if (!isset($standard_speeds[$this->fields['speed']])
-          && (!empty($this->fields['speed']))) {
+          && !empty($this->fields['speed'])) {
          $speed = self::transformPortSpeed($this->fields['speed'], true);
       } else {
          $speed = true;
