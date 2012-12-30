@@ -97,17 +97,17 @@ class NotificationTargetContract extends NotificationTarget {
                break;
          }
 
-         $tmp['##contract.url##']    = urldecode($CFG_GLPI["url_base"].
-                                                 "/index.php?redirect=contract_".$id);
+         $tmp['##contract.url##']          = urldecode($CFG_GLPI["url_base"].
+                                                          "/index.php?redirect=contract_".$id);
          $tmp['##contract.items.number##'] = 0;
-         $tmp['##contract.items##'] = '';
+         $tmp['##contract.items##']        = '';
          if (isset($contract['items']) && count($contract['items'])) {
             $toadd = array();
             foreach ($contract['items'] as $itemtype => $item) {
                if ($type = getItemForItemtype($itemtype)) {
                   $typename = $type->getTypeName();
                   foreach ($item as $item_data) {
-                     $toadd[] = sprintf('%1$s - %2$s',$typename, $item_data['name']);
+                     $toadd[] = sprintf(__('%1$s - %2$s'),$typename, $item_data['name']);
                   }
                }
             }
@@ -115,7 +115,7 @@ class NotificationTargetContract extends NotificationTarget {
                $tmp["##contract.items##"] = implode(', ',$toadd);
             }
          }
-         
+
          $this->datas['contracts'][] = $tmp;
       }
 
