@@ -501,20 +501,19 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       // Display auto inventory informations
-      $rowspan = 10;
+      $rowspan        = 10;
       $inventory_show = false;
-      
+
       if (!empty($ID)
           && $this->fields["is_dynamic"]) {
          $inventory_show = true;
-         $rowspan   -= 4;
+         $rowspan       -= 4;
       }
-      
+
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
-           "</textarea>";
-      echo "</td></tr>\n";
+      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
@@ -554,9 +553,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       if ($inventory_show) {
-         echo "<td rowspan='4'>";
-         _e('Automatic inventory');
-         echo "</td>";
+         echo "<td rowspan='4'>__('Automatic inventory')</td>";
          echo "<td rowspan='4'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";

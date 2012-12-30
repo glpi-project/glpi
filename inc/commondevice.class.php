@@ -223,15 +223,15 @@ abstract class CommonDevice extends CommonDropdown {
       if (!isset($input['designation']) || empty($input['designation'])) {
          return 0;
       }
-      $where = array();
+      $where      = array();
       $a_criteria = $this->getImportCriteria();
       foreach ($a_criteria as $criteria) {
          if (isset($input[$criteria])) {
             $where[] = "`".$criteria."`='".$input[$criteria]."'";
-            
+
          }
       }
-      
+
       $query = "SELECT `id`
                 FROM `".$this->getTable()."`
                 WHERE ".  implode(" AND ", $where);
@@ -243,12 +243,13 @@ abstract class CommonDevice extends CommonDropdown {
       }
       return $this->add($input);
    }
-   
-   
-   
-   /*
+
+
+   /**
     * Criteria used for import function
-    */
+    *
+    * @since version 0.84
+   **/
    function getImportCriteria() {
       return array('designation', 'manufacturers_id');
    }

@@ -116,8 +116,11 @@ class Problem_Ticket extends CommonDBRelation{
       parent::post_deleteFromDB();
    }
 
+
    /**
     * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    *
+    * @since version 0.84
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
@@ -127,19 +130,22 @@ class Problem_Ticket extends CommonDBRelation{
             if (isset($input['problems_id']) && $problem->getFromDB($input['problems_id'])) {
                Ticket::showMassiveSolutionForm($problem->getEntityID());
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                                          _sx('button', 'Post')."'>";
+                             _sx('button', 'Post')."'>";
                return true;
             }
             return false;
-            
+
          default :
             return parent::showSpecificMassiveActionsParameters($input);
       }
       return false;
    }
-   
+
+
    /**
     * @see CommonDBTM::doSpecificMassiveActions()
+    *
+    * @since version 0.84
    **/
    function doSpecificMassiveActions($input=array()) {
 
@@ -154,12 +160,12 @@ class Problem_Ticket extends CommonDBRelation{
                if ($val == 1) {
                   if ($this->can($key,'r')) {
                      if ($ticket->getFromDB($this->fields['tickets_id'])
-                        && $ticket->canSolve()) {
-                        $toupdate  = array();
+                         && $ticket->canSolve()) {
+                        $toupdate                     = array();
                         $toupdate['id']               = $ticket->getID();
                         $toupdate['solutiontypes_id'] = $input['solutiontypes_id'];
                         $toupdate['solution']         = $input['solution'];
-                        
+
                         if ($ticket->update($toupdate)) {
                            $res['ok']++;
                         } else {
@@ -180,7 +186,8 @@ class Problem_Ticket extends CommonDBRelation{
       }
       return $res;
    }
-   
+
+
    /**
     * Show tickets for a problem
     *
@@ -246,13 +253,15 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $numrows,
-                                      'specific_actions' => array('purge' => _x('button',
-                                                                           'Delete permanently'),
-                                                                  'solveticket' => __('Solve tickets')),
-                                      'extraparams' => array('problems_id'   => $problem->getID()),
-                                      'width'         => 1000,
-                                      'height'        => 500);
+         $massiveactionparams = array('num_displayed'    => $numrows,
+                                      'specific_actions' => array('purge'
+                                                                    => _x('button',
+                                                                          'Delete permanently'),
+                                                                  'solveticket'
+                                                                    => __('Solve tickets')),
+                                      'extraparams'      => array('problems_id' => $problem->getID()),
+                                      'width'            => 1000,
+                                      'height'           => 500);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";

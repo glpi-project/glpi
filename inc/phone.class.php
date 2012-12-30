@@ -250,13 +250,13 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       // Display auto inventory informations
-      $rowspan = 7;
+      $rowspan        = 7;
       $inventory_show = false;
 
        if (!empty($ID)
            && $this->fields["is_dynamic"]) {
           $inventory_show = true;
-          $rowspan   -= 2;
+          $rowspan       -= 2;
        }
 
       echo "<tr class='tab_bg_1'>";
@@ -268,8 +268,8 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan'>
-            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Brand')."</td>";

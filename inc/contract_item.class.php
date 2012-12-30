@@ -187,16 +187,20 @@ class Contract_Item extends CommonDBRelation{
       return countElementsInTable(array('glpi_contracts_items'), $restrict);
    }
 
+
    /**
+    * @since version 0.84
+    *
     * @param $contract_id   contract ID
-    * @param $entities_id   entity ID 
+    * @param $entities_id   entity ID
+    *
     * @return array of items linked to contracts
    **/
    static function getItemsForContract($contract_id, $entities_id) {
       global $DB;
 
       $items = array();
-      
+
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_contracts_items`
                 WHERE `glpi_contracts_items`.`contracts_id` = '$contract_id'
@@ -205,7 +209,7 @@ class Contract_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $data = array();
+      $data    = array();
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
@@ -236,13 +240,14 @@ class Contract_Item extends CommonDBRelation{
          $result_linked = $DB->query($query);
          $nb            = $DB->numrows($result_linked);
 
-         while ($objdata=$DB->fetch_assoc($result_linked)) {
+         while ($objdata = $DB->fetch_assoc($result_linked)) {
             $items[$itemtype][$objdata['id']] = $objdata;
          }
       }
       return $items;
    }
-   
+
+
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/

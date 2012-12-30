@@ -2138,7 +2138,7 @@ class Rule extends CommonDBTM {
    **/
    function showAndAddRuleForm($item) {
 
-      $rand = mt_rand();
+      $rand    = mt_rand();
       $canedit = Session::haveRight(static::$right, "w");
 
       if ($canedit

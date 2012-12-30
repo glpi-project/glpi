@@ -1037,7 +1037,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // No name set name
       $input["name"]    = ltrim($input["name"]);
-      $input['content'] = ltrim($input['content']);      
+      $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
          $clean_content = Toolbox::stripslashes_deep($input['content']);
          $input["name"] = preg_replace('/\r\n/',' ',$clean_content);
@@ -1867,7 +1867,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab = array();
       return $tab;
    }
-   
+
    /**
     * Get the ITIL object process status list
     *
@@ -2920,9 +2920,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $can_assign     = $this->canAssign();
       $can_assigntome = $this->canAssignToMe();
       if (isset($options['canupdate']) && !$options['canupdate']) {
-         $can_admin = false;
-         $can_assign = false;
-         $can_assigntome = false;
+         $can_admin       = false;
+         $can_assign      = false;
+         $can_assigntome  = false;
       }
 
       // Manage actors : requester and assign
@@ -2967,7 +2967,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          $candeleteobserver = true;
 
-      } else if (($ID > 0) && !in_array($this->fields['status'], $this->getClosedStatusArray())
+      } else if (($ID > 0)
+                 && !in_array($this->fields['status'], $this->getClosedStatusArray())
                  && !$is_hidden['_users_id_observer']
                  && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                  && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
@@ -3324,7 +3325,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $canedit = $this->canSolve();
       $options = array();
 
-      
+
       if ($knowbase_id_toload > 0) {
          $kb = new KnowbaseItem();
          if ($kb->getFromDB($knowbase_id_toload)) {
@@ -3417,6 +3418,9 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Form to add a solution to an ITIL object
     *
+    * @since version 0.84
+    *
+    * @param $entities_id
    **/
    static function showMassiveSolutionForm($entities_id) {
       global $CFG_GLPI;
@@ -3425,8 +3429,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo '<tr><th colspan=4>'.__('Solve tickets').'</th></tr>';
 
       $rand_template = mt_rand();
-      $rand_text = mt_rand();
-      $rand_type = mt_rand();
+      $rand_text     = mt_rand();
+      $rand_type     = mt_rand();
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
 
@@ -3434,43 +3438,36 @@ abstract class CommonITILObject extends CommonDBTM {
                                        'entity'   => $entities_id,
                                        'rand'     => $rand_template,
                                        // Load type and solution from bookmark
-                                       'toupdate'
-                                                => array('value_fieldname'
-                                                                     => 'value',
-                                                   'to_update'  => 'solution'.$rand_text,
-                                                   'url'        => $CFG_GLPI["root_doc"].
-                                                                  "/ajax/solution.php",
-                                                   'moreparams'
-                                                            => array('type_id'
-                                                               => 'dropdown_solutiontypes_id'.
-                                                                     $rand_type))));
+                                       'toupdate' => array('value_fieldname'
+                                                                        => 'value',
+                                                           'to_update'  => 'solution'.$rand_text,
+                                                           'url'        => $CFG_GLPI["root_doc"].
+                                                                            "/ajax/solution.php",
+                                                           'moreparams'
+                                                              => array('type_id'
+                                                                        => 'dropdown_solutiontypes_id'.
+                                                                            $rand_type))));
 
-      echo "</td><td colspan='2'>&nbsp;";
-      echo "</td></tr>";
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Solution type')."</td><td>";
-
       SolutionType::dropdown(array('value'  => 0,
-                                    'rand'   => $rand_type,
-                                    'entity' => $entities_id));
+                                   'rand'   => $rand_type,
+                                   'entity' => $entities_id));
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Description')."</td><td colspan='3'>";
-
-
       $rand = mt_rand();
       Html::initEditorSystem("solution$rand");
-
       echo "<div id='solution$rand_text'>";
-      echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'>".
-            "</textarea></div>";
-
+      echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'></textarea></div>";
       echo "</td></tr>";
 
       echo '</table>';
 
    }
+
 
    /**
     * Update date mod of the ITIL object

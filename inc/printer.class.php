@@ -375,13 +375,13 @@ class Printer  extends CommonDBTM {
 
 
       // Display auto inventory informations
-      $rowspan = 6;
+      $rowspan        = 6;
       $inventory_show = false;
 
        if (!empty($ID)
            && $this->fields["is_dynamic"]) {
           $inventory_show = true;
-          $rowspan   -= 2;
+          $rowspan       -= 2;
        }
 
       echo "<tr class='tab_bg_1'>";
@@ -390,9 +390,9 @@ class Printer  extends CommonDBTM {
       Domain::dropdown(array('value' => $this->fields["domains_id"]));
       echo "</td>";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
-      echo "<td rowspan='$rowspan'><textarea cols='45' rows='".($rowspan+3)."' name='comment' >".
-            $this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "<td rowspan='$rowspan'>";
+      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Memory')."</td>\n";
@@ -653,7 +653,7 @@ class Printer  extends CommonDBTM {
       $tab[13]['field']          = 'memory_size';
       $tab[13]['name']           = __('Memory');
       $tab[13]['datatype']       = 'string';
-      
+
       $tab[11]['table']          = $this->getTable();
       $tab[11]['field']          = 'init_pages_counter';
       $tab[11]['name']           = __('Initial page counter');

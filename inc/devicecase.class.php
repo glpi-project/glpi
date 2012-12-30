@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -108,14 +108,18 @@ class DeviceCase extends CommonDevice {
             break;
       }
    }
-   
-   
-   
-   /*
+
+
+   /**
     * Criteria used for import function
-    */
-   function getImportCriteria() {
+    *
+    * @see CommonDevice::getImportCriteria()
+    *
+    * @since version 0.84
+    **/
+    function getImportCriteria() {
       return array('designation', 'manufacturers_id', 'devicecasetypes_id');
    }
+
 }
 ?>

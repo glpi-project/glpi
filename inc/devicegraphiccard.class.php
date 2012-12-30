@@ -124,6 +124,8 @@ class DeviceGraphicCard extends CommonDevice {
    /**
     * Criteria used for import function
     *
+    * @see CommonDevice::getImportCriteria()
+    *
     * @since version 0.84
    **/
    function getImportCriteria() {

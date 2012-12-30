@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -78,13 +78,16 @@ class Alert extends CommonDBTM {
       $DB->query($query);
    }
 
+
    /**
     * Clear all alerts  for an item
     *
-    *@param $itemtype   ID of the type to clear
-    *@param $ID         ID of the item to clear
+    * @since version 0.84
     *
-    *@return nothing
+    * @param $itemtype   ID of the type to clear
+    * @param $ID         ID of the item to clear
+    *
+    * @return nothing
    **/
    function cleanDBonItemDelete($itemtype, $ID) {
       global $DB;
@@ -95,7 +98,8 @@ class Alert extends CommonDBTM {
                       AND `items_id` = '$ID'";
       $DB->query($query);
    }
-   
+
+
    /**
     * @param $options array
    **/

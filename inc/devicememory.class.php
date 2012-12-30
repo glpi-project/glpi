@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -140,11 +140,15 @@ class DeviceMemory extends CommonDevice {
             break;
       }
    }
-   
-   
-   /*
+
+
+   /**
     * Criteria used for import function
-    */
+    *
+    * @see CommonDevice::getImportCriteria()
+    *
+    * @since version 0.84
+   **/
    function getImportCriteria() {
       return array('designation', 'devicememorytypes_id', 'manufacturers_id');
    }

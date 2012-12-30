@@ -286,13 +286,13 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       // Display auto inventory informations
-      $rowspan = 6;
+      $rowspan        = 6;
       $inventory_show = false;
 
        if (!empty($ID)
            && $this->fields["is_dynamic"]) {
           $inventory_show = true;
-          $rowspan   -= 3;
+          $rowspan       -= 3;
        }
 
       echo "<tr class='tab_bg_1'>";
@@ -304,8 +304,8 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan'>
-            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
+            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
