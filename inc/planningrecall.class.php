@@ -57,10 +57,13 @@ class PlanningRecall extends CommonDBChild {
       return $this->fields['users_id'] == Session::getLoginUserID();
    }
 
+
    function cleanDBonPurge() {
+
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
+
 
    static function isAvailable() {
       global $CFG_GLPI;

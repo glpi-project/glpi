@@ -254,15 +254,15 @@ class Peripheral extends CommonDBTM {
       echo "</td></tr>\n";
 
       // Display auto inventory informations
-      $rowspan = 3;
+      $rowspan        = 3;
       $inventory_show = false;
 
        if (!empty($ID)
            && $this->fields["is_dynamic"]) {
           $inventory_show = true;
-          $rowspan   -= 1;
+          $rowspan       -= 1;
        }
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
@@ -272,8 +272,8 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
       echo "<td rowspan='$rowspan'>
-            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Brand')."</td>\n";

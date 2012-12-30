@@ -360,16 +360,19 @@ abstract class CommonITILTask  extends CommonDBTM {
       $this->fields['state'] = 1;
    }
 
+
    /**
     * @see CommonDBTM::cleanDBonPurge()
     *
     * @since version 0.84
    **/
    function cleanDBonPurge() {
+
       $class = new PlanningRecall();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
-   
+
+
    // SPECIFIC FUNCTIONS
 
    /**

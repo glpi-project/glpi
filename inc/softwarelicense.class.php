@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -81,14 +81,17 @@ class SoftwareLicense extends CommonDBTM {
       return $input;
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    function cleanDBonPurge() {
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
    }
 
-   
+
    function post_addItem() {
       global $CFG_GLPI;
 

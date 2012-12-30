@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -139,14 +139,18 @@ class DeviceDrive extends CommonDevice {
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
-   
-   
-   
-   /*
+
+
+   /**
     * Criteria used for import function
-    */
+    *
+    * @see CommonDevice::getImportCriteria()
+    *
+    * @since version 0.84
+   **/
    function getImportCriteria() {
       return array('designation', 'manufacturers_id', 'interfacetypes_id');
    }
+
 }
 ?>
