@@ -639,10 +639,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function post_addItem() {
 
-      if ((isset($this->input['_no_history'])
-           && ($this->input['_no_history']))
-          || ((!static::$logs_for_item_1)
-              && (!static::$logs_for_item_2))) {
+      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
+          || (!static::$logs_for_item_1
+              && !static::$logs_for_item_2)) {
          return;
       }
 
@@ -652,7 +651,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if (($item1 !== false)
           && ($item2 !== false)) {
 
-         if ($item1->dohistory && static::$logs_for_item_1) {
+         if ($item1->dohistory
+             && static::$logs_for_item_1) {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem2($item2, 'add'));
@@ -682,10 +682,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function post_updateItem($history=1) {
 
-      if ((isset($this->input['_no_history'])
-           && ($this->input['_no_history']))
-          || ((!static::$logs_for_item_1)
-              && (!static::$logs_for_item_2))) {
+      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
+          || (!static::$logs_for_item_1
+              && !static::$logs_for_item_2)) {
          return;
       }
 
@@ -736,7 +735,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
              && $previous1 && $previous1->dohistory
              && static::$logs_for_item_1) {
             $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem2($previous2, 'update item previous'));
+            $changes[1] = addslashes($this->getHistoryNameForItem2($previous2,
+                                     'update item previous'));
             $changes[2] = "";
             Log::history($previous1->getID(), $previous1->getType(), $changes,
                          $previous2->getType(), static::$log_history_1_delete);
@@ -746,7 +746,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
              && $previous2 && $previous2->dohistory
              && static::$logs_for_item_2) {
             $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem1($previous1, 'update item previous'));
+            $changes[1] = addslashes($this->getHistoryNameForItem1($previous1,
+                                     'update item previous'));
             $changes[2] = "";
             Log::history($previous2->getID(), $previous2->getType(), $changes,
                          $previous1->getType(), static::$log_history_2_delete);
@@ -758,8 +759,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem2($new2, 'update item next'));
-            Log::history($new1->getID(), $new1->getType(), $changes,
-                         $new2->getType(), static::$log_history_1_add);
+            Log::history($new1->getID(), $new1->getType(), $changes, $new2->getType(),
+                         static::$log_history_1_add);
          }
 
          if ($new1
@@ -768,8 +769,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             $changes[0] = '0';
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem1($new1, 'update item next'));
-            Log::history($new2->getID(), $new2->getType(), $changes,
-                         $new1->getType(), static::$log_history_2_add);
+            Log::history($new2->getID(), $new2->getType(), $changes, $new1->getType(),
+                         static::$log_history_2_add);
          }
       }
    }
@@ -784,10 +785,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function post_deleteFromDB() {
 
-      if ((isset($this->input['_no_history'])
-           && ($this->input['_no_history']))
-          || ((!static::$logs_for_item_1)
-              && (!static::$logs_for_item_2))) {
+      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
+          || (!static::$logs_for_item_1
+              && !static::$logs_for_item_2)) {
          return;
       }
 

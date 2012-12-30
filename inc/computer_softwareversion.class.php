@@ -54,10 +54,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return _n('Installation', 'Installations', $nb);
    }
 
+
    function prepareInputForAdd($input) {
 
-      if ((!isset($input['is_template_computer']))
-          || (!isset($input['is_deleted_computer']))) {
+      if (!isset($input['is_template_computer'])
+          || !isset($input['is_deleted_computer'])) {
          // Get template and deleted information from computer
          // If computer set update is_template / is_deleted infos to ensure data validity
          if (isset($input['computers_id'])) {
@@ -77,8 +78,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    **/
    function prepareInputForUpdate($input) {
 
-      if ((!isset($input['is_template_computer']))
-          || (!isset($input['is_deleted_computer']))) {
+      if (!isset($input['is_template_computer'])
+          || !isset($input['is_deleted_computer'])) {
          // If computer set update is_template / is_deleted infos to ensure data validity
          if (isset($input['computers_id'])) {
             // Get template and deleted information from computer

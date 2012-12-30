@@ -2611,7 +2611,7 @@ class Ticket extends CommonITILObject {
    static function getNewStatusArray() {
       return array(self::INCOMING);
    }
-   
+
    /**
     * Get the ITIL object assign or plan status list
     *
@@ -3554,7 +3554,7 @@ class Ticket extends CommonITILObject {
 
       // Check if profile / entity set type and category and try to load template for these values
       if ($template_loaded) { // template loaded for profile or entity
-         $newtype = $type;
+         $newtype              = $type;
          $newitilcategories_id = $itilcategories_id;
          // Get predefined values for ticket template
          if (isset($tt->predefined['itilcategories_id']) && $tt->predefined['itilcategories_id']){
@@ -3564,7 +3564,7 @@ class Ticket extends CommonITILObject {
             $newtype = $tt->predefined['type'];
          }
          if ($newtype
-            && $newitilcategories_id) {
+             && $newitilcategories_id) {
 
             $categ = new ITILCategory();
             if ($categ->getFromDB($newitilcategories_id)) {

@@ -362,12 +362,12 @@ class Toolbox {
       // revert unclean inside <pre>
       $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
       for ($i = 0; $i < $count; ++$i) {
-         $complete = $matches[0][$i];
-         $cleaned  = self::clean_cross_side_scripting_deep($matches[2][$i]);
-         $cleancomplete = $matches[1][$i].$cleaned.$matches[3][$i];;
-         $value = str_replace($complete, $cleancomplete, $value);
+         $complete       = $matches[0][$i];
+         $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
+         $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];;
+         $value          = str_replace($complete, $cleancomplete, $value);
       }
-      
+
       $config             = array('safe'=>1);
       $config["elements"] = "*+iframe";
       $value              = htmLawed($value, $config);
@@ -420,7 +420,8 @@ class Toolbox {
          $user = " [".Session::getLoginUserID().'@'.php_uname('n')."]";
       }
 
-      if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {
+      if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]
+          || $force) {
          error_log(Html::convDateTime(date("Y-m-d H:i:s"))."$user\n".$text,
                    3, GLPI_LOG_DIR."/".$name.".log");
       }
