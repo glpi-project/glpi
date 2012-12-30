@@ -410,7 +410,7 @@ class NetworkName extends FQDNLabel {
     * @param $networkPortID
    **/
    static function showFormForNetworkPort($networkPortID) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $name         = new self();
       $number_names = 0;
@@ -451,7 +451,8 @@ class NetworkName extends FQDNLabel {
          echo "<a href='".$name->getLinkURL()."'>".$name->getTypeName(1)."</a>";
          echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'> - \n";
          Html::showSimpleForm($name->getFormURL(), 'unaffect', __s('Dissociate'),
-                              array('id' => $name->getID()));
+                              array('id' => $name->getID()),
+                              $CFG_GLPI["root_doc"].'/pics/sub_dropdown.png');
       } else {
          echo $name->getTypeName(1);
       }
