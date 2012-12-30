@@ -50,6 +50,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static public $log_history_2_add    = Log::HISTORY_INSTALL_SOFTWARE;
    static public $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
+
    static function getTypeName($nb=0) {
       return _n('Installation', 'Installations', $nb);
    }
@@ -229,9 +230,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 INNER JOIN `glpi_computers`
                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
                 WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$softwareversions_id'
-                   AND `glpi_computers`.`is_deleted` = '0'
+                      AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
-                         AND `glpi_computers_softwareversions`.`is_deleted`='0'" .
+                      AND `glpi_computers_softwareversions`.`is_deleted` = '0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
 
       $result = $DB->query($query);
@@ -263,7 +264,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwareversions`.`is_deleted`='0'" .
+                      AND `glpi_computers_softwareversions`.`is_deleted` = '0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers');
 
       $result = $DB->query($query);
@@ -357,7 +358,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'
-                                AND `glpi_computers_softwareversions`.`is_deleted`='0'";
+                                AND `glpi_computers_softwareversions`.`is_deleted` = '0'";
 
       } else {
          //SoftwareVersion ID
@@ -371,7 +372,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'
-                                AND `glpi_computers_softwareversions`.`is_deleted`='0'";
+                                AND `glpi_computers_softwareversions`.`is_deleted` = '0'";
       }
 
       $number = 0;
@@ -424,7 +425,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                        AND `glpi_computers`.`is_deleted` = '0'
                        AND `glpi_computers`.`is_template` = '0'
-                       AND `glpi_computers_softwareversions`.`is_deleted`='0'
+                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -446,7 +447,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                            sprintf(__('%1$s = %2$s'),
-                                                   $soft->getTypeName(1), $title));
+                                                  Software::getTypeName(1), $title));
 
 
             $sort_img = "<img src='".$CFG_GLPI["root_doc"]."/pics/".
@@ -680,7 +681,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_softwares`
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
-                   AND `glpi_computers_softwareversions`.`is_deleted`='0'
+                      AND `glpi_computers_softwareversions`.`is_deleted` = '0'
                 ORDER BY `softwarecategories_id`, `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
@@ -711,12 +712,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            //TRANS : %1$s is the itemtype name,
                            //        %2$s is the name of the item (used for headings of a list)
                                      sprintf(__('%1$s = %2$s'),
-                                             $comp->getTypeName(1), $comp->getName()));
+                                             Computer::getTypeName(1), $comp->getName()));
       Session::initNavigateListItems('SoftwareLicense',
                            //TRANS : %1$s is the itemtype name,
                            //        %2$s is the name of the item (used for headings of a list)
                                      sprintf(__('%1$s = %2$s'),
-                                             $comp->getTypeName(1), $comp->getName()));
+                                             Computer::getTypeName(1), $comp->getName()));
 
       $installed = array();
       if ($number = $DB->numrows($result)) {
@@ -724,8 +725,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'specific_actions' => array('delete'
-                                                            => _x('button', 'Delete permanently')));
+                              'specific_actions' => array('delete' => _x('button',
+                                                                         'Delete permanently')));
 
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
@@ -790,7 +791,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_states`
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
                 WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
-                   AND `glpi_computers_softwarelicenses`.`is_deleted`='0'";
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
 
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',',$installed).")";
@@ -1127,9 +1128,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(Software::getTypeName(2),
                                               countElementsInTable('glpi_computers_softwareversions',
-                                                                   "computers_id
-                                                                        = '".$item->getID()."'
-                                                                    AND `is_deleted`='0'"));
+                                                                   "computers_id = '".$item->getID()."'
+                                                                      AND `is_deleted`='0'"));
                }
                return Software::getTypeName(2);
             }

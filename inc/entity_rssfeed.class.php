@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -40,13 +40,13 @@ if (!defined('GLPI_ROOT')) {
 class Entity_RSSFeed extends CommonDBRelation {
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'RSSFeed';
-   static public $items_id_1 = 'rssfeeds_id';
-   static public $itemtype_2 = 'Entity';
-   static public $items_id_2 = 'entities_id';
-   
-   static public $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
-   static public $logs_for_item_2        = false;
+   static public $itemtype_1          = 'RSSFeed';
+   static public $items_id_1          = 'rssfeeds_id';
+   static public $itemtype_2          = 'Entity';
+   static public $items_id_2          = 'entities_id';
+
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $logs_for_item_2     = false;
 
 
    /**

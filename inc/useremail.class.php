@@ -119,7 +119,16 @@ class UserEmail  extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $field_name
+    * @param $child_count_js_var
+    *
+    * @return string
+   **/
    static function getJSCodeToAddForItemChild($field_name, $child_count_js_var) {
+
       return "<input title=\'".__s('Default email')."\' type=\'radio\' name=\'_default_email\'" .
              " value=\'-'+$child_count_js_var+'\'>&nbsp;" .
              "<input type=\'text\' size=\'30\' ". "name=\'" . $field_name .
@@ -127,6 +136,12 @@ class UserEmail  extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $canedit
+    * @param $field_name
+   **/
    function showChildForItemForm($canedit, $field_name) {
 
       if ($this->isNewID($this->getID())) {
@@ -136,7 +151,7 @@ class UserEmail  extends CommonDBChild {
       }
 
       echo "<input title='".__s('Default email')."' type='radio' name='_default_email'
-                value='".$this->getID()."'";
+             value='".$this->getID()."'";
       if (!$canedit) {
          echo " disabled";
       }

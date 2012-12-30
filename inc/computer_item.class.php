@@ -71,7 +71,7 @@ class Computer_Item extends CommonDBRelation{
       return countElementsInTable('glpi_computers_items',
                                   "`itemtype` = '".$item->getType()."'
                                       AND `items_id` ='".$item->getField('id')."'
-                                         AND `is_deleted`='0'");
+                                      AND `is_deleted` = '0'");
    }
 
 
@@ -417,7 +417,7 @@ class Computer_Item extends CommonDBRelation{
                               = `glpi_computers_items`.`items_id`)
                       WHERE `computers_id` = '$ID'
                             AND `itemtype` = '".$itemtype."'
-                               AND `glpi_computers_items`.`is_deleted`='0'";
+                            AND `glpi_computers_items`.`is_deleted` = '0'";
             if ($item->maybetemplate()) {
                $query.= " AND NOT `".getTableForItemType($itemtype)."`.`is_template` ";
             }
@@ -546,7 +546,7 @@ class Computer_Item extends CommonDBRelation{
 
       $used    = array();
       $compids = array();
-      $crit    = array('FIELDS'    => array('id', 'computers_id'),
+      $crit    = array('FIELDS'     => array('id', 'computers_id'),
                        'itemtype'   => $item->getType(),
                        'items_id'   => $ID,
                        'is_deleted' => 0);

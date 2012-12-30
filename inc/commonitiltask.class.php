@@ -526,13 +526,14 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($who_group === "mine") {
          if (count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT DISTINCT `users_id`
-                                                                   FROM `glpi_groups_users`
-                                                                   INNER JOIN `glpi_groups`
-                                                                     ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                                                                   WHERE `glpi_groups_users``groups_id` IN ('$groups')
-                                                                     AND `glpi_groups`.`is_assign`)
-                                                                         AND ";
+            $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
+                           IN (SELECT DISTINCT `users_id`
+                               FROM `glpi_groups_users`
+                               INNER JOIN `glpi_groups`
+                                  ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
+                               WHERE `glpi_groups_users``groups_id` IN ('$groups')
+                                     AND `glpi_groups`.`is_assign`)
+                                     AND ";
          } else { // Only personal ones
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
                        AND ";

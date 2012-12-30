@@ -538,7 +538,7 @@ class User extends CommonDBTM {
             $email = trim($email);
             $email_input = array('email'    => $email,
                                  'users_id' => $this->getID());
-            if ((isset($this->input['_default_email']))
+            if (isset($this->input['_default_email'])
                 && ($this->input['_default_email'] == $id)) {
                $email_input['is_default'] = 1;
             } else {
@@ -715,7 +715,7 @@ class User extends CommonDBTM {
             } else { // New email
                $email_input = array('email'    => $email,
                                     'users_id' => $this->getID());
-               if ((isset($this->input['_default_email']))
+               if (isset($this->input['_default_email'])
                    && ($this->input['_default_email'] == $id)) {
                   $email_input['is_default'] = 1;
                } else {

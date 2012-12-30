@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -140,7 +140,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
          Session::initNavigateListItems('Holiday',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $calendar->getTypeName(1),
+                                        sprintf(__('%1$s = %2$s'), Calendar::getTypeName(1),
                                                 $calendar->fields["name"]));
 
          foreach ($holidays as $data) {

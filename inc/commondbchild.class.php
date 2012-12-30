@@ -590,7 +590,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return nothing (display only)
    **/
-   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit = NULL) {
+   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit=NULL) {
       global $CFG_GLPI;
 
       $items_id = $item->getID();
@@ -611,7 +611,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       if ($canedit) {
-
          $lower_name         = strtolower(get_called_class());
          $child_count_js_var = 'nb'.$lower_name.'s';
          $div_id             = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
@@ -644,7 +643,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return nothing (display only)
    **/
-   static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = NULL) {
+   static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit=NULL) {
       global $DB, $CFG_GLPI;
 
       $items_id = $item->getID();
@@ -708,7 +707,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
          echo "</div>";
       }
    }
-
 
 }
 ?>

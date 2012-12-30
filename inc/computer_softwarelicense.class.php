@@ -91,9 +91,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $input['options'] = unserialize(stripslashes($input['options']));
                if (isset($input['options']['move'])) {
                   SoftwareLicense::dropdown(array('condition'
-                                                         => "`glpi_softwarelicenses`.`softwares_id`
-                                                             = '".$input['options']['move']['softwares_id']."'",
-                                                  'used' => $input['options']['move']['used']));
+                                                   => "`glpi_softwarelicenses`.`softwares_id`
+                                                        = '".$input['options']['move']['softwares_id']."'",
+                                                  'used'
+                                                   => $input['options']['move']['used']));
                      echo "<br><br><input type='submit' name='massiveaction' value=\"".
                                     _sx('button','Move')."\" class='submit'>&nbsp;";
                   return true;
@@ -171,7 +172,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$softwarelicenses_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted`='0'" .
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
 
       $result = $DB->query($query);
@@ -203,7 +204,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 WHERE `glpi_softwarelicenses`.`softwares_id` = '$softwares_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted`='0'" .
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'" .
                       getEntitiesRestrictRequest('AND', 'glpi_computers');
 
       $result = $DB->query($query);
@@ -313,7 +314,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                              getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                              AND `glpi_computers`.`is_deleted` = '0'
                              AND `glpi_computers`.`is_template` = '0'
-                             AND `glpi_computers_softwarelicenses`.`is_deleted`='0'";
+                             AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
 
       $number = 0;
       if ($result = $DB->query($query_number)) {
@@ -382,7 +383,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                        AND `glpi_computers`.`is_deleted` = '0'
                        AND `glpi_computers`.`is_template` = '0'
-                       AND `glpi_computers_softwarelicenses`.`is_deleted`='0'
+                       AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -411,7 +412,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
 
-            $text = sprintf(__('%1$s = %2$s'), $soft->getTypeName(1), $soft->fields["name"]);
+            $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["vername"]);
 
             Session::initNavigateListItems('Computer', $text);

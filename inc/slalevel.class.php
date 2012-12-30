@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -158,7 +158,7 @@ class SlaLevel extends RuleTicket {
       echo "</tr>";
       Session::initNavigateListItems('SlaLevel',
       //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
+                                     sprintf(__('%1$s = %2$s'), SLA::getTypeName(1),
                                              $sla->getName()));
 
       while ($data = $DB->fetch_assoc($result)) {

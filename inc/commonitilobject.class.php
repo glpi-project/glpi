@@ -640,8 +640,10 @@ abstract class CommonITILObject extends CommonDBTM {
                         $input['_itil_assign']['_from_object'] = true;
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status']) && (in_array($this->fields['status'], $this->getNewStatusArray())))
-                            || (isset($input['status']) && (in_array($input['status'], $this->getNewStatusArray())))) {
+                        if ((!isset($input['status'])
+                             && in_array($this->fields['status'], $this->getNewStatusArray()))
+                            || (isset($input['status'])
+                                && in_array($input['status'], $this->getNewStatusArray()))) {
                            $input['status'] = self::ASSIGNED;
                         }
                      }
@@ -658,8 +660,10 @@ abstract class CommonITILObject extends CommonDBTM {
                         $input['_itil_assign']['_from_object'] = true;
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status']) && (in_array($this->fields['status'], $this->getNewStatusArray())))
-                            || (isset($input['status']) && (in_array($input['status'], $this->getNewStatusArray())))) {
+                        if ((!isset($input['status'])
+                             && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                            || (isset($input['status'])
+                                && (in_array($input['status'], $this->getNewStatusArray())))) {
                            $input['status'] = self::ASSIGNED;
                         }
                      }
@@ -675,8 +679,10 @@ abstract class CommonITILObject extends CommonDBTM {
                         $input['_itil_assign']['_from_object'] = true;
                         $supplieractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
-                        if ((!isset($input['status']) && (in_array($this->fields['status'], $this->getNewStatusArray())))
-                            || (isset($input['status']) && (in_array($input['status'], $this->getNewStatusArray())))) {
+                        if ((!isset($input['status'])
+                             && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                            || (isset($input['status'])
+                                && (in_array($input['status'], $this->getNewStatusArray())))) {
                            $input['status'] = self::ASSIGNED;
                         }
                      }
@@ -1854,6 +1860,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+
    /**
     * Get the ITIL object new status list
     *
@@ -1863,10 +1870,11 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function getNewStatusArray() {
 
-      // To be overridden by class
+      // To be overriden by class
       $tab = array();
       return $tab;
    }
+
 
    /**
     * Get the ITIL object process status list

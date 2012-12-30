@@ -112,7 +112,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$template->getTypeName()."</td>";
+      echo "<td>".NotificationTemplate::getTypeName()."</td>";
       echo "<td colspan='2'><a href='".Toolbox::getItemTypeFormURL('NotificationTemplate').
                            "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
       echo "</td><td>".
@@ -185,7 +185,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       Session::initNavigateListItems('NotificationTemplateTranslation',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                      sprintf(__('%1$s = %2$s'),
-                                             $template->getTypeName(1), $template->getName()));
+                                             NotificationTemplate::getTypeName(1),
+                                             $template->getName()));
 
       if ($canedit) {
          $rand = mt_rand();

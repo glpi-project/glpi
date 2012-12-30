@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -627,7 +627,7 @@ class Auth {
                $input = Toolbox::stripslashes_deep($this->user->fields);
                // Then ensure addslashes
                $input = Toolbox::addslashes_deep($input);
-               
+
                // update user and Blank PWD to clean old database for the external auth
                $this->user->update($input);
                if ($this->extauth) {
@@ -752,7 +752,7 @@ class Auth {
             $auth = new AuthLdap();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'), $auth->getTypeName(1), $auth->getLink());
+               return sprintf(__('%1$s: %2$s'), AuthLdap::getTypeName(1), $auth->getLink());
             }
             return sprintf(__('%1$s: %2$s'), __('LDAP directory'), $name);
 
@@ -760,7 +760,7 @@ class Auth {
             $auth = new AuthMail();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'), $auth->getTypeName(1), $auth->getLink());
+               return sprintf(__('%1$s: %2$s'), AuthLdap::getTypeName(1), $auth->getLink());
             }
             return sprintf(__('%1$s: %2$s'),__('Email server'), $name);
 
@@ -770,7 +770,7 @@ class Auth {
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), $auth->getTypeName(1)),
+                                         __('CAS'),AuthLdap::getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -783,7 +783,7 @@ class Auth {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
                                          __('x509 certificate authentication'),
-                                         $auth->getTypeName(1)),
+                                         AuthLdap::getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -795,7 +795,7 @@ class Auth {
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('Other'), $auth->getTypeName(1)),
+                                         __('Other'), AuthLdap::getTypeName(1)),
                                  $auth->getLink());
                }
             }

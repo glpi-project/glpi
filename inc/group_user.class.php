@@ -204,7 +204,7 @@ class Group_User extends CommonDBRelation{
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
-                                                $user->getTypeName(1), $user->getName()));
+                                                User::getTypeName(1), $user->getName()));
 
          foreach ($groups as $data) {
             if (!$group->getFromDB($data["id"])) {
@@ -447,7 +447,7 @@ class Group_User extends CommonDBRelation{
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
-                                                $group->getTypeName(1), $group->getName()));
+                                                Group::getTypeName(1), $group->getName()));
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
