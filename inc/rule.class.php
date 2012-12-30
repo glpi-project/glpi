@@ -1267,7 +1267,8 @@ class Rule extends CommonDBTM {
 
                default:
                   //plugins actions
-                  $ouput = self::executePluginsActions($action, $output, $params);
+                  $executeaction = new self();
+                  $ouput = $executeaction->executePluginsActions($action, $output, $params);
                   break;
             }
          }
@@ -2142,7 +2143,7 @@ class Rule extends CommonDBTM {
       $canedit = Session::haveRight(static::$right, "w");
 
       if ($canedit
-          && ($item->getType()=='Entity')) {
+          && ($item->getType() == 'Entity')) {
          $this->showNewRuleForm($item->getField('id'));
       }
 
@@ -2151,7 +2152,7 @@ class Rule extends CommonDBTM {
                     'value' => $item->getField('id'));
 
       $rules = $this->getRulesForCriteria($crit);
-      $nb = count($rules);
+      $nb    = count($rules);
       echo "<div class='spaced'>";
 
       if (!$nb) {
