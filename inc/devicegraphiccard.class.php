@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -119,14 +119,16 @@ class DeviceGraphicCard extends CommonDevice {
             break;
       }
    }
-}
-   
-   
-   
-   /*
+
+
+   /**
     * Criteria used for import function
-    */
+    *
+    * @since version 0.84
+   **/
    function getImportCriteria() {
       return array('designation', 'manufacturers_id', 'interfacetypes_id');
    }
+
+}
 ?>
