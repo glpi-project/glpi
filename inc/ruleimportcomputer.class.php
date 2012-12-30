@@ -435,7 +435,7 @@ class RuleImportComputer extends Rule {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
-            $executeaction = new Rules();
+            $executeaction = new Rule();
             $ruleoutput    = $executeaction->executePluginsActions($action, $output, $params);
             foreach ($ruleoutput as $key => $value) {
                $output[$key] = $value;
