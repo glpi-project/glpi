@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -255,8 +255,8 @@ class Contact_Supplier extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='contacts_id' value='$instID'>";
          Supplier::dropdown(array('used'        => $used,
-                                    'entity'      => $contact->fields["entities_id"],
-                                    'entity_sons' => $contact->fields["is_recursive"]));
+                                  'entity'      => $contact->fields["entities_id"],
+                                  'entity_sons' => $contact->fields["is_recursive"]));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -291,7 +291,7 @@ class Contact_Supplier extends CommonDBRelation{
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
-                                                $contact->getTypeName(1), $contact->getName()));
+                                                Contact::getTypeName(1), $contact->getName()));
 
          foreach ($suppliers as $data) {
             $ID = $data["id"];
@@ -419,7 +419,7 @@ class Contact_Supplier extends CommonDBRelation{
       if ($number) {
          Session::initNavigateListItems('Contact',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $supplier->getTypeName(1),
+                                        sprintf(__('%1$s = %2$s'), Supplier::getTypeName(1),
                                                 $supplier->getName()));
 
          foreach ($contacts as $data) {

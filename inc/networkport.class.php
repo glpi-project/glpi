@@ -628,7 +628,7 @@ class NetworkPort extends CommonDBChild {
                       WHERE `items_id` = '$items_id'
                             AND `itemtype` = '$itemtype'
                             AND `instantiation_type` = '$portType'
-                            AND `is_deleted`='0'
+                            AND `is_deleted` = '0'
                       ORDER BY `name`,
                                `logical_number`";
          }
@@ -1175,8 +1175,8 @@ class NetworkPort extends CommonDBChild {
 
       return countElementsInTable('glpi_networkports',
                                   "`itemtype` = '".$item->getType()."'
-                                    AND `items_id` ='".$item->getField('id')."'
-                                    AND `is_deleted`='0'");
+                                      AND `items_id` ='".$item->getField('id')."'
+                                      AND `is_deleted` = '0'");
    }
 
 

@@ -115,7 +115,7 @@ class Item_Devices extends CommonDBRelation {
                   foreach (self::getDeviceTypes() as $link_type) {
                      $nb   += countElementsInTable($link_type::getTable(),
                                                    "`items_id` = '".$item->getID()."'
-                                                   AND `itemtype` = '".$item->getType()."'
+                                                      AND `itemtype` = '".$item->getType()."'
                                                       AND `is_deleted`='0'");
                   }
                }
@@ -250,7 +250,7 @@ class Item_Devices extends CommonDBRelation {
                 FROM `".static::getTable()."`
                 WHERE `itemtype` = '".$item->getType()."'
                       AND `items_id` = '".$item->getID()."'
-                      AND `is_deleted`='0'
+                      AND `is_deleted` = '0'
                 ORDER BY $fk";
 
       $device = new $device_type();

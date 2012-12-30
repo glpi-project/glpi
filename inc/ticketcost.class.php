@@ -386,7 +386,7 @@ class TicketCost extends CommonDBChild {
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
-                                                $ticket->getTypeName(1), $ticket->getName()));
+                                                Ticket::getTypeName(1), $ticket->getName()));
 
             $total          = 0;
             $total_time     = 0;

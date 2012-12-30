@@ -177,7 +177,7 @@ function update0831to084() {
       $migration->changeField($table, 'status', 'status', 'integer',
                               array('value' => CommonITILObject::INCOMING));
    }
-   
+
    // Update glpi_profiles : ticket_status
    foreach ($DB->request('glpi_profiles') as $data) {
       $fields_to_decode = array('ticket_status','problem_status');
@@ -1383,19 +1383,19 @@ function update0831to084() {
    migrateComputerDevice('DevicePci');
    migrateComputerDevice('DeviceCase');
    migrateComputerDevice('DevicePowerSupply');
-   
+
    $migration->migrationOneTable('glpi_computers_softwareversions');
-   
+
    //Rename fields in glpi_computers_softwareversions with inaproprious signification
    $migration->changeField('glpi_computers_softwareversions', 'is_deleted', 'is_deleted_computer',
                            'bool');
    $migration->changeField('glpi_computers_softwareversions', 'is_template', 'is_template_computer',
                            'bool');
    $migration->migrationOneTable('glpi_computers_softwareversions');
-   
+
    $types = array('glpi_computers_items', 'glpi_computervirtualmachines',
-         'glpi_computers_softwareversions', 'glpi_computerdisks', 'glpi_networkports',
-         'glpi_computers_softwarelicenses');
+                  'glpi_computers_softwareversions', 'glpi_computerdisks', 'glpi_networkports',
+                  'glpi_computers_softwarelicenses');
    foreach (Item_Devices::getDeviceTypes() as $id => $type) {
       $types[] = getTableForItemType($type);
    }
@@ -1409,7 +1409,7 @@ function update0831to084() {
 
    ///For computers, rename is is_ocs_import to is_dynamic
    $migration->changeField('glpi_computers', 'is_ocs_import', 'is_dynamic', 'bool');
-   
+
    //Add field is_dynamic
    $types = array_merge($types, array('glpi_printers', 'glpi_phones', 'glpi_peripherals',
                                       'glpi_networkequipments', 'glpi_networkports',
@@ -1420,9 +1420,9 @@ function update0831to084() {
          $migration->addKey($table, 'is_dynamic');
       }
    }
-    
+
    migrateComputerLocks($migration);
-   
+
    $ADDTODISPLAYPREF['ReservationItem'] = array(5);
 
    // split validation rights in both
@@ -2483,19 +2483,23 @@ function migrateComputerDevice($deviceType, $new_specif=NULL, $new_specif_type=N
    $migration->migrationOneTable($table);
 }
 
+
 //------------------- Locks migration -------------------
 
 /**
  * Move locks from ocslink.import_* to is_dynamic in related tables
- * @since 0.84
- */
+ *
+ * @param $migration
+**/
 function migrateComputerLocks(Migration $migration) {
    global $DB;
-   $import = array('import_printer' => 'Printer', 'import_monitor' => 'Monitor',
+
+   $import = array('import_printer'    => 'Printer',
+                   'import_monitor'    => 'Monitor',
                    'import_peripheral' => 'Peripheral');
-   
+
    foreach ($import as $field => $itemtype) {
-      foreach($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
+      foreach ($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
          if (FieldExists('OCS_glpi_ocslinks', $field)) {
             $import_field = importArrayFromDB($data[$field]);
             //if ($field=='import_monitor' && !in_array('_version_070_', $import_field)) {
@@ -2506,7 +2510,7 @@ function migrateComputerLocks(Migration $migration) {
                $query_update = "UPDATE `glpi_computers_items`
                                 SET `is_dynamic`='1'
                                 WHERE `id` IN (".implode(',',array_keys($import_field)).")
-                                   AND `itemtype`='$itemtype'";
+                                      AND `itemtype`='$itemtype'";
                $DB->query($query_update);
             }
          }
@@ -2515,10 +2519,10 @@ function migrateComputerLocks(Migration $migration) {
    }
    //Migration disks and vms
    $import = array('import_disk'     => 'glpi_computerdisks',
-                    'import_vm'       => 'glpi_computervirtualmachines',
-                    'import_software' => 'glpi_computers_softwareversions',
-                    'import_ip'       => 'glpi_networkports');
-   
+                   'import_vm'       => 'glpi_computervirtualmachines',
+                   'import_software' => 'glpi_computers_softwareversions',
+                   'import_ip'       => 'glpi_networkports');
+
    foreach ($import as $field => $table) {
       if (FieldExists('OCS_glpi_ocslinks', $field)) {
          foreach($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
@@ -2527,7 +2531,7 @@ function migrateComputerLocks(Migration $migration) {
             //   $import_field = importArrayFromDB(migrateImportSoftware($data['computers_id'],
             //                                                             $import_field));
             //}
-         
+
             //If array is not empty
             if (!empty($import_field)) {
                $query_update = "UPDATE `$table`
@@ -2539,17 +2543,17 @@ function migrateComputerLocks(Migration $migration) {
          $migration->dropField('OCS_glpi_ocslinks', $field);
       }
    }
-   
-   
+
    if (FieldExists('OCS_glpi_ocslinks', 'import_device')) {
-      foreach($DB->request('OCS_glpi_ocslinks', '', array('computers_id', 'import_device')) as $data) {
+      foreach ($DB->request('OCS_glpi_ocslinks', '', array('computers_id', 'import_device'))
+               as $data) {
          $import_device = importArrayFromDB($data['import_device']);
          if (!in_array('_version_078_', $import_device)) {
             $import_device = migrateImportDevice($import_device);
          }
 
          $devices = array();
-         $types = Item_Devices::getDeviceTypes();
+         $types   = Item_Devices::getDeviceTypes();
          foreach ($import_device as $key => $val) {
             if (!$key) { // OcsServer::IMPORT_TAG_078
                continue;
@@ -2574,14 +2578,16 @@ function migrateComputerLocks(Migration $migration) {
    $migration->migrationOneTable('OCS_glpi_ocslinks');
 }
 
+
 /**
- *
  * Migration import_device field if GLPI version is not 0.78
- * @since 0.84
- * @param $import_device import_device array
+ *
+ * @param $import_device     array
+ *
  * @return import_device array migrated in post 0.78 scheme
- */
-function migrateImportDevice($import_device = array()) {
+**/
+function migrateImportDevice($import_device=array()) {
+
    $new_import_device = array('_version_078_');
    if (count($import_device)) {
       foreach ($import_device as $key=>$val) {
@@ -2601,23 +2607,24 @@ function migrateImportDevice($import_device = array()) {
    return $new_import_device;
 }
 
+
 /**
- *
  * Migration import_monitor field if GLPI version is not 0.70
- * @since 0.84
- * @param $import_monitor import_device array
+ *
+ * @param $import_monitor
+ *
  * @return import_monitor array migrated in post 0.70 scheme
- */
+**/
 function migrateImportMonitor($import_monitor) {
    global $DB;
-   
+
    //Update data in import_monitor array for 0.70
    if (!in_array('_version_070_', $import_monitor)) {
       foreach ($import_monitor as $key => $val) {
          $monitor_tag = $val;
 
          //search serial when it exists
-         $monitor_serial = "";
+         $monitor_serial   = "";
          $query_monitor_id = "SELECT `items_id`
                               FROM `glpi_computers_items`
                               WHERE `id` = '$key'";
@@ -2643,23 +2650,31 @@ function migrateImportMonitor($import_monitor) {
    return $import_monitor;
 }
 
+
+/**
+ * @param $computers_id
+ * @param $import_software
+ *
+ * @return string
+**/
 function migrateImportSoftware($computers_id, $import_software) {
    global $DB;
+
    //Add the tag of the version at the beginning of the array
    $softs_array[0] = '_version_070_';
    Toolbox::logDebug("migrateImportSoftware");
-    
+
    //For each element of the table, add instID=>name.version
    foreach ($import_software as $key => $value) {
       $query_softs = "SELECT `glpi_softwareversions`.`name` AS version
                       FROM `glpi_computers_softwareversions`,
                            `glpi_softwareversions`
                       WHERE `glpi_computers_softwareversions`.`softwareversions_id`
-                           =`glpi_softwareversions`.`id`
-                      AND `glpi_computers_softwareversions`.`computers_id`
-                           = '$computers_id'
-                      AND `glpi_computers_softwareversions`.`id` = '$key'";
-   
+                                 =`glpi_softwareversions`.`id`
+                            AND `glpi_computers_softwareversions`.`computers_id`
+                                     = '$computers_id'
+                            AND `glpi_computers_softwareversions`.`id` = '$key'";
+
       $result_softs      = $DB->query($query_softs);
       $softs             = $DB->fetch_array($result_softs);
       $softs_array[$key] = $value . '$$$$$'. $softs["version"];

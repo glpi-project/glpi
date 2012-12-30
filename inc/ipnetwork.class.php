@@ -207,12 +207,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function prepareInput($input) {
 
       // In case of entity transfer, $input['network'] is not defined
-      if ((!isset($input['network'])) && (isset($this->fields['network']))) {
+      if (!isset($input['network']) && isset($this->fields['network'])) {
          $input['network'] = $this->fields['network'];
       }
 
       // In case of entity transfer, $input['gateway'] is not defined
-      if ((!isset($input['gateway'])) && (isset($this->fields['gateway']))) {
+      if (!isset($input['gateway']) && isset($this->fields['gateway'])) {
          $input['gateway'] = $this->fields['gateway'];
       }
 
@@ -226,7 +226,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                       'input' => false);
       }
       if (!isset($this->fields["id"])
-          || (!isset($this->fields["network"]))
+          || !isset($this->fields["network"])
           || ($input["network"] != $this->fields["network"])) {
          $network = explode ("/", $input["network"]);
          if (count($network) != 2) {

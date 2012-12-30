@@ -150,7 +150,7 @@ class Change_Ticket extends CommonDBRelation{
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $change->getTypeName(1),
+                                        sprintf(__('%1$s = %2$s'), Change::getTypeName(1),
                                                 $change->fields["name"]));
 
          foreach ($tickets as $data) {
@@ -260,7 +260,7 @@ class Change_Ticket extends CommonDBRelation{
       if ($numrows) {
          Session::initNavigateListItems('Change',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $ticket->getTypeName(1),
+                                        sprintf(__('%1$s = %2$s'), Ticket::getTypeName(1),
                                                 $ticket->fields["name"]));
 
          foreach ($changes as $data) {

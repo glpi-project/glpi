@@ -183,7 +183,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $used              = $ttm->getMandatoryFields($ID);
       $fields            = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
       $simplified_fields = $tt->getSimplifiedInterfaceFields();
-      $both_interfaces   = sprintf('%1$s + %2$s', __('Simplified interface'), __
+      $both_interfaces   = sprintf(__('%1$s + %2$s'), __('Simplified interface'), __
                                    ('Standard interface'));
 
       $rand  = mt_rand();
@@ -214,9 +214,9 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             $select_fields = $fields;
             foreach ($select_fields as $key => $val) {
                if (in_array($key, $simplified_fields)) {
-                  $select_fields[$key] = sprintf('%1$s (%2$s)', $val, $both_interfaces);
+                  $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, $both_interfaces);
                } else {
-                  $select_fields[$key] = sprintf('%1$s (%2$s)', $val, __('Standard interface'));
+                  $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, __('Standard interface'));
                }
             }
             Dropdown::showFromArray('num', $select_fields, array('used' => $used));

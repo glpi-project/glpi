@@ -313,7 +313,7 @@ class Profile_User extends CommonDBRelation {
       if ($nb) {
          Session::initNavigateListItems('User',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $entity->getTypeName(1),
+                                        sprintf(__('%1$s = %2$s'), Entity::getTypeName(1),
                                                 $entity->getName()));
 
          while ($data = $DB->fetch_assoc($result)) {
