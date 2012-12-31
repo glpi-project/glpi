@@ -603,9 +603,15 @@ class EntityData extends CommonDBChild {
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "<td rowspan='2'>" . $LANG['setup'][115] . "&nbsp;:</td><td rowspan='2'>";
+      if ($ID > 0) {
+         $toadd = array(self::CONFIG_PARENT => $LANG['common'][102],
+                        self::CONFIG_NEVER => $LANG['setup'][307]);
+      } else {
+         $toadd = array(self::CONFIG_NEVER =>$LANG['setup'][307]);
+      }
       Dropdown::showInteger('default_alarm_threshold',
                             $entitynotification->fields["default_alarm_threshold"], 0, 100, 1,
-                            array('-1' => $LANG['setup'][307]));
+                            $toadd);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -624,8 +630,10 @@ class EntityData extends CommonDBChild {
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "<td >".$LANG['setup'][46] . "&nbsp;:</td><td>";
-      Contract::dropdownAlert("default_contract_alert",
-                              $entitynotification->fields["default_contract_alert"]);
+      $default_value =  $entitynotification->fields["default_contract_alert"];
+      Contract::dropdownAlert(array('name'           => "default_contract_alert",
+                                    'value'          => $default_value,
+                                    'inherit_parent' => (($ID > 0) ? 1 : 0)));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -636,7 +644,10 @@ class EntityData extends CommonDBChild {
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "<td >" . $LANG['setup'][46]."&nbsp;:</td><td>";
-      Alert::dropdownInfocomAlert($entitynotification->fields["default_infocom_alert"]);
+      $default_value = $entitynotification->fields["default_infocom_alert"];
+      Alert::dropdownInfocomAlert(array('name'           => "default_contract_alert",
+                                        'value'          => $default_value,
+                                        'inherit_parent' => (($ID > 0) ? 1 : 0)));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

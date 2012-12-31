@@ -107,7 +107,7 @@ class Contract extends CommonDBTM {
       return $input;
    }
 
-   
+
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
@@ -239,7 +239,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][41]."</td>";
       echo "<td>";
-      self::dropdownAlert("alert", $this->fields["alert"]);
+      self::dropdownAlert(array('value' => $this->fields["alert"]));
       Alert::displayLastAlert('Contract', $ID);
       echo "</td></tr>";
 
@@ -1425,12 +1425,30 @@ class Contract extends CommonDBTM {
    /**
     * Dropdown for alerting of contracts
     *
-    * @param $myname select name
-    * @param $value default value
+    * @param $options   array
    **/
-   static function dropdownAlert($myname, $value) {
+   static function dropdownAlert($options=array()) {
+      global $LANG;
 
-      Dropdown::showFromArray($myname, self::getAlertName(), array('value' => $value));
+      $p['name']           = 'alert';
+      $p['value']          = 0;
+      $p['inherit_parent'] = false;
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $tab = array();
+      if ($p['inherit_parent']) {
+         $tab[EntityData::CONFIG_PARENT] = $LANG['common'][102];
+      }
+
+      $tab += self::getAlertName();
+
+      Dropdown::showFromArray($p['name'], $tab, $p);
+
    }
 
 

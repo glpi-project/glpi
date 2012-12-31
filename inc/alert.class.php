@@ -184,9 +184,28 @@ class Alert extends CommonDBTM {
    }
 
 
-   static function dropdownInfocomAlert($value) {
+   static function dropdownInfocomAlert($options) {
+      global $LANG;
 
-      Dropdown::showFromArray("default_infocom_alert", self::getAlertName(), array('value' => $value));
+      $p['name']           = 'alert';
+      $p['value']          = 0;
+      $p['inherit_parent'] = false;
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $tab = array();
+      if ($p['inherit_parent']) {
+         $tab[EntityData::CONFIG_PARENT] = $LANG['common'][102];
+      }
+
+      $tab += self::getAlertName();
+
+      Dropdown::showFromArray($p['name'], $tab, $p);
+
    }
 
 
