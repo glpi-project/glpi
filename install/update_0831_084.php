@@ -2502,9 +2502,7 @@ function migrateComputerLocks(Migration $migration) {
       foreach ($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
          if (FieldExists('OCS_glpi_ocslinks', $field)) {
             $import_field = importArrayFromDB($data[$field]);
-            //if ($field=='import_monitor' && !in_array('_version_070_', $import_field)) {
-            //   $import_field = migrateImportMonitor($import_field);
-            //}
+
             //If array is not empty
             if (!empty($import_field)) {
                $query_update = "UPDATE `glpi_computers_items`
@@ -2527,10 +2525,6 @@ function migrateComputerLocks(Migration $migration) {
       if (FieldExists('OCS_glpi_ocslinks', $field)) {
          foreach($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
             $import_field = importArrayFromDB($data[$field]);
-            //if ($field == 'import_software' && !in_array('_version_070_', $import_field)) {
-            //   $import_field = importArrayFromDB(migrateImportSoftware($data['computers_id'],
-            //                                                             $import_field));
-            //}
 
             //If array is not empty
             if (!empty($import_field)) {
@@ -2605,80 +2599,5 @@ function migrateImportDevice($import_device=array()) {
       }
    }
    return $new_import_device;
-}
-
-
-/**
- * Migration import_monitor field if GLPI version is not 0.70
- *
- * @param $import_monitor
- *
- * @return import_monitor array migrated in post 0.70 scheme
-**/
-function migrateImportMonitor($import_monitor) {
-   global $DB;
-
-   //Update data in import_monitor array for 0.70
-   if (!in_array('_version_070_', $import_monitor)) {
-      foreach ($import_monitor as $key => $val) {
-         $monitor_tag = $val;
-
-         //search serial when it exists
-         $monitor_serial   = "";
-         $query_monitor_id = "SELECT `items_id`
-                              FROM `glpi_computers_items`
-                              WHERE `id` = '$key'";
-         $result_monitor_id = $DB->query($query_monitor_id);
-         if ($DB->numrows($result_monitor_id) == 1) {
-            //get monitor Id
-            $id_monitor           = $DB->result($result_monitor_id, 0, "items_id");
-            $query_monitor_serial = "SELECT `serial`
-                                     FROM `glpi_monitors`
-                                     WHERE `id` = '$id_monitor'";
-            $result_monitor_serial = $DB->query($query_monitor_serial);
-            //get serial
-            if ($DB->numrows($result_monitor_serial) == 1) {
-               $monitor_serial = $DB->result($result_monitor_serial, 0, "serial");
-            }
-         }
-         //concat name + serial
-         $monitor_tag .= $monitor_serial;
-         //Update the array with the new value of the monitor
-         $import_monitor[$key] = $monitor_tag;
-      }
-   }
-   return $import_monitor;
-}
-
-
-/**
- * @param $computers_id
- * @param $import_software
- *
- * @return string
-**/
-function migrateImportSoftware($computers_id, $import_software) {
-   global $DB;
-
-   //Add the tag of the version at the beginning of the array
-   $softs_array[0] = '_version_070_';
-   Toolbox::logDebug("migrateImportSoftware");
-
-   //For each element of the table, add instID=>name.version
-   foreach ($import_software as $key => $value) {
-      $query_softs = "SELECT `glpi_softwareversions`.`name` AS version
-                      FROM `glpi_computers_softwareversions`,
-                           `glpi_softwareversions`
-                      WHERE `glpi_computers_softwareversions`.`softwareversions_id`
-                                 =`glpi_softwareversions`.`id`
-                            AND `glpi_computers_softwareversions`.`computers_id`
-                                     = '$computers_id'
-                            AND `glpi_computers_softwareversions`.`id` = '$key'";
-
-      $result_softs      = $DB->query($query_softs);
-      $softs             = $DB->fetch_array($result_softs);
-      $softs_array[$key] = $value . '$$$$$'. $softs["version"];
-   }
-   return $softs_array;
 }
 ?>
