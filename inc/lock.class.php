@@ -44,14 +44,6 @@ if (!defined('GLPI_ROOT')) {
 
 class Lock {
 
-   function canView() {
-      return true;
-   }
-   
-   function canCreate() {
-      return true;
-   }
-
    /**
     *
     * Display form to unlock fields and links
@@ -263,7 +255,7 @@ class Lock {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item->isDynamic() && $this->canView()) {
+      if ($item->isDynamic() && $item->canCreate()) {
          return array('1' => _n('Lock', 'Locks', 2));
       }
       return '';
@@ -343,6 +335,7 @@ class Lock {
       
       return array('ok' => $ok, 'ko' => $ko);
    }
+   
    /**
     *
     * Get massive actions to unlock items
@@ -351,7 +344,7 @@ class Lock {
     * @return an array of actions to be added (empty if no actions to add)
     */
    static function getUnlockMassiveActions($itemtype) {
-      if ($itemtype == 'Computer') {
+      if (Session::haveRight('computer', 'w') && $itemtype == 'Computer') {
          return array("unlock_Monitor"      => __('Unlock monitors', 'ocsinventoryng'),
                         "unlock_Peripheral"   => __('Unlock peripherals', 'ocsinventoryng'),
                         "unlock_Printer"      => __('Unlock printers', 'ocsinventoryng'),
