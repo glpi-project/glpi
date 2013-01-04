@@ -1409,6 +1409,9 @@ function update0831to084() {
 
    ///For computers, rename is is_ocs_import to is_dynamic
    $migration->changeField('glpi_computers', 'is_ocs_import', 'is_dynamic', 'bool');
+   $migration->migrationOneTable('glpi_computers');
+   $migration->dropKey("glpi_computers", 'is_ocs_import');
+   $migration->addKey("glpi_computers", 'is_dynamic');
 
    //Add field is_dynamic
    $types = array_merge($types, array('glpi_printers', 'glpi_phones', 'glpi_peripherals',
