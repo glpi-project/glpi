@@ -85,10 +85,11 @@ class Lock {
          $types = array('Monitor', 'Printer', 'Peripheral');
          foreach($types as $type) {
             $params = array('is_dynamic' => 1, 'is_deleted' => 1, 'computers_id' => $ID,
-                            'itemtype' => $itemtype);
+                            'itemtype' => $type);
             $first  = true;
             foreach ($DB->request('glpi_computers_items', $params, array('id', 'items_id')) as $line) {
-               $item->getFromDB($line['items_id']);
+               $tmp = new $type();
+               $tmp->getFromDB($line['items_id']);
                $header = true;
                if ($first) {
                   echo "<tr><th colspan='2'>".$type::getTypeName(2)."</th>".
@@ -96,7 +97,7 @@ class Lock {
                   $first = false;
                }
                 
-               echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $item->getName() . "</td>";
+               echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $tmp->getName() . "</td>";
                echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'></td></tr>\n";
             }
@@ -277,7 +278,7 @@ class Lock {
 
    /**
     *
-    * Unlock lockes items
+    * Unlock locked items
     * @since 1.0
     * @param $itemtype itemtype of ids to locks
     * @param $items array of items to unlock
@@ -287,43 +288,12 @@ class Lock {
       $item = new $itemtype();
       $ok = 0;
       $ko = 0;
-      $condition = array();
-      $table     = false;
-      $field     = '';
-      
-      switch ($itemtype) {
-         case 'Peripheral':
-         case 'Monitor':
-         case 'Printer':
-         case 'Phone':
-            $conditon = array('itemtype' => $itemtype, 'is_dynamic' => 1, 'is_deleted' => 1);
-            $table    = 'glpi_computers_items';
-            $field    = 'computers_id';
-            break;
-            
-         case 'NetworkPort':
-            $conditon = array('itemtype' => $itemtype, 'is_dynamic' => 1, 'is_deleted' => 1);
-            $table    = 'glpi_networkports';
-            $field    = 'items_id';
-            break;
-            
-         case 'ComputerDisk':
-            $conditon = array('is_dynamic' => 1, 'is_deleted' => 1);
-            $table    = 'glpi_computerdisks';
-            $field    = 'computers_id';
-            break;
-            
-         case 'SoftwareVersion':
-            $conditon = array('is_dynamic' => 1, 'is_deleted' => 1);
-            $table    = 'glpi_compueters_softwareversions';
-            $field    = 'computers_id';
-            break;
-      }
+      $infos = self::getLocksQueryInfosByItemType($itemtype);
       
       foreach ($items as $id => $value) {
          if ($value == 1) {
-            $condition[$field] = $id;
-            foreach ($DB->request($table, $condition, array('id')) as $data) {
+            $condition[$infos['field']] = $id;
+            foreach ($DB->request($infos['table'], $infos['condition'], array('id')) as $data) {
                if ($item->update(array('id' => $data['id'], 'is_deleted' => 0))) {
                   $ok++;
                } else {
@@ -371,6 +341,67 @@ class Lock {
          }
       }
       return false;
+   }
+
+   /**
+    *
+    * Get infos to build an SQL query to get locks fields in a table
+    * @since 0.84
+    * @param $itemtype itemtype of the item to look for locked fields
+    * @return an array which contains necessary informations to build the SQL query
+    */
+   static function getLocksQueryInfosByItemType($itemtype) {
+      $condition = array();
+      $table     = false;
+      $field     = '';
+      
+      switch ($itemtype) {
+         case 'Peripheral':
+         case 'Monitor':
+         case 'Printer':
+         case 'Phone':
+            $conditon = array('itemtype' => $itemtype, 'is_dynamic' => 1, 'is_deleted' => 1);
+            $table    = 'glpi_computers_items';
+            $field    = 'computers_id';
+            break;
+      
+         case 'NetworkPort':
+            $conditon = array('itemtype' => $itemtype, 'is_dynamic' => 1, 'is_deleted' => 1);
+            $table    = 'glpi_networkports';
+            $field    = 'items_id';
+            break;
+      
+         case 'ComputerDisk':
+            $conditon = array('is_dynamic' => 1, 'is_deleted' => 1);
+            $table    = 'glpi_computerdisks';
+            $field    = 'computers_id';
+            break;
+      
+         case 'SoftwareVersion':
+            $conditon = array('is_dynamic' => 1, 'is_deleted' => 1);
+            $table    = 'glpi_compueters_softwareversions';
+            $field    = 'computers_id';
+            break;
+         
+      }
+      return array('condition' => $condition, 'table' => $table, 'field' => $field);
+   }
+   
+   /**
+    *
+    * Enter description here ...
+    * @since
+    * @param unknown $itemtype
+    * @param unknown $id
+    * @return multitype:unknown
+    */
+   static function getLocksFieldsForItemType($itemtype, $id) {
+      $infos   = self::getLocksQueryInfosByItemType($itemtype);
+      $results = array();
+      foreach ($DB->request($infos['table'], $infos['condition'], array('id', $infos['field'])) as $data) {
+        $results[$data['id']] = $data;
+      }
+      return $results;
    }
 }
 ?>
