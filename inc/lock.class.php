@@ -44,6 +44,10 @@ if (!defined('GLPI_ROOT')) {
 
 class Lock {
 
+   static function getTypeName($nb=0) {
+      return _n('Lock', 'Locks', $nb);
+   }
+   
    /**
     *
     * Display form to unlock fields and links
@@ -68,6 +72,7 @@ class Lock {
       echo "<input type='hidden' name='id' value='$ID'>\n";
       echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
       echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2''>".__('Locked items')."</th></tr>";
 
       //Use a hook to allow external inventory tools to manage per field lock
       $results =  Plugin::doHookFunction('display_locked_fields', array('item' =>$item,
@@ -79,16 +84,14 @@ class Lock {
          //Locks for items recorded in glpi_computers_items table
          $types = array('Monitor', 'Printer', 'Peripheral');
          foreach($types as $type) {
-            $item   = new $type();
             $params = array('is_dynamic' => 1, 'is_deleted' => 1, 'computers_id' => $ID,
                             'itemtype' => $itemtype);
             $first  = true;
-            $locale = "Locked ".strtolower($type);
             foreach ($DB->request('glpi_computers_items', $params, array('id', 'items_id')) as $line) {
                $item->getFromDB($line['items_id']);
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>"._n($locale, $locale.'s', 2, 'ocsinventoryng')."</th>".
+                  echo "<tr><th colspan='2'>".$type::getTypeName(2)."</th>".
                         "</tr>\n";
                   $first = false;
                }
@@ -100,17 +103,15 @@ class Lock {
              
          }
           
-         $types = array('ComputerDisk' => 'disk', 'ComputerVirtualMachine' => 'Virtual machine');
-         foreach($types as $type => $label) {
+         $types = array('ComputerDisk', 'ComputerVirtualMachine');
+         foreach($types as $type) {
             $params = array('is_dynamic' => 1, 'is_deleted' => 1, 'computers_id' => $ID);
-         
             $first  = true;
-            $locale = "Locked ".$label;
             foreach ($DB->request(getTableForItemType($type), $params,
                                    array('id', 'name')) as $line) {
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>"._n($locale, $locale.'s', 2, 'ocsinventoryng')."</th>".
+                  echo "<tr><th colspan='2'>".$type::getTypeName(2)."</th>".
                         "</tr>\n";
                   $first = false;
                }
@@ -136,7 +137,7 @@ class Lock {
          foreach ($DB->request($query) as $line) {
             $header = true;
             if ($first) {
-               echo "<tr><th colspan='2'>"._n('Software', 'Softwares', 2, 'ocsinventoryng')."</th>".
+               echo "<tr><th colspan='2'>".Software::getTypeName(2)."</th>".
                      "</tr>\n";
                $first = false;
             }
@@ -162,7 +163,7 @@ class Lock {
          foreach ($DB->request($query) as $line) {
             $header = true;
             if ($first) {
-               echo "<tr><th colspan='2'>"._n('License', 'Licenses', 2, 'ocsinventoryng')."</th>".
+               echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(2)."</th>".
                      "</tr>\n";
                $first = false;
             }
@@ -183,7 +184,7 @@ class Lock {
          $item->getFromDB($line['id']);
          $header = true;
          if ($first) {
-            echo "<tr><th colspan='2'>"._n('Locked IP', 'Locked IP', 2, 'ocsinventoryng')."</th>".
+            echo "<tr><th colspan='2'>".NetworkPort::getTypeName(2)."</th>".
                   "</tr>\n";
             $first = false;
          }
@@ -204,8 +205,7 @@ class Lock {
       }
       if ($nb) {
          $header = true;
-         echo "<tr><th colspan='2'>"._n('Locked component', 'Locked components', 2,
-               'ocsinventoryng')."</th></tr>\n";
+         echo "<tr><th colspan='2'>"._n('Component', 'Components', 2)."</th></tr>\n";
          foreach ($types as $old => $type) {
             $associated_type  = str_replace('Item_', '', $type);
             $associated_table = getTableForItemType($associated_type);
@@ -236,10 +236,10 @@ class Lock {
       if ($header) {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='unlock' value='".
-               _sx('button', 'Unlock', 'ocsinventoryng'). "'></td></tr>";
+               _sx('button', 'Unlock'). "'></td></tr>";
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo __('No locked field', 'ocsinventoryng')."</td></tr>";
+         echo __('No locked item')."</td></tr>";
       }
       echo "</table>";
       Html::closeForm();
@@ -256,7 +256,7 @@ class Lock {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->isDynamic() && $item->canCreate()) {
-         return array('1' => _n('Lock', 'Locks', 2));
+         return Lock::getTypeName(2);
       }
       return '';
    }
@@ -345,12 +345,12 @@ class Lock {
     */
    static function getUnlockMassiveActions($itemtype) {
       if (Session::haveRight('computer', 'w') && $itemtype == 'Computer') {
-         return array("unlock_Monitor"      => __('Unlock monitors', 'ocsinventoryng'),
-                        "unlock_Peripheral"   => __('Unlock peripherals', 'ocsinventoryng'),
-                        "unlock_Printer"      => __('Unlock printers', 'ocsinventoryng'),
-                        "unlock_Software"     => __('Unlock software', 'ocsinventoryng'),
-                        "unlock_NetworkPort"  => __('Unlock IP', 'ocsinventoryng'),
-                        "unlock_ComputerDisk" => __('Unclok volumes', 'ocsinventoryng'));
+         return array("unlock_Monitor"      => __('Unlock monitors'),
+                      "unlock_Peripheral"   => __('Unlock peripherals'),
+                      "unlock_Printer"      => __('Unlock printers'),
+                      "unlock_Software"     => __('Unlock software'),
+                      "unlock_NetworkPort"  => __('Unlock IP'),
+                      "unlock_ComputerDisk" => __('Unlock volumes'));
       } else {
          return array();
       }
