@@ -116,83 +116,99 @@ class Migration {
     * @param $default_value   string   new field's default value,
     *                                  if a specific default value needs to be used
    **/
-   private function fieldFormat($type, $default_value) {
+   private function fieldFormat($type, $default_value, $nodefault = false) {
 
       $format = '';
       switch ($type) {
          case 'bool' :
             $format = "TINYINT(1) NOT NULL";
-            if (is_null($default_value)) {
-               $format .= " DEFAULT '0'";
-            } else if (in_array($default_value, array('0', '1'))) {
-               $format .= " DEFAULT '$default_value'";
-            } else {
-               trigger_error(__('default_value must be 0 or 1'), E_USER_ERROR);
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format .= " DEFAULT '0'";
+               } else if (in_array($default_value, array('0', '1'))) {
+                  $format .= " DEFAULT '$default_value'";
+               } else {
+                  trigger_error(__('default_value must be 0 or 1'), E_USER_ERROR);
+               }
             }
             break;
 
          case 'char' :
             $format = "CHAR(1)";
-            if (is_null($default_value)) {
-                $format .= " DEFAULT NULL";
-            } else {
-               $format .= " DEFAULT '$default_value'";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format .= " DEFAULT NULL";
+               } else {
+                  $format .= " DEFAULT '$default_value'";
+               }
             }
             break;
 
          case 'string' :
             $format = "VARCHAR(255) COLLATE utf8_unicode_ci";
-            if (is_null($default_value)) {
-                $format .= " DEFAULT NULL";
-            } else {
-               $format .= " DEFAULT '$default_value'";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format .= " DEFAULT NULL";
+               } else {
+                  $format .= " DEFAULT '$default_value'";
+               }
             }
             break;
 
          case 'integer' :
             $format = "INT(11) NOT NULL";
-            if (is_null($default_value)) {
-               $format .= " DEFAULT '0'";
-            } else if (is_numeric($default_value)) {
-               $format .= " DEFAULT '$default_value'";
-            } else {
-               trigger_error(__('default_value must be numeric'), E_USER_ERROR);
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format .= " DEFAULT '0'";
+               } else if (is_numeric($default_value)) {
+                  $format .= " DEFAULT '$default_value'";
+               } else {
+                  trigger_error(__('default_value must be numeric'), E_USER_ERROR);
+               }
             }
             break;
 
          case 'date' :
             $format = "DATE";
-            if (is_null($default_value)) {
-                $format.= " DEFAULT NULL";
-            } else {
-               $format.= " DEFAULT '$default_value'";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format.= " DEFAULT NULL";
+               } else {
+                  $format.= " DEFAULT '$default_value'";
+               }
             }
             break;
 
          case 'datetime' :
             $format = "DATETIME";
-            if (is_null($default_value)) {
-                $format.= " DEFAULT NULL";
-            } else {
-               $format.= " DEFAULT '$default_value'";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format.= " DEFAULT NULL";
+               } else {
+                  $format.= " DEFAULT '$default_value'";
+               }
             }
             break;
 
          case 'text' :
             $format = "TEXT COLLATE utf8_unicode_ci";
-            if (is_null($default_value)) {
-                $format.= " DEFAULT NULL";
-            } else {
-               $format.= " DEFAULT '$default_value'";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format.= " DEFAULT NULL";
+               } else {
+                  $format.= " DEFAULT '$default_value'";
+               }
             }
             break;
 
          case 'longtext' :
             $format = "LONGTEXT COLLATE utf8_unicode_ci";
-            if (is_null($default_value)) {
-                $format .= " DEFAULT NULL";
-            } else {
-               $format .= " DEFAULT '$default_value'";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format .= " DEFAULT NULL";
+               } else {
+                  $format .= " DEFAULT '$default_value'";
+               }
             }
             break;
 
@@ -220,6 +236,7 @@ class Migration {
     *    - update if not empty = value of $field (must be protected)
     *    - condition if needed
     *    - value default_value new field's default value, if a specific default value needs to be used
+    *    - nodefault : do not define default value (default false)
     *    - comment comment to be added during field creation
     *    - after where adding the new field
    **/
@@ -229,6 +246,7 @@ class Migration {
       $params['update']    = '';
       $params['condition'] = '';
       $params['value']     = NULL;
+      $params['nodefault'] = false;
       $params['comment']   = '';
       $params['after']     = '';
 
@@ -238,7 +256,7 @@ class Migration {
          }
       }
 
-      $format = $this->fieldFormat($type, $params['value']);
+      $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
       if ($params['comment']) {
          $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
@@ -277,10 +295,12 @@ class Migration {
     * @param $options      array
     *    - default_value new field's default value, if a specific default value needs to be used
     *    - comment comment to be added during field creation
+    *    - nodefault : do not define default value (default false)    
    **/
    function changeField($table, $oldfield, $newfield, $type, $options=array()) {
 
       $params['value']     = NULL;
+      $params['nodefault'] = false;
       $params['comment']   = '';
 
       if (is_array($options) && count($options)) {
@@ -289,7 +309,7 @@ class Migration {
          }
       }
 
-      $format = $this->fieldFormat($type, $params['value']);
+      $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
       if ($params['comment']) {
          $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
