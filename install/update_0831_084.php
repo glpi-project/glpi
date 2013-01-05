@@ -1131,13 +1131,13 @@ function update0831to084() {
    $migration->dropField('glpi_configs', 'authldaps_id_extra');
 
    //Remove OCS tables from GLPI's core
-   $migration->renameTable('glpi_ocsadmininfoslinks', 'OCS_glpi_ocsadmininfoslinks');
-   $migration->renameTable('glpi_ocslinks', 'OCS_glpi_ocslinks');
-   $migration->renameTable('glpi_ocsservers', 'OCS_glpi_ocsservers');
-   $migration->renameTable('glpi_registrykeys', 'OCS_glpi_registrykeys');
+   $migration->renameTable('glpi_ocsadmininfoslinks', 'ocs_glpi_ocsadmininfoslinks');
+   $migration->renameTable('glpi_ocslinks', 'ocs_glpi_ocslinks');
+   $migration->renameTable('glpi_ocsservers', 'ocs_glpi_ocsservers');
+   $migration->renameTable('glpi_registrykeys', 'ocs_glpi_registrykeys');
 
    // copy table to keep value of fields deleted after
-   $migration->copyTable('glpi_profiles', 'OCS_glpi_profiles');
+   $migration->copyTable('glpi_profiles', 'ocs_glpi_profiles');
 
    $migration->dropField('glpi_profiles', 'ocsng');
    $migration->dropField('glpi_profiles', 'sync_ocsng');
@@ -2502,8 +2502,8 @@ function migrateComputerLocks(Migration $migration) {
                    'import_peripheral' => 'Peripheral');
 
    foreach ($import as $field => $itemtype) {
-      foreach ($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
-         if (FieldExists('OCS_glpi_ocslinks', $field)) {
+      foreach ($DB->request('ocs_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
+         if (FieldExists('ocs_glpi_ocslinks', $field)) {
             $import_field = importArrayFromDB($data[$field]);
 
             //If array is not empty
@@ -2516,7 +2516,7 @@ function migrateComputerLocks(Migration $migration) {
             }
          }
       }
-      $migration->dropField('OCS_glpi_ocslinks', $field);
+      $migration->dropField('ocs_glpi_ocslinks', $field);
    }
    //Migration disks and vms
    $import = array('import_disk'     => 'glpi_computerdisks',
@@ -2525,8 +2525,8 @@ function migrateComputerLocks(Migration $migration) {
                    'import_ip'       => 'glpi_networkports');
 
    foreach ($import as $field => $table) {
-      if (FieldExists('OCS_glpi_ocslinks', $field)) {
-         foreach($DB->request('OCS_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
+      if (FieldExists('ocs_glpi_ocslinks', $field)) {
+         foreach($DB->request('ocs_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
             $import_field = importArrayFromDB($data[$field]);
 
             //If array is not empty
@@ -2537,12 +2537,12 @@ function migrateComputerLocks(Migration $migration) {
                $DB->query($query_update);
             }
          }
-         $migration->dropField('OCS_glpi_ocslinks', $field);
+         $migration->dropField('ocs_glpi_ocslinks', $field);
       }
    }
 
-   if (FieldExists('OCS_glpi_ocslinks', 'import_device')) {
-      foreach ($DB->request('OCS_glpi_ocslinks', '', array('computers_id', 'import_device'))
+   if (FieldExists('ocs_glpi_ocslinks', 'import_device')) {
+      foreach ($DB->request('ocs_glpi_ocslinks', '', array('computers_id', 'import_device'))
                as $data) {
          $import_device = importArrayFromDB($data['import_device']);
          if (!in_array('_version_078_', $import_device)) {
@@ -2570,9 +2570,9 @@ function migrateComputerLocks(Migration $migration) {
            $DB->query($query_update);
          }
       }
-      $migration->dropField('OCS_glpi_ocslinks', 'import_device');
+      $migration->dropField('ocs_glpi_ocslinks', 'import_device');
    }
-   $migration->migrationOneTable('OCS_glpi_ocslinks');
+   $migration->migrationOneTable('ocs_glpi_ocslinks');
 }
 
 
