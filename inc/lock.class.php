@@ -227,7 +227,7 @@ class Lock {
             foreach ($DB->request($query) as $data) {
                
                echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-               echo "<input type='checkbox' name='".$itemtype."[" . $data['id'] . "]'></td>";
+               echo "<input type='checkbox' name='".$type."[" . $data['id'] . "]'></td>";
                echo "<td class='left' width='95%'>";
                echo $associated_type::getTypeName()."&nbsp;: ".$data['name'] . "</td>";
                echo "</tr>\n";
@@ -241,6 +241,7 @@ class Lock {
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo __('No locked item')."</td></tr>";
+         echo "</table>";
       }
       
       Html::closeForm();
