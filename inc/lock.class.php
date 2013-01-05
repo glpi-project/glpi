@@ -68,7 +68,7 @@ class Lock {
       
       echo "<div width='50%'>";
       echo "<form method='post' id='lock_form'
-             name='lock_form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
+             name='lock_form' target=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='id' value='$ID'>\n";
       echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
       echo "<table class='tab_cadre_fixe'>";
@@ -96,10 +96,11 @@ class Lock {
                         "</tr>\n";
                   $first = false;
                }
-                
-               echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $tmp->getName() . "</td>";
-               echo "<td class='left' width='50%'>";
-               echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'></td></tr>\n";
+               
+               echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+               echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'></td>";
+               echo "<td class='left' width='95%'>" . $tmp->getName() . "</td>";
+               echo "</tr>\n";
             }
              
          }
@@ -116,10 +117,11 @@ class Lock {
                         "</tr>\n";
                   $first = false;
                }
-         
-               echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $line['name'] . "</td>";
-               echo "<td class='left' width='50%'>";
-               echo "<input type='checkbox' name='".$type."[" . $line['id'] . "]'></td></tr>\n";
+               
+               echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+               echo "<input type='checkbox' name='".$type."[" . $line['id'] . "]'></td>";
+               echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
+               echo "</tr>\n";
             }
          }
 
@@ -142,11 +144,12 @@ class Lock {
                      "</tr>\n";
                $first = false;
             }
-             
-            echo "<tr class='tab_bg_1'><td class='right' width='50%'>" .
-                  $line['software']." ".$line['version']. "</td>";
-            echo "<td class='left' width='50%'>";
-            echo "<input type='checkbox' name='Computer_SoftwareVersion[" . $line['id'] . "]'></td></tr>\n";
+            
+            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+            echo "<input type='checkbox' name='Computer_SoftwareVersion[" . $line['id'] . "]'></td>";
+            echo "<td class='left' width='95%'>" . $line['software']." ".$line['version'] . "</td>";
+            echo "</tr>\n";
+
          }
          
          //Software licenses
@@ -168,11 +171,11 @@ class Lock {
                      "</tr>\n";
                $first = false;
             }
-         
-            echo "<tr class='tab_bg_1'><td class='right' width='50%'>" .
-                  $line['software']." ".$line['version']. "</td>";
-            echo "<td class='left' width='50%'>";
-            echo "<input type='checkbox' name='Computer_SoftwareLicense[" . $line['id'] . "]'></td></tr>\n";
+            
+            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+            echo "<input type='checkbox' name='Computer_SoftwareLicense[" . $line['id'] . "]'></td>";
+            echo "<td class='left' width='95%'>" . $line['software']." ".$line['version'] . "</td>";
+            echo "</tr>\n";
          }
       }
 
@@ -189,10 +192,12 @@ class Lock {
                   "</tr>\n";
             $first = false;
          }
-      
-         echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $item->getName() . "</td>";
-         echo "<td class='left' width='50%'>";
-         echo "<input type='checkbox' name='NetworkPort[" . $line['id'] . "]'></td></tr>\n";
+         
+         echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+         echo "<input type='checkbox' name='NetworkPort[" . $line['id'] . "]'></td>";
+         echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
+         echo "</tr>\n";
+
       }
 
       $types = Item_Devices::getDeviceTypes();
@@ -220,16 +225,18 @@ class Lock {
                          AND `is_dynamic`='1'
                          AND `is_deleted`='1'";
             foreach ($DB->request($query) as $data) {
-               echo "<tr class='tab_bg_1'><td class='right' width='50%'>";
-               echo $associated_type::getTypeName()."&nbsp;: ".$data['name']."</td>";
-               echo "<td class='left' width='50%'>";
-               echo "<input type='checkbox' name='".$itemtype."[" . $data['id'] . "]'></td></tr>\n";
+               
+               echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+               echo "<input type='checkbox' name='".$itemtype."[" . $data['id'] . "]'></td>";
+               echo "<td class='left' width='95%'>";
+               echo $associated_type::getTypeName()."&nbsp;: ".$data['name'] . "</td>";
+               echo "</tr>\n";
             }
          }
       }
       if ($header) {
-        echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-        Html::openArrowMassives('lock_form');
+        echo "<tr class='tab_bg_2'><td class='left' colspan='2'>";
+        Html::openArrowMassives('lock_form', true);
         Html::closeArrowMassives(array(array()));
         echo "</td></tr>";
       }
