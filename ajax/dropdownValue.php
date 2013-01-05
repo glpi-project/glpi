@@ -203,7 +203,8 @@ if ($item instanceof CommonTreeDropdown) {
       }
       echo ">";
 
-      if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+      if (isset($_POST['searchText'])
+          && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
           && ($DB->numrows($result) == $NBMAX)) {
          echo "<option class='tree' value='0'>--".__('Limited view')."--</option>";
       }
@@ -452,7 +453,8 @@ if ($item instanceof CommonTreeDropdown) {
 
       echo ">";
 
-      if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+      if (isset($_POST['searchText'])
+          && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
           && ($DB->numrows($result) == $NBMAX)) {
          echo "<option value='0'>--".__('Limited view')."--</option>";
 
