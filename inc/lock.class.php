@@ -68,7 +68,7 @@ class Lock {
       
       echo "<div width='50%'>";
       echo "<form method='post' id='lock_form'
-             name='lock_form' target=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
+             name='lock_form' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<input type='hidden' name='id' value='$ID'>\n";
       echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
       echo "<table class='tab_cadre_fixe'>";
@@ -235,21 +235,14 @@ class Lock {
          }
       }
       if ($header) {
-        echo "<tr class='tab_bg_2'><td class='left' colspan='2'>";
-        Html::openArrowMassives('lock_form', true);
-        Html::closeArrowMassives(array(array()));
-        echo "</td></tr>";
-      }
-        
-      if ($header) {
-         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input class='submit' type='submit' name='unlock' value='".
-               _sx('button', 'Unlock'). "'></td></tr>";
+         echo "</table>";
+         Html::openArrowMassives('lock_form', true);
+         Html::closeArrowMassives(array('unlock' => _sx('button', 'Unlock')));
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo __('No locked item')."</td></tr>";
       }
-      echo "</table>";
+      
       Html::closeForm();
       echo "</div>\n";
    }
