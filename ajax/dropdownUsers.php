@@ -101,7 +101,8 @@ if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
 
 echo ">";
 
-if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+if (isset($_POST['searchText'])
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
     && ($DB->numrows($result) == $CFG_GLPI["dropdown_max"])) {
 
    echo "<option value='0'>--".__('Limited view')."--</option>";

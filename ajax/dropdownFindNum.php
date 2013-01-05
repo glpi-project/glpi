@@ -109,7 +109,8 @@ $result = $DB->query($query);
 
 echo "<select id='dropdown_find_num' name='".$_POST['myname']."' size='1'>";
 
-if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+if (isset($_POST['searchText'])
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
     && ($DB->numrows($result) == $NBMAX)) {
    echo "<option value='0'>--".__('Limited view')."--</option>";
 }
