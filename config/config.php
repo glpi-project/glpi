@@ -46,6 +46,7 @@ Config::detectRootDoc();
 
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+   Session::loadLanguage();
    // no translation
    if (!isCommandLine()) {
       Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
