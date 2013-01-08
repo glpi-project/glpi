@@ -163,7 +163,7 @@ class NetworkName extends FQDNLabel {
       if (count($recursiveItems) > 0) {
          $this->displayRecursiveItems($recursiveItems, 'Type');
       }
-      echo "</td>\n<td>";
+      echo "</td>\n<td colspan='3'>";
 
       if (!($ID > 0)) {
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
@@ -174,17 +174,12 @@ class NetworkName extends FQDNLabel {
          echo " - <input type='submit' name='unaffect' value=\"" . __s('Dissociate') .
                    "\" class='submit'>";
       }
-      echo "</td>\n";
-      echo "<td>" . __('Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, "name");
+
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-
-      echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
-      Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
-      echo "</td><td>";
-      IPNetwork::showIPNetworkProperties($this->getEntityID());
+      echo "<td>" . __('Name') . "</td><td>\n";
+      Html::autocompletionTextField($this, "name");
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
@@ -203,11 +198,20 @@ class NetworkName extends FQDNLabel {
       IPAddress::showChildsForItemForm($this, '_ipaddresses');
       echo "</td>\n";
 
-      echo "<td>".__('Comments')."</td>";
-      echo "<td><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
+      echo "<td rowspan='3'>".__('Comments')."</td>";
+      echo "<td rowspan='3'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
       echo "</textarea></td>\n";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".IPNetwork::getTypeName(2)."</td><td>";
+      _e('IP network is not included in the database. However, you can see current available networks.');
+      echo "</td></tr>";
+      echo "<tr><td>&nbsp;</td><td>";
+      IPNetwork::showIPNetworkProperties($this->getEntityID());
+      echo "</td></tr>\n";
+
+      
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
