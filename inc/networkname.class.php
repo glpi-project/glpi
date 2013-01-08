@@ -485,11 +485,14 @@ class NetworkName extends FQDNLabel {
       IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses');
       echo "</td>";
 
-      echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
-      Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
-      echo "</td><td>";
-      IPNetwork::showIPNetworkProperties($name->getEntityID());
-      echo "</td>\n";
+      // MoYo : really need to display it here ?
+      // make confure because not updatable
+//       echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
+//       Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
+//       echo "</td><td>";
+//       IPNetwork::showIPNetworkProperties($name->getEntityID());
+//       echo "</td>\n";
+      echo "</td colspan='2'>&nbsp;<td>";
 
       echo "</tr>\n";
    }
