@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -46,43 +46,18 @@ class RuleImportComputerCollection extends RuleCollection {
    ///Store the id of the ocs server
    var $ocsservers_id;
 
+   function canList() {
+      global $PLUGIN_HOOKS;
+
+      if (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item'])) {
+         return static::canView();
+      }
+      return false;
+   }
+   
    function getTitle() {
       return __('Rules for import and link computers');
    }
-
-
-   /**
-    * @see RuleCollection::prepareInputDataForProcess()
-   **/ /*
-   function prepareInputDataForProcess($input, $params) {
-      global $DBocs;
-
-      if (!isset($input['ocsid']) && isset($input['id'])) {
-         $input['ocsid'] = $input['id'];
-      }
-      //Get information about network ports
-      $query = "SELECT *
-                FROM `networks`
-                WHERE `HARDWARE_ID` = '".$input['ocsid']."'";
-      $result = $DBocs->query($query);
-
-      $ipblacklist  = Blacklist::getIPs();
-      $macblacklist = Blacklist::getMACs();
-
-      foreach ($DBocs->request($query) as $data) {
-         if (isset($data['IPSUBNET'])) {
-            $input['IPSUBNET'][] = $data['IPSUBNET'];
-         }
-         if (isset($data['MACADDR']) && !in_array($data['MACADDR'], $macblacklist)) {
-            $input['MACADDRESS'][] = $data['MACADDR'];
-         }
-         if (isset($data['IPADDRESS']) && !in_array($data['IPADDRESS'], $ipblacklist)) {
-            $input['IPADDRESS'][] = $data['IPADDRESS'];
-         }
-      }
-      return array_merge($input,$params);
-   }*/
-
 
    /**
     * @see RuleCollection::preProcessPreviewResults()
