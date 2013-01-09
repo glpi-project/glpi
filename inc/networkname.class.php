@@ -207,7 +207,7 @@ class NetworkName extends FQDNLabel {
       echo "<td>".IPNetwork::getTypeName(2)."</td><td>";
       _e('IP network is not included in the database. However, you can see current available networks.');
       echo "</td></tr>";
-      echo "<tr><td>&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>";
       IPNetwork::showIPNetworkProperties($this->getEntityID());
       echo "</td></tr>\n";
 
@@ -492,7 +492,7 @@ class NetworkName extends FQDNLabel {
 //       echo "</td><td>";
 //       IPNetwork::showIPNetworkProperties($name->getEntityID());
 //       echo "</td>\n";
-      echo "</td colspan='2'>&nbsp;<td>";
+      echo "<td colspan='2'>&nbsp;</td>";
 
       echo "</tr>\n";
    }
