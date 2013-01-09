@@ -62,7 +62,7 @@ class RuleImportComputer extends Rule {
       return __('Rules for import and link computers');
    }
 
-
+   
    /**
     * @see Rule::maxActionsCount()
    **/
@@ -259,14 +259,21 @@ class RuleImportComputer extends Rule {
     * @see Rule::findWithGlobalCriteria()
    **/
    function findWithGlobalCriteria($input) {
-      global $DB;
+      global $DB, $PLUGIN_HOOKS;
 
       $complex_criterias = array();
       $sql_where         = '';
       $sql_from          = '';
       $continue          = true;
-      $global_criteria   = array('IPADDRESS', 'IPSUBNET', 'MACADDRESS', 'manufacturer',
-                                 'model', 'name', 'serial');
+      $global_criteria   = array('manufacturer', 'model', 'name', 'serial');
+
+      //Add plugin global criteria
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $global_criteria = Plugin::doOneHook($plugin, "ruleImportComputer_addGlobalCriteria",
+                                                 $global_criteria);
+         }
+      }
 
       foreach ($global_criteria as $criterion) {
          $criteria = $this->getCriteriaByID($criterion);
@@ -306,43 +313,14 @@ class RuleImportComputer extends Rule {
          $where_entity = $input['params']['entities_id'];
       }
 
-      // Search computer, in entity, not already linked
-      $sql_where = "`glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` IS NULL
-                    AND `glpi_computers`.`entities_id` IN ($where_entity)
-                    AND `glpi_computers`.`is_template` = '0' ";
-
-      $sql_from = "`glpi_computers`
-                   LEFT JOIN `glpi_plugin_ocsinventoryng_ocslinks`
-                          ON (`glpi_computers`.`id` = `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id`)";
+      $sql_where = '1';
+      $sql_from  = '';
 
       // TODO : why don't take care of Rule match attribute ?
       $needport = false;
       $needip   = false;
       foreach ($complex_criterias as $criteria) {
          switch ($criteria->fields['criteria']) {
-            case 'IPADDRESS' :
-               if (count($input["IPADDRESS"])) {
-                  $needport   = true;
-                  $needip     = true;
-                  $sql_where .= " AND `glpi_ipaddresses`.`name` IN ('";
-                  $sql_where .= implode("','", $input["IPADDRESS"]);
-                  $sql_where .= "')";
-               } else {
-                  $sql_where =  " AND 0 ";
-               }
-               break;
-
-            case 'MACADDRESS' :
-               if (count($input["MACADDRESS"])) {
-                  $needport   = true;
-                  $sql_where .= " AND `glpi_networkports`.`mac` IN ('";
-                  $sql_where .= implode("','",$input['MACADDRESS']);
-                  $sql_where .= "')";
-               } else {
-                  $sql_where =  " AND 0 ";
-               }
-               break;
-
             case 'name' :
                if ($criteria->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
                   $sql_where .= " AND (`glpi_computers`.`name`=''
@@ -383,18 +361,20 @@ class RuleImportComputer extends Rule {
          }
       }
 
-      if ($needport) {
-         $sql_from .= " LEFT JOIN `glpi_networkports`
-                           ON (`glpi_computers`.`id` = `glpi_networkports`.`items_id`
-                               AND `glpi_networkports`.`itemtype` = 'Computer') ";
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $params = array('where_entity' => $where_entity,
+                             'input'        => $input,
+                             'criteria'     => $complex_criterias,
+                             'sql_where'    => $sql_where,
+                             'sql_from'     => $sql_from);
+            $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
+                                             $params);
+            $sql_where = $sql_results['sql_where'];
+            $sql_from  = $sql_results['sql_from'];
+         }
       }
-      if ($needip) {
-         $sql_from .= " LEFT JOIN `glpi_networknames`
-                           ON (`glpi_networkports`.`id` =  `glpi_networknames`.`items_id`
-                               AND `glpi_networknames`.`itemtype`='NetworkPort')
-                        LEFT JOIN `glpi_ipaddresses`
-                           ON (`glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`)";
-      }
+
       $sql_glpi = "SELECT `glpi_computers`.`id`
                    FROM $sql_from
                    WHERE $sql_where
