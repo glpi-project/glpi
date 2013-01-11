@@ -1105,14 +1105,14 @@ class Transfer extends CommonDBTM {
          // Search init item
          $netpoint = new Netpoint();
          if ($netpoint->getFromDB($netpoints_id)) {
-            $data  = Toolbox::addslashes_deep($location->fields);
-            $locID = $this->transferDropdownLocation($data['locations_id']);
+            $data  = Toolbox::addslashes_deep($netpoint->fields);
+            $locID = $this->transferDropdownLocation($netpoint->fields['locations_id']);
 
             // Search if the locations_id already exists in the destination entity
             $query = "SELECT `id`
                       FROM `glpi_netpoints`
                       WHERE `entities_id` = '".$this->to."'
-                            AND `name` = '".$data['name']."'
+                            AND `name` = '".$netpoint->fields['name']."'
                             AND `locations_id` = '$locID'";
 
             if ($result_search = $DB->query($query)) {
