@@ -516,7 +516,7 @@ class MailCollector  extends CommonDBTM {
                   } else if (isset($tkt['entities_id'])
                              || isset($tkt['tickets_id'])) {
 
-                     // Is a mail responding of an already existgin ticket ?
+                     // Is a mail responding of an already existing ticket ?
                      if (isset($tkt['tickets_id']) ) {
                         $fup = new TicketFollowup();
                         if ($fup->add($tkt)) {
