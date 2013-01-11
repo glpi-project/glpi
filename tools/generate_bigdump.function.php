@@ -680,7 +680,7 @@ function generateGlobalDropdowns() {
 
 
    $items = array("Technicien", "Commercial", "Technico-Commercial", "President", "Secretaire",
-                  "Directeur d'agence"));
+                  "Directeur d'agence");
    $dp    = new ContractType();
    for ($i=0 ; $i<$MAX['contact_type'] ; $i++) {
       if (isset($items[$i])) {
