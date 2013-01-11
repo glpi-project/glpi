@@ -1215,7 +1215,7 @@ class Transfer extends CommonDBTM {
                            $input                = $carttype->fields;
                            $input['entities_id'] = $this->to;
                            unset($carttype->fields);
-                           $newcarttypeID = $carttype->add(toobox::addslashes_deep($input));
+                           $newcarttypeID = $carttype->add(toolbox::addslashes_deep($input));
                            // 2 - transfer as copy
                            $this->transferItem('CartridgeItem', $data['cartridgeitems_id'],
                                                $newcarttypeID);
@@ -1309,7 +1309,7 @@ class Transfer extends CommonDBTM {
                $input                = $soft->fields;
                $input['entities_id'] = $this->to;
                unset($soft->fields);
-               $newsoftID            = $soft->add(toobox::addslashes_deep($input));
+               $newsoftID            = $soft->add(toolbox::addslashes_deep($input));
             }
 
          }
