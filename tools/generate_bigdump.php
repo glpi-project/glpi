@@ -41,6 +41,11 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
 include ("generate_bigdump.function.php");
 
+if (!Session::getLoginUserID()) {
+   echo "Must be logged in GLPI to run this script";
+   exit();
+}
+
 // Force mailing to false
 $CFG_GLPI["use_mailing"] = 0;
 
