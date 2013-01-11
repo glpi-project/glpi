@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 
@@ -924,34 +924,16 @@ class Transfer extends CommonDBTM {
       if (!isset($this->already_transfer[$itemtype][$ID])) {
          // Check computer exists ?
          if ($item->getFromDB($newID)) {
-            // Manage Ocs links
-            $dataocslink  = array();
-            $ocs_computer = false;
-
-            if (($itemtype == 'Computer')
-                && $CFG_GLPI['use_ocs_mode']) {
-
-               $query = "SELECT *
-                         FROM `glpi_ocslinks`
-                         WHERE `computers_id` = '$ID'";
-
-               if ($result = $DB->query($query)) {
-                  if ($DB->numrows($result) > 0) {
-                     $dataocslink  = $DB->fetch_assoc($result);
-                     $ocs_computer = true;
-                  }
-               }
-            }
 
             // Network connection ? keep connected / keep_disconnected / delete
             if (in_array($itemtype, array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                           'Phone', 'Printer'))) {
-               $this->transferNetworkLink($itemtype, $ID, $newID, $ocs_computer);
+               $this->transferNetworkLink($itemtype, $ID, $newID);
             }
 
             // Device : keep / delete : network case : delete if net connection delete in ocs case
             if (in_array($itemtype, array('Computer'))) {
-               $this->transferDevices($itemtype,$ID,$ocs_computer);
+               $this->transferDevices($itemtype, $ID);
             }
 
             // Reservation : keep / delete
@@ -975,15 +957,15 @@ class Transfer extends CommonDBTM {
 
             if ($itemtype == 'Computer') {
                // Monitor Direct Connect : keep / delete + clean unused / keep unused
-               $this->transferDirectConnection($itemtype, $ID, 'Monitor', $ocs_computer);
+               $this->transferDirectConnection($itemtype, $ID, 'Monitor');
                // Peripheral Direct Connect : keep / delete + clean unused / keep unused
-               $this->transferDirectConnection($itemtype, $ID, 'Peripheral', $ocs_computer);
+               $this->transferDirectConnection($itemtype, $ID, 'Peripheral');
                // Phone Direct Connect : keep / delete + clean unused / keep unused
                $this->transferDirectConnection($itemtype, $ID, 'Phone');
                // Printer Direct Connect : keep / delete + clean unused / keep unused
-               $this->transferDirectConnection($itemtype, $ID, 'Printer', $ocs_computer);
+               $this->transferDirectConnection($itemtype, $ID, 'Printer');
                // License / Software :  keep / delete + clean unused / keep unused
-               $this->transferComputerSoftwares($ID, $ocs_computer);
+               $this->transferComputerSoftwares($ID);
                // Computer Disks :  delete them or not ?
                $this->transferComputerDisks($ID);
             }
@@ -1044,9 +1026,10 @@ class Transfer extends CommonDBTM {
 
             $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
-            Plugin::doHook("item_transfer", array('type'  => $itemtype,
-                                                  'id'    => $ID,
-                                                  'newID' => $newID));
+            Plugin::doHook("item_transfer", array('type'        => $itemtype,
+                                                  'id'          => $ID,
+                                                  'newID'       => $newID,
+                                                  'entities_id' => $this->to));
          }
       }
    }
@@ -1408,9 +1391,8 @@ class Transfer extends CommonDBTM {
     * Transfer softwares of a computer
     *
     * @param $ID           ID of the computer
-    * @param $ocs_computer ID of the computer in OCS if imported from OCS (false by default)
    **/
-   function transferComputerSoftwares($ID, $ocs_computer=false) {
+   function transferComputerSoftwares($ID) {
       global $DB;
 
       // Get Installed version
@@ -1449,12 +1431,6 @@ class Transfer extends CommonDBTM {
             $this->transferAffectedLicense($data['id']);
          }
       } else {
-         if ($ocs_computer) {
-            $query = "UPDATE `glpi_ocslinks`
-                      SET `import_software` = NULL
-                      WHERE `computers_id` = '$ID'";
-            $DB->query($query);
-         }
          $query = "DELETE
                    FROM `glpi_computers_softwarelicenses`
                    WHERE `computers_id` = '$ID'";
@@ -1958,34 +1934,29 @@ class Transfer extends CommonDBTM {
     * @param $itemtype        original type of transfered item
     * @param $ID              ID of the item
     * @param $link_type       type of the linked items to transfer
-    * @param $ocs_computer    if computer type OCS ID of the item if available (false by default)
    **/
-   function transferDirectConnection($itemtype ,$ID, $link_type, $ocs_computer=false) {
+   function transferDirectConnection($itemtype ,$ID, $link_type) {
       global $DB;
 
       // Only same Item case : no duplication of computers
       // Default : delete
       $keep      = 0;
       $clean     = 0;
-      $ocs_field = "";
 
       switch ($link_type) {
          case 'Printer' :
             $keep      = $this->options['keep_dc_printer'];
             $clean     = $this->options['clean_dc_printer'];
-            $ocs_field = "import_printer";
             break;
 
          case 'Monitor' :
             $keep      = $this->options['keep_dc_monitor'];
             $clean     = $this->options['clean_dc_monitor'];
-            $ocs_field = "import_monitor";
             break;
 
          case 'Peripheral' :
             $keep      = $this->options['keep_dc_peripheral'];
             $clean     = $this->options['clean_dc_peripheral'];
-            $ocs_field = "import_peripheral";
             break;
 
          case 'Phone' :
@@ -2097,14 +2068,6 @@ class Transfer extends CommonDBTM {
 
                         $need_clean_process = true;
 
-                        // OCS clean link
-                        if ($ocs_computer && !empty($ocs_field)) {
-                           $query = "UPDATE `glpi_ocslinks`
-                                     SET `$ocs_field` = NULL
-                                     WHERE `computers_id` = '$ID'";
-                           $DB->query($query);
-                        }
-
                      }
                      // If clean and not linked dc -> delete
                      if ($need_clean_process && $clean) {
@@ -2142,13 +2105,6 @@ class Transfer extends CommonDBTM {
 
                         } else if ($clean == 2) { // purge
                            $link_item->delete(array('id' => $item_ID), 1);
-                        }
-
-                        if ($ocs_computer && !empty($ocs_field)) {
-                           $query = "UPDATE `glpi_ocslinks`
-                                     SET `$ocs_field` = NULL
-                                     WHERE `computers_id` = '$ID'";
-                           $DB->query($query);
                         }
 
                      }
@@ -2839,9 +2795,8 @@ class Transfer extends CommonDBTM {
     *
     * @param $itemtype        original type of transfered item
     * @param $ID              ID of the computer
-    * @param $ocs_computer    if computer type OCS ID of the item if available (false by default)
    **/
-   function transferDevices($itemtype, $ID, $ocs_computer=false) {
+   function transferDevices($itemtype, $ID) {
       global $DB;
 
       // Only same case because no duplication of computers
@@ -2855,14 +2810,6 @@ class Transfer extends CommonDBTM {
                          WHERE `computers_id` = '$ID'";
                $result = $DB->query($query);
             }
-            // Only case of ocs link update is needed (if devices are keep nothing to do)
-            if ($ocs_computer) {
-               $query = "UPDATE `glpi_ocslinks`
-                         SET `import_ip` = NULL
-                         WHERE `computers_id` = '$ID'";
-               $DB->query($query);
-            }
-            break;
 
          // Keep devices
          default :
@@ -2878,9 +2825,8 @@ class Transfer extends CommonDBTM {
     * @param $itemtype     original type of transfered item
     * @param $ID           original ID of the item
     * @param $newID        new ID of the item
-    * @param $ocs_computer if computer type OCS ID of the item if available (false by default)
    **/
-   function transferNetworkLink($itemtype, $ID, $newID, $ocs_computer=false) {
+   function transferNetworkLink($itemtype, $ID, $newID) {
       global $DB;
       /// TODO manage with new network system
       $np = new NetworkPort();
@@ -2903,13 +2849,6 @@ class Transfer extends CommonDBTM {
                   if ($ID == $newID) {
                      while ($data = $DB->fetch_assoc($result)) {
                         $np->delete(array('id' => $data['id']));
-                     }
-                     // Only case of ocs link update is needed (if netports are keep nothing to do)
-                     if ($ocs_computer) {
-                        $query = "UPDATE `glpi_ocslinks`
-                                  SET `import_ip` = NULL
-                                  WHERE `computers_id` = '$ID'";
-                        $DB->query($query);
                      }
                   }
                   // Copy -> do nothing
@@ -2966,7 +2905,7 @@ class Transfer extends CommonDBTM {
                         }
                      }
                   }
-            }
+               }
 
          }
       }
