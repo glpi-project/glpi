@@ -146,7 +146,7 @@ class CommonGLPI {
       if (isset(self::$othertabs[$this->getType()])
           && !$this->isNewItem()) {
 
-         foreach(self::$othertabs[$this->getType()] as $typetab) {
+         foreach (self::$othertabs[$this->getType()] as $typetab) {
             $this->addStandardTab($typetab, $onglets, $options);
          }
       }

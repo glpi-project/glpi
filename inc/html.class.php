@@ -2962,7 +2962,7 @@ class Html {
    static function closeArrowMassives($actions, $confirm=array()) {
 
       if (count($actions)) {
-         foreach($actions as $name => $label) {
+         foreach ($actions as $name => $label) {
             if (!empty($name)) {
                echo "<input type='submit' name='$name' ";
                if (is_array($confirm) && isset($confirm[$name])) {

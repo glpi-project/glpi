@@ -106,7 +106,7 @@ class HTMLTableGroup extends HTMLTableBase {
             if (!$header_names) {
                $this->ordered_headers[] = $header;
             } else {
-               foreach($header_names as $sub_header_name) {
+               foreach ($header_names as $sub_header_name) {
                   $this->ordered_headers[] = $this->getHeaderByName($header_name, $sub_header_name);
                }
             }
@@ -134,7 +134,7 @@ class HTMLTableGroup extends HTMLTableBase {
             $sub_header_names = $this->getHeaderOrder($super_header_name);
             $count            = 0;
 
-            foreach($sub_header_names as $sub_header_name) {
+            foreach ($sub_header_names as $sub_header_name) {
                $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                if ($sub_header->hasToDisplay()) {
                   $count ++;
@@ -145,7 +145,7 @@ class HTMLTableGroup extends HTMLTableBase {
                $this->ordered_headers[] = $super_header;
             } else {
                $super_header->updateNumberOfSubHeader($count);
-               foreach($sub_header_names as $sub_header_name) {
+               foreach ($sub_header_names as $sub_header_name) {
                   $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                   if ($sub_header->hasToDisplay()) {
                      $this->ordered_headers[]        = $sub_header;
