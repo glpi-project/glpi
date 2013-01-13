@@ -188,8 +188,8 @@ abstract class FQDNLabel extends CommonDBChild {
       }
 
       $IDs = array();
-      foreach(array('NetworkName'  => 'glpi_networknames',
-                    'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
+      foreach (array('NetworkName'  => 'glpi_networknames',
+                     'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
          $query = "SELECT `id`
                    FROM `$table`
                    WHERE `name` $relation ";

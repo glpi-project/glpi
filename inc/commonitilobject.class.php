@@ -3554,7 +3554,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //Types of the core (after the plugin for robustness)
-      foreach($CFG_GLPI["ticket_types"] as $itemtype) {
+      foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype) // No plugin here
                 && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {

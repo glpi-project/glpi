@@ -27,6 +27,11 @@
  --------------------------------------------------------------------------
 */
 
+/** @file
+ * @brief
+ * @since version 0.84
+*/
+
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '..');
 }
@@ -37,9 +42,9 @@ if (isset($_POST['itemtype']) && isset($_POST["unlock"])) {
    $source_item = new $itemtype();
    if ($source_item->canCreate()) {
       $source_item->check($_POST['id'], 'w');
-      
-      $actions = array("Computer_Item", "Computer_SoftwareVersion", "ComputerDisk" ,
-                        "ComputerVirtualMachine", "NetworkPort", "Computer_SoftwareLicense");
+
+      $actions = array("Computer_Item", "Computer_SoftwareLicense", "Computer_SoftwareVersion",
+                       "ComputerDisk", "ComputerVirtualMachine", "NetworkPort", );
       $devices = Item_Devices::getDeviceTypes();
       $actions = array_merge($actions, array_values($devices));
       foreach ($actions as $type) {

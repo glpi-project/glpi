@@ -41,7 +41,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
-foreach(array('glpi_table_of', 'glpi_foreign_key_field_of') as $session_array_fields) {
+foreach (array('glpi_table_of', 'glpi_foreign_key_field_of') as $session_array_fields) {
    if (!isset($_SESSION[$session_array_fields])) {
       $_SESSION[$session_array_fields] = array();
    }
