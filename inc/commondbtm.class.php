@@ -3245,18 +3245,18 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          //Lock management
-         case 'unlock_Printer':
-         case 'unlock_Monitor':
-         case 'unlock_NetworkPort':
-         case 'unlock_ComputerDisk':
-         case 'unlock_Peripheral':
-         case 'unlock_Software':
+         case 'unlock_Printer' :
+         case 'unlock_Monitor' :
+         case 'unlock_NetworkPort' :
+         case 'unlock_ComputerDisk' :
+         case 'unlock_Peripheral' :
+         case 'unlock_Software' :
             $itemtype = Lock::getItemTypeForMassiveAction($input["action"]);
             if ($itemtype) {
                $res = Lock::unlockItems($itemtype, $input["item"]);
             }
             break;
-            
+
          default :
             // Plugin specific actions
             $split = explode('_',$input["action"]);
@@ -3373,7 +3373,7 @@ class CommonDBTM extends CommonGLPI {
       }
       //Add unlock if needed
       $actions += Lock::getUnlockMassiveActions($itemtype);
-      
+
       // Manage forbidden actions
       $forbidden_actions = $this->getForbiddenStandardMassiveAction();
       if (is_array($forbidden_actions) && count($forbidden_actions)) {
