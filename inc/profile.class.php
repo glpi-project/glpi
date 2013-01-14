@@ -1828,12 +1828,12 @@ class Profile extends CommonDBTM {
       $tab[123]['field']          = 'validate_incident';
       $tab[123]['name']           = __('Validate an incident');
       $tab[123]['datatype']       = 'bool';
-      
+
       $tab[99]['table']          = $this->getTable();
       $tab[99]['field']          = 'create_request_validation';
       $tab[99]['name']           = __('Create a validation request for a request');
       $tab[99]['datatype']       = 'bool';
-      
+
       $tab[122]['table']          = $this->getTable();
       $tab[122]['field']          = 'create_incident_validation';
       $tab[122]['name']           = __('Create a validation request for an incident');
@@ -2209,6 +2209,38 @@ class Profile extends CommonDBTM {
       $p['multiple'] = true;
       $p['size']     = 3;
       return Dropdown::showFromArray($p['name'], $values, $p);
+   }
+
+
+   /**
+    * function to check one right of a user
+    *
+    * @since version 0.84
+    *
+    * @param $user       integer                id of the user to check rights
+    * @param $right      string                 right to check
+    * @param $valright   integer/string/array   value of the rights searched
+    * @param $entity     integer                id of the entity
+    *
+    * @return boolean
+    */
+   static function haveUserRight($user, $right, $valright, $entity) {
+      global $DB;
+
+      $query = "SELECT $right
+                FROM `glpi_profiles`
+                INNER JOIN `glpi_profiles_users`
+                   ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                WHERE `glpi_profiles_users`.`users_id` = '$user'
+                      AND $right IN ('$valright') ".
+                      getEntitiesRestrictRequest(" AND ", "glpi_profiles_users", '', $entity, true);
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }
