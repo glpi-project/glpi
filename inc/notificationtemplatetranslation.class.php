@@ -341,7 +341,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $tags = array();
 
       foreach ($target->tag_descriptions as $tag_type => $infos) {
-         foreach($infos as $key => $val) {
+         foreach ($infos as $key => $val) {
             $infos[$key]['type'] = $tag_type;
          }
          $tags = array_merge($tags,$infos);

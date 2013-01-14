@@ -276,7 +276,7 @@ class Ticket extends CommonITILObject {
 
       $input['slas_id']               = 0;
       $input['slalevels_id']          = 0;
-      $input['sla_waiting_duration'] = 0;
+      $input['sla_waiting_duration']  = 0;
       $input['id']                    = $id;
 
       SlaLevel_Ticket::deleteForTicket($id);
@@ -2391,7 +2391,7 @@ class Ticket extends CommonITILObject {
             $tokeep[] = 'validation';
          }
          $keep = false;
-         foreach($tab as $key => $val) {
+         foreach ($tab as $key => $val) {
             if (!is_array($val)) {
                $keep = in_array($key, $tokeep);
             }

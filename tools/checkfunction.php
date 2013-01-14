@@ -204,7 +204,7 @@ $obsoleted = array(
 );
 
 $res = 0;
-foreach($obsoleted as $old => $new) {
+foreach ($obsoleted as $old => $new) {
    if (in_array('--debug', $_SERVER['argv'])) {
       echo "+ $old => $new\n";
    }

@@ -364,7 +364,7 @@ class Reservation extends CommonDBChild {
                    WHERE `reservationitems_id` = '".$this->fields['reservationitems_id']."'
                          AND `group` = '".$this->fields['group']."' ";
          $rr = clone $this;
-         foreach($DB->request($query) as $data) {
+         foreach ($DB->request($query) as $data) {
             $rr->delete(array('id' => $data['id']));
          }
       }

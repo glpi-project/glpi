@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 // Direct access to file
@@ -121,8 +121,8 @@ $result = $DB->query($query);
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."' size='1'>";
 
 if (isset($_POST['searchText'])
-    && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]
-    && $DB->numrows($result)==$NBMAX) {
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+    && ($DB->numrows($result) == $NBMAX)) {
    echo "<option value='0'>--".__('Limited view')."--</option>";
 } else {
    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";

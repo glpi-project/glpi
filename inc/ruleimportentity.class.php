@@ -129,9 +129,10 @@ class RuleImportEntity extends Rule {
    **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
       global $PLUGIN_HOOKS;
+
       if ($criteria['field'] == '_source') {
          $tab = array();
-         foreach($PLUGIN_HOOKS['import_item'] as $plug => $types) {
+         foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
             $tab[$plug] = Plugin::getInfo($plug, 'name');
          }
          Dropdown::showFromArray($name, $tab);
@@ -139,6 +140,7 @@ class RuleImportEntity extends Rule {
       }
       return false;
    }
+
 
    /**
     * @since version 0.84

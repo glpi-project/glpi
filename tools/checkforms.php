@@ -39,7 +39,7 @@ $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/front/',
               GLPI_ROOT.'/install/');
 
-foreach($dirs as $dir) {
+foreach ($dirs as $dir) {
    if ($handle = opendir($dir)) {
 
       /* Ceci est la façon correcte de traverser un dossier. */

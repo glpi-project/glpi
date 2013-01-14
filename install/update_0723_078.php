@@ -3503,7 +3503,7 @@ function update0723to078() {
                                                  PHONE_TYPE);
                $tostore = array();
 
-               foreach($CFG_GLPI["ticket_types"] as $itemtype) {
+               foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
                   if (pow(2,$itemtype)&$types) {
                      $tostore[] = $typetoname[$itemtype];
                   }
@@ -4573,7 +4573,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                     VALUES (NULL, 'Software Licenses', 0, 'SoftwareLicense', 'alert', 'mail',
                             ".$templates['SoftwareLicense'].", '', 1, 1, NOW())";
 
-      foreach($queries as $query) {
+      foreach ($queries as $query) {
          $DB->queryOrDie($query, "0.78 insert notification");
       }
 
