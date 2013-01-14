@@ -730,7 +730,7 @@ class RSSFeed extends CommonDBTM {
          $this->setError(false);
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
-         foreach($feed->get_items(0,$this->fields['max_items']) as $item) {
+         foreach ($feed->get_items(0,$this->fields['max_items']) as $item) {
             $link = $item->get_permalink();
             echo "<tr class='tab_bg_1'><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
@@ -915,7 +915,7 @@ class RSSFeed extends CommonDBTM {
 
       if ($nb) {
          usort($items, array('SimplePie', 'sort_items'));
-         foreach($items as $item) {
+         foreach ($items as $item) {
             echo "<tr class='tab_bg_1'><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";

@@ -46,6 +46,12 @@ class RuleImportComputerCollection extends RuleCollection {
    ///Store the id of the ocs server
    var $ocsservers_id;
 
+
+   /**
+    * @since version 0.84
+    *
+    * @return boolean
+   **/
    function canList() {
       global $PLUGIN_HOOKS;
 
@@ -54,7 +60,8 @@ class RuleImportComputerCollection extends RuleCollection {
       }
       return false;
    }
-   
+
+
    function getTitle() {
       return __('Rules for import and link computers');
    }

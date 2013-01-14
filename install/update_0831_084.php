@@ -649,7 +649,7 @@ function update0831to084() {
 
       $migration->migrationOneTable('glpi_contractcosts');
 
-      foreach($DB->request('glpi_contracts',"`cost` > 0") as $data) {
+      foreach ($DB->request('glpi_contracts',"`cost` > 0") as $data) {
          $begin_to_add = "NULL";
          $end_to_add   = "NULL";
 
@@ -1214,7 +1214,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_problems_suppliers");
    }
    $migration->migrationOneTable('glpi_problems_suppliers');
-   foreach($DB->request('glpi_problems',"`suppliers_id_assign` > 0") as $data) {
+   foreach ($DB->request('glpi_problems',"`suppliers_id_assign` > 0") as $data) {
       $query = "INSERT INTO `glpi_problems_suppliers`
                        (`suppliers_id`, `type`, `problems_id`)
                 VALUES ('".$data['suppliers_id_assign']."', '".CommonITILActor::ASSIGN."',
@@ -1237,7 +1237,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_suppliers_tickets");
    }
    $migration->migrationOneTable('glpi_suppliers_tickets');
-   foreach($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
+   foreach ($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
       $query = "INSERT INTO `glpi_suppliers_tickets`
                        (`suppliers_id`, `type`, `tickets_id`)
                 VALUES ('".$data['suppliers_id_assign']."', '".CommonITILActor::ASSIGN."',
@@ -1293,7 +1293,7 @@ function update0831to084() {
    $migration->addField('glpi_ticketrecurrents', 'end_date', 'datetime');
 
    $migration->migrationOneTable('glpi_ticketrecurrents');
-   foreach($DB->request('glpi_ticketrecurrents',"`periodicity` >= ".MONTH_TIMESTAMP) as $data) {
+   foreach ($DB->request('glpi_ticketrecurrents',"`periodicity` >= ".MONTH_TIMESTAMP) as $data) {
       $periodicity = $data['periodicity'] ;
       if (is_numeric($periodicity)) {
          if ($periodicity >= 365*DAY_TIMESTAMP) {
@@ -1417,7 +1417,7 @@ function update0831to084() {
    $types = array_merge($types, array('glpi_printers', 'glpi_phones', 'glpi_peripherals',
                                       'glpi_networkequipments', 'glpi_networkports',
                                       'glpi_monitors'));
-   foreach($types as $table) {
+   foreach ($types as $table) {
       if ($migration->addField($table, 'is_dynamic', 'bool')) {
          $migration->migrationOneTable($table);
          $migration->addKey($table, 'is_dynamic');
@@ -2526,7 +2526,7 @@ function migrateComputerLocks(Migration $migration) {
 
    foreach ($import as $field => $table) {
       if (FieldExists('ocs_glpi_ocslinks', $field)) {
-         foreach($DB->request('ocs_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
+         foreach ($DB->request('ocs_glpi_ocslinks', '', array('computers_id', $field)) as $data) {
             $import_field = importArrayFromDB($data[$field]);
 
             //If array is not empty

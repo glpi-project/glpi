@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -107,7 +107,7 @@ class RuleRightCollection extends RuleCollection {
          echo "<td colspan='4' class='center'>".__('Rights and entities assignment')."</td>";
          foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
             if (is_array($val[0])) {
-               foreach($val[0] as $tmp) {
+               foreach ($val[0] as $tmp) {
                   $this->displayActionByName("entity", $tmp);
                }
             } else {

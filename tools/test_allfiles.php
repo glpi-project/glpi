@@ -26,7 +26,7 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
- 
+
 /** @file
 * @brief
 */
@@ -40,9 +40,9 @@ $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/ajax/',
               GLPI_ROOT.'/front/',
               GLPI_ROOT.'/install/',
-	      GLPI_ROOT.'/config/');
+              GLPI_ROOT.'/config/');
 
-foreach($dirs as $dir) {
+foreach ($dirs as $dir) {
    if ($handle = opendir($dir)) {
       echo "Check dir $dir\n";
 #      echo "Files :\n";

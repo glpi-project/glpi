@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 // Ensure current directory when run from crontab
@@ -110,7 +110,7 @@ if (($DB->numrows($result) == 0)
     && ($_GET["ldapservers_id"] != NOT_AVAILABLE)) {
    echo "LDAP Server not found";
 } else {
-   foreach($DB->request($sql) as $data) {
+   foreach ($DB->request($sql) as $data) {
       echo "Processing LDAP Server: ".$data['name'].", ID: ".$data['id']." \n";
       $options['ldapservers_id'] = $data['id'];
       import ($options);
