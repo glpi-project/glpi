@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-04 11:08+0100\n"
+"POT-Creation-Date: 2013-01-16 08:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,14 +82,14 @@ msgstr ""
 #. TRANS: %1$s is a type, %2$s is a table
 #. TRANS: %s id of the approval's state
 #: ajax/dropdownConnectNetworkPort.php:95
-#: ajax/dropdownConnectNetworkPort.php:102 ajax/dropdownConnect.php:184
-#: ajax/dropdownConnect.php:187 ajax/dropdownFindNum.php:126
-#: ajax/dropdownFindNum.php:129 ajax/dropdownFindNum.php:132
-#: ajax/dropdownInstallVersion.php:87 ajax/dropdownNetpoint.php:143
-#: ajax/dropdownNetpoint.php:144 ajax/dropdownUsers.php:126
-#: ajax/dropdownValue.php:258 ajax/dropdownValue.php:307
-#: ajax/dropdownValue.php:361 ajax/dropdownValue.php:495
-#: ajax/dropdownValue.php:504 ajax/private_public.php:55 front/rule.php:48
+#: ajax/dropdownConnectNetworkPort.php:102 ajax/dropdownConnect.php:185
+#: ajax/dropdownConnect.php:188 ajax/dropdownFindNum.php:127
+#: ajax/dropdownFindNum.php:130 ajax/dropdownFindNum.php:133
+#: ajax/dropdownInstallVersion.php:87 ajax/dropdownNetpoint.php:145
+#: ajax/dropdownNetpoint.php:146 ajax/dropdownUsers.php:127
+#: ajax/dropdownValue.php:259 ajax/dropdownValue.php:308
+#: ajax/dropdownValue.php:362 ajax/dropdownValue.php:497
+#: ajax/dropdownValue.php:506 ajax/private_public.php:55 front/rule.php:48
 #: inc/cartridge.class.php:769 inc/cartridgeitem.class.php:476
 #: inc/cartridgeitem.class.php:478 inc/commondbtm.class.php:2673
 #: inc/commondbtm.class.php:2745 inc/commondbtm.class.php:3699
@@ -153,11 +153,11 @@ msgstr ""
 #. TRANS: %1$s is a name, %2$s is ID
 #. TRANS: %s is the entity name
 #: ajax/dropdownConnectNetworkPort.php:109
-#: ajax/dropdownConnectNetworkPort.php:110 ajax/dropdownConnect.php:181
-#: ajax/dropdownFindNum.php:138 ajax/dropdownInstallVersion.php:84
-#: ajax/dropdownNetpoint.php:147 ajax/dropdownSoftwareLicense.php:72
-#: ajax/dropdownValue.php:356 ajax/dropdownValue.php:475
-#: ajax/dropdownValue.php:509 inc/cartridge.class.php:531
+#: ajax/dropdownConnectNetworkPort.php:110 ajax/dropdownConnect.php:182
+#: ajax/dropdownFindNum.php:139 ajax/dropdownInstallVersion.php:84
+#: ajax/dropdownNetpoint.php:149 ajax/dropdownSoftwareLicense.php:72
+#: ajax/dropdownValue.php:357 ajax/dropdownValue.php:477
+#: ajax/dropdownValue.php:511 inc/cartridge.class.php:531
 #: inc/cartridgeitem.class.php:477 inc/change_item.class.php:199
 #: inc/commondbtm.class.php:2740 inc/commondbtm.class.php:4466
 #: inc/commonitiltask.class.php:422 inc/computer.class.php:901
@@ -214,10 +214,10 @@ msgstr ""
 msgid "%1$s (%2$s)"
 msgstr ""
 
-#: ajax/dropdownConnect.php:161 ajax/dropdownFindNum.php:114
-#: ajax/dropdownNetpoint.php:124 ajax/dropdownRules.php:78
-#: ajax/dropdownUsers.php:107 ajax/dropdownValue.php:208
-#: ajax/dropdownValue.php:457
+#: ajax/dropdownConnect.php:162 ajax/dropdownFindNum.php:115
+#: ajax/dropdownNetpoint.php:126 ajax/dropdownRules.php:79
+#: ajax/dropdownUsers.php:108 ajax/dropdownValue.php:209
+#: ajax/dropdownValue.php:459
 msgid "Limited view"
 msgstr ""
 
@@ -286,15 +286,16 @@ msgstr ""
 #: inc/item_problem.class.php:216 inc/knowbaseitem.class.php:600
 #: inc/knowbaseitem.class.php:799 inc/knowbaseitem.class.php:822
 #: inc/knowbaseitem.class.php:1179 inc/link.class.php:412
-#: inc/link.class.php:436 inc/log.class.php:367 inc/log.class.php:392
-#: inc/log.class.php:399 inc/log.class.php:406 inc/log.class.php:416
-#: inc/log.class.php:426 inc/log.class.php:440 inc/log.class.php:449
-#: inc/log.class.php:458 inc/log.class.php:469 inc/log.class.php:479
-#: inc/mailcollector.class.php:1267 inc/mailcollector.class.php:1275
-#: inc/networkport.class.php:650 inc/networkportmigration.class.php:238
-#: inc/notificationmail.class.php:250 inc/notificationtarget.class.php:321
-#: inc/notificationtarget.class.php:343 inc/notificationtarget.class.php:713
-#: inc/notificationtarget.class.php:735 inc/notificationtarget.class.php:738
+#: inc/link.class.php:436 inc/lock.class.php:246 inc/log.class.php:367
+#: inc/log.class.php:392 inc/log.class.php:399 inc/log.class.php:406
+#: inc/log.class.php:416 inc/log.class.php:426 inc/log.class.php:440
+#: inc/log.class.php:449 inc/log.class.php:458 inc/log.class.php:469
+#: inc/log.class.php:479 inc/mailcollector.class.php:1267
+#: inc/mailcollector.class.php:1275 inc/networkport.class.php:650
+#: inc/networkportmigration.class.php:238 inc/notificationmail.class.php:250
+#: inc/notificationtarget.class.php:321 inc/notificationtarget.class.php:343
+#: inc/notificationtarget.class.php:713 inc/notificationtarget.class.php:735
+#: inc/notificationtarget.class.php:738
 #: inc/notificationtargetcommonitilobject.class.php:781
 #: inc/notificationtargetcommonitilobject.class.php:849
 #: inc/notificationtargetcommonitilobject.class.php:851
@@ -434,7 +435,7 @@ msgstr ""
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
 
-#: ajax/dropdownUsers.php:113 front/report.contract.php:56
+#: ajax/dropdownUsers.php:114 front/report.contract.php:56
 #: front/report.contract.php:69 front/report.year.php:55
 #: front/report.year.php:67 inc/change.class.php:620
 #: inc/commonglpi.class.php:533 inc/config.class.php:308
@@ -629,7 +630,7 @@ msgstr ""
 #: inc/rule.class.php:299 inc/rulecollection.class.php:421
 #: inc/ruledictionnarysoftware.class.php:145
 #: inc/ruledictionnarysoftware.class.php:178
-#: inc/ruleimportentity.class.php:168 inc/rulemailcollector.class.php:203
+#: inc/ruleimportentity.class.php:170 inc/rulemailcollector.class.php:203
 #: inc/ruleright.class.php:298 inc/rulerightcollection.class.php:153
 #: inc/ruleticket.class.php:341 inc/search.class.php:5112
 #: inc/sla.class.php:224 inc/software.class.php:492 inc/software.class.php:891
@@ -709,22 +710,22 @@ msgstr ""
 msgid "Access denied"
 msgstr ""
 
-#: config/config.php:167 config/config.php:186
+#: config/config.php:168 config/config.php:187
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
 msgstr ""
 
-#: config/config.php:179 install/install.php:176 install/install.php:186
+#: config/config.php:180 install/install.php:176 install/install.php:186
 msgid "Try again"
 msgstr ""
 
-#: config/config.php:187 inc/plugin.class.php:475
+#: config/config.php:188 inc/plugin.class.php:475
 msgctxt "button"
 msgid "Upgrade"
 msgstr ""
 
-#: config/config.php:193
+#: config/config.php:194
 msgid ""
 "You are trying to use GLPI with files from an earlier version to the version "
 "of the database. Please install the GLPI files corresponding to the version "
@@ -894,14 +895,14 @@ msgstr ""
 #: inc/displaypreference.class.php:601 inc/document.class.php:686
 #: inc/infocom.class.php:1146 inc/item_devices.class.php:172
 #: inc/knowbaseitem.class.php:734 inc/knowbaseitem.class.php:1538
-#: inc/netpoint.class.php:342 inc/networkname.class.php:785
+#: inc/netpoint.class.php:342 inc/networkname.class.php:792
 #: inc/problem_ticket.class.php:259 inc/profile_user.class.php:302
 #: inc/reminder.class.php:1180 inc/reservation.class.php:756
 #: inc/rssfeed.class.php:1001 inc/rule.class.php:2170
 #: inc/ticket.class.php:3839 inc/ticket.class.php:4445
-#: inc/ticket_ticket.class.php:113 inc/transfer.class.php:3035
-#: inc/transfer.class.php:3040 inc/transfer.class.php:3057
-#: inc/transfer.class.php:3064
+#: inc/ticket_ticket.class.php:113 inc/transfer.class.php:2974
+#: inc/transfer.class.php:2979 inc/transfer.class.php:2996
+#: inc/transfer.class.php:3003
 msgctxt "button"
 msgid "Delete permanently"
 msgstr ""
@@ -1269,7 +1270,7 @@ msgid "%1$s %2$s"
 msgstr ""
 
 #: front/crontask.php:46 inc/crontask.class.php:516
-#: inc/transfer.class.php:3013
+#: inc/transfer.class.php:2952
 msgid "Execute"
 msgstr ""
 
@@ -1290,7 +1291,7 @@ msgstr ""
 #: inc/computer.class.php:861 inc/dropdown.class.php:626
 #: inc/event.class.php:116 inc/html.class.php:1845
 #: inc/item_devices.class.php:123 inc/item_devices.class.php:125
-#: inc/item_devices.class.php:159 inc/lock.class.php:208
+#: inc/item_devices.class.php:159 inc/lock.class.php:227
 #: inc/profile.class.php:1305 inc/profile.class.php:1523
 #: install/update_0723_078.php:3889
 msgid "Component"
@@ -1362,7 +1363,7 @@ msgstr[1] ""
 #: front/report.default.php:210 front/report.year.php:57
 #: inc/cartridge.class.php:865 inc/html.class.php:1049 inc/html.class.php:1764
 #: inc/printer.class.php:54 inc/profile.class.php:667
-#: inc/profile.class.php:1421 inc/transfer.class.php:3136
+#: inc/profile.class.php:1421 inc/transfer.class.php:3075
 msgid "Printer"
 msgid_plural "Printers"
 msgstr[0] ""
@@ -1459,7 +1460,7 @@ msgstr[1] ""
 #: inc/item_problem.class.php:157 inc/knowbaseitem.class.php:1553
 #: inc/link_itemtype.class.php:120 inc/monitor.class.php:190
 #: inc/monitor.class.php:438 inc/networkequipment.class.php:220
-#: inc/networkequipment.class.php:406 inc/networkname.class.php:237
+#: inc/networkequipment.class.php:406 inc/networkname.class.php:241
 #: inc/networkport.class.php:1067 inc/notification.class.php:143
 #: inc/notification.class.php:278 inc/notificationtarget.class.php:1197
 #: inc/notificationtargetcontract.class.php:159
@@ -1608,7 +1609,7 @@ msgid "%s replaces an item"
 msgstr ""
 
 #: front/dropdown.common.form.php:116 front/massiveaction.php:158
-#: inc/profile_user.class.php:84 inc/transfer.class.php:3292
+#: inc/profile_user.class.php:84 inc/transfer.class.php:3231
 msgid "No selected element or badly defined operation"
 msgstr ""
 
@@ -1668,7 +1669,7 @@ msgstr ""
 #: inc/group_user.class.php:641 inc/infocom.class.php:1397
 #: inc/infocom.class.php:1518 inc/knowbaseitem.class.php:1422
 #: inc/link.class.php:167 inc/log.class.php:283 inc/monitor.class.php:430
-#: inc/networkequipment.class.php:398 inc/networkname.class.php:243
+#: inc/networkequipment.class.php:398 inc/networkname.class.php:247
 #: inc/networkport.class.php:1041 inc/networkport.class.php:1073
 #: inc/notificationtargetcommonitilobject.class.php:776
 #: inc/notificationtargetproblem.class.php:266
@@ -1755,7 +1756,7 @@ msgstr[1] ""
 #: front/report.default.php:131 front/report.default.php:185
 #: front/report.year.php:59 inc/html.class.php:978 inc/monitor.class.php:53
 #: inc/profile.class.php:656 inc/profile.class.php:1406
-#: inc/transfer.class.php:3126 inc/wifinetwork.class.php:64
+#: inc/transfer.class.php:3065 inc/wifinetwork.class.php:64
 msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] ""
@@ -1765,7 +1766,7 @@ msgstr[1] ""
 #: front/report.default.php:133 front/report.default.php:235
 #: front/report.year.php:60 inc/html.class.php:1033
 #: inc/peripheral.class.php:54 inc/profile.class.php:682
-#: inc/profile.class.php:1426 inc/transfer.class.php:3146
+#: inc/profile.class.php:1426 inc/transfer.class.php:3085
 msgid "Device"
 msgid_plural "Devices"
 msgstr[0] ""
@@ -2070,7 +2071,7 @@ msgstr ""
 #: inc/netpoint.class.php:309 inc/netpoint.class.php:354
 #: inc/networkalias.class.php:117 inc/networkalias.class.php:293
 #: inc/networkequipment.class.php:200 inc/networkequipment.class.php:392
-#: inc/networkname.class.php:178 inc/networkport.class.php:553
+#: inc/networkname.class.php:181 inc/networkport.class.php:553
 #: inc/networkport.class.php:814 inc/networkport.class.php:1034
 #: inc/networkport_vlan.class.php:164 inc/notification.class.php:129
 #: inc/notification.class.php:254 inc/notificationtarget.class.php:1194
@@ -2102,7 +2103,7 @@ msgstr ""
 #: inc/tickettemplatehiddenfield.class.php:239
 #: inc/tickettemplatemandatoryfield.class.php:249
 #: inc/tickettemplatepredefinedfield.class.php:286 inc/transfer.class.php:82
-#: inc/transfer.class.php:3020 inc/user.class.php:1761 inc/user.class.php:2997
+#: inc/transfer.class.php:2959 inc/user.class.php:1761 inc/user.class.php:2997
 #: inc/user.class.php:3072
 msgid "Name"
 msgstr ""
@@ -2120,7 +2121,7 @@ msgstr ""
 #: inc/notificationtargetproblem.class.php:228
 #: inc/notificationtargetticket.class.php:573 inc/peripheral.class.php:178
 #: inc/phone.class.php:175 inc/printer.class.php:279
-#: inc/ruleimportentity.class.php:172 inc/ruleticket.class.php:474
+#: inc/ruleimportentity.class.php:174 inc/ruleticket.class.php:474
 #: inc/software.class.php:212 inc/ticket.class.php:1955
 #: inc/ticket.class.php:3353 inc/ticket.class.php:4252 inc/user.class.php:1673
 #: inc/user.class.php:1787 inc/user.class.php:1966
@@ -2189,7 +2190,7 @@ msgstr[1] ""
 #: inc/notificationtargetcommonitilobject.class.php:796 inc/phone.class.php:50
 #: inc/profile.class.php:679 inc/profile.class.php:1441
 #: inc/supplier.class.php:126 inc/supplier.class.php:299
-#: inc/transfer.class.php:3156 inc/user.class.php:1640 inc/user.class.php:1766
+#: inc/transfer.class.php:3095 inc/user.class.php:1640 inc/user.class.php:1766
 #: inc/user.class.php:1918 inc/user.class.php:2273
 #: install/update_0681_07.php:568 install/update_0723_078.php:3687
 msgid "Phone"
@@ -2274,7 +2275,7 @@ msgstr ""
 #: front/report.netpoint.list.php:74 front/report.netpoint.list.php:78
 #: front/report.switch.list.php:65 front/report.switch.list.php:68
 #: inc/blacklist.class.php:213 inc/networkequipment.class.php:521
-#: inc/networkname.class.php:260
+#: inc/networkname.class.php:264
 msgid "IP"
 msgstr ""
 
@@ -2643,7 +2644,7 @@ msgstr ""
 #: inc/infocom.class.php:1455
 #: inc/notificationtargetcommonitilobject.class.php:383
 #: inc/profile.class.php:696 inc/profile.class.php:1458
-#: inc/supplier.class.php:53 inc/transfer.class.php:3169
+#: inc/supplier.class.php:53 inc/transfer.class.php:3108
 msgid "Supplier"
 msgid_plural "Suppliers"
 msgstr[0] ""
@@ -3069,7 +3070,7 @@ msgstr ""
 #: inc/entity.class.php:2152 inc/infocom.class.php:1610
 #: inc/notificationtargetticket.class.php:260 inc/profile.class.php:500
 #: inc/sla.class.php:160 inc/softwarelicense.class.php:229
-#: inc/transfer.class.php:3031
+#: inc/transfer.class.php:2970
 msgid "Never"
 msgstr ""
 
@@ -3311,7 +3312,7 @@ msgstr ""
 #: inc/software.class.php:450 inc/softwarelicense.class.php:227
 #: inc/ticket.class.php:1921 inc/ticket.class.php:3908
 #: inc/ticket.class.php:5021 inc/transfer.class.php:88
-#: inc/transfer.class.php:3029 inc/user.class.php:2340
+#: inc/transfer.class.php:2968 inc/user.class.php:2340
 msgid "Last update"
 msgstr ""
 
@@ -3397,7 +3398,7 @@ msgstr ""
 #: inc/monitor.class.php:270 inc/monitor.class.php:491
 #: inc/netpoint.class.php:355 inc/networkalias.class.php:129
 #: inc/networkalias.class.php:387 inc/networkequipment.class.php:305
-#: inc/networkequipment.class.php:459 inc/networkname.class.php:206
+#: inc/networkequipment.class.php:459 inc/networkname.class.php:201
 #: inc/networkport.class.php:790 inc/networkport.class.php:1062
 #: inc/networkportmigration.class.php:287 inc/notification.class.php:134
 #: inc/notification.class.php:289
@@ -3427,7 +3428,7 @@ msgstr ""
 #: inc/ticketvalidation.class.php:587 inc/ticketvalidation.class.php:650
 #: inc/ticketvalidation.class.php:653 inc/ticketvalidation.class.php:765
 #: inc/ticketvalidation.class.php:778 inc/ticketvalidation.class.php:804
-#: inc/transfer.class.php:94 inc/transfer.class.php:3023
+#: inc/transfer.class.php:94 inc/transfer.class.php:2962
 #: inc/user.class.php:1660 inc/user.class.php:2328 inc/vlan.class.php:162
 msgid "Comments"
 msgstr ""
@@ -3707,8 +3708,8 @@ msgstr ""
 msgid "No directory associated to entity: impossible search"
 msgstr ""
 
-#: inc/authldap.class.php:2963 inc/transfer.class.php:3036
-#: inc/transfer.class.php:3038
+#: inc/authldap.class.php:2963 inc/transfer.class.php:2975
+#: inc/transfer.class.php:2977
 msgid "Preserve"
 msgstr ""
 
@@ -3968,7 +3969,7 @@ msgstr[1] ""
 #: inc/document_item.class.php:647 inc/group_user.class.php:206
 #: inc/group_user.class.php:449 inc/ipaddress.class.php:278
 #: inc/item_problem.class.php:234 inc/netpoint.class.php:365
-#: inc/networkalias.class.php:392 inc/networkname.class.php:779
+#: inc/networkalias.class.php:392 inc/networkname.class.php:786
 #: inc/networkport.class.php:517 inc/notificationtarget.class.php:1206
 #: inc/notificationtemplatetranslation.class.php:187
 #: inc/problem.class.php:1813 inc/problem_ticket.class.php:275
@@ -4178,7 +4179,7 @@ msgstr ""
 #: inc/cartridge.class.php:501 inc/consumable.class.php:488
 #: inc/entity.class.php:1419 inc/infocom.class.php:60
 #: inc/infocom.class.php:946 inc/infocom.class.php:1217
-#: inc/transfer.class.php:3107 install/update_0723_078.php:4823
+#: inc/transfer.class.php:3046 install/update_0723_078.php:4823
 msgid "Financial and administrative information"
 msgstr ""
 
@@ -4372,7 +4373,7 @@ msgstr ""
 #: inc/tickettemplatehiddenfield.class.php:251
 #: inc/tickettemplatemandatoryfield.class.php:270
 #: inc/tickettemplatepredefinedfield.class.php:310
-#: inc/ticketvalidation.class.php:709 inc/transfer.class.php:3277
+#: inc/ticketvalidation.class.php:709 inc/transfer.class.php:3216
 msgid "No item found"
 msgstr ""
 
@@ -4814,7 +4815,7 @@ msgid "Confirm the final deletion?"
 msgstr ""
 
 #: inc/commondbtm.class.php:1856 inc/commondbtm.class.php:3342
-#: inc/ticket.class.php:4449 inc/transfer.class.php:3039
+#: inc/ticket.class.php:4449 inc/transfer.class.php:2978
 msgctxt "button"
 msgid "Put in dustbin"
 msgstr ""
@@ -5731,7 +5732,7 @@ msgid "Connect"
 msgstr ""
 
 #: inc/computer_item.class.php:283 inc/networkportinstantiation.class.php:773
-#: inc/transfer.class.php:3058 inc/transfer.class.php:3065
+#: inc/transfer.class.php:2997 inc/transfer.class.php:3004
 msgid "Disconnect"
 msgstr ""
 
@@ -5910,7 +5911,7 @@ msgstr ""
 #: inc/config.class.php:342 inc/config.class.php:1450 inc/entity.class.php:293
 #: inc/event.class.php:122 inc/html.class.php:957 inc/profile.class.php:112
 #: inc/profile.class.php:650 inc/profile.class.php:1397
-#: inc/transfer.class.php:3053
+#: inc/transfer.class.php:2992
 msgid "Assets"
 msgstr ""
 
@@ -6656,7 +6657,7 @@ msgstr[1] ""
 #: inc/contract_item.class.php:271 inc/entity.class.php:1374
 #: inc/html.class.php:1269 inc/notificationtargetcontract.class.php:173
 #: inc/profile.class.php:703 inc/profile.class.php:1468
-#: inc/transfer.class.php:3199
+#: inc/transfer.class.php:3138
 msgid "Contract"
 msgid_plural "Contracts"
 msgstr[0] ""
@@ -7372,7 +7373,7 @@ msgstr[1] ""
 
 #: inc/document.class.php:50 inc/document.class.php:155
 #: inc/event.class.php:133 inc/html.class.php:1285 inc/profile.class.php:700
-#: inc/profile.class.php:1463 inc/transfer.class.php:3189
+#: inc/profile.class.php:1463 inc/transfer.class.php:3128
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] ""
@@ -7516,7 +7517,7 @@ msgstr ""
 #: inc/notificationtargetproblem.class.php:270 inc/ticket.class.php:96
 #: inc/ticket.class.php:1441 inc/ticket.class.php:1726
 #: inc/ticket.class.php:4402 inc/ticket.class.php:4932
-#: inc/transfer.class.php:3063
+#: inc/transfer.class.php:3002
 msgid "Ticket"
 msgid_plural "Tickets"
 msgstr[0] ""
@@ -7656,7 +7657,7 @@ msgstr[1] ""
 #: inc/dropdown.class.php:713 inc/event.class.php:127 inc/html.class.php:1230
 #: inc/infocom.class.php:127 inc/infocom.class.php:134
 #: inc/profile.class.php:112 inc/profile.class.php:693
-#: inc/profile.class.php:1454 inc/transfer.class.php:3166
+#: inc/profile.class.php:1454 inc/transfer.class.php:3105
 msgid "Management"
 msgstr ""
 
@@ -8140,7 +8141,7 @@ msgstr ""
 #: inc/entity.class.php:1499 inc/event.class.php:118 inc/event.class.php:131
 #: inc/html.class.php:1338 inc/html.class.php:2624 inc/profile.class.php:602
 #: inc/profile.class.php:736 inc/profile.class.php:1495
-#: inc/reservation.class.php:50 inc/transfer.class.php:3082
+#: inc/reservation.class.php:50 inc/transfer.class.php:3021
 #: install/update_0723_078.php:4824
 msgid "Reservation"
 msgid_plural "Reservations"
@@ -8453,7 +8454,7 @@ msgid "Loading..."
 msgstr ""
 
 #: inc/html.class.php:1016 inc/networkport.class.php:137
-#: inc/transfer.class.php:3056 install/update_0723_078.php:4825
+#: inc/transfer.class.php:2995 install/update_0723_078.php:4825
 msgid "Network port"
 msgid_plural "Network ports"
 msgstr[0] ""
@@ -9205,46 +9206,46 @@ msgstr ""
 msgid "Location comments"
 msgstr ""
 
-#: inc/lock.class.php:48
+#: inc/lock.class.php:50
 msgid "Lock"
 msgid_plural "Locks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lock.class.php:75
+#: inc/lock.class.php:77
 msgid "Locked items"
 msgstr ""
 
-#: inc/lock.class.php:239
+#: inc/lock.class.php:254
 msgctxt "button"
 msgid "Unlock"
 msgstr ""
 
-#: inc/lock.class.php:242
+#: inc/lock.class.php:257
 msgid "No locked item"
 msgstr ""
 
-#: inc/lock.class.php:348
+#: inc/lock.class.php:336
 msgid "Unlock monitors"
 msgstr ""
 
-#: inc/lock.class.php:349
+#: inc/lock.class.php:337
 msgid "Unlock peripherals"
 msgstr ""
 
-#: inc/lock.class.php:350
+#: inc/lock.class.php:338
 msgid "Unlock printers"
 msgstr ""
 
-#: inc/lock.class.php:351
+#: inc/lock.class.php:339
 msgid "Unlock software"
 msgstr ""
 
-#: inc/lock.class.php:352
+#: inc/lock.class.php:340
 msgid "Unlock IP"
 msgstr ""
 
-#: inc/lock.class.php:353
+#: inc/lock.class.php:341
 msgid "Unlock volumes"
 msgstr ""
 
@@ -9253,7 +9254,7 @@ msgstr ""
 #: inc/notificationtargetcommonitilobject.class.php:851
 #: inc/notificationtargetcommonitilobject.class.php:853
 #: inc/notificationtargetcommonitilobject.class.php:855
-#: inc/transfer.class.php:3043
+#: inc/transfer.class.php:2982
 msgid "Historical"
 msgstr ""
 
@@ -9441,18 +9442,18 @@ msgstr ""
 msgid "No import"
 msgstr ""
 
-#: inc/migration.class.php:131
+#: inc/migration.class.php:132
 msgid "default_value must be 0 or 1"
 msgstr ""
 
-#: inc/migration.class.php:166
+#: inc/migration.class.php:167
 msgid "default_value must be numeric"
 msgstr ""
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
 #. TRANS: %s is the name of the table
-#: inc/migration.class.php:502 install/update_0723_078.php:49
+#: inc/migration.class.php:503 install/update_0723_078.php:49
 #: install/update_0723_078.php:229 install/update_0723_078.php:759
 #: install/update_0723_078.php:1425 install/update_0723_078.php:2307
 #: install/update_0723_078.php:2388 install/update_0723_078.php:2599
@@ -9489,12 +9490,12 @@ msgstr ""
 msgid "Change of the database layout - %s"
 msgstr ""
 
-#: inc/migration.class.php:520 inc/software.class.php:1003
+#: inc/migration.class.php:521 inc/software.class.php:1003
 #: install/update.php:137
 msgid "Task completed."
 msgstr ""
 
-#: inc/migration.class.php:542 inc/notificationtemplate.class.php:229
+#: inc/migration.class.php:543 inc/notificationtemplate.class.php:229
 #: inc/notificationtemplate.class.php:290
 #, php-format
 msgid "Automatically generated by GLPI %s"
@@ -9575,40 +9576,40 @@ msgid ""
 "network port"
 msgstr ""
 
-#: inc/networkname.class.php:174 inc/networkname.class.php:453
-#: inc/networkname.class.php:786 inc/networkport.class.php:923
+#: inc/networkname.class.php:174 inc/networkname.class.php:457
+#: inc/networkname.class.php:793 inc/networkport.class.php:923
 msgid "Dissociate"
 msgstr ""
 
-#: inc/networkname.class.php:185 inc/networkname.class.php:485
+#: inc/networkname.class.php:208
 msgid ""
 "IP network is not included in the database. However, you can see current "
 "available networks."
 msgstr ""
 
-#: inc/networkname.class.php:428
+#: inc/networkname.class.php:432
 msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage them."
 msgstr ""
 
-#: inc/networkname.class.php:683
+#: inc/networkname.class.php:690
 msgid "Add a network name"
 msgstr ""
 
-#: inc/networkname.class.php:691
+#: inc/networkname.class.php:698
 msgid "Not associated"
 msgstr ""
 
-#: inc/networkname.class.php:696 inc/networkport_vlan.class.php:143
+#: inc/networkname.class.php:703 inc/networkport_vlan.class.php:143
 msgctxt "button"
 msgid "Associate"
 msgstr ""
 
-#: inc/networkname.class.php:700
+#: inc/networkname.class.php:707
 msgid "Create a new network name"
 msgstr ""
 
-#: inc/networkname.class.php:804
+#: inc/networkname.class.php:811
 msgid "No network name found"
 msgstr ""
 
@@ -11923,7 +11924,7 @@ msgstr ""
 #: inc/ruledictionnaryprinter.class.php:145
 #: inc/ruledictionnarysoftware.class.php:84
 #: inc/ruledictionnarysoftware.class.php:163
-#: inc/ruleimportcomputer.class.php:133 inc/ruleimportentity.class.php:176
+#: inc/ruleimportcomputer.class.php:133 inc/ruleimportentity.class.php:178
 #: inc/ruleright.class.php:329
 msgid "To be unaware of import"
 msgstr ""
@@ -11998,7 +11999,7 @@ msgid "Software deleted by GLPI dictionary rules"
 msgstr ""
 
 #: inc/ruleimportcomputer.class.php:62
-#: inc/ruleimportcomputercollection.class.php:50
+#: inc/ruleimportcomputercollection.class.php:66
 msgid "Rules for import and link computers"
 msgstr ""
 
@@ -13257,101 +13258,101 @@ msgstr ""
 msgid "December"
 msgstr ""
 
-#: inc/transfer.class.php:3059 inc/transfer.class.php:3066
+#: inc/transfer.class.php:2998 inc/transfer.class.php:3005
 msgid "Keep"
 msgstr ""
 
-#: inc/transfer.class.php:3072
+#: inc/transfer.class.php:3011
 msgid "Software of computers"
 msgstr ""
 
-#: inc/transfer.class.php:3076
+#: inc/transfer.class.php:3015
 msgid "If software are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3086
+#: inc/transfer.class.php:3025
 msgid "Components of computers"
 msgstr ""
 
-#: inc/transfer.class.php:3092
+#: inc/transfer.class.php:3031
 msgid "Links between printers and cartridge types and cartridges"
 msgstr ""
 
-#: inc/transfer.class.php:3097
+#: inc/transfer.class.php:3036
 msgid "If the cartridge types are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3103
+#: inc/transfer.class.php:3042
 msgid "Links between cartridge types and cartridges"
 msgstr ""
 
-#: inc/transfer.class.php:3113
+#: inc/transfer.class.php:3052
 msgid "Links between consumable types and consumables"
 msgstr ""
 
-#: inc/transfer.class.php:3117
+#: inc/transfer.class.php:3056
 msgid "Links between computers and volumes"
 msgstr ""
 
-#: inc/transfer.class.php:3123
+#: inc/transfer.class.php:3062
 msgid "Direct connections"
 msgstr ""
 
-#: inc/transfer.class.php:3130
+#: inc/transfer.class.php:3069
 msgid "If monitors are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3140
+#: inc/transfer.class.php:3079
 msgid "If printers are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3150
+#: inc/transfer.class.php:3089
 msgid "If devices are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3160
+#: inc/transfer.class.php:3099
 msgid "If phones are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3173
+#: inc/transfer.class.php:3112
 msgid "If suppliers are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3179
+#: inc/transfer.class.php:3118
 msgid "Links between suppliers and contacts"
 msgstr ""
 
-#: inc/transfer.class.php:3183
+#: inc/transfer.class.php:3122
 msgid "If contacts are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3193
+#: inc/transfer.class.php:3132
 msgid "If documents are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3203
+#: inc/transfer.class.php:3142
 msgid "If contracts are no longer used"
 msgstr ""
 
-#: inc/transfer.class.php:3224
+#: inc/transfer.class.php:3163
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
 msgstr ""
 
-#: inc/transfer.class.php:3225
+#: inc/transfer.class.php:3164
 msgid "Think of making a backup before transferring items."
 msgstr ""
 
-#: inc/transfer.class.php:3227
+#: inc/transfer.class.php:3166
 msgid "Items to transfer"
 msgstr ""
 
-#: inc/transfer.class.php:3227
+#: inc/transfer.class.php:3166
 msgid "Transfer mode"
 msgstr ""
 
-#: inc/transfer.class.php:3286
+#: inc/transfer.class.php:3225
 msgid "To empty the list of elements to be transferred"
 msgstr ""
 
