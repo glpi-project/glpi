@@ -3268,9 +3268,9 @@ class Html {
          }
       }
 
-      echo "<input id='showdate".$p['rand']."' type='text' size='10' name='$name'>";
+      $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='$name'>";
 
-      $output  = "<script type='text/javascript'>\n";
+      $output .= "<script type='text/javascript'>\n";
       $output .= "Ext.onReady(function() {
          var md".$p['rand']." = new Ext.ux.form.XDateField({
             name: '$name'
