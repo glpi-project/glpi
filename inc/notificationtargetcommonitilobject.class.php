@@ -763,6 +763,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas["##$objettype.numberoflogs##"] = count($datas['log']);
       }
 
+      // Get unresolved items
+      $restrict = "`".$item->getTable()."`.`status`
+                     NOT IN ('".implode("', '",
+                     array_merge($item->getSolvedStatusArray(),
+                                 $item->getClosedStatusArray())
+                     )."')";
+
+      if ($item->maybeDeleted()) {
+         $restrict .= " AND `".$item->getTable()."`.`is_deleted` = '0' ";
+      }
+      
+       $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity('glpi_tickets',$this->getEntity(), $restrict);
+
       return $datas;
    }
 
@@ -806,7 +819,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.solution.type'         => __('Solution type'),
                     $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', 2),
-                    $objettype.'.action'                => _n('Event', 'Events', 1)
+                    $objettype.'.action'                => _n('Event', 'Events', 1),
+                    $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
                    );
 
       foreach ($tags as $tag => $label) {
@@ -846,6 +860,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                          __('Entity'), __('Complete name')),
                     $objettype.'.shortentity' => sprintf(__('%1$s (%2$s)'),
                                                          __('Entity'), __('Name')),
+                    $objettype.'.numberoflogs'    => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                         __('Number of items')),
                     $objettype.'.log.date'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                          __('Date')),
                     $objettype.'.log.user'    => sprintf(__('%1$s: %2$s'), __('Historical'),
