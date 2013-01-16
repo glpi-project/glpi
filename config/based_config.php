@@ -120,14 +120,6 @@ if (!defined("GLPI_SCRIPT_DIR")) {
    define("GLPI_SCRIPT_DIR",GLPI_ROOT . "/scripts");
 }
 
-// Default cache_lite installation dir
-if (!defined("GLPI_CACHE_LITE_DIR")) {
-   define("GLPI_CACHE_LITE_DIR", GLPI_ROOT."/lib/cache_lite");
-
-   # if PEAR + Cache_Lite installed, use (in config_path.php)
-   # define("GLPI_CACHE_LITE_DIR", "Cache");
-}
-
 // Default PHPMailer installation dir
 if (!defined("GLPI_PHPMAILER_DIR")) {
    define("GLPI_PHPMAILER_DIR", GLPI_ROOT."/lib/phpmailer");
