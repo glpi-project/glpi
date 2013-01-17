@@ -531,7 +531,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                FROM `glpi_groups_users`
                                INNER JOIN `glpi_groups`
                                   ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                               WHERE `glpi_groups_users``groups_id` IN ('$groups')
+                               WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
                                      AND `glpi_groups`.`is_assign`)
                                      AND ";
          } else { // Only personal ones

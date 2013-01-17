@@ -2813,10 +2813,10 @@ class Ticket extends CommonITILObject {
                                   AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
                                                      $search_computer);
                   if ($item->maybeDeleted()) {
-                     $query .= " AND `is_deleted` = '0' ";
+                     $query .= " AND `$itemtable`.`is_deleted` = '0' ";
                   }
                   if ($item->maybeTemplate()) {
-                     $query .= " AND `is_template` = '0' ";
+                     $query .= " AND `$itemtable`.`is_template` = '0' ";
                   }
                   $query .= getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict)."
                             ORDER BY `$itemtable`.`name`";
