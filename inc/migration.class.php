@@ -140,7 +140,7 @@ class Migration {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
                } else {
-                  $format .= " DEFAULT '$default_value'";
+                  $format .= " NOT NULL DEFAULT '$default_value'";
                }
             }
             break;
@@ -151,7 +151,7 @@ class Migration {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
                } else {
-                  $format .= " DEFAULT '$default_value'";
+                  $format .= " NOT NULL DEFAULT '$default_value'";
                }
             }
             break;
@@ -197,7 +197,7 @@ class Migration {
                if (is_null($default_value)) {
                   $format.= " DEFAULT NULL";
                } else {
-                  $format.= " DEFAULT '$default_value'";
+                  $format.= " NOT NULL DEFAULT '$default_value'";
                }
             }
             break;
@@ -208,7 +208,7 @@ class Migration {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
                } else {
-                  $format .= " DEFAULT '$default_value'";
+                  $format .= " NOT NULL DEFAULT '$default_value'";
                }
             }
             break;
