@@ -42,10 +42,6 @@ class RuleImportComputerCollection extends RuleCollection {
    static public $right        = 'rule_import';
    public $menu_option         = 'linkcomputer';
 
-   // Specific ones
-   ///Store the id of the ocs server
-   var $ocsservers_id;
-
 
    /**
     * @since version 0.84

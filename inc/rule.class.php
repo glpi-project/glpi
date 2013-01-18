@@ -2422,8 +2422,8 @@ class Rule extends CommonDBTM {
 
          $collection = new RuleImportEntityCollection();
          if ($collection->canList()) {
-            $ocsrule = new RuleImportEntity();
-            $ocsrule->showAndAddRuleForm($item);
+            $importrule = new RuleImportEntity();
+            $importrule->showAndAddRuleForm($item);
          }
 
          $collection = new RuleMailCollectorCollection();
