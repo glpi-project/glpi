@@ -105,10 +105,10 @@ class RuleDictionnarySoftware extends RuleCached {
               ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
               : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>";
-      if ($fields["ignore_ocs_import"] == '') {
+      if ($fields["ignore_import"] == '') {
          echo "&nbsp;";
       } else {
-         echo Dropdown::getYesNo($fields["ignore_ocs_import"]);
+         echo Dropdown::getYesNo($fields["ignore_import"]);
       }
       echo "</td>";
       echo "<td class='tab_bg_2'>".

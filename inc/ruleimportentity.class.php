@@ -165,18 +165,18 @@ class RuleImportEntity extends Rule {
    **/
    function getActions() {
 
-      $actions                                           = array();
+      $actions                             = array();
 
-      $actions['entities_id']['name']                    = __('Entity');
-      $actions['entities_id']['type']                    = 'dropdown';
-      $actions['entities_id']['table']                   = 'glpi_entities';
+      $actions['entities_id']['name']      = __('Entity');
+      $actions['entities_id']['type']      = 'dropdown';
+      $actions['entities_id']['table']     = 'glpi_entities';
 
-      $actions['locations_id']['name']                   = __('Location');
-      $actions['locations_id']['type']                   = 'dropdown';
-      $actions['locations_id']['table']                  = 'glpi_locations';
+      $actions['locations_id']['name']     = __('Location');
+      $actions['locations_id']['type']     = 'dropdown';
+      $actions['locations_id']['table']    = 'glpi_locations';
 
-      $actions['_ignore_ocs_import']['name']             = __('To be unaware of import');
-      $actions['_ignore_ocs_import']['type']             = 'yesonly';
+      $actions['_ignore_import']['name']   = __('To be unaware of import');
+      $actions['_ignore_import']['type']   = 'yesonly';
 
       return $actions;
    }

@@ -96,10 +96,10 @@ class RuleDictionnaryPrinter extends RuleCached {
              : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>";
 
-      if ($fields["ignore_ocs_import"] == '') {
+      if ($fields["ignore_import"] == '') {
          echo "&nbsp;";
       } else {
-         echo Dropdown::getYesNo($fields["ignore_ocs_import"]);
+         echo Dropdown::getYesNo($fields["ignore_import"]);
       }
       echo "</td>";
    }
@@ -142,8 +142,8 @@ class RuleDictionnaryPrinter extends RuleCached {
       $actions['name']['name']               = __('Name');
       $actions['name']['force_actions']      = array('assign', 'regex_result');
 
-      $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
-      $actions['_ignore_ocs_import']['type'] = 'yesonly';
+      $actions['_ignore_import']['name']     = __('To be unaware of import');
+      $actions['_ignore_import']['type']     = 'yesonly';
 
       $actions['manufacturer']['name']       = __('Manufacturer');
       $actions['manufacturer']['table']      = 'glpi_manufacturers';
