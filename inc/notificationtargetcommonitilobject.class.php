@@ -773,8 +773,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->maybeDeleted()) {
          $restrict .= " AND `".$item->getTable()."`.`is_deleted` = '0' ";
       }
-      
-       $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity('glpi_tickets',$this->getEntity(), $restrict);
+
+       $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity($item->getTable(),$this->getEntity(), $restrict);
 
       return $datas;
    }
