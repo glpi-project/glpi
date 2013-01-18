@@ -4066,7 +4066,7 @@ CREATE TABLE `glpi_profiles` (
   `config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rule_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entity_rule_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_ocs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `rule_import` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rule_ldap` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rule_softwarecategories` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `search_config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
