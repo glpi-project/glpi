@@ -34,47 +34,6 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
-// TODO OCS
-// must delete this class but use in update_068_0681
-/// DB class to connect to a OCS server
-class DBocs extends DBmysql {
-
-   ///Store the id of the ocs server
-   var $ocsservers_id = -1;
-
-   /**
-    * Constructor
-    *
-    * @param $ID ID of the ocs server ID
-   **/
-   function __construct($ID) {
-      global $CFG_GLPI;
-
-      $this->ocsservers_id = $ID;
-      if ($CFG_GLPI["use_ocs_mode"]) {
-         $data             = OcsServer::getConfig($ID);
-         $this->dbhost     = $data["ocs_db_host"];
-         $this->dbuser     = $data["ocs_db_user"];
-         $this->dbpassword = rawurldecode($data["ocs_db_passwd"]);
-         $this->dbdefault  = $data["ocs_db_name"];
-         $this->dbenc      = $data["ocs_db_utf8"] ? "utf8" : "latin1";
-         parent::__construct();
-      }
-   }
-
-
-   /**
-    * Get current ocs server ID
-    *
-    * @return ID of the ocs server ID
-   **/
-   function getServerID() {
-      return $this->ocsservers_id;
-   }
-
-}
-
-
 
 
 /**
