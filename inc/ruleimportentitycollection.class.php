@@ -34,13 +34,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// OCS Rules collection class
+/// Import rules collection class
 class RuleImportEntityCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
    static public $right        = 'rule_import';
-   public $menu_option         = 'ocs';
+   public $menu_option         = 'importentity';
 
 
    /**
