@@ -302,7 +302,10 @@ class Problem_Ticket extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $ticket->getField('id');
-      if (!$ticket->can($ID,'r')) {
+      if (!Session::haveRight("show_all_problem", 1)
+            || !$ticket->can($ID,'r')) {
+
+//      if (!$ticket->can($ID,'r')) {
          return false;
       }
 
