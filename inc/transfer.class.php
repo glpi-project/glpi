@@ -931,7 +931,7 @@ class Transfer extends CommonDBTM {
                $this->transferNetworkLink($itemtype, $ID, $newID);
             }
 
-            // Device : keep / delete : network case : delete if net connection delete in ocs case
+            // Device : keep / delete : network case : delete if net connection delete in import case
             if (in_array($itemtype, array('Computer'))) {
                $this->transferDevices($itemtype, $ID);
             }

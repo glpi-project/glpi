@@ -43,7 +43,7 @@ class RuleImportEntity extends Rule {
 
 
    function getTitle() {
-      return __('Rules for assigning a computer to an entity');
+      return __('Rules for assigning an item to an entity');
    }
 
 
