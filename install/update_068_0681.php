@@ -31,6 +31,31 @@
 * @brief
 */
 
+/**
+ * DB class to connect to a OCS server
+ *
+**/
+class DBocs extends DBmysql {
+
+   function DBocs() {
+      global $db,$cfg_glpi;
+
+      if ($cfg_glpi["ocs_mode"]){
+         $query            = "SELECT * FROM `glpi_ocs_config`";
+         $result           = $db->query($query);
+         $this->dbhost     = $db->result($result,0,"ocs_db_host");
+         $this->dbuser     = $db->result($result,0,"ocs_db_user");
+         $this->dbpassword = $db->result($result,0,"ocs_db_passwd");
+         $this->dbdefault  = $db->result($result,0,"ocs_db_name");
+         $this->dbh        = @mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword)
+                             or $this->error = 1;
+         @mysql_select_db($this->dbdefault) or $this->error = 1;
+      }
+   }
+
+}
+
+
 /// Update from 0.68 to 0.68.1
 function update068to0681() {
    global $DB, $CFG_GLPI;
@@ -589,7 +614,7 @@ function update068to0681() {
                 FROM `glpi_ocs_link`";
       $result_glpi = $DB->query($query);
 
-      while ($data_glpi=$DB->fetch_array($result_glpi)) {
+      while ($data_glpi = $DB->fetch_array($result_glpi)) {
          // Get ocs information
          $query_ocs = "SELECT *
                        FROM `hardware`
