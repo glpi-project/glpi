@@ -111,9 +111,9 @@ class Problem extends CommonITILObject {
    **/
    function canViewItem() {
 
-//      if (!Session::haveAccessToEntity($this->getEntityID())) {
-//         return false;
-//      }
+      if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
+         return false;
+      }
       return (Session::haveRight('show_all_problem', 1)
               || (Session::haveRight('show_my_problem', 1)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
