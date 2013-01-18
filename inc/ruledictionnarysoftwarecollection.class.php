@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -56,7 +56,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                              "version"             => "version",
                              "manufacturer"        => "new_manufacturer",
                              "is_helpdesk_visible" => "is_helpdesk_visible",
-                             "_ignore_ocs_import"  => "ignore_ocs_import",
+                             "_ignore_import"      => "rule_import",
                              "new_entities_id"     => "new_entities_id"));
    }
 
@@ -77,7 +77,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
-         if (($criteria[0] == '_') && ($criteria != '_ignore_ocs_import')) {
+         if (($criteria[0] == '_') && ($criteria != '_ignore_import')) {
             unset ($output[$criteria]);
          }
       }
