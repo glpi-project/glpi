@@ -1483,7 +1483,7 @@ class Html {
 
 
       if (Session::haveRight("rule_ldap","r")
-          || Session::haveRight("rule_ocs","r")
+          || Session::haveRight("rule_import","r")
           || Session::haveRight("entity_rule_ticket","r")
           || Session::haveRight("rule_softwarecategories","r")
           || Session::haveRight("rule_mailcollector","r")) {

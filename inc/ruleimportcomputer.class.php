@@ -44,17 +44,17 @@ class RuleImportComputer extends Rule {
 
 
    // From Rule
-   static public $right    = 'rule_ocs';
+   static public $right    = 'rule_import';
    public $can_sort        = true;
 
 
    static function canCreate() {
-      return Session::haveRight('rule_ocs', 'w');
+      return Session::haveRight('rule_import', 'w');
    }
 
 
    static function canView() {
-      return Session::haveRight('rule_ocs', 'r');
+      return Session::haveRight('rule_import', 'r');
    }
 
 
@@ -62,7 +62,7 @@ class RuleImportComputer extends Rule {
       return __('Rules for import and link computers');
    }
 
-   
+
    /**
     * @see Rule::maxActionsCount()
    **/

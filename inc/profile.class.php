@@ -1204,7 +1204,7 @@ class Profile extends CommonDBTM {
       self::dropdownRight("rule_ldap", array('value' => $this->fields["rule_ldap"]));
       echo "</td>";
       echo "<td>".__('Rules for assigning a computer to an entity')."</td><td>";
-      self::dropdownRight("rule_ocs", array('value' => $this->fields["rule_ocs"]));
+      self::dropdownRight("rule_import", array('value' => $this->fields["rule_import"]));
       echo "</td>";
       echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td><td>";
       self::dropdownRight("rule_mailcollector",
@@ -1576,7 +1576,7 @@ class Profile extends CommonDBTM {
       $tab[105]['datatype']      = 'right';
 
       $tab[49]['table']          = $this->getTable();
-      $tab[49]['field']          = 'rule_ocs';
+      $tab[49]['field']          = 'rule_import';
       $tab[49]['name']           = __('Rules for assigning a computer to an entity');
       $tab[49]['datatype']       = 'right';
 

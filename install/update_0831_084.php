@@ -1144,6 +1144,8 @@ function update0831to084() {
    $migration->dropField('glpi_profiles', 'view_ocsng');
    $migration->dropField('glpi_profiles', 'clean_ocsng');
 
+   $migration->changeField('glpi_profiles', 'rule_ocs', 'rule_import', 'char');
+
    $migration->dropField('glpi_configs', 'use_ocs_mode');
 
    $query = "DELETE
