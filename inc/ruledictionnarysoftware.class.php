@@ -160,8 +160,8 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['name']['name']                  = _n('Software', 'Software', 1);
       $actions['name']['force_actions']         = array('assign', 'regex_result');
 
-      $actions['_ignore_ocs_import']['name']    = __('To be unaware of import');
-      $actions['_ignore_ocs_import']['type']    = 'yesonly';
+      $actions['_ignore_import']['name']        = __('To be unaware of import');
+      $actions['_ignore_import']['type']        = 'yesonly';
 
       $actions['version']['name']               = _n('Version', 'Versions',1);
       $actions['version']['force_actions']      = array('assign','regex_result',
