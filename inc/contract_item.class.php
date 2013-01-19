@@ -459,7 +459,7 @@ class Contract_Item extends CommonDBRelation{
             if (($con->fields["begin_date"] != '')
                 && !empty($con->fields["begin_date"])) {
                echo " -> ".Infocom::getWarrantyExpir($con->fields["begin_date"],
-                                                     $con->fields["duration"]);
+                                                     $con->fields["duration"], 0, true);
             }
             echo "</td>";
             echo "</tr>";

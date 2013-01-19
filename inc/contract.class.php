@@ -203,7 +203,7 @@ class Contract extends CommonDBTM {
                             array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                               $this->fields["duration"]);
+                                               $this->fields["duration"], 0, true);
       }
       echo "</td>";
       echo "</tr>";
@@ -215,7 +215,8 @@ class Contract extends CommonDBTM {
       if (!empty($this->fields["begin_date"])
           && ($this->fields["notice"] > 0)) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                               $this->fields["duration"], $this->fields["notice"]);
+                                               $this->fields["duration"], $this->fields["notice"],
+                                               true);
       }
       echo "</td>";
       echo "<td>".__('Account number')."</td><td>";
