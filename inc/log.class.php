@@ -130,7 +130,7 @@ class Log extends CommonDBTM {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                // 1st case : Ticket specific dropdown case (without table)
-               if (($real_type == 'Ticket')
+/*               if (($real_type == 'Ticket')
                    && in_array($key, array('global_validation', 'impact', 'items_id', 'itemtype',
                                            'priority', 'status', 'type', 'urgency'))) {
                   $changes = array($id_search_option,
@@ -140,18 +140,19 @@ class Log extends CommonDBTM {
                                    addslashes(Ticket::getSpecificValueToDisplay($key,
                                                                                 array_merge($oldvalues,
                                                                                             $values))));
-               } else if ($val2['table'] == $item->getTable()) {
-                  if (in_array($real_type, $oktype)) {
+               } else*/ if ($val2['table'] == $item->getTable()) {
+               
+//                   if (in_array($real_type, $oktype)) {
                      // 2nd case : use getValueToDisplay();
                      $changes = array($key2,
                                       addslashes($item->getValueToDisplay($searchopt[$key2],
                                                                           $oldvalues)),
                                      addslashes($item->getValueToDisplay($searchopt[$key2],
                                                                          $values)));
-                  } else {
-                     // 3rd case : text field -> keep datas
-                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
-                  }
+//                   } else {
+//                      // 3rd case : text field -> keep datas
+//                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
+//                   }
 
                } else {
 //                      if ($val2['table'] == 'glpi_users_validation') {
