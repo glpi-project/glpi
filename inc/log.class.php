@@ -161,10 +161,10 @@ class Log extends CommonDBTM {
                   // other cases ; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $oldval)),
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $values[$key])));
+                                      addslashes(sprintf('%1$s (%2$s)',Dropdown::getDropdownName($val2["table"],
+                                                                           $oldval),$oldval)),
+                                      addslashes(sprintf('%1$s (%2$s)',Dropdown::getDropdownName($val2["table"],
+                                                                           $values[$key]), $values[$key])));
                   }
                }
                break;
