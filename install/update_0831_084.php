@@ -1256,7 +1256,10 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 
-   $changes['RuleTicket'] = array('suppliers_id_assign' => '_suppliers_id_assign');
+   $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
+   $changes['RuleDictionnarySoftware'] = array('_ignore_ocs_import' => '_ignore_import');
+   $changes['RuleImportEntity']        = array('_ignore_ocs_import' => '_ignore_import');
+   $changes['RuleDictionnaryPrinter']  = array('_ignore_ocs_import' => '_ignore_import');
 
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $tab) {
