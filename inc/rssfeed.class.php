@@ -674,7 +674,7 @@ class RSSFeed extends CommonDBTM {
       echo Dropdown::getYesNo($this->fields['have_error']);
       echo "</td>";
       if ($this->fields['have_error']) {
-         echo "<td>".__('Founded RSS feeds');
+         echo "<td>".__('RSS feeds found');
          echo "</td><td>";
          $this->showDiscoveredFeeds();
          echo "</td>\n";
