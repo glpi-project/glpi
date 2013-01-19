@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -242,7 +242,7 @@ class Contract_Supplier extends CommonDBRelation {
          sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
 
          if (($data["begin_date"] != '') && !empty($data["begin_date"])) {
-            echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"]);
+            echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"], 0, true);
          }
          echo "</td>";
          echo "</tr>";

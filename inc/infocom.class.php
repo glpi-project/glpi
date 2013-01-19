@@ -1110,7 +1110,7 @@ class Infocom extends CommonDBChild {
                                      1, array(-1 => __('Lifelong')), array('unit' => 'month'));
             }
             $tmpdat = self::getWarrantyExpir($ic->fields["warranty_date"],
-                                             $ic->fields["warranty_duration"]);
+                                             $ic->fields["warranty_duration"], 0, true);
             if ($tmpdat) {
                echo "<span class='small_space'>".sprintf(__('Valid to %s'), $tmpdat)."</span>";
             }
@@ -1599,10 +1599,11 @@ class Infocom extends CommonDBChild {
     * @param $from            date     begin date
     * @param $addwarranty     integer  period in months
     * @param $deletenotice    integer  period in months of notice (default 0)
+    * @param $color           boolean  if show expire date in red color (false by default
     *
     * @return expiration date string
    **/
-   static function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
+   static function getWarrantyExpir($from, $addwarranty, $deletenotice=0, $color=false) {
 
       // Life warranty
       if (($addwarranty == -1)
@@ -1614,8 +1615,11 @@ class Infocom extends CommonDBChild {
          return "";
       }
 
-      return Html::convDate(date("Y-m-d",
-                                 strtotime("$from+$addwarranty month -$deletenotice month")));
+      $datetime = strtotime("$from+$addwarranty month -$deletenotice month");
+      if ($color && ($datetime < time())) {
+         return "<span class='red'>".Html::convDate(date("Y-m-d", $datetime))."</span>";
+      }
+      return Html::convDate(date("Y-m-d", $datetime));
    }
 
 

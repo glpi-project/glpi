@@ -2516,6 +2516,7 @@ class CommonDBTM extends CommonGLPI {
     * @return String: comments of the object in the current language (HTML)
    **/
    function getComments() {
+      global $CFG_GLPI;
 
       $comment = "";
       $toadd   = array();
@@ -2585,11 +2586,14 @@ class CommonDBTM extends CommonGLPI {
                           'value' => nl2br($this->getField('contact_num')));
       }
 
-      $infocom = new Infocom();
-      if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-         $toadd[] = array('name'  => __('Warranty expiration date'),
-                          'value' => Infocom::getWarrantyExpir($infocom->fields["warranty_date"],
-                                                               $infocom->fields["warranty_duration"]));
+      if (in_array( $this->getType(), $CFG_GLPI["infocom_types"])) {
+         $infocom = new Infocom();
+         if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+            $toadd[] = array('name'  => __('Warranty expiration date'),
+                             'value' => Infocom::getWarrantyExpir($infocom->fields["warranty_date"],
+                                                                  $infocom->fields["warranty_duration"],
+                                                                  0, true));
+         }
       }
 
       if (($this instanceof CommonDropdown)
@@ -2600,15 +2604,8 @@ class CommonDBTM extends CommonGLPI {
 
       if (count($toadd)) {
          foreach ($toadd as $data) {
-            if ($data['name'] ==__('Warranty expiration date')
-                && $data['value'] < date('d-m-Y')) {
-               $comment .= sprintf(__('%1$s: %2$s')."<br>",
-                                   "<span class='b red'>".$data['name'], $data['value']."</span>");
-
-            } else {
-               $comment .= sprintf(__('%1$s: %2$s')."<br>",
-                                   "<span class='b'>".$data['name'], "</span>".$data['value']);
-            }
+            $comment .= sprintf(__('%1$s: %2$s')."<br>",
+                                "<span class='b'>".$data['name'], "</span>".$data['value']);
          }
       }
 
