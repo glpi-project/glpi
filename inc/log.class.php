@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -141,7 +141,7 @@ class Log extends CommonDBTM {
                                                                                 array_merge($oldvalues,
                                                                                             $values))));
                } else*/ if ($val2['table'] == $item->getTable()) {
-               
+
 //                   if (in_array($real_type, $oktype)) {
                      // 2nd case : use getValueToDisplay();
                      $changes = array($key2,
@@ -162,10 +162,14 @@ class Log extends CommonDBTM {
                   // other cases ; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
-                                      addslashes(sprintf('%1$s (%2$s)',Dropdown::getDropdownName($val2["table"],
-                                                                           $oldval),$oldval)),
-                                      addslashes(sprintf('%1$s (%2$s)',Dropdown::getDropdownName($val2["table"],
-                                                                           $values[$key]), $values[$key])));
+                                      addslashes(sprintf(__('%1$s (%2$s)'),
+                                                         Dropdown::getDropdownName($val2["table"],
+                                                                                   $oldval),
+                                                         $oldval)),
+                                      addslashes(sprintf(__('%1$s (%2$s)'),
+                                                         Dropdown::getDropdownName($val2["table"],
+                                                                                   $values[$key]),
+                                                         $values[$key])));
                   }
                }
                break;
