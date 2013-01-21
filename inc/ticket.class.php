@@ -1152,7 +1152,7 @@ class Ticket extends CommonITILObject {
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
-      
+
       if (isset($input['_users_id_requester'])
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector
@@ -1398,7 +1398,7 @@ class Ticket extends CommonITILObject {
             $values['_auto_import'] = $this->input['_auto_import'];
          }
          $values['_ticket_add'] = true;
-         
+
          // Cron or rule process of hability to do
          if (!is_numeric(Session::getLoginUserID(false))
              || isset($this->input["_rule_process"])
@@ -2004,7 +2004,7 @@ class Ticket extends CommonITILObject {
          $followup_condition = "AND (`NEWTABLE`.`is_private` = '0'
                                  OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
-      
+
       $tab[25]['table']         = 'glpi_ticketfollowups';
       $tab[25]['field']         = 'content';
       $tab[25]['name']          = $LANG['job'][9]." - ".$LANG['joblist'][6];
@@ -4336,7 +4336,7 @@ class Ticket extends CommonITILObject {
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = 'waiting' 
+                              AND `glpi_ticketvalidations`.`status` = 'waiting'
                               AND `glpi_tickets`.`status` NOT IN ('closed', 'solved') ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
@@ -4505,7 +4505,7 @@ class Ticket extends CommonITILObject {
                   $options['searchtype'][2] = 'equals';
                   $options['contains'][2]   = 'old';
                   $options['link'][2]       = 'AND NOT';
-                  
+
                   $forcetab = 'TicketValidation$1';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -4986,8 +4986,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Link to open a new ticket
-      if ($item->getID() && in_array($item->getType(),
-                                     $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
+      if ($item->getID() && Ticket::isPossibleToAssignType($item->getType())) {
          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
               "&amp;itemtype=".$item->getType()."\">".$LANG['joblist'][7]."</a>";
