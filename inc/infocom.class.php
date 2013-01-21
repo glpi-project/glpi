@@ -1597,7 +1597,7 @@ class Infocom extends CommonDBChild {
     * @param $from            date     begin date
     * @param $addwarranty     integer  period in months
     * @param $deletenotice    integer  period in months of notice (default 0)
-    * @param $color           boolean  if show expire date in red color (false by default
+    * @param $color           boolean  if show expire date in red color (false by default)
     *
     * @return expiration date string
    **/

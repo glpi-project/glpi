@@ -766,15 +766,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       // Get unresolved items
       $restrict = "`".$item->getTable()."`.`status`
                      NOT IN ('".implode("', '",
-                     array_merge($item->getSolvedStatusArray(),
-                                 $item->getClosedStatusArray())
-                     )."')";
+                                        array_merge($item->getSolvedStatusArray(),
+                                                    $item->getClosedStatusArray())
+                                        )."'
+                             )";
 
       if ($item->maybeDeleted()) {
          $restrict .= " AND `".$item->getTable()."`.`is_deleted` = '0' ";
       }
 
-       $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity($item->getTable(),$this->getEntity(), $restrict);
+       $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity($item->getTable(),
+                                                                                   $this->getEntity(),
+                                                                                   $restrict);
 
       return $datas;
    }
@@ -861,7 +864,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.shortentity' => sprintf(__('%1$s (%2$s)'),
                                                          __('Entity'), __('Name')),
                     $objettype.'.numberoflogs'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         __('Number of items')),
+                                                             __('Number of items')),
                     $objettype.'.log.date'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                          __('Date')),
                     $objettype.'.log.user'    => sprintf(__('%1$s: %2$s'), __('Historical'),
