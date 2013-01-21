@@ -109,7 +109,7 @@ class Log extends CommonDBTM {
       }
       // needed to have  $SEARCHOPTION
       list($real_type, $real_id) = $item->getLogTypeID();
-      // toolbox::logDebug("constructHistory:", $item->getType(), $real_type, $real_id, $oldvalues);
+       //toolbox::logDebug("constructHistory:", $item->getType(), $real_type, $real_id, $oldvalues);
 
       $searchopt = Search::getOptions($real_type);
 
@@ -167,10 +167,14 @@ class Log extends CommonDBTM {
                   if ($val2['table'] != 'glpi_complete_entities'
                      && $val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $oldval)),
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $values[$key])));
+                                      addslashes(sprintf('%1$s (%2$s)',
+                                                        Dropdown::getDropdownName($val2["table"],
+                                                                                  $oldval),
+                                                        $oldval)),
+                                      addslashes(sprintf('%1$s (%2$s)',
+                                                         Dropdown::getDropdownName($val2["table"],
+                                                                                   $values[$key]),
+                                                          $values[$key])));
                   }
                }
                break;
