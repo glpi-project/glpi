@@ -344,7 +344,7 @@ class TicketFollowup  extends CommonDBTM {
           && ($this->input["_job"]->fields["status"] == CommonITILObject::SOLVED)) {
 
          $update['id']        = $this->input["_job"]->fields['id'];
-         $update['status']    = self::CLOSED;
+         $update['status']    = CommonITILObject::CLOSED;
          $update['closedate'] = $_SESSION["glpi_currenttime"];
 
          // Use update method for history
@@ -354,7 +354,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && in_array($this->input["_job"]->fields["status"], array(self::SOLVED, self::WAITING))) {
+          && in_array($this->input["_job"]->fields["status"], array(CommonITILObject::SOLVED, CommonITILObject::WAITING))) {
 
          if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countGroups(CommonITILActor::ASSIGN) > 0)
