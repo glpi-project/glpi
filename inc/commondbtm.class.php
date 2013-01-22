@@ -455,7 +455,6 @@ class CommonDBTM extends CommonGLPI {
       global $DB, $CFG_GLPI;
 
       if (($force == 1)
-          || !$this->maybeDynamic()
           || !$this->maybeDeleted()) {
 
          $this->cleanDBonPurge();
@@ -466,7 +465,6 @@ class CommonDBTM extends CommonGLPI {
          $query = "DELETE
                    FROM `".$this->getTable()."`
                    WHERE `id` = '".$this->fields['id']."'";
-
          if ($result = $DB->query($query)) {
             $this->post_deleteFromDB();
             return true;
@@ -1205,7 +1203,6 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }
-
       if ($this->isTemplate() || !$this->maybeDeleted()) {
          $force = 1;
       }
@@ -1221,7 +1218,6 @@ class CommonDBTM extends CommonGLPI {
          $this->input['_delete'] = $this->input['delete'];
          unset($this->input['delete']);
       }
-
       // Purge
       if ($force) {
          Plugin::doHook("pre_item_purge", $this);
@@ -1236,6 +1232,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->pre_deleteItem()) {
+
          if ($this->deleteFromDB($force)) {
 
             if ($force) {
@@ -2416,10 +2413,10 @@ class CommonDBTM extends CommonGLPI {
    **/
    function maybeDynamic() {
 
-      if (!isset($this->fields['is_dynamic'])) {
+      if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
-      return isset($this->fields['is_dynamic']);
+      return array_key_exists('is_dynamic', $this->fields);
    }
 
 
