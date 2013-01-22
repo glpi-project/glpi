@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-01-19 10:41+0100\n"
-"PO-Revision-Date: 2013-01-19 09:45+0000\n"
+"PO-Revision-Date: 2013-01-22 13:04+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -8223,7 +8223,7 @@ msgstr "système"
 #: inc/rule.class.php:103 inc/rulecollection.class.php:1086
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "règle"
+msgstr[0] "Règle"
 msgstr[1] "Règles"
 
 #: inc/event.class.php:130
