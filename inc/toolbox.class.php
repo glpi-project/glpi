@@ -309,7 +309,8 @@ class Toolbox {
 
       $value = is_array($value) ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'),
                                             $value)
-                                : (is_null($value) ? NULL : str_replace($in,$out,$value));
+                                : (is_null($value) ? NULL
+                                : (is_resource($value) ? $value : str_replace($in,$out,$value)));
 
       return $value;
    }
@@ -331,7 +332,8 @@ class Toolbox {
 
       $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'),
                                             $value)
-                                : (is_null($value) ? NULL : str_replace($out,$in,$value));
+                                : (is_null($value) ? NULL
+                                : (is_resource($value) ? $value : str_replace($out,$in,$value)));
 
       return $value;
    }
@@ -355,7 +357,8 @@ class Toolbox {
 
       $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'),
                                             $value)
-                                : (is_null($value) ? NULL : str_replace($out,$in,$value));
+                                : (is_null($value) ? NULL
+                                : (is_resource($value) ? $value : str_replace($out,$in,$value)));
 
       include_once(GLPI_HTMLAWED);
 
@@ -635,7 +638,8 @@ class Toolbox {
       global $DB;
 
       $value = is_array($value) ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
-                                : (is_null($value) ? NULL : $DB->escape($value));
+                                : (is_null($value) ? NULL
+                                : (is_resource($value) ? $value : $DB->escape($value)));
 
       return $value;
    }
@@ -651,7 +655,8 @@ class Toolbox {
    static function stripslashes_deep($value) {
 
       $value = is_array($value) ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
-                                : (is_null($value) ? NULL : stripslashes($value));
+                                : (is_null($value) ? NULL :
+                                    (is_resource($value) ? $value :stripslashes($value)));
 
       return $value;
    }
