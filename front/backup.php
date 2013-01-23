@@ -618,7 +618,9 @@ if (count($files)) {
            echo "</td>";
            echo "<td>&nbsp;";
            //TRANS: %s is the filename
-           $string = sprintf(__('Replace the current database with the backup file %s?'), $file);
+           $string = array(sprintf(__('Replace the current database with the backup file %s?'), $file));
+           $string[] = __('Warning, your actual database will be totaly overwriten by the database you want to restore !!!');
+           
            echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
                                           "window.location='".$CFG_GLPI["root_doc"].
                                           "/front/backup.php?file=$file&amp;donotcheckversion=1'").
