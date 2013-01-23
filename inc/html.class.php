@@ -645,24 +645,32 @@ class Html {
     * @return nothing
    **/
    static function addConfirmationOnAction($string, $additionalactions='') {
-
       if (!is_array($string)) {
          $string = array($string);
       }
       $string = Toolbox::addslashes_deep($string);
-
-      if (empty($additionalactions)) {
-         $out = " onclick=\"return window.confirm('";
-      } else {
-         $out = " onclick=\"if (window.confirm('";
+      $additionalactions = trim($additionalactions);
+      $out = " onclick=\"";
+      $multiple = false;
+      $close_string = '';
+      // Manage multiple confirmation
+      foreach ($string as $tab) {
+         if (is_array($tab)) {
+            $multiple = true;
+            $out .="if (window.confirm('";
+            $out .= implode('\n',$tab);
+            $out .= "')){ ";
+            $close_string .= "return true;} else { return false;}";
+         }
       }
-      $out .= implode('\n',$string);
-      $out .= "')";
-      if (empty($additionalactions)) {
-         $out .= ";\" ";
-      } else {
-         $out .= ") {".$additionalactions."};return true;\" ";
+      // manage simple confirmation
+      if (!$multiple) {
+            $out .="if (window.confirm('";
+            $out .= implode('\n',$string);
+            $out .= "')){ ";
+            $close_string .= "return true;} else { return false;}";
       }
+      $out .= $additionalactions.(substr($additionalactions, -1)!=';'?';':'').$close_string."\"";
       return $out;
    }
 
