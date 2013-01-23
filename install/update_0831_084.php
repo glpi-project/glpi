@@ -1449,13 +1449,11 @@ function update0831to084() {
 
    // add rights to delete all validation
    $migration->addField('glpi_profiles', 'delete_validations',
-                        'char', array('value'  => 0,
-                                      'update' => 'delete_ticket'));
+                        'char', array('update' => 'delete_ticket'));
 
    // add rights to manage public rssfeed
    $migration->addField('glpi_profiles', 'rssfeed_public',
-                        'char', array('value'  => 0,
-                                      'update' => 'reminder_public',
+                        'char', array('update' => 'reminder_public',
                                       'after'  => 'reminder_public'));
 
    // add ticket templates
