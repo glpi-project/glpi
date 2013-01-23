@@ -1256,6 +1256,13 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 
+   // Migrate RuleOcs to RuleImportEntity
+   $query = "UPDATE `glpi_rules`
+               SET `sub_type` = 'RuleImportEntity'
+               WHERE `sub_type` = 'RuleOcs'";
+
+   $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
+   
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
    $changes['RuleDictionnarySoftware'] = array('_ignore_ocs_import' => '_ignore_import');
    $changes['RuleImportEntity']        = array('_ignore_ocs_import' => '_ignore_import');
