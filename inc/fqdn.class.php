@@ -79,31 +79,26 @@ class FQDN extends CommonDropdown {
    **/
    function prepareInput($input) {
 
-      // First, we check FQDN validity
-      if (empty($input["fqdn"]) || !self::checkFQDN($input["fqdn"])) {
-         Session::addMessageAfterRedirect(__('Internet domain name is invalid'), false, ERROR);
-         return false;
+      if (isset($input['fqdn'])
+          || $this->isNewID($this->getID())) {
+
+         // Check that FQDN is not empty
+         if (empty($input['fqdn'])) {
+            Session::addMessageAfterRedirect(__('FQDN must not be empty'), false, ERROR);
+            return false;
+         }
+
+         // Transform it to lower case
+         $input["fqdn"] = strtolower( $input['fqdn'] );
+
+         // Then check its validity
+         if (!self::checkFQDN($input["fqdn"])) {
+            Session::addMessageAfterRedirect(__('FQDN is not valid'), false, ERROR);
+            return false;
+         }
+
       }
 
-      // Then, we ensure the FQDN is unique
-      if (isset($input["entities_id"])) {
-         $entityID = $input["entities_id"];
-      } else {
-         $entityID = $_SESSION['glpiactive_entity'];
-      }
-
-      // Should be removed because, there can be several same domains in same entity for instance
-      // when defining different views
-      /*
-      if (!self::checkFQDNUnicity($input["fqdn"], (isset($input["id"]) ? $input["id"] : -1),
-                                  $entityID)) {
-         Session::addMessageAfterRedirect(__('Internet domain already defined in the visible entities'),
-                                          false, ERROR);
-         return false;
-      }
-      */
-
-      $input["fqdn"] = strtolower($input["fqdn"]) ;
 
       return $input;
    }
@@ -215,38 +210,6 @@ class FQDN extends CommonDropdown {
       $tab[11]['datatype'] = 'string';
 
       return $tab;
-   }
-
-
-   /**
-    * Check to see if an FQDN is unique
-    *
-    * @param $fqdn      the FQDN to check
-    * @param $ID        its id to don't check itself
-    * @param $entityID  the entity containing the FQDN
-    *
-    * We check all the entities that are visible.
-    * That allows two sisters entities to define the same FQDN
-    *
-    * @return boolean value : true if already found
-   **/
-   static function checkFQDNUnicity($fqdn, $ID, $entityID) {
-      global $DB;
-
-      $entitiesID = getSonsAndAncestorsOf('glpi_entities', $entityID);
-      $query      = "SELECT `id`
-                     FROM `glpi_fqdns`
-                     WHERE `fqdn` = '$fqdn'
-                           AND `entities_id` IN ('".implode("', '", $entitiesID)."')";
-
-      if ($ID > 0) {
-         $query .= "\nAND `id` <> '$ID'";
-      }
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         return false;
-      }
-      return true;
    }
 
 

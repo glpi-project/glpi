@@ -76,11 +76,7 @@ abstract class FQDNLabel extends CommonDBChild {
     * @param $canBeEmpty   true if empty label is valid (name of NetworkName or NetworkAlias)
     *                      (false by default)
     **/
-   static function checkFQDNLabel($label, $canBeEmpty=false) {
-
-      if (empty($label)) {
-         return $canBeEmpty;
-      }
+   static function checkFQDNLabel($label) {
 
       if (strlen($label) >= 63) {
          return false;
@@ -98,55 +94,26 @@ abstract class FQDNLabel extends CommonDBChild {
    }
 
 
-   /**
-    * \brief Check if a label is unique
-    * The check concerns NetworkNames as well as Networkaliases. We must care about the current
-    * object. Otherwise, unicity will answer false in case of updatint with the same label and
-    * domain
-    *
-    * @param $label        the label to check
-    * @param $fqdns_id     ID of the domain
-    * @param $labeltype    the type of the current Label
-    * @param $labels_id    the if of the current Label
-   **/
-   static function checkFQDNLabelUnicity($label, $fqdns_id, $labeltype, $labels_id) {
-
-      foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id) as $class => $IDs) {
-         // First, remove the current label from the list of answers
-         if ($class == $labeltype) {
-            $key = array_search ($labels_id, $IDs);
-            if ($key !== false) {
-               unset($IDs[$key]);
-            }
-         }
-         if (count($IDs) > 0) {
-            return false;
-         }
-      }
-      return true;
-   }
-
-
    function prepareLabelInput($input) {
-      // Before adding a name, we must unsure its is valid : conform to RFC and is unique
+
 
       if (isset($input['name'])) {
-         $input['name'] = strtolower ( $input['name'] ) ;
 
-         if (!self::checkFQDNLabel($input['name'], true)) {
-            Session::addMessageAfterRedirect(sprintf(__('Invalid internet name: %s'), $input['name']),
-                                             false, ERROR);
-            return false;
+         if (!empty($input['name'])) {
+            // Empty names are allowed
+
+            $input['name'] = strtolower ( $input['name'] ) ;
+
+            // Before adding a name, we must unsure its is valid : it conforms to RFC
+            if (!self::checkFQDNLabel($input['name'])) {
+               Session::addMessageAfterRedirect(sprintf(__('Invalid internet name: %s'),
+                                                        $input['name']),
+                                                false, ERROR);
+               return false;
+            }
+
          }
 
-         // TODO : is it usefull to check label unicity in the current domain ?
-         // $labels_id = (isset($input['id']) ? $input['id'] : -1);
-         // if (!self::checkFQDNLabelUnicity($input['name'], $input["fqdns_id"],
-         //                                  $this->getType(), $labels_id)) {
-         //    Session::addMessageAfterRedirect(sprintf(__('Internet name already defined in visible entities: %s'), $input['name']),
-         //                                     false, ERROR);
-         //    return false;
-         // }
       }
 
       return $input;

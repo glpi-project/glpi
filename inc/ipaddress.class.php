@@ -135,27 +135,25 @@ class IPAddress extends CommonDBChild {
 
    function prepareInput($input) {
 
-      // In case of entity transfer, $input['name'] is not defined
-      if (!isset($input['name']) && isset($this->fields['name'])) {
-         $input['name'] = $this->fields['name'];
+      // If $input['name'] does not exists, then, don't check anything !
+      if (isset($input['name'])) {
+
+         if (!isset($this->fields['name'])
+             || ($this->fields['name'] != $input['name'])) {
+
+            // If previous value differs from current one, then check it !
+             $this->setAddressFromString($input['name']);
+            if (!$this->is_valid()) {
+
+               //TRANS: %s is the invalid address
+               $msg = sprintf(__('Invalid IP address: %s'), $input['name']);
+               Session::addMessageAfterRedirect($msg, false, ERROR);
+               return false;
+            }
+         }
       }
 
-      $valid = false;
-      if (isset($this->fields['name']) && ($this->fields['name'] == $input['name'])) {
-         // Previous value is the same than current !
-         $valid = true;
-      } else { // New value or update !
-         $this->setAddressFromString($input['name']);
-         $valid = $this->is_valid();
-      }
-
-      if (!$valid) {
-         //TRANS: %s is the invalid address
-         $msg = sprintf(__('Invalid address: %s'), $input['name']);
-         Session::addMessageAfterRedirect($msg, false, ERROR);
-         return false;
-      }
-      return $this->setArrayFromAddress($input, "version", "name", "binary");
+      return array_merge($input, $this->setArrayFromAddress($input, "version", "name", "binary"));
 
    }
 
