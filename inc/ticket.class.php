@@ -3555,7 +3555,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (!$template_loaded
-          && ($entities_id > 0)) {
+          && ($entities_id >= 0)) {
 
          // load default entity one if not already loaded
          if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entities_id)) {
