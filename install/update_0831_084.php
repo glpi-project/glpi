@@ -132,7 +132,7 @@ function update0831to084() {
       $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
                                  true);
    }
-   
+
    $lang_to_update = array('ca_CA' => 'ca_ES',
                            'dk_DK' => 'da_DK',
                            'ee_ET' => 'et_EE',
@@ -1153,6 +1153,8 @@ function update0831to084() {
 
    $migration->dropField('glpi_configs', 'use_ocs_mode');
 
+   // clean crontask
+   $migration->copyTable('glpi_crontasks', 'ocs_glpi_crontasks');
    $query = "DELETE
              FROM `glpi_crontasks`
              WHERE `itemtype` = 'OcsServer'";
@@ -1264,7 +1266,7 @@ function update0831to084() {
                WHERE `sub_type` = 'RuleOcs'";
 
    $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
-   
+
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
    $changes['RuleDictionnarySoftware'] = array('_ignore_ocs_import' => '_ignore_import');
    $changes['RuleImportEntity']        = array('_ignore_ocs_import' => '_ignore_import');
