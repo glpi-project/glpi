@@ -381,9 +381,9 @@ class Log extends CommonDBTM {
                   $field          = $linktype_field[1];
                   $devicetype     = $linktype::getDeviceType();
                   $tmp['field']   = $devicetype;
-                  if (isset($specif_fields)) {
+                  $specif_fields  = $linktype::getSpecificities();
+                  if (isset($specif_fields[$field]['short name'])) {
                      $tmp['field']   = $devicetype;
-                     $specif_fields  = $linktype::getSpecificities();
                      $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
                   }
                   //TRANS: %1$s is the old_value, %2$s is the new_value
