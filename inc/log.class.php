@@ -380,12 +380,15 @@ class Log extends CommonDBTM {
                   $linktype       = $linktype_field[0];
                   $field          = $linktype_field[1];
                   $devicetype     = $linktype::getDeviceType();
-                  $tmp['field']   = $devicetype.':';
+                  $tmp['field']   = $devicetype;
                   $specif_fields  = $linktype::getSpecificities();
-                  $tmp['field']  .= $specif_fields[$field]['short name'];
+                  $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
+
                   //TRANS: %1$s is the old_value, %2$s is the new_value
-                  $tmp['change']  = sprintf(__('Change the component %1$s by %2$s'),
-                                            $data[ "old_value"], $data[ "new_value"]);
+                  $tmp['change']  = sprintf(__('Change the component %1$s: %2$s'),
+                                            $tmp['field'],
+                                            sprintf(__('%1$s by %2$s'), $data["old_value"],
+                                                    $data[ "new_value"]));
                   break;
 
                case self::HISTORY_DELETE_DEVICE :
