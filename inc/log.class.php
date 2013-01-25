@@ -381,9 +381,11 @@ class Log extends CommonDBTM {
                   $field          = $linktype_field[1];
                   $devicetype     = $linktype::getDeviceType();
                   $tmp['field']   = $devicetype;
-                  $specif_fields  = $linktype::getSpecificities();
-                  $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
-
+                  if (isset($specif_fields)) {
+                     $tmp['field']   = $devicetype;
+                     $specif_fields  = $linktype::getSpecificities();
+                     $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
+                  }
                   //TRANS: %1$s is the old_value, %2$s is the new_value
                   $tmp['change']  = sprintf(__('Change the component %1$s: %2$s'),
                                             $tmp['field'],
