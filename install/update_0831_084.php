@@ -1160,6 +1160,13 @@ function update0831to084() {
              WHERE `itemtype` = 'OcsServer'";
    $DB->queryOrDie($query, "0.84 delete OcsServer in crontasks");
 
+   // clean displaypreferences
+   $migration->copyTable('glpi_displaypreferences', 'ocs_glpi_displaypreferences');
+   $query = "DELETE
+             FROM `glpi_displaypreferences`
+             WHERE `itemtype` = 'OcsServer'";
+   $DB->queryOrDie($query, "0.84 delete OcsServer in displaypreferences");
+
    // Give history entries to plugin
    $query = "UPDATE `glpi_logs`
              SET `linked_action` = `linked_action`+1000,
