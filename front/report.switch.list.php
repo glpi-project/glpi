@@ -33,7 +33,7 @@
 */
 
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
@@ -41,9 +41,9 @@ Session::checkRight("reports", "r");
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
    Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
-   
+
    Report::title();
-   
+
    $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
    echo "<div class='center spaced'><h2>".sprintf(__('Network report by hardware: %s'),$name).
         "</h2></div>";
