@@ -757,6 +757,7 @@ class Toolbox {
     * @return 2 : creation error 1 : delete error 0: OK
    **/
    static function commonCheckForUseGLPI() {
+      global $CFG_GLPI;
 
       $error = 0;
 
@@ -772,11 +773,11 @@ class Toolbox {
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
-                  <img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                  <img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                   __('GLPI is not compatible with the option zend.ze1_compatibility_mode = On.').
                  "</td>";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                        __s('PHP version is at least 5.3.0 - Perfect!')."\"
                        title=\"".__s('PHP version is at least 5.3.0 - Perfect!')."\"></td>";
          }
@@ -784,7 +785,7 @@ class Toolbox {
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
-               <img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               <img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                 __('You must install at least PHP 5.3.0.')."</td>";
       }
       echo "</tr>";
@@ -792,12 +793,12 @@ class Toolbox {
       // Check for mysql extension ni php
       echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test')."</td>";
       if (class_exists("mysqli")) {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png'
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'
                     alt=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"
                     title=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"></td>";
       } else {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                __('You must install the MySQL Improved extension for PHP.')."</td>";
          $error = 2;
       }
@@ -814,13 +815,13 @@ class Toolbox {
 
       } else if ((isset($_SESSION["Test_session_GLPI"]) && ($_SESSION["Test_session_GLPI"] == 1)) // From install
                  || isset($_SESSION["glpi_currenttime"])) { // From Update
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                     __s('Sessions support is available - Perfect!').
                     "\" title=\"".__s('Sessions support is available - Perfect!')."\"></td>";
 
       } else if ($error != 2) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/orangebutton.png'>".
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
                 __('Make sure that sessions support has been activated in your php.ini')."</td>";
          $error = 1;
       }
@@ -830,7 +831,7 @@ class Toolbox {
       if (ini_get('session.auto_start')==1) {
          echo "<tr class='tab_bg_1'><td class='b'>".__('Test session auto start')."</td>";
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                __('session.auto_start is activated. See .htaccess file in the GLPI root for more information.').
                "</td></tr>";
          $error = 2;
@@ -841,12 +842,12 @@ class Toolbox {
 
       if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                __('You must desactivate the Session_use_trans_id option in your php.ini')."</td>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
                "\" title=\"". __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
                "\"></td>";
@@ -858,13 +859,13 @@ class Toolbox {
 
       if (ini_get('magic_quotes_sybase')) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                __('GLPI does not work with the magic_quotes_sybase option. Please turn it off and retry').
                "</td>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
               __s("The magic_quotes_sybase option isn't active on your server - Perfect!").
               "\" title=\"".
               __s("The magic_quotes_sybase option isn't active on your server - Perfect!").
@@ -876,12 +877,12 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test ctype functions')."</td>";
 
       if (!function_exists('ctype_digit')) {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                     __("GLPI can't work correctly without the ctype functions")."></td>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                     __s('The functionality is found - Perfect!')."\" title=\"".
                     __s('The functionality is found - Perfect!')."\"></td>";
       }
@@ -891,13 +892,13 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
 
       if (!function_exists('json_encode') || !function_exists('json_decode')) {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                     __("GLPI can't work correctly without the json_encode and json_decode functions").
                "></td>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                __s('The functionality is found - Perfect!'). "\" title=\"".
                __s('The functionality is found - Perfect!').
                "\"></td>";
@@ -908,12 +909,12 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Mbstring extension test')."</td>";
 
       if (!extension_loaded('mbstring')) {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                __('Mbstring extension of your parser PHP is not installed')."></td>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                __s('The functionality is found - Perfect!'). "\" title=\"".
                __s('The functionality is found - Perfect!').
                "\"></td>";
@@ -928,14 +929,14 @@ class Toolbox {
       switch (self::checkMemoryLimit()) {
          case 0 : // memory_limit not compiled -> no memory limit
          case 1 : // memory_limit compiled and unlimited
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                   __s('Unlimited memory - Perfect!')."\" title=\"".
                   __s('Unlimited memory - Perfect!')."\"></td>";
             break;
 
          case 2: //Insufficient memory
             $showmem = $mem/1048576;
-            echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
+            echo "<td class='red'><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'><span class='b'>".
                   sprintf(__('%1$s: %2$s'), __('Allocated memory'),
                           sprintf(__('%1$s %2$s'), $showmem, __('Mio'))).
                   "</span>".
@@ -946,7 +947,7 @@ class Toolbox {
             break;
 
          case 3: //Got enough memory, going to the next step
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                   __s('Allocated memory > 64Mio - Perfect!')."\" title=\"".
                   __s('Allocated memory > 64Mio - Perfect!')."\"></td>";
             break;
@@ -975,6 +976,7 @@ class Toolbox {
     *  @return integer 0: OK, 1:Warning, 2:Error
    **/
    static function checkSELinux() {
+      global $CFG_GLPI;
 
       if ((DIRECTORY_SEPARATOR != '/')
           || !file_exists('/usr/sbin/getenforce')) {
@@ -987,7 +989,7 @@ class Toolbox {
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
       echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
       // All modes should be ok
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$mode' title='$mode'></td></tr>";
+      echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt='$mode' title='$mode'></td></tr>";
       if (!strcasecmp($mode, 'Disabled')) {
          // Other test are not useful
          return 0;
@@ -1008,10 +1010,10 @@ class Toolbox {
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
          echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
          if (substr($state, -2) == 'on') {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$state' title='$state'>".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt='$state' title='$state'>".
                  "</td>";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png' alt='$state' title='$state'>".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png' alt='$state' title='$state'>".
                  "</td>";
             $err = 1;
          }

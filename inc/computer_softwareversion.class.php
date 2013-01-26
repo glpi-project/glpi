@@ -890,8 +890,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='5'>";
       echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT .
-             "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
-      echo "<img alt='' name='imgcat$cat' src='".GLPI_ROOT."/pics/folder".
+             "/pics/folder.png','" . $CFG_GLPI['root_doc'] . "/pics/folder-open.png');\">";
+      echo "<img alt='' name='imgcat$cat' src='".$CFG_GLPI['root_doc']."/pics/folder".
              (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>". $catname. "</span>";
       echo "</a></td></tr>";
 

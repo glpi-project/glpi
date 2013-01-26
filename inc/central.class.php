@@ -169,7 +169,7 @@ class Central extends CommonGLPI {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<tr><th colspan='2'>";
-         Html::displayTitle(GLPI_ROOT."/pics/warning.png", __('MySQL replica: read only'),
+         Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", __('MySQL replica: read only'),
                             __('MySQL replica: read only'));
          echo "</th></tr>";
       }

@@ -1322,7 +1322,7 @@ class Config extends CommonDBTM {
       // SimplePie :
       $sp = new SimplePie();
       echo "SimplePie version " . SIMPLEPIE_VERSION . " in (" . realpath(GLPI_SIMPLEPIE_PATH) . ")\n";
-      
+
       echo "\n</pre></td></tr>";
    }
 
@@ -1521,7 +1521,7 @@ class Config extends CommonDBTM {
     * @return 2 : creation error 1 : delete error 0: OK
    **/
    static function checkWriteAccessToDirs($fordebug=false) {
-
+      global $CFG_GLPI;
       $dir_to_check = array(GLPI_CONFIG_DIR
                                     => __('Checking write permissions for setting files'),
                             GLPI_DOC_DIR
@@ -1560,11 +1560,11 @@ class Config extends CommonDBTM {
 
          if ($tmperror > 0) {
             if ($fordebug) {
-               echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'> ".
                      sprintf(__('Check permissions to the directory: %s'), $dir).
                      " ".$errors[$tmperror]."\n";
             } else {
-               echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'><p class='red'>".
                     $errors[$tmperror]."</p> ".
                     sprintf(__('Check permissions to the directory: %s'), $dir).
                     "'</td></tr>";
@@ -1572,9 +1572,9 @@ class Config extends CommonDBTM {
             $error = 2;
          } else {
             if ($fordebug) {
-               echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>$dir : OK\n";
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>$dir : OK\n";
             } else {
-               echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\"
                           title=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\">".
@@ -1591,19 +1591,19 @@ class Config extends CommonDBTM {
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
          if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                        __s('A file was created - Perfect!')."\" title=\"".
                        __s('A file was created - Perfect!')."\"></td></tr>";
          }
 
       } else {
          if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/orangebutton.png'>".
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png'>".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
                  "<p class='red'>".__("The file was created but can't be deleted.")."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }

@@ -69,6 +69,6 @@ if (file_exists($Path.$_GET["name"])) {
       unlink($Path.$_GET["name"]);
    }
 } else {
-   readfile(GLPI_ROOT . "/pics/warning.png");
+   readfile($CFG_GLPI['root_doc'] . "/pics/warning.png");
 }
 ?>
