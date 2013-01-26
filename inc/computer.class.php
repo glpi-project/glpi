@@ -70,6 +70,12 @@ class Computer extends CommonDBTM {
       return Session::haveRight('computer', 'r');
    }
 
+   /**
+    * @see CommonDBTM::useDeletedToLockIfDynamic()
+   **/
+   function useDeletedToLockIfDynamic() {
+      return false;
+   }
 
    /**
     * @see CommonGLPI::defineTabs()

@@ -63,6 +63,12 @@ class Monitor extends CommonDBTM {
       return Session::haveRight('monitor', 'r');
    }
 
+   /**
+    * @see CommonDBTM::useDeletedToLockIfDynamic()
+   **/
+   function useDeletedToLockIfDynamic() {
+      return false;
+   }
 
    /**
     * @see CommonGLPI::defineTabs()
