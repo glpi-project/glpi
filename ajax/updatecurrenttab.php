@@ -28,10 +28,10 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
-define('GLPI_ROOT','..');
+define('GLPI_ROOT', realpath('..'));
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 header("Content-Type: text/html; charset=UTF-8");

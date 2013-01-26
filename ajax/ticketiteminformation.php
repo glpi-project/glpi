@@ -28,13 +28,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"ticketiteminformation.php")) {
    $AJAX_INCLUDE = 1;
-   define('GLPI_ROOT','..');
+   define('GLPI_ROOT', realpath('..'));
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();

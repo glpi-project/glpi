@@ -28,10 +28,10 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
-define('GLPI_ROOT','..');
+define('GLPI_ROOT', realpath('..'));
 // Include plugin if it is a plugin table
 if (!strstr($_POST['itemtype'],"Plugin")) {
    $AJAX_INCLUDE = 1;
