@@ -32,7 +32,7 @@
 * @since version 0.84
 */
 
-define('GLPI_ROOT','..');
+define('GLPI_ROOT', realpath('..'));
 $AJAX_INCLUDE = 1;
 include (GLPI_ROOT."/inc/includes.php");
 

@@ -28,10 +28,10 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
-define('GLPI_ROOT','..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT."/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -152,7 +152,7 @@ if (isset($_POST["type"])
 
             $rand = Supplier::dropdown($param);
             break;
-            
+
 
       }
    }
