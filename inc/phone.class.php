@@ -60,6 +60,12 @@ class Phone extends CommonDBTM {
       return Session::haveRight('phone', 'r');
    }
 
+   /**
+    * @see CommonDBTM::useDeletedToLockIfDynamic()
+   **/
+   function useDeletedToLockIfDynamic() {
+      return false;
+   }
 
    function defineTabs($options=array()) {
 

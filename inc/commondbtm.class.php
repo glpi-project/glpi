@@ -456,7 +456,8 @@ class CommonDBTM extends CommonGLPI {
 
       if (($force == 1)
           || !$this->maybeDeleted()
-          || ($this->maybeDynamic() && !$this->isDynamic())) {
+          || ($this->useDeletedToLockIfDynamic()
+               && !$this->isDynamic())) {
 
          $this->cleanDBonPurge();
          $this->cleanHistory();
@@ -1207,8 +1208,8 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isTemplate()
          || !$this->maybeDeleted()
          // Do not take into account deleted field if maybe dynamic but not dynamic
-         // TODO : don't work, Computer have is_deleted and is_dynamic
-         || ($this->maybeDynamic() && !$this->isDynamic())) {
+         || ($this->useDeletedToLockIfDynamic()
+               && !$this->isDynamic())) {
          $force = 1;
       }
       // Store input in the object to be available in all sub-method / hook
@@ -1850,8 +1851,8 @@ class CommonDBTM extends CommonGLPI {
             } else {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                // If maybe dynamic : do not take into account  is_deleted  field
-               // TODO : don't work, Computer have is_deleted and is_dynamic
-               if (!$this->maybeDeleted() || $this->maybeDynamic()) {
+               if (!$this->maybeDeleted()
+                  || $this->useDeletedToLockIfDynamic()) {
                   echo "<input type='submit' name='delete' value=\""._sx('button',
                                                                          'Delete permanently')."\"
                          class='submit' ".
@@ -2426,7 +2427,19 @@ class CommonDBTM extends CommonGLPI {
       return array_key_exists('is_dynamic', $this->fields);
    }
 
+   /**
+    * Use deleted field in case of dynamic management to lock ?
+    *
+    * need to be overriden if object need to use standard deleted management (Computer...)
+    * @since 0.84
+    *
+    * @return boolean
+   **/
+   function useDeletedToLockIfDynamic() {
+      return $this->maybeDynamic();
+   }
 
+   
    /**
     * Is an object dynamic or not
     *

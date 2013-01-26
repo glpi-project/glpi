@@ -64,6 +64,12 @@ class Printer  extends CommonDBTM {
       return Session::haveRight('printer', 'r');
    }
 
+   /**
+    * @see CommonDBTM::useDeletedToLockIfDynamic()
+   **/
+   function useDeletedToLockIfDynamic() {
+      return false;
+   }
 
    function defineTabs($options=array()) {
 
