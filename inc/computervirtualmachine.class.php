@@ -127,13 +127,23 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Computer')."</td>";
-      echo "<td colspan='3'>".$comp->getLink()."</td></tr>";
+      echo "<td>".$comp->getLink()."</td>";
+      if ($ID && $this->fields['is_dynamic']) {
+         echo "<td>".__('Automatic inventory')."</td>";
+         echo "<td>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'></td>";
+      }
+      echo "</tr>\n";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
-      echo "</td><td>".__('Virtualization system')."&nbsp;:</td>";
+      echo "</td><td>".__('Virtualization system')."</td>";
       echo "<td>";
       VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
       echo "</td></tr>";
@@ -285,9 +295,10 @@ class ComputerVirtualMachine extends CommonDBChild {
       if (empty($virtualmachines)) {
          echo "<tr><th>".__('No virtual machine associated with the computer')."</th></tr>";
       } else {
-         echo "<tr><th colspan='9'>".__('List of virtual machines')."</th></tr>";
+         echo "<tr><th colspan='10'>".__('List of virtual machines')."</th></tr>";
 
          echo "<tr><th>".__('Name')."</th>";
+         echo "<th>".__('Automatic inventory')."</th>";
          echo "<th>".__('Virtualization system')."</th>";
          echo "<th>".__('Virtualization model')."</th>";
          echo "<th>".__('State of the virtual machine')."</th>";
@@ -300,10 +311,13 @@ class ComputerVirtualMachine extends CommonDBChild {
          $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $vm->getFromDB($virtualmachine['id']);
-//             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
-//             echo "<td>$href".$virtualmachine['name']."</a></td>";
+            echo "<td>";
+            if ($vm->isDynamic()) {
+               _e('Yes');
+            }
+            echo "</td>";
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
                                            $virtualmachine['virtualmachinetypes_id']);
