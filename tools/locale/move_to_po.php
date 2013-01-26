@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
@@ -51,7 +51,7 @@ if (!isset($_GET['lang'])) {
    echo "Usage move_to_po.php lang=xx_YY\n Will take the pot file and try to complete it to create initial po for the lang\n";
 }
 
-define('GLPI_ROOT', '../..');
+define('GLPI_ROOT', realpath('../..'));
 //include (GLPI_ROOT . "/inc/includes.php");
 
 if (!is_readable(GLPI_ROOT . "/locales/".$_GET['lang'].".php")) {
