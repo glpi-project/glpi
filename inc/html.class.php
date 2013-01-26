@@ -498,6 +498,7 @@ class Html {
 
       echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
+         $ref_pic_text = self::clean($ref_pic_text);
          echo "<td><img src='".$ref_pic_link."' alt=\"".$ref_pic_text."\" title=\"".$ref_pic_text."\">
                </td>";
       }
