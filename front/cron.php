@@ -36,7 +36,7 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!is_writable(GLPI_LOCK_DIR)) {
