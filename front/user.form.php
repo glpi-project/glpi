@@ -28,10 +28,10 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (empty($_GET["id"])) {
@@ -140,7 +140,7 @@ if (isset($_GET['getvcard'])) {
 
 } else {
 
-   
+
 
    if (isset($_GET["ext_auth"])) {
       Html::header(User::getTypeName(2), '', "admin", "user");
@@ -165,7 +165,7 @@ if (isset($_GET['getvcard'])) {
                        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
                                $_POST["login"]));
          }
-         
+
          Html::back();
    } else {
       Session::checkRight("user", "r");

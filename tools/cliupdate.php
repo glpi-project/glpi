@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (in_array('--help', $_SERVER['argv'])) {
@@ -38,7 +38,7 @@ if (in_array('--help', $_SERVER['argv'])) {
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '..');
+   define('GLPI_ROOT', realpath('..'));
 }
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
@@ -250,7 +250,7 @@ switch ($current_version) {
    case "0.83.2" :
       include("../install/update_0831_0833.php");
       update0831to0833();
-      
+
    case "0.83.3" :
    case "0.83.31" :
    case "0.83.4" :

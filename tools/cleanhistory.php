@@ -42,7 +42,7 @@ if ($argv) {
    }
 }
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 $CFG_GLPI["debug"]=0;

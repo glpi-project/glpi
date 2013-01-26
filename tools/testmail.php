@@ -29,7 +29,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (isset($_SERVER['argc'])) {
@@ -41,7 +41,7 @@ if (isset($_SERVER['argc'])) {
 }
 $NEEDED_ITEMS = array("mailgate", "mailing");
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET['from'])) {

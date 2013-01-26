@@ -32,7 +32,7 @@
 */
 
 // since version 0.83.3
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 
 $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/ajax/',
