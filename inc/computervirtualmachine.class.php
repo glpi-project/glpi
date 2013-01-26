@@ -298,7 +298,9 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<tr><th colspan='10'>".__('List of virtual machines')."</th></tr>";
 
          echo "<tr><th>".__('Name')."</th>";
-         echo "<th>".__('Automatic inventory')."</th>";
+         if (Plugin::haveImport()) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
          echo "<th>".__('Virtualization system')."</th>";
          echo "<th>".__('Virtualization model')."</th>";
          echo "<th>".__('State of the virtual machine')."</th>";
@@ -313,11 +315,13 @@ class ComputerVirtualMachine extends CommonDBChild {
             $vm->getFromDB($virtualmachine['id']);
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
-            echo "<td>";
-            if ($vm->isDynamic()) {
-               _e('Yes');
+            if (Plugin::haveImport()) {
+               echo "<td>";
+               if ($vm->isDynamic()) {
+                  _e('Yes');
+               }
+               echo "</td>";
             }
-            echo "</td>";
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
                                            $virtualmachine['virtualmachinetypes_id']);

@@ -1225,5 +1225,17 @@ class Plugin extends CommonDBTM {
       return $sopt;
    }
 
+   /**
+    * test is a import plugin is enable
+    *
+    * @return boolean
+    *
+    * @since 0.84
+   **/
+   static function haveImport() {
+      global $PLUGIN_HOOKS;
+
+      return (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item']));
+   }
 }
 ?>

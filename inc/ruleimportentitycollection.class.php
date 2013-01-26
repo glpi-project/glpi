@@ -49,7 +49,7 @@ class RuleImportEntityCollection extends RuleCollection {
    function canList() {
       global $PLUGIN_HOOKS;
 
-      if (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item'])) {
+      if (Plugin::haveImport()) {
          return static::canView();
       }
       return false;
