@@ -1207,6 +1207,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isTemplate()
          || !$this->maybeDeleted()
          // Do not take into account deleted field if maybe dynamic but not dynamic
+         // TODO : don't work, Computer have is_deleted and is_dynamic
          || ($this->maybeDynamic() && !$this->isDynamic())) {
          $force = 1;
       }
@@ -1849,6 +1850,7 @@ class CommonDBTM extends CommonGLPI {
             } else {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                // If maybe dynamic : do not take into account  is_deleted  field
+               // TODO : don't work, Computer have is_deleted and is_dynamic
                if (!$this->maybeDeleted() || $this->maybeDynamic()) {
                   echo "<input type='submit' name='delete' value=\""._sx('button',
                                                                          'Delete permanently')."\"
