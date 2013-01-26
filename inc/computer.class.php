@@ -512,6 +512,7 @@ class Computer extends CommonDBTM {
       $inventory_show = false;
 
       if (!empty($ID)
+          && Plugin::haveImport()
           && $this->fields["is_dynamic"]) {
          $inventory_show = true;
          $rowspan       -= 4;
