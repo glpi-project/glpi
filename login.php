@@ -28,10 +28,11 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
-define('GLPI_ROOT', '.');
+define('GLPI_ROOT', __DIR__);
 include (GLPI_ROOT . "/inc/includes.php");
+
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
    if (!is_writable(GLPI_SESSION_DIR)) {
