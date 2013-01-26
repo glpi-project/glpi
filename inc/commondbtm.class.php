@@ -1848,7 +1848,8 @@ class CommonDBTM extends CommonGLPI {
 
             } else {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-               if (!$this->maybeDeleted()) {
+               // If maybe dynamic : do not take into account  is_deleted  field
+               if (!$this->maybeDeleted() || $this->maybeDynamic()) {
                   echo "<input type='submit' name='delete' value=\""._sx('button',
                                                                          'Delete permanently')."\"
                          class='submit' ".
