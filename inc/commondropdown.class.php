@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -262,7 +262,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
             case 'icon' :
                Dropdown::dropdownIcons($field['name'], $this->fields[$field['name']],
-                                       GLPI_ROOT."/pics/icones");
+                                       $CFG_GLPI['root_doc']."/pics/icones");
                if (!empty($this->fields[$field['name']])) {
                   echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
                        $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields[$field['name']]."'>";
@@ -610,7 +610,7 @@ abstract class CommonDropdown extends CommonDBTM {
                                                  $input['entities_id'], $this->maybeRecursive());
          }
          $query .= " LIMIT 1";
-         
+
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
             if ($DB->numrows($result_twin) > 0) {

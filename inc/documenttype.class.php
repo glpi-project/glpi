@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -123,6 +123,7 @@ class DocumentType  extends CommonDropdown {
     * @param $options      array
    **/
    static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+      global $CFG_GLPI;
 
       if (!is_array($values)) {
          $values = array($field => $values);
@@ -131,7 +132,7 @@ class DocumentType  extends CommonDropdown {
       switch ($field) {
          case 'icon' :
             return Dropdown::dropdownIcons($name, $values[$field],
-                                           GLPI_ROOT."/pics/icones", false);
+                                           $CFG_GLPI['root_doc']."/pics/icones", false);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }

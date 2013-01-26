@@ -415,7 +415,7 @@ class Profile_User extends CommonDBRelation {
     * @param $prof Profile object
    **/
    static function showForProfile(Profile $prof) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $ID      = $prof->fields['id'];
       $canedit = Session::haveRight("user", "w");
@@ -491,8 +491,8 @@ class Profile_User extends CommonDBRelation {
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
                echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
-                        GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-               echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;";
+                        $CFG_GLPI['root_doc']."/pics/folder.png','".$CFG_GLPI['root_doc']."/pics/folder-open.png');\">";
+               echo "<img alt='' name='imgcat$temp' src=\"".$CFG_GLPI['root_doc']."/pics/folder.png\">&nbsp;";
                echo "<span class='b'>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
                      "</span>";
                echo "</a>";
