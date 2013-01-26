@@ -3352,7 +3352,8 @@ class CommonDBTM extends CommonGLPI {
          }
          // No delete for entities and tracking of not have right
          if ($isadmin) {
-            if ($this->maybeDeleted()) {
+            // do not take into account is_deleted if items may be dynamic
+            if ($this->maybeDeleted() && !$this->maybeDynamic()) {
                $actions['delete'] = _x('button', 'Put in dustbin');
             } else {
                $actions['purge'] = _x('button', 'Delete permanently');
