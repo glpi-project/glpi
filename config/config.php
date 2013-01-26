@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -54,7 +54,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo "<p>Error: GLPI seems to not be installed properly.</p>";
       echo "<p> config_db.php file is missing.</p>";
       echo "<p>Please restart the install process.</p>";
-      echo "<p><a class='red' href='".GLPI_ROOT."'>Click here to proceed</a></p>";
+      echo "<p><a class='red' href='".$CFG_GLPI['root_doc']."'>Click here to proceed</a></p>";
       echo "</div>";
       Html::nullFooter();
 
