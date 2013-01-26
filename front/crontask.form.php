@@ -31,7 +31,7 @@
 * @brief Form to edit Cron Task
 */
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");

@@ -28,10 +28,10 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_POST['check_version'])) {
@@ -622,7 +622,7 @@ if (count($files)) {
            //TRANS: %s is the filename
            $string[] = array(sprintf(__('Replace the current database with the backup file %s?'), $file));
            $string[] = array(__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!'));
-           
+
            echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
                                           "window.location='".$CFG_GLPI["root_doc"].
                                           "/front/backup.php?file=$file&amp;donotcheckversion=1'").
