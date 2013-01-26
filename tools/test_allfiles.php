@@ -33,7 +33,7 @@
 
 // since version 0.84
 // Use it greping 'Errors' to show files with troubles
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 #include (GLPI_ROOT . "/inc/includes.php");
 
 $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',

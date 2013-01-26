@@ -32,7 +32,7 @@
 */
 
 //#################### INCLUDE & SESSIONS ############################
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 
 // Do not include config.php so set root_doc
 $CFG_GLPI['root_doc'] = '..';

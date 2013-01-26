@@ -26,12 +26,12 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
- 
+
 /** @file
 * @brief
 */
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
