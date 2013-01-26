@@ -28,11 +28,11 @@
 */
 
 /** @file
-* @brief 
+* @brief
 */
 
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 $alias = new NetworkAlias();
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
-} 
+}
 
 if (isset($_GET['popup'])) {
    Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
