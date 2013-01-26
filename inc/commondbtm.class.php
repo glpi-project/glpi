@@ -455,7 +455,8 @@ class CommonDBTM extends CommonGLPI {
       global $DB, $CFG_GLPI;
 
       if (($force == 1)
-          || !$this->maybeDeleted()) {
+          || !$this->maybeDeleted()
+          || ($this->maybeDynamic() && !$this->isDynamic())) {
 
          $this->cleanDBonPurge();
          $this->cleanHistory();
@@ -1203,7 +1204,10 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }
-      if ($this->isTemplate() || !$this->maybeDeleted()) {
+      if ($this->isTemplate()
+         || !$this->maybeDeleted()
+         // Do not take into account deleted field if maybe dynamic but not dynamic
+         || ($this->maybeDynamic() && !$this->isDynamic())) {
          $force = 1;
       }
       // Store input in the object to be available in all sub-method / hook
@@ -2429,7 +2433,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function isDynamic() {
 
-      if ($this->mayBeDynamic()) {
+      if ($this->maybeDynamic()) {
          return $this->fields['is_dynamic'];
       }
       return 0;
