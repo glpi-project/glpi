@@ -31,7 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', '..');
+define('GLPI_ROOT', realpath('..'));
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session ::checkLoginUser();
@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} 
+}
 
 Html::displayErrorAndDie("lost");
 ?>
