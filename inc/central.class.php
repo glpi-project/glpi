@@ -138,7 +138,7 @@ class Central extends CommonGLPI {
     * Show the central personal view
    **/
    static function showMyView() {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $showticket = (Session::haveRight("show_all_ticket", "1")
                      || Session::haveRight("show_assign_ticket", "1"));
@@ -161,7 +161,7 @@ class Central extends CommonGLPI {
                                implode(" ", $accounts));
 
             echo "<tr><th colspan='2'>";
-            Html::displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
+            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             echo "</th></tr>";
          }
       }
