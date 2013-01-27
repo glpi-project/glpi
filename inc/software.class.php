@@ -22,7 +22,7 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
@@ -501,7 +501,8 @@ class Software extends CommonDBTM {
       $tab[72]['datatype']       = 'number';
       $tab[72]['nometa']         = true;
       $tab[72]['massiveaction']  = false;
-      $tab[72]['joinparams']     = array('jointype'   => 'child',
+      if (Session::getLoginUserID()) {
+         $tab[72]['joinparams']  = array('jointype'   => 'child',
                                          'condition'  => "AND NEWTABLE.`is_deleted_computer` = '0'
                                                           AND NEWTABLE.`is_template_computer` = '0'
                                                           ".getEntitiesRestrictRequest('AND', 'NEWTABLE'),
@@ -509,7 +510,7 @@ class Software extends CommonDBTM {
                                                                'joinparams'
                                                                        => array('jointype'
                                                                                  => 'child')));
-
+      }
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
