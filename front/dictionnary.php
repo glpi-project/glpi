@@ -31,8 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 Session::checkSeveralRightsOr(array('rule_dictionnary_dropdown' => 'r',
                                     'rule_dictionnary_software' => 'r'));
