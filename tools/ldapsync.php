@@ -215,8 +215,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
    return 0;
 }
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 ini_set('display_errors',1);
 restore_error_handler();

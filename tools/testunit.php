@@ -34,8 +34,7 @@
 ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 if (!isCommandLine()) {
    echo "<pre>";

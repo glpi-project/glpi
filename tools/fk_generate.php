@@ -31,8 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT."/inc/includes.php");
+include ('../inc/includes.php');
 
 $DB->query("SET FOREIGN_KEY_CHECKS = '0';");
 $result = $DB->list_tables();

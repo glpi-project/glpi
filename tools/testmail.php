@@ -41,8 +41,7 @@ if (isset($_SERVER['argc'])) {
 }
 $NEEDED_ITEMS = array("mailgate", "mailing");
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 if (isset($_GET['from'])) {
    $from = $_GET['from'];

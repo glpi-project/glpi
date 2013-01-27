@@ -56,8 +56,7 @@ if ((isset($_SERVER['argv']) && in_array('help', $_SERVER['argv']))
    exit (0);
 }
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 // Default action : synchro
 // - possible option :

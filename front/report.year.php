@@ -31,8 +31,8 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
+
 Session::checkRight("reports", "r");
 
 Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
