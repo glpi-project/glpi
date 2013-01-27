@@ -32,8 +32,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', realpath('..'));
-   include (GLPI_ROOT . "/inc/includes.php");
+   include ('../inc/includes.php');
 }
 
 $ticket_user = new Ticket_User();
