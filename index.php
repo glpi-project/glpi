@@ -33,7 +33,7 @@
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
-define('GLPI_ROOT', __DIR__);
+define('GLPI_ROOT', dirname(__FILE__));
 include (GLPI_ROOT . "/config/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

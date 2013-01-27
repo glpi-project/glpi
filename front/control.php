@@ -32,7 +32,7 @@
 */
 
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
+
 Html::redirect ($CFG_GLPI['root_doc'] . "/front/fieldunicity.php");
 ?>

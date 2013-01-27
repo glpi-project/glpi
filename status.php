@@ -32,8 +32,7 @@
 */
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
-define('GLPI_ROOT', __DIR__);
-include (GLPI_ROOT . "/inc/includes.php");
+include ('/inc/includes.php');
 
 // Force in normal mode
 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;

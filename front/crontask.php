@@ -31,8 +31,7 @@
 * @brief Search engine from cron tasks
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 Session::checkRight("config", "w");
 

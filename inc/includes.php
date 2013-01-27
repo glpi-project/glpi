@@ -32,7 +32,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   define('GLPI_ROOT', dirname(__DIR__));
 }
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");

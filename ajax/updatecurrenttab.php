@@ -31,7 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
+define('GLPI_ROOT', dirname(__DIR__));
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 header("Content-Type: text/html; charset=UTF-8");

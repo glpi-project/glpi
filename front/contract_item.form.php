@@ -32,8 +32,7 @@
 * @since version 0.84
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 

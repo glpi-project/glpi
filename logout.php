@@ -31,8 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', __DIR__);
-include (GLPI_ROOT . "/inc/includes.php");
+include ('/inc/includes.php');
 
 //@session_start();
 

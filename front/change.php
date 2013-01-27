@@ -32,8 +32,7 @@
 */
 
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 Session::checkSeveralRightsOr(array('show_all_change' => '1',
                                     'show_my_change'  => '1'));

@@ -34,8 +34,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 if (empty($_POST["_type"])
     || ($_POST["_type"] != "Helpdesk")

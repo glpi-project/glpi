@@ -31,12 +31,11 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
 // Include plugin if it is a plugin table
 if (!strstr($_POST['itemtype'],"Plugin")) {
    $AJAX_INCLUDE = 1;
 }
-include (GLPI_ROOT."/inc/includes.php");
+include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
