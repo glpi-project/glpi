@@ -31,8 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 Html::header(__('Search'),$_SERVER['PHP_SELF']);
