@@ -26,7 +26,7 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
- 
+
 /** @file
 * @brief
 */
@@ -106,7 +106,8 @@ class XHProf {
          $id   = $runs->save_run($data, 'glpi');
 
          $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
-         $link = "http://".$_SERVER['HTTP_HOST']."$url/index.php?run=$id&source=glpi";
+         $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
+         $link = "http://".$host."$url/index.php?run=$id&source=glpi";
          Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
 
          self::$run = false;
