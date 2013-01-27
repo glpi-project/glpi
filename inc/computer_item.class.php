@@ -410,6 +410,7 @@ class Computer_Item extends CommonDBRelation{
                       `glpi_computers_items`.`computers_id` as assoc_computers_id,
                       `glpi_computers_items`.`itemtype` as assoc_itemtype,
                       `glpi_computers_items`.`items_id` as assoc_items_id,
+                      `glpi_computers_items`.`is_dynamic` as assoc_is_dynamic,
                       ".getTableForItemType($itemtype).".*
                       FROM `glpi_computers_items`
                       LEFT JOIN `".getTableForItemType($itemtype)."`
@@ -473,6 +474,9 @@ class Computer_Item extends CommonDBRelation{
 
          echo "<th>".__('Type')."</th>";
          echo "<th>".__('Name')."</th>";
+         if (Plugin::haveImport()) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
          echo "<th>".__('Entity')."</th>";
          echo "<th>".__('Serial number')."</th>";
          echo "<th>".__('Inventory number')."</th>";
@@ -499,6 +503,13 @@ class Computer_Item extends CommonDBRelation{
             echo "<td ".
                   ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
                  ">".$name."</td>";
+            if (Plugin::haveImport()) {
+               echo "<td>";
+               if ($data['assoc_is_dynamic']) {
+                  _e('Yes');
+               }
+               echo "</td>";
+            }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
             echo "</td>";
@@ -546,12 +557,13 @@ class Computer_Item extends CommonDBRelation{
 
       $used    = array();
       $compids = array();
-      $crit    = array('FIELDS'     => array('id', 'computers_id'),
+      $crit    = array('FIELDS'     => array('id', 'computers_id', 'is_dynamic'),
                        'itemtype'   => $item->getType(),
                        'items_id'   => $ID,
                        'is_deleted' => 0);
       foreach ($DB->request('glpi_computers_items', $crit) as $data) {
          $compids[$data['id']] = $data['computers_id'];
+         $dynamic[$data['id']] = $data['is_dynamic'];
          $used['Computer'][]   = $data['computers_id'];
       }
       $number = count($compids);
@@ -599,6 +611,9 @@ class Computer_Item extends CommonDBRelation{
          }
 
          echo "<th>".__('Name')."</th>";
+         if (Plugin::haveImport()) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
          echo "<th>".__('Entity')."</th>";
          echo "<th>".__('Serial number')."</th>";
          echo "<th>".__('Inventory number')."</th>";
@@ -616,6 +631,13 @@ class Computer_Item extends CommonDBRelation{
             echo "<td ".
                   ($comp->getField('is_deleted')?"class='tab_bg_2_2'":"").
                  ">".$comp->getLink()."</td>";
+            if (Plugin::haveImport()) {
+               echo "<td>";
+               if ($dynamic[$key]) {
+                  _e('Yes');
+               }
+               echo "</td>";
+            }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $comp->getField('entities_id'));
             echo "</td>";
