@@ -147,7 +147,20 @@ class ComputerDisk extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Computer')."</td>";
-      echo "<td colspan='3'>".$comp->getLink()."</td></tr>";
+      echo "<td>".$comp->getLink()."</td>";
+      if (Plugin::haveImport()) {
+         echo "<td>".__('Automatic inventory')."</td>";
+         echo "<td>";
+         if ($ID && $this->fields['is_dynamic']) {
+            Plugin::doHook("autoinventory_information", $this);
+         } else {
+            _e('No');
+         }
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'></td>";
+      }
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
@@ -217,10 +230,13 @@ class ComputerDisk extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th></tr>";
+         echo "<tr><th colspan='8'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
          if ($DB->numrows($result)) {
             echo "<tr><th>".__('Name')."</th>";
+            if (Plugin::haveImport()) {
+               echo "<th>".__('Automatic inventory')."</th>";
+            }
             echo "<th>".__('Partition')."</th>";
             echo "<th>".__('Mount point')."</th>";
             echo "<th>".__('File system')."</th>";
@@ -229,21 +245,23 @@ class ComputerDisk extends CommonDBChild {
             echo "<th>".__('Free percentage')."</th>";
             echo "</tr>";
 
-         Session::initNavigateListItems(__CLASS__,
+            Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 Computer::getTypeName(1), $comp->getName()));
 
+            $disk = new self();
             while ($data = $DB->fetch_assoc($result)) {
+               $disk->getFromDB($data['id']);
                echo "<tr class='tab_bg_2'>";
-               $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
-                                                      $data['name'], $data['id'])
-                                            : $data['name']);
-               if ($canedit) {
-                  echo "<td><a href='computerdisk.form.php?id=".$data['id']."'>".$name."</a></td>";
-               } else {
-                  echo "<td>".$name."</td>";
+               echo "<td>".$disk->getLink()."</td>";
+               if (Plugin::haveImport()) {
+                  echo "<td>";
+                  if ($disk->isDynamic()) {
+                     _e('Yes');
+                  }
+                  echo "</td>";
                }
                echo "<td>".$data['device']."</td>";
                echo "<td>".$data['mountpoint']."</td>";

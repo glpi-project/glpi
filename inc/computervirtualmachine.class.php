@@ -128,10 +128,14 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Computer')."</td>";
       echo "<td>".$comp->getLink()."</td>";
-      if ($ID && $this->fields['is_dynamic']) {
+      if (Plugin::haveImport()) {
          echo "<td>".__('Automatic inventory')."</td>";
          echo "<td>";
-         Plugin::doHook("autoinventory_information", $this);
+         if ($ID && $this->fields['is_dynamic']) {
+            Plugin::doHook("autoinventory_information", $this);
+         } else {
+            _e('No');
+         }
          echo "</td>";
       } else {
          echo "<td colspan='2'></td>";
