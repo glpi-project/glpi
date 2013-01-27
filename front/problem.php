@@ -31,9 +31,7 @@
 * @brief
 */
 
-
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 Session::checkSeveralRightsOr(array('show_all_problem' => '1',
                                     'show_my_problem'  => '1'));

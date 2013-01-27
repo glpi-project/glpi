@@ -37,8 +37,7 @@
 
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"])) {
    Event::log("-1", "system", 2, "security",

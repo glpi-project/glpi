@@ -31,8 +31,7 @@
 * @brief
 */
 
-define('GLPI_ROOT', realpath('..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../inc/includes.php');
 
 if (!TableExists('glpi_networkportmigrations')) {
    Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
