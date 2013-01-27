@@ -408,9 +408,9 @@ class Bookmark extends CommonDBTM {
     * @return nothing
    **/
    function load($ID, $opener=true) {
-
+      global $CFG_GLPI;
       if ($params= $this->getParameters($ID)) {
-         $url  = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
+         $url  = $CFG_GLPI['root_doc']."/".rawurldecode($this->fields["path"]);
          $url .= "?".Toolbox::append_params($params);
 
          if ($opener) {
