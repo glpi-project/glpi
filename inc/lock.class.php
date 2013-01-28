@@ -309,7 +309,8 @@ class Lock {
          if ($value == 1) {
             $condition[$infos['field']] = $id;
             foreach ($DB->request($infos['table'], $infos['condition'], array('id')) as $data) {
-               if ($item->update(array('id' => $data['id'], 'is_deleted' => 0))) {
+               // Restore without history
+               if ($item->restore(array('id' => $data['id']))) {
                   $ok++;
                } else {
                   $ko++;

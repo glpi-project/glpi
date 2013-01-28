@@ -52,6 +52,8 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
    static public $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
    static public $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
+   static public $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
+   static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
 
    static function getSpecificities() {
