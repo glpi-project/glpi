@@ -2992,11 +2992,12 @@ class Html {
     * @since version 0.84
     *
     * @param $container_id string html of the container of checkboxes link to this check all checkbox
+    * @param $rand string rand value to use (default is auto generated)
     *
     * @return nothing / display item
    **/
-   static function checkAllAsCheckbox($container_id) {
-      echo Html::getCheckAllAsCheckbox($container_id);
+   static function checkAllAsCheckbox($container_id, $rand='') {
+      echo Html::getCheckAllAsCheckbox($container_id, $rand);
    }
 
 
@@ -3006,12 +3007,15 @@ class Html {
     * @since version 0.84
     *
     * @param $container_id string html of the container of checkboxes link to this check all checkbox
+    * @param $rand string rand value to use (default is auto generated)
     *
     * @return Get checkbox string
    **/
-   static function getCheckAllAsCheckbox($container_id) {
+   static function getCheckAllAsCheckbox($container_id, $rand='') {
 
-      $rand = mt_rand();
+      if (empty($rand)) {
+         $rand = mt_rand();
+      }
       $out  = "<input title='".__s('Check all as')."' type='checkbox' name='_checkall_$rand' ".
                 "id='checkall_$rand' ".
                 "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))

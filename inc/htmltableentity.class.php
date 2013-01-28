@@ -161,10 +161,15 @@ abstract class HTMLTableEntity {
    function displayContent() {
 
       if (is_string($this->content)) {
-         echo $this->content;
+         // Manage __RAND__ to be computed on display 
+         $content = $this->content;
+         $content = str_replace('__RAND__',mt_rand(),$content);
+         echo $content;
       } else if (is_array($this->content)) {
          foreach ($this->content as $content) {
             if (is_string($content)) {
+               // Manage __RAND__ to be computed on display
+               $content = str_replace('__RAND__',mt_rand(),$content);
                echo $content;
             } else if (isset($content['function'])) {
                if (isset($content['parameters'])) {

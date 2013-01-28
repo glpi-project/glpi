@@ -544,7 +544,7 @@ class NetworkPort extends CommonDBChild {
       if (($withtemplate != 2)
           && $canedit) {
          $c_checkbox = $table->addHeader('checkbox',
-                                         Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand));
+                                         Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand, '__RAND__'));
       } else {
          $c_checkbox = NULL;
       }
