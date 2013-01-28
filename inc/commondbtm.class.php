@@ -1256,9 +1256,14 @@ class CommonDBTM extends CommonGLPI {
                if ($this->dohistory && $history) {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
+                  $logaction = Log::HISTORY_DELETE_ITEM;
+                  if ($this->useDeletedToLockIfDynamic()
+                     && $this->isDynamic()) {
+                     $logaction = Log::HISTORY_LOCK_ITEM;
+                  }
 
                   Log::history($this->fields["id"], $this->getType(), $changes, 0,
-                               Log::HISTORY_DELETE_ITEM);
+                               $logaction);
                }
                $this->post_deleteItem();
 
@@ -1399,8 +1404,13 @@ class CommonDBTM extends CommonGLPI {
          if ($this->dohistory && $history) {
             $changes[0] = 0;
             $changes[1] = $changes[2] = "";
+            $logaction = Log::HISTORY_RESTORE_ITEM;
+            if ($this->useDeletedToLockIfDynamic()
+                && $this->isDynamic()) {
+               $logaction = Log::HISTORY_UNLOCK_ITEM;
+            }
             Log::history($this->input["id"], $this->getType(), $changes, 0,
-                         Log::HISTORY_RESTORE_ITEM);
+                         $logaction);
          }
 
          $this->post_restoreItem();
