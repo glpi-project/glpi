@@ -116,14 +116,13 @@ abstract class CommonDBConnexity extends CommonDBTM {
       global $DB;
 
       $query = static::getSQLRequestToSearchForItem($itemtype, $items_id);
-
       if (!empty($query)) {
-         $input = array('_no_history' => true,
-                        '_no_notif'   => true);
+         $input = array('_no_history'     => true,
+                        '_no_notif'       => true);
 
          foreach ($DB->request($query) as $data) {
             $input[$this->getIndexName()] = $data[$this->getIndexName()];
-            $this->delete($input);
+            $this->delete($input, 1);
          }
       }
    }
@@ -216,6 +215,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             // then we cannot update the item
             unset($new_item->fields);
             if ((!$new_item->can(-1, 'w', $input)) || (!$this->can($this->getID(), 'd'))) {
+            
                Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
                                                 INFO, true);
                return false;
