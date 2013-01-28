@@ -360,25 +360,12 @@ class Computer extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query  = "DELETE
-                 FROM `glpi_computers_softwareversions`
-                 WHERE `computers_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $csv = new Computer_SoftwareVersion();
+      $csv->cleanDBonItemDelete('Computer', $this->fields['id']);
 
-      $query = "SELECT `id`
-                FROM `glpi_computers_items`
-                WHERE `computers_id` = '".$this->fields['id']."'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $conn = new Computer_Item();
-            while ($data = $DB->fetch_assoc($result)) {
-               $data['_no_auto_action'] = true;
-               $conn->delete($data);
-            }
-         }
-      }
-
+      $ci = new Computer_Item();
+      $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
+      
       Item_Devices::cleanItemDeviceDBOnItemDelete('Computer', $this->fields['id']);
 
       $disk = new ComputerDisk();
