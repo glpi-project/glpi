@@ -458,7 +458,6 @@ class CommonDBTM extends CommonGLPI {
           || !$this->maybeDeleted()
           || ($this->useDeletedToLockIfDynamic()
                && !$this->isDynamic())) {
-
          $this->cleanDBonPurge();
          $this->cleanHistory();
          $this->cleanRelationData();
@@ -1206,6 +1205,8 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->getFromDB($input[static::getIndexName()])) {
          return false;
       }
+
+      // Force purge for templates / may not to be deleted / not dynamic lockable items
       if ($this->isTemplate()
          || !$this->maybeDeleted()
          // Do not take into account deleted field if maybe dynamic but not dynamic
@@ -1213,6 +1214,8 @@ class CommonDBTM extends CommonGLPI {
                && !$this->isDynamic())) {
          $force = 1;
       }
+
+      
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -3035,10 +3038,18 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "purge" :
+         
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   if ($this->can($key,'d')) {
-                     if ($this->delete(array("id" => $key), 1)) {
+                     $force = 1;
+                     // Only mark deletion for
+                     if ($this->maybeDeleted()
+                         && $this->useDeletedToLockIfDynamic()
+                         && $this->isDynamic()) {
+                        $force = 0;
+                     }
+                     if ($this->delete(array("id" => $key), $force)) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;

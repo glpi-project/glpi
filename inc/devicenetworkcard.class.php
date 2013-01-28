@@ -42,7 +42,15 @@ class DeviceNetworkCard extends CommonDevice {
       return _n('Network card', 'Network cards', $nb);
    }
 
-
+   /**
+    * Criteria used for import function
+    *
+    * @since version 0.84
+   **/
+   function getImportCriteria() {
+      return array('designation', 'manufacturers_id', 'mac');
+   }
+   
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),

@@ -725,7 +725,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'specific_actions' => array('delete' => _x('button',
+                              'specific_actions' => array('purge' => _x('button',
                                                                          'Delete permanently')));
 
             Html::showMassiveActions(__CLASS__, $paramsma);
