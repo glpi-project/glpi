@@ -1103,7 +1103,8 @@ class CommonDBTM extends CommonGLPI {
 
             foreach ($DB->request($query) as $data) {
                $input['id'] = $data['id'];
-               $item->update($input);
+               // No history for such update
+               $item->update($input, 0);
             }
          }
       }
