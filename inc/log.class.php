@@ -367,6 +367,14 @@ class Log extends CommonDBTM {
                   $tmp['change'] = __('Delete the item');
                   break;
 
+               case self::HISTORY_LOCK_ITEM :
+                  $tmp['change'] = __('Lock the item');
+                  break;
+
+               case self::HISTORY_UNLOCK_ITEM :
+                  $tmp['change'] = __('Unlock the item');
+                  break;
+
                case self::HISTORY_RESTORE_ITEM :
                   $tmp['change'] = __('Restore the item');
                   break;
