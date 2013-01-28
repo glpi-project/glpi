@@ -45,6 +45,8 @@ class Log extends CommonDBTM {
    const HISTORY_UNINSTALL_SOFTWARE = 5;
    const HISTORY_DISCONNECT_DEVICE  = 6;
    const HISTORY_CONNECT_DEVICE     = 7;
+   const HISTORY_LOCK_DEVICE        = 8;
+   const HISTORY_UNLOCK_DEVICE      = 9;
 
    const HISTORY_LOG_SIMPLE_MESSAGE = 12;
    const HISTORY_DELETE_ITEM        = 13;
@@ -56,6 +58,12 @@ class Log extends CommonDBTM {
    const HISTORY_DELETE_SUBITEM     = 19;
    const HISTORY_CREATE_ITEM        = 20;
    const HISTORY_UPDATE_RELATION    = 21;
+   const HISTORY_LOCK_RELATION      = 22;
+   const HISTORY_LOCK_SUBITEM       = 23;
+   const HISTORY_UNLOCK_RELATION    = 24;
+   const HISTORY_UNLOCK_SUBITEM     = 25;
+//    const HISTORY_LOCK_ITEM          = 26;
+//    const HISTORY_UNLOCK_ITEM        = 27;
 
    // Plugin must use value starting from
    const HISTORY_PLUGIN             = 1000;
@@ -402,7 +410,27 @@ class Log extends CommonDBTM {
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deletion of the component'),
                                            $data["old_value"]);
                   break;
+                  
+               case self::HISTORY_LOCK_DEVICE :
+                  $tmp['field']=NOT_AVAILABLE;
+                  if ($item = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item->getTypeName(1);
+                  }
+                  //TRANS: %s is the component name
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Locking of the component'),
+                                           $data["old_value"]);
+                  break;
 
+               case self::HISTORY_UNLOCK_DEVICE :
+                  $tmp['field']=NOT_AVAILABLE;
+                  if ($item = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item->getTypeName(1);
+                  }
+                  //TRANS: %s is the component name
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlocking of the component'),
+                                           $data["new_value"]);
+                  break;
+                  
                case self::HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']  = _n('Software', 'Software', 1);
                   //TRANS: %s is the software name
@@ -460,6 +488,24 @@ class Log extends CommonDBTM {
                                            $data["old_value"]);
                   break;
 
+               case self::HISTORY_LOCK_RELATION :
+                  $tmp['field'] = NOT_AVAILABLE;
+                  if ($item = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item->getTypeName(1);
+                  }
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Locking the link with an item'),
+                                           $data["old_value"]);
+                  break;
+
+               case self::HISTORY_UNLOCK_RELATION :
+                  $tmp['field'] = NOT_AVAILABLE;
+                  if ($item = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item->getTypeName(1);
+                  }
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlocking the link with an item'),
+                                           $data["new_value"]);
+                  break;
+
                case self::HISTORY_ADD_SUBITEM :
                   $tmp['field'] = '';
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
@@ -490,7 +536,28 @@ class Log extends CommonDBTM {
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["old_value"]));
                   break;
+                  
+               case self::HISTORY_LOCK_SUBITEM :
+                  $tmp['field'] = '';
+                  if ($item = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item->getTypeName(1);
+                  }
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Locking of an item'),
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
+                                                   $data["old_value"]));
+                  break;
+                  
+               case self::HISTORY_UNLOCK_SUBITEM :
+                  $tmp['field'] = '';
+                  if ($item = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item->getTypeName(1);
+                  }
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlocking of an item'),
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
+                                                   $data["new_value"]));
+                  break;
 
+                  
                default :
                   $fct = array($data['itemtype_link'], 'getHistoryEntry');
                   if (($data['linked_action'] >= self::HISTORY_PLUGIN)

@@ -41,7 +41,7 @@ class ComputerDisk extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype = 'Computer';
    static public $items_id = 'computers_id';
-   public $dohistory       = true;
+   public $dohistory       = false;
 
 
    static function getTypeName($nb=0) {

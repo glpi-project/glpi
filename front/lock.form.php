@@ -49,7 +49,7 @@ if (isset($_POST['itemtype']) && isset($_POST["unlock"])) {
             $item = new $type();
             foreach ($_POST[$type] as $key => $val) {
                //Force unlock
-               $item->update(array('id' => $key, 'is_deleted' => 0));
+               $item->restore(array('id' => $key));
             }
          }
       }

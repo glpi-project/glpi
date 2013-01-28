@@ -1260,8 +1260,8 @@ class CommonDBTM extends CommonGLPI {
                   Log::history($this->fields["id"], $this->getType(), $changes, 0,
                                Log::HISTORY_DELETE_ITEM);
                }
-
                $this->post_deleteItem();
+
                Plugin::doHook("item_delete",$this);
             }
             return true;
