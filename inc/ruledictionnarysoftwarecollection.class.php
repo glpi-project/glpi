@@ -56,7 +56,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                              "version"             => "version",
                              "manufacturer"        => "new_manufacturer",
                              "is_helpdesk_visible" => "is_helpdesk_visible",
-                             "_ignore_import"      => "rule_import",
+                             "_ignore_import"      => "ignore_import",
                              "new_entities_id"     => "new_entities_id"));
    }
 
