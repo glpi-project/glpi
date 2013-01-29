@@ -167,6 +167,7 @@ class RuleRight extends Rule {
                      case "_affect_entity_by_dn" :
                      case "_affect_entity_by_tag" :
                      case "_affect_entity_by_domain" :
+                     case "_affect_entity_by_completename" :
                         $entity       = array();
                         foreach ($this->regex_results as $regex_result) {
                            $res = RuleAction::getRegexResultById($action->fields["value"],
@@ -184,7 +185,10 @@ class RuleRight extends Rule {
                                  case "_affect_entity_by_domain" :
                                     $entity_found = Entity::getEntityIDByDomain($res);
                                     break;
-
+                                 case "_affect_entity_by_completename" :
+                                    $res = str_replace('&gt;','>',$res);
+                                    $entity_found = Entity::getEntityIDByCompletename($res);
+                                    break;
                                  default:
                                     $entity_found = -1;
                                     break;
@@ -196,6 +200,7 @@ class RuleRight extends Rule {
                               }
                            }
                         }
+
                         if (!count($entity)) {
                            //Not entity assigned : action processing must be stopped for this rule
                            $continue = false;
@@ -313,6 +318,12 @@ class RuleRight extends Rule {
       $actions['_affect_entity_by_domain']['type']          = 'text';
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
+
+
+      $actions['_affect_entity_by_completename']['name']          = __('Entity from complete name');
+      $actions['_affect_entity_by_completename']['type']          = 'text';
+      $actions['_affect_entity_by_completename']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_completename']['duplicatewith'] = 'entities_id';
 
       $actions['profiles_id']['name']                       = _n('Profile', 'Profiles', 2);
       $actions['profiles_id']['type']                       = 'dropdown';
