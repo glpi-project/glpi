@@ -31,7 +31,7 @@
 * @brief
 */
 
-include ('/inc/includes.php');
+include ('./inc/includes.php');
 
 //@session_start();
 
