@@ -288,12 +288,12 @@ class ComputerDisk extends CommonDBChild {
             }
 
          } else {
-            echo "<tr class='tab_bg_2'><th colspan='7'>".__('No item found')."</th></tr>";
+            echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
          }
 
          if ($canedit
              && !(!empty($withtemplate) && ($withtemplate == 2))) {
-            echo "<tr class='tab_bg_2'><td colspan='7' class='center'>";
+            echo "<tr class='tab_bg_2'><td colspan='$colspan' class='center'>";
             echo "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
                    $withtemplate."'>".__('Add a volume')."</a></td></tr>";
          }
