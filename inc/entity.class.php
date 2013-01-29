@@ -2148,6 +2148,10 @@ class Entity extends CommonTreeDropdown {
 
                case MONTH_TIMESTAMP :
                   return __('Each month');
+
+               default :
+                  // Display value if not defined
+                  return $values[$field];
             }
             break;
 

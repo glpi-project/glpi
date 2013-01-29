@@ -1337,6 +1337,10 @@ class Contract extends CommonDBTM {
       if (isset($tmp[$val])) {
          return $tmp[$val];
       }
+      // If not set and is a string return value
+      if (is_string($val)) {
+         return $val;
+      }
       return NOT_AVAILABLE;
    }
 
