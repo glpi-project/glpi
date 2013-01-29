@@ -1190,13 +1190,6 @@ class Profile extends CommonDBTM {
                                 'noread'  => true));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('SLA')."</td><td>";
-      self::dropdownRight("sla", array('value' => $this->fields["sla"]));
-      echo "</td>";
-      echo "<td colspan='4'>&nbsp;";
-      echo "</td></tr>\n";
-
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Rule', 'Rules', 2)."</th>";
 
       echo "<tr class='tab_bg_4'>";
@@ -1336,7 +1329,14 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Assistance')."</td><td>";
       self::dropdownRight("entity_helpdesk", array('value' => $this->fields["entity_helpdesk"]));
       echo "</td></tr>\n";
-
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('SLA')."</td><td>";
+      self::dropdownRight("sla", array('value' => $this->fields["sla"]));
+      echo "</td>";
+      echo "<td colspan='4'>&nbsp;";
+      echo "</td></tr>\n";
+      
       if ($canedit
           && $closeform) {
          echo "<tr class='tab_bg_1'>";
