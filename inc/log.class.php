@@ -492,7 +492,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete of a link with an item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete a link with an item'),
                                            $data["old_value"]);
                   break;
 
@@ -501,7 +501,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock the link with an item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock a link with an item'),
                                            $data["old_value"]);
                   break;
 
@@ -510,7 +510,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock the link with an item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock a link with an item'),
                                            $data["new_value"]);
                   break;
 
