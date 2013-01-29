@@ -152,14 +152,14 @@ class Log extends CommonDBTM {
 
 //                   if (in_array($real_type, $oktype)) {
                      // 2nd case : use getValueToDisplay();
-                     $changes = array($key2,
-                                      addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                          $oldvalues)),
-                                     addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                         $values)));
+//                      $changes = array($key2,
+//                                       addslashes($item->getValueToDisplay($searchopt[$key2],
+//                                                                           $oldvalues)),
+//                                      addslashes($item->getValueToDisplay($searchopt[$key2],
+//                                                                          $values)));
 //                   } else {
 //                      // 3rd case : text field -> keep datas
-//                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
+                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
 //                   }
 
                } else {
