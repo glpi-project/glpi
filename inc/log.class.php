@@ -190,7 +190,7 @@ class Log extends CommonDBTM {
 
       if ($uid = Session::getLoginUserID(false)) {
          if (is_numeric($uid)) {
-            $username = getUserName($uid,$link=0);
+            $username = sprintf(__('%1$s (%2$s)'),getUserName($uid,$link=0), $uid);
          } else { // For cron management
             $username = $uid;
          }
