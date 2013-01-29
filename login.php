@@ -30,7 +30,7 @@
 /** @file
 * @brief
 */
-include ('inc/includes.php');
+include ('./inc/includes.php');
 
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
