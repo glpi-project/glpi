@@ -463,7 +463,8 @@ class TicketValidation  extends CommonDBChild {
    static function getStatus($value) {
 
       $tab = self::getAllStatusArray(true, true);
-      return (isset($tab[$value]) ? $tab[$value] : '');
+      // Return $value if not define
+      return (isset($tab[$value]) ? $tab[$value] : $value);
    }
 
 

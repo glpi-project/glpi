@@ -2560,6 +2560,10 @@ class Ticket extends CommonITILObject {
 
          case self::DEMAND_TYPE :
             return __('Request');
+
+         default :
+            // Return $value if not defined
+            return $value;
       }
    }
 
