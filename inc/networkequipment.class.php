@@ -328,14 +328,14 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td>";
-//       if ($inventory_show) {
-//          echo "<td rowspan='3'>";
-//          _e('Automatic inventory');
-//          echo "</td>";
-//          echo "<td rowspan='3'>";
-//          Plugin::doHook("autoinventory_information", $this);
-//          echo "</td>";
-//       }
+      if ($inventory_show) {
+         echo "<td rowspan='3'>";
+         _e('Automatic inventory');
+         echo "</td>";
+         echo "<td rowspan='3'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      }
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
