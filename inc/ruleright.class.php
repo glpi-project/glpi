@@ -186,7 +186,7 @@ class RuleRight extends Rule {
                                     $entity_found = Entity::getEntityIDByDomain($res);
                                     break;
                                  case "_affect_entity_by_completename" :
-                                    $res = str_replace('&gt;','>',$res);
+                                    $res = Toolbox::unclean_cross_side_scripting_deep($res);
                                     $entity_found = Entity::getEntityIDByCompletename($res);
                                     break;
                                  default:
