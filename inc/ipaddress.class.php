@@ -137,19 +137,16 @@ class IPAddress extends CommonDBChild {
 
       // If $input['name'] does not exists, then, don't check anything !
       if (isset($input['name'])) {
+         // WARNING: we must in every case, because, sometimes, fields are partially feels
 
-         if (!isset($this->fields['name'])
-             || ($this->fields['name'] != $input['name'])) {
+         // If previous value differs from current one, then check it !
+         $this->setAddressFromString($input['name']);
+         if (!$this->is_valid()) {
 
-            // If previous value differs from current one, then check it !
-             $this->setAddressFromString($input['name']);
-            if (!$this->is_valid()) {
-
-               //TRANS: %s is the invalid address
-               $msg = sprintf(__('Invalid IP address: %s'), $input['name']);
-               Session::addMessageAfterRedirect($msg, false, ERROR);
-               return false;
-            }
+            //TRANS: %s is the invalid address
+            $msg = sprintf(__('Invalid IP address: %s'), $input['name']);
+            Session::addMessageAfterRedirect($msg, false, ERROR);
+            return false;
          }
       }
 
