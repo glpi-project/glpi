@@ -118,7 +118,6 @@ class Log extends CommonDBTM {
          return false;
       }
       $result = 0;
-
       // type for which getValueToDisplay() could be used (fully tested)
       $oktype = array('Entity');
 
@@ -137,36 +136,9 @@ class Log extends CommonDBTM {
                     && ($val2['table'] == $item->getTable()))) {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
-               // 1st case : Ticket specific dropdown case (without table)
-/*               if (($real_type == 'Ticket')
-                   && in_array($key, array('global_validation', 'impact', 'items_id', 'itemtype',
-                                           'priority', 'status', 'type', 'urgency'))) {
-                  $changes = array($id_search_option,
-                                   addslashes(Ticket::getSpecificValueToDisplay($key,
-                                                                                array_merge($values,
-                                                                                            $oldvalues))),
-                                   addslashes(Ticket::getSpecificValueToDisplay($key,
-                                                                                array_merge($oldvalues,
-                                                                                            $values))));
-               } else*/ if ($val2['table'] == $item->getTable()) {
-
-//                   if (in_array($real_type, $oktype)) {
-                     // 2nd case : use getValueToDisplay();
-//                      $changes = array($key2,
-//                                       addslashes($item->getValueToDisplay($searchopt[$key2],
-//                                                                           $oldvalues)),
-//                                      addslashes($item->getValueToDisplay($searchopt[$key2],
-//                                                                          $values)));
-//                   } else {
-//                      // 3rd case : text field -> keep datas
-                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
-//                   }
-
+               if ($val2['table'] == $item->getTable()) {
+                  $changes = array($id_search_option, addslashes($oldval), $values[$key]);
                } else {
-//                      if ($val2['table'] == 'glpi_users_validation') {
-//                         $val2['table'] = 'glpi_users';
-//               }
-
                   // other cases ; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
@@ -326,8 +298,9 @@ class Log extends CommonDBTM {
    static function getHistoryData(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
       global $DB;
 
-      $itemtype = $item->getType();
-      $items_id = $item->getField('id');
+      $itemtype  = $item->getType();
+      $items_id  = $item->getField('id');
+      $itemtable = $item->getTable();
 
       $SEARCHOPTION = Search::getOptions($itemtype);
 
@@ -579,63 +552,75 @@ class Log extends CommonDBTM {
 
          } else {
             $fieldname = "";
+            $searchopt = array();
+            $tablename = '';
             // It's not an internal device
             foreach ($SEARCHOPTION as $key2 => $val2) {
                if ($key2 == $data["id_search_option"]) {
                   $tmp['field'] =  $val2["name"];
+                  $tablename    =  $val2["table"];
                   $fieldname    = $val2["field"];
-
+                  $searchopt    = $val2;
                   if (isset($val2['datatype'])) {
                      $tmp['datatype'] = $val2["datatype"];
                   }
+                  break;
+               }
+            }
+            if ($itemtable == $tablename) {
+               switch ($tmp['datatype']) {
+                  // specific case for text field
+                  case 'text' :
+                     $tmp['change'] = __('Update of the field');
+                     break;
+                  default :
+                     $data["old_value"] = $item->getValueToDisplay($searchopt, $data["old_value"]);
+                     $data["new_value"] = $item->getValueToDisplay($searchopt, $data["new_value"]);
+                     break;
                }
             }
 
-            switch ($tmp['datatype']) {
-               case "bool" :
-                  $data["old_value"] = Dropdown::getYesNo($data["old_value"]);
-                  $data["new_value"] = Dropdown::getYesNo($data["new_value"]);
-                  break;
-
-               case "datetime" :
-                  $data["old_value"] = Html::convDateTime($data["old_value"]);
-                  $data["new_value"] = Html::convDateTime($data["new_value"]);
-                  break;
-
-               case "date" :
-                  $data["old_value"] = Html::convDate($data["old_value"]);
-                  $data["new_value"] = Html::convDate($data["new_value"]);
-                  break;
-
-               case "timestamp" :
-                  $data["old_value"] = Html::timestampToString($data["old_value"]);
-                  $data["new_value"] = Html::timestampToString($data["new_value"]);
-                  break;
-
-               case "actiontime" :
-                  $data["old_value"] = CommonITILObject::getActionTime($data["old_value"]);
-                  $data["new_value"] = CommonITILObject::getActionTime($data["new_value"]);
-                  break;
-
-               case "number" :
-                  $data["old_value"] = Html::formatNumber($data["old_value"],false,0);
-                  $data["new_value"] = Html::formatNumber($data["new_value"],false,0);
-                  break;
-
-               case "decimal" :
-                  $data["old_value"] = Html::formatNumber($data["old_value"]);
-                  $data["new_value"] = Html::formatNumber($data["new_value"]);
-                  break;
-
-               case "right" :
-                  $data["old_value"] = Profile::getRightValue($data["old_value"]);
-                  $data["new_value"] = Profile::getRightValue($data["new_value"]);
-                  break;
-
-               case "text" :
-                  $tmp['change'] = __('Update of the field');
-                  break;
-            }
+//             switch ($tmp['datatype']) {
+//                case "bool" :
+//                   $data["old_value"] = Dropdown::getYesNo($data["old_value"]);
+//                   $data["new_value"] = Dropdown::getYesNo($data["new_value"]);
+//                   break;
+// 
+//                case "datetime" :
+//                   $data["old_value"] = Html::convDateTime($data["old_value"]);
+//                   $data["new_value"] = Html::convDateTime($data["new_value"]);
+//                   break;
+// 
+//                case "date" :
+//                   $data["old_value"] = Html::convDate($data["old_value"]);
+//                   $data["new_value"] = Html::convDate($data["new_value"]);
+//                   break;
+// 
+//                case "timestamp" :
+//                   $data["old_value"] = Html::timestampToString($data["old_value"]);
+//                   $data["new_value"] = Html::timestampToString($data["new_value"]);
+//                   break;
+// 
+//                case "actiontime" :
+//                   $data["old_value"] = CommonITILObject::getActionTime($data["old_value"]);
+//                   $data["new_value"] = CommonITILObject::getActionTime($data["new_value"]);
+//                   break;
+// 
+//                case "number" :
+//                   $data["old_value"] = Html::formatNumber($data["old_value"],false,0);
+//                   $data["new_value"] = Html::formatNumber($data["new_value"],false,0);
+//                   break;
+// 
+//                case "decimal" :
+//                   $data["old_value"] = Html::formatNumber($data["old_value"]);
+//                   $data["new_value"] = Html::formatNumber($data["new_value"]);
+//                   break;
+// 
+//                case "right" :
+//                   $data["old_value"] = Profile::getRightValue($data["old_value"]);
+//                   $data["new_value"] = Profile::getRightValue($data["new_value"]);
+//                   break;
+//             }
             if (empty($tmp['change'])) {
                $tmp['change'] = sprintf(__('Change %1$s by %2$s'),
                                         $data["old_value"], $data["new_value"]);

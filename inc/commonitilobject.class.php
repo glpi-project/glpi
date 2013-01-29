@@ -1590,6 +1590,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 1 :
             return _x('priority', 'Very low');
+
+         default :
+            // Return $value if not define
+            return $value;
+            
       }
    }
 
@@ -1700,6 +1705,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 1 :
             return _x('urgency', 'Very low');
+
+         default :
+            // Return $value if not define
+            return $value;
+            
       }
    }
 
@@ -1811,6 +1821,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 1 :
             return _x('impact', 'Very low');
+            
+         default :
+            // Return $value if not define
+            return $value;
       }
    }
 
@@ -2007,7 +2021,8 @@ abstract class CommonITILObject extends CommonDBTM {
    static function getStatus($value) {
 
       $tab  = static::getAllStatusArray(true);
-      return (isset($tab[$value]) ? $tab[$value] : '');
+      // Return $value if not defined
+      return (isset($tab[$value]) ? $tab[$value] : $value);
    }
 
 
