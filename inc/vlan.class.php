@@ -86,11 +86,13 @@ class Vlan extends CommonDropdown {
    function cleanDBonPurge() {
       global $DB;
 
-      // Temporary solution to clean wrong updated items
-      $query = "DELETE
-                FROM `glpi_networkports_vlans`
-                WHERE `vlans_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $link = new NetworkPort_Vlan();
+      $link->cleanDBonItemDelete($this->getType(), $this->getID());
+
+      $link = new IPNetwork_Vlan();
+      $link->cleanDBonItemDelete($this->getType(), $this->getID());
+
+      return true;
    }
 
 

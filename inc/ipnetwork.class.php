@@ -400,6 +400,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function cleanDBonPurge() {
 
+      $link = new IPNetwork_Vlan();
+      $link->cleanDBonItemDelete($this->getType(), $this->getID());
+
       $link = new IPAddress_IPNetwork();
       $link->cleanDBonItemDelete($this->getType(), $this->getID());
 
