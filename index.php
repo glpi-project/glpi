@@ -31,6 +31,11 @@
 * @brief
 */
 
+// Check PHP version not to have trouble
+if (version_compare(PHP_VERSION, "5.3.0") < 0) {
+   die("PHP >= 5.3.0 required");
+}
+
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
 define('GLPI_ROOT', dirname(__FILE__));
