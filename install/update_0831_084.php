@@ -1135,7 +1135,8 @@ function update0831to084() {
 
    // Clean uneeded logs
    $cleancondition = array();
-   $cleancondition['entity']       = "`itemtype` = 'Entity' AND `itemtype_link` IN ('Reminder', 'Knowbase')";
+   $cleancondition['reminder_kb'] = "`itemtype` IN ('Entity', 'User', 'Profile', 'Group')
+                                       AND `itemtype_link` IN ('Reminder', 'Knowbase')";
 
    foreach ($cleancondition as $name => $condition) {
       $query = "DELETE FROM `glpilogs` WHERE $condition";
