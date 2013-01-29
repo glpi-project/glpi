@@ -36,7 +36,8 @@ include ('../inc/includes.php');
 if (isset($_POST['reinit_network'])) {
    
    if (Session::haveRight('internet', 'w')
-    && Session::haveAccessToEntity(0)) {
+   // Check access to all entities
+    && Session::isViewAllEntities()) {
       IPNetwork::recreateTree();
       Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
       Html::back();
