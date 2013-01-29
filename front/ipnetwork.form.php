@@ -33,14 +33,17 @@
 
 include ('../inc/includes.php');
 
-if (isset($_POST['reinit_network'])
-    && Session::haveRight('internet', 'w')
+if (isset($_POST['reinit_network'])) {
+   
+   if (Session::haveRight('internet', 'w')
     && Session::haveAccessToEntity(0)) {
-
-   IPNetwork::recreateTree();
-   Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
-
-   Html::back();
+      IPNetwork::recreateTree();
+      Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
+      Html::back();
+   } else {
+      Html::displayRightError();
+   }
+   
 }
 
 $dropdown = new IPNetwork();
