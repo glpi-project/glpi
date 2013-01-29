@@ -2052,6 +2052,22 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    }
 
    //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Data migration - %s'), "glpi_ipnetworks_vlans"), true);
+
+   // Adding IPNetwork table
+   if (!TableExists('glpi_ipnetworks_vlans')) {
+      $query = "CREATE TABLE `glpi_ipnetworks_vlans` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
+                  `vlans_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `link` (`ipnetworks_id`, `vlans_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+      $DB->queryOrDie($query, "0.84 create glpi_ipnetworks_vlans");
+   }
+
+   //TRANS: %s is the name of the table
    logMessage(sprintf(__('Data migration - %s'), "glpi_networknames"), true);
 
    // Adding NetworkName table

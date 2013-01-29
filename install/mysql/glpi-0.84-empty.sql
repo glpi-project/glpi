@@ -2081,6 +2081,18 @@ CREATE TABLE `glpi_ipnetworks` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_ipnetworks_vlans
+
+DROP TABLE IF EXISTS `glpi_ipnetworks_vlans`;
+CREATE TABLE `glpi_ipnetworks_vlans` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
+  `vlans_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link` (`ipnetworks_id`, `vlans_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_items_devicecases
 
 DROP TABLE IF EXISTS `glpi_items_devicecases`;
