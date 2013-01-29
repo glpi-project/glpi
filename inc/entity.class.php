@@ -104,6 +104,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+
    /**
     * @since version 0.84
    **/
@@ -1555,14 +1556,13 @@ class Entity extends CommonTreeDropdown {
    private static function getEntityIDByField($field,$value) {
       global $DB;
 
-      $sql = "SELECT `entities_id`
+      $sql = "SELECT `id`
               FROM `glpi_entities`
               WHERE `".$field."` = '".$value."'";
-
       $result = $DB->query($sql);
 
       if ($DB->numrows($result) == 1) {
-         return $DB->result($result, 0, "entities_id");
+         return $DB->result($result, 0, "id");
       }
       return -1;
    }
@@ -1577,7 +1577,15 @@ class Entity extends CommonTreeDropdown {
       return self::getEntityIDByField("ldap_dn", $value);
    }
 
-
+   /**
+    * @since version 0.84 (before in entitydata.class)
+    *
+    * @param $value
+   **/
+   static function getEntityIDByCompletename($value) {
+      return self::getEntityIDByField("completename", $value);
+   }
+   
    /**
     * @since version 0.84 (before in entitydata.class)
     *
