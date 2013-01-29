@@ -245,7 +245,7 @@ class RuleRightCollection extends RuleCollection {
                         if (!is_array($rule_input[$field])) {
                            $rule_parameters[$field] = $rule_input[$field];
                         } else {
-                           for ($i=0 ; $i<count($rule_input[$field])-1 ; $i++) {
+                           for ($i=0 ; $i<count($rule_input[$field]); $i++) {
                               $rule_parameters[$field][] = $rule_input[$field][$i];
                            }
                         }
