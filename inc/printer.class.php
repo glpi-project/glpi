@@ -442,14 +442,14 @@ class Printer  extends CommonDBTM {
       Dropdown::showYesNo("have_wifi", $this->fields["have_wifi"]);
       echo "</td></tr></table>\n";
       echo "</td>";
-//       if ($inventory_show) {
-//          echo "<td rowspan='2'>";
-//          _e('Automatic inventory');
-//          echo "</td>";
-//          echo "<td rowspan='2'>";
-//          Plugin::doHook("autoinventory_information", $this);
-//          echo "</td>";
-//       }
+      if ($inventory_show) {
+         echo "<td rowspan='2'>";
+         _e('Automatic inventory');
+         echo "</td>";
+         echo "<td rowspan='2'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      }
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";

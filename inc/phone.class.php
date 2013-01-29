@@ -314,14 +314,14 @@ class Phone extends CommonDBTM {
       Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
       echo "</td></tr></table>\n";
       echo "</td>";
-//       if ($inventory_show) {
-//          echo "<td rowspan='2'>";
-//          _e('Automatic inventory');
-//          echo "</td>";
-//          echo "<td rowspan='2'>";
-//          Plugin::doHook("autoinventory_information", $this);
-//          echo "</td>";
-//       }
+      if ($inventory_show) {
+         echo "<td rowspan='2'>";
+         _e('Automatic inventory');
+         echo "</td>";
+         echo "<td rowspan='2'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      }
 
       echo "</tr>\n";
 

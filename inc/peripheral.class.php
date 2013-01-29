@@ -306,14 +306,14 @@ class Peripheral extends CommonDBTM {
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td>";
-//       if ($inventory_show) {
-//          echo "<td rowspan='1'>";
-//          _e('Automatic inventory');
-//          echo "</td>";
-//          echo "<td rowspan='1'>";
-//          Plugin::doHook("autoinventory_information", $this);
-//          echo "</td>";
-//       }
+      if ($inventory_show) {
+         echo "<td rowspan='1'>";
+         _e('Automatic inventory');
+         echo "</td>";
+         echo "<td rowspan='1'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      }
       echo "</tr>\n";
 
       $this->showFormButtons($options);
