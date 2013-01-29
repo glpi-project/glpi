@@ -579,48 +579,7 @@ class Log extends CommonDBTM {
                      break;
                }
             }
-
-//             switch ($tmp['datatype']) {
-//                case "bool" :
-//                   $data["old_value"] = Dropdown::getYesNo($data["old_value"]);
-//                   $data["new_value"] = Dropdown::getYesNo($data["new_value"]);
-//                   break;
-// 
-//                case "datetime" :
-//                   $data["old_value"] = Html::convDateTime($data["old_value"]);
-//                   $data["new_value"] = Html::convDateTime($data["new_value"]);
-//                   break;
-// 
-//                case "date" :
-//                   $data["old_value"] = Html::convDate($data["old_value"]);
-//                   $data["new_value"] = Html::convDate($data["new_value"]);
-//                   break;
-// 
-//                case "timestamp" :
-//                   $data["old_value"] = Html::timestampToString($data["old_value"]);
-//                   $data["new_value"] = Html::timestampToString($data["new_value"]);
-//                   break;
-// 
-//                case "actiontime" :
-//                   $data["old_value"] = CommonITILObject::getActionTime($data["old_value"]);
-//                   $data["new_value"] = CommonITILObject::getActionTime($data["new_value"]);
-//                   break;
-// 
-//                case "number" :
-//                   $data["old_value"] = Html::formatNumber($data["old_value"],false,0);
-//                   $data["new_value"] = Html::formatNumber($data["new_value"],false,0);
-//                   break;
-// 
-//                case "decimal" :
-//                   $data["old_value"] = Html::formatNumber($data["old_value"]);
-//                   $data["new_value"] = Html::formatNumber($data["new_value"]);
-//                   break;
-// 
-//                case "right" :
-//                   $data["old_value"] = Profile::getRightValue($data["old_value"]);
-//                   $data["new_value"] = Profile::getRightValue($data["new_value"]);
-//                   break;
-//             }
+            
             if (empty($tmp['change'])) {
                $tmp['change'] = sprintf(__('Change %1$s by %2$s'),
                                         $data["old_value"], $data["new_value"]);

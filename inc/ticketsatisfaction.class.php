@@ -218,6 +218,10 @@ class TicketSatisfaction extends CommonDBTM {
 
          case 2 :
             return __('External survey');
+
+         default :
+            // Get value if not defined
+            return $value;
       }
    }
 
