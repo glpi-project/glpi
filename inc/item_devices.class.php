@@ -161,7 +161,7 @@ class Item_Devices extends CommonDBRelation {
       $table->setTitle(_n('Component', 'Components', 2));
 
       if ($canedit) {
-         $delete_all_column = $table->addHeader('delete all', '&nbsp;');
+         $delete_all_column = $table->addHeader('delete all', Html::getCheckAllAsCheckbox("form_device_action$rand"));
          $delete_all_column->setHTMLClass('center');
       }
 
@@ -267,11 +267,7 @@ class Item_Devices extends CommonDBRelation {
             $current_row->setHTMLID($device_group);
 
             if ($options['canedit']) {
-               $cell_value = "<input type='checkbox' name='removeall_$device_group'
-                               id='removeall_$device_group'
-                               onclick= \"if ( checkAsCheckboxes('removeall_$device_group',
-                                                                 '$device_group'))
-                                                         {return true;}\">";
+               $cell_value = Html::getCheckAllAsCheckbox($device_group);
                $current_row->addCell($delete_all_column, $cell_value);
             }
 
