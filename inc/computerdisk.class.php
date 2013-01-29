@@ -230,7 +230,11 @@ class ComputerDisk extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='8'>".self::getTypeName($DB->numrows($result))."</th></tr>";
+         $colspan=7;
+         if (Plugin::haveImport()) {
+            $colspan++;
+         }
+         echo "<tr><th colspan='$colspan'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
          if ($DB->numrows($result)) {
             echo "<tr><th>".__('Name')."</th>";
