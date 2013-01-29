@@ -1128,9 +1128,19 @@ function update0831to084() {
          //Drop old field
       }
    }
+   
    $migration->dropField('glpi_configs', 'existing_auth_server_field');
    //Remove field to specify an ldap server for SSO users : don't need it anymore
    $migration->dropField('glpi_configs', 'authldaps_id_extra');
+
+   // Clean uneeded logs
+   $cleancondition = array();
+   $cleancondition['entity']       = "`itemtype` = 'Entity' AND `itemtype_link` IN ('Reminder', 'Knowbase')";
+
+   foreach ($cleancondition as $name => $condition) {
+      $query = "DELETE FROM `glpilogs` WHERE $condition";
+      $DB->queryOrDie($query, "0.84 clean logs for $name");
+   }
 
    //Remove OCS tables from GLPI's core
    $migration->renameTable('glpi_ocsadmininfoslinks', 'ocs_glpi_ocsadmininfoslinks');
