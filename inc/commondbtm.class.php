@@ -3300,6 +3300,7 @@ class CommonDBTM extends CommonGLPI {
          case 'unlock_Monitor' :
          case 'unlock_NetworkPort' :
          case 'unlock_ComputerDisk' :
+         case 'unlock_ComputerVirtualMachine' :
          case 'unlock_Peripheral' :
          case 'unlock_SoftwareVersion' :
             $itemtype = Lock::getItemTypeForMassiveAction($input["action"]);
