@@ -273,7 +273,6 @@ $RELATION = array("glpi_authldaps"
                   "glpi_ipnetworks"
                         => array('glpi_ipaddresses_ipnetworks'   => 'ipnetworks_id',
                                  'glpi_ipnetworks'               => 'ipnetworks_id',
-                                 'glpi_ipnetworks_networknames'  => 'ipnetworks_id',
                                  'glpi_ipnetworks_vlans'         => 'ipnetworks_id'),
 
                   "glpi_knowbaseitemcategories"
