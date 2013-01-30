@@ -338,7 +338,7 @@ class Lock {
                       "unlock_Peripheral"   => __('Unlock peripherals'),
                       "unlock_Printer"      => __('Unlock printers'),
                       "unlock_Software"     => __('Unlock software'),
-                      "unlock_NetworkPort"  => __('Unlock IP'),
+                      "unlock_NetworkPort"  => __('Unlock network ports'),
                       "unlock_ComputerDisk" => __('Unlock volumes'));
       }
       return array();
