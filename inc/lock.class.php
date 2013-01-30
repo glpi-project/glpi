@@ -295,15 +295,16 @@ class Lock {
     * Unlock locked items
     *
     * @param $itemtype          itemtype of ids to locks
+    * @param $baseitemtype      itemtype of the based item
     * @param $items       array of items to unlock
    **/
-   static function unlockItems($itemtype, $items) {
+   static function unlockItems($itemtype, $baseitemtype, $items) {
       global $DB;
 
       $item  = new $itemtype();
       $ok    = 0;
       $ko    = 0;
-      $infos = self::getLocksQueryInfosByItemType($itemtype);
+      $infos = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
 
       foreach ($items as $id => $value) {
          if ($value == 1) {
@@ -368,10 +369,11 @@ class Lock {
     * Get infos to build an SQL query to get locks fields in a table
     *
     * @param $itemtype itemtype of the item to look for locked fields
+    * @param $baseitemtype itemtype of the based item
     *
     * @return an array which contains necessary informations to build the SQL query
    **/
-   static function getLocksQueryInfosByItemType($itemtype) {
+   static function getLocksQueryInfosByItemType($itemtype, $baseitemtype) {
 
       $condition = array();
       $table     = false;
@@ -390,7 +392,7 @@ class Lock {
             break;
 
          case 'NetworkPort' :
-            $condition = array('itemtype'   => $itemtype,
+            $condition = array('itemtype'   => $baseitemtype,
                                'is_dynamic' => 1,
                                'is_deleted' => 1);
             $table     = 'glpi_networkports';
@@ -407,7 +409,7 @@ class Lock {
          case 'SoftwareVersion' :
             $condition = array('is_dynamic' => 1,
                                'is_deleted' => 1);
-            $table     = 'glpi_compueters_softwareversions';
+            $table     = 'glpi_computers_softwareversions';
             $field     = 'computers_id';
             break;
 
@@ -421,16 +423,17 @@ class Lock {
    /**
     * @param $itemtype
     * @param $id
+    * Unused
    **/
-   static function getLocksFieldsForItemType($itemtype, $id) {
-
-      $infos   = self::getLocksQueryInfosByItemType($itemtype);
-      $results = array();
-      foreach ($DB->request($infos['table'], $infos['condition'],
-                            array('id', $infos['field'])) as $data) {
-        $results[$data['id']] = $data;
-      }
-      return $results;
-   }
+//   static function getLocksFieldsForItemType($itemtype, $id) {
+//
+//      $infos   = self::getLocksQueryInfosByItemType($itemtype);
+//      $results = array();
+//      foreach ($DB->request($infos['table'], $infos['condition'],
+//                            array('id', $infos['field'])) as $data) {
+//        $results[$data['id']] = $data;
+//      }
+//      return $results;
+//   }
 }
 ?>
