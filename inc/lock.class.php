@@ -335,13 +335,13 @@ class Lock {
    static function getUnlockMassiveActions($itemtype) {
 
       if (Session::haveRight('computer', 'w') && ($itemtype == 'Computer')) {
-         return array("unlock_Monitor"      => __('Unlock monitors'),
-                      "unlock_Peripheral"   => __('Unlock peripherals'),
-                      "unlock_Printer"      => __('Unlock printers'),
-                      "unlock_Software"     => __('Unlock software'),
-                      "unlock_NetworkPort"  => __('Unlock network ports'),
-                      "unlock_ComputerDisk" => __('Unlock volumes'),
-                      "unlock_Device"      => __('Unlock devices'),
+         return array("unlock_Monitor"         => __('Unlock monitors'),
+                      "unlock_Peripheral"      => __('Unlock peripherals'),
+                      "unlock_Printer"         => __('Unlock printers'),
+                      "unlock_SoftwareVersion" => __('Unlock software'),
+                      "unlock_NetworkPort"     => __('Unlock network ports'),
+                      "unlock_ComputerDisk"    => __('Unlock volumes'),
+                      "unlock_Device"          => __('Unlock devices'),
                       );
       }
       return array();
