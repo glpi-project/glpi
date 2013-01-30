@@ -301,20 +301,22 @@ class Lock {
    static function unlockItems($itemtype, $baseitemtype, $items) {
       global $DB;
 
-      $item  = new $itemtype();
       $ok    = 0;
       $ko    = 0;
       $infos = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
+      
+      if ($item = getItemForItemtype(getItemTypeForTable($infos['table']))) {
 
-      foreach ($items as $id => $value) {
-         if ($value == 1) {
-            $condition[$infos['field']] = $id;
-            foreach ($DB->request($infos['table'], $infos['condition'], array('id')) as $data) {
-               // Restore without history
-               if ($item->restore(array('id' => $data['id']))) {
-                  $ok++;
-               } else {
-                  $ko++;
+         foreach ($items as $id => $value) {
+            if ($value == 1) {
+               $condition[$infos['field']] = $id;
+               foreach ($DB->request($infos['table'], $infos['condition'], array('id')) as $data) {
+                  // Restore without history
+                  if ($item->restore(array('id' => $data['id']))) {
+                     $ok++;
+                  } else {
+                     $ko++;
+                  }
                }
             }
          }
