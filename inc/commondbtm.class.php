@@ -3307,6 +3307,11 @@ class CommonDBTM extends CommonGLPI {
                $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);
             }
             break;
+         case 'unlock_Device' :
+            foreach (Item_Devices::getDeviceTypes() as $itemtype) {
+               $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);
+            }
+            break;
 
          default :
             // Plugin specific actions
