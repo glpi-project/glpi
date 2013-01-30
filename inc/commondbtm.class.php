@@ -4118,10 +4118,7 @@ class CommonDBTM extends CommonGLPI {
                   return $text;
 
                case "bool" :
-                  if (is_numeric($value) || is_bool($value)) {
-                     return Dropdown::getYesNo($value);
-                  }
-                  return $value;
+                  return Dropdown::getYesNo($value);
 
                case "date" :
                case "date_delay" :
