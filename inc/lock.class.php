@@ -335,13 +335,14 @@ class Lock {
    static function getUnlockMassiveActions($itemtype) {
 
       if (Session::haveRight('computer', 'w') && ($itemtype == 'Computer')) {
-         return array("unlock_Monitor"         => __('Unlock monitors'),
-                      "unlock_Peripheral"       => __('Unlock peripherals'),
-                      "unlock_Printer"          => __('Unlock printers'),
-                      "unlock_SoftwareVersion"  => __('Unlock software'),
-                      "unlock_NetworkPort"      => __('Unlock network ports'),
-                      "unlock_ComputerDisk"     => __('Unlock volumes'),
-                      "unlock_Device"           => __('Unlock components'));
+         return array("unlock_Monitor"      => __('Unlock monitors'),
+                      "unlock_Peripheral"   => __('Unlock peripherals'),
+                      "unlock_Printer"      => __('Unlock printers'),
+                      "unlock_Software"     => __('Unlock software'),
+                      "unlock_NetworkPort"  => __('Unlock network ports'),
+                      "unlock_ComputerDisk" => __('Unlock volumes'),
+                      "unlock_Device"      => __('Unlock devices'),
+                      );
       }
       return array();
    }
@@ -413,19 +414,18 @@ class Lock {
             $table     = 'glpi_computers_softwareversions';
             $field     = 'computers_id';
             break;
+         default :
+            // Devices
+            if (preg_match('/^Item\_Device/',$itemtype)) {
+               $condition = array('itemtype'   => $baseitemtype,
+                                 'is_dynamic' => 1,
+                                 'is_deleted' => 1);
+               $table     = getTableForItemType($itemtype);
+               $field     = 'items_id';
+            }
 
       }
       
-      $types = Item_Devices::getDeviceTypes();
-      foreach ($types as $old => $type) {
-         
-         if ($itemtype == $type) {
-            $condition = array('is_dynamic' => 1,
-                                  'is_deleted' => 1);
-            $table = getTableForItemType($type);
-            $field = 'items_id';
-         }
-      }
       return array('condition' => $condition,
                    'table'     => $table,
                    'field'     => $field);
