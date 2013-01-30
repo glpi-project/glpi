@@ -267,9 +267,14 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_devicegraphiccards' => 'interfacetypes_id',
                                  'glpi_devicecontrols'     => 'interfacetypes_id'),
 
+                  "glpi_ipaddresses"
+                        => array('glpi_ipaddresses_ipnetworks'   => 'ipaddresses_id'),
+
                   "glpi_ipnetworks"
                         => array('glpi_ipaddresses_ipnetworks'   => 'ipnetworks_id',
-                                 'glpi_ipnetworks'               => 'ipnetworks_id'),
+                                 'glpi_ipnetworks'               => 'ipnetworks_id',
+                                 'glpi_ipnetworks_networknames'  => 'ipnetworks_id',
+                                 'glpi_ipnetworks_vlans'         => 'ipnetworks_id'),
 
                   "glpi_knowbaseitemcategories"
                         => array('glpi_itilcategories'         => 'knowbaseitemcategories_id',
@@ -341,7 +346,8 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_networkequipments' => 'networkequipmenttypes_id'),
 
                   "glpi_networknames"
-                        => array('glpi_networkaliases' => 'networknames_id'),
+                        => array('glpi_networkaliases'          => 'networknames_id',
+                                 'glpi_ipnetworks_networknames' => 'networknames_id'),
 
                   "glpi_networkports"
                         => array('glpi_networkportaggregates'     => 'networkports_id',
@@ -354,6 +360,9 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_networkports_networkports' => array('networkports_id_1',
                                                                            'networkports_id_2'),
                                  'glpi_networkportwifis'          => 'networkports_id'),
+
+                  "glpi_networkportwifis"
+                        => array('glpi_networkportwifis' => 'networkportwifis_id'),
 
                   "glpi_networks"
                         => array('glpi_computers'         => 'networks_id',
