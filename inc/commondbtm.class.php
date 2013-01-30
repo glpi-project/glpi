@@ -3301,7 +3301,7 @@ class CommonDBTM extends CommonGLPI {
          case 'unlock_NetworkPort' :
          case 'unlock_ComputerDisk' :
          case 'unlock_Peripheral' :
-         case 'unlock_Software' :
+         case 'unlock_SoftwareVersion' :
             $itemtype = Lock::getItemTypeForMassiveAction($input["action"]);
             if ($itemtype) {
                $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);
