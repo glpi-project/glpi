@@ -1215,7 +1215,7 @@ class CommonDBTM extends CommonGLPI {
          $force = 1;
       }
 
-      
+
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -2453,7 +2453,7 @@ class CommonDBTM extends CommonGLPI {
       return $this->maybeDynamic();
    }
 
-   
+
    /**
     * Is an object dynamic or not
     *
@@ -3048,7 +3048,7 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "purge" :
-         
+
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   if ($this->can($key,'d')) {
@@ -4118,7 +4118,10 @@ class CommonDBTM extends CommonGLPI {
                   return $text;
 
                case "bool" :
-                  return Dropdown::getYesNo($value);
+                  if (is_numeric($value)) {
+                     return Dropdown::getYesNo($value);
+                  }
+                  return $value;
 
                case "date" :
                case "date_delay" :
