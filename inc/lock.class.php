@@ -344,6 +344,7 @@ class Lock {
                       "unlock_NetworkPort"     => __('Unlock network ports'),
                       "unlock_ComputerDisk"    => __('Unlock volumes'),
                       "unlock_Device"          => __('Unlock devices'),
+                      "unlock_ComputerVirtualMachine" => __('Unlock virtual machines'),
                       );
       }
       return array();
@@ -407,6 +408,13 @@ class Lock {
             $condition = array('is_dynamic' => 1,
                                'is_deleted' => 1);
             $table     = 'glpi_computerdisks';
+            $field     = 'computers_id';
+            break;
+
+         case 'ComputerVirtualMachine' :
+            $condition = array('is_dynamic' => 1,
+                               'is_deleted' => 1);
+            $table     = 'glpi_computervirtualmachines';
             $field     = 'computers_id';
             break;
 
