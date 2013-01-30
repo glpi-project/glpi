@@ -1139,7 +1139,7 @@ function update0831to084() {
                                        AND `itemtype_link` IN ('Reminder', 'Knowbase')";
 
    foreach ($cleancondition as $name => $condition) {
-      $query = "DELETE FROM `glpilogs` WHERE $condition";
+      $query = "DELETE FROM `glpi_logs` WHERE $condition";
       $DB->queryOrDie($query, "0.84 clean logs for $name");
    }
 
