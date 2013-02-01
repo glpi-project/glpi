@@ -695,7 +695,7 @@ class Software extends CommonDBTM {
     * Create a new software
     *
     * @param name                          the software's name (need to be addslashes)
-    * @param manufacturer                  the software's manufacturer (need to be addslashes)
+    * @param manufacturer_id               id of the software's manufacturer
     * @param entity                        the entity in which the software must be added
     * @param comment                       (default '')
     * @param is_recursive         boolean  must the software be recursive (false by default)
@@ -703,50 +703,32 @@ class Software extends CommonDBTM {
     *
     * @return the software's ID
    **/
-   function addSoftware($name, $manufacturer, $entity, $comment='',
+   function addSoftware($name, $manufacturer_id, $entity, $comment='',
                         $is_recursive=false, $is_helpdesk_visible=NULL) {
       global $DB, $CFG_GLPI;
 
-      $manufacturer_id = 0;
-      if ($manufacturer != '') {
-         $manufacturer_id = Dropdown::import('Manufacturer', array('name' => $manufacturer));
-      }
-
-      $sql = "SELECT `id`
-              FROM `glpi_softwares`
-              WHERE `manufacturers_id` = '$manufacturer_id'
-                    AND `name` = '$name' " .
-                    getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id', $entity,
-                                               true);
-
-      $res_soft = $DB->query($sql);
-      if ($soft = $DB->fetch_assoc($res_soft)) {
-         $id = $soft["id"];
+      $input["name"]                = $name;
+      $input["manufacturers_id"]    = $manufacturer_id;
+      $input["entities_id"]         = $entity;
+      $input["is_recursive"]        = ($is_recursive ? 1 : 0);
+      // No comment
+      if (is_null($is_helpdesk_visible)) {
+         $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
       } else {
-         $input["name"]                = $name;
-         $input["manufacturers_id"]    = $manufacturer_id;
-         $input["entities_id"]         = $entity;
-         $input["is_recursive"]        = ($is_recursive ? 1 : 0);
-         // No comment
-         if (is_null($is_helpdesk_visible)) {
-            $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
-         } else {
-            $input["is_helpdesk_visible"] = $is_helpdesk_visible;
-         }
-
-         //Process software's category rules
-         $softcatrule = new RuleSoftwareCategoryCollection();
-         $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
-
-         if (!empty($result) && isset($result["softwarecategories_id"])) {
-            $input["softwarecategories_id"] = $result["softwarecategories_id"];
-         } else {
-            $input["softwarecategories_id"] = 0;
-         }
-
-         $id = $this->add($input);
+         $input["is_helpdesk_visible"] = $is_helpdesk_visible;
       }
-      return $id;
+
+      //Process software's category rules
+      $softcatrule = new RuleSoftwareCategoryCollection();
+      $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+
+      if (!empty($result) && isset($result["softwarecategories_id"])) {
+         $input["softwarecategories_id"] = $result["softwarecategories_id"];
+      } else {
+         $input["softwarecategories_id"] = 0;
+      }
+
+      return $this->add($input);
    }
 
 
@@ -765,11 +747,19 @@ class Software extends CommonDBTM {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity
+      $manufacturer_id = 0;
+      if ($manufacturer != '') {
+         $manufacturer_id = Dropdown::import('Manufacturer', array('name' => $manufacturer));
+      }
+
       $query_search = "SELECT `glpi_softwares`.`id`, `glpi_softwares`.`is_deleted`
                        FROM `glpi_softwares`
                        WHERE `name` = '$name'
-                             AND `is_template` = '0'
-                             AND `entities_id` = '$entity'";
+                             AND `manufacturers_id` = '$manufacturer_id'
+                             AND `is_template` = '0' ".
+                             getEntitiesRestrictRequest('AND', 'glpi_softwares',
+                                                        'entities_id', $entity,true);
+
       $result_search = $DB->query($query_search);
 
       if ($DB->numrows($result_search) > 0) {
@@ -787,7 +777,7 @@ class Software extends CommonDBTM {
       }
 
       if (!$ID) {
-         $ID = $this->addSoftware($name, $manufacturer, $entity, $comment, $is_recursive,
+         $ID = $this->addSoftware($name, $manufacturer_id, $entity, $comment, $is_recursive,
                                   $is_helpdesk_visible);
       }
       return $ID;
