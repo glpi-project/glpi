@@ -1482,7 +1482,12 @@ class Rule extends CommonDBTM {
          if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$actions[$criteria]["name"]."</td>";
-            echo "<td>".$this->getActionValue($criteria, $actions[$criteria]['type'], $value);
+            if (isset($actions[$criteria]['type'])) {
+               $actiontype = $actions[$criteria]['type'];
+            } else {
+               $actiontype ='';
+            }
+            echo "<td>".$this->getActionValue($criteria, $actiontype, $value);
             echo "</td></tr>\n";
          }
       }
