@@ -674,8 +674,8 @@ function update0831to084() {
                            '".$data['is_recursive']."')";
          $DB->queryOrDie($query, '0.84 move contracts costs');
       }
-   }
    $migration->dropField('glpi_contracts', 'cost');
+   }
 
    if (!TableExists('glpi_ticketcosts')) {
       $query = "CREATE TABLE `glpi_ticketcosts` (
@@ -730,10 +730,10 @@ function update0831to084() {
                            '".$data['actiontime']."')";
          $DB->queryOrDie($query, '0.84 move tickets costs');
       }
-   }
    $migration->dropField('glpi_tickets', 'cost_time');
    $migration->dropField('glpi_tickets', 'cost_fixed');
    $migration->dropField('glpi_tickets', 'cost_material');
+   }
 
    $migration->addField("glpi_profiles", "ticketcost", "char",
                         array('update'    => "'w'",
@@ -1239,16 +1239,17 @@ function update0831to084() {
                   KEY `group` (`suppliers_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_problems_suppliers");
+
+      $migration->migrationOneTable('glpi_problems_suppliers');
+      foreach ($DB->request('glpi_problems',"`suppliers_id_assign` > 0") as $data) {
+         $query = "INSERT INTO `glpi_problems_suppliers`
+                          (`suppliers_id`, `type`, `problems_id`)
+                   VALUES ('".$data['suppliers_id_assign']."', '".CommonITILActor::ASSIGN."',
+                           '".$data['id']."')";
+         $DB->query($query);
+      }
+      $migration->dropField('glpi_problems', 'suppliers_id_assign');
    }
-   $migration->migrationOneTable('glpi_problems_suppliers');
-   foreach ($DB->request('glpi_problems',"`suppliers_id_assign` > 0") as $data) {
-      $query = "INSERT INTO `glpi_problems_suppliers`
-                       (`suppliers_id`, `type`, `problems_id`)
-                VALUES ('".$data['suppliers_id_assign']."', '".CommonITILActor::ASSIGN."',
-                        '".$data['id']."')";
-      $DB->query($query);
-   }
-   $migration->dropField('glpi_problems', 'suppliers_id_assign');
 
 
    if (!TableExists('glpi_suppliers_tickets')) {
@@ -1262,16 +1263,17 @@ function update0831to084() {
                   KEY `group` (`suppliers_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_suppliers_tickets");
+
+      $migration->migrationOneTable('glpi_suppliers_tickets');
+      foreach ($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
+         $query = "INSERT INTO `glpi_suppliers_tickets`
+                          (`suppliers_id`, `type`, `tickets_id`)
+                   VALUES ('".$data['suppliers_id_assign']."', '".CommonITILActor::ASSIGN."',
+                           '".$data['id']."')";
+         $DB->query($query);
+      }
+      $migration->dropField('glpi_tickets', 'suppliers_id_assign');
    }
-   $migration->migrationOneTable('glpi_suppliers_tickets');
-   foreach ($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
-      $query = "INSERT INTO `glpi_suppliers_tickets`
-                       (`suppliers_id`, `type`, `tickets_id`)
-                VALUES ('".$data['suppliers_id_assign']."', '".CommonITILActor::ASSIGN."',
-                        '".$data['id']."')";
-      $DB->query($query);
-   }
-   $migration->dropField('glpi_tickets', 'suppliers_id_assign');
 
    $migration->addField('glpi_tickets', 'locations_id', 'integer');
    $migration->addKey('glpi_tickets', 'locations_id');
