@@ -147,8 +147,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
                         AND `glpi_softwares`.`is_template` = '0' ";
 
-         if (isset($params['manufacturer']) && ($params['manufacturer'] > 0)) {
-            $sql .= " AND `manufacturers_id` = '" . $params['manufacturer'] . "'";
+         if (isset($params['manufacturer']) && $params['manufacturer']) {
+            $sql .= " AND `manufacturer` = '" . $params['manufacturer'] . "'";
          }
          if ($offset) {
             $sql .= " LIMIT " . intval($offset) . ",999999999";
@@ -309,8 +309,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          }
 
          if (isset($res_rule["manufacturer"])) {
-            $manufacturer = addslashes(Dropdown::getDropdownName("glpi_manufacturers",
-                                                      $res_rule["manufacturer"]));
+            $manufacturer = $res_rule["manufacturer"];
          } else {
             $manufacturer = addslashes($manufacturer);
          }
@@ -331,7 +330,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $new_software_id = $ID;
          $res_rule["id"]  = $ID;
          if (isset($res_rule["manufacturer"])) {
-            $res_rule["manufacturers_id"] = $res_rule["manufacturer"];
+            $res_rule["manufacturers_id"] = Dropdown::importExternal('Manufacturer',
+                                                                     $res_rule["manufacturer"]);
             unset($res_rule["manufacturer"]);
          }
          $soft->update($res_rule);
