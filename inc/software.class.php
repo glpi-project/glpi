@@ -709,7 +709,7 @@ class Software extends CommonDBTM {
 
       $manufacturer_id = 0;
       if ($manufacturer != '') {
-         $manufacturer_id = Dropdown::importExternal('Manufacturer', $manufacturer);
+         $manufacturer_id = Dropdown::import('Manufacturer', array('name' => $manufacturer));
       }
 
       $sql = "SELECT `id`
