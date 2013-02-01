@@ -291,8 +291,11 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       if (empty($res_rule)) {
          $res_rule = $this->processAllRules($input, array(), array());
       }
-
       $soft = new Software();
+      if (isset($res_rules['_ignore_import']) && ($res_rules['_ignore_import'] == 1)) {
+          $soft->putInTrash($ID, __('Software deleted by GLPI dictionary rules'));
+          return;
+      }
 
       //Software's name has changed or entity
       if ((isset($res_rule["name"]) && ($res_rule["name"] != $name))
@@ -308,7 +311,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $new_name = addslashes($name);
          }
 
-         if (isset($res_rule["manufacturer"])) {
+         if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
             $manufacturer = $res_rule["manufacturer"];
          } else {
             $manufacturer = addslashes($manufacturer);
@@ -329,7 +332,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       } else {
          $new_software_id = $ID;
          $res_rule["id"]  = $ID;
-         if (isset($res_rule["manufacturer"])) {
+         if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
             $res_rule["manufacturers_id"] = Dropdown::importExternal('Manufacturer',
                                                                      $res_rule["manufacturer"]);
             unset($res_rule["manufacturer"]);
