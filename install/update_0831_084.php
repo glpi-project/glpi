@@ -1128,7 +1128,7 @@ function update0831to084() {
          //Drop old field
       }
    }
-   
+
    $migration->dropField('glpi_configs', 'existing_auth_server_field');
    //Remove field to specify an ldap server for SSO users : don't need it anymore
    $migration->dropField('glpi_configs', 'authldaps_id_extra');
@@ -1322,6 +1322,30 @@ function update0831to084() {
       }
    }
 
+   // change ruleaction for manufacturer (id to name)
+   $query = "SELECT  `glpi_ruleactions` .`id` AS id,
+                     `sub_type`,
+                     `glpi_manufacturers`.`name` AS newvalue
+             FROM `glpi_rules`
+             INNER JOIN `glpi_ruleactions`
+                  ON (`glpi_rules`.`id` = `glpi_ruleactions`.`rules_id`
+                      AND `field` = 'Manufacturer')
+             LEFT JOIN `glpi_manufacturers`
+                  ON `glpi_manufacturers`.`id` = `glpi_ruleactions`.`value`
+             WHERE `sub_type` = 'RuleDictionnarySoftware'";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) > 0) {
+         while ($data = $DB->fetch_assoc($result)) {
+         // Update manufacturer
+            $query = "UPDATE `glpi_ruleactions`
+                      SET `value` = '".$data['newvalue']."'
+                      WHERE `id` = ". $data['id'];
+
+               $DB->queryOrDie($query, "0.84 update value of manufacturer for rules actions");
+         }
+      }
+   }
 
 
    // Move ticketrecurrent values to correct ones
