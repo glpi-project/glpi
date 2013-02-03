@@ -133,6 +133,9 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   /**
+    * @param $input
+   **/
    function prepareInput($input) {
 
       // If $input['name'] does not exists, then, don't check anything !
@@ -142,7 +145,6 @@ class IPAddress extends CommonDBChild {
          // If previous value differs from current one, then check it !
          $this->setAddressFromString($input['name']);
          if (!$this->is_valid()) {
-
             //TRANS: %s is the invalid address
             $msg = sprintf(__('Invalid IP address: %s'), $input['name']);
             Session::addMessageAfterRedirect($msg, false, ERROR);
@@ -151,8 +153,8 @@ class IPAddress extends CommonDBChild {
       }
 
       return array_merge($input, $this->setArrayFromAddress($input, "version", "name", "binary"));
-
    }
+
 
    /**
     * @see CommonDBChild::prepareInputForAdd()

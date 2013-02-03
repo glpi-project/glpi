@@ -28,7 +28,7 @@
 */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -89,7 +89,7 @@ class FQDN extends CommonDropdown {
          }
 
          // Transform it to lower case
-         $input["fqdn"] = strtolower( $input['fqdn'] );
+         $input["fqdn"] = strtolower($input['fqdn']);
 
          // Then check its validity
          if (!self::checkFQDN($input["fqdn"])) {
@@ -98,8 +98,6 @@ class FQDN extends CommonDropdown {
          }
 
       }
-
-
       return $input;
    }
 

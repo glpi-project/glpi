@@ -617,9 +617,10 @@ if (count($files)) {
            echo "</td>";
            echo "<td>&nbsp;";
            // Multiple confirmation
-           $string = array();
+           $string   = array();
            //TRANS: %s is the filename
-           $string[] = array(sprintf(__('Replace the current database with the backup file %s?'), $file));
+           $string[] = array(sprintf(__('Replace the current database with the backup file %s?'),
+                                     $file));
            $string[] = array(__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!'));
 
            echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,

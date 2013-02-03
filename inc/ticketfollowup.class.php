@@ -354,7 +354,8 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && in_array($this->input["_job"]->fields["status"], array(CommonITILObject::SOLVED, CommonITILObject::WAITING))) {
+          && in_array($this->input["_job"]->fields["status"],
+                      array(CommonITILObject::SOLVED, CommonITILObject::WAITING))) {
 
          if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countGroups(CommonITILActor::ASSIGN) > 0)
