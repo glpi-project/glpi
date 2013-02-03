@@ -28,11 +28,10 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
-define ('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+include ("../inc/includes.php");
 
 Session::checkRight("reports", "r");
 
