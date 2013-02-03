@@ -457,7 +457,7 @@ class CommonDBTM extends CommonGLPI {
       if (($force == 1)
           || !$this->maybeDeleted()
           || ($this->useDeletedToLockIfDynamic()
-               && !$this->isDynamic())) {
+              && !$this->isDynamic())) {
          $this->cleanDBonPurge();
          $this->cleanHistory();
          $this->cleanRelationData();
@@ -1208,10 +1208,10 @@ class CommonDBTM extends CommonGLPI {
 
       // Force purge for templates / may not to be deleted / not dynamic lockable items
       if ($this->isTemplate()
-         || !$this->maybeDeleted()
-         // Do not take into account deleted field if maybe dynamic but not dynamic
-         || ($this->useDeletedToLockIfDynamic()
-               && !$this->isDynamic())) {
+          || !$this->maybeDeleted()
+          // Do not take into account deleted field if maybe dynamic but not dynamic
+          || ($this->useDeletedToLockIfDynamic()
+              && !$this->isDynamic())) {
          $force = 1;
       }
 
@@ -1866,7 +1866,7 @@ class CommonDBTM extends CommonGLPI {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                // If maybe dynamic : do not take into account  is_deleted  field
                if (!$this->maybeDeleted()
-                  || $this->useDeletedToLockIfDynamic()) {
+                   || $this->useDeletedToLockIfDynamic()) {
                   echo "<input type='submit' name='delete' value=\""._sx('button',
                                                                          'Delete permanently')."\"
                          class='submit' ".
@@ -3396,7 +3396,8 @@ class CommonDBTM extends CommonGLPI {
          // No delete for entities and tracking of not have right
          if ($isadmin) {
             // do not take into account is_deleted if items may be dynamic
-            if ($this->maybeDeleted() && !$this->useDeletedToLockIfDynamic()) {
+            if ($this->maybeDeleted()
+                && !$this->useDeletedToLockIfDynamic()) {
                $actions['delete'] = _x('button', 'Put in dustbin');
             } else {
                $actions['purge'] = _x('button', 'Delete permanently');

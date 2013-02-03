@@ -1282,9 +1282,8 @@ function update0831to084() {
 
    // Migrate RuleOcs to RuleImportEntity
    $query = "UPDATE `glpi_rules`
-               SET `sub_type` = 'RuleImportEntity'
-               WHERE `sub_type` = 'RuleOcs'";
-
+             SET `sub_type` = 'RuleImportEntity'
+             WHERE `sub_type` = 'RuleOcs'";
    $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
 
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
