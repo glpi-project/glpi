@@ -188,10 +188,7 @@ class IPAddress extends CommonDBChild {
    **/
    function post_updateItem($history=1) {
 
-      if ((isset($this->oldvalues['binary_0']))
-          || (isset($this->oldvalues['binary_1']))
-          || (isset($this->oldvalues['binary_2']))
-          || (isset($this->oldvalues['binary_3']))
+      if ((isset($this->oldvalues['name']))
           || (isset($this->oldvalues['entities_id']))) {
 
          $link = new IPAddress_IPNetwork();
