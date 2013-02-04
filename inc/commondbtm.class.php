@@ -1258,7 +1258,7 @@ class CommonDBTM extends CommonGLPI {
                   $changes[1] = $changes[2] = "";
                   $logaction = Log::HISTORY_DELETE_ITEM;
                   if ($this->useDeletedToLockIfDynamic()
-                     && $this->isDynamic()) {
+                      && $this->isDynamic()) {
                      $logaction = Log::HISTORY_LOCK_ITEM;
                   }
 
@@ -1404,13 +1404,12 @@ class CommonDBTM extends CommonGLPI {
          if ($this->dohistory && $history) {
             $changes[0] = 0;
             $changes[1] = $changes[2] = "";
-            $logaction = Log::HISTORY_RESTORE_ITEM;
+            $logaction  = Log::HISTORY_RESTORE_ITEM;
             if ($this->useDeletedToLockIfDynamic()
                 && $this->isDynamic()) {
                $logaction = Log::HISTORY_UNLOCK_ITEM;
             }
-            Log::history($this->input["id"], $this->getType(), $changes, 0,
-                         $logaction);
+            Log::history($this->input["id"], $this->getType(), $changes, 0, $logaction);
          }
 
          $this->post_restoreItem();
@@ -2440,6 +2439,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return array_key_exists('is_dynamic', $this->fields);
    }
+
 
    /**
     * Use deleted field in case of dynamic management to lock ?

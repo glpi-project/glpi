@@ -70,12 +70,16 @@ class Computer extends CommonDBTM {
       return Session::haveRight('computer', 'r');
    }
 
+
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
+    *
+    * @since version 0.84
    **/
    function useDeletedToLockIfDynamic() {
       return false;
    }
+
 
    /**
     * @see CommonGLPI::defineTabs()
@@ -358,14 +362,13 @@ class Computer extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
       $csv = new Computer_SoftwareVersion();
       $csv->cleanDBonItemDelete('Computer', $this->fields['id']);
 
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
-      
+
       Item_Devices::cleanItemDeviceDBOnItemDelete('Computer', $this->fields['id']);
 
       $disk = new ComputerDisk();

@@ -1225,6 +1225,7 @@ class Plugin extends CommonDBTM {
       return $sopt;
    }
 
+
    /**
     * test is a import plugin is enable
     *
@@ -1237,5 +1238,6 @@ class Plugin extends CommonDBTM {
 
       return (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item']));
    }
+
 }
 ?>

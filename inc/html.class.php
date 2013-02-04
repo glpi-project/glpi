@@ -2990,8 +2990,8 @@ class Html {
     *
     * @since version 0.84
     *
-    * @param $container_id string html of the container of checkboxes link to this check all checkbox
-    * @param $rand string rand value to use (default is auto generated)
+    * @param $container_id  string html of the container of checkboxes link to this check all checkbox
+    * @param $rand          string rand value to use (default is auto generated)
     *
     * @return nothing / display item
    **/
@@ -3005,8 +3005,8 @@ class Html {
     *
     * @since version 0.84
     *
-    * @param $container_id string html of the container of checkboxes link to this check all checkbox
-    * @param $rand string rand value to use (default is auto generated)
+    * @param $container_id  string html of the container of checkboxes link to this check all checkbox
+    * @param $rand          string rand value to use (default is auto generated)
     *
     * @return Get checkbox string
    **/

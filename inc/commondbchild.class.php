@@ -432,7 +432,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $item = $this->getItem();
 
-      if (($item !== false) && $item->dohistory) {
+      if (($item !== false)
+          && $item->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = $this->getHistoryNameForItem($item, 'add');
@@ -465,8 +466,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $oldvalues = $this->oldvalues;
       unset($oldvalues[static::$itemtype]);
       unset($oldvalues[static::$items_id]);
-      $item = $items_for_log['new'];
-      if (($item !== false) && $item->dohistory) {
+      $item      = $items_for_log['new'];
+      if (($item !== false)
+          && $item->dohistory) {
          foreach ($oldvalues as $field => $value) {
             $changes = $this->getHistoryChangeWhenUpdateField($field);
             if ((!is_array($changes)) || (count($changes) != 3)) {
@@ -483,7 +485,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $prevItem = $items_for_log['previous'];
          $newItem  = $items_for_log['new'];
 
-         if (($prevItem !== false) && $prevItem->dohistory) {
+         if (($prevItem !== false)
+             && $prevItem->dohistory) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
             $changes[2] = '';
@@ -491,7 +494,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
                          static::$log_history_delete);
          }
 
-         if (($newItem !== false) && $newItem->dohistory) {
+         if (($newItem !== false)
+             && $newItem->dohistory) {
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
@@ -515,8 +519,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $item = $this->getItem();
 
-      if (($item !== false) && $item->dohistory) {
+      if (($item !== false)
+          && $item->dohistory) {
          $changes[0] = '0';
+
          if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
             $changes[1] = '';
             $changes[2] = addslashes($this->getHistoryNameForItem($item, 'delete'));
@@ -529,14 +535,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
    }
 
-    /**
+
+   /**
     *  Actions done when item flag deleted is set to an item
     *
     * @since version 0.84
     *
-    *@return nothing
+    * @return nothing
    **/
    function cleanDBonMarkDeleted() {
+
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || !static::$logs_for_parent) {
          return;
@@ -547,12 +555,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $item = $this->getItem();
 
 
-         if (($item !== false) && $item->dohistory) {
+         if (($item !== false)
+             && $item->dohistory) {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem($item, 'lock'));
             $changes[2] = '';
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                        static::$log_history_lock);
+                         static::$log_history_lock);
          }
       }
    }
@@ -562,8 +571,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * Actions done after the restore of the item
     *
     * @since version 0.84
+    *
     * @return nothing
    **/
+
    function post_restoreItem() {
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || !static::$logs_for_parent) {
@@ -575,16 +586,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $item = $this->getItem();
 
 
-         if (($item !== false) && $item->dohistory) {
+         if (($item !== false)
+             && $item->dohistory) {
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = addslashes($this->getHistoryNameForItem($item, 'unlock'));
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                        static::$log_history_unlock);
+                         static::$log_history_unlock);
          }
       }
    }
-   
+
+
    /**
     * get the Javascript "code" to add to the form when clicking on "+"
     *
