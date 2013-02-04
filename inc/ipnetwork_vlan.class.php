@@ -36,6 +36,10 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since version 0.84
+ *
+**/
 class IPNetwork_Vlan extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -47,9 +51,6 @@ class IPNetwork_Vlan extends CommonDBRelation {
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-   /**
-    * @since version 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -88,11 +89,13 @@ class IPNetwork_Vlan extends CommonDBRelation {
     * @param $vlan
    **/
    function assignVlan($port, $vlan) {
+
       $input = array('ipnetworks_id' => $port,
-                     'vlans_id'        => $vlan);
+                     'vlans_id'      => $vlan);
 
       return $this->add($input);
    }
+
 
    /**
     * @param $port   IPNetwork object
@@ -135,7 +138,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
          echo "<input type='hidden' name='ipnetworks_id' value='$ID'>";
          Vlan::dropdown(array('used' => $used));
          echo "&nbsp;<input type='submit' name='add' value='"._sx('button','Associate').
-              "' class='submit'>";
+                      "' class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table>\n";
@@ -235,5 +238,6 @@ class IPNetwork_Vlan extends CommonDBRelation {
       }
       return true;
    }
+
 }
 ?>

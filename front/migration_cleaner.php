@@ -46,10 +46,11 @@ echo "<table class='tab_cadre_fixe'>";
 echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
 if (Session::haveRight('internet', 'w')
-// Check access to all entities
-   && Session::isViewAllEntities()) {
+    // Check access to all entities
+    && Session::isViewAllEntities()) {
    echo "<tr class='tab_bg_1'><td class='center'>";
-   Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network', __('Reinit the network topology'));
+   Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
+                        __('Reinit the network topology'));
    echo "</td></tr>";
 }
 echo "<tr class='tab_bg_1'><td class='center'>";

@@ -104,7 +104,6 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-
    /**
     * @since version 0.84
    **/
@@ -1577,15 +1576,17 @@ class Entity extends CommonTreeDropdown {
       return self::getEntityIDByField("ldap_dn", $value);
    }
 
+
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since version 0.84
     *
     * @param $value
    **/
    static function getEntityIDByCompletename($value) {
       return self::getEntityIDByField("completename", $value);
    }
-   
+
+
    /**
     * @since version 0.84 (before in entitydata.class)
     *
