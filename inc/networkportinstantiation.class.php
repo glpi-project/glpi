@@ -652,7 +652,8 @@ class NetworkPortInstantiation extends CommonDBChild {
                    FROM `glpi_networkports` AS port
                    WHERE `items_id` = '".$lastItem->getID()."'
                          AND `itemtype` = '".$lastItem->getType()."'
-                         AND `instantiation_type` = '$netport_type'";
+                         AND `instantiation_type` = '$netport_type'
+                   ORDER BY `logical_number`, `name`";
 
          $result = $DB->query($query);
 
