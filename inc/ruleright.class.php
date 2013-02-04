@@ -277,6 +277,13 @@ class RuleRight extends Rule {
          $criterias['MAIL_EMAIL']['linkfield']  = '';
          $criterias['MAIL_EMAIL']['virtual']    = true;
          $criterias['MAIL_EMAIL']['id']         = 'mail_email';
+         
+         $criterias['LOGIN']['table']           = '';
+         $criterias['LOGIN']['field']           = '';
+         $criterias['LOGIN']['name']            = __('Login');
+         $criterias['LOGIN']['linkfield']       = '';
+         $criterias['LOGIN']['virtual']         = true;
+         $criterias['LOGIN']['id']              = 'login';
 
          $criterias['GROUPS']['table']          = 'glpi_groups';
          $criterias['GROUPS']['field']          = 'completename';

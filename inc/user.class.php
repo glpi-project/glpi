@@ -950,7 +950,8 @@ class User extends CommonDBTM {
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
             $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
-            if (count($authtype)) {
+            if (count($authtype)
+                    || $this->fields["authtype"] == Auth::EXTERNAL) {
                // Clean emails
                $this->input["_emails"] = array_unique ($this->input["_emails"]);
 
@@ -1444,6 +1445,100 @@ class User extends CommonDBTM {
    } // getFromIMAP()
 
 
+   
+   /**
+    * Function that try to load from the SSO server the user information...
+   **/
+   function getFromSSO() {
+      global $DB, $CFG_GLPI;
+      
+      $a_field = array();
+      foreach ($CFG_GLPI as $key=>$value) {
+         if (!is_array($value)
+                 && strstr($key, "_ssofield")
+                 && !empty($value)) {
+            $key = str_replace('_ssofield', '', $key);
+            $a_field[$key] = $value;
+         }
+      }
+      
+      if (count($a_field) == 0) {
+         return true;
+      }
+      $this->fields['_ruleright_process'] = true;
+      foreach ($a_field as $field=>$value) {
+         if (!isset($_SERVER[$value])
+                 || empty($_SERVER[$value])) {
+            switch ($field) {
+               case "title" :
+                  $this->fields['usertitles_id'] = 0;
+                  break;
+               case "category" :
+                  $this->fields['usercategories_id'] = 0;
+                  break;
+
+               default :
+                  $this->fields[$field] = "";
+            }
+
+         } else {
+            switch ($field) {
+               case "email1" :
+               case "email2" :
+               case "email3" :
+               case "email4" :
+                  // Manage multivaluable fields
+                  if (!preg_match('/count/',$_SERVER[$value])) {
+                     $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                  }
+                  // Only get them once if duplicated
+                  $this->fields["_emails"] = array_unique($this->fields["_emails"]);
+                  break;
+
+               case "language" :                        
+                  $language = Config::getLanguage($_SERVER[$value]);
+                  if ($language != '') {
+                     $this->fields[$field] = $language;
+                  }
+                  break;
+
+               case "title" :
+                  $this->fields['usertitles_id'] = Dropdown::importExternal('UserTitle',
+                                                               addslashes($_SERVER[$value]));
+                  break;
+
+               case "category" :
+                  $this->fields['usercategories_id'] = Dropdown::importExternal('UserCategory',
+                                                               addslashes($_SERVER[$value]));
+                  break;
+
+               default :
+                  $this->fields[$field] = $_SERVER[$value];
+                  break;
+
+            }
+         }
+      }
+       ///Only process rules if working on the master database
+      if (!$DB->isSlave()) {
+         //Instanciate the affectation's rule
+         $rule = new RuleRightCollection();
+
+         $this->fields = $rule->processAllRules(array(), Toolbox::stripslashes_deep($this->fields),
+                                                array('type'   => 'SSO',
+                                                      'email'  => $this->fields["_emails"],
+                                                      'login'  => $this->fields["name"]));
+
+         //If rule  action is ignore import
+         if (isset($this->fields["_stop_import"])) {
+            return false;
+         }
+      }
+      return true;
+   }
+   
+   
+   
    /**
     * Blank passwords field of a user in the DB
     * needed for external auth users

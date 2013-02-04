@@ -255,6 +255,10 @@ class RuleRightCollection extends RuleCollection {
             return $rule_parameters;
          }
          return $rule_input;
+      } else if ($params["type"] == "SSO") {
+         $rule_parameters["MAIL_EMAIL"]  = $params["email"];
+         $rule_parameters["LOGIN"]       = $params["login"];
+         return $rule_parameters;
       }
       //IMAP/POP login method
       $rule_parameters["MAIL_SERVER"] = $params["mail_server"];
