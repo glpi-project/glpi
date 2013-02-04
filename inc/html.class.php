@@ -1137,7 +1137,6 @@ class Html {
          $menu['maintain']['content']['ticket']['shortcut']        = 't';
          $menu['maintain']['content']['ticket']['page']            = '/front/ticket.php';
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
-         $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
          if (Session::haveRight('tickettemplate', 'r')) {
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['title']
