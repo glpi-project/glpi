@@ -442,9 +442,12 @@ class Migration {
    function copyTable($oldtable, $newtable) {
       global $DB;
 
-      if (!TableExists("$newtable")
-          && TableExists("$oldtable")) {
+      if (!TableExists($newtable)
+          && TableExists($oldtable)) {
 
+         $query = "FLUSH TABLES";
+         $DB->queryOrDie($query, $this->version." flush tables to copy $oldtable to $newtable");
+         
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
 
