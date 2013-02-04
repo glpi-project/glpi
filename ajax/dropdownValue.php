@@ -55,10 +55,12 @@ $table = $item->getTable();
 
 $displaywith = false;
 
-if (isset($_POST['displaywith'])
-    && is_array($_POST['displaywith'])
-    && count($_POST['displaywith'])) {
 
+if (!is_array($_POST['displaywith'])) {
+   $_POST['displaywith'] = unserialize(stripslashes($_POST["displaywith"]));
+}
+if (is_array($_POST['displaywith'])
+   && count($_POST['displaywith'])) {
    $displaywith = true;
 }
 
