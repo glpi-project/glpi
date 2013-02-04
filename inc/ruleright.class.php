@@ -168,7 +168,7 @@ class RuleRight extends Rule {
                      case "_affect_entity_by_tag" :
                      case "_affect_entity_by_domain" :
                      case "_affect_entity_by_completename" :
-                        $entity       = array();
+                        $entity = array();
                         foreach ($this->regex_results as $regex_result) {
                            $res = RuleAction::getRegexResultById($action->fields["value"],
                                                                  $regex_result);
@@ -185,10 +185,12 @@ class RuleRight extends Rule {
                                  case "_affect_entity_by_domain" :
                                     $entity_found = Entity::getEntityIDByDomain($res);
                                     break;
+
                                  case "_affect_entity_by_completename" :
-                                    $res = Toolbox::unclean_cross_side_scripting_deep($res);
+                                    $res          = Toolbox::unclean_cross_side_scripting_deep($res);
                                     $entity_found = Entity::getEntityIDByCompletename($res);
                                     break;
+
                                  default:
                                     $entity_found = -1;
                                     break;
@@ -277,7 +279,7 @@ class RuleRight extends Rule {
          $criterias['MAIL_EMAIL']['linkfield']  = '';
          $criterias['MAIL_EMAIL']['virtual']    = true;
          $criterias['MAIL_EMAIL']['id']         = 'mail_email';
-         
+
          $criterias['LOGIN']['table']           = '';
          $criterias['LOGIN']['field']           = '';
          $criterias['LOGIN']['name']            = __('Login');

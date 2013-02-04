@@ -161,7 +161,8 @@ class Item_Devices extends CommonDBRelation {
       $table->setTitle(_n('Component', 'Components', 2));
 
       if ($canedit) {
-         $delete_all_column = $table->addHeader('delete all', Html::getCheckAllAsCheckbox("form_device_action$rand"));
+         $delete_all_column = $table->addHeader('delete all',
+                                                Html::getCheckAllAsCheckbox("form_device_action$rand"));
          $delete_all_column->setHTMLClass('center');
       }
 
