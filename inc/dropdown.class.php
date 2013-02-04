@@ -1589,10 +1589,11 @@ class Dropdown {
 
          if ($param['mark_unmark_all'] && $param['multiple']) {
             $output .= "<br>\n";
+            /// TODO : review display !!
             $output .= "<input type='button' onclick=\"selectAllOptions('$field_id')\" value='";
-            $output .= __('Select all options')."'>";
+            $output .= __('Select all')."'>";
             $output .= "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value='";
-            $output .=  __('Deselect all options')."'>";
+            $output .=  __('Deselect all')."'>";
          }
 
       }
