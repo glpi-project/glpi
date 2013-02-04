@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -63,12 +63,16 @@ class Monitor extends CommonDBTM {
       return Session::haveRight('monitor', 'r');
    }
 
+
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
+    *
+    * @since version 0.84
    **/
    function useDeletedToLockIfDynamic() {
       return false;
    }
+
 
    /**
     * @see CommonGLPI::defineTabs()

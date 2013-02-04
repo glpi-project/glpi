@@ -3223,7 +3223,6 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "add_contract_item" :
-
             $contractitem = new Contract_Item();
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
@@ -3251,7 +3250,6 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "remove_contract_item" :
-
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Remove item to contracts
@@ -3308,6 +3306,7 @@ class CommonDBTM extends CommonGLPI {
                $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);
             }
             break;
+
          case 'unlock_Device' :
             foreach (Item_Devices::getDeviceTypes() as $itemtype) {
                $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);

@@ -970,7 +970,7 @@ function update0831to084() {
    $migration->addField("glpi_configs", "language_ssofield", "string");
    $migration->addField("glpi_configs", "entity_ssofield", "string");
    $migration->addField("glpi_configs", "registration_number_ssofield", "string");
-   
+
    $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) DEFAULT NULL");
    $migration->addField("glpi_users", 'duedateok_color', "string");
    $migration->addField("glpi_users", 'duedatewarning_color', "string");
@@ -1149,12 +1149,13 @@ function update0831to084() {
    $migration->dropField('glpi_configs', 'authldaps_id_extra');
 
    // Clean uneeded logs
-   $cleancondition = array();
+   $cleancondition                = array();
    $cleancondition['reminder_kb'] = "`itemtype` IN ('Entity', 'User', 'Profile', 'Group')
                                        AND `itemtype_link` IN ('Reminder', 'Knowbase')";
 
    foreach ($cleancondition as $name => $condition) {
-      $query = "DELETE FROM `glpi_logs` WHERE $condition";
+      $query = "DELETE FROM `glpi_logs`
+                WHERE $condition";
       $DB->queryOrDie($query, "0.84 clean logs for $name");
    }
 

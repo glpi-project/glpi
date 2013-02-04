@@ -27,6 +27,11 @@
  --------------------------------------------------------------------------
  */
 
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
+
 /**
  * This class manages locks
  * Lock management is available for objects and link between objects. It relies on the use of
@@ -38,12 +43,7 @@
  * locks for fields
  *
  * @since version 0.84
-**/
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
-
+ **/
 class Lock {
 
    static function getTypeName($nb=0) {
@@ -304,7 +304,7 @@ class Lock {
       $ok    = 0;
       $ko    = 0;
       $infos = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
-      
+
       if ($item = getItemForItemtype(getItemTypeForTable($infos['table']))) {
 
          foreach ($items as $id => $value) {
@@ -337,14 +337,14 @@ class Lock {
    static function getUnlockMassiveActions($itemtype) {
 
       if (Session::haveRight('computer', 'w') && ($itemtype == 'Computer')) {
-         return array("unlock_Monitor"         => __('Unlock monitors'),
-                      "unlock_Peripheral"      => __('Unlock peripherals'),
-                      "unlock_Printer"         => __('Unlock printers'),
-                      "unlock_SoftwareVersion" => __('Unlock software'),
-                      "unlock_NetworkPort"     => __('Unlock network ports'),
-                      "unlock_ComputerDisk"    => __('Unlock volumes'),
-                      "unlock_Device"          => __('Unlock devices'),
-                      "unlock_ComputerVirtualMachine" => __('Unlock virtual machines'),
+         return array("unlock_Monitor"                => __('Unlock monitors'),
+                      "unlock_Peripheral"             => __('Unlock peripherals'),
+                      "unlock_Printer"                => __('Unlock printers'),
+                      "unlock_SoftwareVersion"        => __('Unlock software'),
+                      "unlock_NetworkPort"            => __('Unlock network ports'),
+                      "unlock_ComputerDisk"           => __('Unlock volumes'),
+                      "unlock_Device"                 => __('Unlock devices'),
+                      "unlock_ComputerVirtualMachine" => __('Unlock virtual machines')
                       );
       }
       return array();
@@ -373,8 +373,8 @@ class Lock {
    /**
     * Get infos to build an SQL query to get locks fields in a table
     *
-    * @param $itemtype itemtype of the item to look for locked fields
-    * @param $baseitemtype itemtype of the based item
+    * @param $itemtype       itemtype of the item to look for locked fields
+    * @param $baseitemtype   itemtype of the based item
     *
     * @return an array which contains necessary informations to build the SQL query
    **/
@@ -424,6 +424,7 @@ class Lock {
             $table     = 'glpi_computers_softwareversions';
             $field     = 'computers_id';
             break;
+
          default :
             // Devices
             if (preg_match('/^Item\_Device/',$itemtype)) {
@@ -435,27 +436,11 @@ class Lock {
             }
 
       }
-      
+
       return array('condition' => $condition,
                    'table'     => $table,
                    'field'     => $field);
    }
 
-
-   /**
-    * @param $itemtype
-    * @param $id
-    * Unused
-   **/
-//   static function getLocksFieldsForItemType($itemtype, $id) {
-//
-//      $infos   = self::getLocksQueryInfosByItemType($itemtype);
-//      $results = array();
-//      foreach ($DB->request($infos['table'], $infos['condition'],
-//                            array('id', $infos['field'])) as $data) {
-//        $results[$data['id']] = $data;
-//      }
-//      return $results;
-//   }
 }
 ?>

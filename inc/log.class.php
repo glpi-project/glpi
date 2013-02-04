@@ -190,7 +190,7 @@ class Log extends CommonDBTM {
 
       if ($uid = Session::getLoginUserID(false)) {
          if (is_numeric($uid)) {
-            $username = sprintf(__('%1$s (%2$s)'),getUserName($uid,$link=0), $uid);
+            $username = sprintf(__('%1$s (%2$s)'), getUserName($uid,$link=0), $uid);
          } else { // For cron management
             $username = $uid;
          }
@@ -573,6 +573,7 @@ class Log extends CommonDBTM {
                   case 'text' :
                      $tmp['change'] = __('Update of the field');
                      break;
+
                   default :
                      $data["old_value"] = $item->getValueToDisplay($searchopt, $data["old_value"]);
                      $data["new_value"] = $item->getValueToDisplay($searchopt, $data["new_value"]);
