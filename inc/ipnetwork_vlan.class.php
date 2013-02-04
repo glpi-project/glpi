@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ipnetwork_vlan.class.php 19875 2012-12-19 19:38:48Z tsmr $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
