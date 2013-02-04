@@ -445,9 +445,9 @@ class Migration {
       if (!TableExists($newtable)
           && TableExists($oldtable)) {
 
-         // Try to do a flush tables if RELOAD privileges available 
-         $query = "FLUSH TABLES `$oldtable`, `$newtable`";
-         $DB->query($query);
+//          // Try to do a flush tables if RELOAD privileges available 
+//          $query = "FLUSH TABLES `$oldtable`, `$newtable`";
+//          $DB->query($query);
          
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
