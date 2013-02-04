@@ -375,7 +375,7 @@ class NetworkPortMigration extends CommonDBChild {
                          && $this->can($key,'d')) {
                         if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
                            $instantiation             = $networkport->getInstantiation();
-                           $input2                    = $item->fields;
+                           $input2                    = $this->fields;
                            $input2['networkports_id'] = $input2['id'];
                            unset($input2['id']);
                            if ($instantiation->add($input2)) {
