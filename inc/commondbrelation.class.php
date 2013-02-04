@@ -780,14 +780,15 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-    /**
+   /**
     *  Actions done when item flag deleted is set to an item
     *
     * @since version 0.84
     *
-    *@return nothing
+    * @return nothing
    **/
    function cleanDBonMarkDeleted() {
+
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || (!static::$logs_for_item_1
               && !static::$logs_for_item_2)) {
@@ -800,15 +801,15 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
          if (($item1 !== false)
-            && ($item2 !== false)) {
+             && ($item2 !== false)) {
             if ($item1->dohistory
-               && static::$logs_for_item_1) {
+                && static::$logs_for_item_1) {
                $changes[0] = '0';
                $changes[1] = addslashes($this->getHistoryNameForItem1($item2, 'lock'));
                $changes[2] = "";
 
                Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
-                           static::$log_history_1_lock);
+                            static::$log_history_1_lock);
             }
 
             if ($item2->dohistory
@@ -817,7 +818,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                $changes[1] = addslashes($this->getHistoryNameForItem2($item1, 'lock'));
                $changes[2] = "";
                Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
-                           static::$log_history_2_lock);
+                            static::$log_history_2_lock);
             }
          }
 
@@ -829,9 +830,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * Actions done after the restore of the item
     *
     * @since version 0.84
+    *
     * @return nothing
    **/
    function post_restoreItem() {
+
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || (!static::$logs_for_item_1
               && !static::$logs_for_item_2)) {
@@ -844,30 +847,31 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
          if (($item1 !== false)
-            && ($item2 !== false)) {
+             && ($item2 !== false)) {
             if ($item1->dohistory
-               && static::$logs_for_item_1) {
+                && static::$logs_for_item_1) {
                $changes[0] = '0';
                $changes[1] = '';
                $changes[2] = addslashes($this->getHistoryNameForItem1($item2, 'unlock'));
 
                Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
-                           static::$log_history_1_unlock);
+                            static::$log_history_1_unlock);
             }
 
             if ($item2->dohistory
-               && static::$logs_for_item_2) {
+                && static::$logs_for_item_2) {
                $changes[0] = '0';
                $changes[1] = '';
                $changes[2] = addslashes($this->getHistoryNameForItem2($item1, 'unlock'));
                Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
-                           static::$log_history_2_unlock);
+                            static::$log_history_2_unlock);
             }
          }
 
-      }   
+      }
    }
-   
+
+
   /**
     * Actions done after the DELETE of the item in the database
     *
@@ -882,7 +886,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
               && !static::$logs_for_item_2)) {
          return;
       }
-      
+
       $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
       $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
@@ -894,7 +898,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem1($item2, 'delete'));
             $changes[2] = "";
-            
+
             Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                          static::$log_history_1_delete);
          }

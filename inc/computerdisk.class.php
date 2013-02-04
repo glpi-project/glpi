@@ -252,8 +252,8 @@ class ComputerDisk extends CommonDBChild {
             Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                Computer::getTypeName(1), $comp->getName()));
+                                           sprintf(__('%1$s = %2$s'),
+                                                   Computer::getTypeName(1), $comp->getName()));
 
             $disk = new self();
             while ($data = $DB->fetch_assoc($result)) {

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -42,6 +42,7 @@ class DeviceNetworkCard extends CommonDevice {
       return _n('Network card', 'Network cards', $nb);
    }
 
+
    /**
     * Criteria used for import function
     *
@@ -50,7 +51,8 @@ class DeviceNetworkCard extends CommonDevice {
    function getImportCriteria() {
       return array('designation', 'manufacturers_id', 'mac');
    }
-   
+
+
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
