@@ -63,13 +63,17 @@ class Peripheral extends CommonDBTM {
    static function canView() {
       return Session::haveRight('peripheral', 'r');
    }
-   
+
+
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
+    *
+    * @since version 0.84
    **/
    function useDeletedToLockIfDynamic() {
       return false;
    }
+
 
    function defineTabs($options=array()) {
 
