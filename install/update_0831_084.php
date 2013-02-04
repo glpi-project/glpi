@@ -955,7 +955,22 @@ function update0831to084() {
    $migration->addField("glpi_configs", 'duedatecritical_less',"integer", array('value' => 5));
    $migration->addField("glpi_configs", 'duedatewarning_unit', "string", array('value' => '%'));
    $migration->addField("glpi_configs", 'duedatecritical_unit', "string", array('value' => '%'));
-
+   $migration->addField("glpi_configs", "realname_ssofield", "string");
+   $migration->addField("glpi_configs", "firstname_ssofield", "string");
+   $migration->addField("glpi_configs", "email1_ssofield", "string");
+   $migration->addField("glpi_configs", "email2_ssofield", "string");
+   $migration->addField("glpi_configs", "email3_ssofield", "string");
+   $migration->addField("glpi_configs", "email4_ssofield", "string");
+   $migration->addField("glpi_configs", "phone_ssofield", "string");
+   $migration->addField("glpi_configs", "phone2_ssofield", "string");
+   $migration->addField("glpi_configs", "mobile_ssofield", "string");
+   $migration->addField("glpi_configs", "comment_ssofield", "string");
+   $migration->addField("glpi_configs", "title_ssofield", "string");
+   $migration->addField("glpi_configs", "category_ssofield", "string");
+   $migration->addField("glpi_configs", "language_ssofield", "string");
+   $migration->addField("glpi_configs", "entity_ssofield", "string");
+   $migration->addField("glpi_configs", "registration_number_ssofield", "string");
+   
    $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) DEFAULT NULL");
    $migration->addField("glpi_users", 'duedateok_color', "string");
    $migration->addField("glpi_users", 'duedatewarning_color', "string");
