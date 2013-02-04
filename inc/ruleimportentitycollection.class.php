@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id:
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ Copyright (C) 2003-2013 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
