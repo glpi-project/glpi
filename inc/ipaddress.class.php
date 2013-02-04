@@ -55,7 +55,7 @@ class IPAddress extends CommonDBChild {
    static public $itemtype       = 'itemtype';
    static public $items_id       = 'items_id';
    public $dohistory             = false;
-   
+
    var $history_blacklist = array('binary_0', 'binary_1', 'binary_2', 'binary_3');
 
    /// $version (integer) : version of the adresse. Should be 4 or 6, or empty if not valid address
@@ -148,7 +148,7 @@ class IPAddress extends CommonDBChild {
          $this->setAddressFromString($input['name']);
          if (!$this->is_valid()) {
             //TRANS: %s is the invalid address
-            $msg = sprintf(__('Invalid IP address: %s'), $input['name']);
+            $msg = sprintf(__('%1$s: %2$s'), __('Invalid IP address'), $input['name']);
             Session::addMessageAfterRedirect($msg, false, ERROR);
             return false;
          }
