@@ -42,7 +42,9 @@ define("GLPI_CSRF_MAX_TOKENS","100");
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
 $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce|english names|
-      array('bg_BG' => array('Български',            'bg_BG.mo','bg',    'bg','bulgarian'),
+      array('ar_SA' => array('العَرَبِيَّةُ',        'ar_SA.mo','en',    'ar','arabic'),
+            'bg_BG' => array('Български',            'bg_BG.mo','bg',    'bg','bulgarian'),
+            'id_ID' => array('Bahasa Indonesia',     'id_ID.mo','id',    'id','indonesian'),
             'ca_ES' => array('Català',               'ca_ES.mo','ca',    'ca','catalan'), // ca_CA
             'cs_CZ' => array('Čeština',              'cs_CZ.mo','cs',    'cs','czech'),
             'de_DE' => array('Deutsch',              'de_DE.mo','de',    'de','german'),
@@ -59,7 +61,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'fr_FR' => array('Français',             'fr_FR.mo','fr',    'fr','french'),
             'gl_ES' => array('Galego',               'gl_ES.mo','es',    'gl','galician'),
             'el_GR' => array('Ελληνικά',             'el_GR.mo','el_GR', 'el','greek'), // el_EL
-            'he_IL' => array('עברית',                'he_IL.mo','he',    'he','hebrew'), // he_HE
+            'he_IL' => array('עברית',                 'he_IL.mo','he',    'he','hebrew'), // he_HE
             'hr_HR' => array('Hrvatski',             'hr_HR.mo','hr',    'hr','croatian'),
             'hu_HU' => array('Magyar',               'hu_HU.mo','hu',    'hu','hungarian'),
             'it_IT' => array('Italiano',             'it_IT.mo','it',    'it','italian'),
@@ -76,7 +78,9 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'ru_RU' => array('Pусский',              'ru_RU.mo','ru',    'ru','russian'),
             'sk_SK' => array('Slovenčina',           'sk_SK.mo','sk',    'sk','slovak'),
             'sl_SI' => array('Slovenščina',          'sl_SI.mo','sl',    'sl','slovenian slovene'),
+            'fi_FI' => array('Suomi',                'fi_FI.mo','fi',    'fi','finish'),
             'sv_SE' => array('Svenska',              'sv_SE.mo','sv_SE', 'sv','swedish'),
+            'vi_VN' => array('Tiếng Việt',           'vi_VN.mo','vn',    'vi','vietnamese'),
             'tr_TR' => array('Türkçe',               'tr_TR.mo','tr',    'tr','turkish'),
             'uk_UA' => array('Українська',           'uk_UA.mo','ukr',   'en','ukrainian'), // ua_UA
             'ja_JP' => array('日本語',                'ja_JP.mo','ja',    'ja','japanese'),
