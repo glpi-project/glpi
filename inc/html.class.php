@@ -1945,8 +1945,7 @@ class Html {
                                                                                 'LDAP directories', 2);
          $menu['config']['content']['extauth']['options']['ldap']['page']  = '/front/authldap.php';
 
-         $menu['config']['content']['extauth']['options']['imap']['title'] = _n('LDAP directory',
-                                                                                'LDAP directories', 2);
+         $menu['config']['content']['extauth']['options']['imap']['title'] = _n('Mail server', 'Mail servers', 2);
          $menu['config']['content']['extauth']['options']['imap']['page']  = '/front/authmail.php';
 
          $menu['config']['content']['extauth']['options']['others']['title'] = __('Others');
