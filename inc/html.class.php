@@ -1118,10 +1118,10 @@ class Html {
       }
 
       if ($showallassets) {
-         $menu['inventory']['content']['state']['title']            = __('Global');
-         $menu['inventory']['content']['state']['shortcut']         = '';
-         $menu['inventory']['content']['state']['page']             = '/front/allassets.php';
-         $menu['inventory']['content']['state']['links']['search']  = '/front/allassets.php';
+         $menu['inventory']['content']['allassets']['title']            = __('Global');
+         $menu['inventory']['content']['allassets']['shortcut']         = '';
+         $menu['inventory']['content']['allassets']['page']             = '/front/allassets.php';
+         $menu['inventory']['content']['allassets']['links']['search']  = '/front/allassets.php';
       }
 
       // ASSISTANCE
