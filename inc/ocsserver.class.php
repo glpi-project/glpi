@@ -1864,6 +1864,9 @@ class OcsServer extends CommonDBTM {
                                               $ocsservers_id, $cfg_ocs, $import_vm, $dohistory);
                }
 
+               //Update TAG
+               self::updateTag($line, $data_ocs);
+               
                // Update OCS Cheksum
                $query_ocs = "UPDATE `hardware`
                              SET `CHECKSUM` = (CHECKSUM - $mixed_checksum)
@@ -2022,6 +2025,7 @@ class OcsServer extends CommonDBTM {
             $compupdate["uuid"] = $line["UUID"];
          }
 
+         
          return array('logHistory' => $logHistory,
                       'fields'     => $compupdate);
       }
@@ -5672,9 +5676,6 @@ class OcsServer extends CommonDBTM {
       }
       //If location is update by a rule
       self::updateLocation($line_links, $data);
-
-      // Update TAG
-      self::updateTag($line_links, $line_ocs);
    }
 
    /**
