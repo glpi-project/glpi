@@ -1843,11 +1843,15 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $ADDTODISPLAYPREF['NetworkPortMigration'][] = $optionIndex ++;
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'Network framework'));
+
    $originTables = array();
    foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
       $originTables[$table] = 'origin_'.$table;
    }
 
+   
    if (!TableExists('origin_glpi_networkequipments')) {
       if (TableExists('glpi_networkportethernets')) {
          // Nothing to be done : migration of NetworkPort already OK !
