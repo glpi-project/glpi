@@ -426,9 +426,10 @@ class Toolbox {
          $user = " [".Session::getLoginUserID().'@'.php_uname('n')."]";
       }
 
-      if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]
+      $ok = true;
+      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])
           || $force) {
-         error_log(Html::convDateTime(date("Y-m-d H:i:s"))."$user\n".$text,
+         $ok = error_log(date("Y-m-d H:i:s")."$user\n".$text,
                    3, GLPI_LOG_DIR."/".$name.".log");
       }
 
@@ -437,6 +438,7 @@ class Toolbox {
           && isCommandLine()) {
          fwrite(STDERR, $text);
       }
+      return $ok;
    }
 
 
