@@ -1630,7 +1630,8 @@ function update0831to084() {
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
    global $migration;
 
-   $migration->log('ERROR networkport: '.$origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "]: " . $error);
+   $migration->log($origin . " - NetworkPort[" . $id . "]=" . $itemtype . "[" . $items_id .
+                   "]: " . $error, true);
 }
 
 
