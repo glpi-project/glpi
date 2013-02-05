@@ -951,7 +951,7 @@ class User extends CommonDBTM {
             $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
             if (count($authtype)
-                    || $this->fields["authtype"] == Auth::EXTERNAL) {
+                || $this->fields["authtype"] == Auth::EXTERNAL) {
                // Clean emails
                $this->input["_emails"] = array_unique ($this->input["_emails"]);
 
@@ -1445,34 +1445,36 @@ class User extends CommonDBTM {
    } // getFromIMAP()
 
 
-   
    /**
     * Function that try to load from the SSO server the user information...
+    *
+    * @since version 0.84
    **/
    function getFromSSO() {
       global $DB, $CFG_GLPI;
-      
+
       $a_field = array();
       foreach ($CFG_GLPI as $key=>$value) {
-         if (!is_array($value)
-                 && strstr($key, "_ssofield")
-                 && !empty($value)) {
+         if (!is_array($value) && !empty($value)
+             && strstr($key, "_ssofield")) {
             $key = str_replace('_ssofield', '', $key);
             $a_field[$key] = $value;
          }
       }
-      
+
       if (count($a_field) == 0) {
          return true;
       }
       $this->fields['_ruleright_process'] = true;
       foreach ($a_field as $field=>$value) {
          if (!isset($_SERVER[$value])
-                 || empty($_SERVER[$value])) {
+             || empty($_SERVER[$value])) {
+
             switch ($field) {
                case "title" :
                   $this->fields['usertitles_id'] = 0;
                   break;
+
                case "category" :
                   $this->fields['usercategories_id'] = 0;
                   break;
@@ -1495,7 +1497,7 @@ class User extends CommonDBTM {
                   $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                   break;
 
-               case "language" :                        
+               case "language" :
                   $language = Config::getLanguage($_SERVER[$value]);
                   if ($language != '') {
                      $this->fields[$field] = $language;
@@ -1503,13 +1505,13 @@ class User extends CommonDBTM {
                   break;
 
                case "title" :
-                  $this->fields['usertitles_id'] = Dropdown::importExternal('UserTitle',
-                                                               addslashes($_SERVER[$value]));
+                  $this->fields['usertitles_id']
+                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
                   break;
 
                case "category" :
-                  $this->fields['usercategories_id'] = Dropdown::importExternal('UserCategory',
-                                                               addslashes($_SERVER[$value]));
+                  $this->fields['usercategories_id']
+                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
                   break;
 
                default :
@@ -1536,9 +1538,8 @@ class User extends CommonDBTM {
       }
       return true;
    }
-   
-   
-   
+
+
    /**
     * Blank passwords field of a user in the DB
     * needed for external auth users
