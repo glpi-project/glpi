@@ -345,11 +345,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                     $hardware->getField('groups_id'));
          }
 
-         $modeltable = getSingular($this->getTable())."models";
+         $modeltable = getSingular($hardware->getTable())."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
 
          if ($hardware->isField($modelfield)) {
-            $datas['##ticket.item.model##'] = $hardware->getField($modelfield);
+            $datas['##ticket.item.model##'] = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
          }
 
       }
