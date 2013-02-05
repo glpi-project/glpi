@@ -518,16 +518,12 @@ function update0831to084() {
    if ($migration->addField("glpi_computers_softwareversions", "entities_id", "integer")) {
       $migration->migrationOneTable('glpi_computers_softwareversions');
 
-      $entities = getAllDatasFromTable('glpi_entities');
-
-      foreach ($entities as $entID => $val) {
-         $query3 = "UPDATE `glpi_computers_softwareversions`
-                    SET `entities_id` = $entID
-                    WHERE `computers_id` IN (SELECT `id`
-                                             FROM `glpi_computers`
-                                             WHERE `entities_id` = $entID)";
-         $DB->queryOrDie($query3, "0.84 update entities_id in glpi_computers_softwareversions");
-      }
+      $query3 = "UPDATE `glpi_computers_softwareversions`
+                 LEFT JOIN `glpi_computers`
+                    ON `computers_id`=`glpi_computers`.`id`
+                 SET `glpi_computers_softwareversions`.`entities_id` = `glpi_computers`.`entities_id`";
+      
+      $DB->queryOrDie($query3, "0.84 update entities_id in glpi_computers_softwareversions");
 
       /// create index for search count on tab
       $migration->addKey("glpi_computers_softwareversions",
