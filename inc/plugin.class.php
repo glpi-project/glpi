@@ -167,11 +167,6 @@ class Plugin extends CommonDBTM {
                                         $name, $coretrytoload);
          $translation_included = true;
 
-      } else if (file_exists($dir."fr_FR.mo")) {
-         $TRANSLATE->addTranslationFile('gettext',
-                                        $dir."fr_FR.mo",
-                                        $name, $coretrytoload);
-         $translation_included = true;
       }
 
       if (!$translation_included) {
