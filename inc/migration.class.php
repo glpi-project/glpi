@@ -41,16 +41,16 @@ class Migration {
    private   $change    = array();
    protected $version;
    private   $deb;
-   private   $last;
+   private   $lastMessage;
    private   $log_errors = 0;
    private   $current_message_area_id;
-   
+
    /**
     * @param $ver    number of new version of GLPI
    **/
    function __construct($ver) {
 
-      $this->deb = $this->last = time();
+      $this->deb = time();
       $this->setVersion($ver);
    }
 
@@ -62,6 +62,7 @@ class Migration {
    **/
    function setVersion($ver) {
 
+      $this->flushLogDisplayMessage();
       $this->version = $ver;
       $this->addNewMessageArea("migration_message_$ver");
    }
@@ -70,7 +71,26 @@ class Migration {
       $this->current_message_area_id = $id;
       echo "<div id='".$this->current_message_area_id."'>
             <p class='center'>".__('Work in progress...')."</p></div>";
+
+      $this->flushLogDisplayMessage();
    }
+
+
+   /**
+    * Flush previous display message in log file
+    *
+   * @param $msg    text  to display
+   **/
+   function flushLogDisplayMessage() {
+
+      if (isset($this->lastMessage)) {
+         $tps = Html::timestampToString(time() - $this->lastMessage['time']);
+         $this->log($tps . ' for "' . $this->lastMessage['msg'] . '"', false);
+         unset($this->lastMessage);
+      }
+   }
+
+
    /**
     * Additional message in global message
     *
@@ -78,32 +98,37 @@ class Migration {
    **/
    function displayMessage ($msg) {
 
-      $fin = time();
-      $tps = Html::timestampToString($fin-$this->deb);
+      $now = time();
+      $tps = Html::timestampToString($now-$this->deb);
       echo "<script type='text/javascript'>document.getElementById('".
-             $this->current_message_area_id."').innerHTML=\"<p class='center'>".addslashes($msg)." ($tps)</p>\";".
+             $this->current_message_area_id."').innerHTML=\"<p class='center'>".addslashes($msg).
+             " ($tps)</p>\";".
            "</script>\n";
-      $tps = Html::timestampToString($fin-$this->last);
-      $tolog = 'Last message done in '.$tps."\n";
-      $tolog .= 'MESSAGE: '.$msg;
-      $this->log($tolog);
-      $this->last = $fin;
-      
+
+      $this->flushLogDisplayMessage();
+      $this->lastMessage = array('time' => time(), 'msg'  => $msg);
+
       Html::glpi_flush();
    }
 
    /**
     * log message for this migration
    **/
-   function log($message) {
+   function log($message, $warning) {
+
+      if ($warning) {
+         $log_file_name = 'warning_during_migration_to_'.$this->version;
+      } else {
+         $log_file_name = 'migration_to_'.$this->version;
+      }
 
      // Do not log if more than 3 log error
      if ($this->log_errors < 3
-         && !Toolbox::logInFile('migrationto'.$this->version, $message."\n", true)) {
+         && !Toolbox::logInFile($log_file_name, $message . ' @ ', true)) {
          $this->log_errors++;
      }
    }
-   
+
    /**
     * Display a title
     *
@@ -124,7 +149,8 @@ class Migration {
 
       echo ($red ? "<div class='red'><p>" : "<p><span class='b'>") .
             Html::entities_deep($msg) . ($red ? "</p></div>" : "</span></p>");
-      $this->log('WARNING: '.$msg);
+
+      $this->log($msg, true);
    }
 
 
