@@ -560,7 +560,7 @@ class DBmysql {
 
        if (!is_null($migration) && method_exists($migration,'displayMessage')) {
           $migration->displayTitle(__('Optimizing tables'));
-          $migration->setVersion('999'); // to force new ajax zone
+          $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
           $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
        }
        $result = $DB->list_tables();
