@@ -1007,6 +1007,11 @@ abstract class CommonITILObject extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
+      // Set default status to avoid notice
+      if (!isset($input["status"])) {
+         $input["status"] = "new";
+      }
+
       if (!isset($input["urgency"])
           || !($CFG_GLPI['urgency_mask']&(1<<$input["urgency"]))) {
          $input["urgency"] = 3;
