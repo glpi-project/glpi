@@ -449,6 +449,7 @@ class RuleImportComputer extends Rule {
     * @see Rule::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
+   	// TODO : CLASS NOT EXIST
       return OcsServer::previewRuleImportProcess($output);
    }
 
