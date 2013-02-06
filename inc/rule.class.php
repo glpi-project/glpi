@@ -980,8 +980,8 @@ class Rule extends CommonDBTM {
          $input = $this->prepareInputDataForProcess($input, $params);
 
          if ($this->checkCriterias($input)) {
+            unset($output["_no_rule_matches"]);
             $output = $this->executeActions($output, $params);
-
             //Hook
             $hook_params["sub_type"] = $this->getType();
             $hook_params["ruleid"]   = $this->fields["id"];
@@ -989,7 +989,6 @@ class Rule extends CommonDBTM {
             $hook_params["output"]   = $output;
             Plugin::doHook("rule_matched", $hook_params);
             $output["_rule_process"] = true;
-            unset($output["_no_rule_matches"]);
          }
       }
    }
@@ -1204,10 +1203,11 @@ class Rule extends CommonDBTM {
     */
    function executePluginsActions($action, $output, $params) {
       global $PLUGIN_HOOKS;
-
+      
       if (isset($PLUGIN_HOOKS['use_rules'])) {
+         $params['criterias_results'] = $this->criterias_results;
+         $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            $params['criterias_results'] = $this->criterias_results;
             $output = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
                                                                          'params' => $params,
                                                                          'action' => $action));
@@ -1474,7 +1474,7 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center b'>".__('Validation')."</td><td>";
-      echo Dropdown::getYesNo($global_result)."</td>";
+      echo Dropdown::getYesNo($global_result)."</td></tr>";
 
       $output = $this->preProcessPreviewResults($output);
 
@@ -1949,6 +1949,16 @@ class Rule extends CommonDBTM {
     * @param $output
    **/
    function preProcessPreviewResults($output) {
+      global $PLUGIN_HOOKS;
+      
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         $params['criterias_results'] = $this->criterias_results;
+         $params['rule_itemtype'] = $this->getType();
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $output = Plugin::doOneHook($plugin, "preProcessRulePreviewResults", array('output' => $output,
+                                                                                       'params' => $params));
+         }
+      }
       return $output;
    }
 

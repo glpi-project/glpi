@@ -874,6 +874,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       $output = $this->testAllRules($input, $output, $input);
+
       $rule   = $this->getRuleClass();
 
       echo "<div class='center'>";
@@ -958,7 +959,8 @@ class RuleCollection extends CommonDBTM {
          if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$actions[$criteria]["name"]."</td>";
-            echo "<td>".$rule->getActionValue($criteria, $actions[$criteria]['action_type'], $value);
+            $action_type = (isset($actions[$criteria]['action_type'])?$actions[$criteria]['action_type']:'');
+            echo "<td>".$rule->getActionValue($criteria, $action_type, $value);
             echo "</td></tr>\n";
          }
       }
@@ -970,6 +972,15 @@ class RuleCollection extends CommonDBTM {
     * @param $output
    **/
    function preProcessPreviewResults($output) {
+      global $PLUGIN_HOOKS;
+
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         $params['rule_itemtype'] = $this->getType();
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $output = Plugin::doOneHook($plugin, "preProcessRuleCollectionPreviewResults", array('output' => $output,
+                                                                                                 'params' => $params));
+         }
+      }
       return $this->cleanTestOutputCriterias($output);
    }
 

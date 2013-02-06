@@ -58,15 +58,6 @@ class RuleMailCollector extends Rule {
       return Session::haveRight('rule_mailcollector', 'r');
    }
 
-
-   /**
-    * @see Rule::preProcessPreviewResults()
-   **/
-   function preProcessPreviewResults($output) {
-      return $output;
-   }
-
-
    /**
     * @see Rule::maxActionsCount()
    **/

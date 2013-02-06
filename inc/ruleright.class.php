@@ -60,14 +60,6 @@ class RuleRight extends Rule {
 
 
    /**
-    * @see Rule::preProcessPreviewResults()
-   **/
-   function preProcessPreviewResults($output) {
-      return $output;
-   }
-
-
-   /**
     * @see Rule::maxActionsCount()
    **/
    function maxActionsCount() {
