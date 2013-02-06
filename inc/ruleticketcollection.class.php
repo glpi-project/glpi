@@ -64,6 +64,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
+      $output = parent::preProcessPreviewResults($output);
       return Ticket::showPreviewAssignAction($output);
    }
 

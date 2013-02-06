@@ -62,13 +62,6 @@ class RuleImportComputerCollection extends RuleCollection {
       return __('Rules for import and link computers');
    }
 
-   /**
-    * @see RuleCollection::preProcessPreviewResults()
-   **/
-   function preProcessPreviewResults($output) {
-   	// TODO : CLASS NOT EXIST
-      return OcsServer::previewRuleImportProcess($output);
-   }
 
 }
 ?>

@@ -55,15 +55,6 @@ class RuleImportEntity extends Rule {
       return 2;
    }
 
-
-   /**
-    * @see Rule::preProcessPreviewResults()
-   **/
-   function preProcessPreviewResults($output) {
-      return $output;
-   }
-
-
    /**
     * @see Rule::executeActions()
    **/

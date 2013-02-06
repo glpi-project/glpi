@@ -415,7 +415,7 @@ class RuleImportComputer extends Rule {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
-            $executeaction = new Rule();
+            $executeaction = new self();
             $ruleoutput    = $executeaction->executePluginsActions($action, $output, $params);
             foreach ($ruleoutput as $key => $value) {
                $output[$key] = $value;
@@ -442,15 +442,6 @@ class RuleImportComputer extends Rule {
       if (!$entity_as_criteria) {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       }
-   }
-
-
-   /**
-    * @see Rule::preProcessPreviewResults()
-   **/
-   function preProcessPreviewResults($output) {
-   	// TODO : CLASS NOT EXIST
-      return OcsServer::previewRuleImportProcess($output);
    }
 
 }
