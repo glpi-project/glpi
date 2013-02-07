@@ -1211,9 +1211,15 @@ class Rule extends CommonDBTM {
          $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (in_array($this->getType(), $val)) {
-               $output = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
+               $results = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
                                                                            'params' => $params,
                                                                            'action' => $action));
+               if (is_array($results)) {
+                  foreach ($results as $id => $result) {
+                     $output[$id] = $result;
+                  }
+               }
+
             }
          }
       }
@@ -1440,10 +1446,8 @@ class Rule extends CommonDBTM {
 
       //Test all criterias, without stopping at the first good one
       $this->testCriterias($input, $check_results);
-
       //Process the rule
       $this->process($input, $output, $params);
-
       if (!$criteria = getItemForItemtype($this->rulecriteriaclass)) {
          return;
       }
@@ -1479,7 +1483,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center b'>".__('Validation')."</td><td>";
       echo Dropdown::getYesNo($global_result)."</td></tr>";
-
+      
       $output = $this->preProcessPreviewResults($output);
 
       foreach ($output as $criteria => $value) {
@@ -1960,8 +1964,13 @@ class Rule extends CommonDBTM {
          $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (in_array($this->getType(), $val)) {
-               $output = Plugin::doOneHook($plugin, "preProcessRulePreviewResults", array('output' => $output,
+               $results = Plugin::doOneHook($plugin, "preProcessRulePreviewResults", array('output' => $output,
                                                                                           'params' => $params));
+               if (is_array($results)) {
+                  foreach ($results as $id => $result) {
+                     $output[$id] = $result;
+                  }
+               }
             }
          }
       }
