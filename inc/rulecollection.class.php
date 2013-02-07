@@ -977,8 +977,11 @@ class RuleCollection extends CommonDBTM {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            $output = Plugin::doOneHook($plugin, "preProcessRuleCollectionPreviewResults", array('output' => $output,
-                                                                                                 'params' => $params));
+            if (in_array($this->getType(), $val)) {
+               $output = Plugin::doOneHook($plugin, "preProcessRuleCollectionPreviewResults", 
+                                             array('output' => $output,
+                                                   'params' => $params));
+            }
          }
       }
       return $this->cleanTestOutputCriterias($output);
