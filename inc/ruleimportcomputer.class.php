@@ -270,8 +270,10 @@ class RuleImportComputer extends Rule {
       //Add plugin global criteria
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            $global_criteria = Plugin::doOneHook($plugin, "ruleImportComputer_addGlobalCriteria",
-                                                 $global_criteria);
+            if (in_array($this->getType(), $val)) {
+               $global_criteria = Plugin::doOneHook($plugin, "ruleImportComputer_addGlobalCriteria",
+                                                    $global_criteria);
+            }
          }
       }
 
@@ -363,15 +365,17 @@ class RuleImportComputer extends Rule {
 
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            $params = array('where_entity' => $where_entity,
-                             'input'        => $input,
-                             'criteria'     => $complex_criterias,
-                             'sql_where'    => $sql_where,
-                             'sql_from'     => $sql_from);
-            $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
-                                             $params);
-            $sql_where = $sql_results['sql_where'];
-            $sql_from  = $sql_results['sql_from'];
+            if (in_array($this->getType(), $val)) {
+               $params = array('where_entity' => $where_entity,
+                              'input'        => $input,
+                              'criteria'     => $complex_criterias,
+                              'sql_where'    => $sql_where,
+                              'sql_from'     => $sql_from);
+               $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
+                                                $params);
+               $sql_where = $sql_results['sql_where'];
+               $sql_from  = $sql_results['sql_from'];
+            }
          }
       }
 
