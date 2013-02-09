@@ -429,8 +429,7 @@ class Toolbox {
       $ok = true;
       if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])
           || $force) {
-         $ok = error_log(date("Y-m-d H:i:s")."$user\n".$text,
-                   3, GLPI_LOG_DIR."/".$name.".log");
+         $ok = error_log(date("Y-m-d H:i:s")."$user\n".$text, 3, GLPI_LOG_DIR."/".$name.".log");
       }
 
       if (isset($_SESSION['glpi_use_mode'])

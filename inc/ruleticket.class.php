@@ -228,6 +228,7 @@ class RuleTicket extends Rule {
     * @param $output
    **/
    function preProcessPreviewResults($output) {
+
       $output = parent::preProcessPreviewResults($output);
       return Ticket::showPreviewAssignAction($output);
    }

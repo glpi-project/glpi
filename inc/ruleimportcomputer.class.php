@@ -366,15 +366,15 @@ class RuleImportComputer extends Rule {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (in_array($this->getType(), $val)) {
-               $params = array('where_entity' => $where_entity,
-                              'input'        => $input,
-                              'criteria'     => $complex_criterias,
-                              'sql_where'    => $sql_where,
-                              'sql_from'     => $sql_from);
+               $params      = array('where_entity' => $where_entity,
+                                    'input'        => $input,
+                                    'criteria'     => $complex_criterias,
+                                    'sql_where'    => $sql_where,
+                                    'sql_from'     => $sql_from);
                $sql_results = Plugin::doOneHook($plugin, "ruleImportComputer_getSqlRestriction",
                                                 $params);
-               $sql_where = $sql_results['sql_where'];
-               $sql_from  = $sql_results['sql_from'];
+               $sql_where   = $sql_results['sql_where'];
+               $sql_from    = $sql_results['sql_from'];
             }
          }
       }
