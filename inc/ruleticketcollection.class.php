@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -64,6 +64,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::preProcessPreviewResults()
    **/
    function preProcessPreviewResults($output) {
+
       $output = parent::preProcessPreviewResults($output);
       return Ticket::showPreviewAssignAction($output);
    }

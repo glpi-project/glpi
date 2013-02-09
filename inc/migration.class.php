@@ -38,12 +38,13 @@ if (!defined('GLPI_ROOT')) {
 // class Central
 class Migration {
 
-   private   $change    = array();
+   private   $change     = array();
    protected $version;
    private   $deb;
    private   $lastMessage;
    private   $log_errors = 0;
    private   $current_message_area_id;
+
 
    /**
     * @param $ver    number of new version of GLPI
@@ -67,7 +68,14 @@ class Migration {
       $this->addNewMessageArea("migration_message_$ver");
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $id
+   **/
    function addNewMessageArea($id) {
+
       $this->current_message_area_id = $id;
       echo "<div id='".$this->current_message_area_id."'>
             <p class='center'>".__('Work in progress...')."</p></div>";
@@ -79,7 +87,7 @@ class Migration {
    /**
     * Flush previous display message in log file
     *
-   * @param $msg    text  to display
+    * @since version 0.84
    **/
    function flushLogDisplayMessage() {
 
@@ -96,7 +104,7 @@ class Migration {
     *
     * @param $msg    text  to display
    **/
-   function displayMessage ($msg) {
+   function displayMessage($msg) {
 
       $now = time();
       $tps = Html::timestampToString($now-$this->deb);
@@ -106,13 +114,20 @@ class Migration {
            "</script>\n";
 
       $this->flushLogDisplayMessage();
-      $this->lastMessage = array('time' => time(), 'msg'  => $msg);
+      $this->lastMessage = array('time' => time(),
+                                 'msg'  => $msg);
 
       Html::glpi_flush();
    }
 
+
    /**
     * log message for this migration
+    *
+    * @since version 0.84
+    *
+    * @param $message
+    * @param $warning
    **/
    function log($message, $warning) {
 
@@ -128,6 +143,7 @@ class Migration {
          $this->log_errors++;
      }
    }
+
 
    /**
     * Display a title
@@ -491,10 +507,10 @@ class Migration {
       if (!TableExists($newtable)
           && TableExists($oldtable)) {
 
-//          // Try to do a flush tables if RELOAD privileges available 
+//          // Try to do a flush tables if RELOAD privileges available
 //          $query = "FLUSH TABLES `$oldtable`, `$newtable`";
 //          $DB->query($query);
-         
+
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
 
@@ -570,6 +586,7 @@ class Migration {
       // end of global message
       $this->displayMessage(__('Task completed.'));
    }
+
 
    /**
     * Register a new rule

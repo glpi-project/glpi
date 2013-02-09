@@ -1177,8 +1177,8 @@ class Rule extends CommonDBTM {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "rulePrepareInputDataForProcess",
-                                          array('input'  => $input,
-                                                'params' => $params));
+                                            array('input'  => $input,
+                                                  'params' => $params));
                if (is_array($results)) {
                   foreach ($results as $result) {
                      $input[] = $result;
@@ -1205,15 +1205,15 @@ class Rule extends CommonDBTM {
     */
    function executePluginsActions($action, $output, $params) {
       global $PLUGIN_HOOKS;
-      
+
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['criterias_results'] = $this->criterias_results;
-         $params['rule_itemtype'] = $this->getType();
+         $params['rule_itemtype']     = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
-                                                                           'params' => $params,
-                                                                           'action' => $action));
+                                                                             'params' => $params,
+                                                                             'action' => $action));
                if (is_array($results)) {
                   foreach ($results as $id => $result) {
                      $output[$id] = $result;
@@ -1483,7 +1483,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center b'>".__('Validation')."</td><td>";
       echo Dropdown::getYesNo($global_result)."</td></tr>";
-      
+
       $output = $this->preProcessPreviewResults($output);
 
       foreach ($output as $criteria => $value) {
@@ -1958,14 +1958,15 @@ class Rule extends CommonDBTM {
    **/
    function preProcessPreviewResults($output) {
       global $PLUGIN_HOOKS;
-      
+
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['criterias_results'] = $this->criterias_results;
-         $params['rule_itemtype'] = $this->getType();
+         $params['rule_itemtype']     = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (in_array($this->getType(), $val)) {
-               $results = Plugin::doOneHook($plugin, "preProcessRulePreviewResults", array('output' => $output,
-                                                                                          'params' => $params));
+               $results = Plugin::doOneHook($plugin, "preProcessRulePreviewResults",
+                                            array('output' => $output,
+                                                  'params' => $params));
                if (is_array($results)) {
                   foreach ($results as $id => $result) {
                      $output[$id] = $result;

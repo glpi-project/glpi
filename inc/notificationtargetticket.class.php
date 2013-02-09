@@ -349,7 +349,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $modelfield = getForeignKeyFieldForTable($modeltable);
 
          if ($hardware->isField($modelfield)) {
-            $datas['##ticket.item.model##'] = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
+            $datas['##ticket.item.model##']
+                  = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
          }
 
       }
