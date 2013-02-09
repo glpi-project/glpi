@@ -515,9 +515,8 @@ class TicketFollowup  extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-      //   $options['tickets_id'] = $ticket->getField('id');
-         $input = array('tickets_id' => $ticket->getField('id'));
-         $this->check(-1,'w',$input);
+         $options['tickets_id'] = $ticket->getField('id');
+         $this->check(-1,'w',$options);
       }
       $tech = (Session::haveRight("global_add_followups", "1")
                || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
