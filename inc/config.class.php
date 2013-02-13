@@ -1255,14 +1255,7 @@ class Config extends CommonDBTM {
          echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n";
       }
 
-      /*
-      $version = "???";
-      foreach ($DB->request('SELECT VERSION() as ver') as $data) {
-         $version = $data['ver'];
-      }
-      echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n\n";
-      */
-      echo "MySQL:\t";
+      echo "DBMS:\t";
       foreach ($DB->getInfo() as $key => $val) {
          echo "$key: $val\n\t";
       }
