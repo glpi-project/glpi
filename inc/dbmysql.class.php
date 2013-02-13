@@ -604,10 +604,23 @@ class DBmysql {
    public function getInfo() {
 
       // No translation, used in sysinfo
-      return array('Parameters'       => $this->dbuser."@".$this->dbhost."/".$this->dbdefault,
-                   'Server version'   => $this->dbh->server_info,
-                   'Host info'        => $this->dbh->host_info);
-                   // 'Server status'    => $this->dbh->stat(),
+      $ret = array();
+      $req = $this->request("SELECT @@version AS vers, @@version_comment AS stype");
+
+      if (($data = $req->next())) {
+         if ($data['stype']) {
+            $ret['Server Software'] = $data['stype'];
+         }
+         if ($data['vers']) {
+            $ret['Server Version'] = $data['vers'];
+         } else {
+            $ret['Server Version'] = $this->dbh->server_info;
+         }
+      }
+      $ret['Parameters'] = $this->dbuser."@".$this->dbhost."/".$this->dbdefault;
+      $ret['Host info']  = $this->dbh->host_info;
+
+      return $ret;
    }
 
 
