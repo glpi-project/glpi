@@ -762,8 +762,8 @@ class Html {
 
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
-      // No frame to prevent click-jacking
-      header('x-frame-options:DENY');
+      // Allow only frame from same server to prevent click-jacking
+      header('x-frame-options:SAMEORIGIN');
 
       // Send extra expires header
       self::header_nocache();
@@ -2376,7 +2376,7 @@ class Html {
       global $SIMPLE_FORMS;
 
       echo $SIMPLE_FORMS;
-      
+
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div class='center' id='debugajax'>";
@@ -2682,7 +2682,7 @@ class Html {
       }
       $FOOTER_LOADED = true;
       echo $SIMPLE_FORMS;
-      
+
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer'>";
@@ -2805,7 +2805,7 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
-      
+
       echo $SIMPLE_FORMS;
       // Print foot
       echo "</body></html>";
@@ -3983,7 +3983,7 @@ class Html {
       global $SIMPLE_FORMS;
 
       $id = 'minimal_form'.mt_rand();
-      
+
       $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
       foreach ($fields as $name => $value) {
          $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
@@ -4002,7 +4002,7 @@ class Html {
          echo "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
       }
       echo "</a>";
-      
+
       $SIMPLE_FORMS .= Html::closeForm(false);
    }
 
