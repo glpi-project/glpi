@@ -4194,7 +4194,6 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             echo "<div id='tickethardwareselection$ID' style='display:none'>";
          }
-
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
                                     $dev_itemtype, $dev_items_id);
@@ -5177,9 +5176,10 @@ class Ticket extends CommonITILObject {
       // Link to open a new ticket
       if ($item->getID()
           && Ticket::isPossibleToAssignType($item->getType())) {
-         echo "<a class='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".
-                $item->getID()."&amp;itemtype=".$item->getType()."\">".
-                __('New ticket for this item...')."</a><br><br>";
+         Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
+                              '_add_fromitem', __('New ticket for this item...'),
+                              array('itemtype' => $item->getType(),
+                                    'items_id' => $item->getID()));
       }
 
       echo "<table class='tab_cadre_fixe'>";
