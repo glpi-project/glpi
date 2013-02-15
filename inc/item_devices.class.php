@@ -142,7 +142,6 @@ class Item_Devices extends CommonDBRelation {
 
    static function showForItem(CommonGLPI $item, $withtemplate=0) {
 
-      toolbox::logdebug("item", $item, "template", $withtemplate);
       $ID = $item->getField('id');
 
       if (!$item->can($ID, 'r')) {
