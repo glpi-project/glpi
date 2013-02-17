@@ -441,9 +441,10 @@ class RSSFeed extends CommonDBTM {
       $tab[7]['field']               = 'max_items';
       $tab[7]['name']                = __('Number of items displayed');
       $tab[7]['datatype']            = 'number';
-      $tab[7]['min']                 = 1;
+      $tab[7]['min']                 = 5;
       $tab[7]['max']                 = 100;
-      $tab[7]['step']                = 1;
+      $tab[7]['step']                = 5;
+      $tab[7]['toadd']               = array(1);
       $tab[7]['massiveaction']       = true;
 
       $tab[16]['table']              = $this->getTable();
@@ -662,9 +663,10 @@ class RSSFeed extends CommonDBTM {
       echo "<td>".__('Number of items displayed')."</td>";
       echo "<td>";
       Dropdown::showNumber("max_items", array('value'                => $this->fields["max_items"],
-                                              'min'                  => 1,
+                                              'min'                  => 5,
                                               'max'                  => 100,
-                                              'step'                 => 1,
+                                              'step'                 => 5,
+                                              'toadd'                => array(1),
                                               'display_emptychoice'  => false));
       echo "</td></tr>\n";
 
