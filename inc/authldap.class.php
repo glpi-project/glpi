@@ -1581,7 +1581,7 @@ class AuthLDAP extends CommonDBTM {
 
          foreach ($diff as $user) {
             //If user dn exists in DB, it means that user login field has changed
-            if (!$tmpuser->getFromDBByDn($user_infos[$user]["user_dn"])) {
+            if (!$tmpuser->getFromDBByDn(addslashes($user_infos[$user]["user_dn"]))) {
                $list[] = array("user"      => $user,
                                "timestamp" => $user_infos[$user]["timestamp"],
                                "date_sync" => Dropdown::EMPTY_VALUE);
