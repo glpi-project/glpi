@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# DOMBRE Julien <moyo@indepnet.net>, 2013.
 #   <ilari.kotilainen@kivijarvi.fi>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-02-12 08:54+0100\n"
-"PO-Revision-Date: 2013-02-04 20:34+0000\n"
+"PO-Revision-Date: 2013-02-18 11:25+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/projects/p/GLPI/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -958,7 +959,7 @@ msgstr "Lataa"
 #: inc/ticket.class.php:1262
 #, php-format
 msgid "%1$s adds the item %2$s"
-msgstr "%1$s lisää kohteen %s$s"
+msgstr "%1$s lisää kohteen %2$s"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:64 front/cartridgeitem.form.php:59
@@ -3163,7 +3164,7 @@ msgstr ""
 #: inc/auth.class.php:684
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
-msgstr "Epäonnistunut kirjautuminen käyttäjälle %1$s IP-osoitteesta %s2$s"
+msgstr "Epäonnistunut kirjautuminen käyttäjälle %1$s IP-osoitteesta %2$s"
 
 #: inc/auth.class.php:724
 msgid "Authentication on GLPI database"
