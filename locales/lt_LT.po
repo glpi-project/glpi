@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-02-12 08:54+0100\n"
-"PO-Revision-Date: 2013-02-11 12:40+0000\n"
+"PO-Revision-Date: 2013-02-17 17:30+0000\n"
 "Last-Translator: Tomas1 <tomas.brudnius@gmail.com>\n"
 "Language-Team: Lithuanian (Lithuania) (http://www.transifex.com/projects/p/GLPI/language/lt_LT/)\n"
 "MIME-Version: 1.0\n"
@@ -4837,9 +4837,9 @@ msgstr ""
 #: inc/stat.class.php:1502
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Problema"
+msgstr[1] "Problemos"
+msgstr[2] "Problemos"
 
 #: inc/changetask.class.php:45
 msgid "Change task"
@@ -12043,7 +12043,7 @@ msgstr "Formulės rezultatas"
 
 #: inc/rule.class.php:1506
 msgid "Result of the regular expression"
-msgstr ""
+msgstr "Reguliarios išraiškos rezultatas"
 
 #: inc/rule.class.php:1510
 msgid "Key"
@@ -12331,7 +12331,7 @@ msgstr ""
 #: inc/ruledictionnarysoftwarecollection.class.php:296
 #: inc/ruledictionnarysoftwarecollection.class.php:398
 msgid "Software deleted by GLPI dictionary rules"
-msgstr "Programinę įrangą pašalino GLPĮ katalogo taisyklės"
+msgstr "Programinė įranga pašalinta pagal GLPĮ žodyno taisyklės"
 
 #: inc/ruleimportcomputer.class.php:62
 #: inc/ruleimportcomputercollection.class.php:62
@@ -12437,7 +12437,7 @@ msgstr "Padalinys, nurodytas vartotojo profilyje"
 
 #: inc/rulemailcollector.class.php:210 inc/rulemailcollector.class.php:215
 msgid "Reject email"
-msgstr ""
+msgstr "Atmeskite elektroninį laišką"
 
 #: inc/rulemailcollector.class.php:211
 msgid "without email response"
@@ -12461,7 +12461,7 @@ msgstr ""
 
 #: inc/ruleright.class.php:308
 msgid "Entity based on LDAP information"
-msgstr "Padalinys iš LDAP informacijos"
+msgstr "Padalinys pagal LDAP informaciją"
 
 #: inc/ruleright.class.php:318
 msgid "Entity from mail domain"
@@ -12861,7 +12861,7 @@ msgstr ""
 #: inc/ticket.class.php:736 inc/ticket.class.php:1056
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
-msgstr ""
+msgstr "Neužpildyti privalomi laukai. Prašome pataisyti: %s"
 
 #: inc/ticket.class.php:784 inc/ticket.class.php:1325
 msgid "Unknown ticket"
@@ -13198,9 +13198,9 @@ msgstr ""
 #: inc/tickettemplatemandatoryfield.class.php:49
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Privalomas laukas"
+msgstr[1] "Privalomi laukai"
+msgstr[2] "Privalomi laukai"
 
 #: inc/tickettemplatemandatoryfield.class.php:210
 msgid "Add a mandatory field"

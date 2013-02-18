@@ -5,15 +5,15 @@
 # Translators:
 #   <eiseli@gmail.com>, 2012.
 # Erich Iseli <eiseli@gmail.com>, 2012.
-# Mathieu Simon <mathieu.sim@gmail.com>, 2012.
+# Mathieu Simon <mathieu.sim@gmail.com>, 2012-2013.
 #   <thofl@hotmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-02-12 08:54+0100\n"
-"PO-Revision-Date: 2013-02-04 20:34+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-02-16 11:10+0000\n"
+"Last-Translator: Mathieu Simon <mathieu.sim@gmail.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/GLPI/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1868,8 +1868,8 @@ msgstr "Neue Benutzer importieren"
 #: inc/mailcollector.class.php:77 inc/mailcollector.class.php:1537
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Empfänger"
+msgstr[1] "Empfänger"
 
 #: front/mailcollector.php:45 front/setup.auth.php:58
 #: inc/authmail.class.php:199
@@ -2952,7 +2952,7 @@ msgstr "zugewiesen zu"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
-msgstr ""
+msgstr "Zugewiesene(r) TechnikerIn"
 
 #: front/stat.tracking.php:104
 msgid "Technician in tasks"
@@ -3710,11 +3710,11 @@ msgstr ""
 
 #: inc/authldap.class.php:2658
 msgid "Expert mode"
-msgstr ""
+msgstr "Expertenmodus"
 
 #: inc/authldap.class.php:2660
 msgid "Simple mode"
-msgstr ""
+msgstr "Einfacher Modus"
 
 #: inc/authldap.class.php:2684
 msgctxt "button"
@@ -3745,7 +3745,7 @@ msgstr "Beibehalten"
 
 #: inc/authldap.class.php:2964
 msgid "Put in dustbin"
-msgstr ""
+msgstr "In Papierkorb legen"
 
 #: inc/authldap.class.php:2965
 msgid "Withdraw dynamic authorizations and groups"
@@ -3904,7 +3904,7 @@ msgstr ""
 
 #: inc/bookmark.class.php:649
 msgid "Save as bookmark"
-msgstr ""
+msgstr "Als Lesezeichen speichern"
 
 #: inc/budget.class.php:48 inc/contract.class.php:739
 #: inc/contractcost.class.php:234 inc/contractcost.class.php:298
@@ -4054,8 +4054,8 @@ msgstr "Im Budget verbleibender Betrag"
 #: inc/ticketrecurrent.class.php:272
 msgid "Calendar"
 msgid_plural "Calendars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kalender"
+msgstr[1] "Kalender"
 
 #: inc/calendar.class.php:92 inc/calendar.class.php:109
 msgctxt "button"
@@ -4308,8 +4308,8 @@ msgstr ""
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Monat"
+msgstr[1] "%d Monate"
 
 #: inc/cartridgeitem.class.php:192 inc/cartridgeitem.class.php:281
 #: inc/consumableitem.class.php:138 inc/consumableitem.class.php:228
@@ -4766,8 +4766,8 @@ msgstr[1] "Probleme"
 #: inc/changetask.class.php:45
 msgid "Change task"
 msgid_plural "Change tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aufgabe ändern"
+msgstr[1] "Aufgaben ändern"
 
 #: inc/change_ticket.class.php:57
 msgid "Link Ticket/Change"
@@ -4859,7 +4859,7 @@ msgstr ""
 #: inc/ticket.class.php:4467 inc/transfer.class.php:2978
 msgctxt "button"
 msgid "Put in dustbin"
-msgstr ""
+msgstr "In Papierkorb legen"
 
 #. TRANS: %s is the template name
 #: inc/commondbtm.class.php:2039 inc/computer.class.php:573
@@ -7735,7 +7735,7 @@ msgstr[1] "Aktualisierungsquellen"
 
 #: inc/dropdown.class.php:735 inc/networkport.class.php:843
 msgid "Networking"
-msgstr ""
+msgstr "Netzwerk"
 
 #: inc/dropdown.class.php:738 inc/networkequipment.class.php:331
 #: inc/networkequipment.class.php:480
@@ -7754,7 +7754,7 @@ msgstr "VLAN"
 #: inc/dropdown.class.php:745 inc/profile.class.php:687
 #: inc/profile.class.php:1451
 msgid "Internet"
-msgstr ""
+msgstr "Internet"
 
 #: inc/dropdown.class.php:746 inc/ipnetwork.class.php:63
 msgid "IP network"
@@ -7790,8 +7790,8 @@ msgstr[1] ""
 #: inc/dropdown.class.php:757 inc/usercategory.class.php:42
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Benutzerdefinierte Kategorie"
+msgstr[1] "Benutzerdefinierte Kategorien"
 
 #: inc/dropdown.class.php:759 inc/profile.class.php:1196
 #: inc/profile.class.php:1585 inc/ruleright.class.php:78
@@ -7901,7 +7901,7 @@ msgstr ""
 
 #: inc/dropdown.class.php:1749
 msgid "Current page in portrait PDF"
-msgstr ""
+msgstr "Aktuelle Seite als PDF im Querformat"
 
 #: inc/dropdown.class.php:1751
 msgid "Current page in SLK"
@@ -7913,7 +7913,7 @@ msgstr "Angezeigte Seite als CSV"
 
 #: inc/dropdown.class.php:1753
 msgid "All pages in landscape PDF"
-msgstr ""
+msgstr "Alle Seiten als PDF im Querformat"
 
 #: inc/dropdown.class.php:1755
 msgid "All pages in portrait PDF"
@@ -8027,7 +8027,7 @@ msgstr "Automatisches Abschließen der gelösten Tickets nach"
 
 #: inc/entity.class.php:640 inc/entity.class.php:1750
 msgid "Immediatly"
-msgstr ""
+msgstr "Sofort"
 
 #: inc/entity.class.php:644
 msgid "Alerts on tickets which are not solved"
@@ -9729,7 +9729,7 @@ msgstr "Kein Netzwerkname gefunden"
 
 #: inc/networkportaggregate.class.php:46
 msgid "Aggregation port"
-msgstr ""
+msgstr "Aggregation Port"
 
 #: inc/networkportaggregate.class.php:95 inc/networkportalias.class.php:93
 #: inc/networkportinstantiation.class.php:616
