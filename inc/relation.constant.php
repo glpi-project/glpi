@@ -287,7 +287,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_knowbaseitems_users'    => 'knowbaseitems_id'),
 
                   "glpi_links"
-                        => array('glpi_links_itemtypes' => 'links_id'),
+                        => array('_glpi_links_itemtypes' => 'links_id'),
 
                   "glpi_locations"
                         => array('glpi_cartridgeitems'    => 'locations_id',
