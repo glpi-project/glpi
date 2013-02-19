@@ -578,7 +578,7 @@ $RELATION = array("glpi_authldaps"
 //                                  'glpi_changes'             => array('users_id_recipient',
 //                                                                      'users_id_lastupdater'),
 //                                  'glpi_changes_users'       => 'users_id',
-                                 'glpi_changetasks'         => array('users_id', 'users_id_tech'),
+//                                 'glpi_changetasks'         => array('users_id', 'users_id_tech'),
                                  'glpi_computers'           => array('users_id_tech', 'users_id'),
                                  'glpi_consumableitems'     => 'users_id_tech',
                                  'glpi_displaypreferences'  => 'users_id',
