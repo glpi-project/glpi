@@ -4112,6 +4112,7 @@ class Html {
       echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
       echo "theme_advanced_toolbar_location : 'top',
          theme_advanced_toolbar_align : 'left',
+	 theme_advanced_statusbar_location : 'none',
          theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
          theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
          theme_advanced_buttons3 : ''});";
