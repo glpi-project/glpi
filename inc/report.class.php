@@ -49,7 +49,12 @@ class Report {
       return _n('Report', 'Reports', $nb);
    }
 
-
+   
+   /**
+    * Show report title
+    *
+    * @param none
+   **/
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
 
@@ -138,5 +143,133 @@ class Report {
       echo "</tr>";
       echo "</table>";
    }
+   
+   /**
+    * Show Default Report
+    *
+    * @param none
+   **/
+   static function showDefaultReport() {
+      global $DB;
+      
+      # Title
+      echo "<span class='big b'>GLPI ".Report::getTypeName(2)."</span><br><br>";
+
+      # 1. Get counts of itemtype
+      $items = array('Computer',
+                     'Printer',
+                     'NetworkEquipment',
+                     'Software',
+                     'Monitor',
+                     'Peripheral',
+                     'Phone');
+
+      $linkitems = array('Printer',
+                     'Monitor',
+                     'Peripheral',
+                     'Phone');
+
+      echo "<table class='tab_cadrehov'>";
+
+      foreach ($items as $itemtype) {
+         
+         $table_item = getTableForItemType($itemtype);
+         
+         $where = "WHERE `".$table_item."`.`is_deleted` = '0'
+                      AND `".$table_item."`.`is_template` = '0' ";
+                      
+         $join ="";
+         if (in_array($itemtype, $linkitems)) {
+            $join =  "LEFT JOIN `glpi_computers_items`
+                        ON (`glpi_computers_items`.`itemtype` = '".$itemtype."'
+                       AND `glpi_computers_items`.`items_id` = `".$table_item."`.`id`)";
+
+         }
+         $query = "SELECT COUNT(*)
+                FROM `".$table_item."`
+                $join
+                $where ".
+                  getEntitiesRestrictRequest("AND",$table_item);
+         $result              = $DB->query($query);
+         $number = $DB->result($result,0,0);
+         
+         echo "<tr class='tab_bg_2'><td>".$itemtype::getTypeName(2)."</td>";
+         echo "<td class='numeric'>$number</td></tr>";
+
+      }
+
+      echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
+
+
+      # 2. Get some more number data (operating systems per computer)
+
+      $where = "WHERE `is_deleted` = '0'
+                      AND `is_template` = '0' ";
+                      
+      $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
+                FROM `glpi_computers`
+                LEFT JOIN `glpi_operatingsystems`
+                   ON (`glpi_computers`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
+                $where ".
+                  getEntitiesRestrictRequest("AND","glpi_computers")."
+                GROUP BY `glpi_operatingsystems`.`name`";
+      $result = $DB->query($query);
+
+      while ($data=$DB->fetch_assoc($result)) {
+         if (empty($data['name'])) {
+            $data['name'] = Dropdown::EMPTY_VALUE;
+         }
+         echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
+         echo "<td class='numeric'>".$data['count']."</td></tr>";
+      }
+
+      # Get counts of types
+      
+      $val = array_flip($items);
+      unset($val["Software"]);
+      $items = array_flip($val);
+
+      foreach ($items as $itemtype) {
+         
+         echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$itemtype::getTypeName(2)."</td></tr>";
+
+         $table_item = getTableForItemType($itemtype);
+         $typeclass = $itemtype."Type";
+         $type_table = getTableForItemType($typeclass);
+         $typefield = getForeignKeyFieldForTable(getTableForItemType($typeclass));
+         
+         $where = "WHERE `".$table_item."`.`is_deleted` = '0'
+                      AND `".$table_item."`.`is_template` = '0' ";
+                      
+         $join ="";
+         if (in_array($itemtype, $linkitems)) {
+            $join =  "LEFT JOIN `glpi_computers_items`
+                        ON (`glpi_computers_items`.`itemtype` = '".$itemtype."'
+                       AND `glpi_computers_items`.`items_id` = `".$table_item."`.`id`)";
+
+         }
+         
+         $query = "SELECT COUNT(*) AS count, `".$type_table."`.`name` AS name
+                FROM `".$table_item."`
+                LEFT JOIN `".$type_table."`
+                   ON (`".$table_item."`.`".$typefield."`
+                        = `".$type_table."`.`id`)
+                $join
+                $where ".
+                    getEntitiesRestrictRequest("AND",$table_item)."
+                GROUP BY `".$type_table."`.`name`";
+         $result = $DB->query($query);
+
+         while ($data=$DB->fetch_assoc($result)) {
+            if (empty($data['name'])) {
+               $data['name'] = Dropdown:: EMPTY_VALUE;
+            }
+            echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
+            echo "<td class='numeric'>".$data['count']."</td></tr>";
+         }
+      }
+      echo "</table>";
+   }
 }
+
 ?>
