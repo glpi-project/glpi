@@ -49,14 +49,20 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
    // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_locations`.`name`, `glpi_locations`.`id`,
                     `glpi_netpoints`.`name` AS prise, `glpi_networkports`.`name` AS port,
-                    `glpi_networkports`.`ip`, `glpi_networkports`.`mac`,
+                    `glpi_ipaddress`.`name` AS ip, `glpi_networkports`.`mac`,
                     `glpi_networkports`.`id` AS IDport
              FROM `glpi_netpoints`
              LEFT JOIN `glpi_locations`
                   ON `glpi_locations`.`id` = `glpi_netpoints`.`locations_id`
              LEFT JOIN `glpi_networkports`
                   ON `glpi_networkports`.`netpoints_id` = `glpi_netpoints`.`id`
-             WHERE `glpi_netpoints`.`id` = '".$_POST["prise"]."'
+             LEFT JOIN `glpi_networknames`
+                  ON (`glpi_networknames`.`itemtype` = 'NetworkPort'
+                      AND `glpi_networkports`.`id` = `glpi_networknames`.`items_id`)
+             LEFT JOIN `glpi_ipaddresses`
+                  ON (`glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                      AND `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`)
+         WHERE `glpi_netpoints`.`id` = '".$_POST["prise"]."'
                    AND `glpi_networkports`.`itemtype` = 'NetworkEquipment'";
 
    /*!
@@ -98,7 +104,8 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
                   $ordi = $item->getName();
                }
             }
-            $ip2      = $np->fields['ip'];
+            // TODO get IPs from opposite network port
+            $ip2      = '';
             $mac2     = $np->fields['mac'];
             $portordi = $np->fields['name'];
          }

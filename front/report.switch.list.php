@@ -48,13 +48,19 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
         "</h2></div>";
 
    // TODO : must be review at the end of Damien's work
-   $query = "SELECT `glpi_networkports`.`name` AS port, `glpi_networkports`.`ip`AS ip,
+   $query = "SELECT `glpi_networkports`.`name` AS port, `glpi_ipaddresses`.`name` AS ip,
                     `glpi_networkports`.`mac` AS mac, `glpi_networkports`.`id` AS IDport,
                     `glpi_networkequipments`.`name` AS switch
              FROM `glpi_networkequipments`
              INNER JOIN `glpi_networkports`
                   ON (`glpi_networkports`.`itemtype` = 'NetworkEquipment'
                       AND `glpi_networkports`.`items_id` = `glpi_networkequipments`.`id`)
+             LEFT JOIN `glpi_networknames`
+                  ON (`glpi_networknames`.`itemtype` = 'NetworkPort'
+                      AND `glpi_networkports`.`id` = `glpi_networknames`.`items_id`)
+             LEFT JOIN `glpi_ipaddresses`
+                  ON (`glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                      AND `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`)
              WHERE `glpi_networkequipments`.`id` = '".$_POST["switch"]."'";
 
    $result = $DB->query($query);
@@ -87,8 +93,8 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
                   $ordi = $item->getName();
                }
             }
-
-            $ip2      = $np->fields['ip'];
+            // TODO get IPs from opposite network port
+            $ip2      = '';
             $mac2     = $np->fields['mac'];
             $portordi = $np->fields['name'];
          }
