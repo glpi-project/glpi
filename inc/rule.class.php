@@ -2075,8 +2075,10 @@ class Rule extends CommonDBTM {
       //Agregate all plugins criteria for this rules engine
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {
+         $array = array();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (in_array(static::getType(), $val)) {
+            $array['$val'] = $val;
+            if (in_array(static::getType(), $array)) {
                $results = Plugin::doOneHook($plugin, $hook, array('rule_itemtype' => $itemtype,
                                                                   'values'        => $params));
                if (is_array($results)) {
