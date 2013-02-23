@@ -525,28 +525,6 @@ class NetworkEquipment extends CommonDBTM {
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
 
-
-      $tab[20]['table']         = 'glpi_ipaddresses';
-      $tab[20]['field']         = 'name';
-      $tab[20]['name']          = __('IP');
-      $tab[20]['datatype']      = 'dropdown';
-      $tab[20]['forcegroupby']  = true;
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
-                                        'specific_itemtype' => 'NetworkName',
-                                        'beforejoin'
-                                         => array('table'      => 'glpi_networknames',
-                                                  'joinparams'
-                                                   => array('jointype'          => 'itemtype_item',
-                                                            'specific_itemtype' => 'NetworkEquipment',
-                                                            'beforejoin'
-                                                             => array('table'
-                                                                        => 'glpi_networkequipments',
-                                                                      'joinparams'
-                                                                        => array('jointype'
-                                                                                  => 'itemtype_item')))));
-
-
       return $tab;
    }
 
