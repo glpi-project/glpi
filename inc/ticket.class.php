@@ -3634,7 +3634,6 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
       // Default check
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -3743,6 +3742,13 @@ class Ticket extends CommonITILObject {
 
       if (!$options['template_preview']) {
          $this->showTabs($options);
+      } else {
+         // Add all values to fields of tickets for template preview
+         foreach ($values as $key => $val) {
+            if (!isset($this->fields[$key])) {
+               $this->fields[$key] = $val;
+            }
+         }
       }
 
       // In percent
