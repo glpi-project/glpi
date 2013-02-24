@@ -650,7 +650,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
       global $CFG_GLPI;
 
-      if ($item = getItemForItemtype($_POST['itemtype'])) {
+      if ($item = getItemForItemtype($itemtype)) {
          $objectitemtype = $item->getItilObjectItemType();
 
          //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
