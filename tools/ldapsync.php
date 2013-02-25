@@ -90,7 +90,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
    }
 
    $entity = new Entity();
-   if ($entity->getFromDB($id=$data['entities_id'])) {
+   if ($entity->getFromDB($id=$data['id'])) {
       $tps = microtime(true);
       if ($verb) {
          echo "  $pid: Synchonizing entity '".$entity->getField('completename')."' ($id, mail=$mail)\n";
@@ -227,7 +227,7 @@ if (isset($_GET['verbose'])) {
 }
 $server = 0;
 if (isset($_GET['entity'])) {
-   $crit = array('entities_id' => $_GET['entity']);
+   $crit = array('id' => $_GET['entity']);
 
 } else if (isset($_GET['server'])) {
    if (is_numeric($_GET['server'])) {
@@ -267,7 +267,7 @@ $nb   = 0;
 $pids = array();
 
 $rows = array();
-foreach ($DB->request('glpi_entitydatas', $crit) as $row) {
+foreach ($DB->request('glpi_entities', $crit) as $row) {
    $rows[] = $row;
 }
 if ($verb) {
