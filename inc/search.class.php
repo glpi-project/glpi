@@ -891,8 +891,7 @@ class Search {
             // Define begin and end var for loop
             // Search case
             $begin_display = $p['start'];
-            $end_display   = $p['start']+$LIST_LIMIT;
-
+            $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
             // No search Case
             if ($nosearch) {
                $begin_display = 0;
