@@ -434,6 +434,25 @@ class RuleCollection extends CommonDBTM {
          $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities);
          Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
+
+      echo "<tr>";
+      echo "<th>";
+      if ($canedit) {
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+      }
+      echo "</th>";
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Description')."</th>";
+      echo "<th>".__('Active')."</th>";
+
+      if ($display_entities) {
+         echo "<th>".__('Entity')."</th>\n";
+      }
+      if (!$display_entities) {
+         echo "<th colspan='2'>&nbsp;</th>";
+      }
+      echo "</tr>\n";
+      
       echo "</table>\n";
 
       if ($canedit && $nb) {
