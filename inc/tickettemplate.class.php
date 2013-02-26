@@ -179,6 +179,8 @@ class TicketTemplate extends CommonDropdown {
                                                        'glpi_tickets')        => 'actiontime',
                      $ticket->getSearchOptionIDByField('field', 'itemtype',
                                                        'glpi_tickets')        => 'itemtype',
+                     $ticket->getSearchOptionIDByField('field', 'global_validation',
+                                                       'glpi_tickets')        => 'global_validation',
 
                      4                                                        => '_users_id_requester',
                      71                                                       => '_groups_id_requester',
