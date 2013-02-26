@@ -117,7 +117,7 @@ class MailCollector  extends CommonDBTM {
          $input["host"] = Toolbox::constructMailServerConfig($input);
       }
 
-      if (!NotificationMail::isUserAddressValid($input['name'])) {
+      if (isset($input['name']) && !NotificationMail::isUserAddressValid($input['name'])) {
          Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
       }
 
@@ -694,7 +694,6 @@ class MailCollector  extends CommonDBTM {
       } else {
          $tkt['content'] = $body;
       }
-
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
@@ -815,7 +814,6 @@ class MailCollector  extends CommonDBTM {
             }
          }
       }
-
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
    }
@@ -1055,9 +1053,9 @@ class MailCollector  extends CommonDBTM {
    **/
    function get_mime_type(&$structure) {
 
-      $primary_mime_type = array("APPLICATION", "AUDIO", "IMAGE", "MESSAGE", "MULTIPART", "OTHER",
-                                 "TEXT", "VIDEO");
-
+      // DO NOT REORDER IT
+      $primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO",
+                                 "IMAGE", "VIDEO", "OTHER");
       if ($structure->subtype) {
          return $primary_mime_type[intval($structure->type)] . '/' . $structure->subtype;
       }
@@ -1337,6 +1335,7 @@ class MailCollector  extends CommonDBTM {
    function getBody($mid) {// Get Message Body
 
       $this->getStructure($mid);
+      
       $body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
 
       if ($body == "") {
