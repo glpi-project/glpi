@@ -187,7 +187,15 @@ class Document extends CommonDBTM {
           && (!isset($input['filename']) || empty($input['filename']))) {
          return false;
       }
-
+      
+      // Set default category for document linked to tickets
+      if (isset($input['itemtype'])
+         && $input['itemtype'] == 'Ticket'
+         && (!isset($input['documentcategories_id'])
+            || $input['documentcategories_id'] == 0)) {
+         $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
+      }
+      
       /* Unicity check
       if (isset($input['sha1sum'])) {
          // Check if already upload in the current entity
