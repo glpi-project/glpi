@@ -133,10 +133,11 @@ class NotificationTarget extends CommonDBChild {
     * @return true
    **/
    function validateSendTo(array $infos, $notify_me=false) {
-
+      
       if (!$notify_me) {
          if (isset($infos['users_id'])
-             && ($infos['users_id'] === Session::getLoginUserID())) {
+             // Check login user and not event launch by crontask
+             && ($infos['users_id'] === Session::getLoginUserID(false))) {
             return false;
          }
       }
@@ -651,7 +652,6 @@ class NotificationTarget extends CommonDBChild {
       if ($manager) {
          $query .= " AND `glpi_groups_users`.`is_manager` ";
       }
-
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
       }
