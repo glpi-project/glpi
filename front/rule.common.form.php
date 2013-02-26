@@ -44,52 +44,16 @@ if (!isset($_GET["id"])) {
 $rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
-if (isset($_POST["delete_criteria"])) {
-/// TODO create specific form
-
-   $rulecollection->checkGlobal('w');
-
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         $input["id"] = $key;
-         $rulecriteria->delete($input);
-      }
-   }
-   // Can't do this in RuleCriteria, so do it here
-   $rule->update(array('id'       => $_POST['rules_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
-   Html::back();
-
-} else if (isset($_POST["delete_action"])) {
-   $rulecollection->checkGlobal('w');
-
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         $input["id"] = $key;
-         $ruleaction->delete($input);
-      }
-   }
-   // Can't do this in RuleAction, so do it here
-   $rule->update(array('id'       => $_POST['rules_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
-   Html::back();
-
-} else if (isset($_POST["add_criteria"])) {
+if (isset($_POST["add_criteria"])) {
    $rulecollection->checkGlobal('w');
    $rulecriteria->add($_POST);
 
-   // Can't do this in RuleCriteria, so do it here
-   $rule->update(array('id'       => $_POST['rules_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
    Html::back();
 
 } else if (isset($_POST["add_action"])) {
    $rulecollection->checkGlobal('w');
    $ruleaction->add($_POST);
 
-   // Can't do this in RuleCriteria, so do it here
-   $rule->update(array('id'       => $_POST['rules_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
    Html::back();
 
 } else if (isset($_POST["update"])) {

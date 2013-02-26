@@ -79,51 +79,14 @@ if (isset($_POST["update"])) {
    $action = new SlaLevelAction();
    $action->add($_POST);
 
-   // Can't do this in SlaLevelAction, so do it here
-   $item->update(array('id'       => $_POST['slalevels_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
    Html::back();
 
-} else if (isset($_POST["delete_action"])) {
-   $item->check($_POST['slalevels_id'], 'w');
-
-   $action = new SlaLevelAction();
-
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         $input["id"] = $key;
-         $action->delete($input);
-      }
-   }
-   // Can't do this in RuleAction, so do it here
-   $item->update(array('id'       => $_POST['slalevels_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
-   Html::back();
-
-} else if (isset($_POST["delete_criteria"])) {
-   $item->check($_POST['slalevels_id'], 'w');
-
-   $criteria = new SlaLevelCriteria();
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         $input["id"] = $key;
-         $criteria->delete($input);
-      }
-   }
-   // Can't do this in RuleCriteria, so do it here
-   $item->update(array('id'       => $_POST['slalevels_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
-   Html::back();
-
-}  else if (isset($_POST["add_criteria"])) {
+} else if (isset($_POST["add_criteria"])) {
 
    $item->check($_POST['slalevels_id'], 'w');
    $criteria = new SlaLevelCriteria();
    $criteria->add($_POST);
 
-   // Can't do this in RuleCriteria, so do it here
-   $item->update(array('id'       => $_POST['slalevels_id'],
-                       'date_mod' => $_SESSION['glpi_currenttime']));
    Html::back();
 
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) { //print computer information
