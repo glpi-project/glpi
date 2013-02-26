@@ -1009,7 +1009,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Set default status to avoid notice
       if (!isset($input["status"])) {
-         $input["status"] = "new";
+         $input["status"] = self::INCOMING;
       }
 
       if (!isset($input["urgency"])
