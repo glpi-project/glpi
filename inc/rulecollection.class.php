@@ -435,24 +435,25 @@ class RuleCollection extends CommonDBTM {
          Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
 
-      echo "<tr>";
-      echo "<th>";
-      if ($canedit) {
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-      }
-      echo "</th>";
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Description')."</th>";
-      echo "<th>".__('Active')."</th>";
+      if ($nb) {
+         echo "<tr>";
+         echo "<th>";
+         if ($canedit) {
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         }
+         echo "</th>";
+         echo "<th>".__('Name')."</th>";
+         echo "<th>".__('Description')."</th>";
+         echo "<th>".__('Active')."</th>";
 
-      if ($display_entities) {
-         echo "<th>".__('Entity')."</th>\n";
+         if ($display_entities) {
+            echo "<th>".__('Entity')."</th>\n";
+         }
+         if (!$display_entities) {
+            echo "<th colspan='2'>&nbsp;</th>";
+         }
+         echo "</tr>\n";
       }
-      if (!$display_entities) {
-         echo "<th colspan='2'>&nbsp;</th>";
-      }
-      echo "</tr>\n";
-      
       echo "</table>\n";
 
       if ($canedit && $nb) {
