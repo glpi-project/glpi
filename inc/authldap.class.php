@@ -1348,12 +1348,20 @@ class AuthLDAP extends CommonDBTM {
                }
                echo "</tr>";
             }
+
+            echo "<tr>";
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+            $num = 0;
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', 2), $num,
+                                        $_SERVER['PHP_SELF'].
+                                                "?order=".($values['order']=="DESC"?"ASC":"DESC"));
+            echo "<th>".__('Last update in the LDAP directory')."</th>";
             if ($_SESSION['ldap_import']['mode']) {
-               $colspan = 6;
+               echo "<th>".__('Last update in GLPI')."</th>";
             }
-            else {
-               $colspan = 5;
-            }
+            echo "</tr>";            
             echo "</table>";
 
             $paramsma['ontop'] = false;
