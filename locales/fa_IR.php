@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2013 by the INDEPNET Development Team.
-
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //fa_IR
 
@@ -862,8 +862,8 @@ $LANG['install'][74]="آزمایش اینکه  Session_use_trans_sid استفا�
 $LANG['install'][75]="باید گزینه Session_use_trans_id را در php.ini غیرفعال کنید"; 
 $LANG['install'][76]="خوب - جلسات کار می کند( هیچ مشکلی با trans_id)  ندارد)- کامل!"; 
 $LANG['install'][77]="مرحله"; 
-$LANG['install'][78]="GLPI can't work correctly without the ctype functions"; // en_GB string to be translated
-$LANG['install'][79]="ctype extension test"; // en_GB string to be translated
+$LANG['install'][78]="GLPI بدون توابع ctype بدرستی نمی تواند کار کند"; 
+$LANG['install'][79]="آزمون افزونه ctype"; 
 $LANG['install'][81]="شروع نصب"; 
 $LANG['install'][82]="پایگاه داده ساخته شد"; 
 $LANG['install'][85]="قابلیت موجود - کامل!"; 

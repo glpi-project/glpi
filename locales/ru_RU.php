@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2013 by the INDEPNET Development Team.
-
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //ru_RU
 
@@ -794,8 +794,8 @@ $LANG['help'][50]="Низкое";
 $LANG['help'][51]="Очень низкое"; 
 
 $LANG['install'][0]="Установка или обновление GLPI"; 
-$LANG['install'][1]="Выберите 'Установка' для новой полной установки GLPI."; 
-$LANG['install'][2]="Выберите 'Обновление' для обновления старой версии GLPI"; 
+$LANG['install'][1]="Выберите 'Установка' для новой установки GLPI."; 
+$LANG['install'][2]="Выберите 'Обновление' для обновления предыдущей версии GLPI"; 
 $LANG['install'][3]="Установка"; 
 $LANG['install'][4]="Обновление"; 
 $LANG['install'][5]="Проверка окружения на совместимость с GLPI"; 

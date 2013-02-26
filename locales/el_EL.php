@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2013 by the INDEPNET Development Team.
-
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //el_EL
 
@@ -806,7 +806,7 @@ $LANG['install'][9]="Πρέπει να εγκαταστήσετε κατ'ελα�
 $LANG['install'][10]="Το GLPI δεν είναι συμβατό με την επιλογή zend.ze1_compatibility_mode = On."; 
 $LANG['install'][11]="Η έκδοση PHP είναι τουλάχιστον 5.x - Τέλεια !"; 
 $LANG['install'][12]="Έλεγχος υποστήριξης των sessions"; 
-$LANG['install'][13]="Your parser PHP is not installed with sessions support!"; // en_GB string to be translated
+$LANG['install'][13]="O parser PHP δεν εγκαταστάθηκε με υποστήριξη sessions !"; 
 $LANG['install'][14]="Η υποστήριξη των sessions είναι υπαρκτή - Τέλεια !"; 
 $LANG['install'][15]="Σιγουρέψτε πως έχει ενεργοποιηθεί η υποστήριξη των sesions στο php.ini"; 
 $LANG['install'][16]="Έλεγχος δικαιώματος εγγραφής στα προσωρινά αρχεία"; 
@@ -1085,7 +1085,7 @@ $LANG['links'][7]="Δεν ορίστηκε σύνδεσμος";
 $LANG['links'][9]="Περιεχόμενο αρχείου"; 
 
 $LANG['log'][1]="σύστημα"; 
-$LANG['log'][16]="Προγραμματισμός"; 
+$LANG['log'][16]="προγραμματισμός"; 
 $LANG['log'][18]="εξαρτήματα"; 
 $LANG['log'][20]="Προσθήκη του αντικειμένου"; 
 $LANG['log'][21]="Ενημέρωση αντικειμένου"; 
@@ -1795,7 +1795,7 @@ $LANG['rulesengine'][146]="Χρήστης χαρακτηρισμένος με α
 $LANG['rulesengine'][147]="Χρήστης χαρακτηρισμένος με μοναδικό προφίλ"; 
 $LANG['rulesengine'][148]="Άγνωστο domain ηλεκτρονικής αλληλογραφίας"; 
 $LANG['rulesengine'][149]="Εισηγμένη ομάδα από κατάλογο LDAP"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
+$LANG['rulesengine'][150]="Οι συνδεδεμένοι με την οντότητα κανόνες έχουν απενεργοποιηθεί."; 
 $LANG['rulesengine'][151]="υπάρχει ήδη στο GLPI"; 
 $LANG['rulesengine'][152]="Υπολογιστής προς εισαγωγή"; 
 $LANG['rulesengine'][154]="είναι άδειο στο GLPI"; 
@@ -2206,19 +2206,19 @@ $LANG['stats'][0]="Επέλεξε τα στατιστικά που θα προβ
 $LANG['stats'][1]="Παγκόσμια"; 
 $LANG['stats'][2]="Δεν υπάρχει αντικείμενο προς εμφάνιση"; 
 $LANG['stats'][3]="Ανά αντικείμενο"; 
-$LANG['stats'][5]="Number opened"; // en_GB string to be translated
+$LANG['stats'][5]="Αριθμός ανοιγμένων"; 
 $LANG['stats'][7]="Δείξε γραφικά"; 
 $LANG['stats'][8]="Μέσος χρόνος"; 
 $LANG['stats'][9]="Ανάλυση"; 
 $LANG['stats'][10]="Κλείνει"; 
-$LANG['stats'][11]="Number resolved"; // en_GB string to be translated
+$LANG['stats'][11]="Αριθμός επιλυμένων"; 
 $LANG['stats'][12]="Να ληφθεί υπόψιν"; 
 $LANG['stats'][13]="Αριθμός αιτημάτων"; 
 $LANG['stats'][14]="Πραγματική διάρκεια"; 
 $LANG['stats'][15]="Αριθμός προβλημάτων"; 
 $LANG['stats'][16]="Όνομα τεχνικού"; 
-$LANG['stats'][17]="Number closed"; // en_GB string to be translated
-$LANG['stats'][19]="Number resolved late"; // en_GB string to be translated
+$LANG['stats'][17]="Αριθμός κλειστών"; 
+$LANG['stats'][19]="Αριθμός επιλυμένων καθυστερημένα"; 
 $LANG['stats'][20]="Όνομα χρήστη"; 
 $LANG['stats'][21]="Χρόνος επίλυσης"; 
 $LANG['stats'][22]="Χρόνος κλεισίματος"; 

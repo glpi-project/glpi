@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2013 by the INDEPNET Development Team.
-
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //cs_CZ
 
@@ -462,7 +462,7 @@ $LANG['crontask'][39]="Počet emailů k načtení";
 $LANG['crontask'][40]="Poslední běh"; 
 $LANG['crontask'][41]="Příští běh"; 
 $LANG['crontask'][42]="Co možná nejdříve"; 
-$LANG['crontask'][43]="Žádné čekající akce"; 
+$LANG['crontask'][43]="Žádné pozastavené akce"; 
 $LANG['crontask'][44]="Akce dokončena, částečně zpracováno"; 
 $LANG['crontask'][45]="Akce dokončena, zcela zpracováno"; 
 $LANG['crontask'][46]="Akce dokončena, nic ke zpracování"; 
@@ -983,7 +983,7 @@ $LANG['joblist'][19]="Zpracováváno (naplánováno)";
 $LANG['joblist'][20]="Žádný problém nenalezen."; 
 $LANG['joblist'][21]="Zpracováváno"; 
 $LANG['joblist'][25]="Požadavek na propojené položky"; 
-$LANG['joblist'][26]="Nevyřízené"; 
+$LANG['joblist'][26]="Pozastavené"; 
 $LANG['joblist'][27]="Email pro doplňující zprávu"; 
 $LANG['joblist'][28]="Požadavky na propojené položky"; 
 $LANG['joblist'][29]="Naléhavost"; 

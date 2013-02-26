@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2013 by the INDEPNET Development Team.
-
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //lv_LV
 
@@ -243,7 +243,7 @@ $LANG['common'][8]="Pārvaldīt sagataves...";
 $LANG['common'][9]="Pievienot sagatavi..."; 
 $LANG['common'][10]="Atbildīgais tehniķis"; 
 $LANG['common'][11]="Ierobežots skatījums"; 
-$LANG['common'][12]="Iestatīšana"; 
+$LANG['common'][12]="Konfigurēt"; 
 $LANG['common'][13]="Sagatave"; 
 $LANG['common'][14]="Sagataves"; 
 $LANG['common'][15]="Atrašanās vieta"; 
@@ -2247,7 +2247,7 @@ $LANG['title'][26]="Galvenais";
 $LANG['title'][27]="Savienojumi"; 
 $LANG['title'][28]="Pieteikumi"; 
 $LANG['title'][32]="Saite"; 
-$LANG['title'][33]="Ārējie linki"; 
+$LANG['title'][33]="Saites ārpus GLPI"; 
 $LANG['title'][34]="Linki"; 
 $LANG['title'][36]="Piezīme"; 
 $LANG['title'][37]="Piezīmes"; 
