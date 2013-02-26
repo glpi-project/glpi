@@ -1361,7 +1361,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function deleteMails($mid, $folder='') {
 
-      if ($folder) {
+      if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
             return true;
