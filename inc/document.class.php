@@ -213,6 +213,14 @@ class Document extends CommonDBTM {
          return false;
       }
 
+      // Set default category for document linked to tickets
+      if (isset($input['itemtype'])
+         && $input['itemtype'] == 'Ticket'
+         && (!isset($input['documentcategories_id'])
+            || $input['documentcategories_id'] == 0)) {
+         $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
+      }
+      
       /* Unicity check
       if (isset($input['sha1sum'])) {
          // Check if already upload in the current entity
@@ -1449,7 +1457,6 @@ class Document extends CommonDBTM {
             echo "<input type='hidden' name='items_id' value='$ID'>";
             if ($item->getType()=='Ticket') {
                echo "<input type='hidden' name='tickets_id' value='$ID'>";
-               echo "<input type='hidden' name='documentcategories_id' value='".$CFG_GLPI["documentcategories_id_forticket"]."'>";
             }
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
