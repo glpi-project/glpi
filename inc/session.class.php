@@ -83,7 +83,8 @@ class Session {
          self::destroy();
          self::start();
          $_SESSION = $save;
-
+         // Define default time
+         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
          // Normal mode for this request
          $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
          // Check ID exists and load complete user from DB (plugins...)
