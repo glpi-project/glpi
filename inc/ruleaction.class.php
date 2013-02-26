@@ -95,7 +95,24 @@ class RuleAction extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
+   function post_addItem() {
+      parent::post_addItem();
+      if (isset($this->input['rules_id'])
+         && $realrule = Rule::getRuleObjectByID($this->input['rules_id'])) {
+         $realrule->update(array('id'       => $this->input['rules_id'],
+                                 'date_mod' => $_SESSION['glpi_currenttime']));
+      }
+   }
 
+   function post_purgeItem() {
+      parent::post_purgeItem();
+      if (isset($this->fields['rules_id'])
+         && $realrule = Rule::getRuleObjectByID($this->fields['rules_id'])) {
+         $realrule->update(array('id'       => $this->fields['rules_id'],
+                                 'date_mod' => $_SESSION['glpi_currenttime']));
+      }
+   }
+   
    function getSearchOptions() {
 
       $tab                        = array();

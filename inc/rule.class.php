@@ -103,6 +103,19 @@ class Rule extends CommonDBTM {
       return _n('Rule', 'Rules', $nb);
    }
 
+   /**
+   *  Get correct Rule object for specific rule
+   *  @param $rules_id ID of the rule
+   **/
+   static function getRuleObjectByID($rules_id) {
+
+      $rule = new self();
+      if ($rule->getFromDB($rules_id)) {
+         $realrule = new $rule->fields['sub_type']();
+         return $realrule;
+      }
+      return null;
+   }
 
    /**
     * @since versin 0.84
