@@ -166,6 +166,8 @@ function update0831to084() {
                     'approbation'   => CommonITILObject::APPROVAL,
                     'test'          => CommonITILObject::TEST,
                     'qualification' => CommonITILObject::QUALIFICATION);
+                    
+   // Update field in tables
    foreach (array('glpi_tickets', 'glpi_problems') as $table) {
       // Migrate datas
       foreach ($status as $old => $new) {
@@ -178,6 +180,37 @@ function update0831to084() {
                               array('value' => CommonITILObject::INCOMING));
    }
 
+   // Update Rules
+   $changes = array();
+   $changes['RuleTicket']              = 'status';
+
+   $DB->query("SET SESSION group_concat_max_len = 4194304;");
+   foreach ($changes as $ruletype => $field) {
+      // Get rules
+      $query = "SELECT GROUP_CONCAT(`id`)
+                FROM `glpi_rules`
+                WHERE `sub_type` = '".$ruletype."'
+                GROUP BY `sub_type`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            // Get rule string
+            $rules = $DB->result($result,0,0);
+            
+            // Update actions
+            foreach ($status as $old => $new) {
+               $query = "UPDATE `glpi_ruleactions`
+                         SET `value` = '$new'
+                         WHERE `field` = '$field'
+                              AND `value` = '$old'
+                               AND `rules_id` IN ($rules)";
+
+               $DB->queryOrDie($query, "0.84 update datas for rules actions");
+            }
+         }
+      }
+   }
+   
+   
    // Update glpi_profiles : ticket_status
    foreach ($DB->request('glpi_profiles') as $data) {
       $fields_to_decode = array('ticket_status','problem_status');
@@ -1296,6 +1329,7 @@ function update0831to084() {
              WHERE `sub_type` = 'RuleOcs'";
    $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
 
+   $changes = array();
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
    $changes['RuleDictionnarySoftware'] = array('_ignore_ocs_import' => '_ignore_import');
    $changes['RuleImportEntity']        = array('_ignore_ocs_import' => '_ignore_import');
@@ -1312,6 +1346,7 @@ function update0831to084() {
          if ($DB->numrows($result)>0) {
             // Get rule string
             $rules = $DB->result($result,0,0);
+            
             // Update actions
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_ruleactions`
