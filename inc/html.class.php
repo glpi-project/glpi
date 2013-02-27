@@ -1364,13 +1364,15 @@ class Html {
 
          if (TableExists('glpi_networkportmigrations')
              && (countElementsInTable('glpi_networkportmigrations') > 0)) {
-	    $_SESSION['glpishowmigrationcleaner'] = true;
-	 } else {
-	    $_SESSION['glpishowmigrationcleaner'] = false;
+            $_SESSION['glpishowmigrationcleaner'] = true;
+         } else {
+            $_SESSION['glpishowmigrationcleaner'] = false;
          }
       }
 
-      if ($_SESSION['glpishowmigrationcleaner']) {
+      if ($_SESSION['glpishowmigrationcleaner']
+          && (Session::haveRight("networking", "w")
+              || Session::haveRight("internet", "w"))) {
          $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
          $menu['utils']['content']['migration']['page']     = '/front/migration_cleaner.php';
 

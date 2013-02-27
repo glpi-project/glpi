@@ -33,8 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("networking", "w");
-Session::checkRight("internet", "w");
+Session::checkRight("networking", "w") || Session::checkRight("internet", "w");
 
 if (!TableExists('glpi_networkportmigrations')) {
    Html::displayNotFoundError();
