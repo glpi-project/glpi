@@ -579,7 +579,7 @@ class TicketFollowup  extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("observe_ticket", "1")
-          && !havSession::haveRighteRight("show_full_ticket", "1")) {
+          && !Session::haveRight("show_full_ticket", "1")) {
          return false;
       }
 
