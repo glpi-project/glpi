@@ -33,7 +33,8 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("networking", "w") || Session::checkRight("internet", "w");
+Session::checkSeveralRightsOr(array("networking" => "w",
+                                    "internet"   => "w"));
 
 if (!TableExists('glpi_networkportmigrations')) {
    Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
