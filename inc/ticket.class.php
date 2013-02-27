@@ -1015,7 +1015,6 @@ class Ticket extends CommonITILObject {
 
       // save value before clean;
       $title = ltrim($input['name']);
-
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
 
@@ -1114,6 +1113,12 @@ class Ticket extends CommonITILObject {
          $tmprequester = 0;
       }
 
+      // Clean new lines before passing to rules
+      if (isset($input["content"])) {
+         $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
+         $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
+      }
+      
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                        Toolbox::stripslashes_deep($input),
                                        array('recursive' => true));
