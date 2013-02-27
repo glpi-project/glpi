@@ -56,10 +56,12 @@ if (Session::haveRight('internet', 'w')
                         __('Reinit the network topology'));
    echo "</td></tr>";
 }
-echo "<tr class='tab_bg_1'><td class='center'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
-       __('Clean the network port migration errors') . "</a>";
-echo "</td></tr>";
+if (Session::haveRight('networking', 'w') {
+   echo "<tr class='tab_bg_1'><td class='center'>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
+         __('Clean the network port migration errors') . "</a>";
+   echo "</td></tr>";
+}
 
 echo "</table>";
 echo "</div>";
