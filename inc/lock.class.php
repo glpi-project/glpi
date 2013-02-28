@@ -264,10 +264,10 @@ class Lock {
 
 
    /**
-    * @see inc/CommonGLPI::getTabNameForItem()
+    * @see CommonGLPI::getTabNameForItem()
     *
     * @param $item               CommonGLPI object
-    * @param$withtemplate        (default 0)
+    * @param $withtemplate        (default 0)
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
