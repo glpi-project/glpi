@@ -48,6 +48,9 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class NetworkPortInstantiation extends CommonDBChild {
 
+   // From CommonDBTM
+   var $auto_message_on_action = false;
+
    // From CommonDBChild
    static public $itemtype       = 'NetworkPort';
    static public $items_id       = 'networkports_id';
@@ -57,6 +60,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    public $canHaveVLAN           = true;
    public $canHaveVirtualPort    = true;
    public $haveMAC               = true;
+
+
 
    static function getIndexName() {
       return 'networkports_id';
