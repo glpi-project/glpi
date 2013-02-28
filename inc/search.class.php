@@ -2309,7 +2309,10 @@ class Search {
                      $ADDITONALFIELDS";
 
          case "glpi_contractcosts.cost" :
-            return " SUM(`glpi_contractcosts$addtable`.`cost`) AS ".$NAME."_".$num.",
+            return " SUM(`glpi_contractcosts$addtable`.`cost`) 
+                     / COUNT(`glpi_contractcosts$addtable`.`id`)
+                     * COUNT(DISTINCT `glpi_contractcosts$addtable`.`id`)
+                     AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
          case "glpi_computers_softwareversions.count" :
@@ -2356,14 +2359,20 @@ class Search {
          case "glpi_ticketcosts.cost_time" :
          case "glpi_ticketcosts.cost_fixed" :
          case "glpi_ticketcosts.cost_material" :
-            return " SUM(`glpi_ticketcosts$addtable`.`$field`) AS ".$NAME."_".$num.",
+            return " SUM(`glpi_ticketcosts$addtable`.`$field`) 
+                     / COUNT(`glpi_ticketcosts$addtable`.`id`)
+                     * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
+                     AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
          case "glpi_ticketcosts.totalcost" :
             return " SUM(`glpi_ticketcosts$addtable`.`actiontime`
                          * `glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
                          + `glpi_ticketcosts$addtable`.`cost_fixed`
-                         + `glpi_ticketcosts$addtable`.`cost_material`) AS ".$NAME."_".$num.",
+                         + `glpi_ticketcosts$addtable`.`cost_material`) 
+                     / COUNT(`glpi_ticketcosts$addtable`.`id`)
+                     * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
+                     AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
          case "glpi_tickets_tickets.tickets_id_1" :
