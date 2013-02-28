@@ -2926,7 +2926,7 @@ class Html {
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
     * @param $ontop              display on top of the list (false by default)
     * @param $onright            display on right of the list (false by default)
-    * \deprecated
+    * \deprecated no more used. Use new massive actions system
    **/
    static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
@@ -2967,7 +2967,7 @@ class Html {
     *
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
-    * \deprecated
+    * \deprecated no more used. Use new massive actions system
    **/
    static function closeArrowMassives($actions, $confirm=array()) {
 
@@ -3233,7 +3233,7 @@ class Html {
     * @param $displayYear  should we set/diplay the year? (true by default)
     *
     * @return rand value used
-    * \deprecated used showDateField instead
+    * \deprecated used Html::showDateField instead
    **/
    static function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
                                     $minDate='', $maxDate='', $displayYear=true) {
