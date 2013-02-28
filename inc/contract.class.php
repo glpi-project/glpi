@@ -416,7 +416,7 @@ class Contract extends CommonDBTM {
       $tab[135]['joinparams']    = $joinparams;
 
       $tab[136]['table']         = 'glpi_contractcosts';
-      $tab[136]['field']         = 'cost';
+      $tab[136]['field']         = 'totalcost';
       $tab[136]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Cost'));
       $tab[136]['forcegroupby']  = true;
       $tab[136]['datatype']      = 'decimal';
@@ -695,7 +695,7 @@ class Contract extends CommonDBTM {
       $tab['cost']               = __('Cost');
 
       $tab[11]['table']          = 'glpi_contractcosts';
-      $tab[11]['field']          = 'cost';
+      $tab[11]['field']          = 'totalcost';
       $tab[11]['name']           = __('Total cost');
       $tab[11]['datatype']       = 'decimal';
       $tab[11]['forcegroupby']   = true;

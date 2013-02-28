@@ -2308,7 +2308,7 @@ class Search {
             return " COUNT(DISTINCT `glpi_contracts_items`.`id`) AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
-         case "glpi_contractcosts.cost" :
+         case "glpi_contractcosts.totalcost" :
             return " SUM(`glpi_contractcosts$addtable`.`cost`) 
                      / COUNT(`glpi_contractcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_contractcosts$addtable`.`id`)
