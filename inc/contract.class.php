@@ -704,7 +704,7 @@ class Contract extends CommonDBTM {
 
       $tab[41]['table']          = 'glpi_contractcosts';
       $tab[41]['field']          = 'cost';
-      $tab[41]['name']           = __('Cost');
+      $tab[41]['name']           = _n('Cost', 'Costs', 2);
       $tab[41]['datatype']       = 'decimal';
       $tab[41]['forcegroupby']   = true;
       $tab[41]['massiveaction']  = false;
