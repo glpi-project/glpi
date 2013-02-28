@@ -53,7 +53,6 @@ class Report {
    /**
     * Show report title
     *
-    * @param none
    **/
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -147,7 +146,6 @@ class Report {
    /**
     * Show Default Report
     *
-    * @param none
    **/
    static function showDefaultReport() {
       global $DB;

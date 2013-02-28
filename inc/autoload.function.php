@@ -347,7 +347,6 @@ spl_autoload_register('glpi_autoload');
  * @since version 0.84
  *
  * @package SimplePie
- * @subpackage API
 **/
 class SimplePie_Autoloader {
 
