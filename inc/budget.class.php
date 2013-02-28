@@ -308,19 +308,7 @@ class Budget extends CommonDropdown{
 
          if ($item->canView()) {
             switch ($itemtype) {
-               default :
-                  $query = "SELECT `".$item->getTable()."`.*,
-                                   `glpi_infocoms`.`value`
-                            FROM `glpi_infocoms`
-                            INNER JOIN `".$item->getTable()."`
-                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
-                            WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
-                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
-                                  ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
-                            ORDER BY `".$item->getTable()."`.`entities_id`,
-                                     `".$item->getTable()."`.`name`";
-               break;
+
 
                case 'Contract' :
                   $query = "SELECT `".$item->getTable()."`.`id`,
@@ -355,7 +343,8 @@ class Budget extends CommonDropdown{
 
                case 'Cartridge' :
                   $query = "SELECT `".$item->getTable()."`.*,
-                                   `glpi_cartridgeitems`.`name`
+                                   `glpi_cartridgeitems`.`name`,
+                                   `glpi_infocoms`.`value`
                             FROM `glpi_infocoms`
                             INNER JOIN `".$item->getTable()."`
                                  ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
@@ -371,7 +360,8 @@ class Budget extends CommonDropdown{
 
                case 'Consumable' :
                   $query = "SELECT `".$item->getTable()."`.*,
-                                   `glpi_consumableitems`.`name`
+                                   `glpi_consumableitems`.`name`,
+                                   `glpi_infocoms`.`value`
                             FROM `glpi_infocoms`
                             INNER JOIN `".$item->getTable()."`
                                  ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
@@ -383,6 +373,19 @@ class Budget extends CommonDropdown{
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
                             ORDER BY `entities_id`,
                                      `glpi_consumableitems`.`name`";
+               break;
+               default :
+                  $query = "SELECT `".$item->getTable()."`.*,
+                                   `glpi_infocoms`.`value`
+                            FROM `glpi_infocoms`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
+                            WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
+                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                                  ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
+                            ORDER BY `".$item->getTable()."`.`entities_id`,
+                                     `".$item->getTable()."`.`name`";
                break;
             }
 
