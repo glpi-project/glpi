@@ -63,7 +63,10 @@ class Cartridge extends CommonDBChild {
       return $forbidden;
    }
 
-
+   function getNameField() {
+      return 'id';
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
    }
