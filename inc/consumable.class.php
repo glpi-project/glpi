@@ -46,7 +46,7 @@ class Consumable extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
 
-   var $no_form_page                   = false;
+   var $no_form_page                   = true;
 
 
    /**
