@@ -64,7 +64,10 @@ class Consumable extends CommonDBTM {
       return _n('Consumable', 'Consumables', $nb);
    }
 
-
+   function getNameField() {
+      return 'id';
+   }
+   
    static function canCreate() {
       return Session::haveRight('consumable', 'w');
    }
@@ -121,6 +124,20 @@ class Consumable extends CommonDBTM {
       return false;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getPreAdditionalInfosForName
+   **/
+   function getPreAdditionalInfosForName() {
+
+      $ci = new ConsumableItem();
+      if ($ci->getFromDB($this->fields['consumableitems_id'])) {
+         return $ci->getName();
+      }
+      return '';
+   }   
 
    /**
     * UnLink a consumable linked to a printer

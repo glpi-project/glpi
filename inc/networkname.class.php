@@ -453,7 +453,7 @@ class NetworkName extends FQDNLabel {
        // If the networkname is defined, we must be able to edit it. So we make a link
       if ($name->getID() > 0) {
          echo "<a href='".$name->getLinkURL()."'>".self::getTypeName(1)."</a>";
-         echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'> - \n";
+         echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'>&nbsp;\n";
          Html::showSimpleForm($name->getFormURL(), 'unaffect', __s('Dissociate'),
                               array('id' => $name->getID()),
                               $CFG_GLPI["root_doc"].'/pics/sub_dropdown.png');

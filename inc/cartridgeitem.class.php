@@ -71,7 +71,7 @@ class CartridgeItem extends CommonDBTM {
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
-         return '- '.$this->fields["ref"];
+         return $this->fields["ref"];
       }
       return '';
    }

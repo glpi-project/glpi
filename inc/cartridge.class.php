@@ -105,7 +105,20 @@ class Cartridge extends CommonDBChild {
       parent::post_updateItem($history);
    }
 
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getPreAdditionalInfosForName
+   **/
+   function getPreAdditionalInfosForName() {
 
+      $ci = new CartridgeItem();
+      if ($ci->getFromDB($this->fields['cartridgeitems_id'])) {
+         return $ci->getName();
+      }
+      return '';
+   }
+   
    /**
     * @since version 0.84
     *

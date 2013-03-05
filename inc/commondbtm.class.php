@@ -2703,11 +2703,11 @@ class CommonDBTM extends CommonGLPI {
          if ($p['additional']) {
             $pre = $this->getPreAdditionalInfosForName();
             if (!empty($pre)) {
-               $name = sprintf(__('%1$s %2$s'), $pre, $name);
+               $name = sprintf(__('%1$s - %2$s'), $pre, $name);
             }
             $post = $this->getPostAdditionalInfosForName();
             if (!empty($post)) {
-               $name = sprintf(__('%1$s %2$s'), $name, $post);
+               $name = sprintf(__('%1$s - %2$s'), $name, $post);
             }
          }
          if ($p['comments']) {
