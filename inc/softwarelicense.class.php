@@ -107,7 +107,20 @@ class SoftwareLicense extends CommonDBTM {
       Infocom::cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
    }
 
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getPreAdditionalInfosForName
+   **/
+   function getPreAdditionalInfosForName() {
 
+      $soft = new Software();
+      if ($soft->getFromDB($this->fields['softwares_id'])) {
+         return $soft->getName();
+      }
+      return '';
+   }
+   
    function defineTabs($options=array()) {
 
       $ong = array();

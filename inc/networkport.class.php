@@ -102,7 +102,7 @@ class NetworkPort extends CommonDBChild {
    function getPreAdditionalInfosForName() {
 
       if ($item = $this->getItem()) {
-         return $item->getName() . ' <';
+         return $item->getName();
       }
       return '';
    }
