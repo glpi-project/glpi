@@ -3814,7 +3814,8 @@ class Ticket extends CommonITILObject {
          /// if category mandatory, no empty choice
          /// no empty choice is default value set on ticket creation, else yes
          if (($ID || $values['itilcategories_id'])
-            && $tt->isMandatoryField("itilcategories_id")) {
+            && $tt->isMandatoryField("itilcategories_id")
+            && ($this->fields["itilcategories_id"] > 0)) {
             $opt['display_emptychoice'] = false;
          }
 
