@@ -1118,7 +1118,7 @@ class Ticket extends CommonITILObject {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
       }
-      
+
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                        Toolbox::stripslashes_deep($input),
                                        array('recursive' => true));
@@ -4020,7 +4020,8 @@ class Ticket extends CommonITILObject {
          /// if category mandatory, no empty choice
          /// no empty choice is default value set on ticket creation, else yes
          if (($ID || $values['itilcategories_id'])
-             && $tt->isMandatoryField("itilcategories_id")) {
+             && $tt->isMandatoryField("itilcategories_id")
+             && ($this->fields["itilcategories_id"] > 0)) {
             $opt['display_emptychoice'] = false;
          }
 
@@ -4135,7 +4136,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
          if ($tt->isPredefinedField('global_validation')) {
             echo "<input type='hidden' name='global_validation' value='".$tt->predefined['global_validation']."'>";
-         }         
+         }
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');
          if ($canupdate) {
