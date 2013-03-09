@@ -492,7 +492,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add an item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add the item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["new_value"]));
 
@@ -503,7 +503,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update an item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update the item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["new_value"]));
                   break;
@@ -513,7 +513,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete an item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete the item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["old_value"]));
                   break;
