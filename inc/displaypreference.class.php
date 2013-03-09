@@ -396,7 +396,8 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='image' name='delete' value=\"".
                          _sx('button', 'Delete permanently')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
-                         __s('Delete permanently')."\" title=\"".__s('Delete permanently')."\">";
+                         _sx('button', 'Delete permanently')."\" title=\"".
+                         _sx('button', 'Delete permanently')."\">";
                   Html::closeForm();
                   echo "</td>\n";
                   echo "</tr>";
