@@ -409,7 +409,9 @@ class TicketTemplate extends CommonDropdown {
       $output = '';
       if ($this->isHiddenField($field)) {
          $output .= "</span>";
-         $output .= "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
+         if ($ticket && isset($ticket->fields[$field])) {
+            $output .= "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
+         }
          if ($this->isPredefinedField($field)
              && !is_null($ticket)) {
             if ($num = array_search($field, $this->getAllowedFields())) {
