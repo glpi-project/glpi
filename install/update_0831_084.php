@@ -1195,6 +1195,12 @@ function update0831to084() {
    // copy table to keep value of fields deleted after
    $migration->copyTable('glpi_profiles', 'ocs_glpi_profiles');
 
+
+   $migration->displayWarning("You can delete ocs_* tables if you use OCS mode ONLY AFTER ocsinventoryng plugin installation.",
+                              true);
+   $migration->displayWarning("You can delete ocs_* tables if you do not use OCS syncrhonisation.",
+                              true);
+   
    $migration->dropField('glpi_profiles', 'ocsng');
    $migration->dropField('glpi_profiles', 'sync_ocsng');
    $migration->dropField('glpi_profiles', 'view_ocsng');
