@@ -139,10 +139,6 @@ class Cartridge extends CommonDBChild {
       }
       return '';
    }
-
-   function getSpecificMassiveActions($checkitem=NULL) {
-      return array();
-   }
    
    /**
     * @since version 0.84
