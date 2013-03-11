@@ -755,8 +755,8 @@ class Cartridge extends CommonDBChild {
          if (!$old) {
             $actions = array('uninstall' => __('End of life'));
          } else {
-            $actions = array('updatepages' => __('Update pages'),
-                              'delete' => _x('button', 'Delete permanently'));
+            $actions = array('updatepages' => __('Update printer counter'),
+                             'delete'      => _x('button', 'Delete permanently'));
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
