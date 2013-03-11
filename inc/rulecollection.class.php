@@ -852,7 +852,6 @@ class RuleCollection extends CommonDBTM {
                                                    array('input' => $input,
                                                          'params' => $params),
                                                    $this->getRuleClassName());
-
       return array_merge($this->prepareInputDataForProcess($input, $params), $plugin_result);
    }
 
@@ -1125,7 +1124,7 @@ class RuleCollection extends CommonDBTM {
          $title = _n('Rule', 'Rules', 2);
          if ($item->isRuleRecursive()) {
             //TRANS: %s is the entity name
-            $ong[1] = sprintf(__('Local rules: %s'),
+            $title = sprintf(__('Local rules: %s'),
                               Dropdown::getDropdownName('glpi_entities',
                                                         $_SESSION['glpiactive_entity']));
          }
