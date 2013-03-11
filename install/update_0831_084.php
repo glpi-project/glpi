@@ -1192,14 +1192,43 @@ function update0831to084() {
    $migration->renameTable('glpi_ocsservers', 'ocs_glpi_ocsservers');
    $migration->renameTable('glpi_registrykeys', 'ocs_glpi_registrykeys');
 
+
+   // Migrate RuleOcs to RuleImportEntity
+   $query = "UPDATE `glpi_rules`
+             SET `sub_type` = 'RuleImportEntity'
+             WHERE `sub_type` = 'RuleOcs'";
+   $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
+   
+   $migration->copyTable('glpi_rules', 'ocs_glpi_rules');
+   $migration->copyTable('glpi_ruleactions', 'ocs_glpi_ruleactions');
+   $migration->copyTable('glpi_rulecriterias', 'ocs_glpi_rulecriterias');
+
+   // Delete OCS rules
+   $DB->query("SET SESSION group_concat_max_len = 4194304;");
+   $query = "SELECT GROUP_CONCAT(`id`)
+               FROM `glpi_rules`
+               WHERE `sub_type` = 'RuleImportEntity'
+               GROUP BY `sub_type`";
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         // Get rule string
+         $rules = $DB->result($result,0,0);
+         $query = "DELETE FROM `glpi_ruleactions`
+                     WHERE `rules_id` IN ($rules)";
+
+         $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
+
+         $query = "DELETE FROM `glpi_rulecriterias`
+                     WHERE `rules_id` IN ($rules)";
+         $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
+
+         $query = "DELETE FROM `glpi_rules`
+                     WHERE `id` IN ($rules)";
+         $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
+      }
+   }   
    // copy table to keep value of fields deleted after
    $migration->copyTable('glpi_profiles', 'ocs_glpi_profiles');
-
-
-   $migration->displayWarning("You can delete ocs_* tables if you use OCS mode ONLY AFTER ocsinventoryng plugin installation.",
-                              true);
-   $migration->displayWarning("You can delete ocs_* tables if you do not use OCS syncrhonisation.",
-                              true);
    
    $migration->dropField('glpi_profiles', 'ocsng');
    $migration->dropField('glpi_profiles', 'sync_ocsng');
@@ -1234,6 +1263,12 @@ function update0831to084() {
              WHERE `linked_action` IN (8,9,10,11)";
    $DB->queryOrDie($query, "0.84 update OCS links in history");
 
+
+   $migration->displayWarning("You can delete ocs_* tables if you use OCS mode ONLY AFTER ocsinventoryng plugin installation.",
+                              true);
+   $migration->displayWarning("You can delete ocs_* tables if you do not use OCS syncrhonisation.",
+                              true);
+   
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
    $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
@@ -1328,12 +1363,6 @@ function update0831to084() {
    $migration->addKey('glpi_tickets', 'locations_id');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
-
-   // Migrate RuleOcs to RuleImportEntity
-   $query = "UPDATE `glpi_rules`
-             SET `sub_type` = 'RuleImportEntity'
-             WHERE `sub_type` = 'RuleOcs'";
-   $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
 
    $changes = array();
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
