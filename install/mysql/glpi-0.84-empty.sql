@@ -4383,7 +4383,6 @@ CREATE TABLE `glpi_ruleactions` (
   KEY `field_value` (`field`(50),`value`(50))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_ruleactions` VALUES ('1','1','assign','entities_id','0');
 INSERT INTO `glpi_ruleactions` VALUES ('2','2','assign','entities_id','0');
 INSERT INTO `glpi_ruleactions` VALUES ('3','3','assign','entities_id','0');
 INSERT INTO `glpi_ruleactions` VALUES ('4','4','assign','_refuse_email_no_response','1');
@@ -4674,7 +4673,6 @@ CREATE TABLE `glpi_rulecriterias` (
   KEY `condition` (`condition`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rulecriterias` VALUES ('1','1','TAG','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('2','2','uid','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('3','2','samaccountname','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('4','2','MAIL_EMAIL','0','*');
@@ -4735,7 +4733,6 @@ CREATE TABLE `glpi_rules` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('1','0','RuleImportEntity','1','Root','','AND','1',NULL,NULL,'0');
 INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0');
 INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0');
 INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1');
