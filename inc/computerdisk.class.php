@@ -262,9 +262,7 @@ class ComputerDisk extends CommonDBChild {
                echo "<td>".$disk->getLink()."</td>";
                if (Plugin::haveImport()) {
                   echo "<td>";
-                  if ($disk->isDynamic()) {
-                     _e('Yes');
-                  }
+                  echo Dropdown::getYesNo($data['is_dynamic']);
                   echo "</td>";
                }
                echo "<td>".$data['device']."</td>";
