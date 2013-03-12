@@ -171,7 +171,12 @@ class Item_Devices extends CommonDBRelation {
       $common_column   = $table->addHeader('common', __('Type of component'));
       $specific_column = $table->addHeader('specificities', __('Specificities'));
       $specific_column->setHTMLClass('center');
-
+       
+      $dynamic_column = '';
+      if (Plugin::haveImport()) {
+         $dynamic_column = $table->addHeader('is_dynamic', __('Automatic inventory'));
+      }
+      
       if ($canedit) {
          $content       = "<input type='submit' class='submit' name='delete' value='".
                             _sx('button', 'Delete permanently')."'>";
@@ -185,7 +190,8 @@ class Item_Devices extends CommonDBRelation {
       foreach (self::getDeviceTypes() as $link_type) {
          $devtypes [] = $link_type::getDeviceType();
          $link_type::getTableGroup($item, $table, $table_options, $delete_all_column,
-                                   $common_column, $specific_column, $delete_column);
+                                   $common_column, $specific_column, $delete_column,
+                                   $dynamic_column);
       }
 
       if ($canedit) {
@@ -221,11 +227,12 @@ class Item_Devices extends CommonDBRelation {
                                  HTMLTableSuperHeader $delete_all_column,
                                  HTMLTableSuperHeader $common_column,
                                  HTMLTableSuperHeader $specific_column,
-                                 HTMLTableSuperHeader $delete_column) {
+                                 HTMLTableSuperHeader $delete_column,
+                                 $dynamic_column) {
       global $DB;
 
       $device_type = static::getDeviceType();
-
+      
       $table_group = $table->createGroup($device_type, '');
 
       //TRANS : %1$s is the type of the device
@@ -244,7 +251,12 @@ class Item_Devices extends CommonDBRelation {
                                                 $specific_column, $spec_column);
          $specificity_columns[$field] = $spec_column;
       }
-
+      
+      if (Plugin::haveImport()) {
+         $dynamics_column = $table_group->addHeader('one', '&nbsp;',
+                                                $dynamic_column, $spec_column);
+      }
+      
       if ($options['canedit']) {
          $delete_one  = $table_group->addHeader('one', '&nbsp;', $delete_column, $spec_column);
       }
@@ -287,7 +299,11 @@ class Item_Devices extends CommonDBRelation {
             }
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
-
+         
+         if (Plugin::haveImport()) {
+            $current_row->addCell($dynamics_column, Dropdown::getYesNo($link['is_dynamic']), $spec_cell);
+         }
+         
          if ($options['canedit']) {
             $cell_value   = "<input type='checkbox' name='remove_" . $device_type . "_" .
                               $link['id'] . "' value='1'>";
