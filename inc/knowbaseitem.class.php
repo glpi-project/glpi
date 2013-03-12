@@ -1452,7 +1452,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[9]['table']          = $this->getTable();
       $tab[9]['field']          = 'view';
-      $tab[9]['name']           = __('Views');
+      $tab[9]['name']           = _n('View', 'Views', 2);
       $tab[9]['datatype']       = 'integer';
       $tab[9]['massiveaction']  = false;
 
