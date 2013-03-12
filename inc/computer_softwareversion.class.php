@@ -665,9 +665,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canedit      = Session::haveRight("software", "w");
       $entities_id  = $comp->fields["entities_id"];
 
+      $add_dynamic = '';
+      if (Plugin::haveImport()) {
+         $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
+      }
+      
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
+                       $add_dynamic
                        `glpi_states`.`name` AS state,
                        `glpi_softwareversions`.`id` AS verid,
                        `glpi_softwareversions`.`softwares_id`,
@@ -905,8 +911,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</th>";
       }
       echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th></tr>\n";
-
+      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+      if (isset($data['is_dynamic'])) {
+         echo "<th>".__('Automatic inventory')."</th>";
+      }
+      echo "</tr>\n";
       return $cat;
    }
 
@@ -985,7 +994,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "&nbsp;";
       }
 
-      echo "</td></tr>\n";
+      echo "</td>";
+      
+      echo "</td>";
+      if (isset($data['is_dynamic'])) {
+         echo "<td class='center'>";
+         echo Dropdown::getYesNo($data['is_dynamic']);
+         echo "</td>";
+      }  
+      
+      echo "</tr>\n";
 
       return $licids;
    }
