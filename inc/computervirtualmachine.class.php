@@ -321,9 +321,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<td>".$vm->getLink()."</td>";
             if (Plugin::haveImport()) {
                echo "<td>";
-               if ($vm->isDynamic()) {
-                  _e('Yes');
-               }
+               echo Dropdown::getYesNo($vm->isDynamic());
                echo "</td>";
             }
             echo "<td>";
