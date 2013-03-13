@@ -55,7 +55,9 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
              LEFT JOIN `glpi_locations`
                   ON `glpi_locations`.`id` = `glpi_netpoints`.`locations_id`
              LEFT JOIN `glpi_networkports`
-                  ON `glpi_networkports`.`netpoints_id` = `glpi_netpoints`.`id`
+                  ON `glpi_networkports`.`instantiation_type` = NetworkPortEthernet
+             LEFT JOIN `glpi_networkportethernets`
+                  ON `glpi_networkportethernets`. `networkports_id` = `glpi_networkports`.`id`
              LEFT JOIN `glpi_networknames`
                   ON (`glpi_networknames`.`itemtype` = 'NetworkPort'
                       AND `glpi_networkports`.`id` = `glpi_networknames`.`items_id`)
