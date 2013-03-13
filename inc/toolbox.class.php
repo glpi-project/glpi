@@ -72,6 +72,20 @@ class Toolbox {
       return 0;
    }
 
+   /**
+    * Wrapper for max_input_vars
+    *
+    * @since version 0.84
+    *
+    * @return integer
+   **/
+   static function get_max_input_vars() {
+      $max        = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
+      if (!$max) {
+         $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
+      }
+      return $max;
+   }
 
    /**
     * Convert first caracter in upper

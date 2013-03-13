@@ -1785,26 +1785,36 @@ class Dropdown {
          $list_limit = $CFG_GLPI['list_limit'];
       }
 
+      $values = array();
+
       for ($i=5 ; $i<20 ; $i+=5) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+         $values[$i] = $i;
       }
       for ($i=20 ; $i<50 ; $i+=10) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+         $values[$i] = $i;
       }
       for ($i=50 ; $i<250 ; $i+=50) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+         $values[$i] = $i;
       }
       for ($i=250 ; $i<1000 ; $i+=250) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+         $values[$i] = $i;
       }
       for ($i=1000 ; $i<5000 ; $i+=1000) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+         $values[$i] = $i;
       }
       for ($i=5000 ; $i<=10000 ; $i+=5000) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+         $values[$i] = $i;
       }
-
-      echo "<option value='9999999' ".(($list_limit==9999999)?" selected ":"").">9999999</option>";
+      $values[9999999] = 9999999;
+      // Propose max input vars -10
+      $max        = Toolbox::get_max_input_vars();
+      if ($max>10) {
+         $values[$max-10] = $max-10;
+      }
+      ksort($values);
+      foreach ($values as $val) {
+         echo "<option value='$val' ".(($list_limit==$val)?" selected ":"").">$val</option>";
+      }
       echo "</select>";
    }
 
