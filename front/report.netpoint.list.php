@@ -49,7 +49,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
    // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_locations`.`name`, `glpi_locations`.`id`,
                     `glpi_netpoints`.`name` AS prise, `glpi_networkports`.`name` AS port,
-                    `glpi_ipaddress`.`name` AS ip, `glpi_networkports`.`mac`,
+                    `glpi_ipaddresses`.`name` AS ip, `glpi_networkports`.`mac`,
                     `glpi_networkports`.`id` AS IDport
              FROM `glpi_netpoints`
              LEFT JOIN `glpi_locations`
