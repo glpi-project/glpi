@@ -3162,10 +3162,7 @@ class Html {
       }
 
       $identifier = md5($url.$itemtype.serialize($p['extraparams']).$p['rand']);
-      $max        = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
-      if (!$max) {
-         $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
-      }
+      $max        = Toolbox::get_max_input_vars();
 
       if (($p['num_displayed'] >= 0)
           && ($max > 0)
