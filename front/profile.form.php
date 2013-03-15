@@ -50,9 +50,11 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["delete"])) {
    $prof->check($_POST['id'],'d');
-
-   $prof->delete($_POST);
-   $prof->redirectToList();
+   if ($prof->delete($_POST)) {
+      $prof->redirectToList();
+   } else {
+      Html::back();
+   }
 
 } else if (isset($_POST["update"])
            || isset($_POST["interface"])) {
