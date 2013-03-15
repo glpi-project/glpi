@@ -3297,6 +3297,8 @@ class CommonDBTM extends CommonGLPI {
          case 'unlock_Printer' :
          case 'unlock_Monitor' :
          case 'unlock_NetworkPort' :
+         case 'unlock_NetworkName' :
+         case 'unlock_IPAddress' :
          case 'unlock_ComputerDisk' :
          case 'unlock_ComputerVirtualMachine' :
          case 'unlock_Peripheral' :

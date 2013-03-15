@@ -90,9 +90,9 @@ class Lock {
                             'is_deleted'    => 1,
                             'computers_id'  => $ID,
                             'itemtype'      => $type);
+            $params['FIELDS'] = array('id', 'items_id');
             $first  = true;
-            foreach ($DB->request('glpi_computers_items', $params,
-                                  array('id', 'items_id')) as $line) {
+            foreach ($DB->request('glpi_computers_items', $params) as $line) {
                $tmp    = new $type();
                $tmp->getFromDB($line['items_id']);
                $header = true;
@@ -114,9 +114,9 @@ class Lock {
             $params = array('is_dynamic'    => 1,
                             'is_deleted'    => 1,
                             'computers_id'  => $ID);
+            $params['FIELDS'] = array('id', 'name');
             $first  = true;
-            foreach ($DB->request(getTableForItemType($type), $params,
-                                  array('id', 'name')) as $line) {
+            foreach ($DB->request(getTableForItemType($type), $params) as $line) {
                $header = true;
                if ($first) {
                   echo "<tr><th colspan='2'>".$type::getTypeName(2)."</th></tr>\n";
@@ -135,17 +135,17 @@ class Lock {
                          'is_deleted'    => 1,
                          'computers_id'  => $ID);
          $first  = true;
-         $query = "SELECT `csv`.`id` AS `id`,
-                          `sv`.`name` AS `version`,
-                          `s`.`name` AS `software`
-                   FROM `glpi_computers_softwareversions` AS csv
-                   LEFT JOIN `glpi_softwareversions` AS sv
-                      ON (`csv`.`softwareversions_id` = `sv`.`id`)
-                   LEFT JOIN `glpi_softwares` AS s
-                      ON (`sv`.`softwares_id` = `s`.`id`)
-                   WHERE `csv`.`is_deleted` = '1'
-                         AND `csv`.`is_dynamic` = '1'
-                         AND `csv`.`computers_id` = '$ID'";
+         $query  = "SELECT `csv`.`id` AS `id`,
+                           `sv`.`name` AS `version`,
+                           `s`.`name` AS `software`
+                    FROM `glpi_computers_softwareversions` AS csv
+                    LEFT JOIN `glpi_softwareversions` AS sv
+                       ON (`csv`.`softwareversions_id` = `sv`.`id`)
+                    LEFT JOIN `glpi_softwares` AS s
+                       ON (`sv`.`softwares_id` = `s`.`id`)
+                    WHERE `csv`.`is_deleted` = '1'
+                          AND `csv`.`is_dynamic` = '1'
+                          AND `csv`.`computers_id` = '$ID'";
          foreach ($DB->request($query) as $line) {
             $header = true;
             if ($first) {
@@ -165,17 +165,17 @@ class Lock {
                          'is_deleted'    => 1,
                          'computers_id'  => $ID);
          $first  = true;
-         $query = "SELECT `csv`.`id` AS `id`,
-                          `sv`.`name` AS `version`,
-                          `s`.`name` AS `software`
-                   FROM `glpi_computers_softwarelicenses` AS csv
-                   LEFT JOIN `glpi_softwarelicenses` AS sv
-                      ON (`csv`.`softwarelicenses_id` = `sv`.`id`)
-                   LEFT JOIN `glpi_softwares` AS s
-                      ON (`sv`.`softwares_id` = `s`.`id`)
-                   WHERE `csv`.`is_deleted` = '1'
-                         AND `csv`.`is_dynamic` = '1'
-                         AND `csv`.`computers_id` = '$ID'";
+         $query  = "SELECT `csv`.`id` AS `id`,
+                           `sv`.`name` AS `version`,
+                           `s`.`name` AS `software`
+                    FROM `glpi_computers_softwarelicenses` AS csv
+                    LEFT JOIN `glpi_softwarelicenses` AS sv
+                       ON (`csv`.`softwarelicenses_id` = `sv`.`id`)
+                    LEFT JOIN `glpi_softwares` AS s
+                       ON (`sv`.`softwares_id` = `s`.`id`)
+                    WHERE `csv`.`is_deleted` = '1'
+                          AND `csv`.`is_dynamic` = '1'
+                          AND `csv`.`computers_id` = '$ID'";
          foreach ($DB->request($query) as $line) {
             $header = true;
             if ($first) {
@@ -192,13 +192,14 @@ class Lock {
       }
 
 
+      $first  = true;
+      $item   = new NetworkPort();
       $params = array('is_dynamic' => 1,
                       'is_deleted' => 1,
                       'items_id'   => $ID,
                       'itemtype'   => $itemtype);
-      $first = true;
-      $item  = new NetworkPort();
-      foreach ($DB->request('glpi_networkports', $params, array('id', 'items_id')) as $line) {
+      $params['FIELDS'] = array('id');
+      foreach ($DB->request('glpi_networkports', $params) as $line) {
          $item->getFromDB($line['id']);
          $header = true;
          if ($first) {
@@ -208,6 +209,58 @@ class Lock {
 
          echo "<tr class='tab_bg_1'><td class='center' width='10'>";
          echo "<input type='checkbox' name='NetworkPort[" . $line['id'] . "]'></td>";
+         echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
+         echo "</tr>\n";
+
+      }
+
+      $first = true;
+      $item  = new NetworkName();
+      $params = array('`glpi_networknames`.`is_dynamic`' => 1,
+                      '`glpi_networknames`.`is_deleted`' => 1,
+                      '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
+                      '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
+                      '`glpi_networkports`.`items_id`'   => $ID,
+                      '`glpi_networkports`.`itemtype`'   => $itemtype);
+      $params['FIELDS'] = array('glpi_networknames' => 'id');
+      foreach ($DB->request(array('glpi_networknames', 'glpi_networkports'), $params) as $line) {
+         $item->getFromDB($line['id']);
+         $header = true;
+         if ($first) {
+            echo "<tr><th colspan='2'>".NetworkName::getTypeName(2)."</th></tr>\n";
+            $first = false;
+         }
+
+         echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+         echo "<input type='checkbox' name='NetworkName[" . $line['id'] . "]'></td>";
+         echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
+         echo "</tr>\n";
+
+      }
+
+      $first  = true;
+      $item   = new IPAddress();
+      $params = array('`glpi_ipaddresses`.`is_dynamic`' => 1,
+                      '`glpi_ipaddresses`.`is_deleted`' => 1,
+                      '`glpi_ipaddresses`.`itemtype`'   => 'Networkname',
+                      '`glpi_ipaddresses`.`items_id`'   => '`glpi_networknames`.`id`',
+                      '`glpi_networknames`.`itemtype`'  => 'NetworkPort',
+                      '`glpi_networknames`.`items_id`'  => '`glpi_networkports`.`id`',
+                      '`glpi_networkports`.`items_id`'  => $ID,
+                      '`glpi_networkports`.`itemtype`'  => $itemtype);
+      $params['FIELDS'] = array('glpi_ipaddresses' => 'id');
+      foreach ($DB->request(array('glpi_ipaddresses',
+                                  'glpi_networknames',
+                                  'glpi_networkports'), $params) as $line) {
+         $item->getFromDB($line['id']);
+         $header = true;
+         if ($first) {
+            echo "<tr><th colspan='2'>".IPAddress::getTypeName(2)."</th></tr>\n";
+            $first = false;
+         }
+
+         echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+         echo "<input type='checkbox' name='IPAddress[" . $line['id'] . "]'></td>";
          echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
          echo "</tr>\n";
 
@@ -305,12 +358,12 @@ class Lock {
       $ko    = 0;
       $infos = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
 
-      if ($item = getItemForItemtype(getItemTypeForTable($infos['table']))) {
+      if ($item = getItemForItemtype($infos['type'])) {
 
          foreach ($items as $id => $value) {
             if ($value == 1) {
-               $condition[$infos['field']] = $id;
-               foreach ($DB->request($infos['table'], $infos['condition'], array('id')) as $data) {
+               $infos['condition'][$infos['field']] = $id;
+               foreach ($DB->request($infos['table'], $infos['condition']) as $data) {
                   // Restore without history
                   if ($item->restore(array('id' => $data['id']))) {
                      $ok++;
@@ -342,6 +395,8 @@ class Lock {
                       "unlock_Printer"                => __('Unlock printers'),
                       "unlock_SoftwareVersion"        => __('Unlock software'),
                       "unlock_NetworkPort"            => __('Unlock network ports'),
+                      "unlock_NetworkName"            => __('Unlock network names'),
+                      "unlock_IPAddress"              => __('Unlock IP addreses'),
                       "unlock_ComputerDisk"           => __('Unlock volumes'),
                       "unlock_Device"                 => __('Unlock devices'),
                       "unlock_ComputerVirtualMachine" => __('Unlock virtual machines')
@@ -383,6 +438,7 @@ class Lock {
       $condition = array();
       $table     = false;
       $field     = '';
+      $type      = $itemtype;
 
       switch ($itemtype) {
          case 'Peripheral' :
@@ -394,6 +450,7 @@ class Lock {
                                'is_deleted' => 1);
             $table     = 'glpi_computers_items';
             $field     = 'computers_id';
+            $type      = 'Computer_Item';
             break;
 
          case 'NetworkPort' :
@@ -402,6 +459,30 @@ class Lock {
                                'is_deleted' => 1);
             $table     = 'glpi_networkports';
             $field     = 'items_id';
+            break;
+
+         case 'NetworkName' :
+            $condition = array('`glpi_networknames`.`is_dynamic`' => 1,
+                               '`glpi_networknames`.`is_deleted`' => 1,
+                               '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
+                               '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
+                               '`glpi_networkports`.`itemtype`'   => $baseitemtype);
+            $condition['FIELDS'] = array('glpi_networknames' => 'id');
+            $table     = array('glpi_networknames', 'glpi_networkports');
+            $field     = '`glpi_networkports`.`items_id`';
+            break;
+
+         case 'IPAddress' :
+            $condition = array('`glpi_ipaddresses`.`is_dynamic`' => 1,
+                               '`glpi_ipaddresses`.`is_deleted`' => 1,
+                               '`glpi_ipaddresses`.`itemtype`'   => 'NetworkName',
+                               '`glpi_ipaddresses`.`items_id`'   => '`glpi_networknames`.`id`',
+                               '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
+                               '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
+                               '`glpi_networkports`.`itemtype`'   => $baseitemtype);
+            $condition['FIELDS'] = array('glpi_ipaddresses' => 'id');
+            $table     = array('glpi_ipaddresses', 'glpi_networknames', 'glpi_networkports');
+            $field     = '`glpi_networkports`.`items_id`';
             break;
 
          case 'ComputerDisk' :
@@ -423,6 +504,7 @@ class Lock {
                                'is_deleted' => 1);
             $table     = 'glpi_computers_softwareversions';
             $field     = 'computers_id';
+            $type      = 'Computer_SoftwareVersion';
             break;
 
          default :
@@ -439,7 +521,8 @@ class Lock {
 
       return array('condition' => $condition,
                    'table'     => $table,
-                   'field'     => $field);
+                   'field'     => $field,
+                   'type'      => $type);
    }
 
 }

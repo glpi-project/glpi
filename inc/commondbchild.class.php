@@ -736,7 +736,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $lower_name = strtolower(get_called_class());
       $div_id     = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
 
-     // To be sure not to load bad datas from glpi_itememails table
+     // To be sure not to load bad datas from this table
       if ($items_id == 0) {
          $items_id = -99;
       }
@@ -749,8 +749,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $query .= " AND `itemtype` = '".$item->getType()."'";
       }
 
-
       $current_item = new static();
+
+      if ($current_item->maybeDeleted()) {
+         $query .= " AND `is_deleted` = '0'";
+      }
 
       $count = 0;
       foreach ($DB->request($query) as $data) {

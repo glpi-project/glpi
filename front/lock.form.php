@@ -41,7 +41,8 @@ if (isset($_POST['itemtype']) && isset($_POST["unlock"])) {
       $source_item->check($_POST['id'], 'w');
 
       $actions = array("Computer_Item", "Computer_SoftwareLicense", "Computer_SoftwareVersion",
-                       "ComputerDisk", "ComputerVirtualMachine", "NetworkPort", );
+                       "ComputerDisk", "ComputerVirtualMachine", "NetworkPort", "NetworkName",
+                       "IPAddress");
       $devices = Item_Devices::getDeviceTypes();
       $actions = array_merge($actions, array_values($devices));
       foreach ($actions as $type) {

@@ -246,7 +246,7 @@ class Report {
                        AND `glpi_computers_items`.`items_id` = `".$table_item."`.`id`)";
 
          }
-         
+
          $query = "SELECT COUNT(*) AS count, `".$type_table."`.`name` AS name
                 FROM `".$table_item."`
                 LEFT JOIN `".$type_table."`
@@ -267,6 +267,150 @@ class Report {
          }
       }
       echo "</table>";
+   }
+
+   static function reportForNetworkInformations($networkport_prefix, $networkport_crit,
+                                                $where_crit, $order = '', $field = '',
+                                                $extra = '') {
+      global $DB;
+
+      // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
+      //      match opposite NetworkPort, then its NetworkName and IPAddresses.
+      // Results are groupes by NetworkPort. Then all IPs are concatenated by comma as separator.
+      $query = "SELECT $field
+                       PORT_1.`itemtype` AS itemtype_1,
+                       PORT_1.`items_id` AS items_id_1,
+                       PORT_1.`id` AS id_1,
+                       PORT_1.`name` AS port_1,
+                       PORT_1.`mac` AS mac_1,
+                       GROUP_CONCAT(ADDR_1.`name` SEPARATOR ',') AS ip_1,
+                       PORT_2.`itemtype` AS itemtype_2,
+                       PORT_2.`items_id` AS items_id_2,
+                       PORT_2.`id` AS id_2,
+                       PORT_2.`name` AS port_2,
+                       PORT_2.`mac` AS mac_2,
+                       GROUP_CONCAT(ADDR_2.`name` SEPARATOR ',') AS ip_2
+                FROM $networkport_prefix
+                INNER JOIN `glpi_networkports` AS PORT_1
+                     ON ($networkport_crit AND PORT_1.`is_deleted` = 0)
+                LEFT JOIN `glpi_networknames` AS NAME_1
+                    ON (NAME_1.`itemtype` = 'NetworkPort'
+                        AND PORT_1.`id` = NAME_1.`items_id`
+                        AND NAME_1.`is_deleted` = 0)
+                LEFT JOIN `glpi_ipaddresses` AS ADDR_1
+                    ON (ADDR_1.`itemtype` = 'NetworkName'
+                        AND NAME_1.`id` = ADDR_1.`items_id`
+                        AND ADDR_1.`is_deleted` = 0)
+                LEFT JOIN `glpi_networkports_networkports` AS LINK
+                    ON (LINK.`networkports_id_1` = PORT_1.`id`
+                        OR LINK.`networkports_id_2` = PORT_1.`id`)
+                LEFT JOIN `glpi_networkports` AS PORT_2
+                    ON (PORT_2.`id`=IF(LINK.`networkports_id_1`=PORT_1.`id`,
+                                       LINK.`networkports_id_2`,
+                                       LINK.`networkports_id_1`))
+                LEFT JOIN `glpi_networknames` AS NAME_2
+                    ON (NAME_2.`itemtype` = 'NetworkPort'
+                        AND PORT_2.`id` = NAME_2.`items_id`
+                        AND NAME_2.`is_deleted` = 0)
+                LEFT JOIN `glpi_ipaddresses` AS ADDR_2
+                    ON (ADDR_2.`itemtype` = 'NetworkName'
+                        AND NAME_2.`id` = ADDR_2.`items_id`
+                        AND ADDR_2.`is_deleted` = 0)
+                WHERE $where_crit GROUP BY PORT_1.`id`";
+
+
+      if (!empty($order)) {
+         $query .= "ORDER BY $order";
+      }
+
+      $result = $DB->request($query);
+      if ($result->numrows() > 0) {
+         echo "<table class='tab_cadre_fixehov'>";
+
+         echo "<tr>";
+         if (!empty($extra)) {
+            echo "<td>&nbsp;</td>";
+         }
+         echo "<th colspan='5'>".__('Device 1')."</th>";
+         echo "<th colspan='5'>".__('Device 2')."</th>";
+         echo "</tr>\n";
+
+         echo "<tr>";
+         if (!empty($extra)) {
+            echo "<th>$extra</th>";
+         }
+         echo "<th>".__('Device type')."</th>";
+         echo "<th>".__('Device name')."</th>";
+         echo "<th>".NetworkPort::getTypeName(1)."</th>";
+         echo "<th>".__('MAC address')."</th>";
+         echo "<th>".IPAddress::getTypeName(0)."</th>";
+         echo "<th>".NetworkPort::getTypeName(1)."</th>";
+         echo "<th>".__('MAC address')."</th>";
+         echo "<th>".IPAddress::getTypeName(0)."</th>";
+         echo "<th>".__('Device type')."</th>";
+         echo "<th>".__('Device name')."</th>";
+         echo "</tr>\n";
+
+         foreach ($result as $line) {
+            echo "<tr class='tab_bg_1'>";
+
+            // To ensure that the NetworkEquipment remain the first item, we test its type
+            if ($line['itemtype_2'] == 'NetworkEquipment') {
+              $idx = 2;
+           } else {
+              $idx = 1;
+           }
+
+            if (!empty($extra)) {
+               echo "<td>".(empty($line['extra']) ? NOT_AVAILABLE : $line['extra'])."</td>";
+            }
+
+            $itemtype = $line["itemtype_$idx"];
+            if (!empty($itemtype)) {
+               echo "<td>".$itemtype::getTypeName(1)."</td>";
+               $item_name = '';
+               if ($item = getItemForItemtype($itemtype)) {
+                  if ($item->getFromDB($line["items_id_$idx"])) {
+                     $item_name = $item->getName();
+                  }
+               }
+               echo "<td>".(empty($item_name) ? NOT_AVAILABLE : $item_name)."</td>";
+            } else {
+               echo "<td> ".NOT_AVAILABLE." </td>";
+               echo "<td> ".NOT_AVAILABLE." </td>";
+            }
+            echo "<td>".(empty($line["port_$idx"]) ? NOT_AVAILABLE : $line["port_$idx"])."</td>";
+            echo "<td>".(empty($line["mac_$idx"]) ? NOT_AVAILABLE : $line["mac_$idx"])."</td>";
+            echo "<td>".(empty($line["ip_$idx"]) ? NOT_AVAILABLE : $line["ip_$idx"])."</td>";
+
+            if ($idx == 1) {
+               $idx = 2;
+            } else {
+               $idx = 1;
+            }
+
+            echo "<td>".(empty($line["port_$idx"]) ? NOT_AVAILABLE : $line["port_$idx"])."</td>";
+            echo "<td>".(empty($line["mac_$idx"]) ? NOT_AVAILABLE : $line["mac_$idx"])."</td>";
+            echo "<td>".(empty($line["ip_$idx"]) ? NOT_AVAILABLE : $line["ip_$idx"])."</td>";
+            $itemtype = $line["itemtype_$idx"];
+            if (!empty($itemtype)) {
+               echo "<td>".$itemtype::getTypeName(1)."</td>";
+               $item_name = '';
+               if ($item = getItemForItemtype($itemtype)) {
+                  if ($item->getFromDB($line["items_id_$idx"])) {
+                     $item_name = $item->getName();
+                  }
+               }
+               echo "<td>".(empty($item_name) ? NOT_AVAILABLE : $item_name)."</td>";
+            } else {
+               echo "<td> ".NOT_AVAILABLE." </td>";
+               echo "<td> ".NOT_AVAILABLE." </td>";
+            }
+
+            echo "</tr>\n";
+         }
+         echo "</table><br><hr><br>";
+      }
    }
 }
 
