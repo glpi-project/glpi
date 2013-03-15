@@ -202,6 +202,28 @@ class Profile extends CommonDBTM {
    }
 
 
+   /**
+    * check right before delete
+    *
+    * @since version 0.84
+    *
+    * @return boolean
+   **/
+   function pre_deleteItem() {
+      global $DB;
+
+      if (($this->fields['profile'] == 'w')) {
+  //        && (countElementsInTable($this->getTable(), "`profile` = 'w'") == 1)) {
+         Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
+                                          false, ERROR);
+         Session::addMessageAfterRedirect(__("Deletion refused"),
+                                          false, ERROR);
+         return false;
+      }
+      return true;
+   }
+
+
    function prepareInputForUpdate($input) {
 
       // Check for faq
@@ -1329,14 +1351,14 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Assistance')."</td><td>";
       self::dropdownRight("entity_helpdesk", array('value' => $this->fields["entity_helpdesk"]));
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('SLA')."</td><td>";
       self::dropdownRight("sla", array('value' => $this->fields["sla"]));
       echo "</td>";
       echo "<td colspan='4'>&nbsp;";
       echo "</td></tr>\n";
-      
+
       if ($canedit
           && $closeform) {
          echo "<tr class='tab_bg_1'>";
