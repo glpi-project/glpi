@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -88,7 +88,8 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       $linkObject = new self();
       $input      = array('ipaddresses_id' => $ipaddress->getID());
 
-      foreach (IPNetwork::searchNetworksContainingIP($ipaddress) as $ipnetworks_id) {
+      $entity = $ipadress->getEntity();
+      foreach (IPNetwork::searchNetworksContainingIP($ipaddress, $entity) as $ipnetworks_id) {
          $input['ipnetworks_id'] = $ipnetworks_id;
          $linkObject->add($input);
       }
