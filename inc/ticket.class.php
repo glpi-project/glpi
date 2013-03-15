@@ -5227,6 +5227,7 @@ class Ticket extends CommonITILObject {
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               array('_users_id_requester' => $item->getID()));
+         echo "</td></tr>";
       }
 
       // Ticket list
