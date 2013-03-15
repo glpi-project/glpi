@@ -1039,7 +1039,8 @@ class IPAddress extends CommonDBChild {
                                   '$itemtype'     AS item_type
                            FROM `glpi_ipaddresses_ipnetworks` AS LINK
                            JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                               AND ADDR.`itemtype` = 'NetworkName')
+                                                               AND ADDR.`itemtype` = 'NetworkName'
+                                                               AND ADDR.`is_deleted` = '0')
                            JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                                 AND NAME.`itemtype` = 'NetworkPort')
                            JOIN `glpi_networkports` AS PORT ON (NAME.`items_id` = PORT.`id`
@@ -1062,7 +1063,8 @@ class IPAddress extends CommonDBChild {
                                NULL            AS item_type
                         FROM `glpi_ipaddresses_ipnetworks` AS LINK
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                            AND ADDR.`itemtype` = 'NetworkName')
+                                                            AND ADDR.`itemtype` = 'NetworkName'
+                                                            AND ADDR.`is_deleted` = '0')
                         JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                              AND NAME.`itemtype` = 'NetworkPort')
                         JOIN `glpi_networkports` AS PORT
@@ -1085,7 +1087,8 @@ class IPAddress extends CommonDBChild {
                                NULL            AS item_type
                         FROM `glpi_ipaddresses_ipnetworks` AS LINK
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                            AND ADDR.`itemtype` = 'NetworkName')
+                                                            AND ADDR.`itemtype` = 'NetworkName'
+                                                            AND ADDR.`is_deleted` = '0')
                         JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                              AND NAME.`itemtype` != 'NetworkPort')
                         WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
@@ -1104,7 +1107,8 @@ class IPAddress extends CommonDBChild {
                                NULL            AS item_type
                         FROM `glpi_ipaddresses_ipnetworks` AS LINK
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                            AND ADDR.`itemtype` != 'NetworkName')
+                                                            AND ADDR.`itemtype` != 'NetworkName'
+                                                            AND ADDR.`is_deleted` = '0')
                         WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
 
          $query = implode('UNION ', $queries);
@@ -1200,7 +1204,8 @@ class IPAddress extends CommonDBChild {
          $query                = "SELECT `id`
                                   FROM `glpi_ipaddresses`
                                   WHERE `items_id` = '" . $item->getID() . "'
-                                        AND `itemtype` = '" . $item->getType() . "'";
+                                        AND `itemtype` = '" . $item->getType() . "'
+                                        AND `is_deleted` = '0'";
 
          $canedit              = (isset($options['canedit']) && $options['canedit']);
          $createRow            = (isset($options['createRow']) && $options['createRow']);
