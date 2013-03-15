@@ -212,8 +212,8 @@ class Profile extends CommonDBTM {
    function pre_deleteItem() {
       global $DB;
 
-      if (($this->fields['profile'] == 'w')) {
-  //        && (countElementsInTable($this->getTable(), "`profile` = 'w'") == 1)) {
+      if (($this->fields['profile'] == 'w')
+          && (countElementsInTable($this->getTable(), "`profile` = 'w'") == 1)) {
          Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
                                           false, ERROR);
          Session::addMessageAfterRedirect(__("Deletion refused"),
