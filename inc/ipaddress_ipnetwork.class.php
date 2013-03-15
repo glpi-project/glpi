@@ -88,7 +88,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       $linkObject = new self();
       $input      = array('ipaddresses_id' => $ipaddress->getID());
 
-      $entity = $ipadress->getEntity();
+      $entity = $ipaddress->getEntityID();
       foreach (IPNetwork::searchNetworksContainingIP($ipaddress, $entity) as $ipnetworks_id) {
          $input['ipnetworks_id'] = $ipnetworks_id;
          $linkObject->add($input);
