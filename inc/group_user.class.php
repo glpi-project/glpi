@@ -42,6 +42,8 @@ class Group_User extends CommonDBRelation{
    static $itemtype_1                 = 'User';
    static $items_id_1                 = 'users_id';
 
+   static public $checkItem_1_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+
    static $itemtype_2                 = 'Group';
    static $items_id_2                 = 'groups_id';
 
