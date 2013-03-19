@@ -211,7 +211,7 @@ class Search {
 
       //// 1 - SELECT
       // request currentuser for SQL supervision, not displayed
-      $SELECT = "SELECT '".$_SESSION['glpiname']."' AS currentuser,
+      $SELECT = "SELECT '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
                         ".self::addDefaultSelect($itemtype);
 
       // Add select for all toview item
@@ -602,7 +602,7 @@ class Search {
          }
          // request currentuser for SQL supervision, not displayed
          $query_num = "SELECT $count,
-                              '".$_SESSION['glpiname']."' AS currentuser
+                              '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser
                        FROM `$itemtable`".
                        $COMMONLEFTJOIN;
 
