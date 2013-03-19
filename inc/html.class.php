@@ -49,7 +49,7 @@ class Html {
    **/
    static function clean($value) {
 
-      $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
+      $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
 
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
       $value         = preg_replace($specialfilter, ' ', $value);
