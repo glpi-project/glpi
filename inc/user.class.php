@@ -1638,17 +1638,17 @@ class User extends CommonDBTM {
       echo "<td>" . __('Login') . "</td>";
       // si on est dans le cas d'un ajout , cet input ne doit plus etre hidden
       if ($this->fields["name"] == "") {
-         echo "<td><input name='name' value='" . $this->fields["name"] . "'></td>";
+         echo "<td><input name='name' value=\"" . $this->fields["name"] . "\"></td>";
          // si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 
       } else {
          if (!empty($this->fields["password"])
              || ($this->fields["authtype"] == Auth::DB_GLPI)) {
             echo "<td>";
-            echo "<input name='name' value='" . $this->fields["name"] . "'>";
+            echo "<input name='name' value=\"" . $this->fields["name"] . "\">";
          } else {
             echo "<td class='b'>" . $this->fields["name"];
-            echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
+            echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
          }
          echo "</td>";
       }
