@@ -4600,7 +4600,11 @@ class Search {
                if (isset($searchopt[$ID]['withseconds'])) {
                   $withseconds = $searchopt[$ID]['withseconds'];
                }
-               return Html::timestampToString($data[$NAME.$num],$withseconds);
+               $withdays = true;
+               if (isset($searchopt[$ID]['withdays'])) {
+                  $withdays = $searchopt[$ID]['withdays'];
+               }               
+               return Html::timestampToString($data[$NAME.$num],$withseconds, $withdays);
 
             case "email" :
                $split         = explode('$$$$', $data[$NAME.$num]);

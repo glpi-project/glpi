@@ -310,10 +310,11 @@ class Html {
     *
     * @param $time         integer  timestamp
     * @param $display_sec  boolean  display seconds ? (true by default)
+    * @param $use_days     boolean  use days for display ? (true by default)
     *
     * @return string
    **/
-   static function timestampToString($time, $display_sec=true) {
+   static function timestampToString($time, $display_sec=true, $use_days=true) {
 
       $sign = '';
       if ($time < 0) {
@@ -329,17 +330,22 @@ class Html {
 
       $units = Toolbox::getTimestampTimeUnits($time);
       $out   = $sign;
-
-      if ($units['day'] > 0) {
-         if ($display_sec) {
-            //TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
-            //       %4$d number of seconds
-            return sprintf(__('%1$d days %2$d hours %3$d minutes %4$d seconds'),
-                           $units['day'], $units['hour'], $units['minute'], $units['second']);
+      if ($use_days) {
+         if ($units['day'] > 0) {
+            if ($display_sec) {
+               //TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
+               //       %4$d number of seconds
+               return sprintf(__('%1$d days %2$d hours %3$d minutes %4$d seconds'),
+                              $units['day'], $units['hour'], $units['minute'], $units['second']);
+            }
+            //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
+            return sprintf(__('%1$d days %2$d hours %3$d minutes'),
+                           $units['day'], $units['hour'], $units['minute']);
          }
-         //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
-         return sprintf(__('%1$d days %2$d hours %3$d minutes'),
-                        $units['day'], $units['hour'], $units['minute']);
+      } else {
+         if ($units['day'] > 0) {
+            $units['hour'] += 24*$units['day'];
+         }
       }
 
       if ($units['hour'] > 0) {

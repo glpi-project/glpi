@@ -1970,6 +1970,7 @@ class Ticket extends CommonITILObject {
       $tab[45]['field']             = 'actiontime';
       $tab[45]['name']              = __('Total duration');
       $tab[45]['datatype']          = 'timestamp';
+      $tab[45]['withdays']          = false;
       $tab[45]['massiveaction']     = false;
       $tab[45]['nosearch']          = true;
 
