@@ -328,12 +328,15 @@ class RuleCriteria extends CommonDBChild {
                   $criterias_results[$criteria] = $pattern;
                   return true;
                }
-            } else if ($field == $pattern) {
+            } else {
                //Perform comparison with fields in lower case
                $field                        = Toolbox::strtolower($field);
                $pattern                      = Toolbox::strtolower($pattern);
-               $criterias_results[$criteria] = $pattern;
-               return true;
+
+               if ($field == $pattern) {
+                  $criterias_results[$criteria] = $pattern;
+                  return true;
+               }
             }
             return false;
 
