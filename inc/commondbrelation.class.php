@@ -233,7 +233,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return boolean founded ?
    **/
-   static function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2) {
+   function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2) {
 
       // Check items ID
       if (($item1->getID() < 0) || ($item2->getID() < 0)) {
@@ -257,7 +257,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else if (!is_a($item2, static::$itemtype_2)) {
          return false;
       }
-
       return $this->getFromDBByQuery("WHERE ".implode(' AND ', $wheres));
    }
 
