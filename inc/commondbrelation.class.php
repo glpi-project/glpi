@@ -347,12 +347,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                       static::$items_id_2)) {
                return false;
             }
+            return true;
          } else if ($can2) {
             // Can view the first one ?
             if (!static::canConnexity($method, static::HAVE_VIEW_RIGHT_ON_ITEM, static::$itemtype_1,
                                       static::$items_id_1)) {
                return false;
             }
+            return true;
          } else {
             // No item have right
             return false;

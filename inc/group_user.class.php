@@ -42,8 +42,6 @@ class Group_User extends CommonDBRelation{
    static $itemtype_1                 = 'User';
    static $items_id_1                 = 'users_id';
 
-   static public $checkItem_1_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
-
    static $itemtype_2                 = 'Group';
    static $items_id_2                 = 'groups_id';
 
@@ -189,7 +187,7 @@ class Group_User extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'><tr>";
-      if ($canedit) {
+      if ($canedit && count($used)) {
          echo "<th width='10'>";
          Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
@@ -215,7 +213,7 @@ class Group_User extends CommonDBRelation{
             Session::addToNavigateListItems('Group', $data["id"]);
             echo "<tr class='tab_bg_1'>";
 
-            if ($canedit) {
+            if ($canedit && count($used)) {
                echo "<td width='10'>";
                Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
@@ -398,7 +396,7 @@ class Group_User extends CommonDBRelation{
       }
 
       // Have right to manage members
-      $canedit = ($group->canManageUsersItem());
+      $canedit = self::canUpdate();
       $rand    = mt_rand();
       $user    = new User();
       $crit    = Session::getSavedOption(__CLASS__, 'criterion', '');
@@ -411,7 +409,7 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit) {
          self::showAddUserForm($group, $ids, $entityrestrict, $crit);
-      }
+      } 
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
