@@ -2636,7 +2636,8 @@ class Search {
                $condition = "(";
 
                $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
-                              OR $observer_table.users_id = '".Session::getLoginUserID()."'";
+                              OR $observer_table.users_id = '".Session::getLoginUserID()."'
+                              OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."' ";
 
 
                if (Session::haveRight("show_group_ticket",1)) {
