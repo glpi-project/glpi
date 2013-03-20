@@ -174,9 +174,7 @@ class Group extends CommonTreeDropdown {
       if ($this->fields['is_requester']) {
          $this->addStandardTab('Ticket', $ong, $options);
       }
-      if ($this->dohistory) {
-         $this->addStandardTab('Log',$ong, $options);
-      }
+      $this->addStandardTab('Log',$ong, $options);
 
       return $ong;
    }
