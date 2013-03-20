@@ -67,8 +67,8 @@ class Html {
 
    // Problem with this regex : may crash
    //   $value = preg_replace("/ +/u", " ", $value);
+      $value = str_replace(array("\r\n", "\r"), "\n", $value);
       $value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
-
       return trim($value);
    }
 

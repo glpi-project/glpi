@@ -683,6 +683,7 @@ class MailCollector  extends CommonDBTM {
       $head['subject']               = $this->decodeMimeString($head['subject']);
       $tkt['_head']                  = $head;
 
+
       if (!empty($this->charset)
           && !$this->body_converted) {
          $body                 = Toolbox::encodeInUtf8($body,$this->charset);
@@ -789,7 +790,6 @@ class MailCollector  extends CommonDBTM {
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
-
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
          $rule_options['headers']             = $head;
@@ -1090,12 +1090,13 @@ class MailCollector  extends CommonDBTM {
             } else if ($structure->encoding == 4) {
                $text =  imap_qprint($text);
             }
-
             //else { return $text; }
-            if ($structure->subtype && ($structure->subtype == "HTML")) {
-               $text = str_replace("\r", "", $text);
-               $text = str_replace("\n", "", $text);
-            }
+            /// Do not drop new line for HTML : will be done later on postprocessing
+            /// Make trouble with word/Outlook emails
+//             if ($structure->subtype && ($structure->subtype == "HTML")) {
+//                $text = str_replace("\r", "", $text);
+//                $text = str_replace("\n", "", $text);
+//             }
 
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
