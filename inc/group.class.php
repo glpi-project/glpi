@@ -40,7 +40,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Group extends CommonTreeDropdown {
 
-
+   public $dohistory = true;
+   
    static function getTypeName($nb=0) {
       return _n('Group', 'Groups', $nb);
    }
@@ -172,6 +173,9 @@ class Group extends CommonTreeDropdown {
       }
       if ($this->fields['is_requester']) {
          $this->addStandardTab('Ticket', $ong, $options);
+      }
+      if ($this->dohistory) {
+         $this->addStandardTab('Log',$ong, $options);
       }
 
       return $ong;
