@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
    $input = array('tickets_id'       => $_POST['tickets_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
-                  'type'             => Ticket::OBSERVER);
+                  'type'             => CommonITILActor::OBSERVER);
    $ticket_user->add($input);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
