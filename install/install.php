@@ -217,11 +217,11 @@ function step3($host, $user, $password, $update) {
 
    error_reporting(16);
    echo "<h3>".__('Test of the connection at the database')."</h3>";
-   $link = mysql_connect($host,$user,$password);
+   $link = new mysqli($host, $user, $password);
 
    if (!$link || empty($host) || empty($user)) {
       echo "<p>".__("Can't connect to the database")."\n <br>".
-           sprintf(__('The server answered: %s'), mysql_error())."</p>";
+           sprintf(__('The server answered: %s'), $link->error)."</p>";
 
       if (empty($host) || empty($user)) {
          echo "<p>".__('The server or/and user field is empty')."</p>";
@@ -241,13 +241,13 @@ function step3($host, $user, $password, $update) {
          echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
 
-         $DB_list = mysql_list_dbs($link);
-         while ($row = mysql_fetch_object($DB_list)) {
-            if (!in_array($row->Database,array("information_schema",
+         $DB_list = $link->query("SHOW DATABASES");
+         while ($row = $DB_list->fetch_array()) {
+            if (!in_array($row['Database'],array("information_schema",
                                                "mysql",
                                                "performance_schema") )) {
-               echo "<p><input type='radio' name='databasename' value='". $row->Database ."'>";
-               echo "$row->Database.</p>";
+               echo "<p><input type='radio' name='databasename' value='". $row['Database']."'>";
+               echo $row['Database'].".</p>";
             }
          }
 
@@ -260,17 +260,17 @@ function step3($host, $user, $password, $update) {
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                __('Continue')."'></p>";
-         mysql_close($link);
+         $link->close();
          Html::closeForm();
 
       } else if ($update == "yes") {
          echo "<p>".__('Please select the database to update:')."</p>";
          echo "<form action='install.php' method='post'>";
 
-         $DB_list = mysql_list_dbs($link);
-         while ($row = mysql_fetch_object($DB_list)) {
-            echo "<p><input type='radio' name='databasename' value='". $row->Database ."'>";
-            echo "$row->Database.</p>";
+         $DB_list = $link->query("SHOW DATABASES");
+         while ($row = $DB_list->fetch_array()) {
+            echo "<p><input type='radio' name='databasename' value='". $row['Database']."'>";
+            echo $row['Database'].".</p>";
          }
 
          echo "<input type='hidden' name='db_host' value='". $host ."'>";
@@ -279,7 +279,7 @@ function step3($host, $user, $password, $update) {
          echo "<input type='hidden' name='install' value='update_1'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                 __('Continue')."'></p>";
-         mysql_close($link);
+         $link->close();
          Html::closeForm();
       }
 
@@ -341,15 +341,14 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       $DB->queryOrDie($query, "4203");
    }
 
-
-   $link = mysql_connect($host,$user,$password);
+   $link = new mysqli($host, $user, $password);
 
    if (!empty($databasename)) { // use db already created
-      $DB_selected = mysql_select_db($databasename, $link);
+      $DB_selected = $link->select_db($databasename);
 
       if (!$DB_selected) {
          _e('Impossible to use the database:');
-         echo "<br>".sprintf(__('The server answered: %s'), mysql_error());
+         echo "<br>".sprintf(__('The server answered: %s'), $link->error);
          prev_form($host, $user, $password);
 
       } else {
@@ -366,7 +365,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
    } else if (!empty($newdatabasename)) { // create new db
       // Try to connect
-      if (mysql_select_db($newdatabasename, $link)) {
+      if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
          if (create_conn_file($host,$user,$password,$newdatabasename)) {
@@ -380,10 +379,10 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
          }
 
       } else { // try to create the DB
-         if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")) {
+         if ($link->query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")) {
             echo "<p>".__('Database created')."</p>";
 
-            if (mysql_select_db($newdatabasename, $link)
+            if ($link->select_db($newdatabasename)
                 && create_conn_file($host,$user,$password,$newdatabasename)) {
 
                fill_db();
@@ -397,7 +396,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
          } else { // can't create database
             echo __('Error in creating database!');
-            echo "<br>".sprintf(__('The server answered: %s'), mysql_error());
+            echo "<br>".sprintf(__('The server answered: %s'), $link->error);
             prev_form($host, $user, $password);
          }
       }
@@ -408,7 +407,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       prev_form($host, $user, $password);
    }
 
-   mysql_close($link);
+   $link->close();
 
 }
 
