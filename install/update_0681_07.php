@@ -36,7 +36,7 @@
 function update0681to07() {
    global $DB, $CFG_GLPI;
 
-   @mysql_query("SET NAMES 'latin1'", $DB->dbh);
+   $DB->query("SET NAMES 'latin1'");
 
    // Improve user table :
    if (!isIndex("glpi_users", "firstname")) {
