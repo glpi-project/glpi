@@ -283,6 +283,19 @@ class Profile extends CommonDBTM {
 //          $input["change_status"] = exportArrayToDB($cycle);
 //       }
 
+
+      // check if right if the last write profile on Profile object
+      if (($this->fields['profile'] == 'w')
+          && isset($input['profile']) && ($input['profile'] != 'w')
+          && (countElementsInTable($this->getTable(), "`profile` = 'w'") == 1)) {
+         Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
+                                          false, ERROR);
+         Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
+         unset($input["profile"]);
+      }
+
+
+
       return $input;
    }
 
