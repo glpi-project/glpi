@@ -667,6 +667,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $crit = Session::getSavedOption(__CLASS__, 'criterion', '');
 
+      $critere = "";
+      $catid = countElementsInTable("glpi_softwarecategories")+1;
+
+      if ($crit == $catid) {
+         toolbox::logdebug("egal");
+         $critere = " AND `glpi_softwares`.`softwarecategories_id` = 0";
+      } else if ($crit > 0) {
+         $critere = " AND `glpi_softwares`.`softwarecategories_id` = $crit";
+      }
       $add_dynamic  = '';
       if (Plugin::haveImport()) {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
@@ -690,7 +699,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
-                      AND `glpi_softwares`.`softwarecategories_id` = $crit
+                      $critere
                 ORDER BY `softwarecategories_id`, `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
@@ -735,7 +744,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(2)."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Category')."&nbsp;";
+      $catid = countElementsInTable("glpi_softwarecategories")+1;
+
       SoftwareCategory::dropdown(array('value'     => $crit,
+                                       'toadd'     => array($catid => __('Uncategorized software')),
+                                       'emptylabel' => __('All categories'),
                                        'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
       echo "</td></tr></table>";
 
