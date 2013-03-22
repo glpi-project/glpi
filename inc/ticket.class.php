@@ -5001,13 +5001,17 @@ class Ticket extends CommonITILObject {
       }
 
       // Link to open a new ticket
-      if ($item->getID() && Ticket::isPossibleToAssignType($item->getType())) {
+      if ($item->getID()
+          && Ticket::isPossibleToAssignType($item->getType())
+          && Session::haveRight('create_ticket', 1)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
               "&amp;itemtype=".$item->getType()."\">".$LANG['joblist'][7]."</a>";
          echo "</td></tr>";
       }
-      if ($item->getID() && $item->getType()=='User') {
+      if ($item->getID()
+          && ( $item->getType() == 'User')
+          && Session::haveRight('create_ticket', 1)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
                 $item->getID()."\">".$LANG['joblist'][7]."</a>";
