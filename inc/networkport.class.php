@@ -489,9 +489,16 @@ class NetworkPort extends CommonDBChild {
          echo "<tr class='tab_bg_2'><td class='center'>\n";
          _e('Network port type to be added');
          echo "&nbsp;";
-         Dropdown::showFromArray('instantiation_type',
-                                 self::getNetworkPortInstantiationsWithNames(),
+
+         $instantiations = array();
+         foreach (self::getNetworkPortInstantiations() as $inst_type) {
+            if (call_user_func(array($inst_type, 'canCreate'))) {
+               $instantiations[$inst_type] = call_user_func(array($inst_type, 'getTypeName'));
+            }
+         }
+         Dropdown::showFromArray('instantiation_type', $instantiations,
                                  array('value' => 'NetworkPortEthernet'));
+
          echo "</td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
          _e('Add several ports');
