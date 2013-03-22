@@ -665,11 +665,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canedit      = Session::haveRight("software", "w");
       $entities_id  = $comp->fields["entities_id"];
 
-      $add_dynamic = '';
+      $crit = Session::getSavedOption(__CLASS__, 'criterion', '');
+
+      $add_dynamic  = '';
       if (Plugin::haveImport()) {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
       }
-      
+
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
@@ -688,6 +690,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
+                      AND `glpi_softwares`.`softwarecategories_id` = $crit
                 ORDER BY `softwarecategories_id`, `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
@@ -725,6 +728,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                      sprintf(__('%1$s = %2$s'),
                                              Computer::getTypeName(1), $comp->getName()));
 
+
+
+      // Mini Search engine
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo __('Category')."&nbsp;";
+      SoftwareCategory::dropdown(array('value'     => $crit,
+                                       'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
+      echo "</td></tr></table>";
+
       $installed = array();
       if ($number = $DB->numrows($result)) {
          if ($canedit) {
@@ -736,13 +750,24 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
-         echo "<table class='tab_cadre_fixe'>";
-         while ($data = $DB->fetch_assoc($result)) {
-            if ($data["softwarecategories_id"] != $cat) {
-               self::displayCategoryFooter($cat, $rand, $canedit);
-               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
-            }
 
+          echo "<table class='tab_cadre_fixe'>";
+
+        if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox("softcat$cat$rand");
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         echo "<th>".__('Automatic inventory')."</th>";
+         echo "</tr>\n";
+
+         while ($data = $DB->fetch_assoc($result)) {
+//           if ($data["softwarecategories_id"] != $cat) {
+//               self::displayCategoryFooter($cat, $rand, $canedit);
+//               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
+//            }
             $licids = self::displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('Software', $data["softwares_id"]);
 
@@ -751,7 +776,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
-         self::displayCategoryFooter($cat, $rand, $canedit);
+//         self::displayCategoryFooter($cat, $rand, $canedit);
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
@@ -848,15 +873,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return new category ID
    **/
-   private static function displayCategoryFooter($cat, $rand, $canedit) {
+//   private static function displayCategoryFooter($cat, $rand, $canedit) {
 
       // Close old one
-      if ($cat != -1) {
-         echo "</table>";
+//      if ($cat != -1) {
+//         echo "</table>";
 
-         echo "</div></td></tr>";
-      }
-   }
+//         echo "</div></td></tr>";
+//      }
+//   }
 
 
    /**
@@ -869,55 +894,55 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return new category ID
    **/
-   private static function displayCategoryHeader($computers_ID, $data, $rand, $canedit) {
-      global $CFG_GLPI;
+//   private static function displayCategoryHeader($computers_ID, $data, $rand, $canedit) {
+//      global $CFG_GLPI;
 
-      $display = "none";
+//      $display = "none";
 
-      if (isset($data["softwarecategories_id"])) {
-         $cat = $data["softwarecategories_id"];
+//      if (isset($data["softwarecategories_id"])) {
+//         $cat = $data["softwarecategories_id"];
 
-         if ($cat) {
+//         if ($cat) {
             // Categorized
-            $catname = Dropdown::getDropdownName('glpi_softwarecategories', $cat);
-            $display = $_SESSION["glpiis_categorized_soft_expanded"];
-         } else {
+//            $catname = Dropdown::getDropdownName('glpi_softwarecategories', $cat);
+//            $display = $_SESSION["glpiis_categorized_soft_expanded"];
+//         } else {
             // Not categorized
-            $catname = __('Uncategorized software');
-            $display = $_SESSION["glpiis_not_categorized_soft_expanded"];
-         }
+//            $catname = __('Uncategorized software');
+//            $display = $_SESSION["glpiis_not_categorized_soft_expanded"];
+//         }
 
-      } else {
+//      } else {
          // Not installed
-         $cat     = '';
-         $catname = __('Affected licenses of not installed software');
-         $display = true;
-      }
+//         $cat     = '';
+//         $catname = __('Affected licenses of not installed software');
+//         $display = true;
+//      }
 
-      echo "<tr class='tab_bg_2'><td class='center' colspan='5'>";
-      echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . $CFG_GLPI['root_doc'] .
-             "/pics/folder.png','" . $CFG_GLPI['root_doc'] . "/pics/folder-open.png');\">";
-      echo "<img alt='' name='imgcat$cat' src='".$CFG_GLPI['root_doc']."/pics/folder".
-             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>". $catname. "</span>";
-      echo "</a></td></tr>";
+//      echo "<tr class='tab_bg_2'><td class='center' colspan='5'>";
+//      echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . $CFG_GLPI['root_doc'] .
+//             "/pics/folder.png','" . $CFG_GLPI['root_doc'] . "/pics/folder-open.png');\">";
+//      echo "<img alt='' name='imgcat$cat' src='".$CFG_GLPI['root_doc']."/pics/folder".
+//             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>". $catname. "</span>";
+//      echo "</a></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td colspan='5'>";
-      echo "<div class='center' id='softcat$cat$rand' ".(!$display ?"style=\"display:none;\"" :'').">";
+//      echo "<tr class='tab_bg_2'><td colspan='5'>";
+//      echo "<div class='center' id='softcat$cat$rand' ".(!$display ?"style=\"display:none;\"" :'').">";
 
-      echo "<table class='tab_cadre_fixe'><tr>";
-      if ($canedit) {
-         echo "<th width='10'>";
-         Html::checkAllAsCheckbox("softcat$cat$rand");
-         echo "</th>";
-      }
-      echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
-      if (isset($data['is_dynamic'])) {
-         echo "<th>".__('Automatic inventory')."</th>";
-      }
-      echo "</tr>\n";
-      return $cat;
-   }
+//      echo "<table class='tab_cadre_fixe'><tr>";
+//      if ($canedit) {
+//         echo "<th width='10'>";
+//         Html::checkAllAsCheckbox("softcat$cat$rand");
+//         echo "</th>";
+//      }
+//      echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+//      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+//      if (isset($data['is_dynamic'])) {
+//         echo "<th>".__('Automatic inventory')."</th>";
+//      }
+//      echo "</tr>\n";
+//      return $cat;
+//   }
 
 
    /**
@@ -995,14 +1020,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       echo "</td>";
-      
+
       echo "</td>";
       if (isset($data['is_dynamic'])) {
          echo "<td class='center'>";
          echo Dropdown::getYesNo($data['is_dynamic']);
          echo "</td>";
-      }  
-      
+      }
+
       echo "</tr>\n";
 
       return $licids;
