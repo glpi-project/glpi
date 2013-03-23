@@ -50,7 +50,9 @@ class Apc extends AbstractAdapter implements
      */
     public function __construct($options = null)
     {
-        if (version_compare('3.1.6', phpversion('apc')) > 0) {
+      // GLPI change, allow APC or APCu
+      // https://github.com/zendframework/zf2/issues/4101
+        if (version_compare('3.1.6', phpversion('apc')) > 0 && version_compare('3.1.6', phpversion('apcu')) > 0) {
             throw new Exception\ExtensionNotLoadedException("Missing ext/apc >= 3.1.6");
         }
 
