@@ -65,7 +65,7 @@ class IPAddress extends CommonDBChild {
    protected $textual = '';
    /// $this->binary (bytes[4]) : binary version for the SQL requests. For IPv4 addresses, the
    /// first three bytes are set to [0, 0, 0xffff]
-   protected $binary  = '';
+   protected $binary  = array(0, 0, 0, 0);
 
 
    //////////////////////////////////////////////////////////////////////////////
@@ -147,6 +147,15 @@ class IPAddress extends CommonDBChild {
          // If previous value differs from current one, then check it !
          $this->setAddressFromString($input['name']);
          if (!$this->is_valid()) {
+            if ($input['is_dynamic']) {
+               // We allow invalid IPs that are dynamics !
+               $input['version']  = 0;
+               $input['binary_0'] = 0;
+               $input['binary_1'] = 0;
+               $input['binary_2'] = 0;
+               $input['binary_3'] = 0;
+               return $input;
+            }
             //TRANS: %s is the invalid address
             $msg = sprintf(__('%1$s: %2$s'), __('Invalid IP address'), $input['name']);
             Session::addMessageAfterRedirect($msg, false, ERROR);
