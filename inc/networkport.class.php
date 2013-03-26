@@ -425,7 +425,9 @@ class NetworkPort extends CommonDBChild {
          =  array('characteristics' => array('name'    => __('Characteristics'),
                                              'default' => true),
                   'internet'        => array('name'    => __('Internet information'),
-                                             'default' => true));
+                                             'default' => true),
+                  'dynamic_import'  => array('name'    => __('Automatic inventory'),
+                                             'default' => false));
       $options[__('Common options')]
          = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
       $options[__('Internet information')]
@@ -548,19 +550,13 @@ class NetworkPort extends CommonDBChild {
 
       $table->setTitle($table_name);
 
-      if (($withtemplate != 2)
-          && $canedit) {
-         $c_checkbox = $table->addHeader('checkbox',
-                                         Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand,
-                                                                     '__RAND__'));
-      } else {
-         $c_checkbox = NULL;
-      }
+      $c_main = $table->addHeader('main', self::getTypeName(2));
 
-      $c_number  = $table->addHeader('NetworkPort', "#");
-      $c_name    = $table->addHeader("Name", __('Name'));
-      $c_name->setItemType('NetworkPort');
-      $c_name->setHTMLClass('center');
+      if (($display_options['dynamic_import']) && ($item->isDynamic())) {
+         $table_options['display_isDynamic'] = true;
+      } else {
+         $table_options['display_isDynamic'] = false;
+      }
 
       if ($display_options['characteristics']) {
          $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
@@ -592,16 +588,41 @@ class NetworkPort extends CommonDBChild {
       foreach ($porttypes as $portType) {
 
          if (empty($portType)) {
-            $t_group = $table->createGroup('Migration',
-                                           __('Network ports waiting for manual migration'));
-            if ($display_options['characteristics']) {
+            $group_name  = 'Migration';
+            $group_title = __('Network ports waiting for manual migration');
+         } else {
+            $group_name  = $portType;
+            $group_title = $portType::getTypeName(2);
+         }
+
+         $t_group = $table->createGroup($group_name, $group_title);
+
+         if (($withtemplate != 2)
+             && $canedit) {
+            $c_checkbox = $t_group->addHeader('checkbox',
+                                              Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand,
+                                                                          '__RAND__'), $c_main);
+         } else {
+            $c_checkbox = NULL;
+         }
+
+         $c_number  = $t_group->addHeader('NetworkPort', "#", $c_main);
+         $c_name    = $t_group->addHeader("Name", __('Name'), $c_main);
+         $c_name->setItemType('NetworkPort');
+         $c_name->setHTMLClass('center');
+
+         if ($table_options['display_isDynamic']) {
+            $c_dynamic = $t_group->addHeader("Dynamic", __('Automatic inventory'), $c_main);
+            $c_dynamic->setHTMLClass('center');
+         }
+
+
+         if ($display_options['characteristics']) {
+            if (empty($portType)) {
                NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
                                                                                $c_network, NULL,
                                                                                $table_options);
-            }
-         } else {
-            $t_group = $table->createGroup($portType, $portType::getTypeName(2));
-            if ($display_options['characteristics']) {
+            } else {
                $instantiation = new $portType();
                $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
                                                                 NULL, $table_options);
@@ -702,7 +723,17 @@ class NetworkPort extends CommonDBChild {
 
                   $t_row->addCell($c_number, $content);
 
-                  $t_row->addCell($c_name, $netport->fields["name"], NULL, $netport);
+                  $value = $netport->fields["name"];
+                  if ($netport->fields['is_dynamic'] == 1) {
+                     $value .= "<sup>*</sup>";
+                     $table->is_dynamic = true;
+                  }
+                  $t_row->addCell($c_name, $value, NULL, $netport);
+
+                  if ($table_options['display_isDynamic']) {
+                     $t_row->addCell($c_dynamic,
+                                     Dropdown::getYesNo($netport->fields['is_dynamic']));
+                  }
 
                   $instant_cell = NULL;
                   if ($display_options['characteristics']) {

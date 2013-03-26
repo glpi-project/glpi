@@ -527,16 +527,17 @@ class NetworkName extends FQDNLabel {
          if (isset($options['column_links'][$column_name])) {
             $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
          }
-         $name_header = $base->addHeader($column_name, $content, $super, $father);
-         $name_header->setItemType('NetworkName');
-         $father_for_children = $name_header;
+         $father = $base->addHeader($column_name, $content, $super, $father);
+         $father->setItemType('NetworkName');
 
-      } else {
-         $father_for_children = $father;
+         if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
+            $father = $base->addHeader($column_name.'_dynamic',
+                                               __('Automatic inventory'), $super, $father);
+         }
       }
 
-      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $father_for_children, $options);
-      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $father_for_children, $options);
+      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
    }
 
 
@@ -651,8 +652,17 @@ class NetworkName extends FQDNLabel {
             if (!isset($options['dont_display'][$column_name])) {
                $header              = $row->getGroup()->getHeaderByName('Internet', $column_name);
                $name_cell           = $row->addCell($header, $content, $father, $address);
-               $father_for_children = $name_cell;
-            } else {
+               if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
+                  $dyn_header   = $row->getGroup()->getHeaderByName('Internet',
+                                                                    $column_name.'_dynamic');
+                  $dynamic_cell = $row->addCell($dyn_header,
+                                                Dropdown::getYesNo($address->fields['is_dynamic']),
+                                                $name_cell);
+                  $father_for_children = $dynamic_cell;
+               } else {
+                  $father_for_children = $name_cell;
+               }
+           } else {
                $father_for_children = $father;
             }
 
