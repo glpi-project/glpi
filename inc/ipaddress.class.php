@@ -1010,9 +1010,14 @@ class IPAddress extends CommonDBChild {
             $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
          }
 
-         $this_header = $base->addHeader($column_name, $content, $super, $father);
+         $father = $base->addHeader($column_name, $content, $super, $father);
 
-         IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $this_header, $options);
+         if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
+            $father = $base->addHeader($column_name.'_dynamic', __('Automatic inventory'),
+                                               $super, $father);
+         }
+
+         IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
       }
 
    }
@@ -1228,7 +1233,16 @@ class IPAddress extends CommonDBChild {
                   $row = $row->createRow();
                }
 
-               $this_cell = $row->addCell($header, $address->fields['name'], $father);
+               $content = $address->fields['name'];
+               $this_cell = $row->addCell($header, $content, $father);
+
+               if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
+                  $dyn_header = $row->getGroup()->getHeaderByName('Internet', __CLASS__.'_dynamic');
+                  $this_cell  = $row->addCell($dyn_header,
+                                              Dropdown::getYesNo($address->fields['is_dynamic']),
+                                              $this_cell);
+               }
+
 
                IPNetwork::getHTMLTableCellsForItem($row, $address, $this_cell, $options);
             }
