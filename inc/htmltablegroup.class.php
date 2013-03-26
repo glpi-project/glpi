@@ -67,6 +67,11 @@ class HTMLTableGroup extends HTMLTableBase {
    }
 
 
+   function getTable() {
+      return $this->table;
+   }
+
+
    /**
     * @param $header    HTMLTableHeader object
    **/
