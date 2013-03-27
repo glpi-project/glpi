@@ -137,8 +137,7 @@ if (isset($_POST["add"])) {
       $_GET["instantiation_type"] = "";
    }
    Session::checkRight("networking", "w");
-   Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", 'networking',
-                'networkport');
+   Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory');
 
    $np->showForm($_GET["id"], $_GET);
    Html::footer();
