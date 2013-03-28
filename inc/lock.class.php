@@ -396,7 +396,7 @@ class Lock {
                       "unlock_SoftwareVersion"        => __('Unlock software'),
                       "unlock_NetworkPort"            => __('Unlock network ports'),
                       "unlock_NetworkName"            => __('Unlock network names'),
-                      "unlock_IPAddress"              => __('Unlock IP addreses'),
+                      "unlock_IPAddress"              => __('Unlock IP addresses'),
                       "unlock_ComputerDisk"           => __('Unlock volumes'),
                       "unlock_Device"                 => __('Unlock devices'),
                       "unlock_ComputerVirtualMachine" => __('Unlock virtual machines')
