@@ -528,8 +528,7 @@ class Planning extends CommonGLPI {
                if (($begin_act <= $begin_time)
                    && ($end_act >= $end_time)) {
                   // Activity in quarter
-                  // TODO Moyo: style deleted in commit 19652
-                  echo "<td class='partialavailable'>&nbsp;</td>";
+                  echo "<td class='notavailable'>&nbsp;</td>";
                } else {
                   // Not all the quarter
                   if ($begin_act <= $begin_time) {
