@@ -263,6 +263,9 @@ class Problem extends CommonITILObject {
                  WHERE `problems_id` = '".$this->fields['id']."'";
       $DB->query($query1);
 
+      $pt = new Problem_Ticket();
+      $pt->cleanDBonItemDelete('Problem', $this->fields['id']);
+      
       parent::cleanDBonPurge();
    }
 
