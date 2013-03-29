@@ -196,13 +196,13 @@ class Item_Problem extends CommonDBRelation{
             $nb            = $DB->numrows($result_linked);
 
             for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-               $link = $data["name"];
+               $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
-                  $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
+                  $name = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                }
                $link = Toolbox::getItemTypeFormURL($itemtype);
-               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$link."</a>";
+               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$name."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -211,9 +211,9 @@ class Item_Problem extends CommonDBRelation{
                   echo "</td>";
                }
                if ($prem) {
-                  $name = $item->getTypeName($nb);
+                  $typename = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
-                         (($nb > 1) ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
+                         (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename)."</td>";
                }
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
