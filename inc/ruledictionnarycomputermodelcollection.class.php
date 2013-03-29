@@ -36,21 +36,21 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
    // From RuleCollection
    //public $rule_class_name = 'RuleDictionnaryComputerModel';
 
-   // Specific ones
-   /// dropdown table
-   var $item_table = "";
+   public $item_table  = "glpi_computermodels";
+   public $menu_option = "model.computer";
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
 
-      $this->item_table  = "glpi_computermodels";
-      //Init cache system values
-      $this->initCache("glpi_rulecachecomputermodels", array("name"         => "old_value",
-                                                             "manufacturer" => "manufacturer"));
-      $this->menu_option = "model.computer";
-   }
+//    /**
+//     * Constructor
+//    **/
+//    function __construct() {
+// 
+//       $this->item_table  = "glpi_computermodels";
+//       //Init cache system values
+//       $this->initCache("glpi_rulecachecomputermodels", array("name"         => "old_value",
+//                                                              "manufacturer" => "manufacturer"));
+//       $this->menu_option = "model.computer";
+//    }
 
 
    /**

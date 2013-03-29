@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
+class RuleDictionnaryPrinterCollection extends RuleCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
@@ -43,20 +43,20 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    public $menu_option         = 'printer';
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-
-      //Init cache system values
-      $this->initCache("glpi_rulecacheprinters",
-                       array("name"               => "old_value",
-                             "manufacturer"       => "manufacturer"),
-                       array("name"               => "new_value",
-                             "manufacturer"       => "new_manufacturer",
-                             "_ignore_import"     => "ignore_import",
-                             "is_global"          => "is_global"));
-   }
+//    /**
+//     * Constructor
+//    **/
+//    function __construct() {
+// 
+//       //Init cache system values
+//       $this->initCache("glpi_rulecacheprinters",
+//                        array("name"               => "old_value",
+//                              "manufacturer"       => "manufacturer"),
+//                        array("name"               => "new_value",
+//                              "manufacturer"       => "new_manufacturer",
+//                              "_ignore_import"     => "ignore_import",
+//                              "is_global"          => "is_global"));
+//    }
 
 
    /**

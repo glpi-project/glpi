@@ -36,21 +36,21 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
    // From RuleCollection
    //public $rule_class_name = 'RuleDictionnaryManufacturer';
 
-   // Specific ones
-   /// dropdown table
-   var $item_table = "";
+   public $item_table  = "glpi_manufacturers";
+   public $menu_option = "manufacturers";
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
 
-      $this->item_table  = "glpi_manufacturers";
-      //Init cache system values
-      $this->initCache("glpi_rulecachemanufacturers");
-      $this->menu_option = "manufacturers";
-   }
+//    /**
+//     * Constructor
+//    **/
+//    function __construct() {
+// 
+//       $this->item_table  = "glpi_manufacturers";
+//       //Init cache system values
+//       $this->initCache("glpi_rulecachemanufacturers");
+//       $this->menu_option = "manufacturers";
+//    }
 
 
    /**
