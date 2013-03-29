@@ -178,6 +178,9 @@ class Software extends CommonDBTM {
 
       $version = new SoftwareVersion();
       $version->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $ip = new Item_Problem();
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
    }
 
 

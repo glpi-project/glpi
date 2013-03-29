@@ -248,6 +248,9 @@ class Printer  extends CommonDBTM {
                 SET `printers_id` = NULL
                 WHERE `printers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
+      
+      $ip = new Item_Problem();
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
    }
 
 

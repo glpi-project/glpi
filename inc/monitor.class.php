@@ -154,6 +154,10 @@ class Monitor extends CommonDBTM {
             }
          }
       }
+      
+      $ip = new Item_Problem();
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      
    }
 
 

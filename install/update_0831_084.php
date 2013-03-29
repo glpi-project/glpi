@@ -1660,6 +1660,27 @@ function update0831to084() {
                      NOT IN (SELECT `glpi_computers`.`id`
                              FROM `glpi_computers`)";
    $DB->queryOrDie($query, "0.84 clean glpi_computers_softwarelicenses");
+
+   // Clean unlinked items_problems
+   $query = "DELETE
+             FROM `glpi_items_problems`
+             WHERE `glpi_items_problems`.`problems_id`
+                     NOT IN (SELECT `glpi_problems`.`id`
+                             FROM `glpi_problems`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_items_problems");
+
+
+   $toclean = array('Computer', 'Monitor', 'NetworkEquipment',
+                    'Peripheral', 'Phone', 'Printer', 'Software');
+   foreach ($toclean as $type) {
+      $query = "DELETE
+               FROM `glpi_items_problems`
+               WHERE `glpi_items_problems`.`itemtype` = '$type'
+                     AND `glpi_items_problems`.`items_id`
+                        NOT IN (SELECT `".getTableForItemType($type)."`.`id`
+                              FROM `".getTableForItemType($type)."`)";
+      $DB->queryOrDie($query, "0.84 clean glpi_items_problems");
+   }
    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
