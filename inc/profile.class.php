@@ -1481,10 +1481,10 @@ class Profile extends CommonDBTM {
       $tab[29]['name']           = __('Notes');
       $tab[29]['datatype']       = 'right';
 
-      $tab[29]['table']          = $this->getTable();
-      $tab[29]['field']          = 'internet';
-      $tab[29]['name']           = __('Internet');
-      $tab[29]['datatype']       = 'right';
+      $tab[129]['table']         = $this->getTable();
+      $tab[129]['field']         = 'internet';
+      $tab[129]['name']          = __('Internet');
+      $tab[129]['datatype']      = 'right';
 
       $tab['management']         = __('Management');
 
