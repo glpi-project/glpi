@@ -87,6 +87,9 @@ class SoftwareLicense extends CommonDBTM {
    **/
    function cleanDBonPurge() {
 
+      $csl = new Computer_SoftwareLicense();
+      $csl->cleanDBonItemDelete('SoftwareLicense', $this->fields['id']);
+
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }

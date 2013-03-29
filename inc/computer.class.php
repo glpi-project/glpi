@@ -366,6 +366,9 @@ class Computer extends CommonDBTM {
       $csv = new Computer_SoftwareVersion();
       $csv->cleanDBonItemDelete('Computer', $this->fields['id']);
 
+      $csl = new Computer_SoftwareLicense();
+      $csl->cleanDBonItemDelete('Computer', $this->fields['id']);
+
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
 
