@@ -1587,7 +1587,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<td>";
                $names     = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
                $groupname = sprintf(__('%1$s %2$s'), $names["name"],
-                                    Html::showToolTip($names["comment"]));
+                                    Html::showToolTip($names["comment"], array('display' => false)));
                if ($data['entities_id'] >= 0) {
                   $groupname = sprintf(__('%1$s / %2$s'), $groupname,
                                        Dropdown::getDropdownName('glpi_entities',
@@ -1619,7 +1619,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<td>";
                $names      = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
                $entityname = sprintf(__('%1$s %2$s'), $names["name"],
-                                    Html::showToolTip($names["comment"]));
+                                    Html::showToolTip($names["comment"], array('display' => false)));
                if ($data['is_recursive']) {
                   $entityname = sprintf(__('%1$s %2$s'), $entityname,
                                         "<span class='b'>(".__('R').")</span>");
@@ -1646,7 +1646,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<td>";
                $names       = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                $profilename = sprintf(__('%1$s %2$s'), $names["name"],
-                                    Html::showToolTip($names["comment"]));
+                                    Html::showToolTip($names["comment"], array('display' => false)));
                if ($data['entities_id'] >= 0) {
                   $profilename = sprintf(__('%1$s / %2$s'), $profilename,
                                        Dropdown::getDropdownName('glpi_entities',
