@@ -577,7 +577,9 @@ class Ticket extends CommonITILObject {
                  WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
 
-
+      $pt = new Problem_Ticket();
+      $pt->cleanDBonItemDelete('Ticket', $this->fields['id']);
+      
       $ts = new TicketCost();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 

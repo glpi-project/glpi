@@ -1631,7 +1631,22 @@ function update0831to084() {
       }
    }
 
+   // Clean unlinked ticket_problem 
+   $query = "DELETE
+             FROM `glpi_tickets_problems`
+             WHERE `glpi_tickets_problems`.`tickets_id`
+                     NOT IN (SELECT `glpi_tickets`.`id`
+                             FROM `glpi_tickets`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_tickets_problems");
 
+   $query = "DELETE
+             FROM `glpi_tickets_problems`
+             WHERE `glpi_tickets_problems`.`problems_id`
+                     NOT IN (SELECT `glpi_problems`.`id`
+                             FROM `glpi_problems`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_tickets_problems");
+
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
