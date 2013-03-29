@@ -1633,19 +1633,33 @@ function update0831to084() {
 
    // Clean unlinked ticket_problem 
    $query = "DELETE
-             FROM `glpi_tickets_problems`
-             WHERE `glpi_tickets_problems`.`tickets_id`
+             FROM `glpi_problems_tickets`
+             WHERE `glpi_problems_tickets`.`tickets_id`
                      NOT IN (SELECT `glpi_tickets`.`id`
                              FROM `glpi_tickets`)";
-   $DB->queryOrDie($query, "0.84 clean glpi_tickets_problems");
+   $DB->queryOrDie($query, "0.84 clean glpi_problems_tickets");
 
    $query = "DELETE
-             FROM `glpi_tickets_problems`
-             WHERE `glpi_tickets_problems`.`problems_id`
+             FROM `glpi_problems_tickets`
+             WHERE `glpi_problems_tickets`.`problems_id`
                      NOT IN (SELECT `glpi_problems`.`id`
                              FROM `glpi_problems`)";
-   $DB->queryOrDie($query, "0.84 clean glpi_tickets_problems");
+   $DB->queryOrDie($query, "0.84 clean glpi_problems_tickets");
 
+   // Clean unlinked softwarelicense_computer
+   $query = "DELETE
+             FROM `glpi_computers_softwarelicenses`
+             WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id`
+                     NOT IN (SELECT `glpi_softwarelicenses`.`id`
+                             FROM `glpi_softwarelicenses`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_computers_softwarelicenses");
+
+   $query = "DELETE
+             FROM `glpi_computers_softwarelicenses`
+             WHERE `glpi_computers_softwarelicenses`.`computers_id`
+                     NOT IN (SELECT `glpi_computers`.`id`
+                             FROM `glpi_computers`)";
+   $DB->queryOrDie($query, "0.84 clean glpi_computers_softwarelicenses");
    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
