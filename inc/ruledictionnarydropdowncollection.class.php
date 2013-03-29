@@ -31,7 +31,7 @@
 * @brief 
 */
 
-class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
+class RuleDictionnaryDropdownCollection extends RuleCollection {
 
    // From RuleCollection
 //   public $rule_class_name = 'RuleDictionnaryDropdown';
@@ -40,7 +40,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
    // Specific ones
    /// dropdown table
-   var $item_table = "";
+   public $item_table = "";
 
 
    /**

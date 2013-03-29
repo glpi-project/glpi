@@ -31,7 +31,7 @@
 * @brief 
 */
 
-class RuleDictionnaryDropdown extends RuleCached {
+class RuleDictionnaryDropdown extends Rule {
 
    // From Rule
    static public $right  = 'rule_dictionnary_dropdown';
@@ -47,38 +47,38 @@ class RuleDictionnaryDropdown extends RuleCached {
    }
 
 
-   /**
-    * @see RuleCached::showCacheRuleHeader()
-   **/
-   function showCacheRuleHeader() {
+//    /**
+//     * @see RuleCached::showCacheRuleHeader()
+//    **/
+//    function showCacheRuleHeader() {
+// 
+//       if ($this->show_cache) {
+//          echo "<tr><th colspan='2'>".__('Cache information')."</th><th>".$this->fields["name"].
+//               "</th></tr>";
+//          echo "<tr><td class='tab_bg_1 b'>".__('Original value')."</td>";
+//          echo "<td class='tab_bg_1 b'>".__('Manufacturer')."</td>";
+//          echo "<td class='tab_bg_1 b'>".__('Modified value')."</td></tr>";
+//       } else {
+//          parent::showCacheRuleHeader();
+//       }
+//    }
 
-      if ($this->show_cache) {
-         echo "<tr><th colspan='2'>".__('Cache information')."</th><th>".$this->fields["name"].
-              "</th></tr>";
-         echo "<tr><td class='tab_bg_1 b'>".__('Original value')."</td>";
-         echo "<td class='tab_bg_1 b'>".__('Manufacturer')."</td>";
-         echo "<td class='tab_bg_1 b'>".__('Modified value')."</td></tr>";
-      } else {
-         parent::showCacheRuleHeader();
-      }
-   }
 
-
-   /**
-    * @see RuleCached::showCacheRuleDetail()
-   **/
-   function showCacheRuleDetail($fields) {
-
-      if ($this->show_cache) {
-         echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
-         echo "<td class='tab_bg_2'>".(($fields["manufacturer"] != '')?$fields["manufacturer"]:'').
-              "</td>";
-         echo "<td class='tab_bg_2'>".(($fields["new_value"] != '') ? $fields["new_value"]
-                                                                    : __('Unchanged'))."</td>";
-      } else {
-         parent::showCacheRuleDetail($fields);
-      }
-   }
+//    /**
+//     * @see RuleCached::showCacheRuleDetail()
+//    **/
+//    function showCacheRuleDetail($fields) {
+// 
+//       if ($this->show_cache) {
+//          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
+//          echo "<td class='tab_bg_2'>".(($fields["manufacturer"] != '')?$fields["manufacturer"]:'').
+//               "</td>";
+//          echo "<td class='tab_bg_2'>".(($fields["new_value"] != '') ? $fields["new_value"]
+//                                                                     : __('Unchanged'))."</td>";
+//       } else {
+//          parent::showCacheRuleDetail($fields);
+//       }
+//    }
 
 }
 ?>

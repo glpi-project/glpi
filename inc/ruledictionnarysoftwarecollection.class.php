@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
+class RuleDictionnarySoftwareCollection extends RuleCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
@@ -43,22 +43,22 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    public $menu_option         = 'software';
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-
-      //Init cache system values
-      $this->initCache("glpi_rulecachesoftwares", array("name"         => "old_value",
-                                                        "manufacturer" => "manufacturer",
-                                                        "entities_id"  => "entities_id"),
-                       array("name"                => "new_value",
-                             "version"             => "version",
-                             "manufacturer"        => "new_manufacturer",
-                             "is_helpdesk_visible" => "is_helpdesk_visible",
-                             "_ignore_import"      => "ignore_import",
-                             "new_entities_id"     => "new_entities_id"));
-   }
+//    /**
+//     * Constructor
+//    **/
+//    function __construct() {
+// 
+//       //Init cache system values
+//       $this->initCache("glpi_rulecachesoftwares", array("name"         => "old_value",
+//                                                         "manufacturer" => "manufacturer",
+//                                                         "entities_id"  => "entities_id"),
+//                        array("name"                => "new_value",
+//                              "version"             => "version",
+//                              "manufacturer"        => "new_manufacturer",
+//                              "is_helpdesk_visible" => "is_helpdesk_visible",
+//                              "_ignore_import"      => "ignore_import",
+//                              "new_entities_id"     => "new_entities_id"));
+//    }
 
 
    /**

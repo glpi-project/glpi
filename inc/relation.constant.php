@@ -435,24 +435,6 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_rules"
                         => array('glpi_ruleactions'                          => 'rules_id',
-                                 'glpi_rulecachecomputermodels'              => 'rules_id',
-                                 'glpi_rulecachemanufacturers'               => 'rules_id',
-                                 'glpi_rulecachemonitormodels'               => 'rules_id',
-                                 'glpi_rulecachenetworkequipmentmodels'      => 'rules_id',
-                                 'glpi_rulecacheprintermodels'               => 'rules_id',
-                                 'glpi_rulecacheperipheralmodels'            => 'rules_id',
-                                 'glpi_rulecachephonemodels'                 => 'rules_id',
-                                 'glpi_rulecachecomputertypes'               => 'rules_id',
-                                 'glpi_rulecachemonitortypes'                => 'rules_id',
-                                 'glpi_rulecacheperipheraltypes'             => 'rules_id',
-                                 'glpi_rulecachephonetypes'                  => 'rules_id',
-                                 'glpi_rulecacheprinters'                    => 'rules_id',
-                                 'glpi_rulecacheprintertypes'                => 'rules_id',
-                                 'glpi_rulecachenetworkequipmenttypes'       => 'rules_id',
-                                 'glpi_rulecachesoftwares'                   => 'rules_id',
-                                 'glpi_rulecacheoperatingsystems'            => 'rules_id',
-                                 'glpi_rulecacheoperatingsystemservicepacks' => 'rules_id',
-                                 'glpi_rulecacheoperatingsystemversions'     => 'rules_id',
                                  'glpi_rulecriterias'                        => 'rules_id'),
 
                   "glpi_slalevels"

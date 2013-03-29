@@ -32,16 +32,18 @@
 */
 
 class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnaryDropdownCollection {
+   public $item_table  = "glpi_operatingsystemservicepacks";
+   public $menu_option = "os_sp";
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-
-      $this->item_table = "glpi_operatingsystemservicepacks";
-      $this->initCache("glpi_rulecacheoperatingsystemservicepacks");
-      $this->menu_option = "os_sp";
-   }
+//    /**
+//     * Constructor
+//    **/
+//    function __construct() {
+// 
+//       $this->item_table = "glpi_operatingsystemservicepacks";
+//       $this->initCache("glpi_rulecacheoperatingsystemservicepacks");
+//       $this->menu_option = "os_sp";
+//    }
 
 
    /**
