@@ -496,6 +496,11 @@ abstract class CommonITILObject extends CommonDBTM {
          $class = new $this->userlinkclass();
          $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
+
+      if (!empty($this->supplierlinkclass)) {
+         $class = new $this->supplierlinkclass();
+         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }      
    }
 
 
