@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -49,10 +49,9 @@ class Report {
       return _n('Report', 'Reports', $nb);
    }
 
-   
+
    /**
     * Show report title
-    *
    **/
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -142,14 +141,16 @@ class Report {
       echo "</tr>";
       echo "</table>";
    }
-   
+
+
    /**
     * Show Default Report
     *
+    * @since version 0.84
    **/
    static function showDefaultReport() {
       global $DB;
-      
+
       # Title
       echo "<span class='big b'>GLPI ".Report::getTypeName(2)."</span><br><br>";
 
@@ -170,12 +171,12 @@ class Report {
       echo "<table class='tab_cadrehov'>";
 
       foreach ($items as $itemtype) {
-         
+
          $table_item = getTableForItemType($itemtype);
-         
+
          $where = "WHERE `".$table_item."`.`is_deleted` = '0'
                       AND `".$table_item."`.`is_template` = '0' ";
-                      
+
          $join ="";
          if (in_array($itemtype, $linkitems)) {
             $join =  "LEFT JOIN `glpi_computers_items`
@@ -190,7 +191,7 @@ class Report {
                   getEntitiesRestrictRequest("AND",$table_item);
          $result              = $DB->query($query);
          $number = $DB->result($result,0,0);
-         
+
          echo "<tr class='tab_bg_2'><td>".$itemtype::getTypeName(2)."</td>";
          echo "<td class='numeric'>$number</td></tr>";
 
@@ -203,7 +204,7 @@ class Report {
 
       $where = "WHERE `is_deleted` = '0'
                       AND `is_template` = '0' ";
-                      
+
       $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
                 FROM `glpi_computers`
                 LEFT JOIN `glpi_operatingsystems`
@@ -222,23 +223,23 @@ class Report {
       }
 
       # Get counts of types
-      
+
       $val = array_flip($items);
       unset($val["Software"]);
       $items = array_flip($val);
 
       foreach ($items as $itemtype) {
-         
+
          echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$itemtype::getTypeName(2)."</td></tr>";
 
          $table_item = getTableForItemType($itemtype);
          $typeclass = $itemtype."Type";
          $type_table = getTableForItemType($typeclass);
          $typefield = getForeignKeyFieldForTable(getTableForItemType($typeclass));
-         
+
          $where = "WHERE `".$table_item."`.`is_deleted` = '0'
                       AND `".$table_item."`.`is_template` = '0' ";
-                      
+
          $join ="";
          if (in_array($itemtype, $linkitems)) {
             $join =  "LEFT JOIN `glpi_computers_items`
@@ -269,6 +270,17 @@ class Report {
       echo "</table>";
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $networkport_prefix
+    * @param $networkport_crit
+    * @param $where_crit
+    * @param $order                  (default '')
+    * @param $field                  (default '')
+    * @param $extra                  (default '')
+   **/
    static function reportForNetworkInformations($networkport_prefix, $networkport_crit,
                                                 $where_crit, $order = '', $field = '',
                                                 $extra = '') {
