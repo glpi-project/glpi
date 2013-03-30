@@ -3356,7 +3356,7 @@ class Html {
     * @param $maxTime      maximum allowed time (default '')
     *
     * @return rand value used
-    * \deprecated used Html::showDateTimeField instead
+    * \deprecated since 0.84 used Html::showDateTimeField instead
    **/
    static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
                                         $can_edit=true, $minDate='', $maxDate='', $minTime='',
