@@ -265,6 +265,10 @@ class RuleRightCollection extends RuleCollection {
 
       $fields = array();
       foreach ($criterias as $criteria) {
+         if (!is_array($criteria)) {
+            continue;
+         }
+
          if (isset($criteria['virtual']) && $criteria['virtual']) {
             $fields[]=$criteria['id'];
          } else {
