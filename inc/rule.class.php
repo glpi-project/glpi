@@ -2088,7 +2088,7 @@ class Rule extends CommonDBTM {
       if (empty($itemtype)) {
          $itemtype = static::getType();
       }
-      
+
       //Agregate all plugins criteria for this rules engine
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {
@@ -2446,9 +2446,10 @@ class Rule extends CommonDBTM {
                }
                return $this->getTypeName(2);
 
-            default:
+            default :
                if ($item instanceof Rule) {
-                  return $this->getTypeName(1);
+                  return sprintf(__('%1$s / %2$s'), _n('Criterion', 'Criteria', 2),
+                                 _n('Action', 'Actions', 2));
                }
          }
       }
