@@ -35,8 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES peripherals
 
+/**
+ * Phone Class
+**/
 class Phone extends CommonDBTM {
 
    // From CommonDBTM
@@ -145,7 +147,7 @@ class Phone extends CommonDBTM {
          }
       }
       $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
    }
 
 
