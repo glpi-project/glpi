@@ -3692,7 +3692,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get fields to display in the unicity error message
     *
-    * @return an aray which contains field => label
+    * @return an array which contains field => label
    **/
    function getUnicityFieldsToDisplayInErrorMessage() {
 

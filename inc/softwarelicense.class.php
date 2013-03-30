@@ -123,7 +123,7 @@ class SoftwareLicense extends CommonDBTM {
       }
       return '';
    }
-   
+
    function defineTabs($options=array()) {
 
       $ong = array();
@@ -758,7 +758,7 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Get fields to display in the unicity error message
     *
-    * @return an aray which contains field => label
+    * @return an array which contains field => label
    */
    function getUnicityFieldsToDisplayInErrorMessage() {
 
