@@ -207,7 +207,7 @@ class Html {
     **/
     static function resume_text($string, $length=255) {
 
-       if (strlen($string) > $length) {
+       if (Toolbox::strlen($string) > $length) {
           $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
        }
 
