@@ -1149,6 +1149,12 @@ class Ticket extends CommonITILObject {
          $tmprequester = 0;
       }
 
+      // Clean new lines before passing to rules
+      if (isset($input["content"])) {
+         $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
+         $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
+      }
+
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
