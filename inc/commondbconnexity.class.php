@@ -100,7 +100,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return the SQL request of '' if it is not possible
     **/
-   protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+   static function getSQLRequestToSearchForItem($itemtype, $items_id) {
       return '';
    }
 
