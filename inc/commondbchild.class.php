@@ -61,7 +61,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return string
    **/
-   protected static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+   static function getSQLRequestToSearchForItem($itemtype, $items_id) {
 
       $conditions = array();
       $fields     = array('`'.static::getIndexName().'`');
