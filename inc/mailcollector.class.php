@@ -699,7 +699,6 @@ class MailCollector  extends CommonDBTM {
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
       }
-
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
@@ -790,6 +789,7 @@ class MailCollector  extends CommonDBTM {
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
+      
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
          $rule_options['headers']             = $head;
@@ -1091,12 +1091,10 @@ class MailCollector  extends CommonDBTM {
                $text =  imap_qprint($text);
             }
             //else { return $text; }
-            /// Do not drop new line for HTML : will be done later on postprocessing
-            /// Make trouble with word/Outlook emails
-//             if ($structure->subtype && ($structure->subtype == "HTML")) {
-//                $text = str_replace("\r", "", $text);
-//                $text = str_replace("\n", "", $text);
-//             }
+            if ($structure->subtype && ($structure->subtype == "HTML")) {
+               $text = str_replace("\r", "", $text);
+               $text = str_replace("\n", "", $text);
+            }
 
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
@@ -1360,7 +1358,6 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
-
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
