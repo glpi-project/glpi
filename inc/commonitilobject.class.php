@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Tracking class
+/**
+ * CommonITILObject Class
+**/
 abstract class CommonITILObject extends CommonDBTM {
 
    /// Users by type
@@ -500,7 +502,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!empty($this->supplierlinkclass)) {
          $class = new $this->supplierlinkclass();
          $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      }      
+      }
    }
 
 
@@ -1604,7 +1606,7 @@ abstract class CommonITILObject extends CommonDBTM {
          default :
             // Return $value if not define
             return $value;
-            
+
       }
    }
 
@@ -1719,7 +1721,7 @@ abstract class CommonITILObject extends CommonDBTM {
          default :
             // Return $value if not define
             return $value;
-            
+
       }
    }
 
@@ -1831,7 +1833,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 1 :
             return _x('impact', 'Very low');
-            
+
          default :
             // Return $value if not define
             return $value;
