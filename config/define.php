@@ -307,26 +307,4 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
                                      'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
                                      'use_flat_dropdowntree',);
 
-/// TODO need this array be empty
-// Itemtypes not implements : need to create class to avoid warning on autoload
-$CFG_GLPI['missingclasses'] = array('rulecachecomputermodel',
-                                    'rulecachecomputertype',
-                                    'rulecachemanufacturer',
-                                    'rulecachemonitormodel',
-                                    'rulecachemonitortype',
-                                    'rulecachenetworkequipmentmodel',
-                                    'rulecachenetworkequipmenttype',
-                                    'rulecacheoperatingsystemservicepack',
-                                    'rulecacheoperatingsystem',
-                                    'rulecacheoperatingsystemversion',
-                                    'rulecacheperipheralmodel',
-                                    'rulecacheperipheraltype',
-                                    'rulecachephonemodel',
-                                    'rulecachephonetype',
-                                    'rulecacheprintermodel',
-                                    'rulecacheprinter',
-                                    'rulecacheprintertype',
-                                    'rulecachesoftware');
-
-
 ?>
