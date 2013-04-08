@@ -724,10 +724,6 @@ class NetworkPort extends CommonDBChild {
                   $t_row->addCell($c_number, $content);
 
                   $value = $netport->fields["name"];
-                  if ($netport->fields['is_dynamic'] == 1) {
-                     $value .= "<sup>*</sup>";
-                     $table->is_dynamic = true;
-                  }
                   $t_row->addCell($c_name, $value, NULL, $netport);
 
                   if ($table_options['display_isDynamic']) {
