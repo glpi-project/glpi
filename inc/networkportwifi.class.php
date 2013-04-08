@@ -42,7 +42,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      return _n('Wifi port', 'Wifi ports', $nb);
+      return __('Wifi port');
    }
 
 

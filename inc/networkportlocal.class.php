@@ -45,7 +45,7 @@ class NetworkPortLocal extends NetworkPortInstantiation {
    public $haveMAC     = false;
 
    static function getTypeName($nb=0) {
-     return __('Local loop');
+     return __('Local loop port');
    }
 }
 ?>
