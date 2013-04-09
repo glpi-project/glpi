@@ -263,7 +263,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
             case 'icon' :
                Dropdown::dropdownIcons($field['name'], $this->fields[$field['name']],
-                                       $CFG_GLPI['root_doc']."/pics/icones");
+                                       GLPI_ROOT."/pics/icones");
                if (!empty($this->fields[$field['name']])) {
                   echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
                        $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields[$field['name']]."'>";
