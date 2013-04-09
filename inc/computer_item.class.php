@@ -567,7 +567,7 @@ class Computer_Item extends CommonDBRelation{
       $number = count($compids);
 
       if ($canedit
-          && ($global || $number)) {
+          && ($global || !$number)) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
