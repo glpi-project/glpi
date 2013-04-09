@@ -280,7 +280,7 @@ class NotificationTarget extends CommonDBChild {
 
       if ($notification->getField('itemtype') != '') {
          $notifications_id = $notification->fields['id'];
-         $this->getNotificationTargets($_SESSION['glpiactive_entity']);
+         $this->getNotificationTargets($notification->getEntityID());
 
          $canedit = $notification->can($notifications_id,'w');
 
