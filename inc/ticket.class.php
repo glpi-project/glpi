@@ -3215,14 +3215,19 @@ class Ticket extends CommonITILObject {
          echo "</table></div>";
          echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
 
-      } else if ($CFG_GLPI['use_check_pref']) {
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('Check your personnal information')."</th></tr>";
-         echo "<tr class='tab_bg_1'><td class='center'>";
-         User::showPersonalInformation(Session::getLoginUserID());
-         echo "</td></tr>";
-         echo "</table></div>";
+      } else {
+         // User as requester
+         $values['_users_id_requester'] = Session::getLoginUserID();
+         if ($CFG_GLPI['use_check_pref']) {
+            echo "<div class='center'><table class='tab_cadre_fixe'>";
+            echo "<tr><th>".__('Check your personnal information')."</th></tr>";
+            echo "<tr class='tab_bg_1'><td class='center'>";
+            User::showPersonalInformation(Session::getLoginUserID());
+            echo "</td></tr>";
+            echo "</table></div>";
+         }
       }
+
 
       echo "<input type='hidden' name='_from_helpdesk' value='1'>";
       echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk').
