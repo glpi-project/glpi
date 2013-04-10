@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -199,10 +199,10 @@ class Item_Problem extends CommonDBRelation{
                $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
-                  $name = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
+                  $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                }
-               $link = Toolbox::getItemTypeFormURL($itemtype);
-               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$name."</a>";
+               $link     = Toolbox::getItemTypeFormURL($itemtype);
+               $namelink = "<a href=\"".$link."?id=".$data["id"]."\">".$name."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -219,7 +219,7 @@ class Item_Problem extends CommonDBRelation{
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
                echo "<td class='center".
                         (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
-               echo ">".$name."</td>";
+               echo ">".$namelink."</td>";
                echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-").
                     "</td>";
                echo "<td class='center'>".
