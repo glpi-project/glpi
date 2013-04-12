@@ -4112,7 +4112,7 @@ class Html {
          valid_elements: '*[*]',
          plugins : 'table,directionality,searchreplace',
          theme : 'advanced',
-         entity_encoding : 'numeric', ";
+         entity_encoding : 'raw', ";
          // directionality + search replace plugin
       echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
       echo "theme_advanced_toolbar_location : 'top',
