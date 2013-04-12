@@ -205,29 +205,35 @@ abstract class CommonDBConnexity extends CommonDBTM {
       // Merge both arrays to ensure all the fields are defined for the following checks
       $input = array_merge($this->fields, $input);
 
+      $have_to_check = false;
       foreach ($fields as $field_name) {
          if ((isset($this->fields[$field_name]))
              && ($input[$field_name] != $this->fields[$field_name])) {
 
-            $new_item = clone $this;
-
-            // Solution 1 : If we cannot create the new item or delete the old item,
-            // then we cannot update the item
-            unset($new_item->fields);
-            if ((!$new_item->can(-1, 'w', $input)) || (!$this->can($this->getID(), 'd'))) {
-            
-               Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-                                                INFO, true);
-               return false;
-            }
-
-            // Solution 2 : simple check ! Can we update the item with new values ?
-//             if (!$new_item->can($input['id'], 'w')) {
-//                Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-//                                                 INFO, true);
-//                return false;
-//             }
+            $have_to_check = true;
+            break;
          }
+      }
+
+      if ($have_to_check) {
+
+         $new_item = clone $this;
+
+         // Solution 1 : If we cannot create the new item or delete the old item,
+         // then we cannot update the item
+         unset($new_item->fields);
+         if ((!$new_item->can(-1, 'w', $input)) || (!$this->can($this->getID(), 'd'))) {
+            Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+                                             INFO, true);
+            return false;
+         }
+
+         // Solution 2 : simple check ! Can we update the item with new values ?
+//       if (!$new_item->can($input['id'], 'w')) {
+//          Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+//                                           INFO, true);
+//          return false;
+//       }
       }
 
       return true;
