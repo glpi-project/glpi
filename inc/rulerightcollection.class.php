@@ -246,8 +246,10 @@ class RuleRightCollection extends RuleCollection {
                            $rule_parameters[$field] = $rule_input[$field];
                         } else {
                            if (count($rule_input[$field])) {
-                              foreach ($rule_input[$field] as $val) {
-                                 $rule_parameters[$field][] = $val;
+                              foreach ($rule_input[$field] as $key => $val) {
+                                 if ($key != 'count') {
+                                    $rule_parameters[$field][] = $val;
+                                }
                               }
                            }
                         }
