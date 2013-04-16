@@ -1603,8 +1603,8 @@ class Dropdown {
             $deselect = __('Deselect all');
             $size     = strlen($select) +  strlen($deselect);
 
-            $select   = "<input type='button' onclick=\"selectAllOptions('$field_id')\" value='$select'>";
-            $deselect = "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value='$deselect'>";
+            $select   = "<input type='button' onclick=\"selectAllOptions('$field_id')\" value=\"$select\">";
+            $deselect = "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value=\"$deselect\">";
 
             if ($size > $max_option_size) {
                $output = "<table><tr><td rowspan='2'>".$output."</td>";
