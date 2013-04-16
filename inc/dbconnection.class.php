@@ -83,13 +83,8 @@ class DBConnection extends CommonDBTM {
       }
       $DB_str .= " var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
                   rawurlencode($password) . "'; \n var \$dbdefault = '" . $DBname . "'; \n } \n ?>";
-      $fp      = fopen(GLPI_CONFIG_DIR . "/config_db_slave.php", 'wt');
-      if ($fp) {
-         $fw = fwrite($fp, $DB_str);
-         fclose($fp);
-         return true;
-      }
-      return false;
+
+      return Toolbox::writeConfig('config_db_slave.php', $DB_str);
    }
 
 

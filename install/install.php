@@ -449,14 +449,7 @@ function create_conn_file($host, $user, $password, $DBname) {
                 \n var \$dbdefault	= '". $DBname ."';
                 \n } \n?>";
 
-   $fp = fopen(GLPI_CONFIG_DIR . "/config_db.php",'wt');
-
-   if ($fp) {
-      $fw = fwrite($fp,$DB_str);
-      fclose($fp);
-      return true;
-   }
-   return false;
+   return Toolbox::writeConfig('config_db.php', $DB_str);
 }
 
 
