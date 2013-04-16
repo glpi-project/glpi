@@ -302,7 +302,7 @@ class Toolbox {
        $result .= $char;
      }
 
-     return $result;
+     return Toolbox::unclean_cross_side_scripting_deep($result);
    }
 
 
