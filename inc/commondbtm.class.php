@@ -2653,7 +2653,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * Get field used for name
    **/
-   function getNameField() {
+   static function getNameField() {
       return 'name';
    }
 
@@ -2663,7 +2663,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * Get field used for completename
    **/
-   function getCompleteNameField() {
+   static function getCompleteNameField() {
       return 'completename';
    }
 
@@ -2692,10 +2692,10 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $val;
          }
       }
-      $field = $this->getNameField();
+      $field = static::getNameField();
 
-      if ($p['complete'] && isset($this->fields[$this->getCompleteNameField()])) {
-         $field = $this->getCompleteNameField();
+      if ($p['complete'] && isset($this->fields[static::getCompleteNameField()])) {
+         $field = static::getCompleteNameField();
       }
 
       if (isset($this->fields[$field]) && (strlen($this->fields[$field]) != 0)) {

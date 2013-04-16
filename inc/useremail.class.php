@@ -230,7 +230,7 @@ class UserEmail  extends CommonDBChild {
     *
     * @return string
    **/
-   function getNameField() {
+   static function getNameField() {
       return 'email';
    }
 

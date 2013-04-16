@@ -81,7 +81,7 @@ class Cartridge extends CommonDBChild {
    }
 
    
-   function getNameField() {
+   static function getNameField() {
       return 'id';
    }
    
