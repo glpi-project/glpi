@@ -163,30 +163,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             break;
 
-         case "install_licenses" :
-            if (isset($input['computers_id'])) {
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     $params = array('computers_id'       => $input['computers_id'],
-                                    'softwareversions_id' => $key);
-                     //Get software name and manufacturer
-                     if ($this->can(-1,'w', $params)) {
-                        //Process rules
-                        if ($this->add($params)) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['noright']++;
-                     }
-                  }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
-
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -779,6 +755,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<div class='spaced'>";
       // Affected licenses NOT installed
       $query = "SELECT `glpi_softwarelicenses`.*,
+                       `glpi_computers_softwarelicenses`.`id` AS linkID,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_softwareversions`.`name` AS version,
                        `glpi_states`.`name` AS state
@@ -807,12 +784,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($number = $req->numrows()) {
          if ($canedit) {
             $rand = mt_rand();
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'specific_actions' => array('install_licenses' => _x('button',
-                                                                                   'Install')));
+                              'specific_actions' => array('install' => _x('button', 'Install')));
 
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
             echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          }
          echo "<table class='tab_cadre_fixe'>";
@@ -829,7 +805,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
             Html::closeForm();
          }
       }
@@ -1021,13 +997,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
       global $CFG_GLPI;
-
+      $version = 0;
       if ($data["softwareversions_id_use"]>0) {
-         $ID = $data["softwareversions_id_use"];
+         $version = $data["softwareversions_id_use"];
       } else {
-         $ID = $data["softwareversions_id_buy"];
+         $version = $data["softwareversions_id_buy"];
       }
-
+      
+      $ID = $data['linkID'];
+      
       $multiple  = false;
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];
@@ -1036,7 +1014,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($canedit) {
          echo "<td>";
          if ((empty($withtemplate) || ($withtemplate != 2))
-             && ($ID > 0)) {
+             && ($version > 0)) {
             Html::showMassiveActionCheckBox(__CLASS__, $ID);
          }
          echo "</td>";
