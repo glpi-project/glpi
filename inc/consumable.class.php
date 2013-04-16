@@ -64,7 +64,7 @@ class Consumable extends CommonDBTM {
       return _n('Consumable', 'Consumables', $nb);
    }
 
-   function getNameField() {
+   static function getNameField() {
       return 'id';
    }
    
