@@ -87,7 +87,7 @@ class Ajax {
          if (is_array($param['extraparams']) && count($param['extraparams'])) {
             echo ", params: '".Toolbox::append_params($param['extraparams'])."'";
          }
-         echo "},";
+         echo "}";
 
      echo " }); ";
       echo "</script>";
