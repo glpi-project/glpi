@@ -234,7 +234,7 @@ abstract class CommonDevice extends CommonDropdown {
                   break;
                case 'delta':
                   $where[] = "`".$field."`>'".($input[$field] - $compare[1])."'";
-                  $where[] = "`".$field."`<'".($input[$field] - $compare[1])."'";
+                  $where[] = "`".$field."`<'".($input[$field] + $compare[1])."'";
                   break;
             }
          }
