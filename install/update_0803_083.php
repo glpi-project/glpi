@@ -972,32 +972,14 @@ function update0803to083() {
       $migration->addField("glpi_documents_items", "is_recursive", "bool");
       $migration->migrationOneTable('glpi_documents_items');
 
-      $entities    = getAllDatasFromTable('glpi_entities');
-      $entities[0] = "Root";
-
-      foreach ($entities as $entID => $val) {
-         // Non recursive ones
-         $query3 = "UPDATE `glpi_documents_items`
-                    SET `entities_id` = $entID, `is_recursive` = 0
-                    WHERE `documents_id` IN (SELECT `id`
-                                             FROM `glpi_documents`
-                                             WHERE `entities_id` = $entID
-                                                   AND `is_recursive` = 0)";
-         $DB->query($query3)
-         or die("0.83 update entities_id and is_recursive=0 in glpi_documents_items ".
-                $LANG['update'][90] . $DB->error());
-
-         // Recursive ones
-         $query3 = "UPDATE `glpi_documents_items`
-                    SET `entities_id` = $entID, `is_recursive` = 1
-                    WHERE `documents_id` IN (SELECT `id`
-                                             FROM `glpi_documents`
-                                             WHERE `entities_id` = $entID
-                                                   AND `is_recursive` = 1)";
-         $DB->query($query3)
-         or die("0.83 update entities_id and is_recursive=1 in glpi_documents_items ".
-                $LANG['update'][90] . $DB->error());
-      }
+      $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
+                      INNER JOIN `glpi_documents` as `doc`
+                        ON  `doc`.`id` = `doc_i`.`documents_id`
+                      SET `doc_i`.`entities_id` = `doc`.`entities_id`, 
+                         `doc_i`.`is_recursive` = `doc`.`is_recursive`";
+      $DB->query($query_doc_i)
+         or die("0.83 update entities_id and is_recursive in glpi_documents_items ".
+                  $LANG['update'][90] . $DB->error());      
 
       /// create index for search count on tab
       $migration->dropKey("glpi_documents_items", "item");
