@@ -5148,8 +5148,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                                              WHERE `entities_id` = $entID
                                                    AND `is_recursive` = 0)";
          $DB->query($query3)
-         or die("0.78 update entities_id and is_recursive=0 in glpi_softwareversions for ".
-                $data['itemtype']." ". $LANG['update'][90] . $DB->error());
+         or die("0.78 update entities_id and is_recursive=0 in glpi_softwareversions ". $LANG['update'][90] . $DB->error());
 
          // Recursive ones
          $query3 = "UPDATE `glpi_softwareversions`
@@ -5160,8 +5159,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                                              WHERE `entities_id` = $entID
                                                    AND `is_recursive` = 1)";
          $DB->query($query3)
-         or die("0.78 update entities_id and is_recursive=1 in glpi_softwareversions for ".
-                $data['itemtype']." ". $LANG['update'][90] . $DB->error());
+         or die("0.78 update entities_id and is_recursive=1 in glpi_softwareversions ". $LANG['update'][90] . $DB->error());
       }
    }
 
