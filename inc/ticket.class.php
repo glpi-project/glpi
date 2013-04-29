@@ -3707,6 +3707,7 @@ class Ticket extends CommonITILObject {
 
          if (isset($tt->predefined) && count($tt->predefined)) {
             foreach ($tt->predefined as $predeffield => $predefvalue) {
+
                if (isset($default_values[$predeffield])) {
                   // Is always default value : not set
                   // Set if already predefined field
@@ -4321,7 +4322,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
-         echo $tt->getBeginHiddenFieldText('name');
+         echo $tt->getBeginHiddenFieldValue('name');
 
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
@@ -4350,7 +4351,7 @@ class Ticket extends CommonITILObject {
             showName$rand();
             </script>";
          }
-         echo $tt->getEndHiddenFieldText('name');
+         echo $tt->getEndHiddenFieldValue('name', $this);
 
       } else {
          if (empty($this->fields["name"])) {
@@ -4368,7 +4369,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
-         echo $tt->getBeginHiddenFieldText('content');
+         echo $tt->getBeginHiddenFieldValue('content');
 
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
@@ -4396,7 +4397,7 @@ class Ticket extends CommonITILObject {
             showDesc$rand();
             </script>";
          }
-         echo $tt->getEndHiddenFieldText('content');
+         echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
          echo nl2br($this->fields["content"]);
