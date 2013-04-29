@@ -225,10 +225,18 @@ abstract class CommonDevice extends CommonDropdown {
       }
       $where      = array();
       $a_criteria = $this->getImportCriteria();
-      foreach ($a_criteria as $criteria) {
-         if (isset($input[$criteria])) {
-            $where[] = "`".$criteria."`='".$input[$criteria]."'";
-
+      foreach ($a_criteria as $field => $compare) {
+         if (isset($input[$field])) {
+            $compare = explode(':', $compare);
+            switch ($compare[0]) {
+               case 'equal':
+                  $where[] = "`".$field."`='".$input[$field]."'";
+                  break;
+               case 'delta':
+                  $where[] = "`".$field."`>'".($input[$field] - $compare[1])."'";
+                  $where[] = "`".$field."`<'".($input[$field] - $compare[1])."'";
+                  break;
+            }
          }
       }
 
@@ -251,7 +259,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @since version 0.84
    **/
    function getImportCriteria() {
-      return array('designation', 'manufacturers_id');
+      return array('designation'      => 'equal',
+                   'manufacturers_id' => 'equal');
    }
 
 }

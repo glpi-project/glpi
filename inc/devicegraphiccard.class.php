@@ -129,7 +129,9 @@ class DeviceGraphicCard extends CommonDevice {
     * @since version 0.84
    **/
    function getImportCriteria() {
-      return array('designation', 'manufacturers_id', 'interfacetypes_id');
+      return array('designation'       => 'equal',
+                   'manufacturers_id'  => 'equal',
+                   'interfacetypes_id' => 'equal');
    }
 
 }

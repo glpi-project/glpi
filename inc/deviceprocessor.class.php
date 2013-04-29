@@ -127,5 +127,19 @@ class DeviceProcessor extends CommonDevice {
             break;
       }
    }
+
+   /**
+    * Criteria used for import function
+    *
+    * @see CommonDevice::getImportCriteria()
+    *
+    * @since version 0.84
+   **/
+   function getImportCriteria() {
+      return array('designation'          => 'equal',
+                   'manufacturers_id'     => 'equal',
+                   'frequence'            => 'delta:100');
+   }
+   
 }
 ?>
