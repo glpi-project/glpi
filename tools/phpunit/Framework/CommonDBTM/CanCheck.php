@@ -32,6 +32,9 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
     * Check right on Recursive object
     */
    public function testPrinter() {
+      global $DB;
+      
+      $DB->connect();
 
       $ent0 = $this->sharedFixture['entity'][0];
       $ent1 = $this->sharedFixture['entity'][1];
@@ -120,6 +123,9 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
     * Check right on CommonDBRelation object
     */
    public function testContact_Supplier() {
+      global $DB;
+      
+      $DB->connect();
 
       $ent0 = $this->sharedFixture['entity'][0];
       $ent1 = $this->sharedFixture['entity'][1];
@@ -319,6 +325,9 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
     * Entity right check
     */
    public function testEntity() {
+      global $DB;
+      
+      $DB->connect();
 
       $ent0 = $this->sharedFixture['entity'][0];
       $ent1 = $this->sharedFixture['entity'][1];

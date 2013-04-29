@@ -26,21 +26,8 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-require_once 'PHPUnit/Framework.php';
 
-// Hack for old PHPUnit
-global $CFG_GLPI;
-
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../..');
-   require GLPI_ROOT . "/inc/includes.php";
-   restore_error_handler();
-
-   error_reporting(E_ALL | E_STRICT);
-   ini_set('display_errors','On');
-}
-
-class System_PHP extends PHPUnit_Framework_TestCase {
+class System extends PHPUnit_Framework_TestCase {
 
    public function testPHP() {
 
@@ -86,8 +73,6 @@ class System_AllTests  {
    public static function suite() {
 
       $suite = new PHPUnit_Framework_TestSuite('System');
-      $suite->addTestSuite('System_PHP');
-
       return $suite;
    }
 }
