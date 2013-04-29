@@ -26,33 +26,64 @@
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-require_once 'PHPUnit/Framework.php';
-
-// Hack for old PHPUnit
-global $CFG_GLPI;
-
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../..');
-   require GLPI_ROOT . "/inc/includes.php";
-   restore_error_handler();
-
-   error_reporting(E_ALL | E_STRICT);
-   ini_set('display_errors','On');
-}
-require_once GLPI_ROOT . "/install/update_0723_078.php";
-require_once GLPI_ROOT . "/install/update_078_0781.php";
-require_once GLPI_ROOT . "/install/update_0781_0782.php";
-require_once GLPI_ROOT . "/install/update_0782_080.php";
-
+include("../../install/update_0723_078.php");
+include("../../install/update_078_0781.php");
+include("../../install/update_0781_0782.php");
+include("../../install/update_0782_080.php");
+include("../../install/update_080_0801.php");
+include("../../install/update_0801_0803.php");
+include("../../install/update_0803_083.php");
+include("../../install/update_083_0831.php");
+include("../../install/update_0831_0833.php");
+include("../../install/update_0831_084.php");
 
 function displayMigrationMessage ($id, $msg="") {
    // display nothing
 }
 
 
+class CliMigration extends Migration {
+
+
+   function __construct($ver) {
+      $this->deb = time();
+      $this->setVersion($ver);
+   }
+
+
+   function setVersion($ver) {
+      $this->version = $ver;
+   }
+
+
+   function displayMessage ($msg) {
+
+      $msg .= " (".Html::clean(Html::timestampToString(time()-$this->deb)).")";
+      echo str_pad($msg, 100)."\r";
+   }
+
+
+   function displayTitle($title) {
+      echo "\n".str_pad(" $title ", 100, '=', STR_PAD_BOTH)."\n";
+   }
+
+
+   function displayWarning($msg, $red=false) {
+
+      if ($red) {
+         $msg = "** $msg";
+      }
+      echo str_pad($msg, 100)."\n";
+   }
+}
+$migration = new CliMigration("0.72.3");
+      
 class Install extends PHPUnit_Framework_TestCase {
 
    public function testUpdate() {
+      global $DB;
+      
+      $DB->connect();
 
       // Old devicetype for compatibility
       define("MOBOARD_DEVICE",1);
@@ -69,7 +100,6 @@ class Install extends PHPUnit_Framework_TestCase {
       define("POWER_DEVICE",12);
 
       // Install a fresh 0.72.3 DB
-      $DB  = new DB();
       $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.72.3-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
 
@@ -82,7 +112,7 @@ class Install extends PHPUnit_Framework_TestCase {
       $this->assertTrue($DB->query($query), "Fail: can't set users language");
 
       // Update to 0.78
-      $res = update0723to078(false);
+      $res = update0723to078();
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
 
       $query = "UPDATE `glpi_configs`
@@ -92,7 +122,7 @@ class Install extends PHPUnit_Framework_TestCase {
       $this->assertTrue($DB->query($query), "Fail: can't set version");
 
       // Update to 0.78.1
-      $res = update078to0781(false);
+      $res = update078to0781();
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
 
       $query = "UPDATE `glpi_configs`
@@ -120,14 +150,67 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
+      
+      // Update to 0.80.1
+      $res = update080to0801(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs`
+                SET `version` = '0.80.1',
+                    `language` = 'fr_FR',
+                    `founded_new_version` = ''";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+      
+      // Update to 0.80.3
+      $res = update0801to0803(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs`
+                SET `version` = '0.80.3',
+                    `language` = 'fr_FR',
+                    `founded_new_version` = ''";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+      
+      // Update to 0.83
+      $res = update0803to083(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs`
+                SET `version` = '0.83',
+                    `language` = 'fr_FR',
+                    `founded_new_version` = ''";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+      
+      // Update to 0.83.1
+      $res = update083to0831(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs`
+                SET `version` = '0.83.1',
+                    `language` = 'fr_FR',
+                    `founded_new_version` = ''";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+      
+      // Update to 0.84
+      $res = update0831to084(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs`
+                SET `version` = '0.84',
+                    `language` = 'fr_FR',
+                    `founded_new_version` = ''";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
    }
 
 
    public function testInstall() {
+      global $DB;
+      
+      $DB->connect();
 
-      // Install a fresh 0.80 DB
+      // Install a fresh 0.84 DB
       $DB  = new DB();
-      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql");
+      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.84-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
 
       // update default language
