@@ -109,7 +109,7 @@ define("MONTH_TIMESTAMP",2592000);
 /// Temporary definition for test
 // TODO clean it.
 if (!strstr($_SERVER['PHP_SELF'], "/install/")
-    && !strstr($_SERVER['PHP_SELF'], '/cliupdate')) {
+    && !strstr($_SERVER['PHP_SELF'], 'cliupdate.php')) {
    define("GENERAL_TYPE",'');
    define("COMPUTER_TYPE",'Computer');
    define("NETWORKING_TYPE",'NetworkEquipment');
