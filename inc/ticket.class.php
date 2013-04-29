@@ -4603,7 +4603,7 @@ class Ticket extends CommonITILObject {
          case "process" : // on affiche les tickets planifiés ou assignés au user
             $query .= "WHERE $is_deleted
                              AND ( $search_assign )
-                             AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".
+                             AND (`status` IN ('".implode("','", self::getProcessStatusArray())."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
@@ -4737,7 +4737,7 @@ class Ticket extends CommonITILObject {
                      $num++;
                      $options['field'][$num]      = 12; // status
                      $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'process';
+                     $options['contains'][$num]   = 'notold';
                      $options['link'][$num]       = 'AND';
                      $num++;
                   }
