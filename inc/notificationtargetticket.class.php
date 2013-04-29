@@ -422,17 +422,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##task.date##']         = Html::convDateTime($task['date']);
             $tmp['##task.description##']  = $task['content'];
             $tmp['##task.time##']         = Ticket::getActionTime($task['actiontime']);
+            $tmp['##task.status##']    = Planning::getState($task['state']);
 
 
             $tmp['##task.user##']         = "";
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
-            $tmp['##task.status##']       = "";
             if (!is_null($task['begin'])) {
                $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
                $tmp['##task.begin##']     = Html::convDateTime($task['begin']);
                $tmp['##task.end##']       = Html::convDateTime($task['end']);
-               $tmp['##task.status##']    = Planning::getState($task['state']);
             }
 
             $datas['tasks'][] = $tmp;
