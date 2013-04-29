@@ -122,7 +122,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $tmp['##task.user##']         = "";
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
-            $tmp['##task.status##']       = "";
             if (!is_null($task['begin'])) {
                $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
                $tmp['##task.begin##']     = Html::convDateTime($task['begin']);
