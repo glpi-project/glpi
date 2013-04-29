@@ -138,7 +138,7 @@ class DeviceProcessor extends CommonDevice {
    function getImportCriteria() {
       return array('designation'          => 'equal',
                    'manufacturers_id'     => 'equal',
-                   'frequence'            => 'delta:100');
+                   'frequence'            => 'delta:10');
    }
    
 }

@@ -153,7 +153,7 @@ class DeviceMemory extends CommonDevice {
       return array('designation'          => 'equal',
                    'devicememorytypes_id' => 'equal',
                    'manufacturers_id'     => 'equal',
-                   'frequence'            => 'delta:100');
+                   'frequence'            => 'delta:10');
    }
 
 }
