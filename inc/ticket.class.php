@@ -4467,7 +4467,7 @@ class Ticket extends CommonITILObject {
                      $num++;
                      $options['field'][$num]      = 12; // status
                      $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'process';
+                     $options['contains'][$num]   = 'notold';
                      $options['link'][$num]       = 'AND';
                      $num++;
                   }
