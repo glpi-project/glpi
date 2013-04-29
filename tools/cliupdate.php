@@ -177,9 +177,6 @@ if (TableExists("glpi_configs")) {
    die("Bad schema\n");
 }
 
-$query = "SELECT `version`, `language`
-          FROM `glpi_configs`";
-
 $result          = $DB->query($query) or die("get current version ".$DB->error());
 $current_version = trim($DB->result($result,0,0));
 $glpilanguage    = trim($DB->result($result,0,1));
