@@ -5581,7 +5581,7 @@ class Ticket extends CommonITILObject {
                          AND `glpi_tickets`.`is_deleted` = 0
                          AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
                          AND `glpi_tickets`.`closedate` IS NULL
-                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()";
+                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < NOW()";
          $tickets = array();
          foreach ($DB->request($query) as $tick) {
             $tickets[] = $tick;
