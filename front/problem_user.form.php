@@ -37,10 +37,9 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-$ticket_user = new Ticket_User();
+$ticket_user = new Problem_User();
 
 Session ::checkLoginUser();
-
 if (isset($_REQUEST["update"])) {
    $ticket_user->check($_REQUEST["id"], 'w');
 
