@@ -2652,7 +2652,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                   $text .= sprintf(__('%1$s: %2$s'),__('Email'), $uemail);
                   if (!NotificationMail::isUserAddressValid($uemail)) {
-                     $text .= "<span class='red'>".__('Invalid email address')."</span>";
+                     $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
                }
                echo "&nbsp;";
