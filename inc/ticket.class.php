@@ -5402,7 +5402,7 @@ class Ticket extends CommonITILObject {
             echo "&amp;forcetab=".$forcetab;
          }
          echo "'>";
-         echo "<span class='b'>".$job->fields["name"]."</span></a>&nbsp;";
+         echo "<span class='b'>".$job->getNameID()."</span></a>&nbsp;";
          echo "(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).
               ")&nbsp;";
          Html::showToolTip($job->fields['content'],
