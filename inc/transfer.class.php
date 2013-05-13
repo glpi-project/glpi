@@ -3216,7 +3216,7 @@ class Transfer extends CommonDBTM {
             _e('No item found');
          } else {
             $params = array('id' => '__VALUE__');
-            Ajax::updateItemOnSelectEvent("dropdown_ID$rand", "transfer_form",
+            Ajax::updateItemOnSelectEvent("dropdown_id$rand", "transfer_form",
                                           $CFG_GLPI["root_doc"]."/ajax/transfers.php", $params);
          }
 
