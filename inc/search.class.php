@@ -4697,11 +4697,12 @@ class Search {
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k])) > 0) {
+                        $split2 = self::explodeWithID("$$", $split[$k]);
                         if ($count_display) {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split[$k]),$unit);
+                        $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split2[0]),$unit);
                      }
                   }
                   return $out;
