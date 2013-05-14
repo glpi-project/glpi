@@ -5539,7 +5539,6 @@ class Ticket extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers   = Session::haveRight("user", "r");
       $showprivate = Session::haveRight("show_full_ticket", 1);
 
       $job  = new self();
@@ -5558,12 +5557,10 @@ class Ticket extends CommonITILObject {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
                   $name     = "<span class='b'>".$userdata['name']."</span>";
-                  if ($viewusers) {
-                     $name = sprintf(__('%1$s %2$s'), $name,
-                                     Html::showToolTip($userdata["comment"],
-                                                       array('link'    => $userdata["link"],
-                                                             'display' => false)));
-                  }
+                  $name = sprintf(__('%1$s %2$s'), $name,
+                                    Html::showToolTip($userdata["comment"],
+                                                      array('link'    => $userdata["link"],
+                                                            'display' => false)));
                   echo $name;
                } else {
                   echo $d['alternative_email']."&nbsp;";
