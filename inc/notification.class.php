@@ -419,7 +419,7 @@ class Notification extends CommonDBTM {
    static function getMailingSignature($entity) {
       global $DB, $CFG_GLPI;
 
-      foreach ($DB->request('glpi_entities', array('entities_id' => $entity)) as $data) {
+      foreach ($DB->request('glpi_entities', array('id' => $entity)) as $data) {
          if (!empty($data['mailing_signature'])) {
             return $data['mailing_signature'];
          }
