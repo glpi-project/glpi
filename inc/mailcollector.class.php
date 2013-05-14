@@ -482,10 +482,12 @@ class MailCollector  extends CommonDBTM {
                //Indicates that the mail must be deleted from the mailbox
                $delete_mail = false;
 
-               //If entity assigned, or email refused by rule, or no user associated with the email
+               // If entity assigned, or email refused by rule, or no user or supplier associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
                                   ||(isset($tkt['_users_id_requester'])
-                                     && ($tkt['_users_id_requester'] > 0)));
+                                     && ($tkt['_users_id_requester'] > 0))
+                                  || (isset($tkt['_supplier_email'])
+                                     && $tkt['_supplier_email']));
 
                $rejinput                      = array();
                $rejinput['mailcollectors_id'] = $mailgateID;
@@ -695,10 +697,12 @@ class MailCollector  extends CommonDBTM {
       } else {
          $tkt['content'] = $body;
       }
+      
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
       }
+      
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
@@ -719,12 +723,15 @@ class MailCollector  extends CommonDBTM {
           && preg_match('/\[.+#(\d+)\]/',$head['subject'],$match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
-
+      
+      $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
          // it's a reply to a previous ticket
          $job = new Ticket();
          $tu  = new Ticket_User();
+         $st  = new Supplier_Ticket();
+         $supplier_email = false;
 
          // Check if ticket  exists and users_id exists in GLPI
          /// TODO check if users_id have right to add a followup to the ticket
@@ -732,8 +739,14 @@ class MailCollector  extends CommonDBTM {
              && ($job->fields['status'] != CommonITILObject::CLOSED)
              && ($CFG_GLPI['use_anonymous_followups']
                  || ($tkt['_users_id_requester'] > 0)
-                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from']))) {
+                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from'])
+                 || ($supplier_email = $st->isSupplierEmail($tkt['tickets_id'], $head['from']))
+                )) {
 
+            if ($supplier_email) {
+               $tkt['content'] = sprintf(__('From %s'), $head['from'])."\n\n".$tkt['content'];
+               $tkt['_supplier_email'] = true;
+            }
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
             $first_comment  = true;

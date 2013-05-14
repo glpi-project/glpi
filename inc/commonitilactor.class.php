@@ -106,7 +106,6 @@ abstract class CommonITILActor extends CommonDBRelation {
    function isAlternateEmailForITILObject($items_id, $email) {
       global $DB;
 
-      $users = array();
       $query = "SELECT `".$this->getTable()."`.*
                 FROM `".$this->getTable()."`
                 WHERE `".static::getItilObjectForeignKey()."` = '$items_id'
