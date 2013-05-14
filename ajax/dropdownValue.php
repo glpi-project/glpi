@@ -281,6 +281,8 @@ if ($item instanceof CommonTreeDropdown) {
             if ($level == 1) {
                $class = " class='treeroot'";
                $raquo = "";
+            } else if ($level==2) {
+               $class = " class='tree b' ";
             }
 
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
@@ -320,6 +322,8 @@ if ($item instanceof CommonTreeDropdown) {
                            if ($work_level==1) {
                               $class2 = " class='treeroot'";
                               $raquo2 = "";
+                           } else if ($work_level==2) {
+                              $class2 = " class='tree b' ";
                            }
 
                            $to_display = "<option disabled value='$work_parentID' $class2
