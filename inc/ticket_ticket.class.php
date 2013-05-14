@@ -45,7 +45,8 @@ class Ticket_Ticket extends CommonDBRelation {
    static public $itemtype_2     = 'Ticket';
    static public $items_id_2     = 'tickets_id_2';
 
-   static public $check_entities = false;
+   static public $check_entity_coherency = false;
+   static public $checkItem_2_Rights     = self::HAVE_VIEW_RIGHT_ON_ITEM ;
 
    // Ticket links
    const LINK_TO        = 1;
