@@ -891,18 +891,18 @@ class Search {
             // Define begin and end var for loop
             // Search case
             $begin_display = $p['start'];
-            $end_display   = min($numrows-$p['start'], $p['start']+$LIST_LIMIT);
+            $end_display   = min($numrows, $p['start']+$LIST_LIMIT);
             // No search Case
             if ($nosearch) {
                $begin_display = 0;
-               $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
+               $end_display   = min($numrows, $LIST_LIMIT);
             }
             // Export All case
             if ($p['export_all']) {
                $begin_display = 0;
                $end_display   = $numrows;
             }
-
+            
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
             if (!$isadmin
