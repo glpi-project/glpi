@@ -785,7 +785,6 @@ class Search {
                   $LIMIT;
       }
 
-
       $DBread->query("SET SESSION group_concat_max_len = 4096;");
       $result = $DBread->query($QUERY);
       /// Check group concat limit : if warning : increase limit
@@ -895,8 +894,9 @@ class Search {
             // No search Case
             if ($nosearch) {
                $begin_display = 0;
-               $end_display   = min($numrows, $LIST_LIMIT);
+               $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
             }
+
             // Export All case
             if ($p['export_all']) {
                $begin_display = 0;
