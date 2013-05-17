@@ -902,7 +902,7 @@ class Search {
                $begin_display = 0;
                $end_display   = $numrows;
             }
-            
+
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
             if (!$isadmin
@@ -1677,7 +1677,7 @@ class Search {
          // Force Computer itemtype for AllAssets to permit to show specific items
          if ($itemtype == 'AllAssets') {
             $used_itemtype = 'Computer';
-         } 
+         }
 
          $_POST['itemtype']   = $used_itemtype;
 
@@ -2307,7 +2307,7 @@ class Search {
                      $ADDITONALFIELDS";
 
          case "glpi_contractcosts.totalcost" :
-            return " SUM(`glpi_contractcosts$addtable`.`cost`) 
+            return " SUM(`glpi_contractcosts$addtable`.`cost`)
                      / COUNT(`glpi_contractcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_contractcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
@@ -2357,7 +2357,7 @@ class Search {
          case "glpi_ticketcosts.cost_time" :
          case "glpi_ticketcosts.cost_fixed" :
          case "glpi_ticketcosts.cost_material" :
-            return " SUM(`glpi_ticketcosts$addtable`.`$field`) 
+            return " SUM(`glpi_ticketcosts$addtable`.`$field`)
                      / COUNT(`glpi_ticketcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
@@ -2367,7 +2367,7 @@ class Search {
             return " SUM(`glpi_ticketcosts$addtable`.`actiontime`
                          * `glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
                          + `glpi_ticketcosts$addtable`.`cost_fixed`
-                         + `glpi_ticketcosts$addtable`.`cost_material`) 
+                         + `glpi_ticketcosts$addtable`.`cost_material`)
                      / COUNT(`glpi_ticketcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
@@ -3554,6 +3554,11 @@ class Search {
                   if (isset($joinparams['linkfield'])) {
                      $linkfield = $joinparams['linkfield'];
                   }
+                  // specific for recursivity of license
+                  if ($new_table == 'glpi_softwarelicenses') {
+                     $addcondition = getEntitiesRestrictRequest(' AND', "glpi_softwarelicenses",
+                                                                '', '', true);
+                  }
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                              ON (`$rt`.`id` = `$nt`.`$linkfield`
@@ -4601,7 +4606,7 @@ class Search {
                $withdays = true;
                if (isset($searchopt[$ID]['withdays'])) {
                   $withdays = $searchopt[$ID]['withdays'];
-               }               
+               }
                return Html::timestampToString($data[$NAME.$num],$withseconds, $withdays);
 
             case "email" :
