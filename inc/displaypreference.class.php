@@ -314,7 +314,8 @@ class DisplayPreference extends CommonDBTM {
                echo "<optgroup label=\"$val\">";
 
             } else if (($key != 1)
-                       && !in_array($key,$already_added)) {
+                       && !in_array($key,$already_added)
+                       && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                echo "<option value='$key'>".$val["name"]."</option>\n";
             }
          }
@@ -469,7 +470,8 @@ class DisplayPreference extends CommonDBTM {
                echo "<optgroup label=\"$val\">";
 
             } else if (($key != 1)
-                       && !in_array($key,$already_added)) {
+                       && !in_array($key,$already_added)
+                       && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                echo "<option value='$key'>".$val["name"]."</option>";
             }
          }
