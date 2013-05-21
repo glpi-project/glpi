@@ -729,7 +729,10 @@ class Ticket extends CommonITILObject {
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
                 && (isset($input[$key])
-                    && (empty($input[$key]) || ($input[$key] == 'NULL')))) {
+                    && (empty($input[$key]) || ($input[$key] == 'NULL'))
+                    // Take only into account already set items : do not block old tickets
+                    && (!empty($this->fields[$key])) 
+                   )) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
          }
