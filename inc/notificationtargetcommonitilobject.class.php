@@ -639,7 +639,24 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                } else {
                   $tmp['##author.location##'] = '';
                }
+               
+               if ($user_tmp->getField('usertitles_id')) {
+                  $tmp['##author.title##']
+                                    = Dropdown::getDropdownName('glpi_usertitles',
+                                                                $user_tmp->getField('usertitles_id'));
+               } else {
+                  $tmp['##author.title##'] = '';
+               }
 
+               if ($user_tmp->getField('usercategories_id')) {
+                  $tmp['##author.category##']
+                                    = Dropdown::getDropdownName('glpi_usercategories',
+                                                                $user_tmp->getField('usercategories_id'));
+               } else {
+                  $tmp['##author.category##'] = '';
+               }
+               
+               $tmp['##author.email##']  = $user_tmp->getDefaultEmail();
                $tmp['##author.phone##']  = $user_tmp->getField('phone');
                $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
                $datas['authors'][]       = $tmp;
@@ -811,6 +828,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.location'                   => __('Requester location'),
                     'author.phone'                      => __('Phone'),
                     'author.phone2'                     => __('Phone 2'),
+                    'author.email'                      => _n('Email', 'Emails', 1),
+                    'author.title'                      => _x('person','Title'),
+                    'author.category'                   => __('Category'),
                     $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.lastupdater'           => __('Last updater'),
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
