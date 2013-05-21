@@ -5111,6 +5111,16 @@ class Search {
                $search[$itemtype][70]['field']         = 'name';
                $search[$itemtype][70]['name']          = __('User');
 
+               $search[$itemtype][17]['table']         = 'asset_types';
+               $search[$itemtype][17]['field']         = 'contact';
+               $search[$itemtype][17]['name']          = __('Alternate username');
+               $search[$itemtype][17]['datatype']      = 'string';
+
+               $search[$itemtype][18]['table']         = 'asset_types';
+               $search[$itemtype][18]['field']         = 'contact_num';
+               $search[$itemtype][18]['name']          = __('Alternate username number');
+               $search[$itemtype][18]['datatype']      = 'string';
+               
                $search[$itemtype][71]['table']         = 'glpi_groups';
                $search[$itemtype][71]['field']         = 'completename';
                $search[$itemtype][71]['name']          = __('Group');
