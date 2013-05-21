@@ -3554,11 +3554,7 @@ class Search {
                   if (isset($joinparams['linkfield'])) {
                      $linkfield = $joinparams['linkfield'];
                   }
-                  // specific for recursivity of license
-                  if ($new_table == 'glpi_softwarelicenses') {
-                     $addcondition = getEntitiesRestrictRequest(' AND', "glpi_softwarelicenses",
-                                                                '', '', true);
-                  }
+
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                              ON (`$rt`.`id` = `$nt`.`$linkfield`
