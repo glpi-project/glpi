@@ -584,7 +584,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Step for the hours (minutes)') . "</td><td>";
-      Dropdown::showInteger('time_step', $CFG_GLPI["time_step"], 30, 60, 30, array(5  => 5,
+      Dropdown::showInteger('time_step', $CFG_GLPI["time_step"], 30, 60, 30, array(1  => 1,
+                                                                                   5  => 5,
                                                                                    10 => 10,
                                                                                    15 => 15,
                                                                                    20 => 20));
