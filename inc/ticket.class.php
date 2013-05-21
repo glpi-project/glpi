@@ -2413,7 +2413,7 @@ class Ticket extends CommonITILObject {
       if (!Session::isCron() // no filter for cron
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
-         $tokeep = array('common');
+         $tokeep = array('common', 'requester');
          if (Session::haveRight('validate_request',1)
              || Session::haveRight('validate_incident',1)
              || Session::haveRight('create_incident_validation',1)

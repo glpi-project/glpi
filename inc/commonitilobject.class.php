@@ -2345,7 +2345,12 @@ abstract class CommonITILObject extends CommonDBTM {
                                                            'condition'
                                                             => 'AND NEWTABLE.`type`
                                                                  = '.CommonITILActor::REQUESTER)));
-
+      if (!Session::isCron() // no filter for cron
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $tab[4]['right']       = 'id';
+      }
+      
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'completename';
       $tab[71]['datatype']      = 'dropdown';
@@ -2362,6 +2367,11 @@ abstract class CommonITILObject extends CommonDBTM {
                                                               'condition'
                                                                => 'AND NEWTABLE.`type`
                                                                     = '.CommonITILActor::REQUESTER)));
+      if (!Session::isCron() // no filter for cron
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $tab[71]['condition']       .= " AND `id` IN ('".implode("','",$_SESSION['glpigroups'])."')";
+      }
 
       $tab[22]['table']         = 'glpi_users';
       $tab[22]['field']         = 'name';
@@ -2369,7 +2379,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[22]['right']         = 'all';
       $tab[22]['linkfield']     = 'users_id_recipient';
       $tab[22]['name']          = __('Writer');
-
+      if (!Session::isCron() // no filter for cron
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $tab[22]['right']       = 'id';
+      }
+      
       $tab['observer']          = __('Watcher');
 
       $tab[66]['table']         = 'glpi_users';
