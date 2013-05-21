@@ -645,7 +645,7 @@ class EntityData extends CommonDBChild {
       echo "</td>";
       echo "<td >" . $LANG['setup'][46]."&nbsp;:</td><td>";
       $default_value = $entitynotification->fields["default_infocom_alert"];
-      Alert::dropdownInfocomAlert(array('name'           => "default_contract_alert",
+      Alert::dropdownInfocomAlert(array('name'           => "default_infocom_alert",
                                         'value'          => $default_value,
                                         'inherit_parent' => (($ID > 0) ? 1 : 0)));
       echo "</td></tr>";
