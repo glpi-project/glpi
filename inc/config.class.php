@@ -1597,7 +1597,7 @@ class Config extends CommonDBTM {
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
-                 "<p class='red'>".__("The file was created but can't be deleted.")."</p>".
+                 "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
          $error = 1;
