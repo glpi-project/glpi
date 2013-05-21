@@ -233,196 +233,6 @@ function update0831to084() {
    }
 
 
-//    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
-//
-//    $migration->addField('glpi_profiles', 'change_status', "text",
-//                         array('comment' => "json encoded array of from/dest allowed status change"));
-//
-//    // changes management
-//    if (!TableExists('glpi_changes')) {
-//       $query = "CREATE TABLE `glpi_changes` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `name` varchar(255) DEFAULT NULL,
-//                   `entities_id` int(11) NOT NULL DEFAULT '0',
-//                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-//                   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-//                   `status` int(11) NOT NULL DEFAULT '1',
-//                   `content` longtext DEFAULT NULL,
-//                   `date_mod` DATETIME DEFAULT NULL,
-//                   `date` DATETIME DEFAULT NULL,
-//                   `solvedate` DATETIME DEFAULT NULL,
-//                   `closedate` DATETIME DEFAULT NULL,
-//                   `due_date` DATETIME DEFAULT NULL,
-//                   `users_id_recipient` int(11) NOT NULL DEFAULT '0',
-//                   `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
-//                   `urgency` int(11) NOT NULL DEFAULT '1',
-//                   `impact` int(11) NOT NULL DEFAULT '1',
-//                   `priority` int(11) NOT NULL DEFAULT '1',
-//                   `itilcategories_id` int(11) NOT NULL DEFAULT '0',
-//                   `impactcontent` longtext DEFAULT NULL,
-//                   `controlistcontent` longtext DEFAULT NULL,
-//                   `rolloutplancontent` longtext DEFAULT NULL,
-//                   `backoutplancontent` longtext DEFAULT NULL,
-//                   `checklistcontent` longtext DEFAULT NULL,
-//                   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
-//                   `solution` text COLLATE utf8_unicode_ci,
-//                   `actiontime` int(11) NOT NULL DEFAULT '0',
-//                   `notepad` LONGTEXT NULL,
-//                   PRIMARY KEY (`id`),
-//                   KEY `name` (`name`),
-//                   KEY `entities_id` (`entities_id`),
-//                   KEY `is_recursive` (`is_recursive`),
-//                   KEY `is_deleted` (`is_deleted`),
-//                   KEY `date` (`date`),
-//                   KEY `closedate` (`closedate`),
-//                   KEY `status` (`status`),
-//                   KEY `priority` (`priority`),
-//                   KEY `date_mod` (`date_mod`),
-//                   KEY `itilcategories_id` (`itilcategories_id`),
-//                   KEY `users_id_recipient` (`users_id_recipient`),
-//                   KEY `solvedate` (`solvedate`),
-//                   KEY `solutiontypes_id` (`solutiontypes_id`),
-//                   KEY `urgency` (`urgency`),
-//                   KEY `impact` (`impact`),
-//                   KEY `due_date` (`due_date`),
-//                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 create glpi_changes");
-//    }
-//
-//    if (!TableExists('glpi_changes_users')) {
-//       $query = "CREATE TABLE `glpi_changes_users` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `users_id` int(11) NOT NULL DEFAULT '0',
-//                   `type` int(11) NOT NULL DEFAULT '1',
-//                   `use_notification` tinyint(1) NOT NULL DEFAULT '0',
-//                   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-//                   PRIMARY KEY (`id`),
-//                   UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
-//                   KEY `user` (`users_id`,`type`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changes_users");
-//    }
-//
-//    if (!TableExists('glpi_changes_groups')) {
-//       $query = "CREATE TABLE `glpi_changes_groups` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `groups_id` int(11) NOT NULL DEFAULT '0',
-//                   `type` int(11) NOT NULL DEFAULT '1',
-//                   PRIMARY KEY (`id`),
-//                   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
-//                   KEY `group` (`groups_id`,`type`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changes_groups");
-//    }
-//
-//    if (!TableExists('glpi_changes_suppliers')) {
-//       $query = "CREATE TABLE `glpi_changes_suppliers` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `suppliers_id` int(11) NOT NULL DEFAULT '0',
-//                   `type` int(11) NOT NULL DEFAULT '1',
-//                   PRIMARY KEY (`id`),
-//                   UNIQUE KEY `unicity` (`changes_id`,`type`,`suppliers_id`),
-//                   KEY `group` (`suppliers_id`,`type`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changes_suppliers");
-//    }
-//
-//    if (!TableExists('glpi_changes_items')) {
-//       $query = "CREATE TABLE `glpi_changes_items` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `itemtype` varchar(100) default NULL,
-//                   `items_id` int(11) NOT NULL DEFAULT '0',
-//                   PRIMARY KEY (`id`),
-//                   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
-//                   KEY `item` (`itemtype`,`items_id`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changes_items");
-//    }
-//
-//    if (!TableExists('glpi_changes_tickets')) {
-//       $query = "CREATE TABLE `glpi_changes_tickets` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `tickets_id` int(11) NOT NULL DEFAULT '0',
-//                   PRIMARY KEY (`id`),
-//                   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
-//                   KEY `tickets_id` (`tickets_id`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changes_tickets");
-//    }
-//
-//    if (!TableExists('glpi_changes_problems')) {
-//       $query = "CREATE TABLE `glpi_changes_problems` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `problems_id` int(11) NOT NULL DEFAULT '0',
-//                   PRIMARY KEY (`id`),
-//                   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
-//                   KEY `problems_id` (`problems_id`)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changes_problems");
-//    }
-//
-//    if (!TableExists('glpi_changetasks')) {
-//       $query = "CREATE TABLE `glpi_changetasks` (
-//                   `id` int(11) NOT NULL AUTO_INCREMENT,
-//                   `name` varchar(255) DEFAULT NULL,
-//                   `changes_id` int(11) NOT NULL DEFAULT '0',
-//                   `changetasks_id` int(11) NOT NULL DEFAULT '0',
-//                   `is_blocked` tinyint(1) NOT NULL DEFAULT '0',
-//                   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
-//                   `status` varchar(255) DEFAULT NULL,
-//                   `priority` int(11) NOT NULL DEFAULT '1',
-//                   `percentdone` int(11) NOT NULL DEFAULT '0',
-//                   `date` datetime DEFAULT NULL,
-//                   `begin` datetime DEFAULT NULL,
-//                   `end` datetime DEFAULT NULL,
-//                   `users_id` int(11) NOT NULL DEFAULT '0',
-//                   `users_id_tech` int(11) NOT NULL DEFAULT '0',
-//                   `content` longtext COLLATE utf8_unicode_ci,
-//                   `actiontime` int(11) NOT NULL DEFAULT '0',
-//                   PRIMARY KEY (`id`),
-//                   KEY `name` (`name`),
-//                   KEY `changes_id` (`changes_id`),
-//                   KEY `changetasks_id` (`changetasks_id`),
-//                   KEY `is_blocked` (`is_blocked`),
-//                   KEY `priority` (`priority`),
-//                   KEY `status` (`status`),
-//                   KEY `percentdone` (`percentdone`),
-//                   KEY `users_id` (`users_id`),
-//                   KEY `users_id_tech` (`users_id_tech`),
-//                   KEY `date` (`date`),
-//                   KEY `begin` (`begin`),
-//                   KEY `end` (`end`),
-//                   KEY `taskcategories_id` (taskcategories_id)
-//                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-//       $DB->queryOrDie($query, "0.84 add table glpi_changetasks");
-//    }
-//
-//    /// TODO add changetasktypes table as dropdown
-//    /// TODO review users linked to changetask
-//    /// TODO add display prefs
-//
-//    $migration->addField("glpi_profiles", "show_my_change", "char",
-//                         array('update'    => "1",
-//                               'condition' => " WHERE `own_ticket` = 1"));
-//
-//    $migration->addField("glpi_profiles", "show_all_change", "char",
-//                         array('update'    => "1",
-//                               'condition' => " WHERE `show_all_ticket` = 1"));
-//
-//    $migration->addField("glpi_profiles", "edit_all_change", "char",
-//                         array('update'    => "1",
-//                               'condition' => " WHERE `update_ticket` = 1"));
-//
-//    $migration->addField('glpi_profiles', 'change_status', "text",
-//                         array('comment' => "json encoded array of from/dest allowed status change"));
-//
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'Merge entity and entitydatas'));
@@ -573,7 +383,6 @@ function update0831to084() {
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
 
-   /// TODO : create a new template ?
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
                             "`itemtype` = 'Ticket'
@@ -890,7 +699,6 @@ function update0831to084() {
          $DB->queryOrDie($query, "0.84 add planning recall notification");
          $notid = $DB->insert_id();
 
-         ///TODO complete template
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
                            `content_text`,
@@ -1771,7 +1579,6 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
    //   Networkports or NetworkeEquipment, the migration may take several minutes or hours ...
    //$computerName = gethostbyaddr($IP);
-   /// TODO moyo : with several private networks gethostbyaddr may get wrong information
    $computerName = $IP;
    if ($computerName != $IP) {
       $position = strpos($computerName, ".");
@@ -2323,8 +2130,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             break;
 
        }
-      /// TODO : in case of unknown Interface Type, we should have to set instantiation_type to ''
-      /// Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
+      // In case of unknown Interface Type, we should have to set instantiation_type to ''
+      // Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
       if (!empty($instantiation_type)) {
          $query = "UPDATE `glpi_networkports`
                    SET `instantiation_type` = '$instantiation_type'
@@ -2388,7 +2195,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
-      ///TODO add type T SX LX
       updateNetworkPortInstantiation($port, array('`netpoints_id`' => 'netpoints_id'), true);
    }
 
@@ -2524,7 +2330,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                       $equipment['ip']);
 
 
-            // TODO : we may remove the informations attached to the NetworkPorts
             foreach ($both as $aggregated_networkports_id) {
                $query = "DELETE
                          FROM `glpi_networknames`
