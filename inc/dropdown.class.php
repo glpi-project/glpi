@@ -67,6 +67,7 @@ class Dropdown {
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
     *    - display             : boolean / display or get string (default true)
+    *    - permit_select_parent : boolean / for tree dropdown permit to see parent items not available by default (default false)
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -97,7 +98,7 @@ class Dropdown {
       //Display emptychoice ?
       $params['display_emptychoice'] = ($itemtype != 'Entity');
       $params['display']        = true;
-
+      $params['permit_select_parent'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -192,7 +193,8 @@ class Dropdown {
                       'emptylabel'          => $params['emptylabel'],
                       'display_emptychoice' => $params['display_emptychoice'],
                       'displaywith'         => $params['displaywith'],
-                      'display'             => false);
+                      'display'             => false,
+                      'permit_select_parent' => $params['permit_select_parent']);
 
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";

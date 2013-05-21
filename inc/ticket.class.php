@@ -1936,7 +1936,12 @@ class Ticket extends CommonITILObject {
       $tab[7]['field']              = 'completename';
       $tab[7]['name']               = __('Category');
       $tab[7]['datatype']           = 'dropdown';
-
+      if (!Session::isCron() // no filter for cron
+          && (!isset($_SESSION['glpiactiveprofile']['interface'])
+              || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
+         $tab[7]['condition']       = "`is_helpdeskvisible`='1'";
+      }
+      
       $tab[13]['table']             = $this->getTable();
       $tab[13]['field']             = 'items_id';
       $tab[13]['name']              = __('Associated element');

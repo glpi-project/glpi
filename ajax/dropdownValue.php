@@ -68,6 +68,10 @@ if (!isset($_POST['value'])) {
    $_POST['value'] = '';
 }
 
+if (!isset($_POST['permit_select_parent'])) {
+   $_POST['permit_select_parent'] = false;
+}
+
 // No define rand
 if (!isset($_POST['rand'])) {
    $_POST['rand'] = mt_rand();
@@ -326,7 +330,7 @@ if ($item instanceof CommonTreeDropdown) {
                               $class2 = " class='tree b' ";
                            }
 
-                           $to_display = "<option disabled value='$work_parentID' $class2
+                           $to_display = "<option ".($_POST['permit_select_parent']?'':'disabled')." value='$work_parentID' $class2
                                            title=\"".Html::cleanInputText($title)."\">".
                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
                                          $raquo2.$output2."</option>".$to_display;

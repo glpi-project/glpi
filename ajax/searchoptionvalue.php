@@ -57,6 +57,8 @@ if (isset($_POST['searchtype'])) {
    $display          = false;
    $item             = getItemForItemtype($_POST['itemtype']);
    $options['value'] = $_POST['value'];
+   // For tree dropdpowns
+   $options['permit_select_parent'] = true;
 
    switch ($_POST['searchtype']) {
       case "equals" :
