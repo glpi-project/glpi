@@ -101,6 +101,21 @@ class Document_Item extends CommonDBRelation{
       parent::post_addItem();
    }
 
+   function post_purgeItem() {
+
+      if ($this->fields['itemtype'] == 'Ticket') {
+         $ticket = new Ticket();
+         $input = array('id'            => $this->fields['items_id'],
+                        'date_mod'      => $_SESSION["glpi_currenttime"],
+                        '_donotadddocs' => true);
+
+         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
+            $input['_forcenotif'] = true;
+         }
+         $ticket->update($input);
+      }
+      parent::post_purgeItem();
+   }
 
    /**
     * @param $item   CommonDBTM object
