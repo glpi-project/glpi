@@ -925,6 +925,12 @@ class MailCollector  extends CommonDBTM {
       }
       // Reset errors
       if ($this->marubox) {
+         // call this to avoid the mailbox is empty error message
+         if (imap_num_msg($this->marubox) == 0) {
+             $errors = imap_errors();
+         }
+
+
          if ($this->fields['errors'] > 0) {
             $this->update(array('id'     => $this->getID(),
                                 'errors' => 0));
