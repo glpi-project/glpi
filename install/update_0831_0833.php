@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -37,7 +37,7 @@
  * @return bool for success (will die for most error)
 **/
 function update0831to0833() {
-   global $DB, $LANG, $migration;
+   global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
@@ -68,12 +68,10 @@ function update0831to0833() {
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
-                   SET `doc_i`.`entities_id` = `doc`.`entities_id`, 
+                   SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                       `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-   $DB->query($query_doc_i)
-      or die("0.83 update entities_id and is_recursive in glpi_documents_items ".
-               $LANG['update'][90] . $DB->error());                     
-   
+   $DB->queryOrDie($query_doc_i, "0.83 update entities_id and is_recursive in glpi_documents_items");
+
    // ************ Keep it at the end **************
    $migration->displayMessage('Migration of glpi_displaypreferences');
 

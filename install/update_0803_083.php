@@ -775,11 +775,10 @@ function update0803to083() {
       $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                       INNER JOIN `glpi_documents` as `doc`
                         ON  `doc`.`id` = `doc_i`.`documents_id`
-                      SET `doc_i`.`entities_id` = `doc`.`entities_id`, 
+                      SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                          `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-      $DB->query($query_doc_i)
-         or die("0.83 update entities_id and is_recursive in glpi_documents_items ".
-                  $LANG['update'][90] . $DB->error());      
+      $DB->queryOrDie($query_doc_i,
+                      "0.83 update entities_id and is_recursive in glpi_documents_items");
 
       /// create index for search count on tab
       $migration->dropKey("glpi_documents_items", "item");
