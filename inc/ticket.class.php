@@ -579,7 +579,7 @@ class Ticket extends CommonITILObject {
 
       $pt = new Problem_Ticket();
       $pt->cleanDBonItemDelete('Ticket', $this->fields['id']);
-      
+
       $ts = new TicketCost();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
@@ -731,7 +731,7 @@ class Ticket extends CommonITILObject {
                 && (isset($input[$key])
                     && (empty($input[$key]) || ($input[$key] == 'NULL'))
                     // Take only into account already set items : do not block old tickets
-                    && (!empty($this->fields[$key])) 
+                    && (!empty($this->fields[$key]))
                    )) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
@@ -1941,7 +1941,7 @@ class Ticket extends CommonITILObject {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tab[7]['condition']       = "`is_helpdeskvisible`='1'";
       }
-      
+
       $tab[13]['table']             = $this->getTable();
       $tab[13]['field']             = 'items_id';
       $tab[13]['name']              = __('Associated element');
@@ -2363,6 +2363,7 @@ class Ticket extends CommonITILObject {
          $tab[48]['forcegroupby']   = true;
          $tab[48]['massiveaction']  = false;
          $tab[48]['joinparams']     = array('jointype'  => 'child');
+         $tab[48]['nosearch']       = true;
 
          $tab[42]['table']          = 'glpi_ticketcosts';
          $tab[42]['field']          = 'cost_time';
