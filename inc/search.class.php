@@ -249,7 +249,7 @@ class Search {
          foreach ($searchopt[$itemtype] as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
-               if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
+               if (!in_array($searchopt[$itemtype][$key]["table"], $blacklist_tables)) {
                   $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                              $searchopt[$itemtype][$key]["table"],
                                              $searchopt[$itemtype][$key]["linkfield"], 0, 0,
@@ -397,7 +397,6 @@ class Search {
 
                   if ($p['field'][$key] == "all") {
                      $items = $searchopt[$itemtype];
-
                   } else { // toview case : populate toview
                      foreach ($toview as $key2 => $val2) {
                         $items[$val2] = $searchopt[$itemtype][$val2];
@@ -5120,7 +5119,7 @@ class Search {
                $search[$itemtype][18]['field']         = 'contact_num';
                $search[$itemtype][18]['name']          = __('Alternate username number');
                $search[$itemtype][18]['datatype']      = 'string';
-               
+
                $search[$itemtype][71]['table']         = 'glpi_groups';
                $search[$itemtype][71]['field']         = 'completename';
                $search[$itemtype][71]['name']          = __('Group');

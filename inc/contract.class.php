@@ -422,6 +422,7 @@ class Contract extends CommonDBTM {
       $tab[136]['datatype']      = 'decimal';
       $tab[136]['massiveaction'] = false;
       $tab[136]['joinparams']    = $joinparamscost;
+      $tab[136]['nosearch']      = true;
 
       $tab[137]['table']         = 'glpi_contracts';
       $tab[137]['field']         = 'billing';
@@ -701,6 +702,7 @@ class Contract extends CommonDBTM {
       $tab[11]['forcegroupby']   = true;
       $tab[11]['massiveaction']  = false;
       $tab[11]['joinparams']     = array('jointype' => 'child');
+      $tab[11]['nosearch']       = true;
 
       $tab[41]['table']          = 'glpi_contractcosts';
       $tab[41]['field']          = 'cost';
