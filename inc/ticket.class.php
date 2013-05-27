@@ -1982,6 +1982,7 @@ class Ticket extends CommonITILObject {
       $tab[45]['datatype']          = 'timestamp';
       $tab[45]['withdays']          = false;
       $tab[45]['massiveaction']     = false;
+      $tab[45]['nosearch']          = true;
 
       $tab[64]['table']             = 'glpi_users';
       $tab[64]['field']             = 'name';
@@ -2360,9 +2361,9 @@ class Ticket extends CommonITILObject {
          $tab[48]['name']           = __('Total cost');
          $tab[48]['datatype']       = 'decimal';
          $tab[48]['forcegroupby']   = true;
+         $tab[48]['usehaving']      = true;
          $tab[48]['massiveaction']  = false;
          $tab[48]['joinparams']     = array('jointype'  => 'child');
-         $tab[48]['nosearch']       = true;
 
          $tab[42]['table']          = 'glpi_ticketcosts';
          $tab[42]['field']          = 'cost_time';
