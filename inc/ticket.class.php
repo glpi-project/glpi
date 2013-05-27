@@ -1982,7 +1982,6 @@ class Ticket extends CommonITILObject {
       $tab[45]['datatype']          = 'timestamp';
       $tab[45]['withdays']          = false;
       $tab[45]['massiveaction']     = false;
-      $tab[45]['nosearch']          = true;
 
       $tab[64]['table']             = 'glpi_users';
       $tab[64]['field']             = 'name';
