@@ -93,7 +93,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == $this->getItilObjectItemType() && $item->canView()) {
+      if ($item->getType() == $this->getItilObjectItemType() && $this->canView()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".$item->getForeignKeyField()."` = '".$item->getID()."'";
 
