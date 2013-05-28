@@ -570,10 +570,13 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
+      
       $options = array('value'     => $this->fields["tickettemplates_id"],
-                       'entity'    => 0,
-                       'condition' => '`is_recursive` = 1');
-
+                       'entity'    => 0);
+      if (Session::isMultiEntitiesMode()) {
+         $options['condition'] = '`is_recursive` = 1';
+      }
+                       
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;";
@@ -853,9 +856,13 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
       $options = array('value'     => $this->fields["tickettemplates_id"],
-                       'entity'    => 0,
-                       'condition' => '`is_recursive` = 1');
+                       'entity'    => 0);
 
+      if (Session::isMultiEntitiesMode()) {
+         $options['condition'] = '`is_recursive` = 1';
+      }
+
+                       
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "</tr>\n";
@@ -1705,8 +1712,14 @@ class Profile extends CommonDBTM {
       $tab[108]['field']         = 'name';
       $tab[108]['name']          = __('Default ticket template');
       $tab[108]['datatype']      = 'dropdown';
-      $tab[108]['condition']     = '`entities_id` = 0 AND `is_recursive` = 1';
+      if (Session::isMultiEntitiesMode()) {
+         $tab[108]['condition']     = '`entities_id` = 0 AND `is_recursive` = 1';
+      } else {
+         $tab[108]['condition']     = '`entities_id` = 0';
+      }
 
+
+      
       $tab[103]['table']         = $this->getTable();
       $tab[103]['field']         = 'tickettemplate';
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
