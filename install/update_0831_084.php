@@ -180,6 +180,37 @@ function update0831to084() {
                               array('value' => CommonITILObject::INCOMING));
    }
 
+   // Migrate templates
+   $query = "SELECT `glpi_notificationtemplatetranslations`.*
+               FROM `glpi_notificationtemplatetranslations`
+               INNER JOIN `glpi_notificationtemplates`
+                  ON (`glpi_notificationtemplates`.`id`
+                        = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
+               WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%storestatus=%'
+                     OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%storestatus=%'
+                     OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%storestatus=%'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $subject = $data['subject'];
+            $text = $data['content_text'];
+            $html = $data['content_html'];
+            foreach ($status as $old => $new) {
+               $subject = str_replace("storestatus=$old","storestatus=$new",$subject);
+               $text = str_replace("storestatus=$old","storestatus=$new",$text);
+               $html = str_replace("storestatus=$old","storestatus=$new",$html);
+            }
+            $query = "UPDATE `glpi_notificationtemplatetranslations`
+                        SET `subject` = '".addslashes($subject)."',
+                           `content_text` = '".addslashes($text)."',
+                           `content_html` = '".addslashes($html)."'
+                        WHERE `id` = ".$data['id']."";
+            $DB->queryOrDie($query, "0.84 fix tags usage for storestatus");
+         }
+      }
+   }
+   
    // Update Rules
    $changes = array();
    $changes['RuleTicket']              = 'status';
@@ -1277,6 +1308,8 @@ function update0831to084() {
              SET   `itemtype` = 'ConsumableItem'
              WHERE `itemtype` = 'Consumable'";
    $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Consumable");
+
+
 
    $migration->createRule(array('sub_type'      => 'RuleTicket',
                                 'entities_id'   => 0,

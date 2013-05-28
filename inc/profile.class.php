@@ -1717,8 +1717,6 @@ class Profile extends CommonDBTM {
       } else {
          $tab[108]['condition']     = '`entities_id` = 0';
       }
-
-
       
       $tab[103]['table']         = $this->getTable();
       $tab[103]['field']         = 'tickettemplate';
