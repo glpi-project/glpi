@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-05-14 13:33+0200\n"
-"PO-Revision-Date: 2013-05-12 17:14+0000\n"
+"PO-Revision-Date: 2013-05-28 16:25+0000\n"
 "Last-Translator: balucha <balucha@horizon.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
@@ -729,7 +729,7 @@ msgstr "Prístup zamietnutý"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr "Verzia vašej databázy nie je kompatibilná s verziou nainštalovaných súborov. Vyžaduje sa aktualizácia."
+msgstr "Verzia databázy nie je kompatibilná s verziou programu. Je potrebná aktualizácia."
 
 #: config/config.php:178 install/install.php:176 install/install.php:186
 msgid "Try again"
@@ -806,7 +806,7 @@ msgstr "Súbor %s nenájedný."
 #: front/backup.php:249 front/backup.php:321
 #, php-format
 msgid "Unauthorized access to the file %s"
-msgstr "Neautorizovaný prístup k súboru %s"
+msgstr "Neoprávnený prístup k súboru %s"
 
 #. TRANS: %s is the number of the byte
 #: front/backup.php:256
@@ -936,7 +936,7 @@ msgstr "Nahradiť aktuálnu databázu databázou zo záložného súboru %s?"
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
-msgstr "Varovanie, aktuálna databáza bude kompletne nahradená databázou,ktorú chcete obnoviť!!!"
+msgstr "Varovanie, aktuálna databáza bude kompletne nahradená vybranou zálohou!!!"
 
 #: front/backup.php:629
 msgid "Restore"
@@ -1020,7 +1020,7 @@ msgstr ""
 #: front/ticket.form.php:100 front/transfer.form.php:58 front/user.form.php:90
 #, php-format
 msgid "%s purges an item"
-msgstr ""
+msgstr "%s vymazal položku"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:94 front/cartridgeitem.form.php:89
@@ -1045,7 +1045,7 @@ msgstr ""
 #: front/user.form.php:107
 #, php-format
 msgid "%s updates an item"
-msgstr ""
+msgstr "%s aktualizoval položku"
 
 #: front/budget.form.php:110 front/dropdown.common.form.php:125
 #: front/group.form.php:76 front/ldap.group.import.php:74
@@ -1090,7 +1090,7 @@ msgstr "%s inštaloval náplň"
 #: front/cartridge.form.php:80
 #, php-format
 msgid "%s updates a cartridge"
-msgstr ""
+msgstr "%s aktualizoval náplne"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:43
@@ -1303,7 +1303,7 @@ msgstr "Spustiť"
 
 #: front/crontask.php:46 inc/crontask.class.php:467
 msgid "Next run"
-msgstr "Nasledovné spustenie"
+msgstr "Ďalšie spustenie"
 
 #: front/crontask.php:47
 #, php-format
@@ -1901,7 +1901,7 @@ msgstr[2] "Emailové brány"
 #: front/mailcollector.php:45 front/setup.auth.php:58
 #: inc/authmail.class.php:199
 msgid "Your PHP parser was compiled without the IMAP functions"
-msgstr "Váš prekladač PHP bol skompilovaný bez funkcií IMAP"
+msgstr "PHP bolo skompilované/nainštalované bez funkcií IMAP"
 
 #: front/massiveaction.php:79
 msgid "Bulk modification"
@@ -2011,7 +2011,7 @@ msgstr ""
 #: front/plugin.php:56
 #, php-format
 msgid "The plugin %s is incompatible with this version of GLPI"
-msgstr ""
+msgstr "Plugin %s je nekompatibilný s touto verziou GLPI"
 
 #: front/plugin.php:58
 msgid "Delete or update it otherwise GLPI will not work correctly."
@@ -2431,7 +2431,7 @@ msgstr[2] "LDAP adresáre"
 
 #: front/setup.auth.php:50 inc/authldap.class.php:483
 msgid "The LDAP extension of your PHP parser isn't installed"
-msgstr "Rozšírenie LDAP vášho prekladača PHP nie je nainštalované"
+msgstr "Rozšírenie LDAP pre vaše PHP nieje nainštalované"
 
 #: front/setup.auth.php:51 inc/authldap.class.php:484
 msgid "Impossible to use LDAP as external source of connection"
@@ -2521,7 +2521,7 @@ msgstr "%1$s zmazal licenciu %2$s"
 #: front/softwarelicense.form.php:70
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr ""
+msgstr "%1$s aktualizoval licenciu %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:53
@@ -2539,7 +2539,7 @@ msgstr "%1$s zmazal verziu %2$s"
 #: front/softwareversion.form.php:74
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr ""
+msgstr "%1$s aktualizoval verziu %2$s"
 
 #: front/stat.global.php:36 front/stat.graph.php:36 front/stat.item.php:36
 #: front/stat.location.php:36 front/stat.php:36 front/stat.tracking.php:36
@@ -2554,12 +2554,12 @@ msgstr "Štatistika"
 #: front/stat.global.php:90 front/stat.global.php:201 front/stat.graph.php:332
 #: front/stat.graph.php:439 inc/stat.class.php:415 inc/stat.class.php:433
 msgid "Opened"
-msgstr "Otvorených"
+msgstr "Otvorené"
 
 #: front/stat.global.php:91 front/stat.graph.php:333 inc/stat.class.php:416
 #: inc/ticket.class.php:2591
 msgid "Solved"
-msgstr "Vyriešených"
+msgstr "Vyriešené"
 
 #: front/stat.global.php:92 front/stat.graph.php:334 inc/stat.class.php:417
 #: inc/ticket.class.php:1914
@@ -2823,7 +2823,7 @@ msgstr "Predošlý"
 #: inc/planning.class.php:370 inc/planning.class.php:371
 #: inc/reservation.class.php:485 inc/reservation.class.php:486
 msgid "Next"
-msgstr "Nasledovný"
+msgstr "Ďalší"
 
 #: front/stat.graph.php:351 inc/itilcategory.class.php:161
 #: inc/notificationtargetproblem.class.php:220 inc/problem.class.php:623
@@ -2838,17 +2838,17 @@ msgstr "Zobraz grafy"
 #: front/stat.location.php:170 front/stat.location.php:171
 #: front/stat.tracking.php:173 front/stat.tracking.php:174
 msgid "Number opened"
-msgstr "Počet otvorených požiadaviek"
+msgstr "Počet otvorených"
 
 #: front/stat.location.php:182 front/stat.location.php:183
 #: front/stat.tracking.php:185 front/stat.tracking.php:186
 msgid "Number solved"
-msgstr ""
+msgstr "Počet vyriešených"
 
 #: front/stat.location.php:194 front/stat.location.php:195
 #: front/stat.tracking.php:198 front/stat.tracking.php:199
 msgid "Number solved late"
-msgstr ""
+msgstr "Počet vyriešených neskoro"
 
 #: front/stat.location.php:206 front/stat.location.php:207
 #: front/stat.tracking.php:211 front/stat.tracking.php:212
@@ -2944,11 +2944,11 @@ msgstr "Priradené k"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
-msgstr ""
+msgstr "Technik"
 
 #: front/stat.tracking.php:104
 msgid "Technician in tasks"
-msgstr ""
+msgstr "Technik v úlohe"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:46
@@ -3019,13 +3019,13 @@ msgstr "%s pridal schválenie"
 #: front/ticketvalidation.form.php:61
 #, php-format
 msgid "%s updates an approval"
-msgstr ""
+msgstr "%s aktualizoval schválenie"
 
 #. TRANS: %s is the user login
 #: front/ticketvalidation.form.php:70
 #, php-format
 msgid "%s deletes an approval"
-msgstr ""
+msgstr "%s zmazal schválenie"
 
 #: front/tracking.injector.php:78 inc/ticket.class.php:1445
 msgid "Your ticket has been registered, its treatment is in progress."
@@ -3033,7 +3033,7 @@ msgstr "Vaša požiadavka bola zaznamenaná a prebieha jej spracovanie."
 
 #: front/tracking.injector.php:83
 msgid "OK"
-msgstr "OK"
+msgstr "Áno"
 
 #: front/tracking.injector.php:84
 msgid "Thank you for using our automatic helpdesk system."
@@ -3136,7 +3136,7 @@ msgstr "Nesprávne používateľské meno alebo heslo."
 
 #: inc/auth.class.php:196 inc/auth.class.php:632 inc/auth.class.php:657
 msgid "User not authorized to connect in GLPI"
-msgstr "Používateľ nie je autorizovaný pre pripojenie ku GLPI"
+msgstr "Užívateľ nemá oprávnenie pre pripojenie ku GLPI"
 
 #: inc/auth.class.php:237
 msgid "Password field is empty"
@@ -3150,13 +3150,13 @@ msgstr "Prázdne prihlasovacie meno alebo heslo"
 #: inc/auth.class.php:674
 #, php-format
 msgid "%1$s log in from IP %2$s"
-msgstr ""
+msgstr "%1$s sa prihlásil z IP %2$s"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
 #: inc/auth.class.php:684
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
-msgstr "Neúspešné prihlásenie pre %1$s z IP %2$s"
+msgstr "Neúspešné prihlásenie %1$s z IP %2$s"
 
 #: inc/auth.class.php:724
 msgid "Authentication on GLPI database"
@@ -3252,7 +3252,7 @@ msgstr ""
 
 #: inc/auth.class.php:1094
 msgid "The CURL extension for your PHP parser isn't installed"
-msgstr ""
+msgstr "Rozšírenie CURL pre vaše PHP nieje nainštalované"
 
 #: inc/auth.class.php:1096
 msgid "Impossible to use CAS as external source of connection"
@@ -3898,7 +3898,7 @@ msgstr ""
 
 #: inc/bookmark.class.php:628
 msgid "You have not recorded any bookmarks yet"
-msgstr ""
+msgstr "Zatiaľ nemáte uložené žiadne záložky."
 
 #: inc/bookmark.class.php:650
 msgid "Save as bookmark"
@@ -4886,7 +4886,7 @@ msgstr "Obnoviť"
 
 #: inc/commondbtm.class.php:1872 inc/ticket.class.php:4489
 msgid "Confirm the final deletion?"
-msgstr ""
+msgstr "Potvrdiť nenávratné zmazanie?"
 
 #: inc/commondbtm.class.php:1874 inc/commondbtm.class.php:3402
 #: inc/ticket.class.php:4492 inc/transfer.class.php:2978
@@ -4921,7 +4921,7 @@ msgstr "Zmena indikátora zakázaná. Existujú prepojené položky."
 
 #: inc/commondbtm.class.php:2084
 msgid "Change visibility in child entities"
-msgstr ""
+msgstr "Zmena viditeľnosti v podriadených subjektoch"
 
 #: inc/commondbtm.class.php:2555 inc/commontreedropdown.class.php:568
 #: inc/db.function.php:486 inc/entity.class.php:424
@@ -5504,7 +5504,7 @@ msgstr "Nové zdedené záhlavie"
 #: inc/commontreedropdown.class.php:407
 #, php-format
 msgid "Sons of %s"
-msgstr ""
+msgstr "Potomkovia %s"
 
 #: inc/commontreedropdown.class.php:482 inc/commontreedropdown.class.php:501
 #: inc/computer_softwarelicense.class.php:99
@@ -7593,7 +7593,7 @@ msgstr "Počet priradených položiek"
 
 #: inc/document.class.php:917 inc/document.class.php:1154
 msgid "Upload directory doesn't exist"
-msgstr ""
+msgstr "Adresár pre nahrávanie súborov neexistuje"
 
 #. TRANS: %1$s is the curent filename, %2$s is its directory
 #: inc/document.class.php:947 inc/document.class.php:1041
@@ -7623,7 +7623,7 @@ msgstr "Súbor je priveľký, nemožno ho pridať"
 
 #: inc/document.class.php:1055
 msgid "The file is valid. Upload is successful."
-msgstr "Súbor je platný. Upload bol úspešný."
+msgstr "Súbor je platný. Nahrávanie bolo úspešné."
 
 #: inc/document.class.php:1064
 msgid ""
@@ -8489,11 +8489,11 @@ msgstr "Neplatný internetový názov: %s "
 
 #: inc/group.class.php:118 inc/group.class.php:638 inc/user.class.php:195
 msgid "Used items"
-msgstr "Použité položky"
+msgstr "Používané položky"
 
 #: inc/group.class.php:121 inc/group.class.php:634 inc/user.class.php:196
 msgid "Managed items"
-msgstr ""
+msgstr "Spravované položky"
 
 #: inc/group.class.php:219
 msgid "Visible in a ticket"
@@ -8501,7 +8501,7 @@ msgstr "Viditeľný v požiadavke"
 
 #: inc/group.class.php:232 inc/group.class.php:436
 msgid "Can be notified"
-msgstr ""
+msgstr "Môže byť upovedomená"
 
 #: inc/group.class.php:238 inc/group.class.php:441 inc/group.class.php:446
 msgid "Can contain"
@@ -8593,9 +8593,9 @@ msgstr "Pridať používateľa"
 #: inc/rulerightparameter.class.php:68 inc/rulerightparameter.class.php:85
 msgid "Criterion"
 msgid_plural "Criteria"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Kritérium"
+msgstr[1] "Kritériá"
+msgstr[2] "Kritérií"
 
 #: inc/group_user.class.php:443 inc/group_user.class.php:513
 msgid "D=Dynamic"
@@ -8659,7 +8659,7 @@ msgstr[2] "Sieťové porty"
 #: inc/html.class.php:1180 inc/html.class.php:1181 inc/html.class.php:2723
 #: inc/html.class.php:2724 inc/ticket.class.php:3102 inc/ticket.class.php:3103
 msgid "Ticket waiting for your approval"
-msgstr "Požiadavka čaká na vaše schválenie"
+msgstr "Požiadavky čakajúce na moje schválenie"
 
 #: inc/html.class.php:1232 inc/profile.class.php:873
 #: inc/ticketrecurrent.class.php:53
@@ -8769,7 +8769,7 @@ msgstr "Súhrn"
 #: inc/html.class.php:2366 inc/html.class.php:2367 inc/html.class.php:2745
 #: inc/html.class.php:2746
 msgid "Load a bookmark"
-msgstr ""
+msgstr "Otvoriť záložky"
 
 #: inc/html.class.php:2416
 #, php-format
@@ -10261,7 +10261,7 @@ msgstr "SMTP+TLS"
 
 #: inc/notificationmailsetting.class.php:194
 msgid "SMTP host"
-msgstr "Počítač SMTP"
+msgstr "SMTP server"
 
 #: inc/notificationmailsetting.class.php:197
 msgid "SMTP login (optional)"
@@ -10292,7 +10292,7 @@ msgstr "Manažér skupiny %s"
 
 #: inc/notificationtarget.class.php:738
 msgid "Manager of group"
-msgstr ""
+msgstr "Manažér skupiny"
 
 #: inc/notificationtarget.class.php:756
 #: inc/notificationtargetdbconnection.class.php:51
@@ -10317,7 +10317,7 @@ msgstr "Manažér skupín žiadateľov"
 
 #: inc/notificationtargetcommonitilobject.class.php:391
 msgid "Technician in charge of the ticket"
-msgstr ""
+msgstr "Technik, ktorý má túto požiadavku na starosti"
 
 #: inc/notificationtargetcommonitilobject.class.php:394
 #: inc/notificationtargetreservation.class.php:61
@@ -10343,7 +10343,7 @@ msgstr "Schváliť"
 
 #: inc/notificationtargetcommonitilobject.class.php:407
 msgid "Technician in charge of the task"
-msgstr ""
+msgstr "Technik, ktorý má túto úlohu na starosti"
 
 #: inc/notificationtargetcommonitilobject.class.php:408
 msgid "Task author"
@@ -10382,7 +10382,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:826
 msgid "Number of unresolved items"
-msgstr ""
+msgstr "Počet nevyriešených položiek"
 
 #: inc/notificationtargetcommonitilobject.class.php:851
 msgid "No defined category"
@@ -10492,7 +10492,7 @@ msgstr ""
 
 #: inc/notificationtargetproblem.class.php:53
 msgid "Problem solved"
-msgstr ""
+msgstr "Problém vyriešený"
 
 #: inc/notificationtargetproblem.class.php:54
 #: inc/notificationtargetticket.class.php:188
@@ -10538,11 +10538,11 @@ msgstr "Nová rezervácia"
 
 #: inc/notificationtargetreservation.class.php:45
 msgid "Update of a reservation"
-msgstr ""
+msgstr "Aktualizácia rezervácie"
 
 #: inc/notificationtargetreservation.class.php:46
 msgid "Deletion of a reservation"
-msgstr ""
+msgstr "Zmazanie rezervácie"
 
 #: inc/notificationtargetreservation.class.php:47
 msgid "Reservation expired"
@@ -11104,7 +11104,7 @@ msgstr "Spracovanie (naplánované)"
 #: inc/problem.class.php:649
 msgctxt "problem"
 msgid "Solved"
-msgstr "Vyriešených"
+msgstr "Vyriešené"
 
 #: inc/problem.class.php:650
 msgid "Under observation"
@@ -11347,9 +11347,9 @@ msgstr "Finančné a administratívne informácie"
 #: inc/profile.class.php:759 inc/profile.class.php:1942
 msgid "Public bookmark"
 msgid_plural "Public bookmarks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Verejná záložka"
+msgstr[1] "Verejné záložky"
+msgstr[2] "Verejné záložky"
 
 #: inc/profile.class.php:779
 msgid "Knowledge base administration"
@@ -11516,7 +11516,7 @@ msgstr "Pravidlá pre prevod počítača na objekt"
 #: inc/rulemailcollector.class.php:73
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "Pravidlá pre priradenie požiadavky vytvorenej cez email"
+msgstr "Pravidlá pre priradzovanie požiadaviek cez emailové brány."
 
 #: inc/profile.class.php:1243 inc/profile.class.php:1625
 msgid "Rules for assigning a category to a software"
@@ -11525,7 +11525,7 @@ msgstr "Pravidlá pre priradenie kategórie k softvéru"
 #: inc/profile.class.php:1247 inc/profile.class.php:1604
 #: inc/ruleticket.class.php:46 inc/ruleticketcollection.class.php:59
 msgid "Business rules for tickets"
-msgstr "Obchodné pravidlá pre požiadavky"
+msgstr "Firemné pravidlá pre požiadavky"
 
 #: inc/profile.class.php:1251 inc/profile.class.php:1640
 msgid "Business rules for tickets (entity)"
@@ -11708,7 +11708,7 @@ msgstr "Východzie pre prijímateľov emailu"
 
 #: inc/requesttype.class.php:112 inc/requesttype.class.php:125
 msgid "Be careful: there is no default value"
-msgstr "Upozornenie: toto nie je prednastavená hodnota"
+msgstr "Buď opatrný: tu nieje prednastavená hodnota"
 
 #: inc/reservation.class.php:277
 msgid "The required item is already reserved for this timeframe"
@@ -11849,7 +11849,7 @@ msgstr "Odstráni všetky otvorené rezervácie."
 
 #: inc/reservationitem.class.php:265
 msgid "Authorize reservations"
-msgstr "Autorizovať rezerváciu"
+msgstr "Povoliť rezervácie"
 
 #: inc/reservationitem.class.php:298 inc/search.class.php:4358
 #: inc/search.class.php:4362
@@ -11862,7 +11862,7 @@ msgstr "Rezervácie, ktoré dnes vypršia"
 
 #: inc/reservationitem.class.php:501
 msgid "Send reservation alert failed"
-msgstr ""
+msgstr "Odoslanie upozornenia na rezerváciu zlyhalo"
 
 #: inc/rssfeed.class.php:417
 msgid "Creator"
@@ -12001,7 +12001,7 @@ msgstr "Typ akcie"
 
 #: inc/rule.class.php:700
 msgid "Add a criterion"
-msgstr ""
+msgstr "Pridať kritérium"
 
 #: inc/rule.class.php:779 inc/rule.class.php:1474
 #: inc/rulecriteria.class.php:130
@@ -12411,7 +12411,7 @@ msgstr "Automatické priradenie používateľa"
 
 #: inc/ruleright.class.php:250
 msgid "Global criteria"
-msgstr ""
+msgstr "Globálne kritéria"
 
 #: inc/ruleright.class.php:284
 msgid "Imported group from an LDAP directory"
@@ -12472,7 +12472,7 @@ msgstr ""
 
 #: inc/ruleticket.class.php:470
 msgid "Approval request to technicians group supervisor"
-msgstr ""
+msgstr "Požiadavka na schválenie pre vedúceho skupiny technikov"
 
 #: inc/search.class.php:1258 inc/search.class.php:1262
 #: inc/search.class.php:1335 inc/search.class.php:1339
@@ -12492,7 +12492,7 @@ msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:1514
 msgid "Add a search criterion"
-msgstr ""
+msgstr "Pridať vyhľadávacie kritérium"
 
 #: inc/search.class.php:1521
 msgid "Delete a search criterion"
@@ -12616,7 +12616,7 @@ msgstr "Číslo verzie"
 
 #: inc/software.class.php:546
 msgid "Version comments"
-msgstr ""
+msgstr "Komentáre k verzii"
 
 #: inc/software.class.php:565
 msgid "License name"
@@ -12803,13 +12803,13 @@ msgstr[2] "Priradený kontakt"
 #: inc/supplier.class.php:346
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Priradený kontrakt"
+msgstr[1] "Priradené kontrakty"
+msgstr[2] "Priradené kontrakty"
 
 #: inc/ticket.class.php:407 inc/ticket.class.php:424
 msgid "Created tickets"
-msgstr "Vytvorená požiadavka"
+msgstr "Vytvorené požiadavky"
 
 #: inc/ticket.class.php:504
 msgid "No generated survey"
@@ -12819,7 +12819,7 @@ msgstr "Nevygenerovaný prieskum spokojnosti"
 #: inc/ticket.class.php:737 inc/ticket.class.php:1055
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
-msgstr ""
+msgstr "Povinné polia nie sú vyplnené. Prosím vyplňte: %s"
 
 #: inc/ticket.class.php:784 inc/ticket.class.php:1330
 msgid "Unknown ticket"
@@ -12828,7 +12828,7 @@ msgstr "Neznáma požiadavka"
 #: inc/ticket.class.php:828 inc/ticket.class.php:1425
 #, php-format
 msgid "%1$s updates the item %2$s"
-msgstr ""
+msgstr "%1$s aktualizoval položku %2$s"
 
 #: inc/ticket.class.php:1695 inc/ticketfollowup.class.php:627
 msgid "Add a new followup"
@@ -12961,7 +12961,7 @@ msgstr "Požiadavka bude pridaná do subjektu %s"
 #: inc/ticket.class.php:3859
 #, php-format
 msgid "Next escalation: %s"
-msgstr ""
+msgstr "Ďalšia eskalácia: %s"
 
 #: inc/ticket.class.php:3891
 msgid ""
@@ -12971,7 +12971,7 @@ msgstr "Priradenie SLA požiadavke spôsobilo prepočítanie termínu vyriešeni
 
 #: inc/ticket.class.php:3892
 msgid "Escalations defined in the SLA will be triggered under this new date."
-msgstr ""
+msgstr "Eskalácie definované v SLA budú spúšťané pod týmto novým dátumom"
 
 #: inc/ticket.class.php:3894
 msgid "Assign a SLA"
@@ -12992,7 +12992,7 @@ msgstr ""
 
 #: inc/ticket.class.php:4726 inc/ticket.class.php:4779
 msgid "Tickets to be processed"
-msgstr "Mne priradené úlohy"
+msgstr "Mne priradené požiadavky"
 
 #: inc/ticket.class.php:4745 inc/ticket.class.php:4864
 msgid "Your tickets in progress"
@@ -13114,7 +13114,7 @@ msgstr "Úvodné vytvorenie"
 #: inc/ticketrecurrent.class.php:289
 #, php-format
 msgid "Next creation on %s"
-msgstr ""
+msgstr "Ďalšie vytvorenie %s"
 
 #: inc/ticketrecurrent.class.php:327
 msgid "Invalid frequency. It must be greater than the preliminary creation."
@@ -13133,7 +13133,7 @@ msgstr "Požiadavka %d úspešne vytvorená"
 
 #: inc/ticketrecurrent.class.php:467
 msgid "Ticket creation failed (check mandatory fields)"
-msgstr ""
+msgstr "Vytvorenie požiadavky zlyhalo (skontrolujte povinné polia)"
 
 #: inc/ticketrecurrent.class.php:470
 msgid "Ticket creation failed (no template)"
@@ -13280,11 +13280,11 @@ msgstr "GLPI nie je kompaktabilné s funkciou zend.ze1_compatibility_mode = On."
 
 #: inc/toolbox.class.php:801 inc/toolbox.class.php:802
 msgid "PHP version is at least 5.3.0 - Perfect!"
-msgstr ""
+msgstr "Verzia PHP je minimálne 5.3.0 - Výborne!"
 
 #: inc/toolbox.class.php:809
 msgid "You must install at least PHP 5.3.0."
-msgstr ""
+msgstr "Musíte nainštalovať minimálne PHP 5.3.0"
 
 #: inc/toolbox.class.php:814
 msgid "MySQL Improved extension test"
@@ -13304,7 +13304,7 @@ msgstr "Test session"
 
 #: inc/toolbox.class.php:833
 msgid "Your parser PHP is not installed with sessions support!"
-msgstr "Váš prekladač PHP nie je skompilovaný s podporou sessions!"
+msgstr "PHP nie je nainštalované s podporou sessions!"
 
 #: inc/toolbox.class.php:839 inc/toolbox.class.php:840
 msgid "Sessions support is available - Perfect!"
@@ -13379,7 +13379,7 @@ msgstr "Test rozšírenia mbstring"
 
 #: inc/toolbox.class.php:933
 msgid "Mbstring extension of your parser PHP is not installed"
-msgstr "Mbstring rozšírenie prekladača PHP nie je nainštalované"
+msgstr "Rozšírenie Mbstring pre vaše PHP nie je nainštalované"
 
 #: inc/toolbox.class.php:945
 msgid "Allocated memory test"
@@ -13437,7 +13437,7 @@ msgstr ""
 #: inc/toolbox.class.php:1235 inc/toolbox.class.php:1237
 #: inc/toolbox.class.php:1242 inc/toolbox.class.php:1244
 msgid "You have the latest available version"
-msgstr "Máte poslednú verziu"
+msgstr "Používate najnovšiu dostupnú verziu"
 
 #. TRANS: %s is the error string
 #: inc/toolbox.class.php:1500
@@ -14108,7 +14108,7 @@ msgstr "Migrácia dát"
 
 #: install/update_0831_084.php:438 install/update_0831_084.php:439
 msgid "Root entity"
-msgstr "Root subjektu"
+msgstr "Root subjekt"
 
 #: install/update.php:187
 msgid "Update successful, your database is up to date"
@@ -14132,7 +14132,7 @@ msgstr "Nová štruktúra je hierarchická"
 
 #: install/update.php:405
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr "Ak ste použili oddeľovaciu značku, môžete ju nastaviť a tak automatizovať proces generovania novej štruktúry."
+msgstr "Poskytnite oddeľovací znak pre automatizované generovanie novej štruktúry."
 
 #: install/update.php:406
 msgid ""
@@ -14158,7 +14158,7 @@ msgstr "Nová štruktúra"
 
 #: install/update.php:424
 msgid "This is the new hierarchy. If it's complete approve it."
-msgstr "Toto je nová hierarchia. Je to OK, môžete ju potvrdiť."
+msgstr "Toto je nová štruktúra. Schváľte ju ak je kompletná."
 
 #: install/update.php:845
 msgid "Impossible to accomplish an update by this way!"
