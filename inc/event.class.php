@@ -200,20 +200,15 @@ class Event extends CommonDBTM {
       list($logItemtype, $logService) = self::logArray();
 
       // define default sorting
-      $usersearch = "%";
+      $usersearch = "";
       if (!empty($user)) {
          $usersearch = $user." ";
       }
 
-      /// TODO : do not work with RTL language.
-      /// review log system to be able to do that (store action user)
       // Query Database
-      $string = __('%s adds the item');
-      $string = str_replace('%s','','%s', $string);
-      $string = trim($string);
       $query = "SELECT *
                 FROM `glpi_events`
-                WHERE `message` LIKE '".$usersearch.addslashes($string)."%'
+                WHERE `message` LIKE '".$usersearch."%'
                 ORDER BY `date` DESC
                 LIMIT 0,".intval($_SESSION['glpilist_limit']);
 
