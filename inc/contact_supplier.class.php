@@ -375,7 +375,7 @@ class Contact_Supplier extends CommonDBRelation{
          echo "<form name='contactsupplier_form$rand' id='contactsupplier_form$rand' method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a supplier')."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a contact')."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='suppliers_id' value='$instID'>";
