@@ -277,6 +277,7 @@ class Notification extends CommonDBTM {
       $tab[5]['field']           = 'itemtype';
       $tab[5]['name']            = __('Type');
       $tab[5]['datatype']        = 'itemtypename';
+      $tab[5]['itemtype_list']   = 'notificationtemplates_types';
       $tab[5]['massiveaction']   = false;
 
       $tab[6]['table']           = $this->getTable();
@@ -293,7 +294,7 @@ class Notification extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
-      $tab[16]['datatype']       = 'dropdown';
+      $tab[80]['datatype']       = 'dropdown';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
