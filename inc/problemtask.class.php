@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -97,12 +97,16 @@ class ProblemTask extends CommonITILTask {
          return false;
       }
 
-      return (Session::haveRight("edit_all_problem","1")
-              || (Session::haveRight("show_my_problem","1")
-                  && ($ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                      || (isset($_SESSION["glpigroups"])
-                          && $ticket->haveAGroup(CommonITILActor::ASSIGN,
-                                                 $_SESSION['glpigroups'])))));
+      $problem = new Problem();
+      if ($problem->getFromDB($this->fields['problems_id'])) {
+         return (Session::haveRight("edit_all_problem","1")
+                 || (Session::haveRight("show_my_problem","1")
+                     && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                         || (isset($_SESSION["glpigroups"])
+                             && $problem->haveAGroup(CommonITILActor::ASSIGN,
+                                                    $_SESSION['glpigroups'])))));
+      }
+      return false;
    }
 
 
