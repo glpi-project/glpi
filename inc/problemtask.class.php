@@ -88,12 +88,16 @@ class ProblemTask extends CommonITILTask {
          return false;
       }
 
-      return (Session::haveRight("edit_all_problem","1")
-              || (Session::haveRight("show_my_problem","1")
-                  && ($ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
-                      || (isset($_SESSION["glpigroups"])
-                          && $ticket->haveAGroup(CommonITILObject::ASSIGN,
-                                                 $_SESSION['glpigroups'])))));
+      $problem = new Problem();
+      if ($problem->getFromDB($this->fields['problems_id'])) {
+         return (Session::haveRight("edit_all_problem","1")
+                 || (Session::haveRight("show_my_problem","1")
+                     && ($problem->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+                         || (isset($_SESSION["glpigroups"])
+                             && $problem->haveAGroup(CommonITILObject::ASSIGN,
+                                                    $_SESSION['glpigroups'])))));
+      }
+
    }
 
 
