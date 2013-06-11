@@ -366,6 +366,11 @@ class Translator
             return ($number == 1 ? $singular : $plural);
         }
 
+        /// GLPI Hack for languages with 1 plural form (chinese)
+        if (!is_array($translation)) {
+            return $translation;
+        }
+
         $index = $this->messages[$textDomain][$locale]
                       ->getPluralRule()
                       ->evaluate($number);
@@ -395,7 +400,6 @@ class Translator
         if ($message === '') {
             return '';
         }
-
         if (!isset($this->messages[$textDomain][$locale])) {
             $this->loadMessages($textDomain, $locale);
         }
@@ -495,7 +499,6 @@ class Translator
         if (!isset($this->messages[$textDomain])) {
             $this->messages[$textDomain] = array();
         }
-
         if (null !== ($cache = $this->getCache())) {
             $cacheId = 'Zend_I18n_Translator_Messages_' . md5($textDomain . $locale);
 
