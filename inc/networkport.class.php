@@ -768,8 +768,7 @@ class NetworkPort extends CommonDBChild {
          echo "</table>";
       }
 
-      if ($is_active_network_port
-          && $showmassiveactions) {
+      if ($showmassiveactions) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions('NetworkPort', $massiveactionparams);
 
