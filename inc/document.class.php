@@ -681,14 +681,14 @@ class Document extends CommonDBTM {
 
       switch ($input['action']) {
          case "add_document_item" :
-            Dropdown::showAllItems("items_id", 0, 0, 1,
+            Dropdown::showAllItems("items_id", 0, 0, -1,
                                     $CFG_GLPI["document_types"], false, true, 'item_itemtype');
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Add')."'>";
             return true;
 
          case "remove_document_item" :
-            Dropdown::showAllItems("items_id", 0, 0, 1,
+            Dropdown::showAllItems("items_id", 0, 0, -1,
                                     $CFG_GLPI["document_types"], false, true, 'item_itemtype');
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Delete permanently')."'>";
