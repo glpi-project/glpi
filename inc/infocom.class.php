@@ -391,8 +391,8 @@ class Infocom extends CommonDBChild {
 
       // Clean end alert if buy_date is after old one
       // Or if duration is greater than old one
-      if ((isset($this->oldvalues['buy_date'])
-           && ($this->oldvalues['buy_date'] < $this->fields['buy_date']))
+      if ((isset($this->oldvalues['warranty_date'])
+           && ($this->oldvalues['warranty_date'] < $this->fields['warranty_date']))
           || (isset($this->oldvalues['warranty_duration'])
               && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
 
