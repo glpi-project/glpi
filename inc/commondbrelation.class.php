@@ -277,17 +277,21 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'number';
 
-      $tab[3]['table']         = getTableForItemType(static::$itemtype_1);
-      $tab[3]['field']         = static::$items_id_1;
-      $tab[3]['name']          = call_user_func(array(static::$itemtype_1, 'getTypeName'));
-      $tab[3]['datatype']      = 'text';
-      $tab[3]['massiveaction'] = false;
+      if (!preg_match('/^itemtype/', static::$itemtype_1)) {
+         $tab[3]['table']         = getTableForItemType(static::$itemtype_1);
+         $tab[3]['field']         = static::$items_id_1;
+         $tab[3]['name']          = call_user_func(array(static::$itemtype_1, 'getTypeName'));
+         $tab[3]['datatype']      = 'text';
+         $tab[3]['massiveaction'] = false;
+      }
 
-      $tab[4]['table']         = getTableForItemType(static::$itemtype_2);
-      $tab[4]['field']         = static::$items_id_2;
-      $tab[4]['name']          = call_user_func(array(static::$itemtype_2, 'getTypeName'));
-      $tab[4]['datatype']      = 'text';
-      $tab[4]['massiveaction'] = false;
+      if (!preg_match('/^itemtype/', static::$itemtype_2)) {
+         $tab[4]['table']         = getTableForItemType(static::$itemtype_2);
+         $tab[4]['field']         = static::$items_id_2;
+         $tab[4]['name']          = call_user_func(array(static::$itemtype_2, 'getTypeName'));
+         $tab[4]['datatype']      = 'text';
+         $tab[4]['massiveaction'] = false;
+      }
 
       return $tab;
    }
