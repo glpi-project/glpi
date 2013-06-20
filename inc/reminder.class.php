@@ -1227,7 +1227,7 @@ class Reminder extends CommonDBTM {
                echo "<td>".__('Group')."</td>";
 
                $names    = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
-               $entname = printf(__('%1$s %2$s'), $names["name"],
+               $entname = sprintf(__('%1$s %2$s'), $names["name"],
                                    Html::showToolTip($names["comment"], array('display' => false)));
                if ($data['entities_id'] >= 0) {
                   $entname = sprintf(__('%1$s / %2$s'), $entname,
