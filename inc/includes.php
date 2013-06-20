@@ -83,6 +83,13 @@ if (isset($_GET)) {
    $_GET = array_map(array('Toolbox','addslashes_deep'), $_GET);
    $_GET = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_GET);
 }
+if (isset($_REQUEST)) {
+   if (Toolbox::get_magic_quotes_gpc()) {
+      $_REQUEST = array_map(array('Toolbox', 'stripslashes_deep'), $_REQUEST);
+   }
+   $_REQUEST = array_map(array('Toolbox','addslashes_deep'), $_REQUEST);
+   $_REQUEST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_REQUEST);
+}
 
 // Mark if Header is loaded or not :
 $HEADER_LOADED=false;
