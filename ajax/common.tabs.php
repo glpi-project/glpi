@@ -72,6 +72,11 @@ CommonGLPI::displayStandardTab($item, $_POST['glpi_tab'],$_POST["withtemplate"])
 
 
 if (isset($_POST['full_page_tab'])) {
+   echo "<div class='center' id='debugajax'>";
+   Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab',
+                        'Reload this tab', $_POST);
+   echo "</div>";
+
    Html::footer();
 
    // I think that we should display this warning, because tabs are not prepare
