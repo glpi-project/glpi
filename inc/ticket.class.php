@@ -3166,7 +3166,7 @@ class Ticket extends CommonITILObject {
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
          $options['_predefined_fields']
-                     = json_decode(base64_decode($options['_predefined_fields'])), true);
+                     = json_decode(base64_decode($options['_predefined_fields']), true);
       } else {
          $options['_predefined_fields'] = array();
       }
@@ -3425,7 +3425,7 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $values = $_REQUEST;
       }
-
+ 
       // Restore saved value or override with page parameter
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
