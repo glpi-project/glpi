@@ -84,8 +84,8 @@ function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD, $CFG_GLPI;
    static $notfound = array('xStates' => true);
 
-   // empty classname or non concerted plugin
-   if (empty($classname) || is_numeric($classname)) {
+   // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
+   if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
       return false;
    }
    $dir = GLPI_ROOT . "/inc/";
