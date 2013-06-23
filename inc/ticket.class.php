@@ -3252,7 +3252,7 @@ class Ticket extends CommonITILObject {
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
          $values['_predefined_fields']
-                        = unserialize(rawurldecode(stripslashes($values['_predefined_fields'])));
+                        = Toolbox::decodeArrayFromInput($values['_predefined_fields']);
       } else {
          $values['_predefined_fields'] = array();
       }
@@ -3432,7 +3432,7 @@ class Ticket extends CommonITILObject {
          if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
-                   value=\"".rawurlencode(serialize($predefined_fields))."\">";
+                   value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
          }
          echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
@@ -3705,7 +3705,7 @@ class Ticket extends CommonITILObject {
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
          $values['_predefined_fields']
-                        = unserialize(rawurldecode(stripslashes($values['_predefined_fields'])));
+                        = Toolbox::decodeArrayFromInput($values['_predefined_fields']);
       } else {
          $values['_predefined_fields'] = array();
       }
@@ -4517,7 +4517,7 @@ class Ticket extends CommonITILObject {
             if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
-                      value=\"".rawurlencode(serialize($predefined_fields))."\">";
+                      value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
             }
          }
       }
