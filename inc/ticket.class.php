@@ -3166,7 +3166,7 @@ class Ticket extends CommonITILObject {
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
          $options['_predefined_fields']
-                     = json_decode(base64_decode($options['_predefined_fields']), true);
+                     = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
       } else {
          $options['_predefined_fields'] = array();
       }
@@ -3337,7 +3337,7 @@ class Ticket extends CommonITILObject {
          if ($tt->isField('id') && $tt->fields['id'] > 0) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
-                         value=\"".base64_encode(json_encode($predefined_fields))."\">";
+                         value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
          }
 
          echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
@@ -3524,11 +3524,10 @@ class Ticket extends CommonITILObject {
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
          $values['_predefined_fields']
-                        = json_decode(base64_decode($values['_predefined_fields']), true);
+                        = Toolbox::decodeArrayFromInput($values['_predefined_fields']);
       } else {
          $values['_predefined_fields'] = array();
       }
-
       // Store predefined fields to be able not to take into account on change template
       // Only manage predefined values on ticket creation
       $predefined_fields = array();
@@ -4255,7 +4254,7 @@ class Ticket extends CommonITILObject {
             if ($tt->isField('id') && $tt->fields['id'] > 0) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
-                            value=\"".base64_encode(json_encode($predefined_fields))."\">";
+                            value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
             }
          }
       }

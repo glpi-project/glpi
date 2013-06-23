@@ -1771,11 +1771,41 @@ class Toolbox {
     * Clean integer value (strip all chars not - and spaces )
     *
     * @param $integer string: integer string
-    * @since versin 0.83.5
+    * @since version 0.83.5
     * @return clean integer
    **/
    static function cleanInteger($integer) {
       return preg_replace("/[^0-9-]/", "", $integer);
    }
+
+   /**
+    * Prepare array passed on an input form
+    *
+    * @param $value array: passed array
+    * @since version 0.83.91
+    * @return string encoded array
+   **/
+   static function prepareArrayForInput($value) {
+      return base64_encode(json_encode($value));
+   }
+
+   /**
+    * Decode array passed on an input form
+    *
+    * @param $value string: encoded value
+    * @since version 0.83.91
+    * @return string decoded array
+   **/
+   static function decodeArrayFromInput($value) {
+      if ($dec = base64_decode($value)) {
+         if ($ret = json_decode($dec,true)) {
+            return $ret;
+         }
+      }
+      return array();
+   }
+   
+
+   
 }
 ?>
