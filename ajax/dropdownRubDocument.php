@@ -43,7 +43,7 @@ Session::checkCentralAccess();
 // Make a select box
 if (isset($_POST["rubdoc"])) {
    if (!is_array($_POST['used'])) {
-      $_POST['used'] = unserialize(stripslashes($_POST['used']));
+      $_POST['used'] = Toolbox::decodeArrayFromInput($_POST['used']);
    }
    $used = array();
 

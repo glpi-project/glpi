@@ -89,7 +89,7 @@ if (isset($_POST["itemtype"])
    echo "<span id='span$dropdownname'>\n";
 
    $_POST['value']      = stripslashes($_POST['value']);
-   $_POST['searchopt']  = serialize($searchopt);
+   $_POST['searchopt']  = $searchopt;
 
    include(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";

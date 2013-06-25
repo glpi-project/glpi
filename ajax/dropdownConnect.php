@@ -48,21 +48,24 @@ if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromt
 $fromitem->checkGlobal('w');
 
 if (isset($_POST["used"]) && !is_numeric($_POST["used"]) && !is_array($_POST["used"])) {
-   $used = unserialize(stripslashes($_POST["used"]));
+   $used = Toolbox::decodeArrayFromInput($_POST["used"]);
 } else {
    $used = $_POST["used"];
 }
+
 if (isset($used[$_POST['itemtype']])) {
    $used = $used[$_POST['itemtype']];
 } else {
    $used = array();
 }
 
+
+
 if (isset($_POST["entity_restrict"])
     && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
 
-   $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
+   $_POST["entity_restrict"] = Toolbox::decodeArrayFromInput($_POST["entity_restrict"]);
 }
 
 // Make a select box

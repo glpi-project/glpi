@@ -480,7 +480,7 @@ class Ajax {
           && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
 
          if (!is_array($options["update_item"])) {
-            $datas = unserialize(stripslashes($options["update_item"]));
+            $datas = Toolbox::decodeArrayFromInput($options["update_item"]);
          } else {
             $datas = $options["update_item"];
          }
@@ -544,8 +544,7 @@ class Ajax {
 
             $out .= $key."=";
             if (is_array($val)) {
-               $out .=  rawurlencode(serialize($val));
-
+               $out .=  Toolbox::prepareArrayForInput($val);
             } else if (preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
                $out .=  "'+Ext.get('".$toobserve[$regs[1]]."').getValue()+'";
 

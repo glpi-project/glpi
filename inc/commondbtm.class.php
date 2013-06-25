@@ -2873,10 +2873,11 @@ class CommonDBTM extends CommonGLPI {
          case "update" :
             // Specific options for update fields
             if (isset($input['options'])) {
-               $input['options'] = unserialize(stripslashes($input['options']));
+               $input['options'] = Toolbox::decodeArrayFromInput($input['options']);
             } else {
                $input['options'] = array();
             }
+            
             $first_group    = true;
             $newgroup       = "";
             $items_in_group = 0;

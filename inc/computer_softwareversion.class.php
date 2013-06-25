@@ -105,7 +105,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       switch ($input['action']) {
          case "move_version" :
             if (isset($input['options'])) {
-               $input['options'] = unserialize(stripslashes($input['options']));
+               $input['options'] = Toolbox::decodeArrayFromInput($input['options']);
                if (isset($input['options']['move'])) {
                   $options = array('softwares_id' => $input['options']['move']['softwares_id']);
                      if (isset($input['options']['move']['used'])) {

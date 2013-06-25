@@ -51,7 +51,7 @@ if ($_POST['softwares_id'] > 0) {
       if (is_array($_POST['used'])) {
          $used = $_POST['used'];
       } else {
-         $used = unserialize(stripslashes($_POST['used']));
+         $used = Toolbox::decodeArrayFromInput($_POST['used']);
       }
 
       if (count($used)) {
