@@ -4333,7 +4333,7 @@ class Html {
 
          if ($item_type_output_param != 0) {
             echo "<input type='hidden' name='item_type_param' value='".
-                   serialize($item_type_output_param)."'>";
+                   Toolbox::prepareArrayForInput($item_type_output_param)."'>";
          }
          $split = explode("&amp;",$parameters);
 

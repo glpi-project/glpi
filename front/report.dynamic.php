@@ -55,7 +55,7 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
 
       case 'Stat' :
          if (isset($_GET["item_type_param"])) {
-            $params = unserialize(stripslashes($_GET["item_type_param"]));
+            $params = Toolbox::decodeArrayFromInput($_GET["item_type_param"]);
             switch ($params["type"]) {
                case "comp_champ" :
                   $val = Stat::getItems($_GET["itemtype"], $params["date1"], $params["date2"],

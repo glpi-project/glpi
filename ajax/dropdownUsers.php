@@ -60,14 +60,14 @@ if (isset($_POST['used'])) {
    if (is_array($_POST['used'])) {
       $used = $_POST['used'];
    } else {
-      $used = unserialize(stripslashes($_POST['used']));
+      $used = Toolbox::decodeArrayFromInput($_POST['used']);
    }
 }
 if (isset($_POST["entity_restrict"])
     && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
 
-   $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
+   $_POST["entity_restrict"] = Toolbox::decodeArrayFromInput($_POST["entity_restrict"]);
 }
 
 $result = User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restrict"],
