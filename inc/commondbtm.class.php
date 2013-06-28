@@ -570,9 +570,14 @@ class CommonDBTM extends CommonGLPI {
             while ($data=$DB->fetch_assoc($result)) {
 
                if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
-                  $job->update(array('id'       => $data["id"],
-                                     'items_id' => 0,
-                                     'itemtype' => ''));
+                  $input = array();
+                  $input['id']       = $data["id"];
+                  $input['items_id'] = 0;
+                  $input['itemtype'] = '';
+                  if ($data['status'] == 'closed') {
+                     $input['_disablenotif']= true;
+                  }
+                  $job->update($input);
                } else {
                   $job->delete(array("id" => $data["id"]));
                }
@@ -2877,7 +2882,7 @@ class CommonDBTM extends CommonGLPI {
             } else {
                $input['options'] = array();
             }
-            
+
             $first_group    = true;
             $newgroup       = "";
             $items_in_group = 0;
