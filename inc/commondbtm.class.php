@@ -525,9 +525,14 @@ class CommonDBTM extends CommonGLPI {
             while ($data=$DB->fetch_array($result)) {
 
                if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
-                  $job->update(array('id'       => $data["id"],
-                                     'items_id' => 0,
-                                     'itemtype' => ''));
+                  $input = array();
+                  $input['id']       = $data["id"];
+                  $input['items_id'] = 0;
+                  $input['itemtype'] = '';
+                  if ($data['status'] == 'closed') {
+                     $input['_disablenotif']= true;
+                  }
+                  $job->update($input);
                } else {
                   $job->delete(array("id" => $data["id"]));
                }
@@ -1529,9 +1534,9 @@ class CommonDBTM extends CommonGLPI {
 
                $itemtype = getItemTypeForTable($tablename);
                $item     = new $itemtype();
-   
+
                if ($item->isEntityAssign()) {
-   
+
                   // 1->N Relation
                   if (is_array($field)) {
                      foreach ($field as $f) {
@@ -1540,33 +1545,33 @@ class CommonDBTM extends CommonGLPI {
                            return false;
                         }
                      }
-   
+
                   } else {
                      if (countElementsInTable($tablename,
                                              "`$field`='$ID' AND entities_id NOT IN $entities")>0) {
                         return false;
                      }
                   }
-   
+
                } else {
                   foreach ($RELATION as $othertable => $rel) {
                      // Search for a N->N Relation with devices
                      if ($othertable == "_virtual_device" && isset($rel[$tablename])) {
                         $devfield  = $rel[$tablename][0]; // items_id...
                         $typefield = $rel[$tablename][1]; // itemtype...
-   
+
                         $sql = "SELECT DISTINCT `$typefield` AS itemtype
                               FROM `$tablename`
                               WHERE `$field`='$ID'";
                         $res = $DB->query($sql);
-   
+
                         // Search linked device of each type
                         if ($res) {
                            while ($data = $DB->fetch_assoc($res)) {
                               $itemtype  = $data["itemtype"];
                               $itemtable = getTableForItemType($itemtype);
                               $item      = new $itemtype();
-   
+
                               if ($item->isEntityAssign()) {
                                  if (countElementsInTable(array($tablename, $itemtable),
                                                          "`$tablename`.`$field`='$ID'
@@ -1577,15 +1582,15 @@ class CommonDBTM extends CommonGLPI {
                                     return false;
                                  }
                               }
-   
+
                            }
                         }
-   
+
                      // Search for another N->N Relation
                      } else if ($othertable != $this->getTable() && isset($rel[$tablename])) {
                         $itemtype = getItemTypeForTable($othertable);
                         $item     = new $itemtype();
-   
+
                         if ($item->isEntityAssign()) {
                            if (is_array($rel[$tablename])) {
                               foreach ($rel[$tablename] as $otherfield) {
@@ -1598,7 +1603,7 @@ class CommonDBTM extends CommonGLPI {
                                     return false;
                                  }
                               }
-   
+
                            } else {
                               $otherfield = $rel[$tablename];
                               if (countElementsInTable(array($tablename, $othertable),
@@ -1609,7 +1614,7 @@ class CommonDBTM extends CommonGLPI {
                                  return false;
                               }
                            }
-   
+
                         }
                      }
                   }
