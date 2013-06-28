@@ -29,7 +29,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -1542,10 +1542,17 @@ function update0782to080() {
    $DB->queryOrDie($query, "0.80 change autoclose ticket in glpi_configs");
 
    $query = "UPDATE `glpi_entitydatas`
+             SET `autoclose_delay` = '-2'
+             WHERE `autoclose_delay` = '-1'";
+
+   $DB->queryOrDie($query, "0.80 change autoclose ticket in glpi_entitydatas for inherit");
+
+
+   $query = "UPDATE `glpi_entitydatas`
              SET `autoclose_delay` = '-1'
              WHERE `autoclose_delay` = '0'";
 
-   $DB->queryOrDie($query, "0.80 change autoclose ticket in glpi_entitydatas");
+   $DB->queryOrDie($query, "0.80 change autoclose ticket in glpi_entitydatas for not active");
 
 
    // must always be at the end
