@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-06-25 11:56+0200\n"
-"PO-Revision-Date: 2013-06-20 17:03+0000\n"
+"PO-Revision-Date: 2013-06-27 20:12+0000\n"
 "Last-Translator: balucha <balucha@horizon.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
@@ -2964,7 +2964,7 @@ msgstr "%s pridal dodatok"
 #: front/ticketfollowup.form.php:57
 #, php-format
 msgid "%s approves or refuses a solution"
-msgstr ""
+msgstr "%s schválil alebo zamietol riešenie"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:67
@@ -3410,7 +3410,7 @@ msgstr "%1$s/%2$s"
 
 #: inc/authldap.class.php:258 inc/authldap.class.php:326
 msgid "Successful importation"
-msgstr ""
+msgstr "Úspešný import"
 
 #: inc/authldap.class.php:396
 msgid "Preconfiguration"
@@ -5970,7 +5970,7 @@ msgstr "Počet desatinných miest "
 
 #: inc/config.class.php:238
 msgid "Default chart format"
-msgstr "Prednastavený formát grafu"
+msgstr "Východzí formát grafu"
 
 #: inc/config.class.php:244
 msgid "Dynamic display"
@@ -8138,7 +8138,7 @@ msgstr "Upozornenia o expirovaných licenciách"
 
 #: inc/entity.class.php:588 inc/entity.class.php:1480
 msgid "Send license alarms before"
-msgstr ""
+msgstr "Poslať vopred upozornenia o končiacich licenciách"
 
 #: inc/entity.class.php:595 inc/entity.class.php:1376
 msgid "Alarms on contracts"
@@ -8146,7 +8146,7 @@ msgstr "Upozornenia o zmluvách"
 
 #: inc/entity.class.php:602 inc/entity.class.php:1401
 msgid "Send contract alarms before"
-msgstr ""
+msgstr "Poslať vopred upozornenia o končiacich zmluvách"
 
 #: inc/entity.class.php:609 inc/entity.class.php:1421
 #: inc/infocom.class.php:1129 inc/infocom.class.php:1527
@@ -8156,7 +8156,7 @@ msgstr "Upozornenia na finančných a administratívnych informáciách"
 
 #: inc/entity.class.php:616 inc/entity.class.php:1447
 msgid "Send financial and administrative information alarms before"
-msgstr ""
+msgstr "Poslať vopred upozornenia o finančných a administratívnych informáciach"
 
 #: inc/entity.class.php:623 inc/entity.class.php:1501
 #: inc/reservationitem.class.php:409
@@ -8222,11 +8222,11 @@ msgstr[2] "Šablóny požiadaviek"
 
 #: inc/entity.class.php:739
 msgid "Default value for alarms on contracts"
-msgstr ""
+msgstr "Východzia hodnota upozornení pri zmluvách"
 
 #: inc/entity.class.php:746
 msgid "Default value for alarms on financial and administrative information"
-msgstr ""
+msgstr "Východzia hodnota upozornení pri finančných a administratívnych informáciách"
 
 #: inc/entity.class.php:753 inc/entity.class.php:1314
 msgid "Default threshold for cartridges count"
@@ -9755,11 +9755,11 @@ msgstr ""
 
 #: inc/migration.class.php:194
 msgid "default_value must be 0 or 1"
-msgstr ""
+msgstr "default_value musí byť 0 alebo 1"
 
 #: inc/migration.class.php:229
 msgid "default_value must be numeric"
-msgstr ""
+msgstr "default_value musí byť číslo"
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
@@ -11465,7 +11465,7 @@ msgstr "Zobraziť priradené úlohy (osobné + skupinové)"
 
 #: inc/profile.class.php:983 inc/profile.class.php:1763
 msgid "See all tickets"
-msgstr ""
+msgstr "Zobraziť všetky problémy"
 
 #: inc/profile.class.php:991 inc/profile.class.php:1773
 msgid "See all followups and tasks (public and private)"
@@ -11473,7 +11473,7 @@ msgstr "Zobraziť všetky poznatky a úlohy (verejné a súkromné)"
 
 #: inc/profile.class.php:999 inc/profile.class.php:1788
 msgid "See personnal planning"
-msgstr ""
+msgstr "Zobraziť osobné plánovanie"
 
 #: inc/profile.class.php:1002 inc/profile.class.php:1793
 msgid "See schedule of people in my groups"
@@ -11481,7 +11481,7 @@ msgstr "Zobraziť plánovanie ľudí v mojej skupine"
 
 #: inc/profile.class.php:1005 inc/profile.class.php:1798
 msgid "See all plannings"
-msgstr ""
+msgstr "Zobraziť všetky plánovania"
 
 #: inc/profile.class.php:1013 inc/profile.class.php:1909
 msgid "See all problems"
@@ -11489,7 +11489,7 @@ msgstr "Zobraziť všetky problémy"
 
 #: inc/profile.class.php:1016 inc/profile.class.php:1904
 msgid "See problems (author)"
-msgstr ""
+msgstr "Zobraziť problémy (autor)"
 
 #: inc/profile.class.php:1019 inc/profile.class.php:1914
 msgid "Update all problems"

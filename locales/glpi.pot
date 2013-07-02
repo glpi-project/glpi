@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-25 11:56+0200\n"
+"POT-Creation-Date: 2013-07-02 08:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgstr ""
 
 #: index.php:121 ajax/dropdownMassiveActionAuthMethods.php:66
 #: ajax/dropdownMassiveActionField.php:54 inc/authldap.class.php:1148
-#: inc/commondbtm.class.php:2970 inc/html.class.php:2073
+#: inc/commondbtm.class.php:2975 inc/html.class.php:2073
 #: inc/ticket.class.php:1739 inc/user.class.php:2201 install/update.php:412
 #: install/update.php:427
 msgid "Post"
@@ -92,10 +92,10 @@ msgstr ""
 #: ajax/dropdownValue.php:372 ajax/dropdownValue.php:507
 #: ajax/dropdownValue.php:516 ajax/private_public.php:54 front/rule.php:47
 #: inc/cartridge.class.php:818 inc/cartridgeitem.class.php:476
-#: inc/cartridgeitem.class.php:478 inc/commondbtm.class.php:2706
-#: inc/commondbtm.class.php:2710 inc/commondbtm.class.php:2716
-#: inc/commondbtm.class.php:2788 inc/commondbtm.class.php:3760
-#: inc/commondbtm.class.php:3766 inc/commonitilobject.class.php:1468
+#: inc/cartridgeitem.class.php:478 inc/commondbtm.class.php:2711
+#: inc/commondbtm.class.php:2715 inc/commondbtm.class.php:2721
+#: inc/commondbtm.class.php:2793 inc/commondbtm.class.php:3765
+#: inc/commondbtm.class.php:3771 inc/commonitilobject.class.php:1468
 #: inc/commonitiltask.class.php:811 inc/computer_softwarelicense.class.php:462
 #: inc/computer_softwareversion.class.php:419 inc/consumable.class.php:645
 #: inc/contract.class.php:354 inc/contract.class.php:365
@@ -161,7 +161,7 @@ msgstr ""
 #: ajax/dropdownValue.php:367 ajax/dropdownValue.php:487
 #: ajax/dropdownValue.php:521 inc/cartridge.class.php:578
 #: inc/cartridgeitem.class.php:477 inc/change_item.class.php:199
-#: inc/commondbtm.class.php:2783 inc/commondbtm.class.php:4528
+#: inc/commondbtm.class.php:2788 inc/commondbtm.class.php:4533
 #: inc/commonitiltask.class.php:422 inc/computer.class.php:904
 #: inc/computer_item.class.php:491 inc/computer_softwarelicense.class.php:515
 #: inc/computer_softwareversion.class.php:516
@@ -188,7 +188,7 @@ msgstr ""
 #: inc/log.class.php:145 inc/log.class.php:149 inc/log.class.php:193
 #: inc/log.class.php:496 inc/log.class.php:507 inc/log.class.php:517
 #: inc/log.class.php:527 inc/log.class.php:537 inc/mailcollector.class.php:220
-#: inc/mailcollector.class.php:1284 inc/mailcollector.class.php:1292
+#: inc/mailcollector.class.php:1301 inc/mailcollector.class.php:1309
 #: inc/networkalias.class.php:311 inc/networkequipment.class.php:357
 #: inc/networkequipment.class.php:496 inc/networkport.class.php:677
 #: inc/networkport_vlan.class.php:180 inc/notificationevent.class.php:173
@@ -264,11 +264,11 @@ msgstr ""
 #: inc/auth.class.php:794 inc/auth.class.php:807 inc/authldap.class.php:600
 #: inc/budget.class.php:398 inc/budget.class.php:417
 #: inc/cartridgeitem.class.php:410 inc/cartridgeitem.class.php:413
-#: inc/change_item.class.php:212 inc/commondbtm.class.php:911
-#: inc/commondbtm.class.php:1150 inc/commondbtm.class.php:1328
-#: inc/commondbtm.class.php:1362 inc/commondbtm.class.php:1459
-#: inc/commondbtm.class.php:2638 inc/commondbtm.class.php:3673
-#: inc/commondbtm.class.php:3756 inc/commonitilobject.class.php:2664
+#: inc/change_item.class.php:212 inc/commondbtm.class.php:916
+#: inc/commondbtm.class.php:1155 inc/commondbtm.class.php:1333
+#: inc/commondbtm.class.php:1367 inc/commondbtm.class.php:1464
+#: inc/commondbtm.class.php:2643 inc/commondbtm.class.php:3678
+#: inc/commondbtm.class.php:3761 inc/commonitilobject.class.php:2664
 #: inc/commonitilobject.class.php:2904 inc/commonitiltask.class.php:765
 #: inc/commonitiltask.class.php:774 inc/config.class.php:986
 #: inc/config.class.php:1050 inc/contract.class.php:972
@@ -296,7 +296,7 @@ msgstr ""
 #: inc/log.class.php:468 inc/log.class.php:477 inc/log.class.php:486
 #: inc/log.class.php:495 inc/log.class.php:506 inc/log.class.php:516
 #: inc/log.class.php:526 inc/log.class.php:536
-#: inc/mailcollector.class.php:1283 inc/mailcollector.class.php:1291
+#: inc/mailcollector.class.php:1300 inc/mailcollector.class.php:1308
 #: inc/networkport.class.php:679 inc/networkportmigration.class.php:238
 #: inc/notificationmail.class.php:250 inc/notificationtarget.class.php:322
 #: inc/notificationtarget.class.php:344 inc/notificationtarget.class.php:713
@@ -392,8 +392,8 @@ msgstr[1] ""
 #: inc/cartridgeitem_printermodel.class.php:158 inc/change_item.class.php:134
 #: inc/change_problem.class.php:123 inc/change_problem.class.php:238
 #: inc/change_ticket.class.php:120 inc/change_ticket.class.php:231
-#: inc/commondbtm.class.php:1840 inc/commondbtm.class.php:2840
-#: inc/commondbtm.class.php:2844 inc/commondbtm.class.php:2864
+#: inc/commondbtm.class.php:1845 inc/commondbtm.class.php:2845
+#: inc/commondbtm.class.php:2849 inc/commondbtm.class.php:2869
 #: inc/commonitiltask.class.php:1142 inc/commontreedropdown.class.php:398
 #: inc/computer_softwarelicense.class.php:380
 #: inc/computer_softwareversion.class.php:750
@@ -536,7 +536,7 @@ msgstr ""
 
 #: ajax/private_public.php:68 ajax/subvisibility.php:58 ajax/visibility.php:75
 #: inc/authldap.class.php:1688 inc/budget.class.php:241
-#: inc/commondbtm.class.php:2066 inc/commondropdown.class.php:461
+#: inc/commondbtm.class.php:2071 inc/commondropdown.class.php:461
 #: inc/commontreedropdown.class.php:599 inc/contact.class.php:401
 #: inc/contract.class.php:674 inc/document.class.php:853
 #: inc/fieldunicity.class.php:344 inc/infocom.class.php:1539
@@ -596,7 +596,7 @@ msgstr ""
 #: inc/cartridgeitem.class.php:329 inc/change.class.php:473
 #: inc/change_item.class.php:155 inc/change_problem.class.php:148
 #: inc/change_problem.class.php:257 inc/change_ticket.class.php:144
-#: inc/commondbtm.class.php:3702 inc/commondropdown.class.php:453
+#: inc/commondbtm.class.php:3707 inc/commondropdown.class.php:453
 #: inc/commontreedropdown.class.php:412 inc/commontreedropdown.class.php:591
 #: inc/computer.class.php:860 inc/computer_item.class.php:481
 #: inc/computer_item.class.php:617 inc/computer_softwarelicense.class.php:279
@@ -891,10 +891,10 @@ msgstr ""
 
 #: front/backup.php:614 front/backup.php:663 inc/bookmark.class.php:260
 #: inc/cartridge.class.php:513 inc/cartridge.class.php:755
-#: inc/commondbtm.class.php:1862 inc/commondbtm.class.php:1870
-#: inc/commondbtm.class.php:2853 inc/commondbtm.class.php:2857
-#: inc/commondbtm.class.php:2870 inc/commondbtm.class.php:3381
-#: inc/commondbtm.class.php:3405 inc/commondbtm.class.php:4535
+#: inc/commondbtm.class.php:1867 inc/commondbtm.class.php:1875
+#: inc/commondbtm.class.php:2858 inc/commondbtm.class.php:2862
+#: inc/commondbtm.class.php:2875 inc/commondbtm.class.php:3386
+#: inc/commondbtm.class.php:3410 inc/commondbtm.class.php:4540
 #: inc/commonitilobject.class.php:2065 inc/commonitilobject.class.php:2106
 #: inc/commonitilobject.class.php:2682
 #: inc/computer_softwarelicense.class.php:447
@@ -1646,7 +1646,7 @@ msgctxt "button"
 msgid "Search"
 msgstr ""
 
-#: front/find_num.php:91 inc/commondbtm.class.php:2611
+#: front/find_num.php:91 inc/commondbtm.class.php:2616
 #: inc/computer.class.php:471 inc/computer.class.php:803
 #: inc/config.class.php:402 inc/monitor.class.php:246
 #: inc/monitor.class.php:477 inc/networkequipment.class.php:283
@@ -1673,7 +1673,7 @@ msgstr ""
 #: inc/budget.class.php:203 inc/cartridge.class.php:537
 #: inc/cartridge.class.php:775 inc/cartridgeitem.class.php:275
 #: inc/change.class.php:406 inc/commondbrelation.class.php:276
-#: inc/commondbtm.class.php:3700 inc/commondropdown.class.php:441
+#: inc/commondbtm.class.php:3705 inc/commondropdown.class.php:441
 #: inc/commontreedropdown.class.php:574 inc/computer.class.php:724
 #: inc/computer_softwarelicense.class.php:61 inc/consumable.class.php:498
 #: inc/consumableitem.class.php:222 inc/contact.class.php:308
@@ -1702,8 +1702,8 @@ msgid "ID"
 msgstr ""
 
 #: front/find_num.php:95 inc/blacklist.class.php:215 inc/budget.class.php:291
-#: inc/change_item.class.php:157 inc/commondbtm.class.php:2560
-#: inc/commondbtm.class.php:3701 inc/computer.class.php:465
+#: inc/change_item.class.php:157 inc/commondbtm.class.php:2565
+#: inc/commondbtm.class.php:3706 inc/computer.class.php:465
 #: inc/computer.class.php:782 inc/computer_item.class.php:482
 #: inc/computer_item.class.php:618 inc/computer_softwarelicense.class.php:486
 #: inc/computer_softwareversion.class.php:476
@@ -1730,7 +1730,7 @@ msgid "Serial number"
 msgstr ""
 
 #: front/find_num.php:96 inc/budget.class.php:292
-#: inc/change_item.class.php:158 inc/commondbtm.class.php:2565
+#: inc/change_item.class.php:158 inc/commondbtm.class.php:2570
 #: inc/computer.class.php:475 inc/computer.class.php:787
 #: inc/computer_item.class.php:483 inc/computer_item.class.php:619
 #: inc/computer_softwarelicense.class.php:489
@@ -1856,7 +1856,7 @@ msgid "Import new users"
 msgstr ""
 
 #: front/mailcollector.php:43 inc/html.class.php:1980
-#: inc/mailcollector.class.php:77 inc/mailcollector.class.php:1553
+#: inc/mailcollector.class.php:77 inc/mailcollector.class.php:1570
 msgid "Receiver"
 msgid_plural "Receivers"
 msgstr[0] ""
@@ -2045,7 +2045,7 @@ msgstr ""
 #: inc/budget.class.php:197 inc/budget.class.php:290
 #: inc/calendar_holiday.class.php:131 inc/cartridgeitem.class.php:182
 #: inc/cartridgeitem.class.php:269 inc/change_item.class.php:156
-#: inc/commondbtm.class.php:2812 inc/commondevice.class.php:67
+#: inc/commondbtm.class.php:2817 inc/commondevice.class.php:67
 #: inc/commondropdown.class.php:164 inc/commondropdown.class.php:435
 #: inc/commontreedropdown.class.php:386 inc/commontreedropdown.class.php:410
 #: inc/commontreedropdown.class.php:580 inc/computer.class.php:407
@@ -2119,7 +2119,7 @@ msgstr ""
 
 #: front/report.contract.list.php:120 front/report.year.list.php:132
 #: front/stat.graph.php:135 front/stat.location.php:91
-#: front/stat.tracking.php:94 inc/commondbtm.class.php:2580
+#: front/stat.tracking.php:94 inc/commondbtm.class.php:2585
 #: inc/computer.class.php:422 inc/computer_softwarelicense.class.php:493
 #: inc/computer_softwareversion.class.php:483 inc/config.class.php:405
 #: inc/db.function.php:1206 inc/dropdown.class.php:658
@@ -2146,7 +2146,7 @@ msgid "Date of purchase"
 msgstr ""
 
 #: front/report.contract.list.php:122 front/report.infocom.php:128
-#: front/report.year.list.php:134 inc/commondbtm.class.php:2623
+#: front/report.year.list.php:134 inc/commondbtm.class.php:2628
 #: inc/infocom.class.php:535 inc/infocom.class.php:1318
 #: inc/search.class.php:4144
 msgid "Warranty expiration date"
@@ -2612,7 +2612,7 @@ msgstr[1] ""
 
 #: front/stat.graph.php:101 front/stat.graph.php:108
 #: inc/authldap.class.php:1305 inc/authldap.class.php:1357
-#: inc/authldap.class.php:3052 inc/commondbtm.class.php:2588
+#: inc/authldap.class.php:3052 inc/commondbtm.class.php:2593
 #: inc/commonitilactor.class.php:175 inc/commonitilobject.class.php:2567
 #: inc/commonitilobject.class.php:2713 inc/computer.class.php:486
 #: inc/computer.class.php:813 inc/computer_softwarelicense.class.php:502
@@ -2668,7 +2668,7 @@ msgstr ""
 #: front/stat.graph.php:158 front/stat.graph.php:166
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
 #: inc/authldap.class.php:1682 inc/authldap.class.php:3053
-#: inc/commondbtm.class.php:2597 inc/commonitilobject.class.php:2585
+#: inc/commondbtm.class.php:2602 inc/commonitilobject.class.php:2585
 #: inc/commonitilobject.class.php:2714 inc/computer.class.php:498
 #: inc/computer.class.php:819 inc/computer_softwarelicense.class.php:499
 #: inc/computer_softwareversion.class.php:489 inc/config.class.php:404
@@ -2856,7 +2856,7 @@ msgstr ""
 
 #: front/stat.tracking.php:100 inc/cartridgeitem.class.php:265
 #: inc/change.class.php:389 inc/commondbrelation.class.php:272
-#: inc/commondbtm.class.php:2808 inc/commondevice.class.php:63
+#: inc/commondbtm.class.php:2813 inc/commondevice.class.php:63
 #: inc/commondropdown.class.php:431 inc/commonitiltask.class.php:431
 #: inc/commontreedropdown.class.php:564 inc/computer.class.php:714
 #: inc/computer_softwarelicense.class.php:57 inc/consumableitem.class.php:212
@@ -3249,7 +3249,7 @@ msgstr ""
 #: inc/authmail.class.php:128 inc/authmail.class.php:181
 #: inc/budget.class.php:132 inc/budget.class.php:230
 #: inc/cartridgeitem.class.php:209 inc/cartridgeitem.class.php:318
-#: inc/commondbtm.class.php:2632 inc/commondevice.class.php:78
+#: inc/commondbtm.class.php:2637 inc/commondevice.class.php:78
 #: inc/commondropdown.class.php:176 inc/commondropdown.class.php:447
 #: inc/commontreedropdown.class.php:419 inc/commontreedropdown.class.php:585
 #: inc/computer.class.php:517 inc/computer.class.php:792
@@ -3789,13 +3789,13 @@ msgstr ""
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #. TRANS: %1$s is the itemtype, %2$d is the id of the item
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-#: inc/bookmark.class.php:219 inc/commondbtm.class.php:903
-#: inc/commondbtm.class.php:1139 inc/commondbtm.class.php:2049
+#: inc/bookmark.class.php:219 inc/commondbtm.class.php:908
+#: inc/commondbtm.class.php:1144 inc/commondbtm.class.php:2054
 #, php-format
 msgid "%1$s - ID %2$d"
 msgstr ""
 
-#: inc/bookmark.class.php:221 inc/commondbtm.class.php:2046
+#: inc/bookmark.class.php:221 inc/commondbtm.class.php:2051
 #: inc/knowbaseitem.class.php:497 inc/knowbaseitem.class.php:519
 msgid "New item"
 msgstr ""
@@ -3874,7 +3874,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/budget.class.php:246 inc/cartridgeitem.class.php:323
-#: inc/change.class.php:529 inc/commondbtm.class.php:3972
+#: inc/change.class.php:529 inc/commondbtm.class.php:3977
 #: inc/commonglpi.class.php:182 inc/computer.class.php:797
 #: inc/consumableitem.class.php:270 inc/contact.class.php:388
 #: inc/contract.class.php:658 inc/document.class.php:836
@@ -3930,7 +3930,7 @@ msgstr[1] ""
 #: inc/budget.class.php:442 inc/calendar_holiday.class.php:143
 #: inc/change_item.class.php:230 inc/change_problem.class.php:158
 #: inc/change_problem.class.php:267 inc/change_ticket.class.php:153
-#: inc/change_ticket.class.php:263 inc/commondbtm.class.php:3871
+#: inc/change_ticket.class.php:263 inc/commondbtm.class.php:3876
 #: inc/computerdisk.class.php:255 inc/computer_softwarelicense.class.php:461
 #: inc/computer_softwareversion.class.php:425
 #: inc/computer_softwareversion.class.php:696
@@ -4056,7 +4056,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANS: select action 'update' (before doing it)
-#: inc/cartridge.class.php:77 inc/commondbtm.class.php:3391
+#: inc/cartridge.class.php:77 inc/commondbtm.class.php:3396
 #: inc/rule.class.php:2218
 msgctxt "button"
 msgid "Update"
@@ -4114,7 +4114,7 @@ msgstr ""
 msgid "No cartridge"
 msgstr ""
 
-#: inc/cartridge.class.php:515 inc/commondbtm.class.php:3396
+#: inc/cartridge.class.php:515 inc/commondbtm.class.php:3401
 #: inc/consumable.class.php:468 inc/infocom.class.php:933
 msgid "Enable the financial and administrative information"
 msgstr ""
@@ -4262,7 +4262,7 @@ msgid "Reference"
 msgstr ""
 
 #: inc/cartridgeitem.class.php:202 inc/cartridgeitem.class.php:299
-#: inc/commondbtm.class.php:2605 inc/computer.class.php:433
+#: inc/commondbtm.class.php:2610 inc/computer.class.php:433
 #: inc/computer.class.php:847 inc/consumableitem.class.php:148
 #: inc/consumableitem.class.php:246 inc/itilcategory.class.php:62
 #: inc/itilcategory.class.php:118 inc/monitor.class.php:210
@@ -4477,7 +4477,7 @@ msgid "Description"
 msgstr ""
 
 #: inc/change.class.php:412 inc/change.class.php:833
-#: inc/commondbtm.class.php:2572 inc/commonitiltask.class.php:937
+#: inc/commondbtm.class.php:2577 inc/commonitiltask.class.php:937
 #: inc/computer.class.php:416 inc/computer.class.php:742
 #: inc/computer_softwarelicense.class.php:496
 #: inc/computer_softwareversion.class.php:486
@@ -4746,29 +4746,29 @@ msgstr ""
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
 msgstr ""
 
-#: inc/commondbtm.class.php:911
+#: inc/commondbtm.class.php:916
 msgid "Item successfully added"
 msgstr ""
 
-#: inc/commondbtm.class.php:1150
+#: inc/commondbtm.class.php:1155
 msgid "Item successfully updated"
 msgstr ""
 
-#: inc/commondbtm.class.php:1328
+#: inc/commondbtm.class.php:1333
 msgid "Item successfully deleted"
 msgstr ""
 
-#: inc/commondbtm.class.php:1362
+#: inc/commondbtm.class.php:1367
 msgid "Item successfully purged"
 msgstr ""
 
-#: inc/commondbtm.class.php:1459
+#: inc/commondbtm.class.php:1464
 msgid "Item successfully restored"
 msgstr ""
 
 #. TRANS : means update / actualize
-#: inc/commondbtm.class.php:1843 inc/commondbtm.class.php:1853
-#: inc/commondbtm.class.php:1881 inc/commondbtm.class.php:3987
+#: inc/commondbtm.class.php:1848 inc/commondbtm.class.php:1858
+#: inc/commondbtm.class.php:1886 inc/commondbtm.class.php:3992
 #: inc/commonglpi.class.php:766 inc/commonitilactor.class.php:211
 #: inc/config.class.php:317 inc/config.class.php:446 inc/config.class.php:488
 #: inc/config.class.php:559 inc/config.class.php:701 inc/config.class.php:968
@@ -4786,24 +4786,24 @@ msgctxt "button"
 msgid "Save"
 msgstr ""
 
-#: inc/commondbtm.class.php:1859 inc/commondbtm.class.php:3382
+#: inc/commondbtm.class.php:1864 inc/commondbtm.class.php:3387
 #: inc/ticket.class.php:4492
 msgctxt "button"
 msgid "Restore"
 msgstr ""
 
-#: inc/commondbtm.class.php:1872 inc/ticket.class.php:4501
+#: inc/commondbtm.class.php:1877 inc/ticket.class.php:4501
 msgid "Confirm the final deletion?"
 msgstr ""
 
-#: inc/commondbtm.class.php:1874 inc/commondbtm.class.php:3403
+#: inc/commondbtm.class.php:1879 inc/commondbtm.class.php:3408
 #: inc/ticket.class.php:4504 inc/transfer.class.php:2978
 msgctxt "button"
 msgid "Put in dustbin"
 msgstr ""
 
 #. TRANS: %s is the template name
-#: inc/commondbtm.class.php:2039 inc/computer.class.php:579
+#: inc/commondbtm.class.php:2044 inc/computer.class.php:579
 #: inc/monitor.class.php:337 inc/networkequipment.class.php:367
 #: inc/peripheral.class.php:301 inc/phone.class.php:341
 #: inc/printer.class.php:467 inc/software.class.php:267
@@ -4811,34 +4811,34 @@ msgstr ""
 msgid "Created from the template %s"
 msgstr ""
 
-#: inc/commondbtm.class.php:2043
+#: inc/commondbtm.class.php:2048
 msgid "Template name"
 msgstr ""
 
-#: inc/commondbtm.class.php:2071
+#: inc/commondbtm.class.php:2076
 msgid "You are not allowed to change the visibility flag for child entities."
 msgstr ""
 
-#: inc/commondbtm.class.php:2076
+#: inc/commondbtm.class.php:2081
 msgid "Can't change this attribute. It's inherited from its parent."
 msgstr ""
 
-#: inc/commondbtm.class.php:2080
+#: inc/commondbtm.class.php:2085
 msgid "Flag change forbidden. Linked items found."
 msgstr ""
 
-#: inc/commondbtm.class.php:2084
+#: inc/commondbtm.class.php:2089
 msgid "Change visibility in child entities"
 msgstr ""
 
-#: inc/commondbtm.class.php:2555 inc/commontreedropdown.class.php:568
+#: inc/commondbtm.class.php:2560 inc/commontreedropdown.class.php:568
 #: inc/db.function.php:486 inc/entity.class.php:424
 #: inc/notificationtargetcommonitilobject.class.php:883
 msgid "Complete name"
 msgstr ""
 
 #. TRANS: Number of the alternate username
-#: inc/commondbtm.class.php:2616 inc/computer.class.php:461
+#: inc/commondbtm.class.php:2621 inc/computer.class.php:461
 #: inc/computer.class.php:808 inc/monitor.class.php:236
 #: inc/monitor.class.php:482 inc/networkequipment.class.php:273
 #: inc/networkequipment.class.php:457
@@ -4850,72 +4850,72 @@ msgstr ""
 msgid "Alternate username number"
 msgstr ""
 
-#: inc/commondbtm.class.php:3411
+#: inc/commondbtm.class.php:3416
 msgctxt "button"
 msgid "Add a document"
 msgstr ""
 
-#: inc/commondbtm.class.php:3412
+#: inc/commondbtm.class.php:3417
 msgctxt "button"
 msgid "Remove a document"
 msgstr ""
 
-#: inc/commondbtm.class.php:3418
+#: inc/commondbtm.class.php:3423
 msgctxt "button"
 msgid "Add a contract"
 msgstr ""
 
-#: inc/commondbtm.class.php:3419
+#: inc/commondbtm.class.php:3424
 msgctxt "button"
 msgid "Remove a contract"
 msgstr ""
 
-#: inc/commondbtm.class.php:3673
+#: inc/commondbtm.class.php:3678
 msgid "At least one field has an incorrect value"
 msgstr ""
 
-#: inc/commondbtm.class.php:3721
+#: inc/commondbtm.class.php:3726
 #, php-format
 msgid "Impossible record for %s"
 msgstr ""
 
-#: inc/commondbtm.class.php:3724
+#: inc/commondbtm.class.php:3729
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
 msgstr ""
 
-#: inc/commondbtm.class.php:3727
+#: inc/commondbtm.class.php:3732
 msgid "Other item exist"
 msgstr ""
 
-#: inc/commondbtm.class.php:3766
+#: inc/commondbtm.class.php:3771
 msgid "Item in the dustbin"
 msgstr ""
 
 #. TRANS: %1$s is the user login, %2$s the message
-#: inc/commondbtm.class.php:3892
+#: inc/commondbtm.class.php:3897
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr ""
 
-#: inc/commondbtm.class.php:4223 inc/entity.class.php:1389
+#: inc/commondbtm.class.php:4228 inc/entity.class.php:1389
 #: inc/entity.class.php:1434 inc/search.class.php:4725 inc/user.class.php:2432
 msgid "Default value"
 msgstr ""
 
-#: inc/commondbtm.class.php:4517
+#: inc/commondbtm.class.php:4522
 msgid "Choose a template"
 msgstr ""
 
-#: inc/commondbtm.class.php:4519
+#: inc/commondbtm.class.php:4524
 msgid "Blank Template"
 msgstr ""
 
-#: inc/commondbtm.class.php:4522
+#: inc/commondbtm.class.php:4527
 msgid "Templates"
 msgstr ""
 
-#: inc/commondbtm.class.php:4549
+#: inc/commondbtm.class.php:4554
 msgid "Add a template..."
 msgstr ""
 
@@ -5706,7 +5706,7 @@ msgstr ""
 
 #. TRANS: %s is a size
 #: inc/computerdisk.class.php:272 inc/computerdisk.class.php:274
-#: inc/mailcollector.class.php:1578
+#: inc/mailcollector.class.php:1595
 #, php-format
 msgid "%s Mio"
 msgstr ""
@@ -8761,7 +8761,7 @@ msgstr ""
 msgid "%1$d on %2$d"
 msgstr ""
 
-#: inc/includes.php:163 inc/includes.php:175
+#: inc/includes.php:171 inc/includes.php:183
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -9491,44 +9491,44 @@ msgstr ""
 msgid "From %s"
 msgstr ""
 
-#: inc/mailcollector.class.php:1283
+#: inc/mailcollector.class.php:1300
 msgid "Too large attached file"
 msgstr ""
 
-#: inc/mailcollector.class.php:1291
+#: inc/mailcollector.class.php:1308
 msgid "Invalid attached file"
 msgstr ""
 
 #. TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
-#: inc/mailcollector.class.php:1387
+#: inc/mailcollector.class.php:1404
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
 msgstr ""
 
-#: inc/mailcollector.class.php:1407
+#: inc/mailcollector.class.php:1424
 msgid "Retrieve email (Mails receivers)"
 msgstr ""
 
-#: inc/mailcollector.class.php:1408
+#: inc/mailcollector.class.php:1425
 msgid "Number of emails to retrieve"
 msgstr ""
 
-#: inc/mailcollector.class.php:1525
+#: inc/mailcollector.class.php:1542
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
 msgstr ""
 
-#: inc/mailcollector.class.php:1536
+#: inc/mailcollector.class.php:1553
 msgid "List of not imported emails"
 msgstr ""
 
-#: inc/mailcollector.class.php:1548
+#: inc/mailcollector.class.php:1565
 #, php-format
 msgid "Receivers in error: %s"
 msgstr ""
 
-#: inc/mailcollector.class.php:1576
+#: inc/mailcollector.class.php:1593
 msgid "No import"
 msgstr ""
 
