@@ -2804,10 +2804,11 @@ class Transfer extends CommonDBTM {
          // delete devices
          case 0 :
             foreach ($this->DEVICES_TYPES as $type) {
-               $table = getTableForItemType('Computer_'.$type);
+               $table = getTableForItemType('Item_'.$type);
                $query = "DELETE
                          FROM `$table`
-                         WHERE `computers_id` = '$ID'";
+                         WHERE `itemtype` = '$itemtype'
+                           AND `items_id` = '$ID'";
                $result = $DB->query($query);
             }
 
