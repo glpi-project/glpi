@@ -225,7 +225,6 @@ class Consumable extends CommonDBTM {
                   }
                }
                if ($item = getItemForItemtype($input['give_itemtype'])) {
-                  $item->getFromDB($input["give_items_id"]);
                   Event::log($input["consumableitems_id"], "consumables", 5, "inventory",
                            //TRANS: %s is the user login
                            sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
