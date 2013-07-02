@@ -50,6 +50,16 @@ class RuleTicketCollection extends RuleCollection {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
+   static function canView() {
+
+      return (Session::haveRight('entity_rule_ticket', 'r')
+            || Session::haveRight('rule_ticket', 'r'));
+   }
+
+
    function canList() {
       return Session::haveRight("rule_ticket","r") || static::canView();
    }
