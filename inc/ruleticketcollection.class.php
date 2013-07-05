@@ -56,12 +56,12 @@ class RuleTicketCollection extends RuleCollection {
    static function canView() {
 
       return (Session::haveRight('entity_rule_ticket', 'r')
-            || Session::haveRight('rule_ticket', 'r'));
+              || Session::haveRight('rule_ticket', 'r'));
    }
 
 
    function canList() {
-      return Session::haveRight("rule_ticket","r") || static::canView();
+      return static::canView();
    }
 
 
@@ -92,7 +92,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::showChildrensTab()
    **/
    function showChildrensTab() {
-      return (Session::haveRight('rule_ticket','r')
+      return (Session::haveRight('entity_rule_ticket','r')
               && (count($_SESSION['glpiactiveentities']) > 1));
    }
 
