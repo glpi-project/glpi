@@ -1118,14 +1118,16 @@ class RuleCollection extends CommonDBTM {
                               Dropdown::getDropdownName('glpi_entities',
                                                         $_SESSION['glpiactive_entity']));
          }
-         $title = _n('Rule', 'Rules', 2);
-         if ($item->isRuleRecursive()) {
-            //TRANS: %s is the entity name
-            $title = sprintf(__('Local rules: %s'),
-                              Dropdown::getDropdownName('glpi_entities',
-                                                        $_SESSION['glpiactive_entity']));
+         if (Session::haveRight('entity_rule_ticket','r')) {
+            $title = _n('Rule', 'Rules', 2);
+            if ($item->isRuleRecursive()) {
+               //TRANS: %s is the entity name
+               $title = sprintf(__('Local rules: %s'),
+                                Dropdown::getDropdownName('glpi_entities',
+                                                          $_SESSION['glpiactive_entity']));
+            }
+            $ong[2] = $title;
          }
-         $ong[2] = $title;
          if ($item->showChildrensTab()) {
             $ong[3] = __('Rules applicable in the sub-entities');
          }
