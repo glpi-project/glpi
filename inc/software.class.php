@@ -417,7 +417,9 @@ class Software extends CommonDBTM {
 
       // Only use for History (not by search Engine)
       $tab                       = array();
-
+      
+      $tab['common']             = __('Characteristics');
+      
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
