@@ -1105,7 +1105,7 @@ function update0831to084() {
 
    $migration->displayWarning("You can delete ocs_* tables if you use OCS mode ONLY AFTER ocsinventoryng plugin installation.",
                               true);
-   $migration->displayWarning("You can delete ocs_* tables if you do not use OCS syncrhonisation.",
+   $migration->displayWarning("You can delete ocs_* tables if you do not use OCS synchronisation.",
                               true);
    
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
