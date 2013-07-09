@@ -941,7 +941,7 @@ class Document extends CommonDBTM {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
-                                                    $input['current_filename']);
+                                                    $input['current_filename']));
          } else {
             // TRANS: %1$s is the curent filename, %2$s is its directory
             Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
