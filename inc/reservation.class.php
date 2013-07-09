@@ -536,8 +536,8 @@ class Reservation extends CommonDBChild {
       echo "<th width='14%'>".__('Wednesday')."</th>";
       echo "<th width='14%'>".__('Thursday')."</th>";
       echo "<th width='14%'>".__('Friday')."</th>";
-      echo "<th width='14%'>".__('Sunday')."</th>";
       echo "<th width='14%'>".__('Saturday')."</th>";
+      echo "<th width='14%'>".__('Sunday')."</th>";
       echo "</tr>\n";
       echo "<tr class='tab_bg_3' >";
 
