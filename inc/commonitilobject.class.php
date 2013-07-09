@@ -4147,6 +4147,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $linkclass = new $this->userlinkclass();
       $linktable = $linkclass->getTable();
 
+      $showlink = User::canView();
+      
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
@@ -4175,7 +4177,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $tmp['id']   = $line["users_id"];
             $tmp['link'] = formatUserName($line["users_id"], $line["name"],
                                           $line["realname"],
-                                          $line["firstname"], 1);
+                                          $line["firstname"], $showlink);
             $tab[] = $tmp;
          }
       }
@@ -4194,6 +4196,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $tasktable = getTableForItemType($this->getType().'Task');
+      $showlink = User::canView();
 
 
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
@@ -4230,7 +4233,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $tmp['id']   = $line["users_id"];
             $tmp['link'] = formatUserName($line["users_id"], $line["name"],
                                           $line["realname"],
-                                          $line["firstname"], 1);
+                                          $line["firstname"], $showlink);
             $tab[] = $tmp;
          }
       }
@@ -4250,7 +4253,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $linkclass = new $this->supplierlinkclass();
       $linktable = $linkclass->getTable();
-
 
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
