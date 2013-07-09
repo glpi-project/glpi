@@ -50,7 +50,8 @@ if (isset($_POST["add"])) {
 
    $bookmark->add($_POST);
    $_GET["action"] = "load";
-
+   // Force popup on load.
+   $_SESSION["glpipopup"]["name"] = "load_bookmark";
 } else if (isset($_POST["update"])) {
    $bookmark->check($_POST["id"], 'w');   // Right to update the bookmark
    $bookmark->check(-1, 'w', $_POST);     // Right when entity change
