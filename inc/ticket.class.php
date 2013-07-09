@@ -1032,6 +1032,7 @@ class Ticket extends CommonITILObject {
                   $mandatory_missing = array();
                   $fieldsname        = $tt->getAllowedFieldsNames(true);
                   foreach ($tt->mandatory as $key => $val) {
+
                      // for title if mandatory (restore initial value)
                      if ($key == 'name') {
                         $input['name']                     = $title;
@@ -1054,7 +1055,14 @@ class Ticket extends CommonITILObject {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
+                     // For due_date : check also slas_id
+                     if ($key == 'due_date'
+                           && isset($input['slas_id']) && ($input['slas_id'] > 0)
+                           && isset($mandatory_missing['due_date'])) {
+                        unset($mandatory_missing['due_date']);
+                     }
                   }
+                  
                   if (count($mandatory_missing)) {
                      //TRANS: %s are the fields concerned
                      $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
