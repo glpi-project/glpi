@@ -1094,6 +1094,13 @@ class NetworkPort extends CommonDBChild {
       $tab[4]['name']           = __('MAC address');
       $tab[4]['datatype']       = 'mac';
 
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'instantiation_type';
+      $tab[5]['name']          = __('Network port type');
+      $tab[5]['datatype']      = 'itemtypename';
+      $tab[5]['itemtype_list'] = 'networkport_instantiations';
+      $tab[5]['massiveaction'] = false;
+      
       $tab[9]['table']          = 'glpi_netpoints';
       $tab[9]['field']          = 'name';
       $tab[9]['name']           = _n('Network outlet', 'Network outlets', 1);
