@@ -1151,7 +1151,7 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID,'w');
+      $canedit = Session::haveRight('reminder_public', 'w');
 
       echo "<div class='center'>";
 
@@ -1161,9 +1161,7 @@ class Reminder extends CommonDBTM {
          echo "<form name='remindervisibility_form$rand' id='remindervisibility_form$rand' ";
          echo " method='post' action='".Toolbox::getItemTypeFormURL('Reminder')."'>";
          echo "<input type='hidden' name='reminders_id' value='$ID'>";
-      }
 
-      if (Session::haveRight('reminder_public', 'w')) {
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
