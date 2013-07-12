@@ -1163,26 +1163,27 @@ class Reminder extends CommonDBTM {
          echo "<input type='hidden' name='reminders_id' value='$ID'>";
       }
 
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
-      echo "<tr class='tab_bg_2'><td width='100px'>";
+      if (Session::haveRight('reminder_public', 'w')) {
+         echo "<div class='firstbloc'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
+         echo "<tr class='tab_bg_2'><td width='100px'>";
 
-      $types = array( 'Group', 'Profile', 'User', 'Entity');
+         $types = array( 'Group', 'Profile', 'User', 'Entity');
 
-      $addrand = Dropdown::dropdownTypes('_type', '', $types);
-      $params  = array('type'  => '__VALUE__',
-                       'right' => 'reminder_public');
+         $addrand = Dropdown::dropdownTypes('_type', '', $types);
+         $params  = array('type'  => '__VALUE__',
+                          'right' => 'reminder_public');
 
-      Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/visibility.php",
-                                    $params);
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php",
+                                       $params);
 
-      echo "</td>";
-      echo "<td><span id='visibility$rand'></span>";
-      echo "</td></tr>";
-      echo "</table></div>";
-
+         echo "</td>";
+         echo "<td><span id='visibility$rand'></span>";
+         echo "</td></tr>";
+         echo "</table></div>";
+      }
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
