@@ -1139,7 +1139,7 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID,'w');
+      $canedit = Session::haveRight('reminder_public', 'w');
 
       echo "<div class='center'>";
 
