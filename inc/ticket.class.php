@@ -2152,7 +2152,7 @@ class Ticket extends CommonITILObject {
 
       $tab[27]['table']             = 'glpi_ticketfollowups';
       $tab[27]['field']             = 'count';
-      $tab[27]['name']              = "Number of followups";
+      $tab[27]['name']              = __('Number of followups');
       $tab[27]['forcegroupby']      = true;
       $tab[27]['usehaving']         = true;
       $tab[27]['datatype']          = 'number';
@@ -4479,6 +4479,8 @@ class Ticket extends CommonITILObject {
 
          Ticket_Ticket::displayLinkedTicketsTo($ID);
          echo "</td>";
+      } else {
+         echo "<td></td>";
       }
 
       echo "</tr>";
