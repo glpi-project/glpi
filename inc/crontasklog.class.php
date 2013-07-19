@@ -80,7 +80,7 @@ class CronTaskLog extends CommonDBTM{
                   $ong[2] = self::createTabEntry(_n('Log', 'Logs', 2),
                                                  countElementsInTable($this->getTable(),
                                                                       "crontasks_id
-                                                                        = '".$item->getID()."'"));
+                                                                        = '".$item->getID()."'  AND `state` = '".self::STATE_STOP."' "));
                } else {
                   $ong[2] = _n('Log', 'Logs', 2);
                }
