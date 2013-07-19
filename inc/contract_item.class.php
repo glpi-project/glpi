@@ -46,7 +46,8 @@ class Contract_Item extends CommonDBRelation{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
-
+   var $no_form_page = true;
+ 
    /**
     * Check right on an contract - overloaded to check max_links_allowed
     *
