@@ -506,23 +506,23 @@ class Stat {
             $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
                                                     $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
-            if (($nb_opened > 0)
-                && ($nb_solved > 0)) {
-               //TRANS: %2$d is the percentage. %% to display %
-               $nb_solved = sprintf(__('%1$s (%2$d%%)'), $nb_solved,
-                                    round($nb_solved*100/$nb_opened));
-            }
+//             if (($nb_opened > 0)
+//                 && ($nb_solved > 0)) {
+//                //TRANS: %2$d is the percentage. %% to display %
+//                $nb_solved = sprintf(__('%1$s (%2$d%%)'), $nb_solved,
+//                                     round($nb_solved*100/$nb_opened));
+//             }
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
 
             //le nombre d'intervention resolues - the number of solved intervention
             $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1,
                                                          $date2, $type, $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
-            if (($nb_solved > 0)
-                && ($nb_solved_late > 0)) {
-               $nb_solved_late = sprintf(__('%1$s (%2$d%%)'), $nb_solved_late,
-                                         round($nb_solved_late*100/$nb_solved));
-            }
+//             if (($nb_solved > 0)
+//                 && ($nb_solved_late > 0)) {
+//                $nb_solved_late = sprintf(__('%1$s (%2$d%%)'), $nb_solved_late,
+//                                          round($nb_solved_late*100/$nb_solved));
+//             }
             echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
 
             //le nombre d'intervention closes - the number of closed intervention
@@ -530,11 +530,11 @@ class Stat {
                                                     $type, $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
 
-            if (($nb_opened > 0)
-                && ($nb_closed > 0)) {
-               $nb_closed = sprintf(__('%1$s (%2$d%%)'), $nb_closed,
-                                    round($nb_closed*100/$nb_opened));
-            }
+//             if (($nb_opened > 0)
+//                 && ($nb_closed > 0)) {
+//                $nb_closed = sprintf(__('%1$s (%2$d%%)'), $nb_closed,
+//                                     round($nb_closed*100/$nb_opened));
+//             }
             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
 
             if ($itemtype =='Ticket') {
@@ -543,10 +543,10 @@ class Stat {
                                                                  $date1, $date2, $type,
                                                                  $value[$i]["id"], $value2);
                $nb_opensatisfaction = array_sum($opensatisfaction);
-               if ($nb_opensatisfaction > 0) {
-                  $nb_opensatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_opensatisfaction,
-                                                 round($nb_opensatisfaction*100/$nb_closed));
-               }
+//                if ($nb_opensatisfaction > 0) {
+//                   $nb_opensatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_opensatisfaction,
+//                                                  round($nb_opensatisfaction*100/$nb_closed));
+//                }
                echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
 
                //Satisfaction answer
@@ -555,10 +555,10 @@ class Stat {
                                                                    $date1, $date2, $type,
                                                                    $value[$i]["id"], $value2);
                $nb_answersatisfaction = array_sum($answersatisfaction);
-               if ($nb_answersatisfaction > 0) {
-                  $nb_answersatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_answersatisfaction,
-                                                   round($nb_answersatisfaction*100/$nb_opensatisfaction));
-               }
+//                if ($nb_answersatisfaction > 0) {
+//                   $nb_answersatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_answersatisfaction,
+//                                                    round($nb_answersatisfaction*100/$nb_opensatisfaction));
+//                }
                echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
 
                //Satisfaction rate
