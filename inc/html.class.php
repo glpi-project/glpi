@@ -335,11 +335,11 @@ class Html {
             if ($display_sec) {
                //TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
                //       %4$d number of seconds
-               return sprintf(__('%1$d days %2$d hours %3$d minutes %4$d seconds'),
+               return $out.sprintf(__('%1$d days %2$d hours %3$d minutes %4$d seconds'),
                               $units['day'], $units['hour'], $units['minute'], $units['second']);
             }
             //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
-            return sprintf(__('%1$d days %2$d hours %3$d minutes'),
+            return $out.sprintf(__('%1$d days %2$d hours %3$d minutes'),
                            $units['day'], $units['hour'], $units['minute']);
          }
       } else {
@@ -351,26 +351,26 @@ class Html {
       if ($units['hour'] > 0) {
          if ($display_sec) {
             //TRANS: %1$d number of hours, %2$d number of minutes, %3$d number of seconds
-            return sprintf(__('%1$d hours %2$d minutes %3$d seconds'),
+            return $out.sprintf(__('%1$d hours %2$d minutes %3$d seconds'),
                            $units['hour'], $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of hours, %2$d number of minutes
-         return sprintf(__('%1$d hours %2$d minutes'), $units['hour'], $units['minute']);
+         return $out.sprintf(__('%1$d hours %2$d minutes'), $units['hour'], $units['minute']);
       }
 
       if ($units['minute']>0) {
          if ($display_sec) {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
-            return sprintf(__('%1$d minutes %2$d seconds'), $units['minute'], $units['second']);
+            return $out.sprintf(__('%1$d minutes %2$d seconds'), $units['minute'], $units['second']);
          }
          //TRANS: %d number of minutes
-         return sprintf(_n('%d minute', '%d minutes', $units['minute']), $units['minute']);
+         return $out.sprintf(_n('%d minute', '%d minutes', $units['minute']), $units['minute']);
 
       }
 
       if ($display_sec) {
          //TRANS:  %d number of seconds
-         return sprintf(_n('%s second', '%s seconds', $units['second']), $units['second']);
+         return $out.sprintf(_n('%s second', '%s seconds', $units['second']), $units['second']);
       }
       return '';
    }
