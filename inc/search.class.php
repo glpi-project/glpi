@@ -2215,6 +2215,7 @@ class Search {
             break;
 
          case "glpi_problems.count" :
+         case "glpi_problemtasks.count" :
          case "glpi_tickets.count" :
          case "glpi_ticketfollowups.count" :
          case "glpi_tickettasks.count" :
