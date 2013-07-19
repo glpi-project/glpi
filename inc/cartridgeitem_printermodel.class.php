@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,6 +46,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    static public $itemtype_2          = 'PrinterModel';
    static public $items_id_2          = 'printermodels_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+
+   var $no_form_page = true;
+
 
 
    function getForbiddenStandardMassiveAction() {

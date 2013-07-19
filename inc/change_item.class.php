@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,6 +46,8 @@ class Change_Item extends CommonDBRelation{
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+
+   var $no_form_page = true;
 
 
    function getForbiddenStandardMassiveAction() {
