@@ -126,13 +126,14 @@ class RuleRight extends Rule {
       $output_src   = $output;
 
       if (count($this->actions)) {
+         $entity = array();
          foreach ($this->actions as $action) {
 
             switch ($action->fields["action_type"]) {
                case "assign" :
                   switch ($action->fields["field"]) {
                      case "entities_id" :
-                        $entity = $action->fields["value"];
+                        $entity[] = $action->fields["value"];
                         break;
 
                      case "profiles_id" :
@@ -160,7 +161,6 @@ class RuleRight extends Rule {
                      case "_affect_entity_by_tag" :
                      case "_affect_entity_by_domain" :
                      case "_affect_entity_by_completename" :
-                        $entity = array();
                         foreach ($this->regex_results as $regex_result) {
                            $res = RuleAction::getRegexResultById($action->fields["value"],
                                                                  $regex_result);
@@ -210,21 +210,17 @@ class RuleRight extends Rule {
       if ($continue) {
          //Nothing to be returned by the function :
          //Store in session the entity and/or right
-         if (($entity != '')
-             && ($right != '')) {
-            $output["_ldap_rules"]["rules_entities_rights"][] = array($entity, $right,
-                                                                      $is_recursive);
-         } else if ($entity != '') {
-
-            if (!is_array($entity)) {
-              $entities_array                            = array($entity, $is_recursive);
-              $output["_ldap_rules"]["rules_entities"][] = array($entities_array);
-
-            //If it comes from a regex with multiple results
+         if (count($entity)) {
+            if ($right != '') {
+               foreach ($entity as $entID) {
+                  $output["_ldap_rules"]["rules_entities_rights"][] = array($entID, $right,
+                                                                           $is_recursive);
+               }
             } else {
-               $output["_ldap_rules"]["rules_entities"][] = $entity;
+               foreach ($entity as $entID) {
+                  $output["_ldap_rules"]["rules_entities"][] = array($entID, $is_recursive);
+               }
             }
-
          } else if ($right != '') {
             $output["_ldap_rules"]["rules_rights"][] = $right;
          }
