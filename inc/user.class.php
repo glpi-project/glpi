@@ -743,7 +743,6 @@ class User extends CommonDBTM {
       global $DB;
 
       $return = false;
-
       if ((isset($this->fields['_ruleright_process'])
            || isset($this->input['_ruleright_process'])) // Add after a getFromLDAP
           && isset($this->fields["authtype"])
@@ -813,16 +812,14 @@ class User extends CommonDBTM {
             if ((count($rights) > 0)
                 && (count($entities) > 0)) {
                foreach ($rights as $right) {
-                  foreach ($entities as $entity_tab) {
-                     foreach ($entity_tab as $entity) {
-                        $affectation['entities_id']   = $entity[0];
-                        $affectation['profiles_id']   = $right;
-                        $affectation['users_id']      = $this->fields['id'];
-                        $affectation['is_recursive']  = $entity[1];
-                        $affectation['is_dynamic']    = 1;
+                  foreach ($entities as $entity) {
+                     $affectation['entities_id']   = $entity[0];
+                     $affectation['profiles_id']   = $right;
+                     $affectation['users_id']      = $this->fields['id'];
+                     $affectation['is_recursive']  = $entity[1];
+                     $affectation['is_dynamic']    = 1;
 
-                        $retrieved_dynamic_profiles[] = $affectation;
-                     }
+                     $retrieved_dynamic_profiles[] = $affectation;
                   }
                }
             }
