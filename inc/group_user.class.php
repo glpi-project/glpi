@@ -47,8 +47,6 @@ class Group_User extends CommonDBRelation{
 
    static public $logs_for_item_1     = false;
 
-   var $no_form_page = true;
-
 
 
    /**

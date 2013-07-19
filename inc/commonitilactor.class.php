@@ -42,7 +42,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
    static public $logs_for_item_2     = false;
 
-   var $no_form_page                  = true;
+
 
    // Requester
    const REQUESTER = 1;

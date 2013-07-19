@@ -44,8 +44,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static public $itemtype_2 = 'SoftwareLicense';
    static public $items_id_2 = 'softwarelicenses_id';
 
-   var $no_form_page = true;
-
 
 
    /**
