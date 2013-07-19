@@ -47,6 +47,9 @@ class Group_User extends CommonDBRelation{
 
    static public $logs_for_item_1     = false;
 
+   var $no_form_page = true;
+
+
 
    /**
     * @param $users_id
@@ -409,7 +412,7 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit) {
          self::showAddUserForm($group, $ids, $entityrestrict, $crit);
-      } 
+      }
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";

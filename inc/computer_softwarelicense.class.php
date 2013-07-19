@@ -40,8 +40,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    // From CommonDBRelation
    static public $itemtype_1 = 'Computer';
    static public $items_id_1 = 'computers_id';
+
    static public $itemtype_2 = 'SoftwareLicense';
    static public $items_id_2 = 'softwarelicenses_id';
+
+   var $no_form_page = true;
+
 
 
    /**
@@ -145,7 +149,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $res['ko']++;
             }
             break;
-            
+
          case "install" :
             $csl = new self();
             $csv = new Computer_SoftwareVersion();
@@ -161,7 +165,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                         } else {
                            $version = $sl->fields["softwareversions_id_buy"];
                         }
-                        
+
                         if ($version > 0) {
                            $params = array('computers_id'       => $csl->fields['computers_id'],
                                           'softwareversions_id' => $version);

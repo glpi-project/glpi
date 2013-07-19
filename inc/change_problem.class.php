@@ -47,6 +47,9 @@ class Change_Problem extends CommonDBRelation{
    static public $itemtype_2   = 'Problem';
    static public $items_id_2   = 'problems_id';
 
+   var $no_form_page = true;
+
+
 
    function getForbiddenStandardMassiveAction() {
 
