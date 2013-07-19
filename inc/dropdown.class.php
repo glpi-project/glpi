@@ -1487,7 +1487,7 @@ class Dropdown {
       $param['rand']            = mt_rand();
 
       if (is_array($options) && count($options)) {
-         if (!empty($options['value'])) {
+         if (strlen($options['value'])) {
             $options['values'] = array($options['value']);
             unset($options['value']);
          }
@@ -1495,7 +1495,6 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-
       if ($param['other'] !== false) {
          $other_select_option = $name . '_other_value';
          $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
