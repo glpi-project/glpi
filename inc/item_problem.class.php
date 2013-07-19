@@ -47,8 +47,6 @@ class Item_Problem extends CommonDBRelation{
    static public $items_id_2          = 'items_id';
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-   var $no_form_page = true;
-
 
 
    /**

@@ -78,6 +78,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /// If both items must be in viewable each other entities
    static public $check_entity_coherency = true;
 
+   var $no_form_page = true;
+
 
    /**
     * @since version 0.84

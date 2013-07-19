@@ -44,8 +44,6 @@ class Change_Ticket extends CommonDBRelation{
    static public $itemtype_2   = 'Ticket';
    static public $items_id_2   = 'tickets_id';
 
-   var $no_form_page = true;
-
 
 
    function getForbiddenStandardMassiveAction() {

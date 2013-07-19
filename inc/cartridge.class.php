@@ -51,7 +51,7 @@ class Cartridge extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype             = 'CartridgeItem';
    static public $items_id             = 'cartridgeitems_id';
-   var $no_form_page = true;
+
 
 
    /**
@@ -80,11 +80,11 @@ class Cartridge extends CommonDBChild {
       return false;
    }
 
-   
+
    static function getNameField() {
       return 'id';
    }
-   
+
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
    }
@@ -139,7 +139,7 @@ class Cartridge extends CommonDBChild {
       }
       return '';
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -167,7 +167,7 @@ class Cartridge extends CommonDBChild {
                }
             }
             break;
-            
+
          case "updatepages" :
             if (isset($input['pages'])) {
                foreach ($input["item"] as $key => $val) {
@@ -188,7 +188,7 @@ class Cartridge extends CommonDBChild {
                $res['ko']++;
             }
             break;
-            
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -277,7 +277,7 @@ class Cartridge extends CommonDBChild {
          if ($printer->getFromDB($this->getField("printers_id"))) {
             $toadd.= ", `pages` = '".$printer->fields['last_pages_counter']."' ";
          }
-      
+
          $query = "UPDATE`".$this->getTable()."`
                    SET `date_out` = '".date("Y-m-d")."'
                      $toadd
