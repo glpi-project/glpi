@@ -1160,7 +1160,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td>";
 
       //Use date
-      echo "<td> " . __('Start date') . " </td>";
+      echo "<td> " . __('Startup date') . " </td>";
       echo "<td>";
       $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
       Dropdown::showFromArray('autofill_use_date', $options,
