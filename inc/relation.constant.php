@@ -69,7 +69,7 @@ $RELATION = array("glpi_authldaps"
 //                                  'glpi_changes_tickets'  => 'changes_id',
 //                                  'glpi_changes_users'    => 'changes_id',
 //                                  'glpi_changetasks'      => 'changes_id'),
-// 
+//
 //                   "glpi_changetasks"
 //                         => array('glpi_changetasks'   => 'changetasks_id'),
 
@@ -242,6 +242,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_groups_reminders'  => 'groups_id',
                                  'glpi_groups_tickets'    => 'groups_id',
                                  'glpi_groups_users'      => 'groups_id',
+                                 'glpi_itilcategories'    => 'groups_id',
                                  'glpi_monitors'          => array('groups_id_tech', 'groups_id'),
                                  'glpi_networkequipments' => array('groups_id_tech', 'groups_id'),
                                  'glpi_peripherals'       => array('groups_id_tech', 'groups_id'),
@@ -546,6 +547,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_displaypreferences'  => 'users_id',
                                  'glpi_documents'           => 'users_id',
                                  'glpi_groups_users'        => 'users_id',
+                                 'glpi_itilcategories'      => 'users_id',
                                  'glpi_knowbaseitems'       => 'users_id',
                                  'glpi_monitors'            => array('users_id_tech', 'users_id'),
                                  'glpi_networkequipments'   => array('users_id_tech', 'users_id'),

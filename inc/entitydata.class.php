@@ -400,7 +400,7 @@ class EntityData extends CommonDBChild {
       }
 
       // Notification right applied
-      $canedit = Session::haveRight('entity', 'w') && Session::haveAccessToEntity($ID);
+      $canedit = Session::haveRight('infocom', 'w') && Session::haveAccessToEntity($ID);
 
       // Get data
       $entitydata = new EntityData();
