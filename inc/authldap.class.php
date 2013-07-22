@@ -2425,10 +2425,6 @@ class AuthLDAP extends CommonDBTM {
          $values[$key] = $value;
       }
 
-      if (isset($p['user_params']['user_dn'])) {
-         $values['user_dn'] = $p['user_params']['user_dn'];
-      }
-
       //By default authentify users by login
       //$authentification_value = '';
       $login_attr      = $values['search_parameters']['fields'][self::IDENTIFIER_LOGIN];
