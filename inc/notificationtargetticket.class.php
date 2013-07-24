@@ -68,18 +68,20 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    /**
     * @see NotificationTarget::validateSendTo()
    **/
-   function validateSendTo(array $infos, $notify_me=false) {
+   function validateSendTo($event, array $infos, $notify_me=false) {
+      // Always send notification for satisfaction : if send on ticket closure
+      if ($event != 'satisfaction') {
+         // Check global ones for notification to myself
+         if (!parent::validateSendTo($event, $infos, $notify_me)) {
+            return false;
+         }
 
-      // Check global ones for notification to myself
-      if (!parent::validateSendTo($infos, $notify_me)) {
-         return false;
-      }
-
-      // Private object and no right to see private items : do not send
-      if ($this->isPrivate()
-          && (!isset($infos['additionnaloption']['show_private'])
-              || !$infos['additionnaloption']['show_private'])) {
-         return false;
+         // Private object and no right to see private items : do not send
+         if ($this->isPrivate()
+            && (!isset($infos['additionnaloption']['show_private'])
+               || !$infos['additionnaloption']['show_private'])) {
+            return false;
+         }
       }
       return true;
    }

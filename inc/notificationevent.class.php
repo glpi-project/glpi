@@ -123,7 +123,6 @@ class NotificationEvent extends CommonDBTM {
                   as $data) {
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id = '.$data['id']);
-
             $notificationtarget->clearAddressesList();
 
             //Process more infos (for example for tickets)
@@ -151,7 +150,7 @@ class NotificationEvent extends CommonDBTM {
 
                foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
                   if ($label
-                      || $notificationtarget->validateSendTo($users_infos, $notify_me)) {
+                      || $notificationtarget->validateSendTo($event, $users_infos, $notify_me)) {
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
                         //If ther user's language is the same as the template's one

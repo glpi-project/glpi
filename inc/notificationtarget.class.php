@@ -125,6 +125,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
+    * @param $event     string   notification event
     * @param $infos     array    of destination of the notification
     * @param $notify_me boolean  notify me on my action ?
     *                            ($infos contains users_id to check if the target is me)
@@ -132,7 +133,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return true
    **/
-   function validateSendTo(array $infos, $notify_me=false) {
+   function validateSendTo($event, array $infos, $notify_me=false) {
       
       if (!$notify_me) {
          if (isset($infos['users_id'])
