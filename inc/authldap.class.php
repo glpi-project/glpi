@@ -1549,17 +1549,19 @@ class AuthLDAP extends CommonDBTM {
             $userfound = false;
             if (!empty($ldap_users[$user['name']])
                 || ($userfound = self::dnExistsInLdap($user_infos, $user['user_dn']))) {
-                  //If entry was modified or if script should synchronize all the users
-                  if ($userfound) {
-                     //Get user in DB with this dn
-                     $tmpuser->getFromDBByDn($user['user_dn']);
-                     $glpi_users[] = array('id'        => $user['id'],
-                                           'user'      => $userfound['name'],
-                                           'timestamp' => $user_infos[$userfound['name']]['timestamp'],
-                                           'date_sync' => $tmpuser->fields['date_sync'],
-                                           'dn'        => $user['user_dn']);
+               // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
+               // -> renaming case
+               if ($userfound) {
+                  //Get user in DB with this dn
+                  $tmpuser->getFromDBByDn($user['user_dn']);
+                  $glpi_users[] = array('id'        => $user['id'],
+                                        'user'      => $userfound['name'],
+                                        'timestamp' => $user_infos[$userfound['name']]['timestamp'],
+                                        'date_sync' => $tmpuser->fields['date_sync'],
+                                        'dn'        => $user['user_dn']);
+               //If entry was modified or if script should synchronize all the users
                } else if (($values['action'] == self::ACTION_ALL)
-                          || (($ldap_users[$user['name']] - strtotime($user['date_sync'])) > 0)) {
+                        || (($ldap_users[$user['name']] - strtotime($user['date_sync'])) > 0)) {
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $user['name'],
                                         'timestamp' => $user_infos[$user['name']]['timestamp'],
