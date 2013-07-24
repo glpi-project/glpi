@@ -4469,10 +4469,13 @@ class Search {
             $split = explode("$$$$",$data[$NAME.$num]);
             $out   = '';
             foreach ($split as $val) {
-               $status  = TicketValidation::getStatus($val);
-               $bgcolor = TicketValidation::getStatusColor($val);
-               $out    .= (empty($out)?'':'<br>').
-                          "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
+               if (!empty($val)) {
+                  $split2 = self::explodeWithID("$$", $val);
+                  $status  = TicketValidation::getStatus($split2[0]);
+                  $bgcolor = TicketValidation::getStatusColor($split2[0]);
+                  $out    .= (empty($out)?'':'<br>').
+                           "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
+               }
             }
             return $out;
 
