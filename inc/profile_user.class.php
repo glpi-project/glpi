@@ -59,6 +59,15 @@ class Profile_User extends CommonDBRelation {
    static public $disableAutoEntityForwarding   = true;
 
 
+
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
+   
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
