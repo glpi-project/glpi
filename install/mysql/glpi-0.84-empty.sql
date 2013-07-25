@@ -1713,8 +1713,6 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2013-05-28 09:51:14','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
-
 ### Dump table glpi_fieldblacklists
 
 DROP TABLE IF EXISTS `glpi_fieldblacklists`;
