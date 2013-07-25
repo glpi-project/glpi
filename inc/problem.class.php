@@ -1356,9 +1356,10 @@ class Problem extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'  width='".($colsize1+$colsize2)."%'>";
          $docnb = Document_Item::countForItem($this);
+         echo "<a href=\"".$this->getLinkURL()."&amp;forcetab=Document_Item$1\">";         
          //TRANS: %d is the document number
          echo sprintf(_n('%d associated document', '%d associated documents', $docnb), $docnb);
-         echo "</th>";
+         echo "</a></th>";
          echo "<td colspan='2'></td>";
          echo "</tr>";
       }
