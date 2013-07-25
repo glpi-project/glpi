@@ -4442,9 +4442,10 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<th colspan='2'>";
          $docnb = Document_Item::countForItem($this);
+         echo "<a href=\"".$this->getLinkURL()."&amp;forcetab=Document_Item$1\">";
          //TRANS: %d is the document number
          echo sprintf(_n('%d associated document', '%d associated documents', $docnb), $docnb);
-         echo "</th>";
+         echo "</a></th>";
       }
 
       if ($view_linked_tickets) {
