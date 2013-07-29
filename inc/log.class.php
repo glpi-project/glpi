@@ -575,8 +575,10 @@ class Log extends CommonDBTM {
                      break;
 
                   default :
-                     $data["old_value"] = $item->getValueToDisplay($searchopt, $data["old_value"]);
-                     $data["new_value"] = $item->getValueToDisplay($searchopt, $data["new_value"]);
+                     if ($item = getItemForItemtype($data["itemtype_link"])) {
+                        $data["old_value"] = $item->getValueToDisplay($searchopt, $data["old_value"]);
+                        $data["new_value"] = $item->getValueToDisplay($searchopt, $data["new_value"]);
+                     }
                      break;
                }
             }
