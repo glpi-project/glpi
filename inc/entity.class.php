@@ -1110,7 +1110,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Notification right applied
-      $canedit = Session::haveRight('entity', 'w') && Session::haveAccessToEntity($ID);
+      $canedit = Session::haveRight('infocom', 'w') && Session::haveAccessToEntity($ID);
 
       echo "<div class='spaced'>";
       if ($canedit) {
