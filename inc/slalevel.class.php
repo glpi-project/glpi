@@ -108,7 +108,7 @@ class SlaLevel extends RuleTicket {
                               'used'      => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
          echo "</td><td class='center'>".$LANG['common'][60]."&nbsp;: ";
-         Dropdown::showYesNo("is_active",array('value'=>1));
+         Dropdown::showYesNo("is_active",1);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
