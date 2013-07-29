@@ -123,7 +123,7 @@ class SlaLevel extends RuleTicket {
                                              => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
-         Dropdown::showYesNo("is_active");
+         Dropdown::showYesNo("is_active", 1);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
