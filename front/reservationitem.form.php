@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s retores an item'), $_SESSION["glpiname"]));
+              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["update"])) {
