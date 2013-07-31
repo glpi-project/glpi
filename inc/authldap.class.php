@@ -1145,7 +1145,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input class=submit type='submit' name='change_ldap_filter' value=\"".
-             __s('Post')."\"></td></tr>";
+             _sx('button','Post')."\"></td></tr>";
       echo "</table>";
       Html::closeForm();
       echo "</div>";
@@ -1361,7 +1361,7 @@ class AuthLDAP extends CommonDBTM {
             if ($_SESSION['ldap_import']['mode']) {
                echo "<th>".__('Last update in GLPI')."</th>";
             }
-            echo "</tr>";            
+            echo "</tr>";
             echo "</table>";
 
             $paramsma['ontop'] = false;

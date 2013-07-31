@@ -2195,7 +2195,8 @@ class User extends CommonDBTM {
                                              "/ajax/dropdownMassiveActionAuthMethods.php",
                                           $paramsmassaction);
             echo "<span id='show_massiveaction_field'><br><br>";
-            echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
+            echo "<input type='submit' name='massiveaction' class='submit' value='".
+                   _sx('button','Post')."'>";
             echo "</span>\n";
             return true;
 
