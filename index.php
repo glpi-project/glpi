@@ -118,7 +118,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "</fieldset>";
    echo '<p><span>';
-   echo '<input type="submit" name="submit" value="'.__s('Post').'" class="submit"/>';
+   echo '<input type="submit" name="submit" value="'._sx('button','Post').'" class="submit"/>';
    echo '</span></p>';
     if ($CFG_GLPI["use_mailing"]
        && countElementsInTable('glpi_notifications',

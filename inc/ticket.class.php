@@ -1062,7 +1062,7 @@ class Ticket extends CommonITILObject {
                         unset($mandatory_missing['due_date']);
                      }
                   }
-                  
+
                   if (count($mandatory_missing)) {
                      //TRANS: %s are the fields concerned
                      $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
@@ -1744,7 +1744,7 @@ class Ticket extends CommonITILObject {
             printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
             echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           __s('Post')."'>";
+                           _sx('button','Post')."'>";
             return true;
 
          case "submit_validation" :

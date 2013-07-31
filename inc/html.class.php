@@ -2070,7 +2070,7 @@ class Html {
          echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
          echo "<div id='boutonRecherche'>";
          echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/search.png' value='OK'
-                title=\"". __s('Post')."\"  alt=\"".__s('Post')."\"></div>";
+                title=\""._sx('button','Post')."\"  alt=\""._sx('button','Post')."\"></div>";
          echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch'
                                          value='". __s('Search')."' onfocus=\"this.value='';\">";
          echo "</div>";

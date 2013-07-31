@@ -403,13 +403,14 @@ function showLocationUpdateForm() {
       echo "<h4>".__('Locations update')."</h4>";
       echo "<p>".__('The new structure is hierarchical')."</p>";
       echo "<p>".__('Provide a delimiter in order to automate the new hierarchy generation.')."<br>";
-      echo __('You can also specify a root location which will include all the generated locations.')."</p>";
+      echo __('You can also specify a root location which will include all the generated locations.');
+      echo "</p>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
       echo "<p>".__('Delimiter')."&nbsp;".
             "<input type='text' name='car_sep' value='".$_POST['car_sep']."'></p>";
       echo "<p>".__('Root location').'&nbsp;'.
             "<input type='text' name='root' value='".$_POST['root']."'></p>";
-      echo "<input type='submit' class='submit' name='new_location' value=\"".__s('Post')."\">";
+      echo "<input type='submit' class='submit' name='new_location' value=\""._sx('button','Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       Html::closeForm();
       echo "</div>";
@@ -424,7 +425,8 @@ function showLocationUpdateForm() {
       echo "<p>".__("This is the new hierarchy. If it's complete approve it.")."</p>";
       echo "<div class='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-      echo "<input type='submit' class='submit' name='validate_location' value=\"".__s('Post')."\">";
+      echo "<input type='submit' class='submit' name='validate_location' value=\"".
+             _sx('button','Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</div>";
       Html::closeForm();
