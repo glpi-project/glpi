@@ -178,7 +178,7 @@ define("ERROR",1);
 // For plugins
 $PLUGIN_HOOKS     = array();
 $CFG_GLPI_PLUGINS = array();
-
+$LANG             = array();
 
 $CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
@@ -306,5 +306,4 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
                                      'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
                                      'use_flat_dropdowntree',);
-
 ?>
