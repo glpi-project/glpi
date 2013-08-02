@@ -309,6 +309,13 @@ class NotificationTemplate extends CommonDBTM {
       //Template processed
       $output = "";
 
+      // clean data for strtr
+      foreach ($data as $field=>$value) {
+         if (!is_array($value)) {
+            $cleandata[$field] = $value;
+         }
+      }
+
       //Remove all
       $string = Toolbox::unclean_cross_side_scripting_deep($string);
 
@@ -323,7 +330,7 @@ class NotificationTemplate extends CommonDBTM {
                 && isset($data[$tag_infos])
                 && is_array($data[$tag_infos])) {
 
-               $data_lang_foreach = $data;
+               $data_lang_foreach = $cleandata;
                unset($data_lang_foreach[$tag_infos]);
 
                //Manage FIRST & LAST statement
@@ -361,15 +368,9 @@ class NotificationTemplate extends CommonDBTM {
          }
       }
 
-      foreach ($data as $field=>$value) {
-         if (is_array($value)) {
-            unset($data[$field]);
-         }
-      }
-
       //Now process IF statements
-      $string = self::processIf($string, $data);
-      $string = strtr($string,$data);
+      $string = self::processIf($string, $cleandata);
+      $string = strtr($string, $cleandata);
 
       return $string;
    }
