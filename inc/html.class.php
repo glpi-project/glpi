@@ -2625,7 +2625,8 @@ class Html {
       }
 
       //  Suivi ticket
-      if (Session::haveRight("observe_ticket","1")) {
+      if (Session::haveRight("observe_ticket","1")
+          || Session::haveRight("create_ticket","1")) {
          echo "<li id='menu3'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
                 __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets',2)."</a>";
