@@ -366,6 +366,7 @@ class NotificationTemplate extends CommonDBTM {
             if (empty($out[2][$key]) && !strlen($out[2][$key]) ) { // No = : check if ot empty or not null
 
                if (isset($data['##'.$if_field.'##'])
+                   && $data['##'.$if_field.'##'] != '0'
                    && $data['##'.$if_field.'##'] != ''
                    && $data['##'.$if_field.'##'] != '&nbsp;'
                    && !is_null($data['##'.$if_field.'##'])) {
