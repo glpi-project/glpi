@@ -3161,7 +3161,7 @@ class Ticket extends CommonITILObject {
       // Get default values from posted values on reload form
       if (!$ticket_template) {
          if (isset($_POST)) {
-            $values = $_POST;
+            $values = Html::cleanPostForTextArea($_POST);
          }
       }
 
@@ -3649,7 +3649,7 @@ class Ticket extends CommonITILObject {
       // Get default values from posted values on reload form
       if (!isset($options['template_preview'])) {
          if (isset($_POST)) {
-            $values = $_POST;
+            $values =  Html::cleanPostForTextArea($_POST);
          }
       }
 
@@ -3665,6 +3665,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
+
       // Default check
       if ($ID > 0) {
          $this->check($ID,'r');
