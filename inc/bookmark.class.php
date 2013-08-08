@@ -62,15 +62,27 @@ class Bookmark extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight('bookmark_public', 'w');
+      return true;
    }
-
 
    static function canView() {
-      return Session::haveRight('bookmark_public', 'r');
+      return true;
    }
 
 
+   function canViewItem() {
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || (Session::haveRight('bookmark_public', 'r')
+                  && Session::haveAccessToEntity($this->fields['entities_id'], $this->fields['is_recursive'])));
+   }
+   function canUpdateItem() {
+
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || (!$this->fields['is_private']
+                  && Session::haveRight('bookmark_public', 'w')
+                  && Session::haveAccessToEntity($this->fields['entities_id'])));
+   }
+   
    function isNewItem() {
       /// For tabs management : force isNewItem
       return false;
@@ -230,7 +242,7 @@ class Bookmark extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Type')."</td>";
       echo "<td>";
 
-      if (static::canCreate()) {
+      if (Session::haveRight('bookmark_public', 'w')) {
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"],
                                            $this->fields["entities_id"],
                                            $this->fields["is_recursive"]);
@@ -620,9 +632,11 @@ class Bookmark extends CommonDBTM {
             }
             echo "</table></div>";
 
-            $massiveactionparams['ontop']       = false;
-            $massiveactionparams['forcecreate'] = true;
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            if ($is_private || Session::haveRight('bookmark_public', 'w')) {
+               $massiveactionparams['ontop']       = false;
+               $massiveactionparams['forcecreate'] = true;
+               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            }
          } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>";
             _e('You have not recorded any bookmarks yet');
