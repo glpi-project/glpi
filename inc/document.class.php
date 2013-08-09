@@ -414,12 +414,14 @@ class Document extends CommonDBTM {
          $fileout = $this->fields['filename'];
       }
 
+      $initfileout = $fileout;
       if (Toolbox::strlen($fileout) > $len) {
          $fileout = Toolbox::substr($fileout,0,$len)."&hellip;";
       }
 
       $out = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
-               $this->fields['id'].$params."' target='_blank'>";
+               $this->fields['id'].$params."' alt=\"".$initfileout.
+               "\" title=\"".$initfileout."\" target='_blank'>";
 
       $splitter = explode("/",$this->fields['filepath']);
 
@@ -433,7 +435,7 @@ class Document extends CommonDBTM {
             if ($DB->numrows($result) > 0) {
                $icon = $DB->result($result,0,'icon');
                $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
-                               $fileout."\" title=\"".$fileout."\" src='".
+                               $initfileout."\" title=\"".$initfileout."\" src='".
                                $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
             }
          }
