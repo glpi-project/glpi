@@ -679,6 +679,7 @@ class Html {
             $close_string .= "return true;} else { return false;}";
       }
       $out .= $additionalactions.(substr($additionalactions, -1)!=';'?';':'').$close_string."\"";
+
       return $out;
    }
 
@@ -4455,7 +4456,7 @@ class Html {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
             // Javascript no gettext
-            $javascriptArray[] = "$name: '".urlencode($value)."'";
+            $javascriptArray[] = "'$name': '".urlencode($value)."'";
          }
       }
 
@@ -4472,13 +4473,14 @@ class Html {
             $link .= " class='pointer' ";
          }
       }
+
       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
       $action  = " submitGetLink('$action', {" .implode(', ', $javascriptArray) ."});";
 
       if (is_array($confirm) || strlen($confirm)) {
          $link .= self::addConfirmationOnAction($confirm, $action);
       }  else {
-         $link .= " onclick=\"$action\" ";;
+         $link .= " onclick=\"$action\" ";
       }
 
       $link .= '>';
