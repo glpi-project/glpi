@@ -932,8 +932,6 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','15','0','2013-05-28 09:51:12','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','15','1','2013-05-28 09:51:12','2','0.0165679','0','Action terminée, rien à faire');
 
 ### Dump table glpi_crontasks
 
