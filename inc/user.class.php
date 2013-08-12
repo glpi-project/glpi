@@ -2681,13 +2681,14 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
+            
             foreach ($right as $r) {
                // Check read or active for rights
                $where[] = " (`glpi_profiles`.`".$r."` IN ('1', 'r', 'w') ".
                            getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                       $entity_restrict, 1).") ";
 
-               if (in_array($right, Profile::$helpdesk_rights)) {
+               if (in_array($r, Profile::$helpdesk_rights)) {
                   $forcecentral = false;
                }
             }
