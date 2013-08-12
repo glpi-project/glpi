@@ -155,16 +155,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function addAdditionnalUserInfo(array $data) {
       global $DB;
 
-      if (!isset($data['id'])) {
+      if (!isset($data['users_id'])) {
          return array('show_private' => 0);
       }
 
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_profiles_users`
-                WHERE `users_id`='".$data['id']."' ".
+                WHERE `users_id`='".$data['users_id']."' ".
                       getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
                                                  $this->getEntity(), true)."
                       AND profiles_id IN (".implode(',',$this->private_profiles).")";
+
       $result = $DB->query($query);
 
       if ($DB->result($result,0,'cpt')) {
