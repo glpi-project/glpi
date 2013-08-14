@@ -1222,6 +1222,7 @@ class Rule extends CommonDBTM {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['criterias_results'] = $this->criterias_results;
          $params['rule_itemtype']     = $this->getType();
+
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
@@ -1249,9 +1250,9 @@ class Rule extends CommonDBTM {
     * @return the $output array modified
    **/
    function executeActions($output, $params) {
-
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
+
             switch ($action->fields["action_type"]) {
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
@@ -1290,7 +1291,7 @@ class Rule extends CommonDBTM {
 
                default:
                   //plugins actions
-                  $executeaction = new self();
+                  $executeaction = clone $this;
                   $ouput = $executeaction->executePluginsActions($action, $output, $params);
                   break;
             }
