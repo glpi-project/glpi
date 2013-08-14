@@ -3214,11 +3214,11 @@ class CommonDBTM extends CommonGLPI {
                $ic = new Infocom();
                if ($ic->canCreate()) {
                   foreach ($input["item"] as $key => $val) {
-                     $input = array('itemtype' => $input['itemtype'],
+                     $input2 = array('itemtype' => $input['itemtype'],
                                     'items_id' => $key);
-                     if (!$ic->getFromDBforDevice($input['itemtype'], $key)) {
-                           if ($ic->can(-1,'w',$input)) {
-                           if ($ic->add($input)) {
+                     if (!$ic->getFromDBforDevice($input2['itemtype'], $key)) {
+                           if ($ic->can(-1,'w',$input2)) {
+                           if ($ic->add($input2)) {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
@@ -3238,18 +3238,18 @@ class CommonDBTM extends CommonGLPI {
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Add items to contracts
-                  $input = array('itemtype'     => $input["item_itemtype"],
+                  $input2 = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'contracts_id' => $key);
                }  if (isset($input['contracts_id'])) { // Add contract to item
-                  $input = array('itemtype'     => $input["itemtype"],
+                  $input2 = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $key,
                                  'contracts_id' => $input['contracts_id']);
                } else {
                   return false;
                }
-               if ($contractitem->can(-1, 'w', $input)) {
-               if ($contractitem->add($input)) {
+               if ($contractitem->can(-1, 'w', $input2)) {
+               if ($contractitem->add($input2)) {
                      $res['ok']++;
                   } else {
                      $res['ko']++;
@@ -3264,22 +3264,22 @@ class CommonDBTM extends CommonGLPI {
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Remove item to contracts
-                  $input = array('itemtype'     => $input["item_itemtype"],
+                  $input2 = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'contracts_id' => $key);
                } else {
                   // Remove contract to items
-                  $input = array('itemtype'     => $input["itemtype"],
+                  $input2 = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $key,
                                  'contracts_id' => $input['contracts_id']);
 
                }
                $contractitem = new Contract_Item();
-               if ($contractitem->can(-1, 'w', $input)) {
-                  if ($item = getItemForItemtype($input["itemtype"])) {
-                     if ($item->getFromDB($input['items_id'])) {
+               if ($contractitem->can(-1, 'w', $input2)) {
+                  if ($item = getItemForItemtype($input2["itemtype"])) {
+                     if ($item->getFromDB($input2['items_id'])) {
                         $contract = new Contract();
-                        if ($contract->getFromDB($input['contracts_id'])) {
+                        if ($contract->getFromDB($input2['contracts_id'])) {
                            if ($contractitem->getFromDBForItems($contract, $item)) {
                               if ($contractitem->delete(array('id' => $contractitem->getID()))) {
                                  $res['ok']++;
