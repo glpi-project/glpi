@@ -2244,16 +2244,31 @@ class Transfer extends CommonDBTM {
                   $supplier = new Supplier();
 
                   if ($supplier->getFromDB($data['suppliers_id'])) {
-                     $inputcat['entities_id']  = $this->to;
-                     $inputcat['name']         = addslashes($supplier->fields['name']);
-                     $catid                    = $supplier->findID($inputcat);
-                     if ($catid < 0) {
-                        $catid = $supplier->import($inputcat);
+                     $newID = -1;
+                     $query = "SELECT *
+                                 FROM `glpi_suppliers`
+                                 WHERE `entities_id` = '".$this->to."'
+                                       AND `name` = '".addslashes($supplier->fields['name'])."'";
+
+                     if ($result_search = $DB->query($query)) {
+                        if ($DB->numrows($result_search) > 0) {
+                           $newID = $DB->result($result_search,0,'id');
+                        }
                      }
-                     $input['id']                = $data['id'];
-                     $input[$field]              = $ID;
-                     $input['suppliers_id'] = $catid;
-                     $link->update($input);
+                     if ($newID < 0) {
+                        // 1 - create new item
+                        unset($supplier->fields['id']);
+                        $input    = $supplier->fields;
+                        $input['entities_id']  = $this->to;
+                        // Not set new entity Do by transferItem
+                        unset($supplier->fields);
+                        $newID = $supplier->add(toolbox::addslashes_deep($input));
+                     }
+
+                     $input2['id']           = $data['id'];
+                     $input2[$field]         = $ID;
+                     $input2['suppliers_id'] = $newID;
+                     $link->update($input2);
                   }
 
                }
