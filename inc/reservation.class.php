@@ -741,7 +741,7 @@ class Reservation extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_2'><td>".__('Comments')."</td>";
-      echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
+      echo "<td><textarea name='comment' rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       if (empty($ID)) {
