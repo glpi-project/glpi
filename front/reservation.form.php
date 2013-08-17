@@ -100,6 +100,8 @@ if (isset($_POST["update"])) {
       foreach ($_POST['items'] as $reservationitems_id) {
          $input                        = array();
          $input['reservationitems_id'] = $reservationitems_id;
+         $input['comment']             = $_POST['comment'];
+         
          if (count($dates_to_add)) {
             $input['group'] = $rr->getUniqueGroupFor($reservationitems_id);
          }
