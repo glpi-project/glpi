@@ -86,6 +86,7 @@ if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {
 }
 
 if (isset($_POST["entity_restrict"])
+    && !empty($_POST["entity_restrict"])
     && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
 
