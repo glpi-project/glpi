@@ -259,30 +259,30 @@ class NetworkName extends FQDNLabel {
    **/
    static function getSearchOptionsToAdd(array &$tab, array $joinparams, $itemtype) {
 
-      $tab[20]['table']         = 'glpi_ipaddresses';
-      $tab[20]['field']         = 'name';
-      $tab[20]['name']          = __('IP');
-      $tab[20]['forcegroupby']  = true;
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
+      $tab[126]['table']         = 'glpi_ipaddresses';
+      $tab[126]['field']         = 'name';
+      $tab[126]['name']          = __('IP');
+      $tab[126]['forcegroupby']  = true;
+      $tab[126]['massiveaction'] = false;
+      $tab[126]['joinparams']    = array('jointype'          => 'itemtype_item',
                                         'specific_itemtype' => 'NetworkName',
                                         'beforejoin'        => array('table' => 'glpi_networknames',
                                                                      'joinparams'
                                                                              => $joinparams));
 
-      $tab[27]['table']         = 'glpi_networknames';
-      $tab[27]['field']         = 'name';
-      $tab[27]['name']          = self::getTypeName(2);
-      $tab[27]['forcegroupby']  = true;
-      $tab[27]['massiveaction'] = false;
-      $tab[27]['joinparams']    = $joinparams;
+      $tab[127]['table']         = 'glpi_networknames';
+      $tab[127]['field']         = 'name';
+      $tab[127]['name']          = self::getTypeName(2);
+      $tab[127]['forcegroupby']  = true;
+      $tab[127]['massiveaction'] = false;
+      $tab[127]['joinparams']    = $joinparams;
 
-      $tab[28]['table']         = 'glpi_networkaliases';
-      $tab[28]['field']         = 'name';
-      $tab[28]['name']          = NetworkAlias::getTypeName(2);
-      $tab[28]['forcegroupby']  = true;
-      $tab[28]['massiveaction'] = false;
-      $tab[28]['joinparams']    = array('jointype'   => 'child',
+      $tab[128]['table']         = 'glpi_networkaliases';
+      $tab[128]['field']         = 'name';
+      $tab[128]['name']          = NetworkAlias::getTypeName(2);
+      $tab[128]['forcegroupby']  = true;
+      $tab[128]['massiveaction'] = false;
+      $tab[128]['joinparams']    = array('jointype'   => 'child',
                                         'beforejoin' => array('table'      => 'glpi_networknames',
                                                               'joinparams' => $joinparams));
    }
