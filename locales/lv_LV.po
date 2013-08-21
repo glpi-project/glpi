@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# qubit <qubit.bit@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-08-09 13:22+0200\n"
-"PO-Revision-Date: 2013-08-09 11:23+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-08-21 05:30+0000\n"
+"Last-Translator: qubit <qubit.bit@gmail.com>\n"
 "Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/GLPI/language/lv_LV/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,7 @@ msgstr ""
 
 #: index.php:69
 msgid "GLPI - Authentication"
-msgstr ""
+msgstr "GLPI - Pieteikšanās"
 
 #: index.php:109 front/helpdesk.faq.php:53 inc/config.class.php:470
 #: inc/html.class.php:1950 inc/user.class.php:1711 inc/user.class.php:2398
@@ -141,7 +142,7 @@ msgstr "Pieslēgties atkārtoti"
 #: install/update_0723_078.php:4849
 #, php-format
 msgid "%1$s - %2$s"
-msgstr ""
+msgstr "%1$s - %2$s"
 
 #. TRANS: %1$s is device name, %2$s is port name
 #: ajax/dropdownConnectNetworkPort.php:96
@@ -219,7 +220,7 @@ msgstr ""
 #: inc/user.class.php:2469 inc/user.class.php:3124 inc/user.class.php:3200
 #, php-format
 msgid "%1$s (%2$s)"
-msgstr ""
+msgstr "%1$s (%2$s)"
 
 #: ajax/dropdownConnect.php:164 ajax/dropdownFindNum.php:114
 #: ajax/dropdownNetpoint.php:125 ajax/dropdownRules.php:78
@@ -365,7 +366,7 @@ msgstr "Nosūtīt sekojumus uz epastu"
 #: install/update_0681_07.php:582
 #, php-format
 msgid "%1$s: %2$s"
-msgstr ""
+msgstr "%1$s: %2$s"
 
 #: ajax/dropdownItilActors.php:109 ajax/uemailUpdate.php:93
 #: inc/auth.class.php:1169 inc/auth.class.php:1175 inc/auth.class.php:1181
@@ -512,7 +513,7 @@ msgstr "Iesniedzējs"
 #: inc/reservation.class.php:1184 inc/reservation.class.php:1239
 #: inc/ticketrecurrent.class.php:146 inc/ticketrecurrent.class.php:252
 msgid "Start date"
-msgstr ""
+msgstr "Sākuma datums"
 
 #: ajax/planning.php:91
 msgid "Period"
@@ -803,13 +804,13 @@ msgstr ""
 #: front/backup.php:242 inc/document.class.php:924
 #, php-format
 msgid "File %s not found."
-msgstr ""
+msgstr "Datne %s nav atrasta."
 
 #. TRANS: %s is the name of the file
 #: front/backup.php:249 front/backup.php:321
 #, php-format
 msgid "Unauthorized access to the file %s"
-msgstr ""
+msgstr "Pieeja datnei %s slēgta"
 
 #. TRANS: %s is the number of the byte
 #: front/backup.php:256
@@ -835,7 +836,7 @@ msgstr "Automātiska pāradresācija, lai atceltu - noklikšķiniet"
 #: front/backup.php:558
 #, php-format
 msgid "%s deleted"
-msgstr ""
+msgstr "%s dzēsts"
 
 #: front/backup.php:567
 msgid "Check if a new version is available"
@@ -1075,7 +1076,7 @@ msgstr ""
 #: front/cartridge.form.php:50
 #, php-format
 msgid "%s adds cartridges"
-msgstr ""
+msgstr "%s pievienot kasetnes"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:59
@@ -1297,7 +1298,7 @@ msgstr ""
 #: install/update_0681_07.php:551 install/update_0681_07.php:554
 #, php-format
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #: front/crontask.php:45 inc/crontask.class.php:516
 #: inc/transfer.class.php:2953
@@ -2065,7 +2066,7 @@ msgstr ""
 
 #: front/popup.php:122
 msgid "Close"
-msgstr ""
+msgstr "Aizvērt"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:48
@@ -2390,7 +2391,7 @@ msgstr "Darbs tiek veikts..."
 #: front/rule.common.php:99
 #, php-format
 msgid "Task completed in %s"
-msgstr ""
+msgstr "Darbs pabeigts %s"
 
 #: front/rule.php:41
 msgid "Rule type"
@@ -2711,7 +2712,7 @@ msgstr[2] ""
 #: inc/ticket.class.php:3331 inc/ticket.class.php:4029
 #: inc/ticket.class.php:5098 inc/user.class.php:1745 inc/user.class.php:2485
 msgid "Category"
-msgstr ""
+msgstr "Kategorijas"
 
 #: front/stat.graph.php:158 front/stat.graph.php:166
 #: front/stat.tracking.php:79 front/stat.tracking.php:106
@@ -2900,7 +2901,7 @@ msgstr ""
 
 #: front/stat.tracking.php:85
 msgid "Category tree"
-msgstr ""
+msgstr "Kategoriju koks"
 
 #: front/stat.tracking.php:95
 msgid "Location tree"
@@ -3179,7 +3180,7 @@ msgstr "IMAP/POP serveris"
 #: inc/tickettemplatemandatoryfield.class.php:186
 #, php-format
 msgid "%1$s + %2$s"
-msgstr ""
+msgstr "%1$s + %2$s"
 
 #: inc/auth.class.php:784 inc/auth.class.php:788
 msgid "CAS"
@@ -3402,7 +3403,7 @@ msgstr "Saglabāt"
 #: inc/ipnetwork.class.php:156 inc/profile.class.php:112
 #, php-format
 msgid "%1$s/%2$s"
-msgstr ""
+msgstr "%1$s/%2$s"
 
 #: inc/authldap.class.php:258 inc/authldap.class.php:326
 msgid "Successful importation"
@@ -4017,7 +4018,7 @@ msgstr[2] "Saistītie objekti"
 #: inc/ticketvalidation.class.php:668 inc/user.class.php:3206
 #, php-format
 msgid "%1$s = %2$s"
-msgstr ""
+msgstr "%1$s = %2$s"
 
 #: inc/budget.class.php:442 inc/budget.class.php:577 inc/budget.class.php:605
 #: inc/cartridge.class.php:328 inc/change_item.class.php:231
@@ -4154,7 +4155,7 @@ msgid "New"
 msgid_plural "New"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Jauns"
 
 #: inc/cartridge.class.php:333 inc/cartridge.class.php:446
 msgctxt "cartridge"
@@ -4657,7 +4658,7 @@ msgstr ""
 #: inc/change.class.php:600
 msgctxt "change"
 msgid "New"
-msgstr ""
+msgstr "Jauns"
 
 #: inc/change.class.php:601
 msgid "Evaluation"
@@ -5397,7 +5398,7 @@ msgstr ""
 #: inc/profile_user.class.php:856
 #, php-format
 msgid "%1$s, %2$s"
-msgstr ""
+msgstr "%1$s, %2$s"
 
 #: inc/commonitiltask.class.php:440 inc/problem.class.php:594
 #: inc/ticket.class.php:2296
@@ -5412,13 +5413,13 @@ msgstr ""
 #: inc/commonitiltask.class.php:657
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
-msgstr ""
+msgstr "%1$s: no %2$s līdz %3$s:"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #: inc/commonitiltask.class.php:712
 #, php-format
 msgid "From %1$s to %2$s :"
-msgstr ""
+msgstr "No %1$s līdz %2$s :"
 
 #. TRANS: %s is the start time of a planned item
 #: inc/commonitiltask.class.php:721
@@ -5436,7 +5437,7 @@ msgstr ""
 #: inc/commonitiltask.class.php:732
 #, php-format
 msgid "%1$s (#%2$d)"
-msgstr ""
+msgstr "%1$s (#%2$d)"
 
 #: inc/commonitiltask.class.php:753 inc/reminder.class.php:999
 #, php-format
@@ -5561,7 +5562,7 @@ msgstr ""
 #: inc/ticket.class.php:4387
 #, php-format
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: inc/computer.class.php:523 inc/computer.class.php:836
 #: inc/domain.class.php:42 inc/dropdown.class.php:743
@@ -6607,7 +6608,7 @@ msgid "New"
 msgid_plural "New"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Jauns"
 
 #: inc/consumable.class.php:392
 msgctxt "consumable"
@@ -7101,7 +7102,7 @@ msgstr ""
 #: inc/link.class.php:411 inc/link.class.php:435
 #, php-format
 msgid "%1$s #%2$s"
-msgstr ""
+msgstr "%1$s #%2$s"
 
 #: inc/crontask.class.php:753
 msgid "Launch"
@@ -7570,7 +7571,7 @@ msgstr ""
 
 #: inc/document.class.php:352 inc/document.class.php:866
 msgid "SHA1"
-msgstr ""
+msgstr "SHA1"
 
 #. TRANS: %s is a size
 #: inc/document.class.php:372
@@ -7677,7 +7678,7 @@ msgstr "Pievienot dokumentu"
 #: inc/document_item.class.php:595
 msgctxt "button"
 msgid "Add a new file"
-msgstr ""
+msgstr "Pievienot jaunu datni"
 
 #: inc/document_item.class.php:622
 msgctxt "button"
@@ -7991,7 +7992,7 @@ msgstr[2] ""
 #: inc/dropdown.class.php:1366
 #, php-format
 msgid "%1$dh%2$s"
-msgstr ""
+msgstr "%1$dh%2$s"
 
 #: inc/dropdown.class.php:1588
 msgid "Other..."
@@ -8462,7 +8463,7 @@ msgstr ""
 
 #: inc/fqdn.class.php:63 inc/fqdn.class.php:207
 msgid "FQDN"
-msgstr ""
+msgstr "FQDN"
 
 #: inc/fqdn.class.php:66
 msgid ""
@@ -8560,7 +8561,7 @@ msgstr "Pārvietot"
 #: inc/search.class.php:1314 inc/stat.class.php:1360
 #, php-format
 msgid "%1$s / %2$s"
-msgstr ""
+msgstr "%1$s / %2$s"
 
 #: inc/group_user.class.php:143 inc/user.class.php:2170
 msgid "Associate to a group"
@@ -8576,7 +8577,7 @@ msgstr "Dinamisks"
 #: inc/profile_user.class.php:382 inc/profile_user.class.php:538
 #: inc/profile_user.class.php:850 inc/useremail.class.php:164
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: inc/group_user.class.php:287
 msgid "Add a user"
@@ -8705,9 +8706,9 @@ msgstr[2] ""
 #: inc/user.class.php:2209 inc/user.class.php:2440 inc/user.class.php:2470
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Profili"
+msgstr[1] "Profils"
+msgstr[2] "Profili"
 
 #: inc/html.class.php:1906 inc/notificationtargetticket.class.php:569
 #: inc/profile.class.php:1376 inc/ruleticket.class.php:455
@@ -9403,7 +9404,7 @@ msgstr[2] ""
 #: inc/rssfeed.class.php:1128 inc/rule.class.php:1359
 #: inc/search.class.php:3978 inc/search.class.php:4007
 msgid "R"
-msgstr ""
+msgstr "R"
 
 #: inc/link.class.php:61 inc/link.class.php:65
 #: inc/notificationtargetticket.class.php:732
@@ -9938,7 +9939,7 @@ msgstr ""
 #: inc/networkport.class.php:544
 #, php-format
 msgid "%1$s: %2$d"
-msgstr ""
+msgstr "%1$s: %2$d"
 
 #: inc/networkport.class.php:592 inc/networkport.class.php:681
 msgid "Network ports waiting for manual migration"
@@ -9984,7 +9985,7 @@ msgstr "Savienots ar"
 
 #: inc/networkportethernet.class.php:43
 msgid "Ethernet port"
-msgstr ""
+msgstr "Ethernet ports"
 
 #: inc/networkportethernet.class.php:87 inc/networkportethernet.class.php:132
 #: inc/networkportethernet.class.php:191
@@ -10155,15 +10156,15 @@ msgstr ""
 #: inc/networkportmigration.class.php:290
 #: inc/networkportmigration.class.php:436
 msgid "Network address"
-msgstr ""
+msgstr "Tīkla adreses"
 
 #: inc/networkportmigration.class.php:312
 msgid "Unknown interface"
-msgstr ""
+msgstr "Nezināma saskarne"
 
 #: inc/networkportwifi.class.php:45
 msgid "Wifi port"
-msgstr ""
+msgstr "Wifi ports"
 
 #: inc/networkportwifi.class.php:68 inc/networkportwifi.class.php:101
 #: inc/networkportwifi.class.php:143
@@ -10178,7 +10179,7 @@ msgstr ""
 #: inc/networkportwifi.class.php:100 inc/networkportwifi.class.php:237
 #: inc/wifinetwork.class.php:99 inc/wifinetwork.class.php:125
 msgid "ESSID"
-msgstr ""
+msgstr "ESSID"
 
 #: inc/notification.class.php:165 inc/notification.class.php:267
 #: inc/notificationtarget.class.php:1199
@@ -10964,7 +10965,7 @@ msgstr ""
 #: inc/plugin.class.php:385
 msgctxt "plugin"
 msgid "New"
-msgstr ""
+msgstr "Jauns"
 
 #: inc/plugin.class.php:389
 msgctxt "plugin"
@@ -11080,7 +11081,7 @@ msgstr ""
 #: inc/problem.class.php:644
 msgctxt "problem"
 msgid "New"
-msgstr ""
+msgstr "Jauns"
 
 #: inc/problem.class.php:645
 msgctxt "problem"
@@ -12474,17 +12475,17 @@ msgstr ""
 #: inc/search.class.php:1334 inc/search.class.php:1338
 #, php-format
 msgid "%1$s <> %2$s"
-msgstr ""
+msgstr "%1$s <> %2$s"
 
 #: inc/search.class.php:1267 inc/search.class.php:1344
 #, php-format
 msgid "%1$s < %2$s"
-msgstr ""
+msgstr "%1$s < %2$s"
 
 #: inc/search.class.php:1272 inc/search.class.php:1349
 #, php-format
 msgid "%1$s > %2$s"
-msgstr ""
+msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:1513
 msgid "Add a search criterion"
@@ -12742,15 +12743,15 @@ msgstr "Statistika nav pieejama"
 
 #: inc/stat.class.php:1353
 msgid "SVG"
-msgstr ""
+msgstr "SVG"
 
 #: inc/stat.class.php:1357
 msgid "PNG"
-msgstr ""
+msgstr "PNG"
 
 #: inc/stat.class.php:1362
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: inc/stat.class.php:1494
 msgid "By ticket"
@@ -12880,7 +12881,7 @@ msgstr ""
 #: inc/ticket.class.php:2606
 msgctxt "ticket"
 msgid "New"
-msgstr ""
+msgstr "Jauns"
 
 #: inc/ticket.class.php:2607
 msgid "Processing (assigned)"
@@ -13458,43 +13459,43 @@ msgstr "Savienojuma uzstādījumi"
 #. open.php
 #: inc/toolbox.class.php:1941
 msgid "IMAP"
-msgstr ""
+msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1944
 msgid "POP"
-msgstr ""
+msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1951
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1959
 msgid "TLS"
-msgstr ""
+msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1962
 msgid "NO-TLS"
-msgstr ""
+msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1969
 msgid "NO-VALIDATE-CERT"
-msgstr ""
+msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1972
 msgid "VALIDATE-CERT"
-msgstr ""
+msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -13826,11 +13827,11 @@ msgstr ""
 
 #: inc/wifinetwork.class.php:59
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: inc/wifinetwork.class.php:60
 msgid "Managed"
-msgstr ""
+msgstr "Pārvaldīt"
 
 #: inc/wifinetwork.class.php:61
 msgid "Master"
@@ -14056,7 +14057,7 @@ msgstr "Piedāvātais serviss"
 #: install/update_0831_0833.php:45 install/update_0831_084.php:46
 #, php-format
 msgid "Update to %s"
-msgstr ""
+msgstr "Atjaunināt uz %s"
 
 #. TRANS: %s is 'Clean reservation entity link'
 #. TRANS: %s is the table or item to migrate
@@ -14081,7 +14082,7 @@ msgstr ""
 #: install/update_0831_084.php:2198 install/update_0831_084.php:2409
 #, php-format
 msgid "Data migration - %s"
-msgstr ""
+msgstr "Datu migrācija - %s"
 
 #: install/update_0723_078.php:3689
 msgid "Direct"

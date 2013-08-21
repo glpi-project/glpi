@@ -4,13 +4,14 @@
 # 
 # Translators:
 # elkinr <elkinr@gmail.com>, 2012
+# arkangel <fabian.gonzalez@outlook.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-08-09 13:22+0200\n"
-"PO-Revision-Date: 2013-08-09 11:22+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-08-16 19:28+0000\n"
+"Last-Translator: arkangel <fabian.gonzalez@outlook.com>\n"
 "Language-Team: Spanish (Colombia) (http://www.transifex.com/projects/p/GLPI/language/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -142,7 +143,7 @@ msgstr "Volver a conectarse"
 #: install/update_0723_078.php:4849
 #, php-format
 msgid "%1$s - %2$s"
-msgstr ""
+msgstr "%1$s - %2$s"
 
 #. TRANS: %1$s is device name, %2$s is port name
 #: ajax/dropdownConnectNetworkPort.php:96
@@ -366,7 +367,7 @@ msgstr "Seguimiento por email"
 #: install/update_0681_07.php:582
 #, php-format
 msgid "%1$s: %2$s"
-msgstr ""
+msgstr "%1$s: %2$s"
 
 #: ajax/dropdownItilActors.php:109 ajax/uemailUpdate.php:93
 #: inc/auth.class.php:1169 inc/auth.class.php:1175 inc/auth.class.php:1181
@@ -480,7 +481,7 @@ msgstr[1] "Acciones"
 
 #: ajax/planningcheck.php:51 front/planning.php:55 inc/planning.class.php:412
 msgid "Availability"
-msgstr ""
+msgstr "Disponibilidad"
 
 #: ajax/planning.php:69 inc/change.class.php:774
 #: inc/commonitiltask.class.php:862
@@ -673,8 +674,8 @@ msgstr "En curso"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s incidencia en progreso o recientemente solucionada para este elemento"
+msgstr[1] "%s incidencias en progreso o recientemente solucionadas para este elemento"
 
 #: ajax/ticketsatisfaction.php:59 inc/entity.class.php:720
 msgid "Create survey after"
@@ -800,13 +801,13 @@ msgstr ""
 #: front/backup.php:242 inc/document.class.php:924
 #, php-format
 msgid "File %s not found."
-msgstr ""
+msgstr "Archivo %s no encontrado"
 
 #. TRANS: %s is the name of the file
 #: front/backup.php:249 front/backup.php:321
 #, php-format
 msgid "Unauthorized access to the file %s"
-msgstr ""
+msgstr "Acceso no autorizado a el archivo %s"
 
 #. TRANS: %s is the number of the byte
 #: front/backup.php:256
@@ -832,7 +833,7 @@ msgstr "Redirección automática (si no, haga click)"
 #: front/backup.php:558
 #, php-format
 msgid "%s deleted"
-msgstr ""
+msgstr "%s eliminado"
 
 #: front/backup.php:567
 msgid "Check if a new version is available"
@@ -967,7 +968,7 @@ msgstr "Descarga"
 #: inc/ticket.class.php:1280
 #, php-format
 msgid "%1$s adds the item %2$s"
-msgstr ""
+msgstr "%1$s agrega el elemento %2$s"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:64 front/cartridgeitem.form.php:59
@@ -1065,25 +1066,25 @@ msgstr "Atras"
 #: front/slalevel.form.php:56 inc/document.class.php:233
 #, php-format
 msgid "%s adds a link with an item"
-msgstr ""
+msgstr "%s agrega un enlace con un elemento"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:50
 #, php-format
 msgid "%s adds cartridges"
-msgstr ""
+msgstr "%s agrega cartuchos"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:59
 #, php-format
 msgid "%s deletes a cartridge"
-msgstr ""
+msgstr "%s elimina un cartucho"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:69
 #, php-format
 msgid "%s installs a cartridge"
-msgstr ""
+msgstr "%s instala un cartucho"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:80
@@ -1095,7 +1096,7 @@ msgstr ""
 #: front/cartridgeitem_printermodel.form.php:43
 #, php-format
 msgid "%s associates a type"
-msgstr ""
+msgstr "%s associa un tipo"
 
 #. TRANS: %s is the user login
 #: front/change.form.php:95 front/change.form.php:104
@@ -1111,85 +1112,85 @@ msgstr ""
 #: front/commonitiltask.form.php:56
 #, php-format
 msgid "%s adds a task"
-msgstr ""
+msgstr "%s agrega una tarea"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:65
 #, php-format
 msgid "%s deletes a task"
-msgstr ""
+msgstr "%s elimina una tarea"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:74
 #, php-format
 msgid "%s updates a task"
-msgstr ""
+msgstr "%s actualiza una tarea"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:53
 #, php-format
 msgid "%s adds a volume"
-msgstr ""
+msgstr "%s agrega un volumen"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:63
 #, php-format
 msgid "%s deletes a volume"
-msgstr ""
+msgstr "%s elimina un volumen"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:76
 #, php-format
 msgid "%s updates a volume"
-msgstr ""
+msgstr "%s actualiza un volumen"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:46
 #, php-format
 msgid "%s disconnects an item"
-msgstr ""
+msgstr "%s desconecta un elemento"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:56
 #, php-format
 msgid "%s connects an item"
-msgstr ""
+msgstr "%s conecta un elemento"
 
 #. TRANS: %s is the user login
 #: front/computer_softwarelicense.form.php:45
 #, php-format
 msgid "%s associates a computer and a license"
-msgstr ""
+msgstr "%s asocia un computador y una licencia"
 
 #. TRANS: %s is the user login
 #: front/computer_softwareversion.form.php:50
 #, php-format
 msgid "%s installs software"
-msgstr ""
+msgstr "%s Instala software"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:53
 #, php-format
 msgid "%s adds a virtual machine"
-msgstr ""
+msgstr "%s agraga una maquina virtual"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:63
 #, php-format
 msgid "%s deletes a virtual machine"
-msgstr ""
+msgstr "%s elimina una maquina virtual"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:76
 #, php-format
 msgid "%s updates a virtual machine"
-msgstr ""
+msgstr "%s actualiza una maquina virtual"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:50
 #, php-format
 msgid "%s adds consumables"
-msgstr ""
+msgstr "%s agrega consumibles"
 
 #: front/consumableitem.form.php:95 inc/consumable.class.php:64
 #: inc/entity.class.php:1335 inc/html.class.php:1096 inc/profile.class.php:713
@@ -1203,7 +1204,7 @@ msgstr[1] "Consumibles"
 #: front/contact_supplier.form.php:47 front/contract_supplier.form.php:47
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr ""
+msgstr "%s agraga un enlace a un proveedor"
 
 #. TRANS: %s is the user login
 #: front/contractcost.form.php:53 front/ticketcost.form.php:46
@@ -1306,7 +1307,7 @@ msgstr "Próxima ejecución"
 #: front/crontask.php:47
 #, php-format
 msgid "Next task to run: %s"
-msgstr ""
+msgstr "Siguiente tarea a correr: %s"
 
 #: front/crontask.php:49
 msgid "No action pending"
@@ -1321,8 +1322,8 @@ msgstr "No hay acciones pendientes"
 #: install/update_0723_078.php:3889
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Componente"
+msgstr[1] "Componentes"
 
 #: front/dictionnary.php:39 inc/html.class.php:1459 inc/profile.class.php:115
 #: inc/profile.class.php:1193 inc/profile.class.php:1607
@@ -1422,8 +1423,8 @@ msgstr[1] "Modelos"
 #: inc/dropdown.class.php:697 inc/html.class.php:1588
 msgid "Computer model"
 msgid_plural "Computer models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de computador"
+msgstr[1] "Modelos de computador"
 
 #: front/dictionnary.php:69 inc/dropdown.class.php:702 inc/html.class.php:1601
 #: inc/monitormodel.class.php:44
@@ -1443,14 +1444,14 @@ msgstr[1] "Modelos de impresoras"
 #: front/dictionnary.php:75
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de dispositivo"
+msgstr[1] "Modelos de dispositivo"
 
 #: front/dictionnary.php:78
 msgid "Network equipment model"
 msgid_plural "Network equipment models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de equipo de red"
+msgstr[1] "Modelos de equipos de red"
 
 #: front/dictionnary.php:82 inc/dropdown.class.php:705 inc/html.class.php:1653
 #: inc/phonemodel.class.php:44
@@ -1554,8 +1555,8 @@ msgstr[1] "Tipos de Equipos de red"
 #: inc/html.class.php:1731 inc/phonetype.class.php:42
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de telefono"
+msgstr[1] "Tipos de telefono"
 
 #: front/dictionnary.php:114 front/dictionnary.php:117
 #: front/stat.location.php:88 inc/computer.class.php:529
@@ -1639,8 +1640,8 @@ msgstr "No se han seleccionado elementos o la operación está mal definida"
 #: inc/profile.class.php:1555
 msgid "Dropdown"
 msgid_plural "Dropdowns"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Menú desplegable"
+msgstr[1] "Menús desplegables"
 
 #: front/find_num.php:74
 msgid "Search the ID of your hardware"
@@ -1795,7 +1796,7 @@ msgstr[1] "Dispositivos"
 #: front/group_user.form.php:46 front/user.form.php:115
 #, php-format
 msgid "%s adds a user to a group"
-msgstr ""
+msgstr "%s agrega un usuario a un grupo"
 
 #: front/helpdesk.faq.php:49 front/helpdesk.faq.php:53
 #: front/helpdesk.faq.php:54 inc/html.class.php:1338 inc/html.class.php:2650
@@ -1823,14 +1824,14 @@ msgstr ""
 #: front/ipnetwork_vlan.form.php:46 front/networkport_vlan.form.php:46
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr ""
+msgstr "%s asocio una VLAN a un puerto de red"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:110 front/reminder.form.php:99
 #: front/rssfeed.form.php:101
 #, php-format
 msgid "%s adds a target"
-msgstr ""
+msgstr "%s agrega un objetivo"
 
 #: front/ldap.group.import.php:41 front/ldap.group.php:40
 #: front/ldap.import.php:44 front/ldap.import.php:47 front/ldap.php:38
@@ -1896,7 +1897,7 @@ msgstr ""
 
 #: front/massiveaction.php:147
 msgid "Operation performed partially successful"
-msgstr ""
+msgstr "Operacion realizada parcialmente satisfactoria"
 
 #: front/massiveaction.php:156 front/tracking.injector.php:91
 #: inc/authldap.class.php:1242 inc/html.class.php:449 inc/html.class.php:638
@@ -1909,15 +1910,15 @@ msgstr ""
 
 #: front/migration_cleaner.php:44 inc/html.class.php:1383
 msgid "Migration cleaner"
-msgstr ""
+msgstr "Migration cleaner"
 
 #: front/migration_cleaner.php:49
 msgid "\"Migration cleaner\" tool"
-msgstr ""
+msgstr "herramienta \"Migration cleaner\" "
 
 #: front/migration_cleaner.php:56 inc/ipnetwork.class.php:1024
 msgid "Reinit the network topology"
-msgstr ""
+msgstr "Restaurar la topologia de red"
 
 #: front/migration_cleaner.php:62
 msgid "Clean the network port migration errors"
@@ -1928,7 +1929,7 @@ msgstr ""
 #: front/phone.form.php:97 front/printer.form.php:97
 #, php-format
 msgid "%s sets unitary management"
-msgstr ""
+msgstr "%s define administración unitaria"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:43 front/networkport.form.php:63
@@ -1940,23 +1941,23 @@ msgstr ""
 #: front/networkname.form.php:90
 #, php-format
 msgid "%s associates a network name to an item"
-msgstr ""
+msgstr "%s asociar un nombre de red al elemento"
 
 #. TRANS: %s is the user login
 #: front/networkport.form.php:91
 #, php-format
 msgid "%s adds several network ports"
-msgstr ""
+msgstr "%s agrego varios puertos de red"
 
 #. TRANS: %s is the user login
 #: front/networkportmigration.form.php:67
 #, php-format
 msgid "%s deletes several network ports"
-msgstr ""
+msgstr "%s elimina varios puertos de red"
 
 #: front/networkportmigration.form.php:85
 msgid "Cannot change a migration network port to an unknown one"
-msgstr ""
+msgstr "No se puede cambiar un puerto de migracion de red, a uno desconocido"
 
 #: front/networkportmigration.form.php:88
 msgid "Network port is not available..."
@@ -2032,13 +2033,13 @@ msgstr ""
 
 #: front/popup.php:122
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:48
 #, php-format
 msgid "%s adds a user to an entity"
-msgstr ""
+msgstr "%s agrego un usuario a una entidad"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
@@ -2250,7 +2251,7 @@ msgstr "Precio de compra"
 #: front/report.infocom.php:267
 #, php-format
 msgid "Total: Value=%1$s - Account net value=%2$s"
-msgstr ""
+msgstr "Total: Valor=%1$s - Reporte valor de red=%2$s"
 
 #: front/report.infocom.php:126
 msgid "ANV"
@@ -2342,7 +2343,7 @@ msgstr ""
 
 #: front/rule.common.php:74
 msgid "Replay the rules dictionary"
-msgstr ""
+msgstr "Repetir las reglas del diccionarion"
 
 #: front/rule.common.php:76 inc/migration.class.php:81
 #: inc/software.class.php:936 install/update.php:129
@@ -2352,7 +2353,7 @@ msgstr "Trabajo en proceso..."
 #: front/rule.common.php:99
 #, php-format
 msgid "Task completed in %s"
-msgstr ""
+msgstr "Tarea finalizada en %s"
 
 #: front/rule.php:41
 msgid "Rule type"
@@ -2789,12 +2790,12 @@ msgstr "Mostrar gráficas"
 #: front/stat.location.php:170 front/stat.location.php:171
 #: front/stat.tracking.php:173 front/stat.tracking.php:174
 msgid "Number opened"
-msgstr ""
+msgstr "Numero abierto"
 
 #: front/stat.location.php:182 front/stat.location.php:183
 #: front/stat.tracking.php:185 front/stat.tracking.php:186
 msgid "Number solved"
-msgstr ""
+msgstr "Numero solucionado"
 
 #: front/stat.location.php:194 front/stat.location.php:195
 #: front/stat.tracking.php:198 front/stat.tracking.php:199
@@ -2804,7 +2805,7 @@ msgstr ""
 #: front/stat.location.php:206 front/stat.location.php:207
 #: front/stat.tracking.php:211 front/stat.tracking.php:212
 msgid "Number closed"
-msgstr ""
+msgstr "Numero cerrado"
 
 #: front/stat.tracking.php:77 front/stat.tracking.php:99
 #: inc/commonitilobject.class.php:2206 inc/commonitilobject.class.php:2330
@@ -2846,7 +2847,7 @@ msgstr "Autor"
 
 #: front/stat.tracking.php:80 front/stat.tracking.php:108
 msgid "Group tree"
-msgstr ""
+msgstr "Arbol de grupo"
 
 #: front/stat.tracking.php:85
 msgid "Category tree"
@@ -2894,35 +2895,35 @@ msgstr "Asignado a:"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
-msgstr ""
+msgstr "Técnico asignado"
 
 #: front/stat.tracking.php:104
 msgid "Technician in tasks"
-msgstr ""
+msgstr "Técnico en labor"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:46
 #, php-format
 msgid "%s adds a followup"
-msgstr ""
+msgstr "%s agrga unseguimiento"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:57
 #, php-format
 msgid "%s approves or refuses a solution"
-msgstr ""
+msgstr "%s aprueba o rechaza una solución"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:67
 #, php-format
 msgid "%s updates a followup"
-msgstr ""
+msgstr "%s actualiza un seguimiento"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:76
 #, php-format
 msgid "%s deletes a followup"
-msgstr ""
+msgstr "%s elimina un seguimiento"
 
 #: front/ticket.form.php:80
 msgid ""
@@ -2957,25 +2958,25 @@ msgstr ""
 #: front/ticket_ticket.form.php:48
 #, php-format
 msgid "%s deletes link between tickets"
-msgstr ""
+msgstr "%s elimina enlace entre incidencias"
 
 #. TRANS: %s is the user login
 #: front/ticketvalidation.form.php:52
 #, php-format
 msgid "%s adds an approval"
-msgstr ""
+msgstr "%s agrega una aprobación"
 
 #. TRANS: %s is the user login
 #: front/ticketvalidation.form.php:61
 #, php-format
 msgid "%s updates an approval"
-msgstr ""
+msgstr "%s actualiza una aprobación"
 
 #. TRANS: %s is the user login
 #: front/ticketvalidation.form.php:70
 #, php-format
 msgid "%s deletes an approval"
-msgstr ""
+msgstr "%s elimina una aprobación"
 
 #: front/tracking.injector.php:78 inc/ticket.class.php:1458
 msgid "Your ticket has been registered, its treatment is in progress."
@@ -2993,13 +2994,13 @@ msgstr "Gracias por utilizar nuestro sistema de mesa ayuda automático."
 #: front/user.form.php:129
 #, php-format
 msgid "%s deletes users from a group"
-msgstr ""
+msgstr "%s elimina usuarios desde un grupo"
 
 #. TRANS: %s is the character used as wildcard in ajax search
 #: inc/ajax.class.php:205
 #, php-format
 msgid "Search (%s for all)"
-msgstr ""
+msgstr "Buscar (%s para todos)"
 
 #: inc/alert.class.php:120 inc/alert.class.php:149 inc/alert.class.php:173
 #: inc/contract.class.php:1309 inc/entity.class.php:638
@@ -3106,7 +3107,7 @@ msgstr ""
 #: inc/auth.class.php:684
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
-msgstr ""
+msgstr "Inicio de sesión fallido para %1$s desde la IP %2$s"
 
 #: inc/auth.class.php:724
 msgid "Authentication on GLPI database"
@@ -3201,7 +3202,7 @@ msgstr ""
 
 #: inc/auth.class.php:1094
 msgid "The CURL extension for your PHP parser isn't installed"
-msgstr ""
+msgstr "La extensión CURL para su analizador de PHP no está instalado"
 
 #: inc/auth.class.php:1096
 msgid "Impossible to use CAS as external source of connection"
@@ -3319,7 +3320,7 @@ msgstr "Número administrativo"
 #: inc/user.class.php:1750 inc/user.class.php:1867 inc/user.class.php:2037
 #: inc/user.class.php:2372
 msgid "Phone 2"
-msgstr ""
+msgstr "Telefono 2"
 
 #: inc/auth.class.php:1205 inc/authldap.class.php:781
 #: inc/authldap.class.php:918 inc/authldap.class.php:2751
@@ -3594,11 +3595,11 @@ msgstr "Importar"
 
 #: inc/authldap.class.php:1308 inc/authldap.class.php:1360
 msgid "Last update in the LDAP directory"
-msgstr ""
+msgstr "Ultima actualización en el directorio LDAP"
 
 #: inc/authldap.class.php:1310 inc/authldap.class.php:1362
 msgid "Last update in GLPI"
-msgstr ""
+msgstr "Ultima actualización en GLPI"
 
 #: inc/authldap.class.php:1374 inc/authldap.class.php:1379
 msgid "No user to be synchronized"
@@ -3642,11 +3643,11 @@ msgstr ""
 
 #: inc/authldap.class.php:2663
 msgid "Expert mode"
-msgstr ""
+msgstr "Modo experto"
 
 #: inc/authldap.class.php:2665
 msgid "Simple mode"
-msgstr ""
+msgstr "Modo sencillo"
 
 #: inc/authldap.class.php:2689
 msgctxt "button"
@@ -3677,7 +3678,7 @@ msgstr "Conservar"
 
 #: inc/authldap.class.php:2969
 msgid "Put in dustbin"
-msgstr ""
+msgstr "Poner en la papelera"
 
 #: inc/authldap.class.php:2970
 msgid "Withdraw dynamic authorizations and groups"
@@ -3745,7 +3746,7 @@ msgstr "Nombre del servidor IMAP/POP <br>(el email del usuario será tipo login@
 #: inc/software.class.php:278 inc/user.class.php:1818
 #, php-format
 msgid "Last update on %s"
-msgstr ""
+msgstr "Ultima actualización %s"
 
 #: inc/authmail.class.php:197
 msgid "Email server configuration"
@@ -3787,7 +3788,7 @@ msgstr "UUID"
 #: inc/commondbtm.class.php:1149 inc/commondbtm.class.php:2059
 #, php-format
 msgid "%1$s - ID %2$d"
-msgstr ""
+msgstr "%1$s - ID %2$d"
 
 #: inc/bookmark.class.php:233 inc/commondbtm.class.php:2056
 #: inc/knowbaseitem.class.php:497 inc/knowbaseitem.class.php:519
@@ -3836,11 +3837,11 @@ msgstr ""
 
 #: inc/bookmark.class.php:642
 msgid "You have not recorded any bookmarks yet"
-msgstr ""
+msgstr "Usted no tiene grabado ningun marcador aún"
 
 #: inc/bookmark.class.php:664
 msgid "Save as bookmark"
-msgstr ""
+msgstr "Salvar como marcador"
 
 #: inc/budget.class.php:48 inc/contract.class.php:741
 #: inc/contractcost.class.php:234 inc/contractcost.class.php:298
@@ -3882,7 +3883,7 @@ msgstr "Notas"
 
 #: inc/budget.class.php:282 inc/supplier.class.php:417
 msgid "No associated item"
-msgstr ""
+msgstr "No hay elemento asociado"
 
 #: inc/budget.class.php:284 inc/document_item.class.php:172
 #: inc/document_item.class.php:175 inc/notificationtargetinfocom.class.php:89
@@ -3960,7 +3961,7 @@ msgstr[1] "Elementos asociados"
 #: inc/ticketvalidation.class.php:668 inc/user.class.php:3206
 #, php-format
 msgid "%1$s = %2$s"
-msgstr ""
+msgstr "%1$s = %2$s"
 
 #: inc/budget.class.php:442 inc/budget.class.php:577 inc/budget.class.php:605
 #: inc/cartridge.class.php:328 inc/change_item.class.php:231
@@ -3990,8 +3991,8 @@ msgstr "Total restante del presupuesto"
 #: inc/ticketrecurrent.class.php:272
 msgid "Calendar"
 msgid_plural "Calendars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Calendario"
+msgstr[1] "Calendarios"
 
 #: inc/calendar.class.php:92 inc/calendar.class.php:109
 msgctxt "button"
@@ -4104,15 +4105,15 @@ msgstr[1] "Usados"
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Deteriorado"
+msgstr[1] "Deteriorados"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
 #: inc/cartridge.class.php:341
 #, php-format
 msgid "Total: %1$d (%2$d new, %3$d used, %4$d worn)"
-msgstr ""
+msgstr "Total: %1$d (%2$d nuevo, %3$d usado, %4$d deteriorado)"
 
 #: inc/cartridge.class.php:347 inc/cartridge.class.php:349
 msgid "No cartridge"
@@ -4151,7 +4152,7 @@ msgstr "Fecha de uso"
 
 #: inc/cartridge.class.php:540
 msgid "Used on"
-msgstr ""
+msgstr "Usados en"
 
 #: inc/cartridge.class.php:545 inc/cartridge.class.php:780
 #: inc/cartridge.class.php:942
@@ -4170,8 +4171,8 @@ msgstr "Datos financieros"
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d pagina impresa"
+msgstr[1] "%d paginas impresas"
 
 #: inc/cartridge.class.php:615
 msgid "Counter error"
@@ -4255,8 +4256,8 @@ msgstr ""
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d mes"
+msgstr[1] "%d meses"
 
 #: inc/cartridgeitem.class.php:192 inc/cartridgeitem.class.php:281
 #: inc/consumableitem.class.php:138 inc/consumableitem.class.php:228
@@ -4329,13 +4330,13 @@ msgstr "Alertas sobre cartuchos"
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr ""
+msgstr "Umbral de alarma alcanzado para el tipo de cartucho: %1$s - Referencia %2$s - Remanente %3$d"
 
 #. TRANS: %s is entity name
 #: inc/cartridgeitem.class.php:429
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr ""
+msgstr "%s envio alerta de cartucho fallido"
 
 #: inc/cartridgeitem_printermodel.class.php:153
 msgid "Add a compatible printer model"
@@ -4679,8 +4680,8 @@ msgstr "Agregar un elemento"
 #: inc/change_problem.class.php:61
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Problema/Cambio de enlace"
+msgstr[1] "Problema/Cambio de enlaces"
 
 #: inc/change_problem.class.php:116 inc/change_ticket.class.php:226
 msgid "Add a change"
@@ -4718,8 +4719,8 @@ msgstr[1] "Cambiar Tareas"
 #: inc/change_ticket.class.php:58
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Enlace Incidencia/Cambio"
+msgstr[1] "Enlaces Incidencia/Cambio"
 
 #: inc/change_ticket.class.php:113 inc/problem_ticket.class.php:233
 msgid "Add a ticket"
@@ -4731,7 +4732,7 @@ msgstr "Crear un cambio desde esta incidencia"
 
 #: inc/commondbchild.class.php:212 inc/networkportinstantiation.class.php:519
 msgid "Item not linked to an object"
-msgstr ""
+msgstr "Elemento no enlazado a un objeto"
 
 #: inc/commondbchild.class.php:690 inc/commondevice.class.php:186
 #: inc/commondevice.class.php:190 inc/commonitilobject.class.php:2989
@@ -4805,7 +4806,7 @@ msgstr ""
 #: inc/ticket.class.php:4516 inc/transfer.class.php:2979
 msgctxt "button"
 msgid "Put in dustbin"
-msgstr ""
+msgstr "Poner en la papelera"
 
 #. TRANS: %s is the template name
 #: inc/commondbtm.class.php:2049 inc/computer.class.php:579
@@ -4814,7 +4815,7 @@ msgstr ""
 #: inc/printer.class.php:467 inc/software.class.php:267
 #, php-format
 msgid "Created from the template %s"
-msgstr ""
+msgstr "Creado desde la plantilla %s"
 
 #: inc/commondbtm.class.php:2053
 msgid "Template name"
@@ -4834,7 +4835,7 @@ msgstr "La existencia de elementos enlazados impiden la modificación de este at
 
 #: inc/commondbtm.class.php:2094
 msgid "Change visibility in child entities"
-msgstr ""
+msgstr "Cambio de vicibilidad en entidades hijas"
 
 #: inc/commondbtm.class.php:2565 inc/commontreedropdown.class.php:568
 #: inc/db.function.php:486 inc/entity.class.php:424
@@ -4891,7 +4892,7 @@ msgstr "Artículo agregado con éxito, pero registro duplicado en %s"
 
 #: inc/commondbtm.class.php:3737
 msgid "Other item exist"
-msgstr ""
+msgstr "Otro elemento existente"
 
 #: inc/commondbtm.class.php:3776
 msgid "Item in the dustbin"
@@ -4901,7 +4902,7 @@ msgstr ""
 #: inc/commondbtm.class.php:3902
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
-msgstr ""
+msgstr "%1$s intentando aagregar un elemento ya existente: %2$s"
 
 #: inc/commondbtm.class.php:4233 inc/entity.class.php:1389
 #: inc/entity.class.php:1434 inc/search.class.php:4729 inc/user.class.php:2430
@@ -4944,7 +4945,7 @@ msgstr "Atención, está a punto de borrar un título usado en uno o más elemen
 #: inc/commondropdown.class.php:548
 msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
-msgstr ""
+msgstr "Si usted confirma la eliminación, todos los usuarios de este menú seran borrados."
 
 #: inc/commondropdown.class.php:555
 msgctxt "button"
@@ -4958,7 +4959,7 @@ msgstr "Cancelar"
 
 #: inc/commondropdown.class.php:564
 msgid "You can also replace all uses of this dropdown by another."
-msgstr ""
+msgstr "Usted puede reemplazar todos los usos de este menú por otros."
 
 #: inc/commondropdown.class.php:585
 msgctxt "button"
@@ -5014,7 +5015,7 @@ msgstr "Datos inválidos. Actualización cancelada"
 #: inc/commonitilobject.class.php:1451
 #, php-format
 msgid "Document Ticket %d"
-msgstr ""
+msgstr "Documento de incidencia %d"
 
 #: inc/commonitilobject.class.php:1476
 msgid "Failed to send the file (probably too large)"
@@ -5028,27 +5029,27 @@ msgstr "Todo"
 #: inc/commonitilobject.class.php:1542
 msgctxt "priority"
 msgid "At least very high"
-msgstr ""
+msgstr "Como mínimo muy alto"
 
 #: inc/commonitilobject.class.php:1544
 msgctxt "priority"
 msgid "At least high"
-msgstr ""
+msgstr "Como mínimo alto"
 
 #: inc/commonitilobject.class.php:1546
 msgctxt "priority"
 msgid "At least medium"
-msgstr ""
+msgstr "Como mínimo medio"
 
 #: inc/commonitilobject.class.php:1548
 msgctxt "priority"
 msgid "At least low"
-msgstr ""
+msgstr "Como mínimo bajo"
 
 #: inc/commonitilobject.class.php:1550
 msgctxt "priority"
 msgid "At least very low"
-msgstr ""
+msgstr "Como mínimo muy bajo"
 
 #: inc/commonitilobject.class.php:1556 inc/commonitilobject.class.php:1589
 msgctxt "priority"
@@ -5088,27 +5089,27 @@ msgstr "Todo"
 #: inc/commonitilobject.class.php:1648
 msgctxt "urgency"
 msgid "At least very high"
-msgstr ""
+msgstr "Como mínimo muy alto"
 
 #: inc/commonitilobject.class.php:1650
 msgctxt "urgency"
 msgid "At least high"
-msgstr ""
+msgstr "Como mínimo alto"
 
 #: inc/commonitilobject.class.php:1652
 msgctxt "urgency"
 msgid "At least medium"
-msgstr ""
+msgstr "Como mínimo medio"
 
 #: inc/commonitilobject.class.php:1654
 msgctxt "urgency"
 msgid "At least low"
-msgstr ""
+msgstr "Como mínimo bajo"
 
 #: inc/commonitilobject.class.php:1656
 msgctxt "urgency"
 msgid "At least very low"
-msgstr ""
+msgstr "Como mínimo muy bajo"
 
 #: inc/commonitilobject.class.php:1663 inc/commonitilobject.class.php:1707
 msgctxt "urgency"
@@ -5143,27 +5144,27 @@ msgstr "Todo"
 #: inc/commonitilobject.class.php:1764
 msgctxt "impact"
 msgid "At least very high"
-msgstr ""
+msgstr "Como mínimo muy alto"
 
 #: inc/commonitilobject.class.php:1766
 msgctxt "impact"
 msgid "At least high"
-msgstr ""
+msgstr "Como mínimo alto"
 
 #: inc/commonitilobject.class.php:1768
 msgctxt "impact"
 msgid "At least medium"
-msgstr ""
+msgstr "Como mínimo medio"
 
 #: inc/commonitilobject.class.php:1770
 msgctxt "impact"
 msgid "At least low"
-msgstr ""
+msgstr "Como mínimo bajo"
 
 #: inc/commonitilobject.class.php:1772
 msgctxt "impact"
 msgid "At least very low"
-msgstr ""
+msgstr "Como mínimo muy bajo"
 
 #: inc/commonitilobject.class.php:1779 inc/commonitilobject.class.php:1823
 msgctxt "impact"
@@ -5234,7 +5235,7 @@ msgstr[1] ""
 #: inc/notificationtargetcommonitilobject.class.php:837
 #: inc/ruleticket.class.php:313 inc/ruleticket.class.php:415
 msgid "Assigned to a supplier"
-msgstr ""
+msgstr "Asignado a un proveedor"
 
 #: inc/commonitilobject.class.php:2462 inc/ruleticket.class.php:306
 #: inc/ruleticket.class.php:407
@@ -5247,11 +5248,11 @@ msgstr "Correo para el seguimiento"
 
 #: inc/commonitilobject.class.php:2570
 msgid "Requester user"
-msgstr ""
+msgstr "Usuario solicitante"
 
 #: inc/commonitilobject.class.php:2574
 msgid "Watcher user"
-msgstr ""
+msgstr "Usuario observador"
 
 #: inc/commonitilobject.class.php:2596
 #: inc/notificationtargetcommonitilobject.class.php:395
@@ -5305,7 +5306,7 @@ msgstr[1] "Tareas"
 #: inc/reservation.class.php:273
 msgid ""
 "Error in entering dates. The starting date is later than the ending date"
-msgstr ""
+msgstr "Error en ingreso de Fecha: La fecha de inicio es superior a la fecha de finalización"
 
 #: inc/commonitiltask.class.php:416 inc/commonitiltask.class.php:419
 #: inc/profile_user.class.php:844 inc/profile_user.class.php:851
@@ -5327,31 +5328,31 @@ msgstr "Seguimiento público"
 #: inc/commonitiltask.class.php:657
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
-msgstr ""
+msgstr "%1$s: desde %2$s hasta %3$s:"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #: inc/commonitiltask.class.php:712
 #, php-format
 msgid "From %1$s to %2$s :"
-msgstr ""
+msgstr " Desde %1$s a las %2$s :"
 
 #. TRANS: %s is the start time of a planned item
 #: inc/commonitiltask.class.php:721
 #, php-format
 msgid "Start at %s:"
-msgstr ""
+msgstr "inicia a las %s:"
 
 #. TRANS: %s is the end time of a planned item
 #: inc/commonitiltask.class.php:726
 #, php-format
 msgid "End at %s:"
-msgstr ""
+msgstr "Finaliza a las %s:"
 
 #. TRANS: %1$s is name of the item, %2$d is its ID
 #: inc/commonitiltask.class.php:732
 #, php-format
 msgid "%1$s (#%2$d)"
-msgstr ""
+msgstr "%1$s (#%2$d)"
 
 #: inc/commonitiltask.class.php:753 inc/reminder.class.php:999
 #, php-format
@@ -5397,7 +5398,7 @@ msgstr "Agregar una nueva tarea"
 
 #: inc/commonitiltask.class.php:1106
 msgid "No task found."
-msgstr ""
+msgstr "Tarea no encontrada"
 
 #: inc/commontreedropdown.class.php:52 inc/commontreedropdown.class.php:496
 #: inc/group.class.php:211 inc/itilcategory.class.php:58
@@ -5476,7 +5477,7 @@ msgstr "Ubicación actualizada. Los elementos relacionados se han movido a la mi
 #: inc/ticket.class.php:4387
 #, php-format
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: inc/computer.class.php:523 inc/computer.class.php:836
 #: inc/domain.class.php:42 inc/dropdown.class.php:743
@@ -5528,7 +5529,7 @@ msgstr ""
 #: inc/printer.class.php:475 inc/software.class.php:275
 #, php-format
 msgid "Created on %s"
-msgstr ""
+msgstr "Creado a las %s"
 
 #: inc/computer.class.php:629 inc/computer_item.class.php:454
 #: inc/computer_item.class.php:591 inc/monitor.class.php:380
@@ -5680,8 +5681,8 @@ msgstr[1] "Máquinas virtuales"
 #: inc/virtualmachinestate.class.php:42
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Estado de la maquina virtual"
+msgstr[1] "Estados de la maquina virtual"
 
 #: inc/computer.class.php:1075 inc/computervirtualmachine.class.php:156
 #: inc/computervirtualmachine.class.php:309 inc/dropdown.class.php:708
@@ -5705,18 +5706,18 @@ msgstr ""
 
 #: inc/computer.class.php:1103
 msgid "Memory of virtual machines"
-msgstr ""
+msgstr "Memoria de las máquinas virtuales"
 
 #: inc/computer.class.php:1112
 msgid "Virtual machine UUID"
-msgstr ""
+msgstr "UUID de la máquina virtual"
 
 #. TRANS: %s is a size
 #: inc/computerdisk.class.php:272 inc/computerdisk.class.php:274
 #: inc/mailcollector.class.php:1595
 #, php-format
 msgid "%s Mio"
-msgstr ""
+msgstr "%s Mb"
 
 #: inc/computerdisk.class.php:296
 msgid "Add a volume"
@@ -5782,7 +5783,7 @@ msgstr "Software sin categoría"
 
 #: inc/computer_softwareversion.class.php:873
 msgid "Affected licenses of not installed software"
-msgstr ""
+msgstr "Licencias afectadas de software no instalado"
 
 #: inc/computervirtualmachine.class.php:170
 #: inc/computervirtualmachine.class.php:312
@@ -5916,7 +5917,7 @@ msgstr "Búsqueda global"
 #: inc/profile.class.php:688 inc/profile.class.php:1439
 #: inc/transfer.class.php:2993
 msgid "Assets"
-msgstr ""
+msgstr "Inventario"
 
 #: inc/config.class.php:345
 msgid "Enable the financial and administrative information by default"
@@ -6483,7 +6484,7 @@ msgstr "Dar"
 #: inc/consumable.class.php:230
 #, php-format
 msgid "%s gives a consumable"
-msgstr ""
+msgstr "%s proporciona un consumible"
 
 #. TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is
 #. old number
@@ -6963,7 +6964,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:724
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Un minimo de 64 Mb es comunmente requeridos por GLPI"
 
 #: inc/crontask.class.php:729
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -7179,8 +7180,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d día"
+msgstr[1] "%d días"
 
 #: inc/crontasklog.class.php:80 inc/crontasklog.class.php:85
 #: inc/event.class.php:43 inc/html.class.php:1816 inc/profile.class.php:1223
@@ -7439,7 +7440,7 @@ msgstr ""
 #: inc/document.class.php:372
 #, php-format
 msgid "%s Mio max"
-msgstr ""
+msgstr "%s Mb max"
 
 #: inc/document.class.php:646
 msgctxt "quantity"
@@ -7724,27 +7725,27 @@ msgstr ""
 #: inc/dropdown.class.php:748 inc/ipnetwork.class.php:63
 msgid "IP network"
 msgid_plural "IP networks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Red IP"
+msgstr[1] "Redes IP"
 
 #: inc/dropdown.class.php:749 inc/fqdn.class.php:56
 #: inc/networkalias.class.php:294
 msgid "Internet domain"
 msgid_plural "Internet domains"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "dominio de internet"
+msgstr[1] "Dominios de Internet"
 
 #: inc/dropdown.class.php:750 inc/wifinetwork.class.php:133
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Red wifi"
+msgstr[1] "Redes wifi"
 
 #: inc/dropdown.class.php:751 inc/networkname.class.php:90
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nombre de Red"
+msgstr[1] "Nombres de Red"
 
 #: inc/dropdown.class.php:758 inc/usertitle.class.php:42
 msgid "User title"
@@ -8070,7 +8071,7 @@ msgstr "para ver la entidad y sus subentidades"
 #: inc/entity.class.php:871
 #, php-format
 msgid "%s adds the item"
-msgstr ""
+msgstr "%s adicionar el elemento"
 
 #: inc/entity.class.php:1037
 msgid "Values for the generic rules for assignment to entities"
@@ -8291,13 +8292,13 @@ msgstr "No hay elementos a mostrar"
 
 #: inc/fqdn.class.php:63 inc/fqdn.class.php:207
 msgid "FQDN"
-msgstr ""
+msgstr "FQDN"
 
 #: inc/fqdn.class.php:66
 msgid ""
 "Fully Qualified Domain Name. Use the classical notation (labels separated by"
 " dots). For example: indepnet.net"
-msgstr ""
+msgstr "Nombre de Dominio Totalmente Cualificado (FQDN). Utilice la notación clásica(Etiquetas separadas por puntos). Ejemplo: indepnet.net"
 
 #: inc/fqdn.class.php:87
 msgid "FQDN must not be empty"
@@ -8310,7 +8311,7 @@ msgstr ""
 #: inc/fqdnlabel.class.php:107
 #, php-format
 msgid "Invalid internet name: %s"
-msgstr ""
+msgstr "Nombre invalido de Internet: %s"
 
 #: inc/group.class.php:118 inc/group.class.php:638 inc/user.class.php:195
 msgid "Used items"
@@ -8918,21 +8919,21 @@ msgstr "No se encontró dirección IP"
 #: inc/ipnetmask.class.php:75
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mascara de Subred"
+msgstr[1] "Mascaras de Subred"
 
 #: inc/ipnetwork.class.php:73
 msgid "IP version"
-msgstr ""
+msgstr "Version IP"
 
 #: inc/ipnetwork.class.php:91 inc/ipnetwork.class.php:172
 #: inc/networkportmigration.class.php:299
 msgid "Gateway"
-msgstr "IP de enlace"
+msgstr "Puerta de enlace"
 
 #: inc/ipnetwork.class.php:97 inc/ipnetwork.class.php:176
 msgid "Addressable network"
-msgstr ""
+msgstr "Red direccionable"
 
 #: inc/ipnetwork.class.php:170
 msgid "Set the network using notation address/mask"
@@ -8940,7 +8941,7 @@ msgstr ""
 
 #: inc/ipnetwork.class.php:177
 msgid "An addressable network is a network defined on an equipment"
-msgstr ""
+msgstr "Una red direccionable es una red definida sobre un equipo"
 
 #: inc/ipnetwork.class.php:225 inc/ipnetwork.class.php:237
 msgid "Invalid network address"
@@ -8948,19 +8949,19 @@ msgstr "Dirección de Red Inválida"
 
 #: inc/ipnetwork.class.php:233
 msgid "Invalid input format for the network"
-msgstr ""
+msgstr "Formato invalido de entrada para la Red"
 
 #: inc/ipnetwork.class.php:241
 msgid "Invalid subnet mask"
-msgstr ""
+msgstr "Mascara de subred inválida"
 
 #: inc/ipnetwork.class.php:269
 msgid "Network already defined in visible entities"
-msgstr ""
+msgstr "Red ya definida en entidades visibles"
 
 #: inc/ipnetwork.class.php:315
 msgid "Invalid gateway address"
-msgstr ""
+msgstr "Direccion de Puerta de Enlace invalida"
 
 #: inc/ipnetwork_vlan.class.php:135 inc/networkport.class.php:942
 #: inc/networkport_vlan.class.php:135
@@ -9586,7 +9587,7 @@ msgstr ""
 #: install/update_0831_084.php:2442
 #, php-format
 msgid "Change of the database layout - %s"
-msgstr ""
+msgstr "Cambio del diseño de la Base de datos - %s"
 
 #: inc/migration.class.php:587 inc/software.class.php:1007
 #: install/update.php:137
@@ -9650,8 +9651,8 @@ msgstr ""
 #: inc/networkalias.class.php:53
 msgid "Network alias"
 msgid_plural "Network aliases"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Alias de red"
+msgstr[1] "Alias de redes"
 
 #: inc/networkalias.class.php:276
 msgid "Add a network alias"
@@ -9682,7 +9683,7 @@ msgstr ""
 msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage "
 "them."
-msgstr ""
+msgstr "¡Varios nombres de red disponibles! Diríjase a la pestaña 'Nombre de Red' y Adminístrelos."
 
 #: inc/networkname.class.php:705
 msgid "Add a network name"
@@ -9707,11 +9708,11 @@ msgstr ""
 #: inc/networkportaggregate.class.php:95 inc/networkportalias.class.php:93
 #: inc/networkportinstantiation.class.php:621
 msgid "Origin port"
-msgstr ""
+msgstr "Puerto de origen"
 
 #: inc/networkportalias.class.php:45
 msgid "Alias port"
-msgstr ""
+msgstr "Alias de Puerto"
 
 #: inc/networkport.class.php:424
 msgid "Global displays"
@@ -9737,7 +9738,7 @@ msgstr ""
 #: inc/networkport.class.php:544
 #, php-format
 msgid "%1$s: %2$d"
-msgstr ""
+msgstr "%1$s: %2$d"
 
 #: inc/networkport.class.php:592 inc/networkport.class.php:681
 msgid "Network ports waiting for manual migration"
@@ -9765,7 +9766,7 @@ msgstr "Des-asociar una VLAN"
 #: inc/networkport.class.php:957 inc/networkport_vlan.class.php:141
 #: inc/networkport_vlan.class.php:166 inc/vlan.class.php:153
 msgid "Tagged"
-msgstr ""
+msgstr "Etiquetado"
 
 #: inc/networkport.class.php:959
 msgid "Associate"
@@ -9792,19 +9793,19 @@ msgstr "Tipo de Puerto Ethernet"
 #: inc/networkportethernet.class.php:91 inc/networkportethernet.class.php:131
 #: inc/networkportethernet.class.php:197
 msgid "Ethernet port speed"
-msgstr ""
+msgstr "Puerto de velocidad ethernet"
 
 #: inc/networkportethernet.class.php:216
 msgid "Twisted pair (RJ-45)"
-msgstr ""
+msgstr "Par cruzado (RJ-45)"
 
 #: inc/networkportethernet.class.php:217
 msgid "Multimode fiber"
-msgstr ""
+msgstr "Fibra Multimodo"
 
 #: inc/networkportethernet.class.php:218
 msgid "Single mode fiber"
-msgstr ""
+msgstr "Fibra de modo sencillo"
 
 #. TRANS: %d is the speed
 #: inc/networkportethernet.class.php:243 inc/networkportethernet.class.php:289
@@ -9828,7 +9829,7 @@ msgstr ""
 
 #: inc/networkportinstantiation.class.php:82
 msgid "No options available for this port type."
-msgstr ""
+msgstr "No hay opciones disponibles para este tipo de puerto."
 
 #: inc/networkportinstantiation.class.php:127
 #: inc/networkportinstantiation.class.php:155
@@ -9853,11 +9854,11 @@ msgstr "No hay tarjeta de red disponible"
 
 #: inc/networkportinstantiation.class.php:516
 msgid "Equipment without network card"
-msgstr ""
+msgstr "Equipo sin tarjeta de red"
 
 #: inc/networkportinstantiation.class.php:559
 msgid "item not linked to an object"
-msgstr ""
+msgstr "Elemento no enlazado a un objeto"
 
 #. TRANS: %1$s and %2$s are links
 #: inc/networkportinstantiation.class.php:768
@@ -9872,7 +9873,7 @@ msgstr "Sin nombre"
 
 #: inc/networkportinstantiation.class.php:796
 msgid "Not connected."
-msgstr "No conectado"
+msgstr "No conectado."
 
 #: inc/networkportlocal.class.php:48
 msgid "Local loop port"
@@ -9880,15 +9881,15 @@ msgstr ""
 
 #: inc/networkportmigration.class.php:118
 msgid "Undefined interface"
-msgstr ""
+msgstr "Interfaz indefinida"
 
 #: inc/networkportmigration.class.php:120
 msgid "Invalid network (already defined or with invalid addresses)"
-msgstr ""
+msgstr "Red invalida (ya definida o con dirección invalida)"
 
 #: inc/networkportmigration.class.php:122
 msgid "Gateway not include inside the network"
-msgstr ""
+msgstr "Puerta de enlace no incluida dentro de la red"
 
 #: inc/networkportmigration.class.php:204
 #: inc/networkportmigration.class.php:332
@@ -9906,16 +9907,16 @@ msgstr "Dirección o máscara de Red Inválida"
 
 #: inc/networkportmigration.class.php:223
 msgid "No conflicting network"
-msgstr ""
+msgstr "No hay conflictos de red"
 
 #: inc/networkportmigration.class.php:226
 msgid "you may have to add a network"
-msgstr ""
+msgstr "puede que tenga que añadir una red"
 
 #: inc/networkportmigration.class.php:236
 #, php-format
 msgid "Append a correct gateway to the network %s"
-msgstr ""
+msgstr "Añadir una correcta puerta de enlace a la red %s"
 
 #: inc/networkportmigration.class.php:238
 msgid "Unknown network"
@@ -9935,16 +9936,16 @@ msgstr ""
 
 #: inc/networkportmigration.class.php:262
 msgid "I don't understand why this migration error is not deleted."
-msgstr ""
+msgstr "No entiendo por qué no se elimina este error de migración."
 
 #: inc/networkportmigration.class.php:264
 #: inc/networkportmigration.class.php:270
 msgid "You can delete this migration error"
-msgstr ""
+msgstr "Usted puede eliminar este error de migracion"
 
 #: inc/networkportmigration.class.php:268
 msgid "At all events"
-msgstr ""
+msgstr "En todos los eventos"
 
 #: inc/networkportmigration.class.php:278
 msgid "Original network port information"
@@ -9953,11 +9954,11 @@ msgstr ""
 #: inc/networkportmigration.class.php:290
 #: inc/networkportmigration.class.php:436
 msgid "Network address"
-msgstr ""
+msgstr "Dirección de red"
 
 #: inc/networkportmigration.class.php:312
 msgid "Unknown interface"
-msgstr ""
+msgstr "Interfaz desconocida"
 
 #: inc/networkportwifi.class.php:45
 msgid "Wifi port"
@@ -9976,7 +9977,7 @@ msgstr "Versión de protocolo WiFi"
 #: inc/networkportwifi.class.php:100 inc/networkportwifi.class.php:237
 #: inc/wifinetwork.class.php:99 inc/wifinetwork.class.php:125
 msgid "ESSID"
-msgstr ""
+msgstr "ESSID"
 
 #: inc/notification.class.php:165 inc/notification.class.php:267
 #: inc/notificationtarget.class.php:1199
@@ -10727,8 +10728,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d semana"
+msgstr[1] "%d semanas"
 
 #: inc/planningrecall.class.php:332
 msgid "Send planning recalls"
@@ -12009,7 +12010,7 @@ msgstr "Ignorar la importación"
 #: inc/ruledictionnarysoftwarecollection.class.php:164
 #, php-format
 msgid "%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)"
-msgstr ""
+msgstr "%1$s - reglas de repetición en la base de datos existente:: %2$s/%3$s (%4$s Mb)"
 
 #: inc/ruledictionnaryprintermodelcollection.class.php:55
 msgid "Dictionnary of printer models"
@@ -13153,7 +13154,7 @@ msgstr "Intente aumentando el parámetro memory_limit en el archivo php.ini."
 
 #: inc/toolbox.class.php:971 inc/toolbox.class.php:972
 msgid "Allocated memory > 64Mio - Perfect!"
-msgstr ""
+msgstr "Memoria asignada > 64 Mb - Perfecto!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
 #: inc/toolbox.class.php:1009
@@ -13587,39 +13588,39 @@ msgstr ""
 
 #: inc/wifinetwork.class.php:59
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: inc/wifinetwork.class.php:60
 msgid "Managed"
-msgstr ""
+msgstr "Administrado"
 
 #: inc/wifinetwork.class.php:61
 msgid "Master"
-msgstr ""
+msgstr "Maestro"
 
 #: inc/wifinetwork.class.php:62
 msgid "Repeater"
-msgstr ""
+msgstr "Repetidor"
 
 #: inc/wifinetwork.class.php:63
 msgid "Secondary"
-msgstr ""
+msgstr "Secundario"
 
 #: inc/wifinetwork.class.php:65
 msgid "Automatic"
-msgstr ""
+msgstr "Automático"
 
 #: inc/wifinetwork.class.php:72
 msgid "Infrastructure (with access point)"
-msgstr ""
+msgstr "Infraestructura(con access point)"
 
 #: inc/wifinetwork.class.php:73
 msgid "Ad-hoc (without access point)"
-msgstr ""
+msgstr "Ad-hoc (sin access point)"
 
 #: inc/wifinetwork.class.php:103
 msgid "Wifi network type"
-msgstr ""
+msgstr "Tipo de red Wifi"
 
 #: install/install.php:102
 msgid "Unofficial translations are also available"
@@ -13817,7 +13818,7 @@ msgstr "Servicio prestado"
 #: install/update_0831_0833.php:45 install/update_0831_084.php:46
 #, php-format
 msgid "Update to %s"
-msgstr ""
+msgstr "Actualizar a %s"
 
 #. TRANS: %s is 'Clean reservation entity link'
 #. TRANS: %s is the table or item to migrate
@@ -13842,7 +13843,7 @@ msgstr ""
 #: install/update_0831_084.php:2198 install/update_0831_084.php:2409
 #, php-format
 msgid "Data migration - %s"
-msgstr ""
+msgstr "Migracion de datos - %s"
 
 #: install/update_0723_078.php:3689
 msgid "Direct"
