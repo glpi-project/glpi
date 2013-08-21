@@ -4574,11 +4574,25 @@ class Search {
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
                   $separate = '<hr>';
                }
-               $text = str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
-               if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
-                  $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
+               $split = explode("$$$$", $data[$NAME.$num]);
+               $out = '';
+               $count_display = 0;
+               foreach ($split as $val) {
+                  if (strlen(trim($val)) > 0) {
+                     $split2 = self::explodeWithID("$$", $val);
+                     if ($count_display) {
+                        $out .= $separate;
+                     }
+                     $count_display++;
+                     if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
+                        $out .= Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($split2[0])));
+                     } else {
+                        $out .= nl2br($split2[0]);
+                     }
+                  }
                }
-               return $text;
+
+               return $out;
 
             case "date" :
             case "date_delay" :
