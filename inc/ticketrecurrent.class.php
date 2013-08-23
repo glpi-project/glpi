@@ -316,6 +316,7 @@ class TicketRecurrent extends CommonDropdown {
             return 'NULL';
          }
       }
+
       $check = true;
       if (preg_match('/([0-9]+)MONTH/',$periodicity)
           || preg_match('/([0-9]+)YEAR/',$periodicity)) {
@@ -328,7 +329,7 @@ class TicketRecurrent extends CommonDropdown {
                                           false, ERROR);
          return 'NULL';
       }
-
+      
       if ($periodicity <> 0) {
          // Standard time computation
          $timestart  = strtotime($begin_date) - $create_before;
@@ -349,8 +350,10 @@ class TicketRecurrent extends CommonDropdown {
             }
          }
          // Time start over end date
-         if ($timestart > strtotime($end_date)) {
-            return 'NULL';
+         if (!empty($end_date) && ($end_date <> 'NULL')) {
+            if ($timestart > strtotime($end_date)) {
+               return 'NULL';
+            }
          }
          
          $calendar = new Calendar();
@@ -406,7 +409,6 @@ class TicketRecurrent extends CommonDropdown {
                       AND `glpi_ticketrecurrents`.`is_active` = 1
                       AND (`glpi_ticketrecurrents`.`end_date` IS NULL
                            OR `glpi_ticketrecurrents`.`end_date` > NOW())";
-
       foreach ($DB->request($query) as $data) {
          if (self::createTicket($data)) {
             $tot++;
