@@ -137,7 +137,28 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
    }
 
+   /**
+    * Add linked group without supervisor to the notified user list
+    *
+    * @param $type type of linked groups
+   **/
+   function getLinkedGroupWithoutSupervisorByType($type) {
+      global $DB;
 
+      $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
+      $fkfield        = $this->obj->getForeignKeyField();
+
+      $query = "SELECT `groups_id`
+                FROM `$grouplinktable`
+                WHERE `$grouplinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
+                      AND `$grouplinktable`.`type` = '$type'";
+
+      foreach ($DB->request($query) as $data) {
+         //Add the group in the notified users list
+         $this->getAddressesByGroup(2, $data['groups_id']);
+      }
+   }
+   
    /**
     * Add linked group supervisor to the notified user list
     *
@@ -383,7 +404,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::SUPPLIER, __('Supplier'));
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           __('Manager of the group in charge of the ticket'));
+         $this->addTarget(Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
+                          __('Group in charge of the ticket without manager'));
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requesters group manager'));
+         $this->addTarget(Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
+                 __('Requesters group without manager'));         
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
                           __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
@@ -396,6 +421,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watchers group'));
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
          $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watchers group manager'));
+         $this->addTarget(Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR,
+                           __('Watchers group without manager'));                  
       }
 
       if (($event == 'validation') || ($event == 'validation_answer')) {
@@ -438,6 +465,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   $this->getLinkedGroupSupervisorByType(CommonITILActor::ASSIGN);
                   break;
 
+               //Notification to the group in charge of the ITIL object without supervisor
+               case Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR :
+                  $this->getLinkedGroupWithoutSupervisorByType(CommonITILActor::ASSIGN);
+                  break;
+
                //Send to the user who's got the issue
                case Notification::RECIPIENT :
                   $this->getRecipientAddress();
@@ -462,6 +494,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   $this->getLinkedGroupByType(CommonITILActor::REQUESTER);
                   break;
 
+               //Notification to the requester group without supervisor
+               case Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR :
+                  $this->getLinkedGroupWithoutSupervisorByType(CommonITILActor::REQUESTER);
+                  break;
+                  
                case Notification::ASSIGN_GROUP :
                   $this->getLinkedGroupByType(CommonITILActor::ASSIGN);
                   break;
@@ -505,6 +542,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                case Notification::SUPERVISOR_OBSERVER_GROUP :
                   $this->getLinkedGroupSupervisorByType(CommonITILActor::OBSERVER);
                   break;
+
+               //Notification to the observer group without supervisor
+               case Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR :
+                  $this->getLinkedGroupWithoutSupervisorByType(CommonITILActor::OBSERVER);
+                  break;                  
             }
          }
    }
