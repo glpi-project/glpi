@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-08-27 12:56+0200\n"
-"PO-Revision-Date: 2013-08-27 10:56+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-08-27 11:58+0000\n"
+"Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
 "Language-Team: Danish (Denmark) (http://www.transifex.com/projects/p/GLPI/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5228,8 +5228,8 @@ msgstr[1] "Forespørgergruppe"
 #: inc/ruleticket.class.php:325 inc/ruleticket.class.php:430
 msgid "Watcher group"
 msgid_plural "Watcher groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Overvågergruppe"
+msgstr[1] "Overvågergrupper"
 
 #: inc/commonitilobject.class.php:2446
 #: inc/notificationtargetcommonitilobject.class.php:879
@@ -5240,7 +5240,7 @@ msgstr "Tilknyttet til en leverandør"
 #: inc/commonitilobject.class.php:2462 inc/ruleticket.class.php:306
 #: inc/ruleticket.class.php:407
 msgid "Technician group"
-msgstr ""
+msgstr "Teknikgruppe"
 
 #: inc/commonitilobject.class.php:2490
 msgid "Email for followup"
@@ -10094,7 +10094,7 @@ msgstr "Manager for gruppe"
 
 #: inc/notificationtarget.class.php:746
 msgid "Group without manager"
-msgstr ""
+msgstr "Gruppe uden manager"
 
 #: inc/notificationtarget.class.php:764
 #: inc/notificationtargetdbconnection.class.php:51
@@ -10115,15 +10115,15 @@ msgstr "Manager for gruppen med ansvar for sagen"
 
 #: inc/notificationtargetcommonitilobject.class.php:408
 msgid "Group in charge of the ticket without manager"
-msgstr ""
+msgstr "Sagsansvarlig gruppe uden manager"
 
 #: inc/notificationtargetcommonitilobject.class.php:409
 msgid "Requester group manager"
-msgstr ""
+msgstr "Forspørgergruppe manager"
 
 #: inc/notificationtargetcommonitilobject.class.php:411
 msgid "Requester group without manager"
-msgstr ""
+msgstr "Forspørgergruppe uden manager"
 
 #: inc/notificationtargetcommonitilobject.class.php:416
 msgid "Technician in charge of the ticket"
@@ -10136,11 +10136,11 @@ msgstr "Hardware bruger"
 
 #: inc/notificationtargetcommonitilobject.class.php:423
 msgid "Watcher group manager"
-msgstr ""
+msgstr "Overvågergruppe manager"
 
 #: inc/notificationtargetcommonitilobject.class.php:425
 msgid "Watcher group without manager"
-msgstr ""
+msgstr "Overvågergruppe uden manager"
 
 #: inc/notificationtargetcommonitilobject.class.php:429
 #: inc/ticketvalidation.class.php:650 inc/ticketvalidation.class.php:751
@@ -12259,11 +12259,11 @@ msgstr "Send en godkendelses-forespørgsel"
 
 #: inc/ruleticket.class.php:463
 msgid "Approval request to requester group supervisor"
-msgstr ""
+msgstr "Godkendelsesforespørgsel til forespørgergruppens supervisor"
 
 #: inc/ruleticket.class.php:470
 msgid "Approval request to technician group supervisor"
-msgstr ""
+msgstr "Godkendelsesforespørgsel til teknikgruppens supervisor"
 
 #: inc/search.class.php:1257 inc/search.class.php:1261
 #: inc/search.class.php:1334 inc/search.class.php:1338
@@ -12770,7 +12770,7 @@ msgstr "Sager der skal behandles"
 
 #: inc/ticket.class.php:4797 inc/ticket.class.php:4934
 msgid "Your observed tickets"
-msgstr ""
+msgstr "Dine overvågede sager"
 
 #: inc/ticket.class.php:4816 inc/ticket.class.php:4951
 msgid "Your tickets in progress"
