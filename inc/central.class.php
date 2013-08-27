@@ -182,6 +182,7 @@ class Central extends CommonGLPI {
       Ticket::showCentralList(0, "toapprove", false);
       Ticket::showCentralList(0, "rejected", false);
       Ticket::showCentralList(0, "requestbyself", false);
+      Ticket::showCentralList(0, "observed", false);
       if ($showticket) {
          Ticket::showCentralList(0, "process", false);
          Ticket::showCentralList(0, "waiting", false);
@@ -256,6 +257,7 @@ class Central extends CommonGLPI {
       if (Session::haveRight('show_group_ticket','1')) {
          Ticket::showCentralList(0, "toapprove", true);
          Ticket::showCentralList(0, "requestbyself", true);
+         Ticket::showCentralList(0, "observed", true);
       } else {
          Ticket::showCentralList(0, "waiting", true);
       }
