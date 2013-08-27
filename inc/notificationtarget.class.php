@@ -993,11 +993,16 @@ class NotificationTarget extends CommonDBChild {
             $this->getAddressesByGroup(0, $data['items_id']);
             break;
 
-         //Send to all the users of a group
+         //Send to all the managers of a group
          case Notification::SUPERVISOR_GROUP_TYPE :
             $this->getAddressesByGroup(1, $data['items_id']);
             break;
 
+         //Send to all the users of a group without managers
+         case Notification::GROUP_WITHOUT_SUPERVISOR_TYPE :
+            $this->getAddressesByGroup(2, $data['items_id']);
+            break;
+            
          //Send to all the users of a profile
          case Notification::PROFILE_TYPE :
             $this->getUsersAddressesByProfile($data['items_id']);
