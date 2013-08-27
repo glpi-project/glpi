@@ -480,15 +480,31 @@ class Document_Item extends CommonDBRelation{
       $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
 
+
+      if (isset($_POST["order"]) && ($_POST["order"] == "ASC")) {
+         $order = "ASC";
+      } else {
+         $order = "DESC";
+      }
+
+      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
+         $sort = "`".$_POST["sort"]."`";
+      } else {
+         $sort = "`assocdate`";
+      }
+
       $query = "SELECT `glpi_documents_items`.`id` AS assocID,
                        `glpi_documents_items`.`date_mod` AS assocdate,
-                       `glpi_entities`.`id` AS entity,
-                       `glpi_documents`.`name` AS assocName,
+                       `glpi_entities`.`id` AS entityID,
+                       `glpi_entities`.`completename` AS entity,
+                       `glpi_documentcategories`.`completename` AS headings,
                        `glpi_documents`.*
                 FROM `glpi_documents_items`
                 LEFT JOIN `glpi_documents`
                           ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
                 LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                LEFT JOIN `glpi_documentcategories`
+                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
                 WHERE `glpi_documents_items`.`items_id` = '$ID'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
@@ -504,14 +520,17 @@ class Document_Item extends CommonDBRelation{
          $query .= "UNION
                     SELECT `glpi_documents_items`.`id` AS assocID,
                            `glpi_documents_items`.`date_mod` AS assocdate,
-                           `glpi_entities`.`id` AS entity,
-                           `glpi_documents`.`name` AS assocName,
+                           `glpi_entities`.`id` AS entityID,
+                           `glpi_entities`.`completename` AS entity,
+                           `glpi_documentcategories`.`completename` AS headings,
                            `glpi_documents`.*
                     FROM `glpi_documents_items`
                     LEFT JOIN `glpi_documents`
                               ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
                     LEFT JOIN `glpi_entities`
                               ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                    LEFT JOIN `glpi_documentcategories`
+                              ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
                     WHERE `glpi_documents_items`.`documents_id` = '$ID'
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
@@ -522,7 +541,7 @@ class Document_Item extends CommonDBRelation{
             $query .= " AND `glpi_documents`.`entities_id`='0' ";
          }
       }
-      $query .= " ORDER BY `assocdate` DESC, assocName ";
+      $query .= " ORDER BY $sort $order ";
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -637,23 +656,35 @@ class Document_Item extends CommonDBRelation{
          $massiveactionparams = array('num_displayed'  => $number);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
+
+      $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
+            (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
       if ($canedit && $number && ($withtemplate < 2)) {
          echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('File')."</th>";
-      echo "<th>".__('Web link')."</th>";
-      echo "<th>".__('Heading')."</th>";
-      echo "<th>".__('MIME type')."</th>";
-      echo "<th>".__('Date')."</th>";
+
+      $columns = array('name' => __('Name'),
+                       'entity' => __('Entity'),
+                       'filename'   => __('File'),
+                       'link'=> __('Web link'),
+                       'headings'   => __('Heading'),
+                       'mime'   => __('MIME type'),
+                       'assocdate'   => __('Date'));
+
+      foreach ($columns as $key => $val) {
+         echo "<th>".(($sort == "`$key`") ?$sort_img:"").
+               "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                  (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+      }
       echo "</tr>";
       $used = array();
 
       if ($number) {
+
          // Don't use this for document associated to document
          // To not loose navigation list for current document
          if ($item->getType() != 'Document') {
@@ -688,7 +719,7 @@ class Document_Item extends CommonDBRelation{
                echo "</td>";
             }
             echo "<td class='center'>$link</td>";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data['entity']);
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data['entityID']);
             echo "</td>";
             echo "<td class='center'>$downloadlink</td>";
             echo "<td class='center'>";
