@@ -164,7 +164,7 @@ class NotificationMailSetting extends CommonDBTM {
             echo "<span class='red'>&nbsp;".__('Invalid email address')."</span>";
          }
          echo " </td>";
-         echo "<td >" . __('Response address (if needed)') . "</td>";
+         echo "<td >" . __('Response name (if needed)') . "</td>";
          echo "<td><input type='text' name='admin_reply_name' size='40' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          echo " </td></tr>";
