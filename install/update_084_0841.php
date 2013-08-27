@@ -82,7 +82,17 @@ function update084to0841() {
          $DB->queryOrDie($query, "0.85 fix encoding of html field : $table.$field");
       }
    }
-   
+
+   // Add date_mod to document_item
+   $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
+   $migration->migrationOneTable('glpi_documents_items');
+   $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
+                  INNER JOIN `glpi_documents` as `doc`
+                  ON  `doc`.`id` = `doc_i`.`documents_id`
+                  SET `doc_i`.`date_mod` = `doc`.`date_mod`";
+   $DB->queryOrDie($query_doc_i,
+                  "0.84.1 update date_mod in glpi_documents_items");
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
