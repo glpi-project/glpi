@@ -406,23 +406,23 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                           __('Manager of the group in charge of the ticket'));
          $this->addTarget(Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
                           __('Group in charge of the ticket without manager'));
-         $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requesters group manager'));
+         $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
          $this->addTarget(Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
-                 __('Requesters group without manager'));         
+                 __('Requester group without manager'));
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
                           __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
                           __('Group in charge of the hardware'));
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of the ticket'));
-         $this->addTarget(Notification::REQUESTER_GROUP, __('Requesters group'));
+         $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
          $this->addTarget(Notification::AUTHOR, __('Requester'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
-         $this->addTarget(Notification::OBSERVER_GROUP, __('Watchers group'));
+         $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
-         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watchers group manager'));
+         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watcher group manager'));
          $this->addTarget(Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR,
-                           __('Watchers group without manager'));                  
+                           __('Watcher group without manager'));
       }
 
       if (($event == 'validation') || ($event == 'validation_answer')) {
@@ -877,9 +877,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.lastupdater'           => __('Last updater'),
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
                     $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
-                    $objettype.'.groups'                => _n('Requesters group',
-                                                              'Requesters groups', 2),
-                    $objettype.'.observergroups'        => _n('Watchers group', 'Watchers groups', 2),
+                    $objettype.'.groups'                => _n('Requester group',
+                                                              'Requester groups', 2),
+                    $objettype.'.observergroups'        => _n('Watcher group', 'Watcher groups', 2),
                     $objettype.'.assigntogroups'        => __('Assigned to groups'),
                     $objettype.'.solution.type'         => __('Solution type'),
                     $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),
