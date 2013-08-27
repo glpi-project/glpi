@@ -303,7 +303,7 @@ class RuleTicket extends Rule {
 
       $criterias['_groups_id_assign']['table']        = 'glpi_groups';
       $criterias['_groups_id_assign']['field']        = 'completename';
-      $criterias['_groups_id_assign']['name']         = __('Technicians group');
+      $criterias['_groups_id_assign']['name']         = __('Technician group');
       $criterias['_groups_id_assign']['linkfield']    = '_groups_id_assign';
       $criterias['_groups_id_assign']['type']         = 'dropdown';
       $criterias['_groups_id_assign']['condition']    = '`is_assign`';
@@ -322,7 +322,7 @@ class RuleTicket extends Rule {
 
       $criterias['_groups_id_observer']['table']      = 'glpi_groups';
       $criterias['_groups_id_observer']['field']      = 'completename';
-      $criterias['_groups_id_observer']['name']       = __('Watchers group');
+      $criterias['_groups_id_observer']['name']       = __('Watcher group');
       $criterias['_groups_id_observer']['linkfield']  = '_groups_id_observer';
       $criterias['_groups_id_observer']['type']       = 'dropdown';
 
@@ -387,7 +387,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_requester']['appendtoarray']      = array('use_notification' => 1);
       $actions['_users_id_requester']['appendtoarrayfield'] = 'users_id';
 
-      $actions['_groups_id_requester']['name']              = __('Requesters group');
+      $actions['_groups_id_requester']['name']              = __('Requester group');
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['force_actions']     = array('assign', 'append');
@@ -404,7 +404,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_assign']['appendtoarrayfield']    = 'users_id';
 
       $actions['_groups_id_assign']['table']                = 'glpi_groups';
-      $actions['_groups_id_assign']['name']                 = __('Technicians group');
+      $actions['_groups_id_assign']['name']                 = __('Technician group');
       $actions['_groups_id_assign']['type']                 = 'dropdown';
       $actions['_groups_id_assign']['condition']            = '`is_assign`';
       $actions['_groups_id_assign']['force_actions']        = array('assign', 'append');
@@ -427,7 +427,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_observer']['appendtoarrayfield']  = 'users_id';
 
       $actions['_groups_id_observer']['table']              = 'glpi_groups';
-      $actions['_groups_id_observer']['name']               = __('Watchers group');
+      $actions['_groups_id_observer']['name']               = __('Watcher group');
       $actions['_groups_id_observer']['type']               = 'dropdown';
       $actions['_groups_id_observer']['force_actions']      = array('assign', 'append');
       $actions['_groups_id_observer']['permitseveral']      = array('append');
@@ -460,14 +460,14 @@ class RuleTicket extends Rule {
       $actions['users_id_validate']['force_actions']        = array('add_validation');
 
       $actions['users_id_validate_requester_supervisor']['name']
-                                          = __('Approval request to requesters group supervisor');
+                                          = __('Approval request to requester group supervisor');
       $actions['users_id_validate_requester_supervisor']['type']
                                           = 'yesno';
       $actions['users_id_validate_requester_supervisor']['force_actions']
                                           = array('add_validation');
 
       $actions['users_id_validate_assign_supervisor']['name']
-                                          = __('Approval request to technicians group supervisor');
+                                          = __('Approval request to technician group supervisor');
       $actions['users_id_validate_assign_supervisor']['type']
                                           = 'yesno';
       $actions['users_id_validate_assign_supervisor']['force_actions']
