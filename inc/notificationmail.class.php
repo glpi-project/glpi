@@ -218,7 +218,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       // For exchange
       $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
 
-      $mmail->SetFrom($options['from'], $options['fromname']);
+      $mmail->SetFrom($options['from'], $options['fromname'], false);
 
       if ($options['replyto']) {
          $mmail->AddReplyTo($options['replyto'], $options['replytoname']);
