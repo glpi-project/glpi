@@ -4036,7 +4036,7 @@ class Html {
          $rand    = mt_rand();
          $name    = "field_".$params['name'].$rand;
          $output .=  "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
-                       "' value=\"".self::cleanInputText($params['value']).
+                       "' autocomplete='off' value=\"".self::cleanInputText($params['value']).
                        "\" size='".$params['size']."'>\n";
          $output .= "<script type='text/javascript' >\n";
 
