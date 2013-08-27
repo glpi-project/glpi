@@ -600,6 +600,63 @@ class Problem extends CommonITILObject {
                                           => array('table'      => 'glpi_problemtasks',
                                                    'joinparams' => array('jointype' => 'child')));
 
+      $tab[92]['table']          = 'glpi_problemtasks';
+      $tab[92]['field']          = 'is_private';
+      $tab[92]['name']           = __('Private task');
+      $tab[92]['datatype']       = 'bool';
+      $tab[92]['forcegroupby']   = true;
+      $tab[92]['splititems']     = true;
+      $tab[92]['massiveaction']  = false;
+      $tab[92]['joinparams']     = array('jointype' => 'child');
+
+      $tab[94]['table']          = 'glpi_users';
+      $tab[94]['field']          = 'name';
+      $tab[94]['name']           = __('Writer');
+      $tab[94]['datatype']       = 'itemlink';
+      $tab[94]['right']          = 'all';
+      $tab[94]['forcegroupby']   = true;
+      $tab[94]['massiveaction']  = false;
+      $tab[94]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_problemtasks',
+                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[95]['table']          = 'glpi_users';
+      $tab[95]['field']          = 'name';
+      $tab[95]['linkfield']      = 'users_id_tech';
+      $tab[95]['name']           = __('Technician');
+      $tab[95]['datatype']       = 'itemlink';
+      $tab[95]['right']          = 'own_ticket';
+      $tab[95]['forcegroupby']   = true;
+      $tab[95]['massiveaction']  = false;
+      $tab[95]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_problemtasks',
+                                                   'joinparams' => array('jointype'  => 'child')));
+
+      $tab[96]['table']          = 'glpi_problemtasks';
+      $tab[96]['field']          = 'actiontime';
+      $tab[96]['name']           = __('Duration');
+      $tab[96]['datatype']       = 'timestamp';
+      $tab[96]['massiveaction']  = false;
+      $tab[96]['forcegroupby']   = true;
+      $tab[96]['joinparams']     = array('jointype' => 'child');
+
+      $tab[97]['table']          = 'glpi_problemtasks';
+      $tab[97]['field']          = 'date';
+      $tab[97]['name']           = __('Date');
+      $tab[97]['datatype']       = 'datetime';
+      $tab[97]['massiveaction']  = false;
+      $tab[97]['forcegroupby']   = true;
+      $tab[97]['joinparams']     = array('jointype' => 'child');
+
+      $tab[33]['table']          = 'glpi_problemtasks';
+      $tab[33]['field']          = 'state';
+      $tab[33]['name']           = __('Status');
+      $tab[33]['datatype']       = 'specific';
+      $tab[33]['searchtype']     = 'equals';
+      $tab[33]['searchequalsonfield'] = true;
+      $tab[33]['massiveaction']  = false;
+      $tab[33]['forcegroupby']   = true;
+      $tab[33]['joinparams']     = array('jointype' => 'child');
+
       $tab['solution']          = _n('Solution', 'Solutions', 2);
 
       $tab[23]['table']         = 'glpi_solutiontypes';

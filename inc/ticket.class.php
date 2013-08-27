@@ -2337,6 +2337,7 @@ class Ticket extends CommonITILObject {
          $tab[96]['name']           = __('Duration');
          $tab[96]['datatype']       = 'timestamp';
          $tab[96]['massiveaction']  = false;
+         $tab[96]['forcegroupby']   = true;
          $tab[96]['joinparams']     = array('jointype' => 'child');
 
          $tab[97]['table']          = 'glpi_tickettasks';
@@ -2344,9 +2345,19 @@ class Ticket extends CommonITILObject {
          $tab[97]['name']           = __('Date');
          $tab[97]['datatype']       = 'datetime';
          $tab[97]['massiveaction']  = false;
+         $tab[97]['forcegroupby']   = true;
          $tab[97]['joinparams']     = array('jointype' => 'child');
 
-
+         $tab[33]['table']          = 'glpi_tickettasks';
+         $tab[33]['field']          = 'state';
+         $tab[33]['name']           = __('Status');
+         $tab[33]['datatype']       = 'specific';
+         $tab[33]['searchtype']     = 'equals';
+         $tab[33]['searchequalsonfield'] = true;
+         $tab[33]['massiveaction']  = false;
+         $tab[33]['forcegroupby']   = true;
+         $tab[33]['joinparams']     = array('jointype' => 'child');
+         
          $tab['solution']           = _n('Solution', 'Solutions', 1);
 
          $tab[23]['table']          = 'glpi_solutiontypes';

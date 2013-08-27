@@ -101,7 +101,50 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    }
 
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+
+      switch ($field) {
+         case 'state' :
+            return Planning::getState($values[$field]);
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }   
+
+   /**
+    * @since version 0.84
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+    * @return string
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'state':
+            return Planning::dropdownState($name, $values[$field], false);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+   
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (($item->getType() == $this->getItilObjectItemType())
@@ -466,6 +509,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[6]['datatype']      = 'actiontime';
       $tab[6]['massiveaction'] = false;
 
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'state';
+      $tab[7]['name']          = __('Status');
+      $tab[7]['datatype']      = 'specific';
+      
       return $tab;
    }
 
