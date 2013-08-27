@@ -49,7 +49,9 @@ class Notification extends CommonDBTM {
    const MAILING_TYPE          = 4;
    //Notification to the supervisor of a group
    const SUPERVISOR_GROUP_TYPE = 5;
-
+   //Notification to all user of a group except supervisor
+   const GROUP_WITHOUT_SUPERVISOR_TYPE = 6;
+   
    // MAILING USERS TYPE
 
    //Notification to the GLPI global administrator
@@ -98,7 +100,12 @@ class Notification extends CommonDBTM {
    const SUPERVISOR_OBSERVER_GROUP  = 22;
    //Notification to the group of technician in charge of the item
    const ITEM_TECH_GROUP_IN_CHARGE  = 23;
-
+   // Notification to group of people without supervisor
+   const ASSIGN_GROUP_WITHOUT_SUPERVISOR     = 24;
+   //Notification to the ticket's requester group without supervisor
+   const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;
+   //Notification to the ticket's observer group without supervisor
+   const OBSERVER_GROUP_WITHOUT_SUPERVISOR   = 26;
 
    // From CommonDBTM
    public $dohistory = true;

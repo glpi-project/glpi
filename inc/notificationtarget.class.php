@@ -635,7 +635,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get targets for all the users of a group
     *
-    * @param $manager      0 all users, 1 only supervisors
+    * @param $manager      0 all users, 1 only supervisors, 2 all users without supervisors
     * @param $group_id     id of the group
    **/
    function getAddressesByGroup($manager, $group_id) {
@@ -650,9 +650,12 @@ class NotificationTarget extends CommonDBChild {
                INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                WHERE `glpi_groups_users`.`groups_id` = '$group_id'
                      AND `glpi_groups`.`is_notify`";
-      if ($manager) {
+      if ($manager == 1) {
          $query .= " AND `glpi_groups_users`.`is_manager` ";
+      } else if ($manager == 2) {
+         $query .= " AND NOT `glpi_groups_users`.`is_manager` ";
       }
+
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
       }
@@ -739,6 +742,10 @@ class NotificationTarget extends CommonDBChild {
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Manager of group'),
                                                $data["name"]),
                           Notification::SUPERVISOR_GROUP_TYPE);
+         //Add group without supervisor
+         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Group without manager'),
+                                               $data["name"]),
+                          Notification::GROUP_WITHOUT_SUPERVISOR_TYPE);
       }
    }
 
