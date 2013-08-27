@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2013-08-27 11:59+0200\n"
-"PO-Revision-Date: 2013-08-27 10:00+0000\n"
+"POT-Creation-Date: 2013-08-27 12:56+0200\n"
+"PO-Revision-Date: 2013-08-27 10:56+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/GLPI/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
@@ -1468,7 +1468,7 @@ msgstr[0] ""
 #: inc/monitor.class.php:452 inc/networkequipment.class.php:241
 #: inc/networkequipment.class.php:427 inc/networkname.class.php:241
 #: inc/networkport.class.php:1116 inc/notification.class.php:150
-#: inc/notification.class.php:285 inc/notificationtarget.class.php:1205
+#: inc/notification.class.php:285 inc/notificationtarget.class.php:1210
 #: inc/notificationtargetcontract.class.php:159
 #: inc/notificationtargetfieldunicity.class.php:87
 #: inc/notificationtargetticket.class.php:569
@@ -2058,7 +2058,7 @@ msgstr ""
 #: inc/networkport.class.php:610 inc/networkport.class.php:848
 #: inc/networkport.class.php:1076 inc/networkport_vlan.class.php:164
 #: inc/notification.class.php:136 inc/notification.class.php:261
-#: inc/notificationtarget.class.php:1202
+#: inc/notificationtarget.class.php:1207
 #: inc/notificationtargetcommonitilobject.class.php:927
 #: inc/notificationtargetcontract.class.php:155
 #: inc/notificationtargetcrontask.class.php:88
@@ -3347,7 +3347,7 @@ msgstr ""
 #: inc/fieldunicity.class.php:65 inc/fieldunicity.class.php:354
 #: inc/mailcollector.class.php:231 inc/mailcollector.class.php:326
 #: inc/notification.class.php:145 inc/notification.class.php:292
-#: inc/notificationtarget.class.php:1204 inc/reservationitem.class.php:142
+#: inc/notificationtarget.class.php:1209 inc/reservationitem.class.php:142
 #: inc/rssfeed.class.php:430 inc/rssfeed.class.php:657 inc/rule.class.php:302
 #: inc/rule.class.php:422 inc/rule.class.php:2233
 #: inc/rulecollection.class.php:418 inc/rulecollection.class.php:447
@@ -3889,7 +3889,7 @@ msgstr[0] ""
 #: inc/group_user.class.php:450 inc/ipaddress.class.php:283
 #: inc/item_problem.class.php:235 inc/netpoint.class.php:365
 #: inc/networkalias.class.php:392 inc/networkname.class.php:798
-#: inc/networkport.class.php:526 inc/notificationtarget.class.php:1214
+#: inc/networkport.class.php:526 inc/notificationtarget.class.php:1219
 #: inc/notificationtemplatetranslation.class.php:187
 #: inc/problem.class.php:1877 inc/problem_ticket.class.php:276
 #: inc/problem_ticket.class.php:375 inc/profile_user.class.php:325
@@ -4284,7 +4284,7 @@ msgstr ""
 #: inc/group.class.php:737 inc/group_user.class.php:519
 #: inc/itilcategory.class.php:327 inc/knowbaseitem.class.php:1334
 #: inc/netpoint.class.php:331 inc/networkalias.class.php:376
-#: inc/notificationtarget.class.php:1240 inc/profile_user.class.php:237
+#: inc/notificationtarget.class.php:1245 inc/profile_user.class.php:237
 #: inc/rule.class.php:2211 inc/search.class.php:5617
 #: inc/software.class.php:914 inc/softwarelicense.class.php:570
 #: inc/softwarelicense.class.php:733 inc/softwareversion.class.php:293
@@ -5135,17 +5135,17 @@ msgstr ""
 #: inc/commonitilobject.class.php:2357 inc/commonitilobject.class.php:2588
 #: inc/notificationtargetcommonitilobject.class.php:417
 #: inc/notificationtargetcommonitilobject.class.php:880
-#: inc/ruleticket.class.php:390
-msgid "Requesters group"
-msgid_plural "Requesters groups"
+#: inc/ruleticket.class.php:294 inc/ruleticket.class.php:390
+msgid "Requester group"
+msgid_plural "Requester groups"
 msgstr[0] ""
 
 #: inc/commonitilobject.class.php:2410 inc/commonitilobject.class.php:2592
 #: inc/notificationtargetcommonitilobject.class.php:421
 #: inc/notificationtargetcommonitilobject.class.php:882
 #: inc/ruleticket.class.php:325 inc/ruleticket.class.php:430
-msgid "Watchers group"
-msgid_plural "Watchers groups"
+msgid "Watcher group"
+msgid_plural "Watcher groups"
 msgstr[0] ""
 
 #: inc/commonitilobject.class.php:2446
@@ -5156,7 +5156,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:2462 inc/ruleticket.class.php:306
 #: inc/ruleticket.class.php:407
-msgid "Technicians group"
+msgid "Technician group"
 msgstr ""
 
 #: inc/commonitilobject.class.php:2490
@@ -5715,7 +5715,7 @@ msgstr ""
 msgid "General setup"
 msgstr ""
 
-#: inc/config.class.php:202 inc/notificationtarget.class.php:1059
+#: inc/config.class.php:202 inc/notificationtarget.class.php:1064
 msgid "URL of the application"
 msgstr ""
 
@@ -9777,7 +9777,7 @@ msgid "ESSID"
 msgstr ""
 
 #: inc/notification.class.php:172 inc/notification.class.php:274
-#: inc/notificationtarget.class.php:1206
+#: inc/notificationtarget.class.php:1211
 msgid "Notification method"
 msgstr ""
 
@@ -9914,11 +9914,11 @@ msgid "Group in charge of the ticket without manager"
 msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:409
-msgid "Requesters group manager"
+msgid "Requester group manager"
 msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:411
-msgid "Requesters group without manager"
+msgid "Requester group without manager"
 msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:416
@@ -9931,11 +9931,11 @@ msgid "Hardware user"
 msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:423
-msgid "Watchers group manager"
+msgid "Watcher group manager"
 msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:425
-msgid "Watchers group without manager"
+msgid "Watcher group without manager"
 msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:429
@@ -12026,20 +12026,16 @@ msgstr ""
 msgid "Ticket location"
 msgstr ""
 
-#: inc/ruleticket.class.php:294
-msgid "Requester group"
-msgstr ""
-
 #: inc/ruleticket.class.php:458 inc/ticketvalidation.class.php:633
 msgid "Send an approval request"
 msgstr ""
 
 #: inc/ruleticket.class.php:463
-msgid "Approval request to requesters group supervisor"
+msgid "Approval request to requester group supervisor"
 msgstr ""
 
 #: inc/ruleticket.class.php:470
-msgid "Approval request to technicians group supervisor"
+msgid "Approval request to technician group supervisor"
 msgstr ""
 
 #: inc/search.class.php:1257 inc/search.class.php:1261
