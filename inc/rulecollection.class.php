@@ -903,7 +903,6 @@ class RuleCollection extends CommonDBTM {
       }
 
       $output = $this->testAllRules($input, $output, $input);
-
       $rule   = $this->getRuleClass();
 
       echo "<div class='center'>";
@@ -936,6 +935,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       $output        = $this->cleanTestOutputCriterias($output);
+      
       unset($output["result"]);
       $global_result = (count($output)?1:0);
 
@@ -953,10 +953,12 @@ class RuleCollection extends CommonDBTM {
     * @return cleaned array
    **/
    function cleanTestOutputCriterias(array $output) {
-
+      $rule   = $this->getRuleClass();
+      $actions = $rule->getAllActions();
+      
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
-         if ($criteria[0] == '_') {
+         if ($criteria[0] == '_' && !isset($actions[$criteria])) {
             unset($output[$criteria]);
          }
       }
