@@ -844,12 +844,25 @@ class RuleCollection extends CommonDBTM {
     * @return the updated input datas
    **/
    function prepareInputDataForProcessWithPlugins($input, $params) {
-
-      $plugin_result = Rule::doHookAndMergeResults('ruleCollectionPrepareInputDataForProcess',
-                                                   array('input' => $input,
-                                                         'params' => $params),
-                                                   $this->getRuleClassName());
-      return array_merge($this->prepareInputDataForProcess($input, $params), $plugin_result);
+      global $PLUGIN_HOOKS;
+      
+      $input = $this->prepareInputDataForProcess($input, $params);
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (is_array($val) && in_array($this->getRuleClassName(), $val)) {
+               $results = Plugin::doOneHook($plugin, 'ruleCollectionPrepareInputDataForProcess',
+                                             array('rule_itemtype' => $this->getRuleClassName(),
+                                                   'values'        => array('input' => $input,
+                                                                            'params' => $params)));
+               if (is_array($results)) {
+                  foreach ($results as $id => $result) {
+                     $input[$id] = $result;
+                  }
+               }
+            }
+         }
+      }
+      return $input;
    }
 
 
