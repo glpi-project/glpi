@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -42,11 +42,11 @@ class Document_Item extends CommonDBRelation{
    // From CommonDBRelation
    static public $itemtype_1    = 'Document';
    static public $items_id_1    = 'documents_id';
-   static public $take_entity_1 = false ;
+   static public $take_entity_1 = true ;
 
    static public $itemtype_2    = 'itemtype';
    static public $items_id_2    = 'items_id';
-   static public $take_entity_2 = true ;
+   static public $take_entity_2 = false ;
 
 
    /**
@@ -80,7 +80,6 @@ class Document_Item extends CommonDBRelation{
       if (countElementsInTable($this->getTable(),$restrict) > 0) {
          return false;
       }
-
       return parent::prepareInputForAdd($input);
    }
 
