@@ -226,9 +226,7 @@ class Document extends CommonDBTM {
          $docitem = new Document_Item();
          $docitem->add(array('documents_id' => $this->fields['id'],
                              'itemtype'     => $this->input["itemtype"],
-                             'items_id'     => $this->input["items_id"],
-                             'entities_id'  => $this->input["entities_id"],
-                             'is_recursive' => $this->input["is_recursive"]));
+                             'items_id'     => $this->input["items_id"]));
 
          Event::log($this->fields['id'], "documents", 4, "document",
                   //TRANS: %s is the user login
