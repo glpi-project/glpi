@@ -136,7 +136,7 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canDeleteItem() {
-      return $this->canUpdateItem();
+      return Session::haveRight('delete_problem', '1');
    }
 
 

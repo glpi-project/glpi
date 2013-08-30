@@ -1192,7 +1192,8 @@ class Html {
       }
 
       if (Session::haveRight("show_all_problem","1")
-          || Session::haveRight("show_my_problem","1")) {
+          || Session::haveRight("show_my_problem","1")
+          || Session::haveRight("delete_problem", "1")) {
          $menu['maintain']['content']['problem']['title']           = _n('Problem', 'Problems', 2);
          $menu['maintain']['content']['problem']['shortcut']        = '';
          $menu['maintain']['content']['problem']['page']            = '/front/problem.php';

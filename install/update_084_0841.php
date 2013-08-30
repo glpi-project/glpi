@@ -99,10 +99,13 @@ function update084to0841() {
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
-                       `doc_i`.`is_recursive` = `doc`.`is_recursive`
-                   WHERE `doc_i`.`entities_id` <> `doc`.`entities_id`";
+                       `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
+
+   // add delet_problem
+   $migration->addField('glpi_profiles', 'delete_problem', 'char',
+                        array('after' => 'edit_all_problem'));
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

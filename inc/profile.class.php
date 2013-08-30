@@ -1026,6 +1026,12 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Delete problems')."</td><td>";
+      Dropdown::showYesNo("delete_problem", $this->fields["delete_problem"]);
+      echo "</td>";
+      echo "</tr>\n";
+
 //       echo "<tr class='tab_bg_2'>";
 //       echo "<td>".__('Update all changes')."</td><td>";
 //       Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
@@ -1918,6 +1924,11 @@ class Profile extends CommonDBTM {
       $tab[114]['field']         = 'edit_all_problem';
       $tab[114]['name']          = __('Update all problems');
       $tab[114]['datatype']      = 'bool';
+
+      $tab[115]['table']         = $this->getTable();
+      $tab[115]['field']         = 'delete_problem';
+      $tab[115]['name']          = __('Delete all problems');
+      $tab[115]['datatype']      = 'bool';
 
 //       $tab[111]['table']         = $this->getTable();
 //       $tab[111]['field']         = 'change_status';
