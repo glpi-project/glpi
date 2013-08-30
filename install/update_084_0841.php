@@ -93,6 +93,23 @@ function update084to0841() {
    $DB->queryOrDie($query_doc_i,
                   "0.84.1 update date_mod in glpi_documents_items");
 
+
+   // correct entities_id in documents_items
+   $doc = new Document();
+   foreach ($DB->request("glpi_documents_items") as $data) {
+      $entid = $data['entities_id'];
+      if ($doc->getFromDB($data['documents_id'])) {
+         $entity = $doc->getField("entities_id");
+         if ($entid != $entity) {
+            $query = "UPDATE `glpi_documents_items`
+                      SET `entities_id` = '".$entity."'
+                            WHERE `entities_id` = '".$entid."'";
+            $DB->queryOrDie($query, "0.84.1 change entities_id in documents_items");
+         }
+      }
+   }
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
