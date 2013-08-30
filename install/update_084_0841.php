@@ -98,7 +98,8 @@ function update084to0841() {
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
-                   SET `doc_i`.`entities_id` = `doc`.`entities_id`
+                   SET `doc_i`.`entities_id` = `doc`.`entities_id`,
+                       `doc_i`.`is_recursive` = `doc`.`is_recursive`
                    WHERE `doc_i`.`entities_id` <> `doc`.`entities_id`";
    $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
