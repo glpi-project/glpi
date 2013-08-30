@@ -157,6 +157,32 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @return boolean
+    **/
+   static function canDelete() {
+      return Session::haveRight('delete_problem', '1');
+   }
+
+
+   /**
+    * Is the current user have right to delete the current problem ?
+    *
+    * @since version 0.84
+    *
+    * @return boolean
+    **/
+   function canDeleteItem() {
+
+      if (!Session::haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      return Session::haveRight('delete_problem', '1');
+   }
+
+
    function pre_deleteItem() {
 
       NotificationEvent::raiseEvent('delete', $this);
@@ -268,7 +294,7 @@ class Problem extends CommonITILObject {
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete('Problem', $this->fields['id']);
-      
+
       parent::cleanDBonPurge();
    }
 
@@ -410,7 +436,8 @@ class Problem extends CommonITILObject {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if (ProblemTask::canCreate()) {
+
+            if (ProblemTask::canCreate()) {
          $actions['add_task'] = __('Add a new task');
       }
       if (Session::haveRight("edit_all_problem","1")) {
@@ -421,6 +448,7 @@ class Problem extends CommonITILObject {
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
+      toolbox::logdebug("actions", $actions);
       return $actions;
    }
 
@@ -1413,7 +1441,7 @@ class Problem extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'  width='".($colsize1+$colsize2)."%'>";
          $docnb = Document_Item::countForItem($this);
-         echo "<a href=\"".$this->getLinkURL()."&amp;forcetab=Document_Item$1\">";         
+         echo "<a href=\"".$this->getLinkURL()."&amp;forcetab=Document_Item$1\">";
          //TRANS: %d is the document number
          echo sprintf(_n('%d associated document', '%d associated documents', $docnb), $docnb);
          echo "</a></th>";
@@ -1580,7 +1608,7 @@ class Problem extends CommonITILObject {
          $id_for_massaction = $id;
       }
 
-      $candelete   = Session::haveRight("edit_all_problem", "1");
+      $candelete   = Session::haveRight("delete_problem", "1");
       $canupdate   = Session::haveRight("edit_all_problem", "1");
       $showprivate = Session::haveRight("show_all_problem", "1");
       $align       = "class='center'";
@@ -1959,5 +1987,23 @@ class Problem extends CommonITILObject {
       return $DB->result($result, 0, 0);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @return string
+    */
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      if (!Session::haveRight('delete_problem', 1)) {
+         $forbidden[] = 'delete';
+         $forbidden[] = 'purge';
+         $forbidden[] = 'restore';
+      }
+
+      return $forbidden;
+   }
 }
 ?>
