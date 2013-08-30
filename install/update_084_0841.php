@@ -87,27 +87,20 @@ function update084to0841() {
    $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
    $migration->migrationOneTable('glpi_documents_items');
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
-                  INNER JOIN `glpi_documents` as `doc`
-                  ON  `doc`.`id` = `doc_i`.`documents_id`
-                  SET `doc_i`.`date_mod` = `doc`.`date_mod`";
+                   INNER JOIN `glpi_documents` as `doc`
+                     ON  `doc`.`id` = `doc_i`.`documents_id`
+                   SET `doc_i`.`date_mod` = `doc`.`date_mod`";
    $DB->queryOrDie($query_doc_i,
                   "0.84.1 update date_mod in glpi_documents_items");
 
 
    // correct entities_id in documents_items
-   $doc = new Document();
-   foreach ($DB->request("glpi_documents_items") as $data) {
-      $entid = $data['entities_id'];
-      if ($doc->getFromDB($data['documents_id'])) {
-         $entity = $doc->getField("entities_id");
-         if ($entid != $entity) {
-            $query = "UPDATE `glpi_documents_items`
-                      SET `entities_id` = '".$entity."'
-                            WHERE `entities_id` = '".$entid."'";
-            $DB->queryOrDie($query, "0.84.1 change entities_id in documents_items");
-         }
-      }
-   }
+   $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
+                   INNER JOIN `glpi_documents` as `doc`
+                     ON  `doc`.`id` = `doc_i`.`documents_id`
+                   SET `doc_i`.`entities_id` = `doc`.`entities_id`
+                   WHERE `doc_i`.`entities_id` <> `doc`.`entities_id`";
+   $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
 
    // ************ Keep it at the end **************
