@@ -44,12 +44,14 @@ class Profile extends CommonDBTM {
    static public $helpdesk_rights = array('add_followups', 'create_ticket',
                                           'create_ticket_on_login', 'create_request_validation',
                                           'create_incident_validation',
-                                          'faq', 'helpdesk_hardware', 'helpdesk_item_type',
+                                          'faq', 'group_add_followups',
+                                          'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update', 'reminder_public',
                                           'reservation_helpdesk', 'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
-                                          'update_own_followups', 'validate_incident', 'validate_request');
+                                          'update_own_followups', 'validate_incident',
+                                          'validate_request');
 
 
    /// Common fields used for all profiles type
@@ -570,15 +572,18 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
-      
+
       $options = array('value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0);
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
-                       
       TicketTemplate::dropdown($options);
       echo "</td>";
+      echo "<td>".__('Add a followup to tickets of associated groups')."</td><td>";
+      Dropdown::showYesNo("group_add_followups", $this->fields["group_add_followups"]);
+      echo "</td>";
+
       echo "<td colspan='2'>&nbsp;";
       echo "</td></tr>\n";
 
@@ -862,7 +867,7 @@ class Profile extends CommonDBTM {
          $options['condition'] = '`is_recursive` = 1';
       }
 
-                       
+
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "</tr>\n";
@@ -1717,7 +1722,7 @@ class Profile extends CommonDBTM {
       } else {
          $tab[108]['condition']     = '`entities_id` = 0';
       }
-      
+
       $tab[103]['table']         = $this->getTable();
       $tab[103]['field']         = 'tickettemplate';
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
