@@ -1234,7 +1234,8 @@ class Config extends CommonDBTM {
       echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
-      echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
+      echo wordwrap("PHP ".phpversion().' '.php_sapi_name()." (".implode(', ',$exts).")\n",
+                    $width, "\n\t");
       $msg = "Setup: ";
 
       foreach (array('max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
