@@ -1027,7 +1027,7 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Delete problems')."</td><td>";
+      echo "<td>".__('Delete all problems')."</td><td>";
       Dropdown::showYesNo("delete_problem", $this->fields["delete_problem"]);
       echo "</td>";
       echo "</tr>\n";
