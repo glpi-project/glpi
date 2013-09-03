@@ -42,7 +42,8 @@ class Reservation extends CommonDBChild {
    static public $itemtype = 'ReservationItem';
    static public $items_id = 'reservationitems_id';
 
-
+   static public $checkParentRights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+   
    /**
     * @param $nb  integer  for singular or plural
    **/
@@ -291,7 +292,8 @@ class Reservation extends CommonDBChild {
    **/
    static function canCreate() {
 
-      return (Session::haveRight("reservation_helpdesk", "1")
+      return ((Session::haveRight("reservation_helpdesk", "1")
+               || Session::haveRight("reservation_central", "w"))
               && parent::canCreate());
    }
 
@@ -301,7 +303,8 @@ class Reservation extends CommonDBChild {
    **/
    static function canView() {
 
-      return (Session::haveRight("reservation_central", "r")
+      return ((Session::haveRight("reservation_helpdesk", "1")
+               || Session::haveRight("reservation_central", "r"))
               && parent::canView());
    }
 
@@ -311,7 +314,8 @@ class Reservation extends CommonDBChild {
    **/
    static function canUpdate() {
 
-      return (Session::haveRight("reservation_central", "w")
+      return ((Session::haveRight("reservation_helpdesk", "1")
+               || Session::haveRight("reservation_central", "w"))
               && parent::canUpdate());
    }
 
@@ -321,7 +325,8 @@ class Reservation extends CommonDBChild {
    **/
    static function canDelete() {
 
-      return (Session::haveRight("reservation_central", "w")
+      return ((Session::haveRight("reservation_helpdesk", "1")
+               || Session::haveRight("reservation_central", "w"))
               && parent::canDelete());
    }
 
@@ -332,15 +337,18 @@ class Reservation extends CommonDBChild {
    **/
    function canChildItem($methodItem, $methodNotItem) {
 
-      if (!parent::canChildItem($methodItem, $methodNotItem)) {
-         return false;
-      }
 
       // Original user always have right
       if ($this->fields['users_id'] === Session::getLoginUserID()) {
          return true;
       }
+      
+      if (!parent::canChildItem($methodItem, $methodNotItem)) {
+         return false;
+      }
 
+
+      
       $ri = $this->getItem();
       if ($ri === false) {
          return false;
