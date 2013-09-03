@@ -2507,7 +2507,7 @@ class Html {
       // Main Headline
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."' accesskey='1' title=\"".__s('Home')."\">".
+      echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
            "<span class='invisible'>Logo</span></a></div>";
 
       // Les préférences + lien déconnexion

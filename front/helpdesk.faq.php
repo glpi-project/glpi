@@ -51,7 +51,7 @@ if (Session::getLoginUserID()) {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
    Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
-                                       __('FAQ')            => $_SERVER['PHP_SELF']));
+                                       __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
 }
 
 if (isset($_GET["id"])) {
