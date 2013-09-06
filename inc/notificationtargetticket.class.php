@@ -235,7 +235,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @see NotificationTargetCommonITILObject::getDatasForObject()
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // Common ITIL datas
       $datas                               = parent::getDatasForObject($item, $options, $simple);
@@ -504,7 +504,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          // Ticket Satisfaction
-         $inquest                                = new TicketSatisfaction();
+               $inquest                                = new TicketSatisfaction();
          $datas['##satisfaction.type##']         = '';
          $datas['##satisfaction.datebegin##']    = '';
          $datas['##satisfaction.dateanswered##'] = '';
@@ -515,23 +515,46 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             // internal inquest
             if ($inquest->fields['type'] == 1) {
                $datas['##ticket.urlsatisfaction##']
-                           = $this->formatURL($options['additionnaloption']['usertype'],
-                                              "ticket_".$item->getField("id").'_Ticket$3');
-            // external inquest
+               = $this->formatURL($options['additionnaloption']['usertype'],
+                     "ticket_".$item->getField("id").'_Ticket$3');
+               // external inquest
             } else if ($inquest->fields['type'] == 2) {
                $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
             }
 
             $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
             $datas['##satisfaction.datebegin##']
-                                            = Html::convDateTime($inquest->fields['date_begin']);
+            = Html::convDateTime($inquest->fields['date_begin']);
             $datas['##satisfaction.dateanswered##']
-                                            = Html::convDateTime($inquest->fields['date_answered']);
+            = Html::convDateTime($inquest->fields['date_answered']);
             $datas['##satisfaction.satisfaction##']
-                                             = $inquest->fields['satisfaction'];
+            = $inquest->fields['satisfaction'];
             $datas['##satisfaction.description##']
-                                             = $inquest->fields['comment'];
+            = $inquest->fields['comment'];
          }
+
+         // Document
+         $datas['##document.id##']    = '';
+         $datas['##document.titre##'] = '';
+         $datas['##document.url##']   = '';
+
+         $query = "SELECT *
+                   FROM `glpi_documents`
+                   LEFT JOIN `glpi_documents_items`
+                      ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
+                   WHERE `glpi_documents_items`.`itemtype` = 'Ticket'
+                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+         $result = $DB->query($query);
+
+         foreach ($DB->request($query) as $data) {
+            $datas['##document.id##']    = $data['id'];
+            $datas['##document.title##'] = $data['filename'];
+            $datas['##document.url##']
+               = $this->formatURL($options['additionnaloption']['usertype'],
+                                  "ticket_".$item->getField("id").'_Document_Item$1');
+
+         }
+
       }
 
       return $datas;
@@ -746,7 +769,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'problem.title'           => sprintf(__('%1$s: %2$s'), __('Problem'),
                                                          __('Title')),
                     'problem.content'         => sprintf(__('%1$s: %2$s'), __('Problem'),
-                                                         __('Description'))
+                                                         __('Description')),
+                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
+                    'document.title'          => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Title')),
+                    'document.url'            => sprintf(__('%1$s: %2$s'), __('Document'), ('URL')),
                    );
 
       foreach ($tags as $tag => $label) {
