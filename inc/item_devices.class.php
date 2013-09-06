@@ -187,7 +187,9 @@ class Item_Devices extends CommonDBRelation {
 
       $table_options = array('canedit' => $canedit);
 
-      $devtypes = array();
+      $devtypes          = array();
+      $delete_all_column = new  HTMLTableSuperHeader(new HTMLTableMain(), '', '');
+      $delete_column     = new  HTMLTableSuperHeader(new HTMLTableMain(), '', '');
       foreach (self::getDeviceTypes() as $link_type) {
          $devtypes [] = $link_type::getDeviceType();
          $link_type::getTableGroup($item, $table, $table_options, $delete_all_column,
