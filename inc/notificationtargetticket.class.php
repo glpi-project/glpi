@@ -533,28 +533,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   = $inquest->fields['comment'];
          }
 
-         // Document
-         $datas['##document.id##']    = '';
-         $datas['##document.titre##'] = '';
-         $datas['##document.url##']   = '';
-
-         $query = "SELECT *
-                   FROM `glpi_documents`
-                   LEFT JOIN `glpi_documents_items`
-                      ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                   WHERE `glpi_documents_items`.`itemtype` = 'Ticket'
-                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
-         $result = $DB->query($query);
-
-         foreach ($DB->request($query) as $data) {
-            $datas['##document.id##']    = $data['id'];
-            $datas['##document.title##'] = $data['filename'];
-            $datas['##document.url##']
-                  = $this->formatURL($options['additionnaloption']['usertype'],
-                                     "ticket_".$item->getField("id").'_Document_Item$1');
-
-         }
-
       }
 
       return $datas;
@@ -769,11 +747,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'problem.title'           => sprintf(__('%1$s: %2$s'), __('Problem'),
                                                          __('Title')),
                     'problem.content'         => sprintf(__('%1$s: %2$s'), __('Problem'),
-                                                         __('Description')),
-                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
-                    'document.title'          => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Title')),
-                    'document.url'            => sprintf(__('%1$s: %2$s'), __('Document'), ('URL')),
+                                                         __('Description'))
                    );
 
       foreach ($tags as $tag => $label) {

@@ -158,7 +158,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->getAddressesByGroup(2, $data['groups_id']);
       }
    }
-   
+
    /**
     * Add linked group supervisor to the notified user list
     *
@@ -498,7 +498,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                case Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR :
                   $this->getLinkedGroupWithoutSupervisorByType(CommonITILActor::REQUESTER);
                   break;
-                  
+
                case Notification::ASSIGN_GROUP :
                   $this->getLinkedGroupByType(CommonITILActor::ASSIGN);
                   break;
@@ -546,7 +546,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                //Notification to the observer group without supervisor
                case Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR :
                   $this->getLinkedGroupWithoutSupervisorByType(CommonITILActor::OBSERVER);
-                  break;                  
+                  break;
             }
          }
    }
@@ -615,7 +615,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @param $simple          (false by default)
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $objettype = strtolower($item->getType());
 
@@ -681,7 +681,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                } else {
                   $tmp['##author.location##'] = '';
                }
-               
+
                if ($user_tmp->getField('usertitles_id')) {
                   $tmp['##author.title##']
                                     = Dropdown::getDropdownName('glpi_usertitles',
@@ -697,7 +697,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                } else {
                   $tmp['##author.category##'] = '';
                }
-               
+
                $tmp['##author.email##']  = $user_tmp->getDefaultEmail();
                $tmp['##author.phone##']  = $user_tmp->getField('phone');
                $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
@@ -838,6 +838,28 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                                    $this->getEntity(),
                                                                                    $restrict);
 
+       // Document
+       $datas['##document.id##']    = '';
+       $datas['##document.titre##'] = '';
+       $datas['##document.url##']   = '';
+
+       $query = "SELECT *
+                FROM `glpi_documents`
+                LEFT JOIN `glpi_documents_items`
+                      ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
+                WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
+                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+       $result = $DB->query($query);
+
+       foreach ($DB->request($query) as $data) {
+          $datas['##document.id##']    = $data['id'];
+          $datas['##document.title##'] = $data['filename'];
+          $datas['##document.url##']
+          = $this->formatURL($options['additionnaloption']['usertype'],
+                "ticket_".$item->getField("id").'_Document_Item$1');
+
+       }
+
       return $datas;
    }
 
@@ -934,7 +956,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.log.field'   => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                          __('Field')),
                     $objettype.'.log.content' => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         _x('name', 'Update')));
+                                                         _x('name', 'Update')),
+                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
+                    'document.title'          => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Title')),
+                    'document.url'            => sprintf(__('%1$s: %2$s'), __('Document'), ('URL')),
+      );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
