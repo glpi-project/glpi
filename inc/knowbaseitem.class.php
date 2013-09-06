@@ -1307,26 +1307,27 @@ class KnowbaseItem extends CommonDBTM {
          echo "<input type='hidden' name='knowbaseitems_id' value='$ID'>";
       }
 
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</th></tr>";
-      echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</th></tr>";
+         echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
 
-      $types = array( 'Group', 'Profile', 'User', 'Entity');
+         $types = array( 'Group', 'Profile', 'User', 'Entity');
 
-      $addrand = Dropdown::dropdownTypes('_type', '', $types);
-      $params  = array('type'  => '__VALUE__',
-                       'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
+         $addrand = Dropdown::dropdownTypes('_type', '', $types);
+         $params  = array('type'  => '__VALUE__',
+                          'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
 
-      Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/visibility.php",
                                     $params);
 
-      echo "</td>";
-      echo "<td><span id='visibility$rand'></span>";
-      echo "</td></tr>";
-      echo "</table></div>";
-
+         echo "</td>";
+         echo "<td><span id='visibility$rand'></span>";
+         echo "</td></tr>";
+         echo "</table></div>";
+      }
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
