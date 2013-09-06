@@ -661,6 +661,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.authors##"] = '';
+      $datas['authors'] = array();
       if ($item->countUsers(CommonITILActor::REQUESTER)) {
          $users = array();
          foreach ($item->getUsers(CommonITILActor::REQUESTER) as $tmpusr) {
@@ -806,7 +807,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $datas["##$objettype.solution.description##"]
                      = Toolbox::unclean_cross_side_scripting_deep($item->getField('solution'));
-
+      $datas['log'] = array();
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
          $tmp                               = array();
@@ -817,10 +818,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas['log'][]                    = $tmp;
       }
 
-      $datas["##$objettype.numberoflogs##"] = 0;
-      if (isset($datas['log'])) {
-         $datas["##$objettype.numberoflogs##"] = count($datas['log']);
-      }
+      $datas["##$objettype.numberoflogs##"] = count($datas['log']);
 
       // Get unresolved items
       $restrict = "`".$item->getTable()."`.`status`
@@ -839,7 +837,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                                    $restrict);
 
        // Document
-       $query = "SELECT *
+       $query = "SELECT `glpi_documents`.*
                  FROM `glpi_documents`
                  LEFT JOIN `glpi_documents_items`
                       ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
@@ -847,28 +845,26 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                        AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
 
-       $datas["##documents##"] = '';
+       $datas["documents"] = array();
        if ($result = $DB->query($query)) {
           while ($data = $DB->fetch_assoc($result)) {
-             $docs[$data['id']] = $data;
-          }
-
-          foreach ($docs as $key => $doc) {
-             $tmp                       = array();
-             $tmp['##document.id##']    = $doc['documents_id'];
-             $tmp['##document.title##'] = $doc['filename'];
+             $tmp                        = array();
+             $tmp['##document.id##']     = $data['id'];
+             $tmp['##document.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                            "document_".$data['id']);
+             $tmp['##document.filename'] = $data['filename'];
              $datas['documents'][] = $tmp;
           }
        }
+               $datas['##ticket.urlsatisfaction##']
+                     = $this->formatURL($options['additionnaloption']['usertype'],
+                                        "ticket_".$item->getField("id").'_Ticket$3');
 
-       $datas['##document.url##']
+       $datas["##$objettype.urldocument##"]
              = $this->formatURL($options['additionnaloption']['usertype'],
                                 $objettype."_".$item->getField("id").'_Document_Item$1');
 
-       $datas["##$objettype.numberofdocuments##"] = 0;
-       if (!empty($datas['documents'])) {
-          $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
-       }
+       $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
 
 
       return $datas;
@@ -969,11 +965,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                             __('Field')),
                     $objettype.'.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                             _x('name', 'Update')),
+                    'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('ID')),
                     'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('ID')),
-                    'document.title'             => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Title')),
-                    'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
+                    'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('File')),
+                    $objettype.'.urldocument'    => sprintf(__('%1$s: %2$s'), _n('Document', 'Documents', 2),
                                                             __('URL')),
                     'document.numberofdocuments' => __('Number of documents')
       );

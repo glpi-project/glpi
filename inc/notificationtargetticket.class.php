@@ -415,7 +415,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          //Task infos
          $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
-
+         $datas['tasks'] = array();
+         
          foreach ($tasks as $task) {
             $tmp                          = array();
             $tmp['##task.isprivate##']    = Dropdown::getYesNo($task['is_private']);
@@ -440,13 +441,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $datas['tasks'][] = $tmp;
          }
 
-         $datas['##ticket.numberoftasks##'] = 0;
-         if (!empty($datas['tasks'])) {
-            $datas['##ticket.numberoftasks##'] = count($datas['tasks']);
-         }
+         $datas['##ticket.numberoftasks##'] = count($datas['tasks']);
 
          //Followup infos
          $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
+         $datas['followups'] = array();
          foreach ($followups as $followup) {
             $tmp                             = array();
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
@@ -458,10 +457,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $datas['followups'][]            = $tmp;
          }
 
-         $datas['##ticket.numberoffollowups##'] = 0;
-         if (isset($datas['followups'])) {
-            $datas['##ticket.numberoffollowups##'] = count($datas['followups']);
-         }
+         $datas['##ticket.numberoffollowups##'] = count($datas['followups']);
 
          //Validation infos
          $restrict = "`tickets_id`='".$item->getField('id')."'";
@@ -473,7 +469,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
          $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
-
+         $datas['validations'] = array();
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
