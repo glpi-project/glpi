@@ -847,20 +847,29 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                        AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
 
+       $datas["##documents##"] = '';
        if ($result = $DB->query($query)) {
           while ($data = $DB->fetch_assoc($result)) {
              $docs[$data['id']] = $data;
           }
 
-          foreach ($docs as $doc) {
+          foreach ($docs as $key => $doc) {
              $tmp                       = array();
-             $tmp['##document.id##']    = $doc['id'];
+             $tmp['##document.id##']    = $doc['documents_id'];
              $tmp['##document.title##'] = $doc['filename'];
-             $tmp['##document.url##']   = $this->formatURL($options['additionnaloption']['usertype'],
-                                      $objettype."_".$item->getField("id").'_Document_Item$1');
-             $datas['document'][] = $tmp;
+             $datas['documents'][] = $tmp;
           }
        }
+
+       $datas['##document.url##']
+             = $this->formatURL($options['additionnaloption']['usertype'],
+                                $objettype."_".$item->getField("id").'_Document_Item$1');
+
+       $datas["##$objettype.numberofdocuments##"] = 0;
+       if (!empty($datas['documents'])) {
+          $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
+       }
+
 
       return $datas;
    }
@@ -920,8 +929,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Foreach global tags
-      $tags = array('log'      => __('Historical'),
-                    'authors'  => _n('Requester', 'Requesters', 2));
+      $tags = array('log'       => __('Historical'),
+                    'authors'   => _n('Requester', 'Requesters', 2),
+                    'documents' => _n('Document', 'Documents', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -944,25 +954,28 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags without lang
-      $tags = array($objettype.'.urlapprove'  => __('Web link to approval the solution'),
-                    $objettype.'.entity'      => sprintf(__('%1$s (%2$s)'),
-                                                         __('Entity'), __('Complete name')),
-                    $objettype.'.shortentity' => sprintf(__('%1$s (%2$s)'),
-                                                         __('Entity'), __('Name')),
-                    $objettype.'.numberoflogs'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                             __('Number of items')),
-                    $objettype.'.log.date'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         __('Date')),
-                    $objettype.'.log.user'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                          __('User')),
-                    $objettype.'.log.field'   => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         __('Field')),
-                    $objettype.'.log.content' => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         _x('name', 'Update')),
-                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
-                    'document.title'    => sprintf(__('%1$s: %2$s'), __('Document'),
+      $tags = array($objettype.'.urlapprove'     => __('Web link to approval the solution'),
+                    $objettype.'.entity'         => sprintf(__('%1$s (%2$s)'),
+                                                            __('Entity'), __('Complete name')),
+                    $objettype.'.shortentity'    => sprintf(__('%1$s (%2$s)'),
+                                                            __('Entity'), __('Name')),
+                    $objettype.'.numberoflogs'   => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('Number of items')),
+                    $objettype.'.log.date'       => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('Date')),
+                    $objettype.'.log.user'       => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('User')),
+                    $objettype.'.log.field'      => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('Field')),
+                    $objettype.'.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            _x('name', 'Update')),
+                    'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('ID')),
+                    'document.title'             => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Title')),
-                    'document.url'      => sprintf(__('%1$s: %2$s'), __('Document'), ('URL')),
+                    'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('URL')),
+                    'document.numberofdocuments' => __('Number of documents')
       );
 
       foreach ($tags as $tag => $label) {
