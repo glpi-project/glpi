@@ -166,6 +166,8 @@ class Item_Devices extends CommonDBRelation {
          $delete_all_column = $table->addHeader('delete all',
                                                 Html::getCheckAllAsCheckbox("form_device_action$rand", '__RAND__'));
          $delete_all_column->setHTMLClass('center');
+      } else {
+         $delete_all_column = NULL;
       }
 
       $common_column   = $table->addHeader('common', __('Type of component'));
@@ -183,13 +185,13 @@ class Item_Devices extends CommonDBRelation {
                             _sx('button', 'Delete permanently')."'>";
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
+      } else {
+         $delete_column = NULL;
       }
 
       $table_options = array('canedit' => $canedit);
 
       $devtypes          = array();
-      $delete_all_column = new  HTMLTableSuperHeader(new HTMLTableMain(), '', '');
-      $delete_column     = new  HTMLTableSuperHeader(new HTMLTableMain(), '', '');
       foreach (self::getDeviceTypes() as $link_type) {
          $devtypes [] = $link_type::getDeviceType();
          $link_type::getTableGroup($item, $table, $table_options, $delete_all_column,
@@ -227,10 +229,10 @@ class Item_Devices extends CommonDBRelation {
 
 
    static function getTableGroup(CommonDBTM $item, HTMLTableMain $table, array $options,
-                                 HTMLTableSuperHeader $delete_all_column,
+                                 HTMLTableSuperHeader $delete_all_column = NULL,
                                  HTMLTableSuperHeader $common_column,
                                  HTMLTableSuperHeader $specific_column,
-                                 HTMLTableSuperHeader $delete_column,
+                                 HTMLTableSuperHeader $delete_column = NULL,
                                  $dynamic_column) {
       global $DB;
 
