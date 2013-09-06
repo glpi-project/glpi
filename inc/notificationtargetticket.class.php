@@ -504,7 +504,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          // Ticket Satisfaction
-               $inquest                                = new TicketSatisfaction();
+         $inquest                                = new TicketSatisfaction();
          $datas['##satisfaction.type##']         = '';
          $datas['##satisfaction.datebegin##']    = '';
          $datas['##satisfaction.dateanswered##'] = '';
@@ -515,8 +515,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             // internal inquest
             if ($inquest->fields['type'] == 1) {
                $datas['##ticket.urlsatisfaction##']
-               = $this->formatURL($options['additionnaloption']['usertype'],
-                     "ticket_".$item->getField("id").'_Ticket$3');
+                     = $this->formatURL($options['additionnaloption']['usertype'],
+                                        "ticket_".$item->getField("id").'_Ticket$3');
                // external inquest
             } else if ($inquest->fields['type'] == 2) {
                $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
@@ -524,13 +524,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
             $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
             $datas['##satisfaction.datebegin##']
-            = Html::convDateTime($inquest->fields['date_begin']);
+                  = Html::convDateTime($inquest->fields['date_begin']);
             $datas['##satisfaction.dateanswered##']
-            = Html::convDateTime($inquest->fields['date_answered']);
+                  = Html::convDateTime($inquest->fields['date_answered']);
             $datas['##satisfaction.satisfaction##']
-            = $inquest->fields['satisfaction'];
+                  = $inquest->fields['satisfaction'];
             $datas['##satisfaction.description##']
-            = $inquest->fields['comment'];
+                  = $inquest->fields['comment'];
          }
 
          // Document
@@ -550,8 +550,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $datas['##document.id##']    = $data['id'];
             $datas['##document.title##'] = $data['filename'];
             $datas['##document.url##']
-               = $this->formatURL($options['additionnaloption']['usertype'],
-                                  "ticket_".$item->getField("id").'_Document_Item$1');
+                  = $this->formatURL($options['additionnaloption']['usertype'],
+                                     "ticket_".$item->getField("id").'_Document_Item$1');
 
          }
 
