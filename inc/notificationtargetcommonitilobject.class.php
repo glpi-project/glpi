@@ -850,9 +850,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
           while ($data = $DB->fetch_assoc($result)) {
              $tmp                        = array();
              $tmp['##document.id##']     = $data['id'];
+             $tmp['##document.name##']     = $data['name'];
              $tmp['##document.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
                                                             "document_".$data['id']);
-             $tmp['##document.filename'] = $data['filename'];
+             $tmp['##document.filename##'] = $data['filename'];
              $datas['documents'][] = $tmp;
           }
        }
@@ -915,6 +916,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', 2),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
+                    $objettype.'.numberofdocuments' => __('Number of documents')
                    );
 
       foreach ($tags as $tag => $label) {
@@ -971,9 +973,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                             __('ID')),
                     'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('File')),
+                    'document.name'          => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Name')),
                     $objettype.'.urldocument'    => sprintf(__('%1$s: %2$s'), _n('Document', 'Documents', 2),
                                                             __('URL')),
-                    'document.numberofdocuments' => __('Number of documents')
       );
 
       foreach ($tags as $tag => $label) {
