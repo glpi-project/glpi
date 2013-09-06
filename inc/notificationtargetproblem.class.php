@@ -97,10 +97,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             }
          }
 
-         $datas['##problem.numberoftickets##'] = 0;
-         if (!empty($datas['tickets'])) {
-            $datas['##problem.numberoftickets##'] = count($datas['tickets']);
-         }
+         $datas['##problem.numberoftickets##'] = count($datas['tickets']);
 
          $restrict  = "`problems_id` = '".$item->getField('id')."'
                        ORDER BY `date` DESC,
@@ -108,7 +105,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
          //Task infos
          $tasks = getAllDatasFromTable('glpi_problemtasks', $restrict);
-
+         $datas['tasks'] = array();
          foreach ($tasks as $task) {
             $tmp                          = array();
             $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
@@ -131,10 +128,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $datas['tasks'][] = $tmp;
          }
 
-         $datas['##problem.numberoftasks##'] = 0;
-         if (!empty($datas['tasks'])) {
-            $datas['##problem.numberoftasks##'] = count($datas['tasks']);
-         }
+         $datas['##problem.numberoftasks##'] = count($datas['tasks']);
 
          $restrict = "`problems_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_items_problems',$restrict);
@@ -191,10 +185,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             }
          }
 
-         $datas['##problem.numberofitems##'] = 0;
-         if (!empty($datas['items'])) {
-            $datas['##problem.numberofitems##'] = count($datas['items']);
-         }
+         $datas['##problem.numberofitems##'] = count($datas['items']);
 
       }
       return $datas;
