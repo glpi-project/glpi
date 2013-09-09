@@ -67,7 +67,7 @@ class Profile_User extends CommonDBRelation {
       return $forbidden;
    }
 
-   
+
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
@@ -510,7 +510,7 @@ class Profile_User extends CommonDBRelation {
 
                echo "<tr class='tab_bg_2'><td>";
                echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
-               echo Html::checkAllAsCheckbox("entity$temp$rand").__('All');;
+               echo Html::checkAllAsCheckbox("entity$temp$rand").__('All');
 
                echo "<table class='tab_cadre_fixe'>\n";
             }
