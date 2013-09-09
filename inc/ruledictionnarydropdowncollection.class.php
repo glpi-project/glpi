@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryDropdownCollection extends RuleCollection {
@@ -263,7 +263,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
       }
 
       if (isCommandLine()) {
-         printf(__('Replay rules on existing database ended on %s')."\n", date("r"));;
+         printf(__('Replay rules on existing database ended on %s')."\n", date("r"));
       } else {
          Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }

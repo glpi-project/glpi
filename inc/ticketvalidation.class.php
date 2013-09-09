@@ -724,7 +724,7 @@ class TicketValidation  extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID,'w');
       } else {
-         $options['tickets_id'] = $options['parent']->fields["id"];;
+         $options['tickets_id'] = $options['parent']->fields["id"];
          $this->check(-1,'w', $options);
       }
 
