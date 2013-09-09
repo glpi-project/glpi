@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -105,7 +105,7 @@ class ReservationItem extends CommonDBChild {
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      
+
    }
 
 
@@ -513,7 +513,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * Display debug information for reservation of current object
    **/
-   function showDebug() {
+   function showDebugResa() {
 
       $resa                                = new Reservation();
       $resa->fields['id']                  = '1';

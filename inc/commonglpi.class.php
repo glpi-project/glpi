@@ -612,7 +612,7 @@ class CommonGLPI {
       if (in_array($class, $CFG_GLPI["reservation_types"])) {
          $resitem = new ReservationItem();
          if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
-            $resitem->showDebug();
+            $resitem->showDebugResa();
          }
       }
    }
