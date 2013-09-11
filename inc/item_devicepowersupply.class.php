@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -44,6 +44,14 @@ class Item_DevicePowerSupply extends Item_Devices {
    static public $items_id_2 = 'devicepowersupplies_id';
 
    static protected $notable = false;
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function itemAffinity() {
+      return array('Computer', 'NetworkEquipment');
+   }
 
 }
 ?>

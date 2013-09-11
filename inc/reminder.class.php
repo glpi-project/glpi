@@ -36,7 +36,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/// Reminder class
+/**
+ * Reminder Class
+**/
 class Reminder extends CommonDBTM {
 
    // For visibility checks
@@ -45,20 +47,29 @@ class Reminder extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+   static $rightname    = 'reminder_public';
+
+
 
    static function getTypeName($nb=0) {
-      return _n('Reminder', 'Reminders', $nb);
+
+      if (Session::haveRight('reminder_public',READ)) {
+         return _n('Reminder', 'Reminders', $nb);
+      }
+      return _n('Personal reminder', 'Personal reminders', $nb);
    }
 
 
    static function canCreate() {
-      return (Session::haveRight('reminder_public', 'w')
+
+      return (Session::haveRight(self::$rightname, CREATE)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
    static function canView() {
-      return (Session::haveRight('reminder_public', 'r')
+
+      return (Session::haveRight(self::$rightname, READ)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
@@ -67,7 +78,7 @@ class Reminder extends CommonDBTM {
 
       // Is my reminder or is in visibility
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', 'r')
+              || (Session::haveRight(self::$rightname, READ)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -81,7 +92,20 @@ class Reminder extends CommonDBTM {
    function canUpdateItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', 'w')
+              || (Session::haveRight(self::$rightname, UPDATE)
+                  && $this->haveVisibilityAccess()));
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::canPurgeItem()
+   **/
+   function canPurgeItem() {
+
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || (Session::haveRight(self::$rightname, PURGE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -124,46 +148,6 @@ class Reminder extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "deletevisibility":
-            foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('Entity_Reminder', 'Group_Reminder', 'Profile_Reminder',
-                                         'Reminder_User'))) {
-                  $item = new $type();
-                  foreach ($items as $key => $val) {
-                     if ($item->can($key,'w')) {
-                        if ($item->delete(array('id' => $key))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['noright']++;
-                     }
-                  }
-               }
-            }
-
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
-
-   /**
     * @since version 0.83
    **/
    function countVisibilities() {
@@ -183,7 +167,7 @@ class Reminder extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public reminder right : no visibility check
-      if (!Session::haveRight('reminder_public', 'r')) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -271,7 +255,7 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityJoins($forceall=false) {
 
-      if (!Session::haveRight('reminder_public', 'r')) {
+      if (!self::canView()) {
          return '';
       }
 
@@ -315,7 +299,7 @@ class Reminder extends CommonDBTM {
 
       $restrict = "`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
 
-      if (!Session::haveRight('reminder_public', 'r')) {
+      if (!self::canView()) {
          return $restrict;
       }
 
@@ -500,7 +484,7 @@ class Reminder extends CommonDBTM {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("reminder_public","r")) {
+      if (self::canView()) {
          switch ($item->getType()) {
             case 'Reminder' :
                if ($item->canUpdate()) {
@@ -522,6 +506,7 @@ class Reminder extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Reminder', $ong, $options);
 
@@ -666,13 +651,12 @@ class Reminder extends CommonDBTM {
          $onfocus="onfocus=\"if (this.value=='".$this->fields['name']."') this.value='';\"";
       }
 
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->can($ID, UPDATE);
 
       if ($canedit) {
          Html::initEditorSystem('text');
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'><td>".__('Title')."</td>";
@@ -700,11 +684,17 @@ class Reminder extends CommonDBTM {
       echo "<td>";
       echo '<table><tr><td>';
       echo __('Begin').'</td><td>';
-      Html::showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"], 1, true,
-                                 $canedit);
+      Html::showDateTimeField("begin_view_date",
+                              array('value'      => $this->fields["begin_view_date"],
+                                    'timestep'   => 1,
+                                    'maybeempty' => true,
+                                    'canedit'    => $canedit));
       echo '</td><td>'.__('End').'</td><td>';
-      Html::showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true,
-                                 $canedit);
+      Html::showDateTimeField("end_view_date",
+                              array('value'      => $this->fields["end_view_date"],
+                                    'timestep'   => 1,
+                                    'maybeempty' => true,
+                                    'canedit'    => $canedit));
       echo '</td></tr></table>';
       echo "</td>";
       echo "<td>".__('Status')."</td>";
@@ -723,7 +713,7 @@ class Reminder extends CommonDBTM {
       if ($canedit) {
          echo "<script type='text/javascript' >\n";
          echo "function showPlan() {\n";
-            echo "Ext.get('plan').setDisplayed('none');";
+         echo Html::jsHide('plan');
             $params = array('form'     => 'remind',
                             'users_id' => $this->fields["users_id"],
                             'itemtype' => $this->getType(),
@@ -743,9 +733,8 @@ class Reminder extends CommonDBTM {
       if (!$ID
           || !$this->fields["is_planned"]) {
 
-         if (Session::haveRight("show_planning","1")
-             || Session::haveRight("show_group_planning","1")
-             || Session::haveRight("show_all_planning","1")) {
+         if (Session::haveRightsOr("planning", array(Planning::READMY, Planning::READGROUP,
+                                                     Planning::READALL))) {
 
             echo "<div id='plan' onClick='showPlan()'>\n";
             echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
@@ -804,7 +793,6 @@ class Reminder extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -842,7 +830,7 @@ class Reminder extends CommonDBTM {
 
       // See public reminder ?
       if (($who === Session::getLoginUserID())
-          && Session::haveRight("reminder_public","r")) {
+          && self::canView()) {
          $readpub    = self::addVisibilityRestrict();
       }
 
@@ -1054,7 +1042,7 @@ class Reminder extends CommonDBTM {
 
       } else {
          // Show public reminders / not mines : need to have access to public reminders
-         if (!Session::haveRight('reminder_public', 'r')) {
+         if (!self::canView()) {
             return false;
          }
 
@@ -1131,7 +1119,6 @@ class Reminder extends CommonDBTM {
    }
 
 
-
    /**
     * Show visibility config for a reminder
    **/
@@ -1139,13 +1126,14 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = Session::haveRight('reminder_public', 'w');
+      $canedit = $this->canEdit($ID);
 
       echo "<div class='center'>";
 
       $rand = mt_rand();
 
-      $nb = count($this->users) + count($this->groups) + count($this->profiles) + count($this->entities);
+      $nb = count($this->users) + count($this->groups) + count($this->profiles)
+            + count($this->entities);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -1176,13 +1164,15 @@ class Reminder extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
-                           'specific_actions' => array('deletevisibility'
-                                                         => _x('button', 'Delete permanently')) );
+                           'container'        => 'mass'.__CLASS__.$rand,
+                           'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                       'delete' => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+            $paramsma['confirm']
+               = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -1202,8 +1192,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]'
-                          value='1' >";
+                  Html::showMassiveActionCheckBox('Reminder_User',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1212,7 +1201,6 @@ class Reminder extends CommonDBTM {
             }
          }
       }
-
       // Groups
       if (count($this->groups)) {
          foreach ($this->groups as $key => $val) {
@@ -1220,8 +1208,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Group_Reminder',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1252,8 +1239,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]'
-                          value='1'>";
+                  Html::showMassiveActionCheckBox('Entity_Reminder',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1277,8 +1263,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Profile_Reminder',$data["id"]);
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
@@ -1304,7 +1289,7 @@ class Reminder extends CommonDBTM {
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
 
@@ -1312,6 +1297,22 @@ class Reminder extends CommonDBTM {
       // Add items
 
       return true;
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'helpdesk') {
+         $values = array(READ => __('Read'));
+      } else {
+         $values = parent::getRights();
+      }
+      return $values;
    }
 
 }

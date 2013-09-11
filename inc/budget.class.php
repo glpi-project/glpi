@@ -43,25 +43,18 @@ class Budget extends CommonDropdown{
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'budget';
+
 
    static function getTypeName($nb=0) {
       return _n('Budget', 'Budgets', $nb);
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('budget', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('budget', 'r');
-   }
-
-
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__,$ong, $options);
       $this->addStandardTab('Document_Item',$ong, $options);
       $this->addStandardTab('Link',$ong, $options);
@@ -77,8 +70,8 @@ class Budget extends CommonDropdown{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return array (1 => __('Main'),
-                             2 => _n('Item', 'Items', 2));
+               return array(1 => __('Main'),
+                            2 => _n('Item', 'Items', 2));
          }
       }
       return '';
@@ -120,7 +113,6 @@ class Budget extends CommonDropdown{
       }
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -142,13 +134,13 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
+      Html::showDateField("begin_date", array('value' => $this->fields["begin_date"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("end_date", $this->fields["end_date"]);
+      Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
       echo "</td></tr>";
 
       if ($ID > 0) {
@@ -161,7 +153,6 @@ class Budget extends CommonDropdown{
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 
@@ -261,7 +252,7 @@ class Budget extends CommonDropdown{
 
       $budgets_id = $this->fields['id'];
 
-      if (!$this->can($budgets_id,'r')) {
+      if (!$this->can($budgets_id, READ)) {
          return false;
       }
 
@@ -308,7 +299,6 @@ class Budget extends CommonDropdown{
 
          if ($item->canView()) {
             switch ($itemtype) {
-
 
                case 'Contract' :
                   $query = "SELECT `".$item->getTable()."`.`id`,
@@ -374,6 +364,7 @@ class Budget extends CommonDropdown{
                             ORDER BY `entities_id`,
                                      `glpi_consumableitems`.`name`";
                break;
+
                default :
                   $query = "SELECT `".$item->getTable()."`.*,
                                    `glpi_infocoms`.`value`
@@ -456,7 +447,7 @@ class Budget extends CommonDropdown{
 
       $budgets_id = $this->fields['id'];
 
-      if (!$this->can($budgets_id, 'r')) {
+      if (!$this->can($budgets_id, READ)) {
          return false;
       }
 

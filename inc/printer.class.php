@@ -35,14 +35,19 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES Printers
 
+/**
+ * Printer Class
+**/
 class Printer  extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
 
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
+   static $rightname                   = 'printer';
+
 
 
    /**
@@ -52,16 +57,6 @@ class Printer  extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Printer', 'Printers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('printer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('printer', 'r');
    }
 
 
@@ -78,7 +73,9 @@ class Printer  extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Cartridge', $ong, $options);
+      $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -206,6 +203,10 @@ class Printer  extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // TODO : manage templates for item_devices
+         // ADD Devices
+         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -248,9 +249,12 @@ class Printer  extends CommonDBTM {
                 SET `printers_id` = NULL
                 WHERE `printers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
-      
+
       $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
+                                                  (!empty($this->input['keep_devices'])));
    }
 
 
@@ -269,7 +273,6 @@ class Printer  extends CommonDBTM {
 
       $target       = $this->getFormURL();
       $withtemplate = $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -285,7 +288,9 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_printer`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -359,19 +364,15 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Management type')."</td>";
       echo "<td>";
-      if ($this->can($ID,'w')) {
-         Dropdown::showGlobalSwitch($this->fields["id"],
-                                    array('withtemplate' => $withtemplate,
-                                          'value'        => $this->fields["is_global"],
-                                          'management_restrict'
-                                                         => $CFG_GLPI["printers_management_restrict"],
-                                          'target'       => $target));
-      } else {
-         Dropdown::showGlobalSwitch($this->fields["id"],
-                                    array('withtemplate' => $withtemplate,
-                                          'value'        => $this->fields["is_global"],
-                                          'target'       => $target));
+      $globalitem = array();
+      $globalitem['withtemplate'] = $withtemplate;
+      $globalitem['value']        = $this->fields["is_global"];
+      $globalitem['target']       = $target;
+
+      if ($this->can($ID, UPDATE)) {
+         $globalitem['management_restrict'] = $CFG_GLPI["printers_management_restrict"];
       }
+      Dropdown::showGlobalSwitch($this->fields["id"], $globalitem);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -400,7 +401,8 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>\n";
       echo "<td>";
-      Domain::dropdown(array('value' => $this->fields["domains_id"]));
+      Domain::dropdown(array('value'  => $this->fields["domains_id"],
+                             'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
       echo "<td rowspan='$rowspan'>";
@@ -428,6 +430,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Port','Ports',2)."</td>";
       echo "<td>\n<table>";
+      // TODO : switch to checkbox ?
       // serial interface
       echo "<tr><td>".__('Serial')."</td><td>";
       Dropdown::showYesNo("have_serial", $this->fields["have_serial"]);
@@ -450,9 +453,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr></table>\n";
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='2'>";
-         _e('Automatic inventory');
-         echo "</td>";
+         echo "<td rowspan='2'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
@@ -480,7 +481,6 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -505,58 +505,13 @@ class Printer  extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if ($isadmin) {
-         $actions['connect']    = _x('button', 'Connect');
-         $actions['disconnect'] = _x('button', 'Disconnect');
+      if (static::canUpdate()) {
+         Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+         MassiveAction::getAddTransferList($actions);
       }
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
-      }
+
       return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "connect" :
-         case "disconnect" :
-            $ci = new Computer_Item();
-            return $ci->showSpecificMassiveActionsParameters($input);
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "connect" :
-         case "disconnect" :
-            $ci = new Computer_Item();
-            return $ci->doSpecificMassiveActions($input);
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
@@ -593,6 +548,7 @@ class Printer  extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
+      $tab[31]['condition']      = "`is_visible_printer`='1'";
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';

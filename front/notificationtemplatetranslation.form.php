@@ -42,15 +42,15 @@ if (!isset($_GET["id"])) {
 $language = new NotificationTemplateTranslation();
 
 if (isset($_POST["add"])) {
-   $language->check(-1,'w',$_POST);
+   $language->check(-1, CREATE, $_POST);
    $newID = $language->add($_POST);
    Event::log($newID, "notificationtemplatetranslations", 4, "notification",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["language"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $language->check($_POST["id"],'d');
-   $language->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $language->check($_POST["id"], PURGE);
+   $language->delete($_POST, 1);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
               //TRANS: %s is the user login
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    $language->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $language->check($_POST["id"],'w');
+   $language->check($_POST["id"], UPDATE);
    $language->update($_POST);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
+   Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification",
                 "notificationtemplate");
 
    if ($_GET["id"] == '') {
@@ -75,7 +75,8 @@ if (isset($_POST["add"])) {
    } else {
       $options = array();
    }
-   $language->showForm($_GET["id"], $options);
+   $options['id'] = $_GET["id"];
+   $language->display($options);
    Html::footer();
 }
 ?>

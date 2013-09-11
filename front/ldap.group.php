@@ -34,8 +34,8 @@
 include ('../inc/includes.php');
 
 $group = new Group();
-$group->checkGlobal('w');
-Session::checkRight('user_authtype', 'w');
+$group->checkGlobal(UPDATE);
+Session::checkRight('user', User::UPDATEAUTHENT);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");
 

@@ -53,7 +53,7 @@ class Contact_Supplier extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -67,78 +67,9 @@ class Contact_Supplier extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_contact_supplier" :
-            $contactsupplier = new Contact_Supplier();
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['contacts_id'])) {
-                  $input = array('suppliers_id' => $key,
-                                 'contacts_id'  => $input['contacts_id']);
-               } else if (isset($input['suppliers_id'])) {
-                  $input = array('suppliers_id' => $input['suppliers_id'],
-                                 'contacts_id'  => $key);
-               } else {
-                  return false;
-               }
-               if ($contactsupplier->can(-1, 'w', $input)) {
-                  if ($contactsupplier->add($input)) {
-                     $res['ok']++;
-                  } else {
-                     $res['ko']++;
-                  }
-               } else {
-                  $res['noright']++;
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "add_contact_supplier" :
-            if ($input['itemtype'] == 'Supplier') {
-               Contact::dropdown(array('name' => "contacts_id"));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Add')."'>";
-               return true;
-            }
-            if ($input['itemtype'] == 'Contact') {
-               Supplier::dropdown(array('name' => "suppliers_id"));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Add')."'>";
-               return true;
-            }
-            break;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("contact_enterprise","r")) {
+      if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -212,11 +143,11 @@ class Contact_Supplier extends CommonDBRelation{
 
       $instID = $contact->fields['id'];
 
-      if (!$contact->can($instID,'r')) {
+      if (!$contact->can($instID, READ)) {
          return false;
       }
 
-      $canedit = $contact->can($instID,'w');
+      $canedit = $contact->can($instID, UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contacts_suppliers`.`id`,
@@ -270,8 +201,9 @@ class Contact_Supplier extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed' => $number,
+                                      'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -332,7 +264,7 @@ class Contact_Supplier extends CommonDBRelation{
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -345,10 +277,10 @@ class Contact_Supplier extends CommonDBRelation{
       global $DB,$CFG_GLPI;
 
       $instID = $supplier->fields['id'];
-      if (!$supplier->can($instID,'r')) {
+      if (!$supplier->can($instID, READ)) {
          return false;
       }
-      $canedit = $supplier->can($instID,'w');
+      $canedit = $supplier->can($instID, UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contacts`.*,
@@ -397,8 +329,9 @@ class Contact_Supplier extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed' => $number,
+                                      'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -452,7 +385,7 @@ class Contact_Supplier extends CommonDBRelation{
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

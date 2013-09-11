@@ -40,10 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
+   var $can_be_translated = true;
 
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
+      // TODO: update when move_under will migrate to new massive actions system
       $forbidden[] = 'move_under';
       return $forbidden;
    }

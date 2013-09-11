@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 // autoload include in objecttask.form (tickettask, problemtask,...)
@@ -48,7 +48,7 @@ $itemtype = $task->getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
-   $task->check(-1, 'w', $_POST);
+   $task->check(-1, CREATE, $_POST);
    $task->add($_POST);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
@@ -56,17 +56,17 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds a task'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
 
-} else if (isset($_POST["delete"])) {
-   $task->check($_POST['id'], 'd');
-   $task->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $task->check($_POST['id'], PURGE);
+   $task->delete($_POST, 1);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes a task'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges a task'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
 
 } else if (isset($_POST["update"])) {
-   $task->check($_POST["id"], 'w');
+   $task->check($_POST["id"], UPDATE);
    $task->update($_POST);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",

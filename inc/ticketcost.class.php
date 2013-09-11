@@ -35,8 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// TicketCost class
-/// since version 0.84
+/**
+ * TicketCost Class
+ *
+ * @since version 0.84
+**/
 class TicketCost extends CommonDBChild {
 
    // From CommonDBChild
@@ -44,41 +47,12 @@ class TicketCost extends CommonDBChild {
    static public $items_id  = 'tickets_id';
    public $dohistory        = true;
 
+   static $rightname        = 'ticketcost';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Cost', 'Costs', $nb);
-   }
-
-
-   static function canCreate() {
-
-      return (Session::haveRight('ticketcost','w')
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-      return (Session::haveRight('ticketcost','r')
-              && parent::canView());
-   }
-
-   /**
-    * @since version 0.84
-   **/
-   static function canUpdate() {
-
-      return (Session::haveRight('ticketcost','w')
-              && parent::canUpdate());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canDelete() {
-
-      return (Session::haveRight('ticketcost','w')
-              && parent::canDelete());
    }
 
 
@@ -121,7 +95,7 @@ class TicketCost extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'Ticket')
-          && Session::haveRight("ticketcost","r")) {
+          && Session::haveRight(self::$rightname, READ)) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -234,11 +208,11 @@ class TicketCost extends CommonDBChild {
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
          $options['tickets_id'] = $ticket->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
          $this->initBasedOnPrevious();
       }
 
@@ -263,7 +237,7 @@ class TicketCost extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('Begin date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("begin_date", $this->fields['begin_date']);
+      Html::showDateField("begin_date", array('value' => $this->fields['begin_date']));
       echo "</td>";
       echo "</tr>";
 
@@ -275,7 +249,7 @@ class TicketCost extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("end_date", $this->fields['end_date']);
+      Html::showDateField("end_date", array('value' => $this->fields['end_date']));
       echo "</td>";
       echo "</tr>";
 
@@ -331,11 +305,11 @@ class TicketCost extends CommonDBChild {
       $ID = $ticket->fields['id'];
 
       if (!$ticket->getFromDB($ID)
-          || !$ticket->can($ID, "r")
-          || !Session::haveRight('ticketcost', 'r')) {
+          || !$ticket->can($ID, READ)
+          || !Session::haveRight(self::$rightname, READ)) {
          return false;
       }
-      $canedit = Session::haveRight('ticketcost', 'w');
+      $canedit = Session::haveRightsOr('ticketcost', array(CREATE, UPDATE, PURGE));
 
       echo "<div class='center'>";
 
@@ -358,9 +332,11 @@ class TicketCost extends CommonDBChild {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
-         echo __('Add a new cost')."</a></div>\n";
+         if (Session::haveRight('ticketcost', CREATE)) {
+            echo "<div class='center firstbloc'>".
+                   "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
+            echo __('Add a new cost')."</a></div>\n";
+         }
       }
 
       if ($result = $DB->query($query)) {

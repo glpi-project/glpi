@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 if (!isset($_GET["uID"])) {
    if (($uid = Session::getLoginUserID())
-       && !Session::haveRight("show_all_planning","1")) {
+       && !Session::haveRight("planning", Planning::READALL)) {
       $_GET["uID"] = $uid;
    } else {
       $_GET["uID"] = 0;
@@ -85,7 +85,7 @@ if (isset($_GET['checkavailability'])) {
                $ismine = true;
             } else {
                $entities = Profile_User::getUserEntitiesForRight($user->getID(),
-                                                                 'show_group_planning');
+                                                                 Planning::READGROUP);
                $groups   = Group_User::getUserGroups($user->getID());
                foreach ($groups as $group) {
                   if (($_GET["gID"] == $group['id'])
@@ -100,7 +100,7 @@ if (isset($_GET['checkavailability'])) {
          // If not mine check global right
          if (!$ismine) {
             // First check user
-            $entities = Profile_User::getUserEntitiesForRight($user->getID(), 'show_all_planning');
+            $entities = Profile_User::getUserEntitiesForRight($user->getID(), Planning::READALL);
             if ($_GET["uID"]) {
                $userentities = Profile_User::getUserEntities($user->getID());
                $intersect    = array_intersect($entities, $userentities);
@@ -125,10 +125,9 @@ if (isset($_GET['checkavailability'])) {
       }
    }
 } else {
-   Html::header(__('Planning'), $_SERVER['PHP_SELF'], "maintain", "planning");
+   Html::header(__('Planning'), $_SERVER['PHP_SELF'], "helpdesk", "planning");
 
-   Session::checkSeveralRightsOr(array('show_all_planning' => '1',
-                                       'show_planning'     => '1'));
+   Session::haveRightsOr('planning', array(Planning::READALL, Planning::READMY));
 
    if (!isset($_GET["date"]) || empty($_GET["date"])) {
       $_GET["date"] = strftime("%Y-%m-%d");
@@ -136,9 +135,8 @@ if (isset($_GET['checkavailability'])) {
    if (!isset($_GET["type"])) {
       $_GET["type"] = "week";
    }
-
    $planning = new Planning();
-   $planning->show($_GET);
+   $planning->display($_GET);
 
    Html::footer();
 }

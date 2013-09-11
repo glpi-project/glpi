@@ -38,7 +38,7 @@ Session::checkLoginUser();
 $fup = new TicketFollowup();
 
 if (isset($_POST["add"])) {
-   $fup->check(-1,'w',$_POST);
+   $fup->check(-1, CREATE, $_POST);
    $fup->add($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["update"])) {
-   $fup->check($_POST['id'], 'w');
+   $fup->check($_POST['id'], UPDATE);
    $fup->update($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
@@ -67,13 +67,13 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates a followup'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
-} else if (isset($_POST["delete"])) {
-   $fup->check($_POST['id'], 'd');
-   $fup->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $fup->check($_POST['id'], PURGE);
+   $fup->delete($_POST, 1);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes a followup'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges a followup'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 }
 

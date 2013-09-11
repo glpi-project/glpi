@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DeviceNetworkCard
+/**
+ * DeviceNetworkCard Class
+**
+ */
 class DeviceNetworkCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
@@ -49,6 +52,7 @@ class DeviceNetworkCard extends CommonDevice {
     * @since version 0.84
    **/
    function getImportCriteria() {
+
       return array('designation'      => 'equal',
                    'manufacturers_id' => 'equal',
                    'mac'              => 'equal');

@@ -39,7 +39,7 @@ $link          = new Link();
 $link_itemtype = new Link_ItemType();
 
 if (isset($_POST["add"])) {
-   $link->check(-1,'w', $_POST);
+   $link->check(-1, CREATE, $_POST);
 
    if ($link_itemtype->add($_POST)) {
     Event::log($_POST["links_id"], "links", 4, "setup",

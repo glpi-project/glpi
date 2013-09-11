@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("profile", "r");
+Session::checkRight("profile", READ);
 
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
@@ -42,15 +42,15 @@ if (!isset($_GET['id'])) {
 $prof = new Profile();
 
 if (isset($_POST["add"])) {
-   $prof->check(-1,'w',$_POST);
+   $prof->check(-1, CREATE, $_POST);
    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
    Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
-} else if (isset($_POST["delete"])) {
-   $prof->check($_POST['id'],'d');
-   if ($prof->delete($_POST)) {
+} else if (isset($_POST["purge"])) {
+   $prof->check($_POST['id'], PURGE);
+   if ($prof->delete($_POST, 1)) {
       $prof->redirectToList();
    } else {
       Html::back();
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])
            || isset($_POST["interface"])) {
-   $prof->check($_POST['id'],'w');
+   $prof->check($_POST['id'], UPDATE);
 
    $prof->update($_POST);
    Html::back();
@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
 
 Html::header(Profile::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "profile");
 
-$prof->showForm($_GET["id"]);
+$prof->display(array('id' => $_GET["id"]));
 
 Html::footer();
 ?>

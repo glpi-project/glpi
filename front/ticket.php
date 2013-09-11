@@ -38,7 +38,7 @@ Session::checkLoginUser();
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(Ticket::getTypeName(2),'',$_SESSION["glpiname"]);
 } else {
-   Html::header(Ticket::getTypeName(2),'',"maintain","ticket");
+   Html::header(Ticket::getTypeName(2),'',"helpdesk","ticket");
 }
 
 if ($_SESSION['glpirefresh_ticket_list'] > 0) {

@@ -98,7 +98,7 @@ class NotificationTargetContract extends NotificationTarget {
          }
 
          $tmp['##contract.url##']          = urldecode($CFG_GLPI["url_base"].
-                                                          "/index.php?redirect=contract_".$id);
+                                                          "/index.php?redirect=Contract_".$id);
          $tmp['##contract.items.number##'] = 0;
          $tmp['##contract.items##']        = '';
          if (isset($contract['items']) && count($contract['items'])) {
@@ -170,7 +170,8 @@ class NotificationTargetContract extends NotificationTarget {
 
 
       //Tags without lang
-      $tags = array('contract.url' => sprintf(__('%1$s: %2$s'), __('Contract'), __('URL')));
+      $tags = array('contract.url' => sprintf(__('%1$s: %2$s'), _n('Contract', 'Contracts', 1),
+                                              __('URL')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -178,6 +179,17 @@ class NotificationTargetContract extends NotificationTarget {
                                    'value' => true,
                                    'lang'  => false));
       }
+
+      //Foreach global tags
+      $tags = array('contracts' => _n('Contract', 'Contracts', 2));
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'     => $tag,
+                                   'label'   => $label,
+                                   'value'   => false,
+                                   'foreach' => true));
+      }
+
       asort($this->tag_descriptions);
    }
 

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("peripheral", "r");
+Session::checkRight("peripheral", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,15 +45,19 @@ if (!isset($_GET["withtemplate"])) {
 $peripheral = new Peripheral();
 
 if (isset($_POST["add"])) {
-   $peripheral->check(-1,'w',$_POST);
+   $peripheral->check(-1, CREATE, $_POST);
 
-   $newID = $peripheral->add($_POST);
-   Event::log($newID, "peripherals", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $peripheral->add($_POST)) {
+      Event::log($newID, "peripherals", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($peripheral->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $peripheral->check($_POST["id"],'d');
+   $peripheral->check($_POST["id"], DELETE);
    $peripheral->delete($_POST);
 
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -62,7 +66,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $peripheral->check($_POST["id"],'d');
+   $peripheral->check($_POST["id"], PURGE);
 
    $peripheral->restore($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -71,7 +75,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $peripheral->check($_POST["id"],'d');
+   $peripheral->check($_POST["id"], PURGE);
 
    $peripheral->delete($_POST,1);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -80,7 +84,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $peripheral->check($_POST["id"],'w');
+   $peripheral->check($_POST["id"], UPDATE);
 
    $peripheral->update($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -89,7 +93,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $peripheral->check($_POST["id"],'w');
+   $peripheral->check($_POST["id"], UPDATE);
 
    Computer_Item::unglobalizeItem($peripheral);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -99,8 +103,9 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_POST["id"]);
 
 } else {
-   Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "peripheral");
-   $peripheral->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "peripheral");
+   $peripheral->display(array('id'           => $_GET["id"],
+                              'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

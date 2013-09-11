@@ -28,16 +28,15 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryDropdown extends Rule {
 
    // From Rule
-   static public $right  = 'rule_dictionnary_dropdown';
    public $can_sort      = true;
-   public $show_cache    = false;
 
+   static $rightname     = 'rule_dictionnary_dropdown';
 
    /**
     * @see Rule::maxActionsCount()
@@ -46,39 +45,6 @@ class RuleDictionnaryDropdown extends Rule {
       return 1;
    }
 
-
-//    /**
-//     * @see RuleCached::showCacheRuleHeader()
-//    **/
-//    function showCacheRuleHeader() {
-// 
-//       if ($this->show_cache) {
-//          echo "<tr><th colspan='2'>".__('Cache information')."</th><th>".$this->fields["name"].
-//               "</th></tr>";
-//          echo "<tr><td class='tab_bg_1 b'>".__('Original value')."</td>";
-//          echo "<td class='tab_bg_1 b'>".__('Manufacturer')."</td>";
-//          echo "<td class='tab_bg_1 b'>".__('Modified value')."</td></tr>";
-//       } else {
-//          parent::showCacheRuleHeader();
-//       }
-//    }
-
-
-//    /**
-//     * @see RuleCached::showCacheRuleDetail()
-//    **/
-//    function showCacheRuleDetail($fields) {
-// 
-//       if ($this->show_cache) {
-//          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
-//          echo "<td class='tab_bg_2'>".(($fields["manufacturer"] != '')?$fields["manufacturer"]:'').
-//               "</td>";
-//          echo "<td class='tab_bg_2'>".(($fields["new_value"] != '') ? $fields["new_value"]
-//                                                                     : __('Unchanged'))."</td>";
-//       } else {
-//          parent::showCacheRuleDetail($fields);
-//       }
-//    }
 
 }
 ?>

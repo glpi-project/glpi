@@ -28,15 +28,19 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES link
+/** Link Class
+**/
 class Link extends CommonDBTM {
+
+   static $rightname = 'link';
+
 
 
    static function getTypeName($nb=0) {
@@ -44,19 +48,9 @@ class Link extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('link', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('link', 'r');
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("link","r")) {
+      if (self::canView()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(_n('Link','Links',2),
                                         countElementsInTable('glpi_links_itemtypes',
@@ -78,6 +72,7 @@ class Link extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Link_ItemType', $ong, $options);
 
       return $ong;
@@ -94,6 +89,19 @@ class Link extends CommonDBTM {
 
 
    /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getEmpty()
+   **/
+   function getEmpty() {
+
+      parent::getEmpty();
+      //Keep the same behavior as in previous versions
+      $this->fields['open_window'] = 1;
+   }
+
+
+   /**
    * Print the link form
    *
    * @param $ID      integer ID of the item
@@ -105,7 +113,6 @@ class Link extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td height='23'>".__('Valid tags')."</td>";
@@ -114,13 +121,17 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name", array('size' => 84));
+      Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
-      echo "<td colspan='2'>";
+      echo "<td colspan='3'>";
       Html::autocompletionTextField($this, "link", array('size' => 84));
-      echo "</td><td width='1'></td></tr>";
+      echo "</td></td></tr>";
+
+      echo "<tr><td>".__('Open in a new window')."</td><td>";
+      Dropdown::showYesNo('open_window', $this->fields['open_window']);
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('File content')."</td>";
       echo "<td colspan='3'>";
@@ -128,7 +139,6 @@ class Link extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -142,11 +152,10 @@ class Link extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 
@@ -365,7 +374,7 @@ class Link extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("link","r")) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -376,7 +385,8 @@ class Link extends CommonDBTM {
       $query = "SELECT `glpi_links`.`id`,
                        `glpi_links`.`link` AS link,
                        `glpi_links`.`name` AS name ,
-                       `glpi_links`.`data` AS data
+                       `glpi_links`.`data` AS data,
+                       `glpi_links`.`open_window` AS open_window
                 FROM `glpi_links`
                 INNER JOIN `glpi_links_itemtypes`
                      ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
@@ -407,7 +417,11 @@ class Link extends CommonDBTM {
                   $name =  (isset($names[$key]) ? $names[$key] : reset($names));
                   echo "<tr class='tab_bg_2'>";
                   $url = $link;
-                  echo "<td class='center'><a href='$url' target='_blank'>";
+                  echo "<td class='center'><a href='$url'";
+                  if ($data['open_window']) {
+                     echo " target='_blank'";
+                  }
+                  echo ">";
                   $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
                   $linkname = printf(__('%1$s: %2$s'), $linkname, $link);
                   echo "</a></td></tr>";

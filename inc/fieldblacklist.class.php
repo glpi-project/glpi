@@ -28,30 +28,24 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Fieldblacklist
+/**
+ * Fieldblacklist Class
+**/
 class Fieldblacklist extends CommonDropdown {
+
+   static $rightname = 'config';
+
 
    static function getTypeName($nb=0) {
       return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);
    }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
-
 
    function getAdditionalFields() {
 
@@ -242,7 +236,7 @@ class Fieldblacklist extends CommonDropdown {
          $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
-               if ($item->can(-1,'r')) {
+               if ($item->can(-1, READ)) {
                   $options[$itemtype] = $item->getTypeName(1);
                }
             }

@@ -40,7 +40,7 @@ class RuleRightCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = false;
-   static public $right        = 'rule_ldap';
+   static $rightname           = 'rule_ldap';
    public $orderby             = "name";
    public $menu_option         = 'right';
 

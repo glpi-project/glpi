@@ -45,12 +45,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 if (isset($_POST['searchtype'])) {
-
-   if (!is_array($_POST['searchopt'])) {
-      $searchopt = Toolbox::decodeArrayFromInput($_POST['searchopt']);
-   } else {
-      $searchopt      = $_POST['searchopt'];
-   }
+   $searchopt      = $_POST['searchopt'];
    $_POST['value'] = rawurldecode($_POST['value']);
 
    $addmeta        = "";
@@ -62,6 +57,7 @@ if (isset($_POST['searchtype'])) {
    $display          = false;
    $item             = getItemForItemtype($_POST['itemtype']);
    $options['value'] = $_POST['value'];
+   $options['width'] = '100%';
    // For tree dropdpowns
    $options['permit_select_parent'] = true;
 

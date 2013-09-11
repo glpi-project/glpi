@@ -35,8 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class IPAddress_IPNetwork : Connection between IPAddress and IPNetwork
-/// @since 0.84
+/**
+ * Class IPAddress_IPNetwork : Connection between IPAddress and IPNetwork
+ *
+ * @since 0.84
+**/
 class IPAddress_IPNetwork extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -92,6 +95,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($ipaddress, $entity);
       if ($ipnetworks_ids !== false) {
          // Beware that invalid IPaddresses don't have any valid address !
+         $entity = $ipaddress->getEntityID();
          foreach (IPNetwork::searchNetworksContainingIP($ipaddress, $entity) as $ipnetworks_id) {
             $input['ipnetworks_id'] = $ipnetworks_id;
             $linkObject->add($input);

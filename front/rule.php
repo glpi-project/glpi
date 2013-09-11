@@ -37,6 +37,8 @@ Session::checkCentralAccess();
 
 Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
+RuleCollection::titleBackup();
+
 echo "<table class='tab_cadre'>";
 echo "<tr><th>" . __('Rule type') . "</th></tr>";
 
@@ -55,14 +57,14 @@ foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
    }
 }
 
-if (Session::haveRight("transfer","r" )
+if (Session::haveRight("transfer", READ)
     && Session::isMultiEntitiesMode()) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/front/transfer.php'>".__('Transfer')."</a>";
    echo "</td></tr>";
 }
 
-if (Session::haveRight("config","r" )) {
+if (Session::haveRight("config", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/front/blacklist.php'>".
         _n('Blacklist','Blacklists',2)."</a>";

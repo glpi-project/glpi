@@ -67,6 +67,7 @@ class IPAddress extends CommonDBChild {
    /// first three bytes are set to [0, 0, 0xffff]
    protected $binary  = array(0, 0, 0, 0);
 
+   static $rightname  = 'internet';
 
    //////////////////////////////////////////////////////////////////////////////
    // CommonDBTM related methods
@@ -98,35 +99,6 @@ class IPAddress extends CommonDBChild {
             }
          }
       }
-   }
-
-
-   // Keep can* because IP Address can be attach to whatever type of item
-   static function canView() {
-
-      return (Session::haveRight('internet', 'r')
-              && parent::canView());
-   }
-
-
-   static function canCreate() {
-
-      return (Session::haveRight('internet', 'w')
-              && parent::canCreate());
-   }
-
-
-   static function canUpdate() {
-
-      return (Session::haveRight('internet', 'w')
-              && parent::canUpdate());
-   }
-
-
-   static function canDelete() {
-
-      return (Session::haveRight('internet', 'w')
-              && parent::canDelete());
    }
 
 
@@ -230,14 +202,14 @@ class IPAddress extends CommonDBChild {
 
       if ($item->getType() == 'IPNetwork') {
 
-         if (isset($_POST["start"])) {
-            $start = $_POST["start"];
+         if (isset($_GET["start"])) {
+            $start = $_GET["start"];
          } else {
             $start = 0;
          }
 
-         if (!empty($_POST["order"])) {
-            $table_options['order'] = $_POST["order"];
+         if (!empty($_GET["order"])) {
+            $table_options['order'] = $_GET["order"];
          } else {
             $table_options['order'] = 'ip';
          }
@@ -333,7 +305,7 @@ class IPAddress extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getID()
-          && $item->can($item->getField('id'),'r')) {
+          && $item->can($item->getField('id'), READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
          }
@@ -1014,7 +986,7 @@ class IPAddress extends CommonDBChild {
 
          if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
             $father = $base->addHeader($column_name.'_dynamic', __('Automatic inventory'),
-                                               $super, $father);
+                                        $super, $father);
          }
 
          IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
@@ -1233,7 +1205,7 @@ class IPAddress extends CommonDBChild {
                   $row = $row->createRow();
                }
 
-               $content = $address->fields['name'];
+               $content   = $address->fields['name'];
                $this_cell = $row->addCell($header, $content, $father);
 
                if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {

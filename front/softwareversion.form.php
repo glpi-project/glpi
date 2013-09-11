@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "r");
+Session::checkRight("software", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,7 +45,7 @@ if (!isset($_GET["softwares_id"])) {
 $version = new SoftwareVersion();
 
 if (isset($_POST["add"])) {
-    $version->check(-1,'w',$_POST);
+    $version->check(-1, CREATE,$_POST);
 
    if ($newID = $version->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",
@@ -56,17 +56,16 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $version->check($_POST['id'],'d');
-
-   $version->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $version->check($_POST['id'], PURGE);
+   $version->delete($_POST, 1);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the version id
-              sprintf(__('%1$s deletes the version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
+              sprintf(__('%1$s purges the version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $version->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $version->check($_POST['id'],'w');
+   $version->check($_POST['id'], UPDATE);
 
    $version->update($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
@@ -75,8 +74,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SoftwareVersion::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
-   $version->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
+   Html::header(SoftwareVersion::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
+   $version->display(array('id'           => $_GET["id"],
+                           'softwares_id' => $_GET["softwares_id"]));
    Html::footer();
 }
 ?>

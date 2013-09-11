@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class ContractType
 class ContractType extends CommonDropdown {
 
+   var $can_be_translated = true;
+
    static function getTypeName($nb=0) {
       return _n('Contract type', 'Contract types', $nb);
    }

@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Problems and Items
+/**
+ * Item_Problem Class
+ *
+ *  Relation between Problems and Items
+**/
 class Item_Problem extends CommonDBRelation{
 
 
@@ -55,7 +59,7 @@ class Item_Problem extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -104,10 +108,10 @@ class Item_Problem extends CommonDBRelation{
 
       $instID = $problem->fields['id'];
 
-      if (!$problem->can($instID,'r')) {
+      if (!$problem->can($instID, READ)) {
          return false;
       }
-      $canedit = $problem->can($instID,'w');
+      $canedit = $problem->canEdit($instID);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`
@@ -132,9 +136,11 @@ class Item_Problem extends CommonDBRelation{
          foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showAllItems("items_id", 0, 0,
-                                ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
-                                $types);
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+                                                         => $types,
+                                                     'entity_restrict'
+                                                         => ($problem->fields['is_recursive']
+                                                             ?-1 :$problem->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";
@@ -147,8 +153,8 @@ class Item_Problem extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array();
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -237,8 +243,9 @@ class Item_Problem extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         // TODO check because we switched from $paramsma to $massiveactionparams
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -253,7 +260,7 @@ class Item_Problem extends CommonDBRelation{
                return _n('Item', 'Items', 2);
 
             default :
-               if (Session::haveRight("show_all_problem","1")) {
+               if (Session::haveRight("problem", Problem::READALL)) {
                   $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one

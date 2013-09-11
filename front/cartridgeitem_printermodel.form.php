@@ -36,8 +36,8 @@ include ('../inc/includes.php');
 
 $cipm = new CartridgeItem_PrinterModel();
 if (isset($_POST["add"])) {
-   $cipm->check(-1,'w', $_POST);
-   if ($cipm->add($_POST)) {
+   $cipm->check(-1, UPDATE, $_POST);
+   if ($newID = $cipm->add($_POST)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s associates a type'), $_SESSION["glpiname"]));

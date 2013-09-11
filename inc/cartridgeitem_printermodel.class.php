@@ -52,7 +52,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -72,7 +72,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && Session::haveRight("printer","r")) {
+          && Printer::canView()) {
          switch ($item->getType()) {
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -111,11 +111,11 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $instID = $item->getField('id');
-      if (!$item->can($instID, 'r')) {
+      if (!$item->can($instID, READ)) {
          return false;
       }
-      $canedit = $item->can($instID, 'w');
-      $rand = mt_rand();
+      $canedit = $item->canEdit($instID);
+      $rand    = mt_rand();
 
       $query = "SELECT `".static::getTable()."`.`id`,
                        `glpi_printermodels`.`name` AS `type`,
@@ -168,8 +168,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          if ($canedit) {
             $rand     = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => count($used));
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            $paramsma = array('num_displayed' => count($used),
+                              'container'     => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($paramsma);
          }
 
          echo "<table class='tab_cadre_fixe'>";
@@ -194,7 +195,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
          echo "</div>";

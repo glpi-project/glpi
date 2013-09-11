@@ -38,7 +38,7 @@ if (isset($_POST['itemtype']) && isset($_POST["unlock"])) {
    $itemtype    = $_POST['itemtype'];
    $source_item = new $itemtype();
    if ($source_item->canCreate()) {
-      $source_item->check($_POST['id'], 'w');
+      $source_item->check($_POST['id'], UPDATE);
 
       $actions = array("Computer_Item", "Computer_SoftwareLicense", "Computer_SoftwareVersion",
                        "ComputerDisk", "ComputerVirtualMachine", "NetworkPort", "NetworkName",

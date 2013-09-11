@@ -105,7 +105,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       switch ($input['action']) {
          case "move_version" :
             if (isset($input['options'])) {
-               $input['options'] = Toolbox::decodeArrayFromInput($input['options']);
                if (isset($input['options']['move'])) {
                   $options = array('softwares_id' => $input['options']['move']['softwares_id']);
                      if (isset($input['options']['move']['used'])) {
@@ -144,7 +143,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer
-                     if ($this->can($key,'w')) {
+                     if ($this->can($key, UPDATE)) {
                         //Process rules
                         if ($this->update(array('id' => $key,
                                                 'softwareversions_id'
@@ -152,9 +151,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }
@@ -287,28 +288,28 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    private static function showInstallations($searchID, $crit) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("software", "r") || !$searchID) {
+      if (!Software::canView() || !$searchID) {
          return false;
       }
 
-      $canedit         = Session::haveRight("software", "w");
-      $canshowcomputer = Session::haveRight("computer", "r");
+      $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
+      $canshowcomputer = Computer::canView();
 
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       } else {
          $start = 0;
       }
 
-      if (isset($_POST["order"]) && ($_POST["order"] == "DESC")) {
+      if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
 
-      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
          // manage several param like location,compname :  order first
-         $tmp  = explode(",",$_POST["sort"]);
+         $tmp  = explode(",",$_GET["sort"]);
          $sort = "`".implode("` $order,`",$tmp)."`";
 
       } else {
@@ -412,7 +413,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $softwares_id  = $data['sID'];
             $soft          = new Software();
             $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser      = Session::haveRight('user', 'r');
+            $linkUser      = User::canView();
             $title         = $soft->fields["name"];
 
             if ($crit == "id") {
@@ -434,9 +435,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
+                                 'container'     => 'mass'.__CLASS__.$rand,
                                  'specific_actions' => array('move_version'
                                                                      => _x('button', 'Move'),
+                                                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                                              'purge' => _x('button',
                                                                            'Delete permanently')));
                // Options to update version
@@ -447,7 +451,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   $paramsma['extraparams']['options']['move']['used'] = array($searchID);
                }
 
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
             }
 
             echo "<table class='tab_cadre_fixehov'><tr>";
@@ -559,7 +563,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "</table>\n";
             if ($canedit) {
                $paramsma['ontop'] =false;
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
                Html::closeForm();
             }
 
@@ -585,7 +589,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $softwareversions_id = $version->getField('id');
 
-      if (!Session::haveRight("software", "r") || !$softwareversions_id) {
+      if (!Software::canView() || !$softwareversions_id) {
          return false;
       }
 
@@ -632,20 +636,27 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("software", "r")) {
+      if (!Software::canView()) {
          return false;
       }
 
       $computers_id = $comp->getField('id');
       $rand         = mt_rand();
-      $canedit      = Session::haveRight("software", "w");
+      $canedit      = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $entities_id  = $comp->fields["entities_id"];
 
-      $add_dynamic = '';
+      $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
+
+      $where        = '';
+      if ($crit > -1) {
+         $where = " AND `glpi_softwares`.`softwarecategories_id` = $crit";
+      }
+
+      $add_dynamic  = '';
       if (Plugin::haveImport()) {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
       }
-      
+
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
@@ -664,7 +675,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
-                ORDER BY `softwarecategories_id`, `softname`, `version`";
+                      $where
+                ORDER BY `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
 
@@ -701,25 +713,64 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                      sprintf(__('%1$s = %2$s'),
                                              Computer::getTypeName(1), $comp->getName()));
 
+      // Mini Search engine
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo __('Category')."&nbsp;";
+      SoftwareCategory::dropdown(array('value'      => $crit,
+                                       'toadd'      => array('-1' =>  __('All categories')),
+                                       'emptylabel' => __('Uncategorized software'),
+                                       'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
+      echo "</td></tr></table>";
+      $number = $DB->numrows($result);
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
+      }
+
       $installed = array();
-      if ($number = $DB->numrows($result)) {
+
+      if ($number) {
+         echo "<div class='spaced'>";
+         Html::printAjaxPager('',  $start, $number);
+
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'specific_actions' => array('purge' => _x('button',
+                              'container'        => 'mass'.__CLASS__.$rand,
+                              'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                          'purge' => _x('button',
                                                                         'Delete permanently')));
 
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
-         while ($data = $DB->fetch_assoc($result)) {
-            if ($data["softwarecategories_id"] != $cat) {
-               self::displayCategoryFooter($cat, $rand, $canedit);
-               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
-            }
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         if (isset($data['is_dynamic'])) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
+         echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
+         echo "</tr>\n";
 
-            $licids = self::displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit);
+         // TODO review it : do it in one request
+         for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
+
+            if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
+               $licids = self::softsByCategory($data, $computers_id, $withtemplate,
+                                               $canedit, true);
+            } else {
+               $licids = self::softsByCategory($data, $computers_id, $withtemplate,
+                                               $canedit, false);
+            }
             Session::addToNavigateListItems('Software', $data["softwares_id"]);
 
             foreach ($licids as $licid) {
@@ -727,13 +778,28 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
-         self::displayCategoryFooter($cat, $rand, $canedit);
+/*         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         if (isset($data['is_dynamic'])) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
+         echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
+         echo "</tr>\n";
+*/
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
+      } else {
+         echo "<p class='center b'>".__('No item found')."</p>";
       }
       echo "</div>\n";
       if ((empty($withtemplate) || ($withtemplate != 2))
@@ -774,42 +840,61 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_states`
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
                 WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'
+                      $where";
 
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',',$installed).")";
       }
+      $query .= " ORDER BY `softname`, `version`;";
 
       $req = $DB->request($query);
       if ($number = $req->numrows()) {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
+            // TODO MassiveAction: specific_actions
             $actions = array('install' => _x('button', 'Install'));
             if (SoftwareLicense::canUpdate()) {
-               $actions['purge'] = _x('button', 'Delete permanently');
+               $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                        'purge'] = _x('button', 'Delete permanently');
             }
+
             $paramsma = array('num_displayed'    => $number,
+                              'container'        => 'massSoftwareLicense'.$rand,
                               'specific_actions' => $actions);
 
-            Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
-            echo "<input type='hidden' name='computers_id' value='$computers_id'>";
+            Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('massSoftwareLicense'.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         echo "</tr>\n";
+
          $cat = true;
          foreach ($req as $data) {
-            if ($cat) {
-               self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
-               $cat = false;
-            }
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
          }
-         self::displayCategoryFooter(NULL, $rand, $canedit);
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('massSoftwareLicense'.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         echo "</tr>\n";
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
       }
@@ -820,119 +905,43 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Display category footer for Computer_SoftwareVersion::showForComputer function
-    *
-    * @param $cat                current category ID
-    * @param $rand               random for unicity / no more used
-    * @param $canedit   boolean / no more used
-    *
-    * @return new category ID
-   **/
-   private static function displayCategoryFooter($cat, $rand, $canedit) {
-
-      // Close old one
-      if ($cat != -1) {
-         echo "</table>";
-
-         echo "</div></td></tr>";
-      }
-   }
-
-
-   /**
-    * Display category header for Computer_SoftwareVersion::showForComputer function
-    *
-    * @param $computers_ID             ID of the computer
-    * @param $data                     data used to display
-    * @param $rand                     random for unicity
-    * @param $canedit         boolean
-    *
-    * @return new category ID
-   **/
-   private static function displayCategoryHeader($computers_ID, $data, $rand, $canedit) {
-      global $CFG_GLPI;
-
-      $display = "none";
-
-      if (isset($data["softwarecategories_id"])) {
-         $cat = $data["softwarecategories_id"];
-
-         if ($cat) {
-            // Categorized
-            $catname = Dropdown::getDropdownName('glpi_softwarecategories', $cat);
-            $display = $_SESSION["glpiis_categorized_soft_expanded"];
-         } else {
-            // Not categorized
-            $catname = __('Uncategorized software');
-            $display = $_SESSION["glpiis_not_categorized_soft_expanded"];
-         }
-
-      } else {
-         // Not installed
-         $cat     = '';
-         $catname = __('Affected licenses of not installed software');
-         $display = true;
-      }
-
-      echo "<tr class='tab_bg_2'><td class='center' colspan='5'>";
-      echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . $CFG_GLPI['root_doc'] .
-             "/pics/folder.png','" . $CFG_GLPI['root_doc'] . "/pics/folder-open.png');\">";
-      echo "<img alt='' name='imgcat$cat' src='".$CFG_GLPI['root_doc']."/pics/folder".
-             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>". $catname. "</span>";
-      echo "</a></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td colspan='5'>";
-      echo "<div class='center' id='softcat$cat$rand' ".(!$display ?"style=\"display:none;\"" :'').">";
-
-      echo "<table class='tab_cadre_fixe'><tr>";
-      if ($canedit) {
-         echo "<th width='10'>";
-         Html::checkAllAsCheckbox("softcat$cat$rand");
-         echo "</th>";
-      }
-      echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
-      if (isset($data['is_dynamic'])) {
-         echo "<th>".__('Automatic inventory')."</th>";
-      }
-      echo "</tr>\n";
-      return $cat;
-   }
-
-
-   /**
     * Display a installed software for a category
     *
     * @param $data                     data used to display
     * @param $computers_id             ID of the computer
     * @param $withtemplate             template case of the view process
     * @param $canedit         boolean  user can edit software ?
+    * @param $display         boolean  display and calculte if true or juste calculate
     *
     * @return array of found license id
    **/
-   private static function displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit) {
+   private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
+                                           $display) {
       global $DB, $CFG_GLPI;
 
       $ID       = $data["id"];
       $verid    = $data["verid"];
       $multiple = false;
 
-      echo "<tr class='tab_bg_1'>";
-      if ($canedit) {
-         echo "<td>";
-         Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-         echo "</td>";
-      }
-      echo "<td class='center b'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
-      echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
-                                                      $data["softname"], $data['softwares_id'])
-                                            : $data["softname"]);
-      echo "</a></td>";
-      echo "<td>" . $data["state"] . "</td>";
+      if ($display) {
+         echo "<tr class='tab_bg_1'>";
+         if ($canedit) {
+            echo "<td>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            echo "</td>";
+         }
+         echo "<td class='center b'>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".
+                        $data['softwares_id']."'>";
+         echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
+                                                         $data["softname"], $data['softwares_id'])
+                                               : $data["softname"]);
+         echo "</a></td>";
+         echo "<td>" . $data["state"] . "</td>";
 
-      echo "<td>" . $data["version"];
-      echo "</td><td>";
+         echo "<td>" . $data["version"];
+         echo "</td><td>";
+      }
 
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_softwarelicensetypes`.`name` AS type
@@ -957,33 +966,39 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $licserial = sprintf(__('%1$s (%2$s)'), $licserial, $licdata['type']);
          }
 
-         echo "<span class='b'>". $licdata['name']. "</span> - ".$licserial;
+         if ($display) {
+            echo "<span class='b'>". $licdata['name']. "</span> - ".$licserial;
 
-         $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
-         $link      = $link_item."?id=".$licdata['id'];
-         $comment   = "<table><tr><td>".__('Name')."</td><td>".$licdata['name']."</td></tr>".
-                        "<tr><td>".__('Serial number')."</td><td>".$licdata['serial']."</td></tr>".
-                        "<tr><td>". __('Comments').'</td><td>'.$licdata['comment'].'</td></tr>".
-                      "</table>';
+            $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
+            $link      = $link_item."?id=".$licdata['id'];
+            $comment   = "<table><tr><td>".__('Name')."</td><td>".$licdata['name']."</td></tr>".
+                         "<tr><td>".__('Serial number')."</td><td>".$licdata['serial']."</td></tr>".
+                         "<tr><td>". __('Comments').'</td><td>'.$licdata['comment'].'</td></tr>".
+                         "</table>';
 
-         Html::showToolTip($comment, array('link' => $link));
-         echo "<br>";
+            Html::showToolTip($comment, array('link' => $link));
+            echo "<br>";
+         }
       }
 
-      if (!count($licids)) {
-         echo "&nbsp;";
-      }
+      if ($display) {
+         if (!count($licids)) {
+            echo "&nbsp;";
+         }
 
-      echo "</td>";
-      
-      echo "</td>";
-      if (isset($data['is_dynamic'])) {
-         echo "<td class='center'>";
-         echo Dropdown::getYesNo($data['is_dynamic']);
          echo "</td>";
-      }  
-      
-      echo "</tr>\n";
+
+         echo "</td>";
+         if (isset($data['is_dynamic'])) {
+            echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
+         }
+
+         echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
+                                                                  $data['softwarecategories_id']);
+         echo "</td>";
+
+         echo "</tr>\n";
+      }
 
       return $licids;
    }
@@ -1001,15 +1016,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
       global $CFG_GLPI;
+
       $version = 0;
       if ($data["softwareversions_id_use"]>0) {
          $version = $data["softwareversions_id_use"];
       } else {
          $version = $data["softwareversions_id_buy"];
       }
-      
+
       $ID = $data['linkID'];
-      
+
       $multiple  = false;
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];
@@ -1117,14 +1133,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForVersion($item->getID());
                }
-               return array(1 => SoftwareVersion::getTypeName(1),
+               return array(1 => __('Summary'),
                             2 => self::createTabEntry(self::getTypeName(2), $nb));
             }
             break;
 
          case 'Computer' :
             // Installation allowed for template
-            if (Session::haveRight("software","r")) {
+            if (Software::canView()) {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(Software::getTypeName(2),
                                               countElementsInTable('glpi_computers_softwareversions',

@@ -37,7 +37,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownNotificationTemplate.php")) {
    Html::header_nocache();
 }
 
-Session::checkRight("notification", "w");
+Session::checkRight("notification", UPDATE);
 
 NotificationTemplate::dropdownTemplates('notificationtemplates_id', $_POST['itemtype']);
 ?>

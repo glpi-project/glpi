@@ -54,21 +54,25 @@ if (isset($_GET['getvcard'])) {
    if (empty($_GET["id"])) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/user.php");
    }
-   $user->check($_GET['id'], 'r');
+   $user->check($_GET['id'], READ);
    $user->generateVcard();
 
 } else if (isset($_POST["add"])) {
-   $user->check(-1, 'w', $_POST);
+   $user->check(-1, CREATE, $_POST);
 
    // Pas de nom pas d'ajout
-   if (!empty($_POST["name"]) && $newID=$user->add($_POST)) {
+   if (!empty($_POST["name"])
+       && ($newID = $user->add($_POST))) {
       Event::log($newID, "users", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($user->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $user->check($_POST['id'], 'd');
+   $user->check($_POST['id'], DELETE);
    $user->delete($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -76,7 +80,7 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $user->check($_POST['id'], 'd');
+   $user->check($_POST['id'], PURGE);
    $user->restore($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -84,14 +88,14 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $user->check($_POST['id'], 'd');
+   $user->check($_POST['id'], PURGE);
    $user->delete($_POST, 1);
    Event::log($_POST["id"], "users", 4, "setup",
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $user->redirectToList();
 
 } else if (isset($_POST["force_ldap_resynch"])) {
-   Session::checkRight('user_authtype', 'w');
+   Session::checkRight('user', User::UPDATEAUTHENT);
 
    $user->getFromDB($_POST["id"]);
    AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
@@ -100,7 +104,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $user->check($_POST['id'], 'w');
+   $user->check($_POST['id'], UPDATE);
    $user->update($_POST);
    Event::log($_POST['id'], "users", 5, "setup",
               //TRANS: %s is the user login
@@ -108,7 +112,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["addgroup"])) {
-   $groupuser->check(-1,'w',$_POST);
+   $groupuser->check(-1, CREATE, $_POST);
    if ($groupuser->add($_POST)) {
       Event::log($_POST["users_id"], "users", 4, "setup",
                  //TRANS: %s is the user login
@@ -119,7 +123,7 @@ if (isset($_GET['getvcard'])) {
 } else if (isset($_POST["deletegroup"])) {
    if (count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
-         if ($groupuser->can($key,'w')) {
+         if ($groupuser->can($key, DELETE)) {
             $groupuser->delete(array('id' => $key));
          }
       }
@@ -130,7 +134,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["change_auth_method"])) {
-   Session::checkRight('user_authtype', 'w');
+   Session::checkRight('user', User::UPDATEAUTHENT);
 
    if (isset($_POST["auths_id"])) {
       User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
@@ -146,7 +150,7 @@ if (isset($_GET['getvcard'])) {
       User::showAddExtAuthForm();
       Html::footer();
    } else if (isset($_POST['add_ext_auth_ldap'])) {
-      Session::checkRight("import_externalauth_users", "w");
+      Session::checkRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS);
 
       if (isset($_POST['login']) && !empty($_POST['login'])) {
          AuthLdap::importUserFromServers(array('name' => $_POST['login']));
@@ -154,11 +158,11 @@ if (isset($_GET['getvcard'])) {
       Html::back();
    } else if (isset($_POST['add_ext_auth_simple'])) {
          if (isset($_POST['login']) && !empty($_POST['login'])) {
-            Session::checkRight("import_externalauth_users", "w");
+            Session::checkRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS);
             $input = array('name'     => $_POST['login'],
                            '_extauth' => 1,
                            'add'      => 1);
-            $user->check(-1, 'w', $input);
+            $user->check(-1, CREATE, $input);
             $newID = $user->add($input);
             Event::log($newID, "users", 4, "setup",
                        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
@@ -167,9 +171,9 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
    } else {
-      Session::checkRight("user", "r");
+      Session::checkRight("user", READ);
       Html::header(User::getTypeName(2), '', "admin", "user");
-      $user->showForm($_GET["id"]);
+      $user->display(array('id' => $_GET["id"]));
       Html::footer();
 
    }

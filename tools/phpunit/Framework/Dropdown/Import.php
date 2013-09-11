@@ -166,9 +166,6 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
                                  'value'       => $out2='Web Site'));
       $this->assertGreaterThan(0, $ida[1], "Fail: can't create rule 2 action");
 
-      // Cache empty
-      $cache = $rule->getCacheTable();
-      $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
 
       $manu = new Manufacturer();
 

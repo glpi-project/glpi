@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -40,19 +40,11 @@ class AuthMail extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'config';
+
 
    static function getTypeName($nb=0) {
       return _n('Mail server', 'Mail servers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 
@@ -62,6 +54,19 @@ class AuthMail extends CommonDBTM {
          $input["connect_string"] = Toolbox::constructMailServerConfig($input);
       }
       return $input;
+   }
+
+
+   static function canCreate() {
+      return static::canUpdate();
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function canPurge() {
+      return static::canUpdate();
    }
 
 
@@ -77,7 +82,8 @@ class AuthMail extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('authMail', $ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -142,7 +148,7 @@ class AuthMail extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Config::canUpdate()) {
          return false;
       }
       $spotted = false;
@@ -158,7 +164,6 @@ class AuthMail extends CommonDBTM {
 
       if (Toolbox::canUseImapPop()) {
          $options['colspan'] = 1;
-         $this->showTabs($options);
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -190,7 +195,6 @@ class AuthMail extends CommonDBTM {
          echo "</td></tr>";
 
          $this->showFormButtons($options);
-         $this->addDivForTabs();
 
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
@@ -325,9 +329,9 @@ class AuthMail extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && $item->can($item->getField('id'),'r')) {
+      if (!$withtemplate && $item->can($item->getField('id'),READ)) {
          $ong = array();
-         $ong[1] = __('Main');    // test connexion
+         $ong[1] = _sx('button','Test');    // test connexion
 
          return $ong;
       }

@@ -33,53 +33,49 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("group", "r");
+Session::checkRight("group", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
 $group     = new Group();
-$groupuser = new Group_User();
 
 if (isset($_POST["add"])) {
-   $group->check(-1,'w',$_POST);
+   $group->check(-1, CREATE, $_POST);
    if ($newID=$group->add($_POST)) {
       Event::log($newID, "groups", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($group->getFormURL()."?id=".$newID);
+      }
    }
-   Ajax::refreshDropdownPopupInMainWindow();
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $group->check($_POST["id"],'d');
-   $group->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $group->check($_POST["id"], PURGE);
+   $group->delete($_POST, 1);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $group->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $group->check($_POST["id"],'w');
+   $group->check($_POST["id"], UPDATE);
    $group->update($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_GET['popup'])) {
+} else if (isset($_GET['_in_modal'])) {
    Html::popHeader(Group::getTypeName(2),$_SERVER['PHP_SELF']);
-   if (isset($_GET["rand"])) {
-      $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
-   }
    $group->showForm($_GET["id"]);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-   echo "</div>";
    Html::popFooter();
 
 } else {
    Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
-   $group->showForm($_GET["id"]);
+   $group->display(array('id' =>$_GET["id"]));
    Html::footer();
 }
 ?>

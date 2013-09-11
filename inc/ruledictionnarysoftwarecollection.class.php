@@ -38,28 +38,10 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
-   static public $right        = 'rule_dictionnary_software';
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'software';
 
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       //Init cache system values
-//       $this->initCache("glpi_rulecachesoftwares", array("name"         => "old_value",
-//                                                         "manufacturer" => "manufacturer",
-//                                                         "entities_id"  => "entities_id"),
-//                        array("name"                => "new_value",
-//                              "version"             => "version",
-//                              "manufacturer"        => "new_manufacturer",
-//                              "is_helpdesk_visible" => "is_helpdesk_visible",
-//                              "_ignore_import"      => "ignore_import",
-//                              "new_entities_id"     => "new_entities_id"));
-//    }
-
+   static $rightname           = 'rule_dictionnary_software';
 
    /**
     * @see RuleCollection::getTitle()

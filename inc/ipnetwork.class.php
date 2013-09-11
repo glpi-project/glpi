@@ -48,15 +48,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    public $dohistory = true;
 
+   static $rightname = 'internet';
 
-   static function canCreate() {
-      return Session::haveRight('internet', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('internet', 'r');
-   }
 
 
    static function getTypeName($nb=0) {
@@ -643,6 +636,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('IPNetwork_Vlan', $ong, $options);
       $this->addStandardTab('IPAddress', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -1013,7 +1007,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function title() {
       parent::title();
 
-      if (Session::haveRight('internet', 'w')
+      if (Session::haveRight('internet', UPDATE)
           && Session::isViewAllEntities()) {
 
          echo "<div class='spaced' id='tabsbody'>";

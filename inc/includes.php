@@ -97,7 +97,6 @@ if (isset($_REQUEST)) {
    $_REQUEST = array_map(array('Toolbox','addslashes_deep'), $_REQUEST);
    $_REQUEST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_REQUEST);
 }
-
 if (isset($_FILES)) {
    if (Toolbox::get_magic_quotes_gpc()) {
       $_FILES = array_map(array('Toolbox', 'stripslashes_deep'), $_FILES);
@@ -142,6 +141,9 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 // Manage force tab
 if (isset($_REQUEST['forcetab'])) {
    if (preg_match('/([a-zA-Z]+).form.php/',$_SERVER['PHP_SELF'],$matches)) {
+      $itemtype = $matches[1];
+      Session::setActiveTab($matches[1], $_REQUEST['forcetab']);
+   } else if (preg_match('/([a-zA-Z]+).php/',$_SERVER['PHP_SELF'],$matches)) {
       $itemtype = $matches[1];
       Session::setActiveTab($matches[1], $_REQUEST['forcetab']);
    }

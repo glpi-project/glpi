@@ -28,14 +28,16 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Calendar
+/**
+ * Calendar Class
+**/
 class Calendar extends CommonDropdown {
 
    // From CommonDBTM
@@ -43,6 +45,7 @@ class Calendar extends CommonDropdown {
 
    static protected $forward_entity_to = array('CalendarSegment');
 
+   static $rightname = 'calendar';
 
    /**
     * @since version 0.84
@@ -50,6 +53,7 @@ class Calendar extends CommonDropdown {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
+      // TODO : update when merge will use new massive actions system
       $forbidden[] = 'merge';
       return $forbidden;
    }
@@ -57,16 +61,6 @@ class Calendar extends CommonDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Calendar','Calendars',$nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('calendar', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('calendar', 'r');
    }
 
 
@@ -137,19 +131,23 @@ class Calendar extends CommonDropdown {
                      if ($this->getFromDB($key)) {
                         if (!$this->isEntityAssign()
                             || ($input['entities_id'] != $this->getEntityID())) {
-                           if ($this->can(-1,'w',$options)) {
+                           if ($this->can(-1, CREATE, $options)) {
                               if ($this->duplicate($options)) {
                                  $res['ok']++;
                               } else {
+                                 $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                                  $res['ko']++;
                               }
                            } else {
+                              $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                               $res['noright']++;
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
                         }
                      } else {
+                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                         $res['ko']++;
                      }
                   }
@@ -168,7 +166,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $options array of new values to set
    **/
-   function duplicate ($options=array()) {
+   function duplicate($options=array()) {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -331,18 +329,40 @@ class Calendar extends CommonDropdown {
 
 
    /**
+    * Is the time passed is in a working hour
+    *
+    * @since version 0.85
+    *
+    * @param $time    time  time to check
+    *
+    * @return boolean
+   **/
+   function isAWorkingHour($time) {
+
+      if ($this->isAWorkingDay($time)) {
+         $dayofweek = self::getDayNumberInWeek($time);
+         return CalendarSegment::isAWorkingHour($this->fields['id'], $dayofweek,
+                                                date('H:i:s', $time));
+      }
+      return false;
+   }
+
+
+   /**
     * Add a delay to a date using the active calendar
     *
     * if delay >= DAY_TIMESTAMP : work in days
     * else work in minutes
     *
-    * @param $start           datetime    begin
-    * @param $delay           timestamp   delay to add
-    * @param $work_in_days    boolean     force working in days (false by default)
+    * @param $start              datetime    begin
+    * @param $delay              timestamp   delay to add
+    * @param $additional_delay   timestamp   delay to add (default 0)
+    * @param $work_in_days       boolean     force working in days (false by default)
+    * @param $end_of_working_day boolean     end of working day (false by default)
     *
     * @return end date
    **/
-   function computeEndDate($start, $delay, $work_in_days=false) {
+   function computeEndDate($start, $delay, $additional_delay=0, $work_in_days=false, $end_of_working_day=false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -350,7 +370,39 @@ class Calendar extends CommonDropdown {
 
       $actualtime = strtotime($start);
       $timestart  = strtotime($start);
-      $datestart  = date('Y-m-d',$timestart);
+      $datestart  = date('Y-m-d', $timestart);
+
+      // End of working day
+      if ($end_of_working_day) {
+         $numberofdays = $delay / DAY_TIMESTAMP;
+         // Add $additional_delay to start time.
+         // If start + delay is next day : +1 day
+         $actualtime += $additional_delay;
+
+         // Begin next day
+         $actualtime    += DAY_TIMESTAMP;
+         $numberofdays--;
+         $cache_duration = $this->getDurationsCache();
+         $dayofweek      = self::getDayNumberInWeek($actualtime);
+         $actualdate     = date('Y-m-d',$actualtime);
+
+         while ($numberofdays > 0) {
+            if (!$this->isHoliday($actualdate)
+                && ($cache_duration[$dayofweek] > 0)) {
+               $numberofdays --;
+            }
+            $actualtime += DAY_TIMESTAMP;
+            $actualdate  = date('Y-m-d',$actualtime);
+            $dayofweek   = self::getDayNumberInWeek($actualtime);
+         }
+         $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
+         $actualtime      = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
+
+         return date('Y-m-d H:i:s', $actualtime);
+      }
+
+      // Add additional delay to initial delay
+      $delay += $additional_delay;
 
       if ($work_in_days) { // only based on days
          $cache_duration = $this->getDurationsCache();
@@ -391,7 +443,7 @@ class Calendar extends CommonDropdown {
          // If > last working hour set last working hour
          $dayofweek       = self::getDayNumberInWeek($actualtime);
          $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
-         if ($lastworkinghour< date('H:i:s', $actualtime)) {
+         if ($lastworkinghour < date('H:i:s', $actualtime)) {
             $actualtime   = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
          }
 

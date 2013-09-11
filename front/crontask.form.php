@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 
 $crontask = new CronTask();
 
@@ -51,13 +51,13 @@ if (isset($_POST['execute'])) {
    }
    Html::back();
 } else if (isset($_POST["update"])) {
-   Session::checkRight('config', 'w');
+   Session::checkRight('config', UPDATE);
    $crontask->update($_POST);
    Html::back();
 
 } else if (isset($_POST['resetdate'])
            && isset($_POST["id"])) {
-   Session::checkRight('config', 'w');
+   Session::checkRight('config', UPDATE);
    if ($crontask->getFromDB($_POST["id"])) {
        $crontask->resetDate();
    }
@@ -65,7 +65,7 @@ if (isset($_POST['execute'])) {
 
 } else if (isset($_POST['resetstate'])
            && isset($_POST["id"])) {
-   Session::checkRight('config', 'w');
+   Session::checkRight('config', UPDATE);
    if ($crontask->getFromDB($_POST["id"])) {
        $crontask->resetState();
    }
@@ -76,8 +76,7 @@ if (isset($_POST['execute'])) {
       exit();
    }
    Html::header(Crontask::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'crontask');
-   $crontask->showForm($_GET["id"]);
+   $crontask->display(array('id' =>$_GET["id"]));
    Html::footer();
 }
-Html::displayErrorAndDie('Lost');
 ?>

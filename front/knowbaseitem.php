@@ -33,14 +33,16 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('knowbase' => 'r',
-                                    'faq'      => 'r'));
+if (!Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ))) {
+   Session::redirectIfNotLoggedIn();
+   Html::displayRightError();
+}
 
 if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
-Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
 
 // Search a solution
 if (!isset($_GET["contains"])
@@ -61,7 +63,7 @@ if (isset($_GET['forcetab'])) {
 }
 
 $kb = new Knowbase();
-$kb->show($_GET);
+$kb->display($_GET);
 
 
 Html::footer();

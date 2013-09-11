@@ -35,8 +35,15 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// DocumentType class
+/**
+ * DocumentType Class
+**/
 class DocumentType  extends CommonDropdown {
+   static $rightname      = 'typedoc';
+
+   var $can_be_translated = true;
+
+
 
    function getAdditionalFields() {
 
@@ -136,15 +143,17 @@ class DocumentType  extends CommonDropdown {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('typedoc', 'w');
+   static function showAvailableTypesLink() {
+      global $CFG_GLPI;
+                  
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').".dialog('open');\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+             title=\"".__s('Help')."\" alt=\"".__s('Help')."\"
+             class='calendrier'>";
+      echo "</a>";
+      Ajax::createIframeModalWindow('documenttypelist',
+                                    $CFG_GLPI["root_doc"]."/front/documenttype.list.php",
+                                    array('title'         => static::getTypeName(2)));
    }
-
-
-   static function canView() {
-      return Session::haveRight('typedoc', 'r');
-   }
-
 }
 ?>

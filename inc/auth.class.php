@@ -35,10 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+require_once GLPI_PASSWORD_COMPAT;
+
 /**
  *  Identification class used to login
 **/
-class Auth {
+class Auth extends CommonGLPI {
    //! Error string
    var $err ='';
    /** User class variable
@@ -68,11 +70,56 @@ class Auth {
    const X509     = 6;
    const NOT_YET_AUTHENTIFIED = 0;
 
+
    /**
     * Constructor
    **/
    function __construct() {
       $this->user = new User();
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function canView() {
+      return Session::haveRight('config', READ);
+   }
+
+
+   /**
+    *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
+   **/
+   static function getMenuContent() {
+
+      $menu = array();
+      if (Config::canUpdate()) {
+            $menu['title']                              = __('Authentication');
+            $menu['page']                               = '/front/setup.auth.php';
+
+            $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(2);
+            $menu['options']['ldap']['page']            = '/front/authldap.php';
+            $menu['options']['ldap']['links']['search'] = '/front/authldap.php';
+            $menu['options']['ldap']['links']['add']    = '' .'/front/authldap.form.php';
+
+            $menu['options']['imap']['title']           = AuthMail::getTypeName(2);
+            $menu['options']['imap']['page']            = '/front/authmail.php';
+            $menu['options']['imap']['links']['search'] = '/front/authmail.php';
+            $menu['options']['imap']['links']['add']    = '' .'/front/authmail.form.php';
+
+            $menu['options']['others']['title']         = __('Others');
+            $menu['options']['others']['page']          = '/front/auth.others.php';
+
+            $menu['options']['settings']['title']       = __('Setup');
+            $menu['options']['settings']['page']        = '/front/auth.settings.php';
+
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
    }
 
 
@@ -216,6 +263,104 @@ class Auth {
 
 
    /**
+    * Check is new password functions works properly
+    *
+    * From https://raw.github.com/ircmaxell/password_compat/master/version-test.php
+    *
+    * @since version 0.85
+    *
+    * @return boolean
+   **/
+   static function isCryptOk() {
+      static $pass = NULL;
+
+      if (is_null($pass)) {
+         if (function_exists('crypt')) {
+            $hash = '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG';
+            $test = crypt("password", $hash);
+            $pass = ($test == $hash);
+         } else {
+            $pass = false;
+         }
+      }
+      return $pass;
+   }
+
+
+   /**
+    * Check is a password match the stored hash
+    *
+    * @since version 0.85
+    *
+    * @param $pass string
+    * @param $hash string
+    *
+    * @return boolean
+   **/
+   static function checkPassword($pass, $hash) {
+
+      $tmp = NULL;
+      if (self::isCryptOk()) {
+         $tmp = password_get_info($hash);
+      }
+
+      if (isset($tmp['algo']) && $tmp['algo']) {
+         $ok = password_verify($pass, $hash);
+
+      } else if (strlen($hash)==32) {
+         $ok = md5($pass) == $hash;
+
+      } else if (strlen($hash)==40) {
+         $ok = sha1($pass) == $hash;
+
+      } else {
+         $salt = substr($hash,0,8);
+         $ok = ($salt.sha1($salt.$pass) == $hash);
+      }
+
+      return $ok;
+   }
+
+
+   /**
+    * Is the hash stored need to be regenerated
+    *
+    * @since version 0.85
+    *
+    * @param $hash string
+    *
+    * @return boolean
+   **/
+   static function needRehash($hash) {
+
+      if (self::isCryptOk()) {
+         return password_needs_rehash($hash, PASSWORD_DEFAULT);
+      }
+      // sha1(40) + salt(8)
+      return (strlen($hash) < 48);
+   }
+
+
+   /**
+    * Compute the hash for a password
+    *
+    * @since version 0.85
+    *
+    * @param $pass string
+    *
+    * @return string
+   **/
+   static function getPasswordHash($pass) {
+
+      if (self::isCryptOk()) {
+         return password_hash($pass, PASSWORD_DEFAULT);
+      }
+      $salt = sprintf("%08x", mt_rand());
+      return $salt.sha1($salt.$pass);
+   }
+
+
+   /**
     * Find a user in the GLPI DB
     *
     * @param $name      User Login
@@ -250,16 +395,11 @@ class Auth {
       if ($result) {
          if ($DB->numrows($result) == 1) {
             $password_db = $DB->result($result, 0, "password");
-            // MD5 password
-            if (strlen($password_db) == 32) {
-               $password_post = md5($password);
-            } else {
-               $password_post = sha1($password);
-            }
 
-            if (strcmp($password_db, $password_post) == 0) {
-               // Update password to sha1
-               if (strlen($password_db) == 32) {
+            if (self::checkPassword($password, $password_db)) {
+
+               // Update password if needed
+               if (self::needRehash($password_db)) {
                   $input['id']        = $DB->result($result, 0, "id");
                   // Set glpiID to allow passwod update
                   $_SESSION['glpiID'] = $input['id'];
@@ -621,6 +761,9 @@ class Auth {
       // if not, we update him.
       if ($this->auth_succeded) {
 
+         //Set user an not deleted from LDAP
+         $this->user->fields['is_deleted_ldap'] = 0;
+
          // Prepare data
          $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
          if ($this->extauth) {
@@ -925,7 +1068,7 @@ class Auth {
           && strstr($_SERVER['SSL_CLIENT_S_DN'], $CFG_GLPI["x509_email_field"])) {
 
          if ($redirect) {
-            Html::redirect("login.php".$redir_string);
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::X509;
          }
@@ -939,7 +1082,7 @@ class Auth {
               /*|| (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable]))*/)) {
 
          if ($redirect) {
-            Html::redirect("login.php".$redir_string);
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::EXTERNAL;
          }
@@ -948,7 +1091,7 @@ class Auth {
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          if ($redirect) {
-            Html::redirect("login.php".$redir_string);
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::CAS;
          }
@@ -966,7 +1109,7 @@ class Auth {
    static function showSynchronizationForm(User $user) {
       global $DB, $CFG_GLPI;
 
-      if (Session::haveRight("user_authtype", "w")) {
+      if (Session::haveRight("user", User::UPDATEAUTHENT)) {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
          echo "<div class='firstbloc'>";
 
@@ -1033,7 +1176,7 @@ class Auth {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'User' :
-               if (Session::haveRight("user_authtype", "w")) {
+               if (Session::haveRight("user", User::UPDATEAUTHENT)) {
                   return __('Synchronization');
                }
                break;
@@ -1058,12 +1201,10 @@ class Auth {
    static function showOtherAuthList() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Config::canUpdate()) {
          return false;
       }
-
       echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
 

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("printer", "r");
+Session::checkRight("printer", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,16 +44,19 @@ if (!isset($_GET["withtemplate"])) {
 
 $print = new Printer();
 if (isset($_POST["add"])) {
-   $print->check(-1,'w',$_POST);
+   $print->check(-1, CREATE,$_POST);
 
    if ($newID=$print->add($_POST)) {
       Event::log($newID, "printers", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($print->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $print->check($_POST["id"],'d');
+   $print->check($_POST["id"], DELETE);
    $print->delete($_POST);
 
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -62,7 +65,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $print->check($_POST["id"],'d');
+   $print->check($_POST["id"], PURGE);
 
    $print->restore($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -71,7 +74,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $print->check($_POST["id"],'d');
+   $print->check($_POST["id"], PURGE);
 
    $print->delete($_POST, 1);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -80,7 +83,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $print->check($_POST["id"],'w');
+   $print->check($_POST["id"], UPDATE);
 
    $print->update($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -89,7 +92,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $print->check($_POST["id"],'w');
+   $print->check($_POST["id"], UPDATE);
 
    Computer_Item::unglobalizeItem($print);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -98,8 +101,9 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["id"]);
 
 } else {
-   Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory","printer");
-   $print->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "assets","printer");
+   $print->display(array('id'           => $_GET["id"],
+                         'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

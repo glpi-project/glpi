@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Problem class
+/**
+ * Problem class
+**/
 class Problem extends CommonITILObject {
 
    // From CommonDBTM
@@ -46,12 +48,15 @@ class Problem extends CommonITILObject {
    public $grouplinkclass    = 'Group_Problem';
    public $supplierlinkclass = 'Problem_Supplier';
 
+   static $rightname         = 'problem';
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
    const IMPACT_MASK_FIELD    = 'impact_mask';
    const STATUS_MATRIX_FIELD  = 'problem_status';
 
+   const READMY               = 1;
+   const READALL              = 1024;
 
    /**
     * Name of the type
@@ -64,17 +69,17 @@ class Problem extends CommonITILObject {
 
 
    function canAdminActors() {
-      return Session::haveRight('edit_all_problem', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssign() {
-      return Session::haveRight('edit_all_problem', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssignToMe() {
-      return Session::haveRight('edit_all_problem', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
@@ -83,8 +88,8 @@ class Problem extends CommonITILObject {
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray())
-              && (Session::haveRight("edit_all_problem","1")
-                  || (Session::haveRight('show_my_problem', 1)
+              && (Session::haveRight(self::$rightname, UPDATE)
+                  || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(CommonITILActor::ASSIGN,
@@ -92,15 +97,8 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('edit_all_problem', '1');
-   }
-
-
    static function canView() {
-
-      return (Session::haveRight('show_all_problem', '1')
-              || Session::haveRight('show_my_problem', '1'));
+      return Session::haveRightsOr(self::$rightname, array(self::READALL, self::READMY));
    }
 
 
@@ -114,8 +112,8 @@ class Problem extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
          return false;
       }
-      return (Session::haveRight('show_all_problem', 1)
-              || (Session::haveRight('show_my_problem', 1)
+      return (Session::haveRight(self::$rightname, self::READALL)
+              || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -153,33 +151,7 @@ class Problem extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight('edit_all_problem', 1);
-   }
-
-
-   /**
-    * @since version 0.84
-    *
-    * @return boolean
-    **/
-   static function canDelete() {
-      return Session::haveRight('delete_problem', '1');
-   }
-
-
-   /**
-    * Is the current user have right to delete the current problem ?
-    *
-    * @since version 0.84
-    *
-    * @return boolean
-    **/
-   function canDeleteItem() {
-
-      if (!Session::haveAccessToEntity($this->getEntityID())) {
-         return false;
-      }
-      return Session::haveRight('delete_problem', '1');
+      return Session::haveRight(self::$rightname, CREATE);
    }
 
 
@@ -210,11 +182,13 @@ class Problem extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               $ong = array (1 => __('Analysis'),
-                             2 => _n('Solution', 'Solutions', 1));
-               if (Session::haveRight('observe_ticket','1')) {
+               $ong = array(1 => __('Analysis'),
+                            2 => _n('Solution', 'Solutions', 1));
+                            
+               if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
                }
+
                return $ong;
          }
       }
@@ -265,9 +239,10 @@ class Problem extends CommonITILObject {
    function defineTabs($options=array()) {
 
       // show related tickets and changes
-      $ong['empty'] = $this->getTypeName(1);
+      $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Ticket', $ong, $options);
-//       $this->addStandardTab('Change', $ong, $options);
+      $this->addStandardTab('Change', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
@@ -386,7 +361,7 @@ class Problem extends CommonITILObject {
             $pt = new Problem_Ticket();
             $pt->add(array('tickets_id'  => $this->input['_tickets_id'],
                            'problems_id' => $this->fields['id'],
-                           '_no_notif'   => true));
+                           /*'_no_notif'   => true*/));
 
             if (!empty($ticket->fields['itemtype'])
                 && ($ticket->fields['items_id'] > 0)) {
@@ -394,7 +369,7 @@ class Problem extends CommonITILObject {
                $it->add(array('problems_id' => $this->fields['id'],
                               'itemtype'    => $ticket->fields['itemtype'],
                               'items_id'    => $ticket->fields['items_id'],
-                              '_no_notif'   => true));
+                              /*'_no_notif'   => true*/));
             }
          }
       }
@@ -436,19 +411,17 @@ class Problem extends CommonITILObject {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-
-            if (ProblemTask::canCreate()) {
+      if (ProblemTask::canCreate()) {
          $actions['add_task'] = __('Add a new task');
       }
-      if (Session::haveRight("edit_all_problem","1")) {
+      if (Session::haveRight(self::$rightname, UPDATE)) {
          $actions['add_actor'] = __('Add an actor');
       }
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
-      toolbox::logdebug("actions", $actions);
+
       return $actions;
    }
 
@@ -684,7 +657,7 @@ class Problem extends CommonITILObject {
       $tab[33]['massiveaction']  = false;
       $tab[33]['forcegroupby']   = true;
       $tab[33]['joinparams']     = array('jointype' => 'child');
-
+      
       $tab['solution']          = _n('Solution', 'Solutions', 2);
 
       $tab[23]['table']         = 'glpi_solutiontypes';
@@ -814,8 +787,7 @@ class Problem extends CommonITILObject {
    static function showCentralList($start, $status="process", $showgroupproblems=true) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_problem","1")
-          && !Session::haveRight("show_my_problem","1")) {
+      if (!static::canView()) {
          return false;
       }
 
@@ -1031,10 +1003,10 @@ class Problem extends CommonITILObject {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
-      if (!Session::haveRight("show_all_problem","1") && !Session::haveRight("show_my_problem",1)) {
+      if (!static::canView()) {
          return false;
       }
-      if (!Session::haveRight("show_all_problem","1")) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          $foruser = true;
       }
 
@@ -1140,7 +1112,7 @@ class Problem extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers = Session::haveRight("user", "r");
+      $viewusers = User::canView();
 
       $problem   = new self();
       $rand      = mt_rand();
@@ -1264,11 +1236,10 @@ class Problem extends CommonITILObject {
       $this->initForm($ID, $options);
 
       $showuserlink = 0;
-      if (Session::haveRight('user','r')) {
+      if (User::canView()) {
          $showuserlink = 1;
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -1283,7 +1254,9 @@ class Problem extends CommonITILObject {
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
-      Html::showDateTimeFormItem("date", $date, 1, false);
+      Html::showDateTimeField("date", array('value'      => $date,
+                                            'timestep'   => 1,
+                                            'maybeempty' => false));
       echo "</td>";
       echo "<th width='$colsize1%'>".__('Due date')."</th>";
       echo "<td width='$colsize2%' class='left'>";
@@ -1291,7 +1264,8 @@ class Problem extends CommonITILObject {
       if ($this->fields["due_date"] == 'NULL') {
          $this->fields["due_date"] = '';
       }
-      Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
+      Html::showDateTimeField("due_date", array('value'    => $this->fields["due_date"],
+                                                'timestep' => 1));
 
       echo "</td></tr>";
 
@@ -1317,12 +1291,16 @@ class Problem extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".__('Date of solving')."</th>";
          echo "<td>";
-         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
+         Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
+                                                    'timestep'   => 1,
+                                                    'maybeempty' => false));
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
             echo "<th>".__('Closing date')."</th>";
             echo "<td>";
-            Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
+            Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
+                                                       'timestep'   => 1,
+                                                       'maybeempty' => false));
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
@@ -1369,8 +1347,10 @@ class Problem extends CommonITILObject {
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
       $params = array('urgency'  => '__VALUE0__',
                       'impact'   => '__VALUE1__',
-                      'priority' => $idpriority);
-      Ajax::updateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
+                      'priority' => 'dropdown_priority'.$idpriority);
+      Ajax::updateItemOnSelectEvent(array('dropdown_urgency'.$idurgency,
+                                          'dropdown_impact'.$idimpact),
+                                    $idajax,
                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
       echo "</tr>";
@@ -1385,7 +1365,7 @@ class Problem extends CommonITILObject {
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
-      echo "Ext.get('name$rand').setDisplayed('none');";
+      echo Html::jsHide("name$rand");
       $params = array('maxlength' => 250,
                       'size'      => 110,
                       'name'      => 'name',
@@ -1414,7 +1394,7 @@ class Problem extends CommonITILObject {
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
-      echo "Ext.get('desc$rand').setDisplayed('none');";
+      echo Html::jsHide("desc$rand");
       $params = array('rows'  => 6,
                       'cols'  => 110,
                       'name'  => 'content',
@@ -1451,7 +1431,6 @@ class Problem extends CommonITILObject {
 
       $options['colspan'] = 2;
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
 
@@ -1463,8 +1442,8 @@ class Problem extends CommonITILObject {
    **/
    function showAnalysisForm() {
 
-      $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+      $this->check($this->getField('id'), READ);
+      $canedit = $this->canEdit($this->getField('id'));
 
       $options            = array();
       $options['canedit'] = false;
@@ -1541,250 +1520,6 @@ class Problem extends CommonITILObject {
                $FROM";
    }
 
-
-   /**
-    * @param $output_type   (default Search::HTML_OUTPUT)
-    * @param $mass_id       id of the form to check all (default '')
-   **/
-   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
-
-      // New Line for Header Items Line
-      echo Search::showNewLine($output_type);
-      // $show_sort if
-      $header_num = 1;
-
-      $items = array();
-
-      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
-      $items[__('Status')]       = "glpi_problems.status";
-      $items[__('Date')]         = "glpi_problems.date";
-      $items[__('Last update')]  = "glpi_problems.date_mod";
-
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
-      }
-
-      $items[__('Priority')]           = "glpi_problems.priority";
-      $items[__('Requester')]          = "glpi_problems.users_id";
-      $items[_x('problem','Assigned')] = "glpi_problems.users_id_assign";
-//       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_problems.items_id";
-      $items[__('Category')]           = "glpi_itilcategories.completename";
-      $items[__('Title')]              = "glpi_problems.name";
-
-      foreach ($items as $key => $val) {
-         $issort = 0;
-         $link   = "";
-         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
-      }
-
-      // End Line for column headers
-      echo Search::showEndLine($output_type);
-   }
-
-
-   /**
-    * @param $id
-    * @param $output_type        (default Search::HTML_OUTPUT)
-    * @param $row_num            (default 0)
-    * @param $id_for_massaction  (default -1)
-    */
-   static function showShort($id, $output_type=Search::HTML_OUTPUT, $row_num=0,
-                             $id_for_massaction=-1) {
-      global $CFG_GLPI;
-
-      $rand = mt_rand();
-
-      /// TODO to be cleaned. Get datas and clean display links
-
-      // Prints a job in short form
-      // Should be called in a <table>-segment
-      // Print links or not in case of user view
-      // Make new job object and fill it from database, if success, print it
-      $job = new self();
-
-      // If id is specified it will be used as massive aciton id
-      // Used when displaying ticket and wanting to delete a link data
-      if ($id_for_massaction == -1) {
-         $id_for_massaction = $id;
-      }
-
-      $candelete   = Session::haveRight("delete_problem", "1");
-      $canupdate   = Session::haveRight("edit_all_problem", "1");
-      $showprivate = Session::haveRight("show_all_problem", "1");
-      $align       = "class='center'";
-      $align_desc  = "class='left'";
-
-      if ($job->getFromDB($id)) {
-         $item_num = 1;
-         $bgcolor  = $_SESSION["glpipriority_".$job->fields["priority"]];
-
-         echo Search::showNewLine($output_type,$row_num%2);
-
-         $check_col = '';
-         if (($candelete || $canupdate)
-             && ($output_type == Search::HTML_OUTPUT)) {
-
-            $check_col = Html::getMassiveActionCheckBox(__CLASS__, $id_for_massaction);
-         }
-         echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
-
-         // First column
-         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
-         if ($output_type == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".self::getStatusIconURL($job->fields["status"])."'
-                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
-                           self::getStatus($job->fields["status"])."\">";
-         } else {
-            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
-                                 self::getStatus($job->fields["status"]));
-         }
-
-         echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
-
-         // Second column
-         if ($job->fields['status'] == self::CLOSED) {
-            $second_col = sprintf(__('Closed on %s'),
-                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                    Html::convDateTime($job->fields['closedate']));
-          } else if ($job->fields['status'] == self::SOLVED) {
-            $second_col = sprintf(__('Solved on %s'),
-                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                    Html::convDateTime($job->fields['solvedate']));
-         } else if ($job->fields['due_date']) {
-            $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
-                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                    Html::convDateTime($job->fields['due_date']));
-         } else {
-             $second_col = sprintf(__('Opened on %s'),
-                                   (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                     Html::convDateTime($job->fields['date']));
-        }
-
-         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
-
-         // Second BIS column
-         $second_col = Html::convDateTime($job->fields["date_mod"]);
-         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=90");
-
-         // Second TER column
-         if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
-            echo Search::showItem($output_type, $second_col, $item_num, $row_num,
-                                  $align." width=100");
-         }
-
-         // Third Column
-         echo Search::showItem($output_type,
-                               "<span class='b'>".parent::getPriorityName($job->fields["priority"]).
-                                "</span>",
-                               $item_num, $row_num, "$align bgcolor='$bgcolor'");
-
-         // Fourth Column
-         $fourth_col = "";
-
-         if (isset($job->users[CommonITILActor::REQUESTER])
-             && count($job->users[CommonITILActor::REQUESTER])) {
-            foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
-               $userdata    = getUserName($d["users_id"], 2);
-               $fourth_col .= "<span class='b'>".$userdata['name']."</span>";
-               $fourth_col  = sprintf(__('%1$s %2$s')."<br>", $fourth_col,
-                                     Html::showToolTip($userdata["comment"],
-                                                       array('link'    => $userdata["link"],
-                                                             'display' => false)));
-            }
-         }
-
-         if (isset($job->groups[CommonITILActor::REQUESTER])
-             && count($job->groups[CommonITILActor::REQUESTER])) {
-            foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-               $fourth_col .= "<br>";
-            }
-         }
-
-         echo Search::showItem($output_type, $fourth_col, $item_num, $row_num, $align);
-
-         // Fifth column
-         $fifth_col = "";
-
-         if (isset($job->users[CommonITILActor::ASSIGN])
-             && count($job->users[CommonITILActor::ASSIGN])) {
-            foreach ($job->users[CommonITILActor::ASSIGN] as $d) {
-               $userdata = getUserName($d["users_id"], 2);
-               $fifth_col .= "<span class='b'>".$userdata['name']."</span>";
-               $fifth_col  = sprintf(__('%1$s %2$s')."<br>", $fifth_col,
-                                     Html::showToolTip($userdata["comment"],
-                                                       array('link'    => $userdata["link"],
-                                                             'display' => false)));
-            }
-         }
-
-         if (isset($job->groups[CommonITILActor::ASSIGN])
-             && count($job->groups[CommonITILActor::ASSIGN])) {
-            foreach ($job->groups[CommonITILActor::ASSIGN] as $d) {
-               $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-               $fifth_col .= "<br>";
-            }
-         }
-
-         if (isset($job->suppliers[CommonITILActor::ASSIGN])
-             && count($job->suppliers[CommonITILActor::ASSIGN])) {
-            foreach ($job->suppliers[CommonITILActor::ASSIGN] as $d) {
-               $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
-               $fifth_col .= "<br>";
-            }
-         }
-
-
-         echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
-
-         // Sixth Colum
-
-
-         // Seventh column
-         echo Search::showItem($output_type,
-                               "<span class='b'>".
-                                 Dropdown::getDropdownName('glpi_itilcategories',
-                                                           $job->fields["itilcategories_id"]).
-                                 "</span>",
-                               $item_num, $row_num, $align);
-
-         // Eigth column
-         $eigth_column = "<span class='b'>".$job->fields["name"]."</span>&nbsp;";
-
-         // Add link
-         if ($job->canViewItem()) {
-            $eigth_column = "<a id='problem".$job->fields["id"]."$rand' href=\"".
-                              $CFG_GLPI["root_doc"].
-                              "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
-
-            if ($output_type == Search::HTML_OUTPUT) {
-               $eigth_column = sprintf(__('%1$s (%2$s)'), $eigth_column,
-                                       $job->numberOfTasks($showprivate));
-            }
-         }
-
-         if ($output_type == Search::HTML_OUTPUT) {
-            $eigth_column = sprintf(__('%1$s %2$s'), $eigth_column,
-                                    Html::showToolTip($job->fields['content'],
-                                                      array('display' => false,
-                                                            'applyto' => "ticket".$job->fields["id"].
-                                                                           $rand)));
-         }
-
-         echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
-                               $align_desc."width='300'");
-
-         // Finish Line
-         echo Search::showEndLine($output_type);
-
-      } else {
-         echo "<tr class='tab_bg_2'><td colspan='6'><i>".__('No problem in progress.').
-              "</i></td></tr>";
-      }
-   }
-
-
    /**
     * Display problems for an item
     *
@@ -1797,7 +1532,7 @@ class Problem extends CommonITILObject {
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_problem","1")) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
       }
 
@@ -1991,19 +1726,18 @@ class Problem extends CommonITILObject {
    /**
     * @since version 0.85
     *
-    * @return string
-    */
-   function getForbiddenStandardMassiveAction() {
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
 
-      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $values = parent::getRights();
+      unset($values[READ]);
 
-      if (!Session::haveRight('delete_problem', 1)) {
-         $forbidden[] = 'delete';
-         $forbidden[] = 'purge';
-         $forbidden[] = 'restore';
-      }
+      $values[self::READALL] = __('See all');
+      $values[self::READMY]  = __('See (author)');
 
-      return $forbidden;
+      return $values;
    }
+
 }
 ?>

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("contract", "r");
+Session::checkRight("contract", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
@@ -48,16 +48,20 @@ $contractitem     = new Contract_Item();
 $contractsupplier = new Contract_Supplier();
 
 if (isset($_POST["add"])) {
-   $contract->check(-1,'w',$_POST);
+   $contract->check(-1, CREATE, $_POST);
 
    if ($newID = $contract->add($_POST)) {
       Event::log($newID, "contracts", 4, "financial",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($contract->getFormURL()."?id=".$newID);
+      }
+
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $contract->check($_POST['id'],'d');
+   $contract->check($_POST['id'], DELETE);
 
    if ($contract->delete($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -67,7 +71,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $contract->check($_POST['id'],'d');
+   $contract->check($_POST['id'], PURGE);
 
    if ($contract->restore($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -77,7 +81,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $contract->check($_POST['id'],'d');
+   $contract->check($_POST['id'], PURGE);
 
    if ($contract->delete($_POST,1)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -87,7 +91,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $contract->check($_POST['id'],'w');
+   $contract->check($_POST['id'], UPDATE);
 
    if ($contract->update($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
@@ -97,8 +101,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contract");
-   $contract->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contract");
+   $contract->display(array('id'           => $_GET["id"],
+                            'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

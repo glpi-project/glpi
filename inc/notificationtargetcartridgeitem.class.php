@@ -64,7 +64,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
          $tmp['##cartridge.reference##'] = $cartridge['ref'];
          $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);
          $tmp['##cartridge.url##']       = urldecode($CFG_GLPI["url_base"].
-                                                     "/index.php?redirect=cartridgeitem_".$id);
+                                                     "/index.php?redirect=CartridgeItem_".$id);
          $this->datas['cartridges'][] = $tmp;
       }
 

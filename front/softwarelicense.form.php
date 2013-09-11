@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "r");
+Session::checkRight("software", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,25 +44,28 @@ if (!isset($_GET["softwares_id"])) {
 $license = new SoftwareLicense();
 
 if (isset($_POST["add"])) {
-   $license->check(-1,'w',$_POST);
+   $license->check(-1, CREATE,$_POST);
 
-   $newID = $license->add($_POST);
-   Event::log($_POST['softwares_id'], "software", 4, "inventory",
-              //TRANS: %s is the user login, %2$s is the license id
-              sprintf(__('%1$s adds the license %2$s'), $_SESSION["glpiname"], $newID));
+   if ($newID = $license->add($_POST)) {
+      Event::log($_POST['softwares_id'], "software", 4, "inventory",
+                 //TRANS: %s is the user login, %2$s is the license id
+                 sprintf(__('%1$s adds the license %2$s'), $_SESSION["glpiname"], $newID));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($license->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $license->check($_POST['id'],'d');
-
-   $license->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $license->check($_POST['id'], PURGE);
+   $license->delete($_POST, 1);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the license id
-              sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
+              sprintf(__('%1$s purges the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $license->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $license->check($_POST['id'],'w');
+   $license->check($_POST['id'], UPDATE);
 
    $license->update($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
@@ -71,8 +74,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SoftwareLicense::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
-   $license->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
+   Html::header(SoftwareLicense::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
+   $license->display(array('id'           => $_GET["id"],
+                           'softwares_id' => $_GET["softwares_id"]));
    Html::footer();
 }
 ?>

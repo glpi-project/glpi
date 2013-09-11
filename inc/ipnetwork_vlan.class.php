@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * @since version 0.84
- *
 **/
 class IPNetwork_Vlan extends CommonDBRelation {
 
@@ -54,7 +53,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -104,11 +103,11 @@ class IPNetwork_Vlan extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $port->getID();
-      if (!$port->can($ID, 'r')) {
+      if (!$port->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $port->can($ID, 'w');
+      $canedit = $port->canEdit($ID);
       $rand    = mt_rand();
 
       $query = "SELECT `".self::getTable()."`.id as assocID,
@@ -149,8 +148,9 @@ class IPNetwork_Vlan extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed' => $number,
+                                      'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -186,8 +186,9 @@ class IPNetwork_Vlan extends CommonDBRelation {
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         // TODO check because we switched from $paramsma to $massiveactionparams
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

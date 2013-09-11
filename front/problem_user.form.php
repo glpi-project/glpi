@@ -29,28 +29,36 @@
 
 /** @file
 * @brief
+* @since version 0.83
 */
 
 if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-$problem_user = new Problem_User();
+$link = new Problem_User();
 
 Session ::checkLoginUser();
+Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $problem_user->check($_POST["id"], 'w');
+   $link->check($_POST["id"], UPDATE);
+   $link->update($_POST);
 
-   $problem_user->update($_POST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.opener.location.reload();";
-   echo "window.close()";
-   echo "</script>";
+} else if (isset($_POST['delete'])) {
+   $link->check($_POST['id'], DELETE);
+   $link->delete($_POST);
+
+   Event::log($link->fields['problems_id'], "problem", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$link->fields['problems_id']);
 
 } else if (isset($_GET["id"])) {
-   $problem_user->showUserNotificationForm($_GET["id"]);
+   $link->showUserNotificationForm($_GET["id"]);
 } else {
    Html::displayErrorAndDie('Lost');
 }
+
+Html::popFooter();
 ?>

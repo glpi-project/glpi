@@ -42,7 +42,7 @@ if (!isset($_GET["reservationitems_id"])) {
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
-   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "reservation");
+   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
 Reservation::showCalendar($_GET["reservationitems_id"]);

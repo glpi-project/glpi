@@ -46,20 +46,24 @@ if (!isset($_GET["modify"])) {
    $_GET["modify"] = "";
 }
 
+
 $kb = new KnowbaseItem();
 
 if (isset($_POST["add"])) {
    // ajoute un item dans la base de connaisssances
-   $kb->check(-1,'w',$_POST);
-
+   $kb->check(-1, CREATE,$_POST);
    $newID = $kb->add($_POST);
    Event::log($newID, "knowbaseitem", 5, "tools",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   if (isset($_POST['_in_modal']) && $_POST['_in_modal']) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$newID&_in_modal=1");
+   } else {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   }
 
 } else if (isset($_POST["update"])) {
    // actualiser  un item dans la base de connaissances
-   $kb->check($_POST["id"],'w');
+   $kb->check($_POST["id"], UPDATE);
 
    $kb->update($_POST);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
@@ -67,15 +71,15 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    // effacer un item dans la base de connaissances
-   $kb->check($_POST["id"],'d');
-
-   $kb->delete($_POST);
+   $kb->check($_POST["id"], PURGE);
+   $kb->delete($_POST, 1);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $kb->redirectToList();
+
 } else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["knowbaseitems_id"]) && $_POST["knowbaseitems_id"]) {
@@ -112,62 +116,54 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if ($_GET["id"] == "new") {
-   // on affiche le formulaire de saisie de l'item
-   $kb->check(-1,'w');
+} else if (isset($_GET["id"])) {
 
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
-   $available_options = array('item_itemtype', 'item_items_id');
-   $options           = array();
-   foreach ($available_options as $key) {
-      if (isset($_GET[$key])) {
-         $options[$key] = $_GET[$key];
+   if (isset($_GET["_in_modal"])) {
+      Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
+      $kb = new KnowbaseItem();
+      if ($_GET['id']) {
+         $kb->check($_GET["id"], READ);
+         $kb->showFull();
+      } else { // New item
+         $kb->showForm($_GET["id"], $_GET);
       }
-   }
-   $kb->showForm("",$options);
-   Html::footer();
-
-} else if (empty($_GET["id"])) {
-   // No id or no tickets id to create from solution
-   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
-
-} else if (isset($_GET["id"])
-           && ($_GET["modify"] == "yes")) {
-   // modifier un item dans la base de connaissance
-   $kb->check($_GET["id"],'r');
-
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
-   $kb->showForm($_GET["id"]);
-   Html::footer();
-
-} else {
-   // Affiche un item de la base de connaissances
-   $kb->check($_GET["id"],'r');
-
-   if (Session::getLoginUserID()) {
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-         Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
-      } else {
-         Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
-      }
-      Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+      Html::popFooter();
    } else {
-      $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
-      // Anonymous FAQ
-      Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
-                                          __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
-   }
+      // modifier un item dans la base de connaissance
+      $kb->check($_GET["id"], READ);
 
-   $kb->showFull(true);
+      if (Session::getLoginUserID()) {
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+         } else {
+            Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
+         }
+         Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+      } else {
+         $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
+         // Anonymous FAQ
+         Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
+                                             __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
+      }
    
-   if (Session::getLoginUserID()) {
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-         Html::footer();
+      $available_options = array('item_itemtype', 'item_items_id', 'id');
+      $options           = array();
+      foreach ($available_options as $key) {
+         if (isset($_GET[$key])) {
+            $options[$key] = $_GET[$key];
+         }
+      }
+      $kb->display($options);
+      
+      if (Session::getLoginUserID()) {
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            Html::footer();
+         } else {
+            Html::helpFooter();
+         }
       } else {
          Html::helpFooter();
       }
-   } else {
-      Html::helpFooter();
    }
 }
 ?>

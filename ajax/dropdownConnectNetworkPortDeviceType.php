@@ -37,47 +37,33 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("networking", "w");
+Session::checkRight("networking", UPDATE);
 
 // Make a select box
 if (class_exists($_POST["itemtype"])) {
    $table    = getTableForItemType($_POST["itemtype"]);
    $rand     = mt_rand();
 
-   $use_ajax = true;
-   $paramsconnectpdt
-             = array('searchText'      => '__VALUE__',
-                     'itemtype'        => $_POST['itemtype'],
-                     'rand'            => $rand,
-                     'myname'          => "items",
-                     'entity_restrict' => $_POST["entity_restrict"],
-                     // Beware: '\n' inside condition is transformed to 'n' in SQL request
-                     //         so don't cut this SQL request !
-                     'condition'       => "(`id` in (SELECT `items_id`".
-                                                    "FROM `glpi_networkports`".
-                                                    "WHERE `itemtype` = '".$_POST["itemtype"]."'".
-                                                          "AND `instantiation_type`".
-                                                               "= '".$_POST['instantiation_type']."'))",
-                     'update_item'     => array('value_fieldname'
-                                                      => 'item',
-                                                'to_update'
-                                                      => "results_item_$rand",
-                                                'url' => $CFG_GLPI["root_doc"].
-                                                           "/ajax/dropdownConnectNetworkPort.php",
-                                                'moreparams'
-                                                      => array('networkports_id'
-                                                                  => $_POST['networkports_id'],
-                                                               'itemtype'
-                                                                  => $_POST['itemtype'],
-                                                               'myname'
-                                                                  => $_POST['myname'],
-                                                               'instantiation_type'
-                                                                  => $_POST['instantiation_type'])));
+   $toupdate = array('value_fieldname' => 'item',
+                     'to_update'       => "results_item_$rand",
+                     'url'             => $CFG_GLPI["root_doc"]."/ajax/dropdownConnectNetworkPort.php",
+                     'moreparams'      => array('networkports_id'    => $_POST['networkports_id'],
+                                                'itemtype'           => $_POST['itemtype'],
+                                                'myname'             => $_POST['myname'],
+                                                'instantiation_type' => $_POST['instantiation_type']));
+   $params   = array('rand'      => $rand,
+                     'name'      => "items",
+                     'entity'    => $_POST["entity_restrict"],
+                   // Beware: '\n' inside condition is transformed to 'n' in SQL request
+                   //         so don't cut this SQL request !
+                     'condition' => "(`id` in (SELECT `items_id`".
+                                               "FROM `glpi_networkports`".
+                                               "WHERE `itemtype` = '".$_POST["itemtype"]."'".
+                                                     "AND `instantiation_type`".
+                                                           "= '".$_POST['instantiation_type']."'))",
+                     'toupdate'  => $toupdate);
 
-   $default = "<select name='NetworkPortConnect_item'>".
-               "<option value='0'>".Dropdown::EMPTY_VALUE."</option>".
-              "</select>\n";
-   Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $paramsconnectpdt, $default, $rand);
+   Dropdown::show($_POST['itemtype'], $params);
 
    echo "<span id='results_item_$rand'>";
    echo "</span>\n";

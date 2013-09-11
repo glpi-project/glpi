@@ -89,7 +89,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                   $tmp['##ticket.date##']    = $ticket->getField('date');
                   $tmp['##ticket.title##']   = $ticket->getField('name');
                   $tmp['##ticket.url##']     = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                         "?redirect=ticket_".$data['tickets_id']);
+                                                         "?redirect=Ticket_".$data['tickets_id']);
                   $tmp['##ticket.content##'] = $ticket->getField('content');
 
                   $datas['tickets'][] = $tmp;

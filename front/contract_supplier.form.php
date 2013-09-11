@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 Session::checkCentralAccess();
 $contractsupplier = new Contract_Supplier();
 if (isset($_POST["add"])) {
-   $contractsupplier->check(-1,'w',$_POST);
+   $contractsupplier->check(-1, CREATE,$_POST);
 
    if (isset($_POST["contracts_id"]) && ($_POST["contracts_id"] > 0)
        && isset($_POST["suppliers_id"]) && ($_POST["suppliers_id"] > 0)) {

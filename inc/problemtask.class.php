@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 class ProblemTask extends CommonITILTask {
 
+
    /**
     * @since version 0.84
    **/
@@ -46,23 +47,27 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canCreate() {
-
-      return (Session::haveRight('show_my_problem', '1')
-              || Session::haveRight('edit_all_problem', '1'));
+      return Session::haveRight('problem', UPDATE);
    }
 
 
    static function canView() {
-
-      return (Session::haveRight('show_all_problem', 1)
-              || Session::haveRight('show_my_problem', 1));
+      return Session::haveRightsOr('problem', array(Problem::READALL, Problem::READMY));
    }
 
 
    static function canUpdate() {
+      return Session::haveRight('problem', UPDATE);
+   }
 
-      return (Session::haveRight('edit_all_problem', 1)
-              || Session::haveRight('show_my_problem', 1));
+
+   /**
+    * @since version 0.85
+    *
+    * @return boolean
+   **/
+   static function canPurge() {
+      return Session::haveRight('problem', UPDATE);
    }
 
 
@@ -72,7 +77,7 @@ class ProblemTask extends CommonITILTask {
 
 
    function canEditAll() {
-      return Session::haveRight('edit_all_problem', 1);
+      return Session::haveRightsOr('problem', array(CREATE, UPDATE, DELETE, PURGE));
    }
 
 
@@ -99,12 +104,12 @@ class ProblemTask extends CommonITILTask {
 
       $problem = new Problem();
       if ($problem->getFromDB($this->fields['problems_id'])) {
-         return (Session::haveRight("edit_all_problem","1")
-                 || (Session::haveRight("show_my_problem","1")
+         return (Session::haveRight('problem', UPDATE)
+                 || (Session::haveRight('problem', Problem::READMY)
                      && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
                              && $problem->haveAGroup(CommonITILActor::ASSIGN,
-                                                    $_SESSION['glpigroups'])))));
+                                                     $_SESSION['glpigroups'])))));
       }
       return false;
    }
@@ -122,7 +127,7 @@ class ProblemTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('edit_all_problem',1)) {
+          && !Session::haveRight('problem', UPDATE)) {
          return false;
       }
 
@@ -131,12 +136,12 @@ class ProblemTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to delete the current task ?
+    * Is the current user have right to purge the current task ?
     *
     * @return boolean
    **/
-   function canDeleteItem() {
-      return Session::haveRight('delete_problem', '1');
+   function canPurgeItem() {
+      return $this->canUpdateItem();
    }
 
 

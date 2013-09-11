@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Changes and Items
+/**
+ * Change_Item Class
+ *
+ * Relation between Changes and Items
+**/
 class Change_Item extends CommonDBRelation{
 
 
@@ -52,7 +56,7 @@ class Change_Item extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -100,10 +104,10 @@ class Change_Item extends CommonDBRelation{
 
       $instID = $change->fields['id'];
 
-      if (!$change->can($instID,'r')) {
+      if (!$change->can($instID, READ)) {
          return false;
       }
-      $canedit = $change->can($instID,'w');
+      $canedit = $change->canEdit($instID);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`
@@ -128,11 +132,12 @@ class Change_Item extends CommonDBRelation{
          foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showAllItems("items_id", 0, 0,
-                                ($change->fields['is_recursive']?-1:$change->fields['entities_id']),
-                                $types);
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes' => $types,
+                                                     'entity_restrict'
+                                                                 => ($change->fields['is_recursive']
+                                                                     ?-1:$change->fields['entities_id'])));
          echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
@@ -143,8 +148,8 @@ class Change_Item extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array();
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -233,8 +238,9 @@ class Change_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         // TODO check because we switched from $paramsma to $massiveactionparams
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

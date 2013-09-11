@@ -38,9 +38,9 @@ if (!defined('GLPI_ROOT')) {
 class RuleMailCollector extends Rule {
 
    // From Rule
-   static public $right    = 'rule_mailcollector';
-   public $orderby         = "name";
-   public $can_sort        = true;
+   static $rightname = 'rule_mailcollector';
+   public $orderby   = "name";
+   public $can_sort  = true;
 
 
    // Temproray hack for this class in 0.84
@@ -48,15 +48,6 @@ class RuleMailCollector extends Rule {
       return 'glpi_rules';
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('rule_mailcollector', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('rule_mailcollector', 'r');
-   }
 
    /**
     * @see Rule::maxActionsCount()

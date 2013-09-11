@@ -153,6 +153,7 @@ class DeviceHardDrive extends CommonDevice {
     * @since version 0.84
    **/
    function getImportCriteria() {
+
       return array('designation'       => 'equal',
                    'manufacturers_id'  => 'equal',
                    'interfacetypes_id' => 'equal');

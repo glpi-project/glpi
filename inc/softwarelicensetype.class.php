@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class SoftwareLicenseType
 class SoftwareLicenseType extends CommonDropdown {
 
+   var $can_be_translated = true;
+
    static function getTypeName($nb=0) {
       return _n('License type', 'License types', $nb);
    }

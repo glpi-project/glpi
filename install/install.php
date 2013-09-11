@@ -89,8 +89,6 @@ function choose_language() {
 }
 
 
-
-
 function acceptLicense() {
 
    echo "<div class='center'>";
@@ -243,9 +241,9 @@ function step3($host, $user, $password, $update) {
 
          $DB_list = $link->query("SHOW DATABASES");
          while ($row = $DB_list->fetch_array()) {
-            if (!in_array($row['Database'],array("information_schema",
-                                               "mysql",
-                                               "performance_schema") )) {
+            if (!in_array($row['Database'], array("information_schema",
+                                                  "mysql",
+                                                  "performance_schema") )) {
                echo "<p><input type='radio' name='databasename' value='". $row['Database']."'>";
                echo $row['Database'].".</p>";
             }
@@ -321,25 +319,22 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
    //Fill the database
    function fill_db() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       //include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.84.1-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.85-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
-
       // update default language
-      $query = "UPDATE `glpi_configs`
-                SET `language` = '".$_SESSION["glpilanguage"]."'";
-      $DB->queryOrDie($query, "4203");
-
+      Config::setConfigurationValues('core', array('language' => $_SESSION["glpilanguage"]));
       $query = "UPDATE `glpi_users`
                 SET `language` = NULL";
       $DB->queryOrDie($query, "4203");
    }
+
 
    $link = new mysqli($host, $user, $password);
 
@@ -355,6 +350,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
          if (create_conn_file($host,$user,$password,$databasename)) {
             fill_db();
             echo "<p>".__('OK - database was initialized')."</p>";
+
             next_form();
 
          } else { // can't create config_db file
@@ -420,9 +416,12 @@ function step7() {
    require_once (GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();
 
+
+   $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
    $query = "UPDATE `glpi_configs`
-             SET `url_base` = '".str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER'])."'
-             WHERE `id` = '1'";
+             SET `value`     = '$url_base'
+             WHERE `context` = 'core'
+               AND `name`    = 'url_base'";
    $DB->query($query);
 
    echo "<h2>".__('The installation is finished')."</h2>";

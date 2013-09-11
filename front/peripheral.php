@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("peripheral", "r");
+Session::checkRight("peripheral", READ);
 
-Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "peripheral");
+Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "peripheral");
 
 Search::show('Peripheral');
 

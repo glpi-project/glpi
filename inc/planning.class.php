@@ -39,6 +39,42 @@ if (!defined('GLPI_ROOT')) {
 
 class Planning extends CommonGLPI {
 
+   static $rightname = 'planning';
+
+   const READMY    =    1;
+   const READGROUP = 1024;
+   const READALL   = 2048;
+
+
+   /**
+    * @since version 0.85
+    *
+    * @param $nb
+   **/
+   static function getTypeName($nb=0) {
+      return __('Planning');
+   }
+
+
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuShorcut() {
+      return 'p';
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function canView() {
+
+      return Session::haveRightsOr(self::$rightname, array(self::READMY, self::READGROUP,
+                                                           self::READALL));
+   }
+
 
    function defineTabs($options=array()) {
 
@@ -55,10 +91,10 @@ class Planning extends CommonGLPI {
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = __('Personal View');
-         if (Session::haveRight("show_group_planning","1")) {
+         if (Session::haveRight(self::$rightname, self::READGROUP)) {
             $tabs[2] = __('Group View');
          }
-         if (Session::haveRight("show_all_planning","1")) {
+         if (Session::haveRight(self::$rightname, self::READALL)) {
             $tabs[3] = _n('User', 'Users', 2);
             $tabs[4] = _n('Group', 'Groups', 2);
          }
@@ -74,31 +110,31 @@ class Planning extends CommonGLPI {
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 : // all
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'my', 0,
-                                           $_POST["limititemtype"]);
-               Planning::showPlanning($_SESSION['glpiID'], $_POST["gID"], $_POST["date"],
-                                      $_POST["type"], $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'my', 0,
+                                           $_GET["limititemtype"]);
+               Planning::showPlanning($_SESSION['glpiID'], $_GET["gID"], $_GET["date"],
+                                      $_GET["type"], $_GET["limititemtype"]);
                break;
 
             case 2 :
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'mygroups', 0,
-                                           $_POST["limititemtype"]);
-               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_POST["date"],
-                                      $_POST["type"], $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'mygroups', 0,
+                                           $_GET["limititemtype"]);
+               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_GET["date"],
+                                      $_GET["type"], $_GET["limititemtype"]);
                break;
 
             case 3 :
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'users',
-                                           $_POST["uID"], $_POST["limititemtype"]);
-               Planning::showPlanning($_POST['uID'], 0, $_POST["date"], $_POST["type"],
-                                      $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'users',
+                                           $_GET["uID"], $_GET["limititemtype"]);
+               Planning::showPlanning($_GET['uID'], 0, $_GET["date"], $_GET["type"],
+                                      $_GET["limititemtype"]);
                break;
 
             case 4 :
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'groups',
-                                           $_POST["gID"], $_POST["limititemtype"]);
-               Planning::showPlanning(0, $_POST['gID'], $_POST["date"], $_POST["type"],
-                                      $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'groups',
+                                           $_GET["gID"], $_GET["limititemtype"]);
+               Planning::showPlanning(0, $_GET['gID'], $_GET["date"], $_GET["type"],
+                                      $_GET["limititemtype"]);
                break;
          }
       }
@@ -135,18 +171,12 @@ class Planning extends CommonGLPI {
    **/
    static function dropdownState($name, $value='', $display=true) {
 
-      $output  = "<select name='$name' id='$name'>";
-      $output .= "<option value='0'".(($value == 0)?" selected ":"").">".
-                   _n('Information', 'Information', 1)."</option>";
-      $output .= "<option value='1'".(($value == 1)?" selected ":"").">".__('To do')."</option>";
-      $output .= "<option value='2'".(($value == 2)?" selected ":"").">".__('Done')."</option>";
-      $output .= "</select>";
+      $values = array(0 => _n('Information', 'Information', 1),
+                      1 => __('To do'),
+                      2 => __('Done'));
 
-      if ($display) {
-         echo  $output;
-      } else {
-         return $output;
-      }
+      return Dropdown::showFromArray($name, $values, array('value'   => $value,
+                                                           'display' => $display));
    }
 
 
@@ -261,21 +291,21 @@ class Planning extends CommonGLPI {
             break;
 
          case 'mygroups' :
-            if (!Session::haveRight("show_group_planning","1")) {
+            if (!Session::haveRight(self::$rightname, self::READGROUP)) {
                exit();
             }
             $gID = 'mine';
             break;
 
          case 'users' :
-            if (!Session::haveRight("show_all_planning","1")) {
+            if (!Session::haveRight(self::$rightname, self::READALL)) {
                exit();
             }
             $uID = $value;
             break;
 
          case 'groups' :
-            if (!Session::haveRight("show_all_planning","1")) {
+            if (!Session::haveRight(self::$rightname, self::READALL)) {
                exit();
             }
             $gID = $value;
@@ -320,14 +350,15 @@ class Planning extends CommonGLPI {
       echo "</td>";
 
       echo "<td>";
-      Html::showDateFormItem("date", $date, false);
+      Html::showDateField("date", array('value'      => $date,
+                                        'maybeempty' => false));
       echo '</td><td>';
 
-      echo "<select name='type'>";
-      echo "<option value='day' ".(($type == "day")?" selected ":"").">".__('Day')."</option>";
-      echo "<option value='week' ".(($type == "week")?" selected ":"").">".__('Week')."</option>";
-      echo "<option value='month' ".(($type == "month")?" selected ":"").">".__('Month')."</option>";
-      echo "</select></td>\n";
+      $values = array('day'   => __('Day'),
+                      'week'  => __('Week'),
+                      'month' => __('Month'));
+      Dropdown::showFromArray('type', $values, array('value' => $type));
+      echo "</td>\n";
 
       echo "<td rowspan='2' class='center'>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Show')."\">";
@@ -415,11 +446,13 @@ class Planning extends CommonGLPI {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start')."</td>\n";
       echo "<td>";
-      Html::showDateFormItem("begin", $begin, false);
+      Html::showDateField("begin", array('value'      => $begin,
+                                         'myabeempty' => false));
       echo "</td>\n";
       echo "<td>".__('End')."</td>\n";
       echo "<td>";
-      Html::showDateFormItem("end", $end, false);
+      Html::showDateField("end", array('value'      => $end,
+                                       'maybeempty' => false));
       echo "</td>\n";
 
       echo "<td rowspan='2' class='center'>";
@@ -572,8 +605,7 @@ class Planning extends CommonGLPI {
    static function showPlanning($who, $who_group, $when, $type, $limititemtype='') {
       global $CFG_GLPI, $DB;
 
-      if (!Session::haveRight("show_planning","1")
-          && !Session::haveRight("show_all_planning","1")) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::READMY, self::READALL))) {
          return false;
       }
 
@@ -920,7 +952,7 @@ class Planning extends CommonGLPI {
    static function showCentral($who) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("show_planning","1")
+      if (!Session::haveRight(self::$rightname, self::READMY)
           || ($who <= 0)) {
          return false;
       }
@@ -1087,5 +1119,16 @@ class Planning extends CommonGLPI {
       return $v->returnCalendar();
    }
 
+   /**
+    * @since version 0.85
+   **/
+   function getRights($interface='central') {
+
+      $values[self::READMY]    = __('See personnal planning');
+      $values[self::READGROUP] = __('See schedule of people in my groups');
+      $values[self::READALL]   = __('See all plannings');
+
+      return $values;
+   }
 }
 ?>

@@ -28,14 +28,18 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Change_Group
+/**
+ * Change_Group Class
+ *
+ *  Relation between Changes and Groups
+**/
 class Change_Group extends CommonITILActor {
 
    // From CommonDBRelation

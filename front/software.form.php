@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "r");
+Session::checkRight("software", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,15 +44,19 @@ if (!isset($_GET["withtemplate"])) {
 
 $soft = new Software();
 if (isset($_POST["add"])) {
-   $soft->check(-1,'w',$_POST);
+   $soft->check(-1, CREATE,$_POST);
 
-   $newID = $soft->add($_POST);
-   Event::log($newID, "software", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $soft->add($_POST)) {
+      Event::log($newID, "software", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($soft->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $soft->check($_POST["id"],'d');
+   $soft->check($_POST["id"], DELETE);
    $soft->delete($_POST);
 
    Event::log($_POST["id"], "software", 4, "inventory",
@@ -62,7 +66,7 @@ if (isset($_POST["add"])) {
    $soft->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $soft->check($_POST["id"],'d');
+   $soft->check($_POST["id"], PURGE);
 
    $soft->restore($_POST);
    Event::log($_POST["id"], "software", 4, "inventory",
@@ -71,7 +75,7 @@ if (isset($_POST["add"])) {
    $soft->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $soft->check($_POST["id"],'d');
+   $soft->check($_POST["id"], PURGE);
 
    $soft->delete($_POST,1);
    Event::log($_POST["id"], "software", 4, "inventory",
@@ -80,7 +84,7 @@ if (isset($_POST["add"])) {
    $soft->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $soft->check($_POST["id"],'w');
+   $soft->check($_POST["id"], UPDATE);
 
    $soft->update($_POST);
    Event::log($_POST["id"], "software", 4, "inventory",
@@ -89,8 +93,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
-   $soft->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
+   $soft->display(array('id'           => $_GET["id"],
+                        'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

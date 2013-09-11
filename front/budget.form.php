@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("budget", "r");
+Session::checkRight("budget", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = '';
@@ -44,19 +44,20 @@ if (!isset($_GET["withtemplate"])) {
 
 $budget = new Budget();
 if (isset($_POST["add"])) {
-   $budget->check(-1,'w',$_POST);
+   $budget->check(-1, CREATE, $_POST);
 
    if ($newID = $budget->add($_POST)) {
-      $budget->refreshParentInfos();
-
       Event::log($newID, "budget", 4, "financial",
                   //TRANS: %1$s is the user login, %2$s is the name of the item to add
                   sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($budget->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $budget->check($_POST["id"],'d');
+   $budget->check($_POST["id"], DELETE);
 
    if ($budget->delete($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -66,7 +67,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $budget->check($_POST["id"],'d');
+   $budget->check($_POST["id"], PURGE);
 
    if ($budget->restore($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -76,7 +77,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $budget->check($_POST["id"],'d');
+   $budget->check($_POST["id"], PURGE);
 
    if ($budget->delete($_POST,1)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -86,7 +87,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $budget->check($_POST["id"],'w');
+   $budget->check($_POST["id"], UPDATE);
 
    if ($budget->update($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -95,24 +96,16 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else {
-   if (isset($_GET['popup'])) {
+} else if (isset($_GET['_in_modal'])) {
       Html::popHeader(Budget::getTypeName(1),$_SERVER['PHP_SELF']);
-      if (isset($_GET["rand"])) {
-         $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
-      }
-   } else {
-      Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "financial", "budget");
-   }
-   $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-
-   if (isset($_GET['popup'])) {
-      echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-      echo "</div>";
-
+      $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
       Html::popFooter();
-   } else {
-      Html::footer();
-   }
+
+} else {
+   Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
+   $budget->display(array('id'           => $_GET["id"],
+                          'withtemplate' => $_GET["withtemplate"]));
+
+   Html::footer();
 }
 ?>

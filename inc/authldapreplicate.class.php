@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -36,12 +36,19 @@
 **/
 class AuthLdapReplicate extends CommonDBTM {
 
+   static $rightname = 'config';
+
+
+   static function canCreate() {
+      return static::canUpdate();
+   }
+
 
    /**
-    * @since version 0.84
+    * @since version 0.85
    **/
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
+   static function canPurge() {
+      return static::canUpdate();
    }
 
 
@@ -53,7 +60,7 @@ class AuthLdapReplicate extends CommonDBTM {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 

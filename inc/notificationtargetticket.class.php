@@ -35,12 +35,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+/**
+ * NotificationTarget Class
+**/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    var $private_profiles = array();
 
    public $html_tags = array('##ticket.solution.description##');
+
+   const HEADERTAG = '=-=-=-=';
+   const FOOTERTAG = '=_=_=_=';
+
 
 
    /**
@@ -69,6 +75,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @see NotificationTarget::validateSendTo()
    **/
    function validateSendTo($event, array $infos, $notify_me=false) {
+
       // Always send notification for satisfaction : if send on ticket closure
       if ($event != 'satisfaction') {
          // Check global ones for notification to myself
@@ -78,8 +85,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          // Private object and no right to see private items : do not send
          if ($this->isPrivate()
-            && (!isset($infos['additionnaloption']['show_private'])
-               || !$infos['additionnaloption']['show_private'])) {
+             && (!isset($infos['additionnaloption']['show_private'])
+                 || !$infos['additionnaloption']['show_private'])) {
             return false;
          }
       }
@@ -104,6 +111,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       return parent::getSubjectPrefix();
    }
 
+   /**
+   * Get header to add to content
+   **/
+   function getContentHeader() {
+      return self::HEADERTAG.' '.__('To answer by email, write above this line').' '.self::HEADERTAG;
+   }
+
+   /**
+   * Get footer to add to content
+   **/
+   function getContentFooter() {
+      return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.self::FOOTERTAG;
+   }
 
    /**
     * @since version 0.84
@@ -118,9 +138,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function addAdditionnalInfosForTarget() {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_profiles`
-                WHERE `glpi_profiles`.`show_full_ticket` = '1'";
+      $query = "SELECT `profiles_id` as id
+                FROM `glpi_profilerights`
+                WHERE `glpi_profilerights`.`name` = 'followup'
+                  AND `glpi_profilerights`.`rights` & ".
+                     (TicketFollowup::SEEPRIVATE | TicketFollowup::SEEPUBLIC);
 
       foreach ($DB->request($query) as $data) {
          $this->private_profiles[$data['id']] = $data['id'];
@@ -165,7 +187,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
                                                  $this->getEntity(), true)."
                       AND profiles_id IN (".implode(',',$this->private_profiles).")";
-
       $result = $DB->query($query);
 
       if ($DB->result($result,0,'cpt')) {
@@ -195,7 +216,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'delete'            => __('Deletion of a ticket'),
                       'alertnotclosed'    => __('Not solved tickets'),
                       'recall'            => __('Automatic reminders of SLAs'),
-                      'satisfaction'      => __('Satisfaction survey'));
+                      'satisfaction'      => __('Satisfaction survey'),
+                      'replysatisfaction' => __('Satisfaction survey answer'));
       asort($events);
       return $events;
    }
@@ -215,8 +237,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if ($this->isPrivate()) {
          $query .= " INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                         AND `glpi_profiles`.`interface` = 'central'
-                         AND `glpi_profiles`.`show_full_ticket` = '1') ";
+                         AND `glpi_profiles`.`interface` = 'central')
+                     INNER JOIN `glpi_profilerights`
+                     ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
+                         AND `glpi_profilerights`.`name` = 'followup'
+                         AND `glpi_profilerights`.`rights` & ".
+                            (TicketFollowup::SEEPRIVATE | TicketFollowup::SEEPUBLIC).") ";
+
       }
       return $query;
    }
@@ -235,7 +262,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @see NotificationTargetCommonITILObject::getDatasForObject()
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       // Common ITIL datas
       $datas                               = parent::getDatasForObject($item, $options, $simple);
@@ -344,8 +371,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          //Object group
          if ($hardware->getField('groups_id')) {
             $datas['##ticket.item.group##']
-                        = Dropdown::getDropdownName('glpi_groups',
-                                                    $hardware->getField('groups_id'));
+                        = Dropdown::getDropdownName('glpi_groups', $hardware->getField('groups_id'));
          }
 
          $modeltable = getSingular($hardware->getTable())."models";
@@ -353,7 +379,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          if ($hardware->isField($modelfield)) {
             $datas['##ticket.item.model##']
-                  = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
+                        = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
          }
 
       }
@@ -416,7 +442,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          //Task infos
          $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
          $datas['tasks'] = array();
-         
          foreach ($tasks as $task) {
             $tmp                          = array();
             $tmp['##task.isprivate##']    = Dropdown::getYesNo($task['is_private']);
@@ -426,7 +451,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##task.date##']         = Html::convDateTime($task['date']);
             $tmp['##task.description##']  = $task['content'];
             $tmp['##task.time##']         = Ticket::getActionTime($task['actiontime']);
-            $tmp['##task.status##']    = Planning::getState($task['state']);
+            $tmp['##task.status##']       = Planning::getState($task['state']);
 
 
             $tmp['##task.user##']         = "";
@@ -469,7 +494,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
          $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
-         $datas['validations'] = array();
+
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
@@ -511,24 +536,23 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             // internal inquest
             if ($inquest->fields['type'] == 1) {
                $datas['##ticket.urlsatisfaction##']
-                     = $this->formatURL($options['additionnaloption']['usertype'],
-                                        "ticket_".$item->getField("id").'_Ticket$3');
-               // external inquest
+                           = $this->formatURL($options['additionnaloption']['usertype'],
+                                              "ticket_".$item->getField("id").'_Ticket$3');
+            // external inquest
             } else if ($inquest->fields['type'] == 2) {
                $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
             }
 
             $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
             $datas['##satisfaction.datebegin##']
-                  = Html::convDateTime($inquest->fields['date_begin']);
+                                            = Html::convDateTime($inquest->fields['date_begin']);
             $datas['##satisfaction.dateanswered##']
-                  = Html::convDateTime($inquest->fields['date_answered']);
+                                            = Html::convDateTime($inquest->fields['date_answered']);
             $datas['##satisfaction.satisfaction##']
-                  = $inquest->fields['satisfaction'];
+                                             = $inquest->fields['satisfaction'];
             $datas['##satisfaction.description##']
-                  = $inquest->fields['comment'];
+                                             = $inquest->fields['comment'];
          }
-
       }
 
       return $datas;

@@ -150,6 +150,7 @@ class DeviceMemory extends CommonDevice {
     * @since version 0.84
    **/
    function getImportCriteria() {
+
       return array('designation'          => 'equal',
                    'devicememorytypes_id' => 'equal',
                    'manufacturers_id'     => 'equal',

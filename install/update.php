@@ -563,19 +563,28 @@ function updateDbUpTo031() {
    if (TableExists("glpi_config")) {
       // Get current version
       // Use language from session, even if sometime not reliable
-      $query = "SELECT `version`, '$glpilanguage'
+      $query = "SELECT `version`, 'language'
                 FROM `glpi_config`";
+      $result = $DB->queryOrDie($query, "get current version");
 
-   } else { // >= 0.78
+      $current_version = trim($DB->result($result,0,0));
+      $glpilanguage    = trim($DB->result($result,0,1));
+   // < 0.85
+   } else if (FieldExists('glpi_configs', 'version')) {
       // Get current version and language
       $query = "SELECT `version`, `language`
                 FROM `glpi_configs`";
+      $result = $DB->queryOrDie($query, "get current version");
+
+      $current_version = trim($DB->result($result,0,0));
+      $glpilanguage    = trim($DB->result($result,0,1));
+   } else {
+      $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
+
+      $current_version = $configurationValues['version'];
+      $glpilanguage    = $configurationValues['language'];
    }
 
-   $result = $DB->queryOrDie($query, "get current version");
-
-   $current_version = trim($DB->result($result,0,0));
-   $glpilanguage    = trim($DB->result($result,0,1));
 
 
    // To prevent problem of execution time
@@ -732,9 +741,13 @@ function updateDbUpTo031() {
       case "0.84" :
          include("update_084_0841.php");
          update084to0841();
-         break;
 
       case "0.84.1" :
+         include("update_084_085.php");
+         update084to085();
+         break;
+
+      case "0.85" :
          break;
 
       default :
@@ -765,11 +778,9 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   $query = "UPDATE `glpi_configs`
-             SET `version` = ' 0.84.1',
-                 `language` = '".$glpilanguage."',
-                 `founded_new_version` = ''";
-   $DB->queryOrDie($query);
+   Config::setConfigurationValues('core', array('version'             => '0.85',
+                                                'language'            => $glpilanguage,
+                                                'founded_new_version' => ''));
 
    // Update process desactivate all plugins
    $plugin = new Plugin();
@@ -885,12 +896,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             $tab = updateDbUpTo031();
 
          } else {
-            // Get current version
-            $query = "SELECT `version`
-                      FROM `$config_table`";
-            $result = $DB->queryOrDie($query, "get current version");
-
-            $current_version = trim($DB->result($result, 0, 0));
+            $current_version = Config::getCurrentDBVersion();
             $tab = updateDbUpTo031();
          }
 

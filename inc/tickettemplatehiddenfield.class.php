@@ -52,7 +52,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -83,7 +83,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate","r")) {
+          && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
@@ -175,14 +175,14 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       $ID = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
          return false;
       }
 
       $ttm     = new self();
       $used    = $ttm->getHiddenFields($ID);
 
-      $canedit = $tt->can($ID, "w");
+      $canedit = $tt->canEdit($ID);
       $fields  = $tt->getAllowedFieldsNames(false, isset($used['itemtype']));
       $rand    = mt_rand();
 
@@ -224,8 +224,9 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed'  => $numrows);
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            $massiveactionparams = array('num_displayed' => $numrows,
+                                         'container'     => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>";
@@ -254,7 +255,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
          echo "</table>";
          if ($canedit && $numrows) {
             $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
          echo "</div>";

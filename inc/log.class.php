@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Log class
+/**
+ * Log Class
+**/
 class Log extends CommonDBTM {
 
    const HISTORY_ADD_DEVICE         = 1;
@@ -67,6 +69,9 @@ class Log extends CommonDBTM {
 
    // Plugin must use value starting from
    const HISTORY_PLUGIN             = 1000;
+
+   static $rightname = 'logs';
+
 
 
    static function getTypeName($nb=0) {
@@ -113,7 +118,6 @@ class Log extends CommonDBTM {
       // needed to have  $SEARCHOPTION
       list($real_type, $real_id) = $item->getLogTypeID();
       $searchopt                 = Search::getOptions($real_type);
-
       if (!is_array($searchopt)) {
          return false;
       }
@@ -130,8 +134,18 @@ class Log extends CommonDBTM {
                // skip sub-title
                continue;
             }
+            // specific for profile
+            if (($item->getType() == 'ProfileRight')
+                && ($key == 'rights')) {
+               if (isset($val2['rightname'])
+                   && ($val2['rightname'] == $item->fields['name'])) {
+
+                  $id_search_option = $key2;
+                  $changes          =  array($id_search_option, addslashes($oldval), $values[$key]);
+               }
+
             // Linkfield or standard field not massive action enable
-            if (($val2['linkfield'] == $key)
+            } else if (($val2['linkfield'] == $key)
                 || (($key == $val2['field'])
                     && ($val2['table'] == $item->getTable()))) {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
@@ -154,8 +168,9 @@ class Log extends CommonDBTM {
                }
                break;
             }
-         }
+            //
 
+         }
          if (count($changes)) {
             $result = self::history($real_id, $real_type, $changes);
          }
@@ -492,7 +507,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add the item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["new_value"]));
 
@@ -503,7 +518,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update the item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["new_value"]));
                   break;
@@ -513,7 +528,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete the item'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["old_value"]));
                   break;
@@ -537,7 +552,6 @@ class Log extends CommonDBTM {
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["new_value"]));
                   break;
-
 
                default :
                   $fct = array($data['itemtype_link'], 'getHistoryEntry');
@@ -567,7 +581,8 @@ class Log extends CommonDBTM {
                   break;
                }
             }
-            if ($itemtable == $tablename) {
+            if (($itemtable == $tablename)
+                || ($tmp['datatype'] == 'right')) {
                switch ($tmp['datatype']) {
                   // specific case for text field
                   case 'text' :
@@ -601,6 +616,18 @@ class Log extends CommonDBTM {
    **/
    function post_addItem() {
       $_SESSION['glpi_maxhistory'] = $this->fields['id'];
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values = array( READ => __('Read'));
+      return $values;
    }
 
 }

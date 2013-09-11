@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = 0;
@@ -48,7 +48,7 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' class='center'>";
 User::dropdown(array('name'   => 'id',
                      'value'  => $_GET["id"],
-                     'right'  => 'reservation_helpdesk'));
+                     'right'  => 'reservation'));
 
 echo "</td>";
 echo "<td rowspan='2' class='center'><input type='submit' class='submit' name='submit' value='".

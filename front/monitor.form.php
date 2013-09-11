@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("monitor", "r");
+Session::checkRight("monitor", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,15 +45,19 @@ if (!isset($_GET["withtemplate"])) {
 $monitor = new Monitor();
 
 if (isset($_POST["add"])) {
-   $monitor->check(-1,'w',$_POST);
+   $monitor->check(-1, CREATE,$_POST);
 
-   $newID = $monitor->add($_POST);
-   Event::log($newID, "monitors", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $monitor->add($_POST)) {
+      Event::log($newID, "monitors", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($monitor->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $monitor->check($_POST["id"],'d');
+   $monitor->check($_POST["id"], DELETE);
    $monitor->delete($_POST);
 
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -62,7 +66,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $monitor->check($_POST["id"],'d');
+   $monitor->check($_POST["id"], PURGE);
 
    $monitor->restore($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -71,7 +75,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $monitor->check($_POST["id"],'d');
+   $monitor->check($_POST["id"], PURGE);
 
    $monitor->delete($_POST,1);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -80,7 +84,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $monitor->check($_POST["id"],'w');
+   $monitor->check($_POST["id"], UPDATE);
 
    $monitor->update($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -89,7 +93,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $monitor->check($_POST["id"],'w');
+   $monitor->check($_POST["id"], UPDATE);
 
    Computer_Item::unglobalizeItem($monitor);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -99,8 +103,9 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_POST["id"]);
 
 } else {
-   Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "monitor");
-   $monitor->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "monitor");
+   $monitor->display(array('id'           => $_GET["id"],
+                           'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

@@ -37,10 +37,7 @@ if (!($dropdown instanceof CommonDropdown)) {
 }
 if (!$dropdown->canView()) {
    // Gestion timeout session
-   if (!Session::getLoginUserID()) {
-      Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-      exit();
-   }
+   Session::redirectIfNotLoggedIn();
    Html::displayRightError();
 }
 

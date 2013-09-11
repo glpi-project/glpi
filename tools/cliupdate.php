@@ -167,19 +167,30 @@ class CliMigration extends Migration {
 
 /*---------------------------------------------------------------------*/
 
-if (TableExists("glpi_configs")) {
+if (!TableExists("glpi_configs")) {
+   // Get current version
+   // Use language from session, even if sometime not reliable
+   $query = "SELECT `version`, 'language'
+             FROM `glpi_config`";
+   $result = $DB->queryOrDie($query, "get current version");
+
+   $current_version = trim($DB->result($result,0,0));
+   $glpilanguage    = trim($DB->result($result,0,1));
+// < 0.85
+} else if (FieldExists('glpi_configs', 'version')) {
+   // Get current version and language
    $query = "SELECT `version`, `language`
              FROM `glpi_configs`";
-} else if (TableExists("glpi_config")) {
-   $query = "SELECT `version`, `language`
-             FROM `glpi_config`";
-} else {
-   die("Bad schema\n");
-}
+   $result = $DB->queryOrDie($query, "get current version");
 
-$result          = $DB->query($query) or die("get current version ".$DB->error());
-$current_version = trim($DB->result($result,0,0));
-$glpilanguage    = trim($DB->result($result,0,1));
+   $current_version = trim($DB->result($result,0,0));
+   $glpilanguage    = trim($DB->result($result,0,1));
+} else {
+   $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
+
+   $current_version     = $configurationValues['version'];
+   $glpilanguage        = $configurationValues['language'];
+}
 
 $migration = new CliMigration($current_version);
 
@@ -264,7 +275,11 @@ switch ($current_version) {
       include("../install/update_084_0841.php");
       update084to0841();
       break;
-         
+      
+   case "0.84.1" :
+      include("../install/update_084_085.php");
+      update084to085();
+
    case GLPI_VERSION :
       break;
 
@@ -275,10 +290,8 @@ switch ($current_version) {
 if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   $query = "UPDATE `glpi_configs`
-             SET `version` = '".GLPI_VERSION."',
-                 `founded_new_version` = ''";
-   $DB->queryOrDie($query, 'update version number');
+   Config::setConfigurationValues('core', array('version'             => GLPI_VERSION,
+                                                'founded_new_version' => ''));
 
    // Update process desactivate all plugins
    $plugin = new Plugin();
@@ -288,8 +301,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_0831_084.php");
-   update0831to084();
+   include("../install/update_084_085.php");
+   update084to085();
 
    $migration->displayWarning("\nForced migration Done.");
 

@@ -90,11 +90,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       switch ($input['action']) {
          case "move_license" :
             if (isset($input['options'])) {
-               $input['options'] = Toolbox::decodeArrayFromInput($input['options']);
                if (isset($input['options']['move'])) {
                   SoftwareLicense::dropdown(array('condition'
-                                                   => "`glpi_softwarelicenses`.`softwares_id`
-                                                        = '".$input['options']['move']['softwares_id']."'",
+                                                  => "`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                    => $input['options']['move']['used']));
                      echo "<br><br><input type='submit' name='massiveaction' value=\"".
@@ -129,7 +127,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer
-                     if ($this->can($key,'w')) {
+                     if ($this->can($key, UPDATE)) {
                         //Process rules
                         if ($this->update(array('id'  => $key,
                                                 'softwarelicenses_id'
@@ -137,9 +135,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }
@@ -165,10 +165,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                         }
 
                         if ($version > 0) {
-                           $params = array('computers_id'       => $csl->fields['computers_id'],
-                                          'softwareversions_id' => $version);
+                           $params = array('computers_id'        => $csl->fields['computers_id'],
+                                           'softwareversions_id' => $version);
                            //Get software name and manufacturer
-                           if ($csv->can(-1,'w', $params)) {
+                           if ($csv->can(-1, CREATE, $params)) {
                               //Process rules
                               if ($csv->add($params)) {
                                  $res['ok']++;
@@ -190,6 +190,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                }
             }
             break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -272,7 +273,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $softwarelicense_id = $license->getField('id');
 
-      if (!Session::haveRight("software", "r") || !$softwarelicense_id) {
+      if (!Software::canView() || !$softwarelicense_id) {
          return false;
       }
 
@@ -320,29 +321,29 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $searchID = $license->getField('id');
 
-      if (!Session::haveRight("software", "r") || !$searchID) {
+      if (!Software::canView() || !$searchID) {
          return false;
       }
 
-      $canedit         = Session::haveRight("software", "w");
-      $canshowcomputer = Session::haveRight("computer", "r");
+      $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
+      $canshowcomputer = Computer::canView();
 
 
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       } else {
          $start = 0;
       }
 
-      if (isset($_POST["order"]) && ($_POST["order"] == "DESC")) {
+      if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
 
-      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
          // manage several param like location,compname : order first
-         $tmp  = explode(",",$_POST["sort"]);
+         $tmp  = explode(",",$_GET["sort"]);
          $sort = "`".implode("` $order,`",$tmp)."`";
       } else {
          $sort = "`entity` $order, `compname`";
@@ -442,9 +443,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
+                                 'container'        => 'mass'.__CLASS__.$rand,
                                  'specific_actions' => array('move_license'
                                                                       => _x('button', 'Move'),
+                                                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                                              'delete' => _x('button',
                                                                            'Delete permanently')));
                // Options to update license
@@ -452,13 +456,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $paramsma['extraparams']['options']['move']['softwares_id']
                                                                    = $license->fields['softwares_id'];
 
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
             }
 
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
-            $linkUser   = Session::haveRight('user', 'r');
+            $linkUser   = User::canView();
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["vername"]);
@@ -540,7 +544,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             echo "</table>\n";
             if ($canedit) {
                $paramsma['ontop'] = false;
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
                Html::closeForm();
             }
 

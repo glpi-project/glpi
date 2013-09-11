@@ -28,20 +28,24 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class FieldUnicity
+/**
+ * FieldUnicity Class
+**/
 class FieldUnicity extends CommonDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory       = true;
 
-   var $second_level_menu = "control";
+   var $second_level_menu  = "control";
+
+   static $rightname       = 'config';
 
 
    static function getTypeName($nb=0) {
@@ -50,12 +54,15 @@ class FieldUnicity extends CommonDropdown {
 
 
    static function canCreate() {
-      return Session::haveRight('config', 'w');
+      return static::canUpdate();
    }
 
 
-   static function canView() {
-      return Session::haveRight('config', 'r');
+   /**
+    * @since version 0.85
+   **/
+   static function canPurge() {
+      return static::canUpdate();
    }
 
 

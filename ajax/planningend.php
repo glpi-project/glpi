@@ -48,7 +48,13 @@ if (isset($_POST['duration']) && ($_POST['duration'] == 0)
    if (!isset($_POST['global_end'])) {
       $_POST['global_end'] = '';
    }
-   Html::showDateTimeFormItem($_POST['name'], $_POST['end'], -1, false, true, '', '',
-                              $_POST['global_begin'], $_POST['global_end']);
+   Html::showDateTimeField($_POST['name'], array('value'      =>  $_POST['end'],
+                                                 'timestep'   => -1,
+                                                 'maybeempty' => false,
+                                                 'canedit'    => true,
+                                                 'mindate'    => '',
+                                                 'maxdate'    => '',
+                                                 'mintime'    => $_POST['global_begin'],
+                                                 'maxtime'    => $_POST['global_end']));
 }
 ?>

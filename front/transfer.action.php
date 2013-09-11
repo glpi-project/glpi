@@ -37,7 +37,7 @@ Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
 
 $transfer = new Transfer();
 
-$transfer->checkGlobal('r');
+$transfer->checkGlobal(READ);
 
 if (isset($_POST['transfer'])) {
    if (isset($_SESSION['glpitransfer_list'])) {

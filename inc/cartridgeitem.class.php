@@ -43,23 +43,25 @@ if (!defined('GLPI_ROOT')) {
  * \see Cartridge
 **/
 class CartridgeItem extends CommonDBTM {
+
    // From CommonDBTM
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
    public $dohistory                   = true;
 
+   static $rightname                   = 'cartridge';
 
    static function getTypeName($nb=0) {
       return _n('Cartridge model','Cartridge models',$nb);
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('cartridge', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('cartridge', 'r');
+   /**
+    * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuName() {
+      return Cartridge::getTypeName(2);
    }
 
 
@@ -84,7 +86,7 @@ class CartridgeItem extends CommonDBTM {
 
       $class = new CartridgeItem_PrinterModel();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      
+
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
@@ -102,6 +104,7 @@ class CartridgeItem extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -175,7 +178,6 @@ class CartridgeItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -230,13 +232,15 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Alert threshold')."</td>";
       echo "<td>";
-      Dropdown::showInteger('alarm_threshold', $this->fields["alarm_threshold"], 0, 100, 1,
-                            array('-1' => __('Never')));
+      Dropdown::showNumber('alarm_threshold', array('value' => $this->fields["alarm_threshold"],
+                                                    'min'   => 0,
+                                                    'max'   => 100,
+                                                    'step'  => 1,
+                                                    'toadd' => array('-1' => __('Never'))));
       Alert::displayLastAlert('CartridgeItem', $ID);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -250,11 +254,10 @@ class CartridgeItem extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 
@@ -466,7 +469,8 @@ class CartridgeItem extends CommonDBTM {
                      ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
                 WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id`
                            = '".$printer->fields["printermodels_id"]."'
-                      AND `glpi_cartridgeitems`.`entities_id` ='".$printer->fields["entities_id"]."'
+                      ".getEntitiesRestrictRequest('AND', 'glpi_cartridgeitems', '',
+                                                   $printer->fields["entities_id"], true)."
                 GROUP BY tID
                 ORDER BY `name`, `ref`";
       $datas = array();

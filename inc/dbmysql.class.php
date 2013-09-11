@@ -164,25 +164,11 @@ class DBmysql {
       $res = @$this->dbh->query($query);
       if (!$res) {
          // no translation for error logs
-         $error = "*** MySQL query error: \n***\nSQL: ".addslashes($query)."\nError: ".
+         $error = "  *** MySQL query error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
+         $error .= toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
 
-         if (function_exists("debug_backtrace")) {
-            $error .= "Backtrace :\n";
-            $traces = debug_backtrace();
-            foreach ($traces as $trace) {
-               $error .= (isset($trace["file"]) ? $trace["file"] : "") . "&nbsp;:" .
-                         (isset($trace["line"]) ? $trace["line"] : "") . "\t\t" .
-                         (isset($trace["class"]) ? $trace["class"] : "") .
-                         (isset($trace["type"]) ? $trace["type"] : "") .
-                         (isset($trace["function"]) ? $trace["function"]."()" : "") ."\n";
-            }
-         } else {
-            $error .= "Script : " ;
-         }
-
-         $error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
-         Toolbox::logInFile("sql-errors", $error."\n");
+         Toolbox::logInFile("sql-errors", $error);
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
@@ -623,7 +609,6 @@ class DBmysql {
       return $ret;
    }
 
-
    /**
     * Get a global DB lock
     *
@@ -820,8 +805,7 @@ class DBmysqlIterator  implements Iterator {
             // NULL condition
             $ret .= "$name IS NULL";
 
-         } else if ((is_numeric($value))
-                    || (preg_match("/^`.*?`$/", $value))) {
+         } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
             // Integer or field name
             $ret .= "$name=$value";
 

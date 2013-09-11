@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -36,6 +36,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class TicketTask  extends CommonITILTask {
+
+   static $rightname = 'task';
+
+   const SEEPUBLIC       =    1;
+   const UPDATEMY        =    2;
+   const UPDATEALL       = 1024;
+//   const NOTUSED      = 2048;
+   const ADDALLTICKET    = 4096;
+   const SEEPRIVATE      = 8192;
+
+
 
 
    /**
@@ -48,34 +59,32 @@ class TicketTask  extends CommonITILTask {
 
    static function canCreate() {
 
-      return (Session::haveRight('global_add_tasks', 1)
-              || Session::haveRight('own_ticket', 1));
+      return (Session::haveRight(self::$rightname, self::ADDALLTICKET)
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('observe_ticket', 1)
-              || Session::haveRight('show_full_ticket', 1)
-              || Session::haveRight('own_ticket', 1));
+      return (Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('global_add_tasks', 1)
-              || Session::haveRight('own_ticket', 1)
-              || Session::haveRight('update_tasks', 1) );
+      return (Session::haveRight(self::$rightname, self::UPDATEALL)
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    function canViewPrivates() {
-      return Session::haveRight('show_full_ticket', 1);
+      return Session::haveRight(self::$rightname, self::SEEPRIVATE);
    }
 
 
    function canEditAll() {
-      return Session::haveRight('update_tasks', 1);
+      return Session::haveRight(self::$rightname, self::UPDATEALL);
    }
 
 
@@ -90,12 +99,12 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      if (Session::haveRight('show_full_ticket', 1)) {
+      if (Session::haveRightsOr(self::$rightname, array(self::SEEPRIVATE, self::SEEPUBLIC))) {
          return true;
       }
 
       if (!$this->fields['is_private']
-          && Session::haveRight('observe_ticket',1)) {
+          && Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
          return true;
       }
 
@@ -120,7 +129,7 @@ class TicketTask  extends CommonITILTask {
       $ticket = new Ticket();
 
       if ($ticket->getFromDB($this->fields['tickets_id'])) {
-         return (Session::haveRight("global_add_tasks","1")
+         return (Session::haveRight(self::$rightname, self::ADDALLTICKET)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
                      && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -141,7 +150,7 @@ class TicketTask  extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('update_tasks',1)) {
+          && !Session::haveRight(self::$rightname, self::UPDATEALL)) {
          return false;
       }
 
@@ -203,5 +212,29 @@ class TicketTask  extends CommonITILTask {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[UPDATE], $values[CREATE], $values[READ]);
+
+      if ($interface == 'central') {
+         $values[self::UPDATEALL]      = __('Update all');
+         $values[self::ADDALLTICKET]   = __('Add to all tickets');
+         $values[self::SEEPRIVATE]     = __('See private ones');
+      }
+
+      $values[self::SEEPUBLIC]   = __('See public ones');
+
+      if ($interface == 'helpdesk') {
+         unset($values[PURGE]);
+      }
+
+      return $values;
+   }
 }
 ?>

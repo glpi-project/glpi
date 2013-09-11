@@ -48,11 +48,11 @@ if (!Session::getLoginUserID()) {
 // Force mailing to false
 $CFG_GLPI["use_mailing"] = 0;
 
-$entity_number = 5;
+$entity_number = 10;
 
 $multiplicator = 0.5;
 
-$MAX['locations']         = 100;
+$MAX['locations']         = 10;
 $MAX['kbcategories']      = 8;
 $MAX['tracking_category'] = 5;
 $MAX_KBITEMS_BY_CAT       = 10;
@@ -97,7 +97,7 @@ $MAX['model_monitors']           = 10;
 $MAX['model_peripherals']        = 10;
 $MAX['model_phones']             = 10;
 $MAX['model_networking']         = 10;
-$MAX['netpoint']                 = 1000;
+$MAX['netpoint']                 = 50;
 $MAX['auto_update']              = 10;
 $MAX['phone_power']              = 10;
 $MAX['manufacturer']             = 10;
@@ -106,13 +106,13 @@ $MAX['manufacturer']             = 10;
 $MAX['users_sadmin']   = 1;
 $MAX['users_admin']    = 50;
 $MAX['users_normal']   = 50;
-$MAX['users_postonly'] = 1000;
+$MAX['users_postonly'] = 100;
 $MAX['enterprises']    = 5;
 $MAX['contacts']       = 10;
 $MAX['groups']         = 3;
 
 // INVENTORY ITEMS
-$MAX['computers']             = 500;
+$MAX['computers']             = 100;
 $MAX['printers']              = 10;
 $MAX['networking']            = $MAX['locations'];
 $MAX['monitors']              = $MAX['computers'];
@@ -152,7 +152,7 @@ $percent['answersatisfaction'] = 50;
 
 // RESERVATION
 $percent['reservationitems'] = 1;
-$percent['reservations']     = 90;
+$percent['reservations']     = 40;
 
 // DOCUMENT
 $MAX['document'] = 10;
@@ -182,7 +182,7 @@ generateGlobalDropdowns();
 DBmysql::optimize_tables ();
 
 // Force entity right
-$_SESSION['glpiactive_profile']['entity'] = 'w';
+$_SESSION['glpiactive_profile']['entity'] = 127;
 
 // Root entity
 generate_entity(0);

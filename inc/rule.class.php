@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * Rule class store all information about a GLPI rule :
+ * Rule Class store all information about a GLPI rule :
  *   - description
  *   - criterias
  *   - actions
@@ -51,8 +51,6 @@ class Rule extends CommonDBTM {
    var $actions   = array();
    ///Criterias affected to this rule
    var $criterias = array();
-   /// Right needed to use this rule
-   static public $right     = 'config';
    /// Rules can be sorted ?
    var $can_sort  = false;
    /// field used to order rules
@@ -69,6 +67,8 @@ class Rule extends CommonDBTM {
 
    var $regex_results            = array();
    var $criterias_results        = array();
+
+   static $rightname             = 'config';
 
    const RULE_NOT_IN_CACHE       = -1;
    const RULE_WILDCARD           = '*';
@@ -93,6 +93,7 @@ class Rule extends CommonDBTM {
    const OR_MATCHING             = "OR";
 
 
+
    // Temproray hack for this class
    static function getTable() {
       return 'glpi_rules';
@@ -103,9 +104,13 @@ class Rule extends CommonDBTM {
       return _n('Rule', 'Rules', $nb);
    }
 
+
    /**
-   *  Get correct Rule object for specific rule
-   *  @param $rules_id ID of the rule
+    *  Get correct Rule object for specific rule
+    *
+    *  @since version 0.84
+    *
+    *  @param $rules_id ID of the rule
    **/
    static function getRuleObjectByID($rules_id) {
 
@@ -116,6 +121,312 @@ class Rule extends CommonDBTM {
       }
       return null;
    }
+
+
+   /**
+    *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
+   **/
+   static function getMenuContent() {
+      global $CFG_GLPI;
+
+      $menu = array();
+
+      if (Session::haveRight("rule_ldap", READ)
+          || Session::haveRight("rule_ocs", READ)
+          || Session::haveRight("entity_rule_ticket", READ)
+          || Session::haveRight("rule_softwarecategories", READ)
+          || Session::haveRight("rule_mailcollector", READ)) {
+
+         $menu['rule']['title'] = static::getTypeName(2);
+         $menu['rule']['page']  = static::getSearchURL(false);
+
+         foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+            $rulecollection = new $rulecollectionclass();
+            if ($rulecollection->canList()) {
+               $ruleclassname = $rulecollection->getRuleClassName();
+               $menu['rule']['options'][$rulecollection->menu_option]['title']
+                              = $rulecollection->getRuleClass()->getTitle();
+               $menu['rule']['options'][$rulecollection->menu_option]['page']
+                              = Toolbox::getItemTypeSearchURL($ruleclassname, false);
+               $menu['rule']['options'][$rulecollection->menu_option]['links']['search']
+                              = Toolbox::getItemTypeSearchURL($ruleclassname, false);
+               if ($rulecollection->canCreate()) {
+                  $menu['rule']['options'][$rulecollection->menu_option]['links']['add']
+                              = Toolbox::getItemTypeFormURL($ruleclassname, false);
+               }
+            }
+         }
+      }
+
+      if (Transfer::canView()
+          && Session::isMultiEntitiesMode()) {
+
+         $menu['rule']['title'] = static::getTypeName(2);
+         $menu['rule']['page']  = static::getSearchURL(false);
+
+         $menu['rule']['options']['transfer']['title']           = __('Transfer');
+         $menu['rule']['options']['transfer']['page']            = "/front/transfer.php";
+         $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
+
+         if (Session::haveRightsOr("transfer", array(CREATE, UPDATE))) {
+            $menu['rule']['options']['transfer']['links']['summary']
+                                                                 = "/front/transfer.action.php";
+            $menu['rule']['options']['transfer']['links']['add'] = "/front/transfer.form.php";
+         }
+      }
+
+
+      if (Session::haveRight("rule_dictionnary_dropdown", READ)
+          || Session::haveRight("rule_dictionnary_software", READ)
+          || Session::haveRight("rule_dictionnary_printer", READ)) {
+
+         $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', 2);
+         $menu['dictionnary']['shortcut'] = '';
+         $menu['dictionnary']['page']     = '/front/dictionnary.php';
+
+         $menu['dictionnary']['options']['manufacturers']['title']
+                           = _n('Manufacturer', 'Manufacturers', 2);
+         $menu['dictionnary']['options']['manufacturers']['page']
+                           = '/front/ruledictionnarymanufacturer.php';
+         $menu['dictionnary']['options']['manufacturers']['links']['search']
+                           = '/front/ruledictionnarymanufacturer.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['manufacturers']['links']['add']
+                              = '/front/ruledictionnarymanufacturer.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['software']['title']
+                           = _n('Software', 'Software', 2);
+         $menu['dictionnary']['options']['software']['page']
+                           = '/front/ruledictionnarysoftware.php';
+         $menu['dictionnary']['options']['software']['links']['search']
+                           = '/front/ruledictionnarysoftware.php';
+
+         if (RuleDictionnarySoftware::canCreate()) {
+            $menu['dictionnary']['options']['software']['links']['add']
+                              = '/front/ruledictionnarysoftware.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['model.computer']['title']
+                           = _n('Computer model', 'Computer models', 2);
+         $menu['dictionnary']['options']['model.computer']['page']
+                           = '/front/ruledictionnarycomputermodel.php';
+         $menu['dictionnary']['options']['model.computer']['links']['search']
+                           = '/front/ruledictionnarycomputermodel.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['model.computer']['links']['add']
+                              = '/front/ruledictionnarycomputermodel.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['model.monitor']['title']
+                           = _n('Monitor model', 'Monitor models', 2);
+         $menu['dictionnary']['options']['model.monitor']['page']
+                           = '/front/ruledictionnarymonitormodel.php';
+         $menu['dictionnary']['options']['model.monitor']['links']['search']
+                           = '/front/ruledictionnarymonitormodel.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['model.monitor']['links']['add']
+                              = '/front/ruledictionnarymonitormodel.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['model.printer']['title']
+                           = _n('Printer model', 'Printer models', 2);
+         $menu['dictionnary']['options']['model.printer']['page']
+                           = '/front/ruledictionnaryprintermodel.php';
+         $menu['dictionnary']['options']['model.printer']['links']['search']
+                           = '/front/ruledictionnaryprintermodel.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['model.printer']['links']['add']
+                              = '/front/ruledictionnaryprintermodel.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['model.peripheral']['title']
+                           = _n('Peripheral model', 'Peripheral models', 2);
+         $menu['dictionnary']['options']['model.peripheral']['page']
+                           = '/front/ruledictionnaryperipheralmodel.php';
+         $menu['dictionnary']['options']['model.peripheral']['links']['search']
+                           = '/front/ruledictionnaryperipheralmodel.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['model.peripheral']['links']['add']
+                              = '/front/ruledictionnaryperipheralmodel.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['model.networking']['title']
+                           = _n('Networking equipment model', 'Networking equipment models', 2);
+         $menu['dictionnary']['options']['model.networking']['page']
+                           = '/front/ruledictionnarynetworkequipmentmodel.php';
+         $menu['dictionnary']['options']['model.networking']['links']['search']
+                           = '/front/ruledictionnarynetworkequipmentmodel.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['model.networking']['links']['add']
+                              = '/front/ruledictionnarynetworkequipmentmodel.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['model.phone']['title']
+                           = _n('Phone model', 'Phone models', 2);
+         $menu['dictionnary']['options']['model.phone']['page']
+                           = '/front/ruledictionnaryphonemodel.php';
+         $menu['dictionnary']['options']['model.phone']['links']['search']
+                           = '/front/ruledictionnaryphonemodel.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['model.phone']['links']['add']
+                              = '/front/ruledictionnaryphonemodel.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['type.computer']['title']
+                           = _n('Computer type', 'Computer types', 2);
+         $menu['dictionnary']['options']['type.computer']['page']
+                           = '/front/ruledictionnarycomputertype.php';
+         $menu['dictionnary']['options']['type.computer']['links']['search']
+                           = '/front/ruledictionnarycomputertype.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['type.computer']['links']['add']
+                              = '/front/ruledictionnarycomputertype.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['type.monitor']['title']
+                           = _n('Monitor type', 'Monitors types', 2);
+         $menu['dictionnary']['options']['type.monitor']['page']
+                           = '/front/ruledictionnarymonitortype.php';
+         $menu['dictionnary']['options']['type.monitor']['links']['search']
+                           = '/front/ruledictionnarymonitortype.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['type.monitor']['links']['add']
+                              = '/front/ruledictionnarymonitortype.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['type.printer']['title']
+                           = _n('Printer type', 'Printer types', 2);
+         $menu['dictionnary']['options']['type.printer']['page']
+                           = '/front/ruledictionnaryprintertype.php';
+         $menu['dictionnary']['options']['type.printer']['links']['search']
+                           = '/front/ruledictionnaryprintertype.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['type.printer']['links']['add']
+                              = '/front/ruledictionnaryprintertype.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['type.peripheral']['title']
+                           = _n('Peripheral type', 'Peripheral types', 2);
+         $menu['dictionnary']['options']['type.peripheral']['page']
+                           = '/front/ruledictionnaryperipheraltype.php';
+         $menu['dictionnary']['options']['type.peripheral']['links']['search']
+                           = '/front/ruledictionnaryperipheraltype.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['type.peripheral']['links']['add']
+                              = '/front/ruledictionnaryperipheraltype.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['type.networking']['title']
+                           = _n('Networking equipment type', 'Networking equipment types', 2);
+         $menu['dictionnary']['options']['type.networking']['page']
+                           = '/front/ruledictionnarynetworkequipmenttype.php';
+         $menu['dictionnary']['options']['type.networking']['links']['search']
+                           = '/front/ruledictionnarynetworkequipmenttype.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['type.networking']['links']['add']
+                              = '/front/ruledictionnarynetworkequipmenttype.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['type.phone']['title']
+                           = _n('Phone type', 'Phone types', 2);
+         $menu['dictionnary']['options']['type.phone']['page']
+                           = '/front/ruledictionnaryphonetype.php';
+         $menu['dictionnary']['options']['type.phone']['links']['search']
+                           = '/front/ruledictionnaryphonetype.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['type.phone']['links']['add']
+                              = '/front/ruledictionnaryphonetype.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['os']['title']
+                           = __('Operating system');
+         $menu['dictionnary']['options']['os']['page']
+                           = '/front/ruledictionnaryoperatingsystem.php';
+         $menu['dictionnary']['options']['os']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystem.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['os']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystem.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['os_sp']['title']
+                           = __('Service pack');
+         $menu['dictionnary']['options']['os_sp']['page']
+                           = '/front/ruledictionnaryoperatingsystemservicepack.php';
+         $menu['dictionnary']['options']['os_sp']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystemservicepack.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['os_sp']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystemservicepack.form.php';
+         }
+
+
+         $menu['dictionnary']['options']['os_version']['title']
+                           = __('Version of the operating system');
+         $menu['dictionnary']['options']['os_version']['page']
+                           = '/front/ruledictionnaryoperatingsystemversion.php';
+         $menu['dictionnary']['options']['os_version']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystemversion.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['os_version']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystemversion.form.php';
+         }
+
+         $menu['dictionnary']['options']['printer']['title']
+                           = _n('Printer', 'Printers', 2);
+         $menu['dictionnary']['options']['printer']['page']
+                           = '/front/ruledictionnaryprinter.php';
+         $menu['dictionnary']['options']['printer']['links']['search']
+                           = '/front/ruledictionnaryprinter.php';
+
+         if (RuleDictionnaryPrinter::canCreate()) {
+            $menu['dictionnary']['options']['printer']['links']['add']
+                              = '/front/ruledictionnaryprinter.form.php';
+         }
+      }
+
+      if (count($menu)) {
+         $menu['is_multi_entries'] = true;
+         return $menu;
+      }
+
+      return false;
+   }
+
 
    /**
     * @since versin 0.84
@@ -138,16 +449,6 @@ class Rule extends CommonDBTM {
    **/
    function getRuleIdField () {
       return $this->rules_id_field;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight(static::$right, 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight(static::$right, 'r');
    }
 
 
@@ -197,6 +498,9 @@ class Rule extends CommonDBTM {
          }
       }
 
+      $actions['duplicate'] = __('Duplicate');
+      $actions['export']    = __('Export');
+
       return $actions;
    }
 
@@ -208,21 +512,35 @@ class Rule extends CommonDBTM {
 
       switch ($input['action']) {
          case "move_rule" :
-            echo "<select name='move_type'>";
-            echo "<option value='after' selected>".__('After')."</option>";
-            echo "<option value='before'>".__('Before')."</option>";
-            echo "</select>&nbsp;";
+            $values = array('after'  => __('After'),
+                            'before' => __('Before'));
+            Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
 
-            if (isset($input['entity_restrict'])) {
-               $condition = $input['entity_restrict'];
+            if (isset($input['entity'])) {
+               $condition = $input['entity'];
             } else {
                $condition = "";
             }
+
             Rule::dropdown(array('sub_type'        => $input['itemtype'],
                                  'name'            => "ranking",
-                                 'entity_restrict' => $condition));
+                                 'entity'          => $condition,
+                                 'width'           => '50%'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
+            return true;
+
+         case "duplicate" :
+            if ($this->isEntityAssign()) {
+               Entity::dropdown();
+            }
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Duplicate')."'>";
+            return true;
+
+         case "export" :
+            echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+                         __s('Export')."'>";
             return true;
 
          default :
@@ -253,15 +571,45 @@ class Rule extends CommonDBTM {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             } else {
                $res['noright']++;
+               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
             }
             break;
+
+         case 'duplicate':
+            $rulecollection = new RuleCollection();
+            if (isset($input["item"]) && count($input["item"])) {
+               foreach ($input["item"] as $key => $val) {
+                  if ($this->getFromDB($key)) {
+                     if ($rulecollection->duplicateRule($key)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                     }
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
+                  }
+               }
+            }
+            break;
+
+         case 'export':
+            if (isset($input["item"]) && count($input["item"])) {
+               $_SESSION['exportitems'] = $input["item"];
+               $res['ok']       = -1; //processed after redirection
+               $res['REDIRECT'] = 'rule.backup.php?action=download&itemtype='.$this->getType();
+            }
+         break;
 
          default :
             return parent::doSpecificMassiveActions($input);
@@ -391,17 +739,16 @@ class Rule extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-
+      toolbox::logdebug($options);
       if (!$this->isNewID($ID)) {
-         $this->check($ID, 'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->checkGlobal('w');
+         $this->checkGlobal(UPDATE);
       }
 
-      $canedit = $this->can(static::$right, "w");
-
-      $this->showTabs($options);
+      $canedit = $this->canEdit(static::$rightname);
+      $rand = mt_rand();
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -448,17 +795,18 @@ class Rule extends CommonDBTM {
                $url = $CFG_GLPI["root_doc"];
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$url.
-                  "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType().
-                  "&amp;rules_id=".$this->fields["id"]."' ,'glpipopup', 'height=400,".
-                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
+            echo "<a class='vsubmit' href='#' onClick=\"".
+                  Html::jsGetElementbyID('ruletest'.$rand).".dialog('open');\">".
                   __('Test')."</a>";
+            Ajax::createIframeModalWindow('ruletest'.$rand,
+                                          $url."/front/rule.test.php?". "sub_type=".$this->getType().
+                                             "&rules_id=".$this->fields["id"],
+                                          array('title' => __('Test')));
             echo "</td></tr>\n";
          }
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -565,6 +913,7 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showActionsList($rules_id, $options=array()) {
+      global $CFG_GLPI;
 
       $rand = mt_rand();
       $p['readonly'] = false;
@@ -575,7 +924,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, "w");
+      $canedit = $this->canEdit($rules_id);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -584,14 +933,25 @@ class Rule extends CommonDBTM {
       }
       $this->getTitleAction();
 
+
       if ($canedit
           && (($this->maxActionsCount() == 0)
               || (sizeof($this->actions) < $this->maxActionsCount()))) {
+         echo "<div id='viewaction" . $rules_id . "$rand'></div>\n";
 
-         echo "<form name='actionsaddform' method='post' action='".
-                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
-         $this->addActionForm($rules_id);
-         Html::closeForm();
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddAction" . $rules_id . "$rand() {\n";
+         $params = array('type'       => 'RuleAction',
+                         'parenttype' => $this->getType(),
+                         'rules_id'   => $rules_id,
+                         'id'         => -1);
+         Ajax::updateItemJsCode("viewaction" . $rules_id . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
+         echo "<div class='center firstbloc'>".
+               "<a class='vsubmit' href='javascript:viewAddAction".$rules_id."$rand();'>";
+         echo __('Add a new action')."</a></div>\n";
       }
 
       $nb = count($this->actions);
@@ -599,10 +959,11 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
-         $paramsma = array('num_displayed' => $nb,
+         $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
-                           'check_items_id' => $rules_id);
-         Html::showMassiveActions($this->ruleactionclass, $paramsma);
+                           'check_items_id' => $rules_id,
+                           'container'      => 'mass'.$this->ruleactionclass.$rand);
+         Html::showMassiveActions($paramsma);
       }
 
       echo "<table $style>";
@@ -621,100 +982,16 @@ class Rule extends CommonDBTM {
 
 
       foreach ($this->actions as $action) {
-         $this->showMinimalActionForm($action->fields, $canedit);
+         $this->showMinimalActionForm($action->fields, $canedit, $rand);
       }
       echo "</table>\n";
 
       if ($canedit && $nb) {
-         $paramsma['ontop'] =false;
-         Html::showMassiveActions($this->ruleactionclass, $paramsma);
+         $paramsma['ontop'] = false;
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";
-   }
-
-
-   /**
-    * Display the add action form
-    *
-    * @param $rules_id rule ID
-   **/
-   function addActionForm($rules_id) {
-      // CFG_GLPI needed by ruleaction.php
-      global $CFG_GLPI;
-
-      if ($ra = getItemForItemtype($this->ruleactionclass)) {
-         echo "<div class='firstbloc'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>" . _n('Action', 'Actions', 1) . "</tr>";
-
-         echo "<tr class='tab_bg_1 center'>";
-         echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
-         $rand   = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
-         $params = array('field'               => '__VALUE__',
-                         'sub_type'            => $this->getType(),
-                         $this->rules_id_field => $rules_id);
-
-         Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
-                                       $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
-
-
-         echo "</td><td class='left' width='30%'><span id='action_span'>\n";
-         echo "</span></td>\n";
-         echo "<td class='tab_bg_2 left' width='80px'>";
-         echo "<input type='hidden' name='".$this->rules_id_field."' value='".
-                $this->fields["id"]."'>";
-         echo "<input type='submit' name='add_action' value=\""._sx('button','Add')."\"
-                class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table></div>";
-      }
-   }
-
-
-   /**
-    * Display the add criteria form
-    *
-    * @param $rules_id rule ID
-   **/
-   function addCriteriaForm($rules_id) {
-      // CFG_GLPI needed by rulecriteria.php
-      global $CFG_GLPI;
-
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . _n('Criterion', 'Criteria', 1) . "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td>";
-      $rand   = $this->dropdownCriteria();
-      $params = array('criteria' => '__VALUE__',
-                      'rand'     => $rand,
-                      'sub_type' => $this->getType());
-
-      Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
-                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
-
-      if ($this->specific_parameters) {
-         $itemtype = get_class($this).'Parameter';
-         echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
-                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"var w = window.open('".Toolbox::getItemTypeFormURL($itemtype).
-                "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
-                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
-      }
-
-      echo "</td><td class='left'><span id='criteria_span'>\n";
-/*      $_POST["sub_type"] = $this->getType();
-      $_POST["criteria"] = $val;
-      include (GLPI_ROOT."/ajax/rulecriteria.php");*/
-      echo "</span></td>\n";
-      echo "<td class='tab_bg_2' width='80px'>";
-      echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_criteria' value=\""._sx('button','Add')."\"
-             class='submit'>";
-      echo "</td></tr>\n";
-      echo "</table></div>";
    }
 
 
@@ -730,6 +1007,7 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showCriteriasList($rules_id, $options=array()) {
+      global $CFG_GLPI;
 
       $rand = mt_rand();
       $p['readonly'] = false;
@@ -740,7 +1018,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, "w");
+      $canedit = $this->canEdit($rules_id);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -749,10 +1027,21 @@ class Rule extends CommonDBTM {
       }
 
       if ($canedit) {
-         echo "<form name='criteriasaddform' method='post' action='".
-                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
-         $this->addCriteriaForm($rules_id);
-         Html::closeForm();
+         echo "<div id='viewcriteria" . $rules_id . "$rand'></div>\n";
+
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddCriteria" . $rules_id . "$rand() {\n";
+         $params = array('type'       => 'RuleCriteria',
+                         'parenttype' => $this->getType(),
+                         'rules_id'   => $rules_id,
+                         'id'         => -1);
+         Ajax::updateItemJsCode("viewcriteria" . $rules_id . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
+         echo "<div class='center firstbloc'>".
+               "<a class='vsubmit' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
+         echo __('Add a new criteria')."</a></div>\n";
       }
 
       echo "<div class='spaced'>";
@@ -763,8 +1052,9 @@ class Rule extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
          $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
-                           'check_items_id' => $rules_id);
-         Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
+                           'check_items_id' => $rules_id,
+                           'container'      => 'mass'.$this->rulecriteriaclass.$rand);
+         Html::showMassiveActions($paramsma);
       }
 
       echo "<table $style>";
@@ -782,13 +1072,13 @@ class Rule extends CommonDBTM {
 
 
       foreach ($this->criterias as $criteria) {
-         $this->showMinimalCriteriaForm($criteria->fields, $canedit);
+         $this->showMinimalCriteriaForm($criteria->fields, $canedit, $rand);
       }
       echo "</table>\n";
 
       if ($canedit && $nb) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
 
@@ -900,8 +1190,6 @@ class Rule extends CommonDBTM {
             $value = $ID;
          }
       }
-      asort($items);
-
       return Dropdown::showFromArray($p['name'], $items, $p);
    }
 
@@ -1222,7 +1510,6 @@ class Rule extends CommonDBTM {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['criterias_results'] = $this->criterias_results;
          $params['rule_itemtype']     = $this->getType();
-
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
             if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "executeActions", array('output' => $output,
@@ -1250,9 +1537,9 @@ class Rule extends CommonDBTM {
     * @return the $output array modified
    **/
    function executeActions($output, $params) {
+
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
-
             switch ($action->fields["action_type"]) {
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
@@ -1332,7 +1619,7 @@ class Rule extends CommonDBTM {
    function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
       global $CFG_GLPI;
 
-      $canedit = Session::haveRight(static::$right, "w") && !$display_entities;
+      $canedit = (self::canUpdate() && !$display_entities);
       echo "<tr class='tab_bg_1'>";
 
       if ($canedit) {
@@ -1403,6 +1690,11 @@ class Rule extends CommonDBTM {
 
       // Before adding, add the ranking of the new rule
       $input["ranking"] = $this->getNextRanking();
+      //If no uuid given, generate a new one
+      if (!isset($input['uuid'])) {
+         $input["uuid"] = self::getUuid();
+      }
+
       return $input;
    }
 
@@ -1431,16 +1723,31 @@ class Rule extends CommonDBTM {
     *
     * @param $fields    datas used to display the action
     * @param $canedit   can edit the actions rule ?
+    * @param $rand      random value of the form
    **/
-   function showMinimalActionForm($fields, $canedit) {
+   function showMinimalActionForm($fields, $canedit, $rand) {
+      global $CFG_GLPI;
 
+      $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
+                         $fields['rules_id'].$fields["id"]."$rand();\""
+                        : '');
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
+         echo "\n<script type='text/javascript' >\n";
+         echo "function viewEditAction". $fields['rules_id'].$fields["id"]."$rand() {\n";
+         $params = array('type'       => 'RuleAction',
+                         'parenttype' => $this->getType(),
+                         'rules_id'   => $fields['rules_id'],
+                         'id'         => $fields["id"]);
+         Ajax::updateItemJsCode("viewaction" . $fields['rules_id'] . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
          echo "</td>";
       }
-      echo $this->getMinimalActionText($fields);
+      echo $this->getMinimalActionText($fields, $edit);
       echo "</tr>\n";
    }
 
@@ -1540,44 +1847,67 @@ class Rule extends CommonDBTM {
     *
     * @param $fields    datas used to display the criteria
     * @param $canedit   can edit the criterias rule ?
+    * @param $rand      random value of the form
    **/
-   function showMinimalCriteriaForm($fields, $canedit) {
+   function showMinimalCriteriaForm($fields, $canedit, $rand) {
+      global $CFG_GLPI;
 
-      echo "<tr class='tab_bg_1'>";
+      $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
+                         $fields['rules_id'].$fields["id"]."$rand();\""
+                        : '');
+      echo "<tr class='tab_bg_1' >";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
+         echo "\n<script type='text/javascript' >\n";
+         echo "function viewEditCriteria". $fields['rules_id'].$fields["id"]."$rand() {\n";
+         $params = array('type'      => 'RuleCriteria',
+                        'parenttype' => $this->getType(),
+                        'rules_id'   => $fields['rules_id'],
+                        'id'         => $fields["id"]);
+         Ajax::updateItemJsCode("viewcriteria" . $fields['rules_id'] . "$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
          echo "</td>";
       }
 
-      echo $this->getMinimalCriteriaText($fields);
+      echo $this->getMinimalCriteriaText($fields, $edit);
       echo "</tr>\n";
    }
 
 
    /**
     * @param $fields
+    * @param $addtotd   (default '')
    **/
-   function getMinimalCriteriaText($fields) {
+   function getMinimalCriteriaText($fields, $addtotd='') {
 
-      $text  = "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this),
-                                                       $fields["criteria"])."</td>";
-      $text .= "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
-                                                         $fields["pattern"]) . "</td>";
+      $text  = "<td $addtotd>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
+      $text .= "<td $addtotd>" . RuleCriteria::getConditionByID($fields["condition"],
+                                                                get_class($this),
+                                                                $fields["criteria"])."</td>";
+      $text .= "<td $addtotd>" . $this->getCriteriaDisplayPattern($fields["criteria"],
+                                                                  $fields["condition"],
+                                                                  $fields["pattern"]) . "</td>";
       return $text;
    }
 
 
    /**
     * @param $fields
+    * @param $addtotd   (default '')
    **/
-   function getMinimalActionText($fields) {
+   function getMinimalActionText($fields, $addtotd='') {
 
-      $text  = "<td>" . $this->getActionName($fields["field"]) . "</td>";
-      $text .= "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-      $text .= "<td>" . $this->getActionValue($fields["field"], $fields['action_type'],
-                                              $fields["value"]) . "</td>";
+      $text  = "<td $addtotd>" . $this->getActionName($fields["field"]) . "</td>";
+      $text .= "<td $addtotd>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
+      if (isset($fields["value"])) {
+         $text .= "<td $addtotd>" . $this->getActionValue($fields["field"], $fields['action_type'],
+                                                          $fields["value"]) . "</td>";
+      } else {
+         $text .= "<td $addtotd>&nbsp;</td>";
+      }
       return $text;
    }
 
@@ -1709,7 +2039,6 @@ class Rule extends CommonDBTM {
                if (isset($crit['condition'])) {
                   $param['condition'] = $crit['condition'];
                }
-
                Dropdown::show(getItemTypeForTable($crit['table']), $param);
 
                $display = true;
@@ -1806,6 +2135,12 @@ class Rule extends CommonDBTM {
             case "dropdown_users_validate" :
                return getUserName($value);
 
+            case "dropdown_groups_validate" :
+               return Dropdown::getDropdownName('glpi_groups', $value);
+
+            case "dropdown_validation_percent" :
+               return Dropdown::getValueWithUnit($value,'%');
+
             case "yesonly" :
             case "yesno" :
                return Dropdown::getYesNo($value);
@@ -1851,7 +2186,8 @@ class Rule extends CommonDBTM {
 
             switch ($crit['type']) {
                case "dropdown" :
-                  $tmp = Dropdown::getDropdownName($crit["table"], $value);
+                  $tmp = Dropdown::getDropdownName($crit["table"], $value, false, false);
+                  //$tmp = Dropdown::getDropdownName($crit["table"], $value);
                   // return empty string to be able to check if set
                   if ($tmp == '&nbsp;') {
                      return '';
@@ -1914,7 +2250,7 @@ class Rule extends CommonDBTM {
       if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
          echo "<div class='spaced'>";
-         echo "<table class='tab_cadre'>";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>" . _n('Criterion', 'Criteria', 2) . "</th></tr>";
 
          $type_match        = (($this->fields["match"] == self::AND_MATCHING) ?__('and') :__('or'));
@@ -2005,7 +2341,7 @@ class Rule extends CommonDBTM {
 
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
-      $p['entity_restrict'] = '';
+      $p['entity'] = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2017,30 +2353,8 @@ class Rule extends CommonDBTM {
          return false;
       }
 
-      $rand         = mt_rand();
-      $limit_length = $_SESSION["glpidropdown_chars_limit"];
-      $use_ajax     = false;
-
-      if ($CFG_GLPI["use_ajax"]) {
-         $nb = countElementsInTable("glpi_rules", "`sub_type`='".$p['sub_type']."'");
-
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
-
-      $params = array('searchText'      => '__VALUE__',
-                      'myname'          => $p['name'],
-                      'limit'           => $limit_length,
-                      'rand'            => $rand,
-                      'type'            => $p['sub_type'],
-                      'entity_restrict' => $p['entity_restrict']);
-
-      $default  = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
-      $default .= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
-      Ajax::dropdown($use_ajax, "/ajax/dropdownRules.php", $params, $default, $rand);
-
-      return $rand;
+      $p['condition'] = "`sub_type` = '".$p['sub_type']."'";
+      return Dropdown::show($p['sub_type'],$p);
    }
 
 
@@ -2191,7 +2505,7 @@ class Rule extends CommonDBTM {
    function showAndAddRuleForm($item) {
 
       $rand    = mt_rand();
-      $canedit = Session::haveRight(static::$right, "w");
+      $canedit = self::canUpdate();
 
       if ($canedit
           && ($item->getType() == 'Entity')) {
@@ -2216,10 +2530,10 @@ class Rule extends CommonDBTM {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
             $paramsma = array('num_displayed'    => $nb,
-                              'specific_actions' => array('update' => _x('button', 'Update'),
-                                                          'purge'  => _x('button',
-                                                                         'Delete permanently')));
-            Html::showMassiveActions(get_called_class(), $paramsma);
+                              'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update' => _x('button', 'Update'),
+                                                          'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'  => _x('button',
+                                                                                                                               'Delete permanently')));
+            Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
 
@@ -2262,7 +2576,7 @@ class Rule extends CommonDBTM {
 
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(get_called_class(), $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
       }
@@ -2276,6 +2590,7 @@ class Rule extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -2315,11 +2630,11 @@ class Rule extends CommonDBTM {
 
    /**
     * @param $action array
+    * @param $value          value to display (default '')
    **/
-   function displayAdditionalRuleAction(array $action) {
+   function displayAdditionalRuleAction(array $action, $value='') {
       return false;
    }
-
 
 
    /**
@@ -2447,10 +2762,12 @@ class Rule extends CommonDBTM {
                }
                return $this->getTypeName(2);
 
-            default :
+            default:
                if ($item instanceof Rule) {
-                  return sprintf(__('%1$s / %2$s'), _n('Criterion', 'Criteria', 2),
-                                 _n('Action', 'Actions', 2));
+                  $ong    = array();
+                  $ong[1] = _n('Criterion', 'Criteria', 2);
+                  $ong[2] = _n('Action', 'Actions', 2);
+                  return $ong;
                }
          }
       }
@@ -2486,20 +2803,53 @@ class Rule extends CommonDBTM {
       } else if ($item->getType() == 'SLA') {
          $rule = new RuleTicket();
          $rule->showAndAddRuleForm($item);
-
-//       } else if ($item->getType() == 'SlaLevel') {
-//          $rule = new RuleTicket();
-//          $item->getRuleWithCriteriasAndActions($item->getID(), 0, 1);
-//          $item->showActionsList($item->getID());
-
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
-         $item->showCriteriasList($item->getID());
-         $item->showActionsList($item->getID());
+         switch ($tabnum) {
+            case 1 :
+               $item->showCriteriasList($item->getID());
+               break;
+
+            case 2 :
+               $item->showActionsList($item->getID());
+               break;
+         }
       }
 
       return true;
    }
+
+
+   /**
+    * Generate unique id for rule based on server name, glpi directory and basetime
+    *
+    * @since version 0.85
+    *
+    * @return uuid
+   **/
+   static function getUuid() {
+
+      //encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
+      $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8);
+      // encode script current dir, ex : /var/www/glpi_X
+      $dirSubSha1    = substr(sha1(__FILE__), 0, 8);
+
+      return uniqid("$serverSubSha1-$dirSubSha1-", true);
+   }
+
+
+   /**
+    * Display debug information for current object
+    *
+    * @since version 0.85
+   **/
+   function showDebug() {
+
+      echo "<div class='spaced'>";
+      printf(__('%1$s: %2$s'), "<b>UUID</b>", $this->fields['uuid']);
+      echo "</div>";
+   }
+
 
 }
 ?>

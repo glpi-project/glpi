@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class DocumentCategory
 class DocumentCategory extends CommonTreeDropdown {
 
+   var $can_be_translated = true;
+
    static function getTypeName($nb=0) {
       return _n('Document heading', 'Document headings', $nb);
    }

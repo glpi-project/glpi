@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("networking", "w");
+Session::checkRight("networking", UPDATE);
 
 // Make a select box
 if (class_exists($_POST["itemtype"])
@@ -82,8 +82,7 @@ if (class_exists($_POST["itemtype"])
    $result = $DB->query($query);
 
    echo "<br>";
-   echo "<select name='".$_POST['myname']."' size='1'>";
-   echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
+   $values = array(0 => Dropdown::EMPTY_VALUE);
 
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_assoc($result)) {
@@ -108,13 +107,9 @@ if (class_exists($_POST["itemtype"])
             $output      = sprintf(__('%1$s (%2$s)'), $output, $ID);
             $output_long = sprintf(__('%1$s (%2$s)'), $output_long, $ID);
          }
-         $output = Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]);
-         echo "<option value='$ID' title=\"".Html::cleanInputText($output_long)."\">".$output;
-         echo "</option>";
+         $values[$ID] = $output_long;
       }
    }
-   echo "</select>";
-
-//    echo "<input type='submit' name='connect' value=\"".__s('Connect')."\" class='submit'>";
+   Dropdown::showFromArray($_POST['myname'], $values);
 }
 ?>

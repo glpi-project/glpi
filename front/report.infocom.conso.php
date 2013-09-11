@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    $year           = date("Y")-1;
@@ -57,12 +57,12 @@ Report::title();
 echo "\n<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateFormItem("date1", $_POST["date1"]);
+Html::showDateField("date1", array('value' => $_POST["date1"]));
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>\n";
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2", $_POST["date2"]);
+Html::showDateField("date2", array('value' => $_POST["date2"]));
 echo "</td></tr>";
 echo "</table>\n";
 Html::closeForm();

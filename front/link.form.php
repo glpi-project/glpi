@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("link", "r");
+Session::checkRight("link", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,23 +42,23 @@ if (empty($_GET["id"])) {
 $link = new Link();
 
 if (isset($_POST["add"])) {
-   $link->check(-1,'w');
+   $link->check(-1, CREATE);
 
    $newID = $link->add($_POST);
    Event::log($newID, "links", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
-} else if (isset($_POST["delete"])) {
-   $link->check($_POST["id"],'d');
-   $link->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $link->check($_POST["id"], PURGE);
+   $link->delete($_POST, 1);
    Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $link->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $link->check($_POST["id"],'w');
+   $link->check($_POST["id"], UPDATE);
    $link->update($_POST);
    Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(Link::getTypeName(2), $_SERVER['PHP_SELF'], "config", "link");
 
-   $link->showForm($_GET["id"]);
+   $link->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

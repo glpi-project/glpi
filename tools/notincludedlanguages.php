@@ -28,7 +28,8 @@
  */
 
 /** @file
-* @brief Get all po files not used in GLPI 
+* @brief Get all po files not used in GLPI
+* @since version 0.84
 */
 
 include ('../inc/includes.php');
@@ -51,10 +52,7 @@ while ($file = readdir($dir)) {
          if (!isset($CFG_GLPI['languages'][$lang])) {
             echo $lang." is missing\n";
          }
-
        }
-
    }
 }
-
 ?>

@@ -38,7 +38,7 @@ Html::header_nocache();
 
 $network = new IPNetwork();
 
-if ($network->can($_POST['ipnetworks_id'], 'r')) {
+if ($network->can($_POST['ipnetworks_id'], READ)) {
    echo "<br>\n";
    echo "<a href='".$network->getLinkURL()."'>".$network->fields['completename']."</a><br>\n";
 

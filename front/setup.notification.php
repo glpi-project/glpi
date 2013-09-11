@@ -33,35 +33,35 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('notification' => 'r',
-                                    'config'       => 'w'));
+Session::checkSeveralRightsOr(array('notification' => READ,
+                                    'config'       => UPDATE));
 
-Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "mailing", -1);
+Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "notification");
 
 if (isset($_POST['activate'])) {
    $config             = new Config();
-   $tmp['id']          = $CFG_GLPI['id'];
+   $tmp['id']          = 1;
    $tmp['use_mailing'] = 1;
    $config->update($tmp);
    Html::back();
 }
 
 if (!$CFG_GLPI['use_mailing']) {
-   if (Session::haveRight("config","w")) {
+   if (Session::haveRight("config", UPDATE)) {
       echo "<div class='center'>";
       Html::showSimpleForm($_SERVER['PHP_SELF'], 'activate', __('Enable followup via email'));
       echo "</div>";
    }
 } else {
-   if (!Session::haveRight("config","r")
-       && Session::haveRight("notification","r")
+   if (!Session::haveRight("config", READ)
+       && Session::haveRight("notification", READ)
        && $CFG_GLPI['use_mailing']) {
       Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
 
    } else {
       echo "<table class='tab_cadre'>";
       echo "<tr><th>" . _n('Notification', 'Notifications',2)."</th></tr>";
-      if (Session::haveRight("config","r")) {
+      if (Session::haveRight("config", READ)) {
          echo "<tr class='tab_bg_1'><td class='center'>".
               "<a href='notificationmailsetting.form.php'>". __('Email followups configuration') .
               "</a></td></tr>";
@@ -69,7 +69,7 @@ if (!$CFG_GLPI['use_mailing']) {
                   _n('Notification template', 'Notification templates', 2) ."</a></td> </tr>";
       }
 
-      if (Session::haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
+      if (Session::haveRight("notification", READ) && $CFG_GLPI['use_mailing']) {
          echo "<tr class='tab_bg_1'><td class='center'>".
               "<a href='notification.php'>". _n('Notification', 'Notifications',2)."</a></td></tr>";
       } else {

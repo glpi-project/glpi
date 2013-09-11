@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -39,8 +39,8 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
-   static public $right        = 'rule_softwarecategories';
-   public $menu_option         = 'softwarecategories';
+   static $rightname   = 'rule_softwarecategories';
+   public $menu_option = 'softwarecategories';
 
 
    function getTitle() {

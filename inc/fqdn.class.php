@@ -41,15 +41,8 @@ class FQDN extends CommonDropdown {
 
    public $dohistory = true;
 
+   static $rightname = 'internet';
 
-   static function canCreate() {
-      return Session::haveRight('internet', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('internet', 'r');
-   }
 
 
    static function getTypeName($nb=0) {
@@ -128,7 +121,7 @@ class FQDN extends CommonDropdown {
    **/
    function getFQDN() {
 
-      if ($this->can($this->getID(), 'r')) {
+      if ($this->can($this->getID(), READ)) {
          return $this->fields["fqdn"];
       }
       return "";

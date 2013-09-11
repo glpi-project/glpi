@@ -68,13 +68,13 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
           || ($this->target_object instanceof CommonITILTask)) {
          $item2                              = $this->target_object->getItem();
          $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                         "?redirect=".strtolower($item2->getType()).
+                                                         "?redirect=".$item2->getType().
                                                          "_".$item2->getID());
 
       } else {
          $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
                                                          "?redirect=".
-                                                         strtolower($this->target_object->getType()).
+                                                         $this->target_object->getType().
                                                          "_".$this->target_object->getID());
       }
       $this->datas['##recall.item.name##'] = '';

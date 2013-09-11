@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Generic class for Search Engine
+/**
+ * Search Class
+ *
+ * Generic class for Search Engine
+**/
 class Search {
 
    // Default number of items displayed in global search
@@ -48,6 +52,10 @@ class Search {
    const CSV_OUTPUT           = 3;
    const PDF_OUTPUT_PORTRAIT  = 4;
 
+   const LBBR = '#LBBR#';
+   const LBHR = '#LBHR#';
+
+   const NULLVALUE = '__NULL__';
 
    /**
     * Display search engine for an type
@@ -100,6 +108,7 @@ class Search {
       $p['field2']      = '';//
       $p['itemtype2']   = '';
       $p['searchtype2'] = '';
+      $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
@@ -118,7 +127,7 @@ class Search {
          Html::displayRightError();
       }
 
-      // Manage defautll seachtype value : for bookmark compatibility
+      // Manage default seachtype value : for bookmark compatibility
       if (count($p['contains'])) {
          foreach ($p['contains'] as $key => $val) {
             if (!isset($p['searchtype'][$key])) {
@@ -133,8 +142,6 @@ class Search {
             }
          }
       }
-
-      $target           = Toolbox::getItemTypeSearchURL($itemtype);
 
       $limitsearchopt   = self::getCleanedOptions($itemtype);
 
@@ -240,7 +247,8 @@ class Search {
             $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                        $searchopt[$itemtype][$val]["table"],
                                        $searchopt[$itemtype][$val]["linkfield"], 0, 0,
-                                       $searchopt[$itemtype][$val]["joinparams"]);
+                                       $searchopt[$itemtype][$val]["joinparams"],
+                                       $searchopt[$itemtype][$val]["field"]);
          }
       }
 
@@ -249,11 +257,12 @@ class Search {
          foreach ($searchopt[$itemtype] as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
-               if (!in_array($searchopt[$itemtype][$key]["table"], $blacklist_tables)) {
+               if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
                   $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                              $searchopt[$itemtype][$key]["table"],
                                              $searchopt[$itemtype][$key]["linkfield"], 0, 0,
-                                             $searchopt[$itemtype][$key]["joinparams"]);
+                                             $searchopt[$itemtype][$key]["joinparams"],
+                                             $searchopt[$itemtype][$key]["field"]);
                }
             }
          }
@@ -397,6 +406,7 @@ class Search {
 
                   if ($p['field'][$key] == "all") {
                      $items = $searchopt[$itemtype];
+
                   } else { // toview case : populate toview
                      foreach ($toview as $key2 => $val2) {
                         $items[$val2] = $searchopt[$itemtype][$val2];
@@ -484,7 +494,8 @@ class Search {
                                              $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
                                              $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
                                              1, $p['itemtype2'][$i],
-                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"]);
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["field"]);
                }
             }
          }
@@ -763,8 +774,8 @@ class Search {
 
                // SOFTWARE HACK
                if ($ctype == 'Software') {
-                  $tmpquery = str_replace("glpi_softwares.serial", "''", $tmpquery);
-                  $tmpquery = str_replace("glpi_softwares.otherserial", "''", $tmpquery);
+                  $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
+                  $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
                }
                $QUERY .= $tmpquery;
             }
@@ -783,6 +794,7 @@ class Search {
                   $ORDER.
                   $LIMIT;
       }
+
 
       $DBread->query("SET SESSION group_concat_max_len = 4096;");
       $result = $DBread->query($QUERY);
@@ -806,6 +818,7 @@ class Search {
              || $p['export_all']) {
             $numrows = $DBread->numrows($result);
          }
+
          // Contruct Pager parameters
          $globallinkto = self::getArrayUrlLink("field", $p['field']).
                          self::getArrayUrlLink("link", $p['link']).
@@ -821,9 +834,9 @@ class Search {
 
          // Not more used : clean pages : try to comment it
          /*
-         $tmp=explode('?',$target,2);
+         $tmp=explode('?',$p['target'],2);
          if (count($tmp)>1) {
-            $target = $tmp[0];
+            $p['target'] = $tmp[0];
             $parameters = $tmp[1].'&amp;'.$parameters;
          }
          */
@@ -832,7 +845,7 @@ class Search {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
                if ($numrows > ($p['start'] + self::GLOBAL_DISPLAY_COUNT)) {
-                  echo " <a href='$target?$parameters'>".__('All')."</a>";
+                  echo " <a href='".$p['target']."?$parameters'>".__('All')."</a>";
                }
                echo "</h2></div>\n";
             } else {
@@ -862,27 +875,30 @@ class Search {
                   }
                }
                $search_config = "";
-               if (Session::haveRight("search_config","w")
-                   || Session::haveRight("search_config_global","w")) {
+               if (Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
+                                                                DisplayPreference::GENERAL))) {
 
-//                   Ajax::createModalWindow('searchconfig_window',
-//                         $CFG_GLPI['root_doc']."/ajax/searchconfig.php?itemtype=$itemtype",
-//                         array('title'    => __('Select default items to show'),
-//                               'width'    => '1000'));
+                  $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open');\"";
 
-//                   $tmp = " class='pointer' onClick=\"searchconfig_window.show()\"";
-
-                  $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
-                         "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
-
-                  $search_config  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
-                                      __s('Select default items to show')."\" src='".
-                                      $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-                  $search_config .= $tmp.">";
+                  $search_config
+                     = "<img alt=\"".__s('Select default items to show')."\" title=\"".
+                         __s('Select default items to show')."\" src='".
+                         $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+                  $search_config
+                    .= $tmp.">";
+                  $search_config
+                    .= Ajax::createIframeModalWindow('search_config',
+                                                     $CFG_GLPI["root_doc"].
+                                                       "/front/displaypreference.form.php?itemtype=$itemtype",
+                                                     array('title'
+                                                             => __('Select default items to show'),
+                                                           'reloadonclose'
+                                                             => true,
+                                                           'display'
+                                                             => false));
                }
 
-               Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0,
+               Html::printPager($p['start'], $numrows, $p['target'], $parameters, $itemtype, 0,
                                 $search_config);
             }
 
@@ -890,17 +906,18 @@ class Search {
             // Search case
             $begin_display = $p['start'];
             $end_display   = min($numrows, $p['start']+$LIST_LIMIT);
+
             // No search Case
             if ($nosearch) {
                $begin_display = 0;
                $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
             }
-
             // Export All case
             if ($p['export_all']) {
                $begin_display = 0;
                $end_display   = $numrows;
             }
+
 
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
@@ -910,14 +927,16 @@ class Search {
             }
             $showmassiveactions = false;
             if ($itemtype != 'AllAssets') {
-               $showmassiveactions = count($item->getAllMassiveActions($p['is_deleted']));
+               $showmassiveactions = count(MassiveAction::getAllMassiveActions($item,
+                                                                               $p['is_deleted']));
                if ($showmassiveactions
                    && ($output_type == self::HTML_OUTPUT)) {
                   Html::openMassiveActionsForm('massform'.$itemtype);
                   $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
                                                'fixed'         => false,
-                                               'is_deleted'    => $p['is_deleted']);
-                  Html::showMassiveActions($itemtype, $massiveactionparams);
+                                               'is_deleted'    => $p['is_deleted'],
+                                               'container'     => 'massform'.$itemtype);
+                  Html::showMassiveActions($massiveactionparams);
                }
             }
 
@@ -954,6 +973,7 @@ class Search {
             $headers_line        = '';
             $headers_line_top    = '';
             $headers_line_bottom = '';
+            echo self::showBeginHeader($output_type);
             echo self::showNewLine($output_type);
             $header_num = 1;
             if (($output_type == self::HTML_OUTPUT)
@@ -972,7 +992,7 @@ class Search {
                if (!isset($searchopt[$itemtype][$val]['nosort'])
                    || !$searchopt[$itemtype][$val]['nosort']) {
 
-                  $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".
+                  $linkto = $p['target']."?itemtype=$itemtype&amp;sort=".$val."&amp;order=".
                              (($p['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$p['start'].
                              $globallinkto;
                }
@@ -1032,6 +1052,7 @@ class Search {
             $headers_line_bottom .= $headers_line;
 
             echo $headers_line_top;
+            echo self::showEndHeader($output_type);
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
@@ -1057,7 +1078,7 @@ class Search {
 
             // Display Loop
             while (($i < $numrows) && ($i < $end_display)) {
-            // Column num
+               // Column num
                $item_num = 1;
                // Get data and increment loop variables
                $data = $DBread->fetch_assoc($result);
@@ -1116,12 +1137,12 @@ class Search {
                               $count_display = 0;
                               $out           = "";
                               $unit          = "";
-                              $separate      = '<br>';
+                              $separate      = self::LBBR;
 
                               if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
                                   && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
 
-                                 $separate = '<hr>';
+                                 $separate = self::LBHR;
                               }
 
                               if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
@@ -1174,16 +1195,28 @@ class Search {
                }
                // Specific column display
                if ($itemtype == 'CartridgeItem') {
+                  $extrastyle = '';
+                  if ($output_type != self::HTML_OUTPUT) {
+                     if (Cartridge::getUnusedNumber($data["id"]) <= $data["ALARM"]) {
+                        $extrastyle = "style=\"background-color: #cf9b9b;\"";
+                     }
+                  }
                   echo self::showItem($output_type,
                                       Cartridge::getCount($data["id"], $data["ALARM"],
                                                           $output_type != self::HTML_OUTPUT),
-                                      $item_num, $row_num);
+                                      $item_num, $row_num, $extrastyle);
                }
                if ($itemtype == 'ConsumableItem') {
+                  $extrastyle = '';
+                  if ($output_type != self::HTML_OUTPUT) {
+                     if (Consumable::getUnusedNumber($data["id"]) <= $data["ALARM"]) {
+                        $extrastyle = "style=\"background-color: #cf9b9b;\"";
+                     }
+                  }
                   echo self::showItem($output_type,
                                       Consumable::getCount($data["id"], $data["ALARM"],
                                                            $output_type != self::HTML_OUTPUT),
-                                      $item_num, $row_num);
+                                      $item_num, $row_num, $extrastyle);
                }
                if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                   $typename = $data["TYPE"];
@@ -1390,7 +1423,7 @@ class Search {
             if ($output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
                   $massiveactionparams['ontop'] = false;
-                  Html::showMassiveActions($itemtype, $massiveactionparams);
+                  Html::showMassiveActions($massiveactionparams);
                   // End form for delete item
                   Html::closeForm();
                } else {
@@ -1398,7 +1431,7 @@ class Search {
                }
             }
             if ($output_type == self::HTML_OUTPUT) { // In case of HTML display
-               Html::printPager($p['start'], $numrows, $target, $parameters, '', 0, $search_config);
+               Html::printPager($p['start'], $numrows, $p['target'], $parameters, '', 0, $search_config);
 
             }
          } else {
@@ -1427,7 +1460,7 @@ class Search {
             break;
 
          case 'Ticket' :
-            if (Session::haveRight("show_all_ticket","1")) {
+            if (Session::haveRight("ticket", Ticket::READALL)) {
                $linked = array_keys(Ticket::getAllTypesForHelpdesk());
             }
             break;
@@ -1468,13 +1501,13 @@ class Search {
       $p['field2']      = '';
       $p['itemtype2']   = '';
       $p['searchtype2'] = '';
+      $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
 
       $options = self::getCleanedOptions($itemtype);
-      $target  = Toolbox::getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
@@ -1484,7 +1517,7 @@ class Search {
 
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
-      echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
+      echo "<form name='searchform$itemtype' method='get' action=\"".$p['target']."\">";
       echo "<div id='searchcriterias'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -1499,22 +1532,28 @@ class Search {
       }
       echo "<td>";
 
-      echo "<table id='searchcriteriastable'>";
+      echo "<table id='searchcriteriastable' width='100%'>";
+
+      $logicaloperators = array('AND'     => 'AND',
+                                'OR'      => 'OR',
+                                'AND NOT' => 'AND NOT',
+                                'OR NOT'  => 'OR NOT',);
+
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='50%'>";
+         echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='45%'>";
          // First line display add / delete images for normal and meta search items
          if ($i == 0) {
             echo "<input type='hidden' disabled id='add_search_count' name='add_search_count'
                    value='1'>";
-            echo "<a href='#' onClick = \"document.getElementById('add_search_count').disabled=false;
+            echo "<a href='#' onClick = \"".Html::jsEnable('add_search_count')."
                    document.forms['searchform$itemtype'].submit();\">";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
                    __s('Add a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
                echo "<input type='hidden' disabled id='delete_search_count'
                       name='delete_search_count' value='1'>";
-               echo "<a href='#' onClick = \"document.getElementById('delete_search_count').disabled=false;
+               echo "<a href='#' onClick = \"".Html::jsEnable('delete_search_count')."
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
                       __s('Delete a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1522,7 +1561,7 @@ class Search {
             if (is_array($linked) && (count($linked) > 0)) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
                       value='1'>";
-               echo "<a href='#' onClick=\"document.getElementById('add_search_count2').disabled=false;
+               echo "<a href='#' onClick=\"".Html::jsEnable('add_search_count2')."
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
                       __s('Add a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1530,7 +1569,7 @@ class Search {
                if ($_SESSION["glpisearchcount2"][$itemtype] > 0) {
                   echo "<input type='hidden' disabled id='delete_search_count2'
                          name='delete_search_count2' value='1'>";
-                  echo "<a href='#' onClick=\"document.getElementById('delete_search_count2').disabled=false;
+                  echo "<a href='#' onClick=\"".Html::jsEnable('delete_search_count2')."
                          document.forms['searchform$itemtype'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
                          __s('Delete a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1557,117 +1596,50 @@ class Search {
 
          // Display link item
          if ($i > 0) {
-            echo "<select name='link[$i]'>";
-            echo "<option value = 'AND' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "AND")) {
-               echo "selected";
+            $value = '';
+            if (is_array($p["link"]) && isset($p["link"][$i])) {
+               $value = $p["link"][$i];
             }
-            echo ">AND</option>\n";
-
-            echo "<option value='OR' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "OR")) {
-               echo "selected";
-            }
-            echo ">OR</option>\n";
-
-            echo "<option value='AND NOT' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "AND NOT")) {
-               echo "selected";
-            }
-            echo ">AND NOT</option>\n";
-
-            echo "<option value='OR NOT' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "OR NOT")) {
-               echo "selected";
-            }
-            echo ">OR NOT</option>";
-            echo "</select>&nbsp;";
+            Dropdown::showFromArray("link[$i]",$logicaloperators,
+                                    array('value' => $value,
+                                          'width' => '30%'));
          }
 
 
          $selected = $first = '';
+         $values   = array();
          // display select box to define search item
-         echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
          if ($CFG_GLPI['allow_search_view'] == 2) {
-            echo "<option value='view' ";
-            if (is_array($p['field'])
-                && isset($p['field'][$i]) && ($p['field'][$i] == "view")) {
-               echo "selected";
-               $selected = 'view';
-            }
-            echo ">".__('Items seen')."</option>\n";
+            $values['view'] = __('Items seen');
          }
 
          reset($options);
-         $first_group = true;
-         $str_limit   = 28; // Not $_SESSION['glpidropdown_chars_limit'] because must be really to short (5 or 10) and search engine will be unusable
-         $nb_in_group = 0;
-         $group       = '';
+         $group = '';
 
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
-               if (!$first_group) {
-                  $group .= "</optgroup>\n";
-               } else {
-                  $first_group = false;
-               }
-               if ($nb_in_group) {
-                  echo $group;
-               }
-               $group       = '';
-               $nb_in_group = 0;
-
-               $group .= "<optgroup label=\"".Toolbox::substr($val,0,$str_limit)."\">";
+               $group = $val;
             } else {
                if (!isset($val['nosearch']) || ($val['nosearch'] == false)) {
-                  $nb_in_group ++;
-                  $group .= "<option title=\"".Html::cleanInputText($val["name"]).
-                                           "\" value='$key'";
-                  if (is_array($p['field'])
-                      && isset($p['field'][$i]) && ($key == $p['field'][$i])) {
-                     $group   .= "selected";
-                     $selected = $key;
-                  } else if (empty($first)) {
-                     $first = $key;
-                  }
-                  $group .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
+                  $values[$group][$key] = $val["name"];
                }
             }
          }
-         if (!$first_group) {
-            $group .= "</optgroup>\n";
-         }
-         if ($nb_in_group) {
-            echo $group;
-         }
          if ($CFG_GLPI['allow_search_view'] == 1) {
-            echo "<option value='view' ";
-            if (is_array($p['field'])
-                && isset($p['field'][$i]) && ($p['field'][$i] == "view")) {
-               echo "selected";
-               $selected = 'view';
-            }
-            echo ">".__('Items seen')."</option>\n";
+            $values['view'] = __('Items seen');
          }
          if ($CFG_GLPI['allow_search_all']) {
-            echo "<option value='all' ";
-            if (is_array($p['field'])
-                && isset($p['field'][$i]) && ($p['field'][$i] == "all")) {
-               echo "selected";
-               $selected = 'all';
-            }
-            echo ">".__('All')."</option>";
+            $values['all'] = __('All');
          }
-         if (empty($selected)) {
-            $selected = $first;
+         $value = '';
+         if (is_array($p['field']) && isset($p['field'][$i])) {
+            $value = $p['field'][$i];
          }
-         echo "</select>\n";
 
+         $rand     = Dropdown::showFromArray("field[$i]", $values, array('value' => $value,
+                                                                         'width' => '60%'));
+         $field_id = Html::cleanId("dropdown_field[$i]$rand");
          echo "</td><td class='left'>";
          echo "<div id='SearchSpan$itemtype$i'>\n";
 
@@ -1680,8 +1652,9 @@ class Search {
 
          $_POST['itemtype']   = $used_itemtype;
 
+         $_POST['itemtype']   = $itemtype;
          $_POST['num']        = $i;
-         $_POST['field']      = $selected;
+         $_POST['field']      = $value;
          $_POST['searchtype'] = (is_array($p['searchtype'])
                                  && isset($p['searchtype'][$i])?$p['searchtype'][$i]:"" );
          $_POST['value']      = (is_array($p['contains'])
@@ -1694,7 +1667,7 @@ class Search {
                          'num'        => $i,
                          'value'      => $_POST["value"],
                          'searchtype' => $_POST["searchtype"]);
-         Ajax::updateItemOnSelectEvent("Search$itemtype$i", "SearchSpan$itemtype$i",
+         Ajax::updateItemOnSelectEvent($field_id, "SearchSpan$itemtype$i",
                                        $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 
          echo "</td></tr>\n";
@@ -1708,51 +1681,34 @@ class Search {
             echo "<tr><td class='left' colspan='2'>";
             $rand = mt_rand();
 
-            echo "<table width='100%'><tr class='left'><td width='35%'>";
+            echo "<table width='100%'><tr class='left'><td width='30%'>";
             // Display link item (not for the first item)
-            echo "<select name='link2[$i]'>";
-            echo "<option value='AND' ";
-            if (is_array($p['link2'])
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "AND")) {
-               echo "selected";
+            $value = '';
+            if (is_array($p["link2"]) && isset($p["link2"][$i])) {
+               $value = $p["link2"][$i];
             }
-            echo ">AND</option>\n";
-
-            echo "<option value='OR' ";
-            if (is_array($p['link2'])
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "OR")) {
-               echo "selected";
-            }
-            echo ">OR</option>\n";
-
-            echo "<option value='AND NOT' ";
-            if (is_array($p['link2'])
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "AND NOT")) {
-               echo "selected";
-            }
-            echo ">AND NOT</option>\n";
-
-            echo "<option value='OR NOT' ";
-            if (is_array($p['link2'] )
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "OR NOT")) {
-               echo "selected";
-            }
-            echo ">OR NOT</option>\n";
-            echo "</select>&nbsp;";
+            Dropdown::showFromArray("link2[$i]",$logicaloperators,
+                                    array('value' => $value,
+                                          'width' => '45%'));
 
             // Display select of the linked item type available
-            echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
-            echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
             foreach ($linked as $key) {
                if (!isset($metanames[$key])) {
                   if ($linkitem = getItemForItemtype($key)) {
                      $metanames[$key] = $linkitem->getTypeName();
                   }
                }
-               echo "<option value='$key'>".Toolbox::substr($metanames[$key], 0, 20)."</option>\n";
             }
-            echo "</select>&nbsp;";
+            $value = '';
+            if (is_array($p['itemtype2'])
+                && isset($p['itemtype2'][$i])
+                && !empty($p['itemtype2'][$i])) {
+               $value = $p['itemtype2'][$i];
+            }
 
+            $rand = Dropdown::showItemTypes("itemtype2[$i]", $linked, array('width' => '50%',
+                                                                            'value' => $value));
+            $field_id = Html::cleanId("dropdown_itemtype2[$i]$rand");
             echo "</td><td>";
             // Ajax script for display search met& item
             echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
@@ -1766,7 +1722,7 @@ class Search {
                             'searchtype2' => (is_array($p['searchtype2'])
                                               && isset($p['searchtype2'][$i])?$p['searchtype2'][$i]:""));
 
-            Ajax::updateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand",
+            Ajax::updateItemOnSelectEvent($field_id,
                                           "show_".$itemtype."_".$i."_$rand",
                                           $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",
                                           $params);
@@ -1774,14 +1730,15 @@ class Search {
             if (is_array($p['itemtype2'])
                 && isset($p['itemtype2'][$i])
                 && !empty($p['itemtype2'][$i])) {
+//                echo "<script type='text/javascript' >";
+//                echo "alert('".$p['itemtype2'][$i]."');";
+//                echo Html::jsSetDropdownValue($field_id, $p['itemtype2'][$i]);
+//                echo "</script>\n";
 
                $params['itemtype'] = $p['itemtype2'][$i];
                Ajax::updateItem("show_".$itemtype."_".$i."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);
-               echo "<script type='text/javascript' >";
-               echo "window.document.getElementById('itemtype2_".$itemtype."_".$i."_$rand').value='".
-                                                    $p['itemtype2'][$i]."';";
-               echo "</script>\n";
+
             }
             echo "</td></tr></table>";
 
@@ -1793,33 +1750,7 @@ class Search {
 
       echo "<td width='150px'>";
       echo "<table width='100%'>";
-      // Display sort selection
-/*      echo "<tr><td colspan='2'>".__('sorted by');
-      echo "&nbsp;<select name='sort' size='1'>";
-      reset($options);
-      $first_group=true;
-      foreach ($options as $key => $val) {
-         if (!is_array($val)) {
-            if (!$first_group) {
-               echo "</optgroup>\n";
-            } else {
-               $first_group=false;
-            }
-            echo "<optgroup label=\"$val\">";
-         } else {
-            echo "<option value='$key'";
-            if ($key == $p['sort']) {
-               echo " selected";
-            }
-            echo ">".Toolbox::substr($val["name"],0,20)."</option>\n";
-         }
-      }
-      if (!$first_group) {
-         echo "</optgroup>\n";
-      }
-      echo "</select> ";
-      echo "</td></tr>\n";
-*/
+
       // Display deleted selection
 
       echo "<tr>";
@@ -1829,7 +1760,7 @@ class Search {
       echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit' >";
       echo "</td><td>";
       Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
-      echo "<a href='$target?reset=reset' >";
+      echo "<a href='".$p['target']."?reset=reset' >";
       echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
@@ -2514,8 +2445,9 @@ class Search {
          }
       }
 
-      $tocompute   = "`$table$addtable`.`$field`";
-      $tocomputeid = "`$table$addtable`.`id`";
+      $tocompute      = "`$table$addtable`.`$field`";
+      $tocomputeid    = "`$table$addtable`.`id`";
+      $tocomputetrans = "`$table".$addtable."_trans`.`value`";
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
@@ -2566,12 +2498,22 @@ class Search {
       // Default case
       if ($meta
          || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute,'$$',$tocomputeid) SEPARATOR '$$$$')
+         $TRANS = '';
+         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+            $TRANS = ", '$$', $tocomputetrans";
+
+         }
+         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."') $TRANS,
+                                               '$$',$tocomputeid) SEPARATOR '$$$$')
                               AS ".$NAME."_$num,
                   $ADDITONALFIELDS";
       }
-      return "$tocompute AS ".$NAME."_$num,
-              $ADDITONALFIELDS";
+      $TRANS = '';
+      if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+         $TRANS = $tocomputetrans." AS ".$NAME."_".$num."_trans, ";
+
+      }
+      return "$tocompute AS ".$NAME."_$num, $TRANS $ADDITONALFIELDS";
    }
 
 
@@ -2590,7 +2532,7 @@ class Search {
             return Reminder::addVisibilityRestrict();
 
          case 'Notification' :
-            if (!Session::haveRight('config','w')) {
+            if (!Config::canView()) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
             }
             break;
@@ -2606,7 +2548,7 @@ class Search {
          case 'Ticket' :
             // Same structure in addDefaultJoin
             $condition = '';
-            if (!Session::haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight("ticket", Ticket::READALL)) {
 
                $searchopt
                   = &self::getOptions($itemtype);
@@ -2635,10 +2577,10 @@ class Search {
 
                $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                               OR $observer_table.users_id = '".Session::getLoginUserID()."'
-                              OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."' ";
+                              OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'";
 
 
-               if (Session::haveRight("show_group_ticket",1)) {
+               if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $requestergroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
@@ -2647,24 +2589,24 @@ class Search {
                   }
                }
 
-               if (Session::haveRight("own_ticket","1")) {// Can own ticket : show assign to me
+               if (Session::haveRight("ticket", Ticket::OWN)) {// Can own ticket : show assign to me
                   $condition .= " OR $assign_table.users_id = '".Session::getLoginUserID()."' ";
                }
 
-               if (Session::haveRight("show_assign_ticket","1")) { // show mine + assign to me
+               if (Session::haveRightsOr("ticket", array(Ticket::READMY, Ticket::READASSIGN))) { // show mine + assign to me
 
                   $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $assigngroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
-                  if (Session::haveRight('assign_ticket',1)) {
+                  if (Session::haveRight('ticket', Ticket::ASSIGN)) {
                      $condition .= " OR `glpi_tickets`.`status`='".CommonITILObject::INCOMING."'";
                   }
                }
 
-               if (Session::haveRight('validate_incident', 1)
-                   || Session::haveRight('validate_request', 1)) {
+               if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                             TicketValidation::VALIDATEREQUEST))) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
                                           = '".Session::getLoginUserID()."'";
                }
@@ -3100,7 +3042,8 @@ class Search {
          }
       }
 
-      $tocompute = "`$table`.`$field`";
+      $tocompute      = "`$table`.`$field`";
+      $tocomputetrans = "`".$table."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table`", $tocompute);
@@ -3186,10 +3129,10 @@ class Search {
                return self::makeTextCriteria($date_computation, $val, $nott, $link);
 
             case "right" :
-               if (($val == 'NULL') || ($val == 'null')) {
-                  return $link." $tocompute IS ".($nott?'NOT':'')." NULL ";
+               if ($searchtype == 'notequals') {
+                  $nott = !$nott;
                }
-               return $link." $tocompute = '$val' ";
+               return $link. ($nott?' NOT':'')." ($tocompute & '$val') ";
 
             case "bool" :
                if (!is_numeric($val)) {
@@ -3249,8 +3192,8 @@ class Search {
 
          if ((!isset($searchopt[$ID]['searchequalsonfield'])
                || !$searchopt[$ID]['searchequalsonfield'])
-            && (($table != getTableForItemType($itemtype))
-               || ($itemtype == 'AllAssets'))) {
+            && ($table != getTableForItemType($itemtype))
+               || ($itemtype == 'AllAssets')) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
@@ -3267,6 +3210,12 @@ class Search {
          $out .= ')';
          return $out;
       }
+      $transitemtype = getItemTypeForTable($inittable);
+      if (Session::haveTranslations($transitemtype, $field)) {
+         return " $link (".self::makeTextCriteria($tocompute,$val,$nott,'')."
+                          OR ".self::makeTextCriteria($tocomputetrans,$val,$nott,'').")";
+      }
+
       return self::makeTextCriteria($tocompute,$val,$nott,$link);
    }
 
@@ -3309,7 +3258,7 @@ class Search {
          case 'Ticket' :
             // Same structure in addDefaultWhere
             $out = '';
-            if (!Session::haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight("ticket", Ticket::READALL)) {
                $searchopt = &self::getOptions($itemtype);
 
 //                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
@@ -3324,7 +3273,7 @@ class Search {
                                          "glpi_tickets_users", "tickets_users_id", 0, 0,
                                          $searchopt[4]['joinparams']['beforejoin']['joinparams']);
 
-               if (Session::haveRight("show_group_ticket",1)) {
+               if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                                "glpi_groups_tickets", "groups_tickets_id", 0, 0,
@@ -3343,13 +3292,13 @@ class Search {
                                             $searchopt[65]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (Session::haveRight("own_ticket","1")) { // Can own ticket : show assign to me
+               if (Session::haveRight("ticket", Ticket::OWN)) { // Can own ticket : show assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (Session::haveRight("show_assign_ticket","1")) { // show mine + assign to me
+               if (Session::haveRightsOr("ticket", array(Ticket::READMY, Ticket::READASSIGN))) { // show mine + assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);
@@ -3361,8 +3310,8 @@ class Search {
                   }
                }
 
-               if (Session::haveRight('validate_incident', 1)
-                   || Session::haveRight('validate_request', 1)) {
+               if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                             TicketValidation::VALIDATEREQUEST))) {
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
@@ -3393,17 +3342,18 @@ class Search {
     *
     * @param $itemtype                    item type
     * @param $ref_table                   reference table
-    * @param $already_link_tables   array of tables already joined
+    * @param $already_link_tables  array  of tables already joined
     * @param $new_table                   new table to join
     * @param $linkfield                   linkfield for LeftJoin
     * @param $meta                        is it a meta item ? (default 0)
     * @param $meta_type                   meta type table (default 0)
-    * @param $joinparams            array join parameters (condition / joinbefore...)
+    * @param $joinparams           array  join parameters (condition / joinbefore...)
+    * @param $field                string field to display (needed for translation join) (default '')
     *
     * @return Left join string
    **/
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
-                                $linkfield, $meta=0, $meta_type=0, $joinparams=array()) {
+                               $linkfield, $meta=0, $meta_type=0, $joinparams=array(), $field='') {
       global $CFG_GLPI;
 
       // Rename table for meta left join
@@ -3415,7 +3365,6 @@ class Search {
 //       if ($new_table=="glpi_users"
 //           || $new_table=="glpi_groups"
 //           || $new_table=="glpi_users_validation") {
-
       if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
          $nt .= "_".$linkfield;
          $AS  = " AS ".$nt;
@@ -3451,14 +3400,12 @@ class Search {
       if ($linkfield == getForeignKeyFieldForTable($new_table)) {
          $tocheck = $nt;
       }
-//       echo '->'.$tocheck.'<br>';
 
       if (in_array($tocheck,$already_link_tables)) {
          return "";
       }
       array_push($already_link_tables, $tocheck);
 
-//        echo "DONE<br>";
       $specific_leftjoin = '';
 
       // Plugin can override core definition for its type
@@ -3503,10 +3450,8 @@ class Search {
                   if (isset($tab['joinparams'])) {
                      $interjoinparams = $tab['joinparams'];
                   }
-//                   echo "BEFORE ";
                   $before .= self::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
                                                $interlinkfield, $meta, $meta_type, $interjoinparams);
-//                   echo "END BEFORE ".'<br>';
                }
 
                // No direct link with the previous joins
@@ -3601,13 +3546,20 @@ class Search {
                   $specific_leftjoin = "LEFT JOIN `$new_table` $AS
                                           ON (`$rt`.`$linkfield` = `$nt`.`id`
                                               $addcondition)";
+                  $transitemtype = getItemTypeForTable($new_table);
+                  if (Session::haveTranslations($transitemtype, $field)) {
+                     $transAS            = $nt.'_trans';
+                     $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS $transAS
+                                             ON (`$transAS`.`itemtype` = '$transitemtype'
+                                                 AND `$transAS`.`items_id` = `$nt`.`id`
+                                                 AND `$transAS`.`language` = '".$_SESSION['glpilanguage']."'
+                                                 AND `$transAS`.`field` = '$field')";
+                  }
                   break;
             }
          }
-//          echo $before.$specific_leftjoin.'<br>';
          return $before.$specific_leftjoin;
       }
- //     return '';
    }
 
 
@@ -3837,7 +3789,7 @@ class Search {
             if (($ID <> 151) && !empty($data[$NAME.$num])
                 && ($data[$NAME.$num.'_2'] != CommonITILObject::WAITING)
                 && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
-               return " class='tab_bg_2_2' ";
+               return " style=\"background-color: #cf9b9b\" ";
             }
 
          default :
@@ -3892,222 +3844,225 @@ class Search {
       if ($meta) {
          $NAME = "META_";
       }
-      $table     = $searchopt[$ID]["table"];
-      $field     = $searchopt[$ID]["field"];
-      $linkfield = $searchopt[$ID]["linkfield"];
+      if (isset($searchopt[$ID]["table"])) {
+         $table     = $searchopt[$ID]["table"];
+         $field     = $searchopt[$ID]["field"];
+         $linkfield = $searchopt[$ID]["linkfield"];
 
-      /// TODO try to clean all specific cases using SpecificToDisplay
 
-      switch ($table.'.'.$field) {
-         case "glpi_users.name" :
-            // USER search case
-            if (($itemtype != 'User')
-                && isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
+         /// TODO try to clean all specific cases using SpecificToDisplay
 
-               $out           = "";
-               $split         = explode("$$$$",$data[$NAME.$num]);
-               $count_display = 0;
-               $added         = array();
-               for ($k=0 ; $k<count($split) ; $k++) {
-                  if ($split[$k] > 0) {
-                     if ($count_display) {
-                        $out .= "<br>";
-                     }
-                     $count_display++;
-                     if ($itemtype == 'Ticket') {
-                        $userdata = getUserName($split[$k],2);
-                        $out     .= sprintf(__('%1$s %2$s'), $userdata['name'],
-                                            Html::showToolTip($userdata["comment"],
-                                                              array('link'    => $userdata["link"],
-                                                                    'display' => false)));
+         switch ($table.'.'.$field) {
+            case "glpi_users.name" :
+               // USER search case
+               if (($itemtype != 'User')
+                   && isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
 
-                     } else {
-                        $out .= getUserName($split[$k], 1);
-                     }
-                  }
-               }
-
-               // Manage alternative_email for tickets_users
-               if (($itemtype == 'Ticket')
-                   && isset($data[$NAME.$num.'_2'])) {
-                  $split = explode("$$$$",$data[$NAME.$num.'_2']);
+                  $out           = "";
+                  $split         = explode("$$$$",$data[$NAME.$num]);
+                  $count_display = 0;
+                  $added         = array();
                   for ($k=0 ; $k<count($split) ; $k++) {
-                     $split2 = explode(" ",$split[$k]);
-                     if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
+                     if ($split[$k] > 0) {
                         if ($count_display) {
-                           $out .= "<br>";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
-                        $out .= "<a href='mailto:".$split2[1]."'>".$split2[1]."</a>";
-                     }
-                  }
-               }
+                        if ($itemtype == 'Ticket') {
+                           $userdata = getUserName($split[$k],2);
+                           $out     .= sprintf(__('%1$s %2$s'), $userdata['name'],
+                                               Html::showToolTip($userdata["comment"],
+                                                                 array('link'    => $userdata["link"],
+                                                                       'display' => false)));
 
-               return $out;
-            }
-            if ($itemtype != 'User') {
-               $toadd = '';
-               if (($itemtype == 'Ticket')
-                   && ($data[$NAME.$num."_3"] > 0)) {
-                  $userdata = getUserName($data[$NAME.$num."_3"], 2);
-                  $toadd    = Html::showToolTip($userdata["comment"],
-                                                array('link'    => $userdata["link"],
-                                                      'display' => false));
-               }
-               $usernameformat = formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
-                                                $data[$NAME.$num."_2"], $data[$NAME.$num."_4"], 1);
-               return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
-            }
-            break;
-
-         case "glpi_profiles.interface" :
-            return Profile::getInterfaceName($data[$NAME.$num]);
-
-         case "glpi_profiles.name" :
-            if (($itemtype == 'User')
-                && ($ID == 20)) {
-               $out           = "";
-               $split         = explode("$$$$",$data[$NAME.$num]);
-               $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
-               $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
-               $count_display = 0;
-               $added         = array();
-               for ($k=0 ; $k<count($split) ; $k++) {
-                  if (strlen(trim($split[$k])) > 0) {
-                     $text = sprintf(__('%1$s - %2$s'), $split[$k],
-                                     Dropdown::getDropdownName('glpi_entities', $split2[$k]));
-                     if ($split3[$k]) {
-                        $text = sprintf(__('%1$s %2$s'), $text, "(".__('R').")");
-                     }
-                     if (!in_array($text,$added)) {
-                        if ($count_display) {
-                           $out .= "<br>";
+                        } else {
+                           $out .= getUserName($split[$k], 1);
                         }
-                        $count_display++;
-                        $out     .= $text;
-                        $added[]  = $text;
                      }
                   }
-               }
-               return $out;
-            }
-            break;
 
-         case "glpi_entities.completename" :
-            if ($itemtype == 'User') {
-               $out           = "";
-               $split         = explode("$$$$",$data[$NAME.$num]);
-               $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
-               $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
-               $added         = array();
-               $count_display = 0;
-               for ($k=0 ; $k<count($split) ; $k++) {
-                  if (strlen(trim($split[$k])) > 0) {
-                     $text = sprintf(__('%1$s - %2$s'), $split[$k],
-                                     Dropdown::getDropdownName('glpi_profiles', $split2[$k]));
-                     if ($split3[$k]) {
-                        $text = sprintf(__('%1$s %2$s'), $text, "(".__('R').")");
-                     }
-                     if (!in_array($text,$added)) {
-                        if ($count_display) {
-                           $out .= "<br>";
+                  // Manage alternative_email for tickets_users
+                  if (($itemtype == 'Ticket')
+                      && isset($data[$NAME.$num.'_2'])) {
+                     $split = explode("$$$$",$data[$NAME.$num.'_2']);
+                     for ($k=0 ; $k<count($split) ; $k++) {
+                        $split2 = explode(" ",$split[$k]);
+                        if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
+                           if ($count_display) {
+                              $out .= self::LBBR;
+                           }
+                           $count_display++;
+                           $out .= "<a href='mailto:".$split2[1]."'>".$split2[1]."</a>";
                         }
-                        $count_display++;
-                        $out    .= $text;
-                        $added[] = $text;
                      }
                   }
+
+                  return $out;
                }
-               return $out;
-            }
-            break;
+               if ($itemtype != 'User') {
+                  $toadd = '';
+                  if (($itemtype == 'Ticket')
+                      && ($data[$NAME.$num."_3"] > 0)) {
+                     $userdata = getUserName($data[$NAME.$num."_3"], 2);
+                     $toadd    = Html::showToolTip($userdata["comment"],
+                                                   array('link'    => $userdata["link"],
+                                                         'display' => false));
+                  }
+                  $usernameformat = formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
+                                                   $data[$NAME.$num."_2"], $data[$NAME.$num."_4"],
+                                                   1);
+                  return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
+               }
+               break;
 
-         case "glpi_documenttypes.icon" :
-            if (!empty($data[$NAME.$num])) {
-               return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".
-                        $data[$NAME.$num]."'>";
-            }
-            return "&nbsp;";
+            case "glpi_profiles.interface" :
+               return Profile::getInterfaceName($data[$NAME.$num]);
 
-         case "glpi_documents.filename" :
-            $doc = new Document();
-            if ($doc->getFromDB($data['id'])) {
-               return $doc->getDownloadLink();
-            }
-            return NOT_AVAILABLE;
+            case "glpi_profiles.name" :
+               if (($itemtype == 'User')
+                   && ($ID == 20)) {
+                  $out           = "";
+                  $split         = explode("$$$$",$data[$NAME.$num]);
+                  $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
+                  $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
+                  $count_display = 0;
+                  $added         = array();
+                  for ($k=0 ; $k<count($split) ; $k++) {
+                     if (strlen(trim($split[$k])) > 0) {
+                        $text = sprintf(__('%1$s - %2$s'), $split[$k],
+                                        Dropdown::getDropdownName('glpi_entities', $split2[$k]));
+                        if ($split3[$k]) {
+                           $text = sprintf(__('%1$s %2$s'), $text, "(".__('R').")");
+                        }
+                        if (!in_array($text,$added)) {
+                           if ($count_display) {
+                              $out .= self::LBBR;
+                           }
+                           $count_display++;
+                           $out     .= $text;
+                           $added[]  = $text;
+                        }
+                     }
+                  }
+                  return $out;
+               }
+               break;
 
-         case "glpi_deviceharddrives.specificity" :
-         case "glpi_devicememories.specificity" :
-         case "glpi_deviceprocessors.specificity" :
-            return $data[$NAME.$num];
-
-         case "glpi_networkports.mac" :
-            $out = "";
-            if ($itemtype == 'Computer') {
-               $displayed = array();
-               if (!empty($data[$NAME.$num."_2"])) {
-                  $split         = explode("$$$$",$data[$NAME.$num."_2"]);
+            case "glpi_entities.completename" :
+               if ($itemtype == 'User') {
+                  $out           = "";
+                  $split         = explode("$$$$",$data[$NAME.$num]);
+                  $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
+                  $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
+                  $added         = array();
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
-                     $lowstr = Toolbox::strtolower($split[$k]);
-                     if ((strlen(trim($split[$k])) > 0)
-                         && !in_array($lowstr, $displayed)) {
-                        if ($count_display) {
-                           $out .= "<br>";
+                     if (strlen(trim($split[$k])) > 0) {
+                        $text = sprintf(__('%1$s - %2$s'), $split[$k],
+                                        Dropdown::getDropdownName('glpi_profiles', $split2[$k]));
+                        if ($split3[$k]) {
+                           $text = sprintf(__('%1$s %2$s'), $text, "(".__('R').")");
                         }
-                        $count_display++;
-                        $out        .= $split[$k];
-                        $displayed[] = $lowstr;
+                        if (!in_array($text,$added)) {
+                           if ($count_display) {
+                              $out .= self::LBBR;
+                           }
+                           $count_display++;
+                           $out    .= $text;
+                           $added[] = $text;
+                        }
+                     }
+                  }
+                  return $out;
+               }
+               break;
+
+            case "glpi_documenttypes.icon" :
+               if (!empty($data[$NAME.$num])) {
+                  return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".
+                           $data[$NAME.$num]."'>";
+               }
+               return "&nbsp;";
+
+            case "glpi_documents.filename" :
+               $doc = new Document();
+               if ($doc->getFromDB($data['id'])) {
+                  return $doc->getDownloadLink();
+               }
+               return NOT_AVAILABLE;
+
+            case "glpi_deviceharddrives.specificity" :
+            case "glpi_devicememories.specificity" :
+            case "glpi_deviceprocessors.specificity" :
+               return $data[$NAME.$num];
+
+            case "glpi_networkports.mac" :
+               $out = "";
+               if ($itemtype == 'Computer') {
+                  $displayed = array();
+                  if (!empty($data[$NAME.$num."_2"])) {
+                     $split         = explode("$$$$",$data[$NAME.$num."_2"]);
+                     $count_display = 0;
+                     for ($k=0 ; $k<count($split) ; $k++) {
+                        $lowstr = Toolbox::strtolower($split[$k]);
+                        if ((strlen(trim($split[$k])) > 0)
+                            && !in_array($lowstr, $displayed)) {
+                           if ($count_display) {
+                              $out .= self::LBBR;
+                           }
+                           $count_display++;
+                           $out        .= $split[$k];
+                           $displayed[] = $lowstr;
+                        }
+                     }
+                     if (!empty($data[$NAME.$num])) {
+                        $out .= self::LBBR;
                      }
                   }
                   if (!empty($data[$NAME.$num])) {
-                     $out .= "<br>";
-                  }
-               }
-               if (!empty($data[$NAME.$num])) {
-                  $split         = explode("$$$$",$data[$NAME.$num]);
-                  $count_display = 0;
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     $lowstr = Toolbox::strtolower($split[$k]);
-                     if ((strlen(trim($split[$k])) > 0)
-                         && !in_array($lowstr, $displayed)) {
-                        if ($count_display) {
-                           $out .= "<br>";
+                     $split         = explode("$$$$",$data[$NAME.$num]);
+                     $count_display = 0;
+                     for ($k=0 ; $k<count($split) ; $k++) {
+                        $lowstr = Toolbox::strtolower($split[$k]);
+                        if ((strlen(trim($split[$k])) > 0)
+                            && !in_array($lowstr, $displayed)) {
+                           if ($count_display) {
+                              $out .= self::LBBR;
+                           }
+                           $count_display++;
+                           $out        .= $split[$k];
+                           $displayed[] = $lowstr;
                         }
-                        $count_display++;
-                        $out        .= $split[$k];
-                        $displayed[] = $lowstr;
                      }
                   }
+                  return $out;
                }
-               return $out;
-            }
-            break;
+               break;
 
-         case "glpi_contracts.duration" :
-         case "glpi_contracts.notice" :
-         case "glpi_contracts.periodicity" :
-         case "glpi_contracts.billing" :
-            if (!empty($data[$NAME.$num])) {
-               $split  = explode('$$$$', $data[$NAME.$num]);
-               $output = "";
-               foreach ($split as $duration) {
-                  $output .= (empty($output)?'':'<br>') .
-                              sprintf(_n('%d month', '%d months', $duration), $duration);
+            case "glpi_contracts.duration" :
+            case "glpi_contracts.notice" :
+            case "glpi_contracts.periodicity" :
+            case "glpi_contracts.billing" :
+               if (!empty($data[$NAME.$num])) {
+                  $split  = explode('$$$$', $data[$NAME.$num]);
+                  $output = "";
+                  foreach ($split as $duration) {
+                     $output .= (empty($output)?'':self::LBBR) .
+                                 sprintf(_n('%d month', '%d months', $duration), $duration);
+                  }
+                  return $output;
                }
-               return $output;
-            }
-            return "&nbsp;";
+               return "&nbsp;";
 
-         case "glpi_contracts.renewal" :
-            return Contract::getContractRenewalName($data[$NAME.$num]);
+            case "glpi_contracts.renewal" :
+               return Contract::getContractRenewalName($data[$NAME.$num]);
 
 //          case "glpi_infocoms.sink_time" :
 //             if (!empty($data[$NAME.$num])) {
 //                $split = explode("$$$$", $data[$NAME.$num]);
 //                $out   = '';
 //                foreach ($split as $val) {
-//                   $out .= (empty($out)?'':'<br>');
+//                   $out .= (empty($out)?'':self::LBBR);
 //                   if ($val > 0) {
 //                      //TRANS: %d is a number of years
 //                      $out .= sprintf(_n('%d year', '%d years', $val), $val);
@@ -4122,7 +4077,7 @@ class Search {
 //                $split = explode("$$$$", $data[$NAME.$num]);
 //                $out   = '';
 //                foreach ($split as $val) {
-//                   $out .= (empty($out)?'':'<br>');
+//                   $out .= (empty($out)?'':self::LBBR);
 //                   if ($val > 0) {
 //                      $out .= sprintf(_n('%d month', '%d months', $val), $val);
 //                   }
@@ -4134,34 +4089,34 @@ class Search {
 //             }
 //             return "&nbsp;";
 
-         case "glpi_infocoms.sink_type" :
-            $split = explode("$$$$", $data[$NAME.$num]);
-            $out   = '';
-            foreach ($split as $val) {
-               $out .= (empty($out)?'':'<br>').Infocom::getAmortTypeName($val);
-            }
-            return $out;
+            case "glpi_infocoms.sink_type" :
+               $split = explode("$$$$", $data[$NAME.$num]);
+               $out   = '';
+               foreach ($split as $val) {
+                  $out .= (empty($out)?'':self::LBBR).Infocom::getAmortTypeName($val);
+               }
+               return $out;
 
-         case "glpi_infocoms.alert" :
-            if ($data[$NAME.$num] == pow(2,Alert::END)) {
-               return __s('Warranty expiration date');
-            }
-            return "";
+            case "glpi_infocoms.alert" :
+               if ($data[$NAME.$num] == pow(2,Alert::END)) {
+                  return __s('Warranty expiration date');
+               }
+               return "";
 
-         case "glpi_contracts.alert" :
-            switch ($data[$NAME.$num]) {
-               case pow(2,Alert::END) :
-                  return __('End');
+            case "glpi_contracts.alert" :
+               switch ($data[$NAME.$num]) {
+                  case pow(2,Alert::END) :
+                     return __('End');
 
-               case pow(2,Alert::NOTICE) :
-                  return __('Notice');
+                  case pow(2,Alert::NOTICE) :
+                     return __('Notice');
 
-               case pow(2,Alert::END) + pow(2,Alert::NOTICE) :
-                  return __('End + Notice');
-            }
-            return "";
+                  case pow(2,Alert::END) + pow(2,Alert::NOTICE) :
+                     return __('End + Notice');
+               }
+               return "";
 
-         case "glpi_tickets_tickets.tickets_id_1" :
+            case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
                $split      = explode("$$$$",$data[$NAME.$num]);
                $split2     = explode("$$$$",$data[$NAME.$num."_2"]);
@@ -4172,7 +4127,7 @@ class Search {
                      $text = sprintf(__('%1$s - %2$s'), $linkid,
                                      Dropdown::getDropdownName('glpi_tickets', $linkid));
                      if (count($displayed)) {
-                        $out .= "<br>";
+                        $out .= self::LBBR;
                      }
                      $displayed[$linkid] = $linkid;
                      $out               .= $text;
@@ -4180,196 +4135,197 @@ class Search {
                }
                return $out;
 
-         case "glpi_problems.count" :
-            if (($data[$NAME.$num] > 0)
-                && Session::haveRight("show_all_problem","1")) {
-               if ($itemtype == 'ITILCategory') {
-                  $options['field'][0]      = 7;
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = $data['id'];
-                  $options['link'][0]       = 'AND';
-               }
+            case "glpi_problems.count" :
+               if (($data[$NAME.$num] > 0)
+                   && Session::haveRight("problem", Problem::READALL)) {
+                  if ($itemtype == 'ITILCategory') {
+                     $options['field'][0]      = 7;
+                     $options['searchtype'][0] = 'equals';
+                     $options['contains'][0]   = $data['id'];
+                     $options['link'][0]       = 'AND';
+                  }
 
-               $options['reset'] = 'reset';
+                  $options['reset'] = 'reset';
 
-               $out  = "<a id='problem$itemtype".$data['id']."' ";
-               $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  $out  = "<a id='problem$itemtype".$data['id']."' ";
+                  $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                              Toolbox::append_params($options, '&amp;')."\">";
-               $out .= $data[$NAME.$num]."</a>";
-
-            } else {
-               $out = $data[$NAME.$num];
-            }
-            return $out;
-
-         case "glpi_tickets.count" :
-            if (($data[$NAME.$num] > 0)
-                && Session::haveRight("show_all_ticket","1")) {
-
-               if ($itemtype == 'User') {
-                  $options['field'][0]      = 4;
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = $data['id'];
-                  $options['link'][0]       = 'AND';
-
-                  $options['field'][1]      = 22;
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = $data['id'];
-                  $options['link'][1]       = 'OR';
-
-                  $options['field'][2]      = 5;
-                  $options['searchtype'][2] = 'equals';
-                  $options['contains'][2]   = $data['id'];
-                  $options['link'][2]       = 'OR';
-
-               } else if ($itemtype == 'ITILCategory') {
-                  $options['field'][0]      = 7;
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = $data['id'];
-                  $options['link'][0]       = 'AND';
+                  $out .= $data[$NAME.$num]."</a>";
 
                } else {
-                  $options['field'][0]       = 12;
-                  $options['searchtype'][0]  = 'equals';
-                  $options['contains'][0]    = 'all';
-                  $options['link'][0]        = 'AND';
-
-                  $options['itemtype2'][0]   = $itemtype;
-                  $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
-                  $options['searchtype2'][0] = 'equals';
-                  $options['contains2'][0]   = $data['id'];
-                  $options['link2'][0]       = 'AND';
+                  $out = $data[$NAME.$num];
                }
+               return $out;
 
-               $options['reset'] = 'reset';
+            case "glpi_tickets.count" :
+               if (($data[$NAME.$num] > 0)
+                   && Session::haveRight("ticket", Ticket::READALL)) {
 
-               $out  = "<a id='ticket$itemtype".$data['id']."' ";
-               $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                  if ($itemtype == 'User') {
+                     $options['field'][0]      = 4;
+                     $options['searchtype'][0] = 'equals';
+                     $options['contains'][0]   = $data['id'];
+                     $options['link'][0]       = 'AND';
+
+                     $options['field'][1]      = 22;
+                     $options['searchtype'][1] = 'equals';
+                     $options['contains'][1]   = $data['id'];
+                     $options['link'][1]       = 'OR';
+
+                     $options['field'][2]      = 5;
+                     $options['searchtype'][2] = 'equals';
+                     $options['contains'][2]   = $data['id'];
+                     $options['link'][2]       = 'OR';
+
+                  } else if ($itemtype == 'ITILCategory') {
+                     $options['field'][0]      = 7;
+                     $options['searchtype'][0] = 'equals';
+                     $options['contains'][0]   = $data['id'];
+                     $options['link'][0]       = 'AND';
+
+                  } else {
+                     $options['field'][0]       = 12;
+                     $options['searchtype'][0]  = 'equals';
+                     $options['contains'][0]    = 'all';
+                     $options['link'][0]        = 'AND';
+
+                     $options['itemtype2'][0]   = $itemtype;
+                     $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
+                     $options['searchtype2'][0] = 'equals';
+                     $options['contains2'][0]   = $data['id'];
+                     $options['link2'][0]       = 'AND';
+                  }
+
+                  $options['reset'] = 'reset';
+
+                  $out  = "<a id='ticket$itemtype".$data['id']."' ";
+                  $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                              Toolbox::append_params($options, '&amp;')."\">";
-               $out .= $data[$NAME.$num]."</a>";
+                  $out .= $data[$NAME.$num]."</a>";
 
-            } else {
-               $out = $data[$NAME.$num];
-            }
-            return $out;
+               } else {
+                  $out = $data[$NAME.$num];
+               }
+               return $out;
 
-         case "glpi_tickets.due_date" :
-            // Due date + progress
-            if ($ID == 151) {
+            case "glpi_tickets.due_date" :
+               // Due date + progress
+               if ($ID == 151) {
                   $out = Html::convDate($data[$NAME.$num]);
-               // No due date in waiting status
-               if ($data[$NAME.$num.'_2'] == CommonITILObject::WAITING) {
-                  return '';
+
+                  // No due date in waiting status
+                  if ($data[$NAME.$num.'_2'] == CommonITILObject::WAITING) {
+                     return '';
+                  }
+                  if (empty($data[$NAME.$num])) {
+                     return '';
+                  }
+                  if (($data[$NAME.$num.'_2'] == Ticket::SOLVED)
+                      || ($data[$NAME.$num.'_2'] == Ticket::CLOSED)) {
+                     return $data[$NAME.$num];
+                  }
+                  $ticket = new Ticket();
+                  $ticket->getFromDB($data['ITEM_0']);
+                  $percentage = 0;
+                  if ($ticket->fields['slas_id'] != 0) { // Have SLA
+                     $sla = new SLA();
+                     $sla->getFromDB($ticket->fields['slas_id']);
+                     $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'],
+                                                               date('Y-m-d H:i:s'));
+                     $totaltime   = $sla->getActiveTimeBetween($ticket->fields['date'],
+                                                               $data[$NAME.$num]);
+                     $percentage  = round((100 * $currenttime) / $totaltime);
+                  } else {
+                     $calendars_id = Entity::getUsedConfig('calendars_id',
+                                                           $ticket->fields['entities_id']);
+                     if ($calendars_id != 0) { // Ticket entity have calendar
+                        $calendar = new Calendar();
+                        $calendar->getFromDB($calendars_id);
+                        $currenttime = $calendar->getActiveTimeBetween($ticket->fields['date'],
+                                                                       date('Y-m-d H:i:s'));
+                        $totaltime   = $calendar->getActiveTimeBetween($ticket->fields['date'],
+                                                                       $data[$NAME.$num]);
+                        $percentage  = round((100 * $currenttime) / $totaltime);
+                     } else { // No calendar
+                        $currenttime = strtotime(date('Y-m-d H:i:s'))
+                                                 - strtotime($ticket->fields['date']);
+                        $totaltime   = strtotime($data[$NAME.$num])
+                                                 - strtotime($ticket->fields['date']);
+                        $percentage  = round((100 * $currenttime) / $totaltime);
+                     }
+                  }
+                  if ($percentage > 100) {
+                     $percentage = 100;
+                  }
+                  $percentage_text = $percentage;
+
+                  if ($_SESSION['glpiduedatewarning_unit'] == '%') {
+                     $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
+                     $less_warn       = (100 - $percentage);
+                  } else if ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
+                     $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
+                     $less_warn       = ($totaltime - $currenttime);
+                  } else if ($_SESSION['glpiduedatewarning_unit'] == 'day') {
+                     $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
+                     $less_warn       = ($totaltime - $currenttime);
+                  }
+
+                  if ($_SESSION['glpiduedatecritical_unit'] == '%') {
+                     $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
+                     $less_crit       = (100 - $percentage);
+                  } else if ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+                     $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
+                     $less_crit       = ($totaltime - $currenttime);
+                  } else if ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+                     $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
+                     $less_crit       = ($totaltime - $currenttime);
+                  }
+
+                  $color = $_SESSION['glpiduedateok_color'];
+                  if ($less_crit < $less_crit_limit) {
+                     $color = $_SESSION['glpiduedatecritical_color'];
+                  } else if ($less_warn < $less_warn_limit) {
+                     $color = $_SESSION['glpiduedatewarning_color'];
+                  }
+
+                  //Calculate bar progress
+                  $out .= "<div class='center' style='background-color: #ffffff; width: 100%;
+                            border: 1px solid #9BA563;' >";
+                  $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
+                  $out .= "<div class='center' style='background-color: ".$color.";
+                            width: ".$percentage."%; height: 12px' ></div>";
+                  $out .= "</div>";
+                  return $out;
+               }
+               break;
+
+            case "glpi_softwarelicenses.number" :
+               if ($data[$NAME.$num."_2"] == -1) {
+                  return __('Unlimited');
                }
                if (empty($data[$NAME.$num])) {
-                  return '';
+                  return 0;
                }
-               if (($data[$NAME.$num.'_2'] == Ticket::SOLVED)
-                   || ($data[$NAME.$num.'_2'] == Ticket::CLOSED)) {
-                  return $data[$NAME.$num];
+               return $data[$NAME.$num];
+
+            case "glpi_auth_tables.name" :
+               return Auth::getMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
+                                          $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
+
+            case "glpi_reservationitems.comment" :
+               if (empty($data[$NAME.$num])) {
+                  return "<a title=\"".__s('Modify the comment')."\"
+                           href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
+                           $data["refID"]."' >".__('None')."</a>";
                }
-               $ticket = new Ticket();
-               $ticket->getFromDB($data['ITEM_0']);
-               $percentage = 0;
-               if ($ticket->fields['slas_id'] != 0) { // Have SLA
-                  $sla = new SLA();
-                  $sla->getFromDB($ticket->fields['slas_id']);
-                  $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'],
-                                                            date('Y-m-d H:i:s'));
-                  $totaltime   = $sla->getActiveTimeBetween($ticket->fields['date'],
-                                                            $data[$NAME.$num]);
-                  $percentage  = round((100 * $currenttime) / $totaltime);
-               } else {
-                  $calendars_id = Entity::getUsedConfig('calendars_id',
-                                                        $ticket->fields['entities_id']);
-                  if ($calendars_id != 0) { // Ticket entity have calendar
-                     $calendar = new Calendar();
-                     $calendar->getFromDB($calendars_id);
-                     $currenttime = $calendar->getActiveTimeBetween($ticket->fields['date'],
-                                                                    date('Y-m-d H:i:s'));
-                     $totaltime   = $calendar->getActiveTimeBetween($ticket->fields['date'],
-                                                                    $data[$NAME.$num]);
-                     $percentage  = round((100 * $currenttime) / $totaltime);
-                  } else { // No calendar
-                     $currenttime = strtotime(date('Y-m-d H:i:s'))
-                                                - strtotime($ticket->fields['date']);
-                     $totaltime   = strtotime($data[$NAME.$num])
-                                                - strtotime($ticket->fields['date']);
-                     $percentage  = round((100 * $currenttime) / $totaltime);
-                  }
-               }
-               if ($percentage > 100) {
-                  $percentage = 100;
-               }
-               $percentage_text = $percentage;
-
-               if ($_SESSION['glpiduedatewarning_unit'] == '%') {
-                  $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
-                  $less_warn       = (100 - $percentage);
-               } else if ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
-                  $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
-                  $less_warn       = ($totaltime - $currenttime);
-               } else if ($_SESSION['glpiduedatewarning_unit'] == 'day') {
-                  $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
-                  $less_warn       = ($totaltime - $currenttime);
-               }
-
-               if ($_SESSION['glpiduedatecritical_unit'] == '%') {
-                  $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
-                  $less_crit       = (100 - $percentage);
-               } else if ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
-                  $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
-                  $less_crit       = ($totaltime - $currenttime);
-               } else if ($_SESSION['glpiduedatecritical_unit'] == 'day') {
-                  $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
-                  $less_crit       = ($totaltime - $currenttime);
-               }
-
-               $color = $_SESSION['glpiduedateok_color'];
-               if ($less_crit < $less_crit_limit) {
-                  $color = $_SESSION['glpiduedatecritical_color'];
-               } else if ($less_warn < $less_warn_limit) {
-                  $color = $_SESSION['glpiduedatewarning_color'];
-               }
-
-               //Calculate bar progress
-               $out  .= "<div class='center' style='background-color: #ffffff; width: 100%;
-                         border: 1px solid #9BA563;' >";
-               $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
-               $out .= "<div class='center' style='background-color: ".$color.";
-                         width: ".$percentage."%; height: 12px' ></div>";
-               $out .= "</div>";
-               return $out;
-            }
-            break;
-
-         case "glpi_softwarelicenses.number" :
-            if ($data[$NAME.$num."_2"] == -1) {
-               return __('Unlimited');
-            }
-            if (empty($data[$NAME.$num])) {
-               return 0;
-            }
-            return $data[$NAME.$num];
-
-         case "glpi_auth_tables.name" :
-            return Auth::getMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
-                                       $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
-
-         case "glpi_reservationitems.comment" :
-            if (empty($data[$NAME.$num])) {
                return "<a title=\"".__s('Modify the comment')."\"
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                        $data["refID"]."' >".__('None')."</a>";
-            }
-            return "<a title=\"".__s('Modify the comment')."\"
-                     href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                     $data['refID']."' >".Html::resume_text($data[$NAME.$num])."</a>";
+                        $data['refID']."' >".Html::resume_text($data[$NAME.$num])."</a>";
 
-         case 'glpi_notifications.mode' :
+            case 'glpi_notifications.mode' :
                return Notification::getMode($data[$NAME.$num]);
 
-         case 'glpi_notifications.event' :
+            case 'glpi_notifications.event' :
                $item = NotificationTarget::getInstanceByType($data['itemtype']);
                if ($item) {
                   $events = $item->getAllEvents();
@@ -4379,135 +4335,137 @@ class Search {
                }
                return '';
 
-         case 'glpi_reminders.state' :
-            return Planning::getState($data[$NAME.$num]);
+            case 'glpi_reminders.state' :
+               return Planning::getState($data[$NAME.$num]);
 
-         case 'glpi_crontasks.description' :
-            $tmp = new CronTask();
-            return $tmp->getDescription($data['id']);
+            case 'glpi_crontasks.description' :
+               $tmp = new CronTask();
+               return $tmp->getDescription($data['id']);
 
-         case 'glpi_crontasks.state' :
-            return CronTask::getStateName($data[$NAME.$num]);
+            case 'glpi_crontasks.state' :
+               return CronTask::getStateName($data[$NAME.$num]);
 
-         case 'glpi_crontasks.mode' :
-            return CronTask::getModeName($data[$NAME.$num]);
+            case 'glpi_crontasks.mode' :
+               return CronTask::getModeName($data[$NAME.$num]);
 
-         case 'glpi_crontasks.itemtype' :
-            if ($plug = isPluginItemType($data[$NAME.$num])) {
-               return $plug['plugin'];
-            }
-            return '';
-
-         case 'glpi_changes.status':
-            $status = Change::getStatus($data[$NAME.$num]);
-            return "<img src=\"".Change::getStatusIconURL($data[$NAME.$num])."\"
-                     alt=\"$status\" title=\"$status\">&nbsp;$status";
-
-         case 'glpi_problems.status':
-            $status = Problem::getStatus($data[$NAME.$num]);
-            return "<img src=\"".Problem::getStatusIconURL($data[$NAME.$num])."\"
-                     alt=\"$status\" title=\"$status\">&nbsp;$status";
-
-         case 'glpi_tickets.status':
-            $status = Ticket::getStatus($data[$NAME.$num]);
-            return "<img src=\"".Ticket::getStatusIconURL($data[$NAME.$num])."\"
-                     alt=\"$status\" title=\"$status\">&nbsp;$status";
-
-         case 'glpi_tickets.items_id' :
-            if (!empty($data[$NAME.$num."_2"])
-                && ($item = getItemForItemtype($data[$NAME.$num."_2"]))) {
-               if ($item->getFromDB($data[$NAME.$num])) {
-                  return $item->getLink(array('comments' => true));
+            case 'glpi_crontasks.itemtype' :
+               if ($plug = isPluginItemType($data[$NAME.$num])) {
+                  return $plug['plugin'];
                }
-            }
-            return '&nbsp;';
+               return '';
 
-         case 'glpi_tickets.name' :
-            if (isset($searchopt[$ID]['forcegroupby'])
-                && $searchopt[$ID]['forcegroupby']) {
+            case 'glpi_changes.status':
+               $status = Change::getStatus($data[$NAME.$num]);
+               return "<img src=\"".Change::getStatusIconURL($data[$NAME.$num])."\"
+                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+
+            case 'glpi_problems.status':
+               $status = Problem::getStatus($data[$NAME.$num]);
+               return "<img src=\"".Problem::getStatusIconURL($data[$NAME.$num])."\"
+                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+
+            case 'glpi_tickets.status':
+               $status = Ticket::getStatus($data[$NAME.$num]);
+               return "<img src=\"".Ticket::getStatusIconURL($data[$NAME.$num])."\"
+                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+
+            case 'glpi_tickets.items_id' :
+               if (!empty($data[$NAME.$num."_2"])
+                   && ($item = getItemForItemtype($data[$NAME.$num."_2"]))) {
+                  if ($item->getFromDB($data[$NAME.$num])) {
+                     return $item->getLink(array('comments' => true));
+                  }
+               }
+               return '&nbsp;';
+
+            case 'glpi_tickets.name' :
+               if (isset($searchopt[$ID]['forcegroupby'])
+                   && $searchopt[$ID]['forcegroupby']) {
+                  $split = explode("$$$$",$data[$NAME.$num]);
+                  $out   = '';
+                  $link  = Toolbox::getItemTypeFormURL('Ticket');
+                  foreach ($split as $val) {
+                     if (!empty($val)) {
+                        $split2 = self::explodeWithID("$$", $val);
+                        $out   .= "<a id='ticket".$split2[1]."' href=\"".$link;
+                        $out   .= (strstr($link,'?') ?'&amp;' :  '?');
+                        $out   .= 'id='.$split2[1];
+                        $out   .= "\">";
+                        $name   = $split2[0];
+                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                           $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
+                        }
+                        $out .= $name."</a>".self::LBBR;
+                     }
+                  }
+                  return $out;
+               }
+               $link = Toolbox::getItemTypeFormURL('Ticket');
+               $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
+               $out .= (strstr($link,'?') ?'&amp;' :  '?');
+               $out .= 'id='.$data[$NAME.$num."_2"];
+               // Force solution tab if solved
+               if ($data[$NAME.$num."_4"] == CommonITILObject::SOLVED) {
+                  $out .= "&amp;forcetab=Ticket$2";
+               }
+               $out .= "\">";
+               $name = $data[$NAME.$num];
+               if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
+                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
+               }
+               $out .= $name."</a>";
+               $content=Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($data[$NAME.$num."_3"]));
+               $out = sprintf(__('%1$s %2$s'), $out,
+                              Html::showToolTip(nl2br(Html::Clean($content)),
+                                                      array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
+                                                            'display' => false)));
+
+               return $out;
+
+            case 'glpi_ticketvalidations.status' :
                $split = explode("$$$$",$data[$NAME.$num]);
                $out   = '';
-               $link  = Toolbox::getItemTypeFormURL('Ticket');
                foreach ($split as $val) {
                   if (!empty($val)) {
-                     $split2 = self::explodeWithID("$$", $val);
-                     $out   .= "<a id='ticket".$split2[1]."' href=\"".$link;
-                     $out   .= (strstr($link,'?') ?'&amp;' :  '?');
-                     $out   .= 'id='.$split2[1];
-                     $out   .= "\">";
-                     $name   = $split2[0];
-                     if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                        $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
-                     }
-                     $out .= $name."</a><br>";
+                     $split2  = self::explodeWithID("$$", $val);
+                     $status  = TicketValidation::getStatus($split2[0]);
+                     $bgcolor = TicketValidation::getStatusColor($split2[0]);
+                     $out    .= (empty($out)?'':self::LBBR).
+                                 "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
                   }
                }
                return $out;
-            }
-            $link = Toolbox::getItemTypeFormURL('Ticket');
-            $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
-            $out .= (strstr($link,'?') ?'&amp;' :  '?');
-            $out .= 'id='.$data[$NAME.$num."_2"];
-            // Force solution tab if solved
-            if ($data[$NAME.$num."_4"] == CommonITILObject::SOLVED) {
-               $out .= "&amp;forcetab=Ticket$2";
-            }
-            $out .= "\">";
-            $name = $data[$NAME.$num];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
-               $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
-            }
-            $out .= $name."</a>";
 
-            $out = sprintf(__('%1$s %2$s'), $out,
-                           Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
-                                                   array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
-                                                         'display' => false)));
-            return $out;
+            case 'glpi_ticketsatisfactions.type' :
+               return TicketSatisfaction::getTypeInquestName($data[$NAME.$num]);
 
+            case 'glpi_ticketsatisfactions.satisfaction' :
+               return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);
 
+            case 'glpi_notimportedemails.reason' :
+               return NotImportedEmail::getReason($data[$NAME.$num]);
 
-         case 'glpi_ticketvalidations.status' :
-            $split = explode("$$$$",$data[$NAME.$num]);
-            $out   = '';
-            foreach ($split as $val) {
-               if (!empty($val)) {
-                  $split2 = self::explodeWithID("$$", $val);
-                  $status  = TicketValidation::getStatus($split2[0]);
-                  $bgcolor = TicketValidation::getStatusColor($split2[0]);
-                  $out    .= (empty($out)?'':'<br>').
-                           "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
-               }
-            }
-            return $out;
-
-         case 'glpi_ticketsatisfactions.type' :
-            return TicketSatisfaction::getTypeInquestName($data[$NAME.$num]);
-
-         case 'glpi_ticketsatisfactions.satisfaction' :
-            return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);
-
-         case 'glpi_notimportedemails.reason' :
-            return NotImportedEmail::getReason($data[$NAME.$num]);
-
-         case 'glpi_notimportedemails.messageid' :
-            $clean = array('<' => '',
-                           '>' => '');
-            return strtr($data[$NAME.$num], $clean);
+            case 'glpi_notimportedemails.messageid' :
+               $clean = array('<' => '',
+                              '>' => '');
+               return strtr($data[$NAME.$num], $clean);
+         }
       }
 
 
       //// Default case
 
       // Link with plugin tables : need to know left join structure
-      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table.'.'.$field, $matches)) {
-         if (count($matches) == 2) {
-            $plug     = $matches[1];
-            $function = 'plugin_'.$plug.'_giveItem';
-            if (function_exists($function)) {
-               $out = $function($itemtype,$ID,$data,$num);
-               if (!empty($out)) {
-                  return $out;
+      if (isset($table)) {
+         if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table.'.'.$field, $matches)) {
+            if (count($matches) == 2) {
+               $plug     = $matches[1];
+               $function = 'plugin_'.$plug.'_giveItem';
+               if (function_exists($function)) {
+                  $out = $function($itemtype,$ID,$data,$num);
+                  if (!empty($out)) {
+                     return $out;
+                  }
                }
             }
          }
@@ -4516,9 +4474,9 @@ class Search {
       if (isset($searchopt[$ID]['unit'])) {
          $unit = $searchopt[$ID]['unit'];
       }
-
       /// TODO try to use getvalueToDisplay instead of redefine display system
       // Preformat items
+
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
@@ -4545,9 +4503,9 @@ class Search {
                $out           = "";
                $split         = explode("$$$$", $data[$NAME.$num]);
                $count_display = 0;
-               $separate      = '<br>';
+               $separate      = self::LBBR;
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                  $separate = '<hr>';
+                  $separate = self::LBHR;
                }
 
                for ($k=0 ; $k<count($split) ; $k++) {
@@ -4572,9 +4530,9 @@ class Search {
                return $out;
 
             case "text" :
-               $separate = '<br>';
+               $separate = self::LBBR;
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                  $separate = '<hr>';
+                  $separate = self::LBHR;
                }
                $split = explode("$$$$", $data[$NAME.$num]);
                $out = '';
@@ -4593,7 +4551,6 @@ class Search {
                      }
                   }
                }
-
                return $out;
 
             case "date" :
@@ -4601,7 +4558,13 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'<br>').Html::convDate($val);
+                  $split2 = self::explodeWithID("$$", $val);
+                  if (is_null($split2[0])
+                      && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
+                     $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
+                  } else {
+                     $out .= (empty($out)?'':self::LBBR).Html::convDate($split2[0]);
+                  }
                }
                return $out;
 
@@ -4609,7 +4572,13 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'<br>').Html::convDateTime($val);
+                  $split2 = self::explodeWithID("$$", $val);
+                  if (is_null($split2[0])
+                      && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
+                     $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
+                  } else {
+                     $out .= (empty($out)?'':self::LBBR).Html::convDateTime($split2[0]);
+                  }
                }
                return $out;
 
@@ -4629,7 +4598,7 @@ class Search {
                    $out .= (empty($out)?'':'<br>').Html::timestampToString($val,$withseconds, $withdays);
                }
                return $out;
-               
+
             case "email" :
                $split         = explode('$$$$', $data[$NAME.$num]);
                $out           = '';
@@ -4637,11 +4606,11 @@ class Search {
                foreach ($split as $val) {
                   $split2 = self::explodeWithID("$$", $val);
                   if ($count_display) {
-                     $out .= "<br>";
+                     $out .= self::LBBR;
                   }
                   $count_display++;
                   if (!empty($val)) {
-                     $out .= (empty($out)?'':'<br>');
+                     $out .= (empty($out)?'':self::LBBR);
                      $out .= "<a href='mailto:$split2[0]'>$split2[0]</a>";
                   }
                }
@@ -4669,7 +4638,7 @@ class Search {
                      if (strlen(trim($split[$k])) > 0) {
                         $split2 = self::explodeWithID("$$", $split[$k]);
                         if ($count_display) {
-                           $out .= "<br>";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
@@ -4700,7 +4669,7 @@ class Search {
                         $split2 = self::explodeWithID("$$", $split[$k]);
 
                         if ($count_display) {
-                           $out .= "<br>";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
@@ -4725,7 +4694,7 @@ class Search {
                      if (strlen(trim($split[$k])) > 0) {
                         $split2 = self::explodeWithID("$$", $split[$k]);
                         if ($count_display) {
-                           $out .= "<br>";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split2[0]),$unit);
@@ -4734,9 +4703,6 @@ class Search {
                   return $out;
                }
                return Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$NAME.$num]),$unit);
-
-            case "right":
-               return Profile::getRightValue($data[$NAME.$num]);
 
             case "itemtypename":
                if ($obj = getItemForItemtype($data[$NAME.$num])) {
@@ -4751,15 +4717,14 @@ class Search {
                return __('Default value');
          }
       }
-
       // Manage items with need group by / group_concat
       if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
          $out           = "";
          $split         = explode("$$$$", $data[$NAME.$num]);
          $count_display = 0;
-         $separate      = '<br>';
+         $separate      = self::LBBR;
          if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-            $separate = '<hr>';
+            $separate = self::LBHR;
          }
          for ($k=0 ; $k<count($split) ; $k++) {
             if (strlen(trim($split[$k])) > 0) {
@@ -4785,20 +4750,26 @@ class Search {
       }
 
       // Get specific display if available
-      $itemtype = getItemTypeForTable($table);
-      if ($item = getItemForItemtype($itemtype)) {
-         $tmpdata  = array($field => $data[$NAME.$num]);
-         if (isset($searchopt[$ID]['additionalfields']) && count($searchopt[$ID]['additionalfields'])) {
-            foreach ($searchopt[$ID]['additionalfields'] as $key) {
-               $tmpdata[$key] = $data[$NAME.$num.'_'.$key];
+      if (isset($table)) {
+         $itemtype = getItemTypeForTable($table);
+         if ($item = getItemForItemtype($itemtype)) {
+            $tmpdata  = array($field => $data[$NAME.$num]);
+            if (isset($searchopt[$ID]['additionalfields'])
+                && count($searchopt[$ID]['additionalfields'])) {
+
+               foreach ($searchopt[$ID]['additionalfields'] as $key) {
+                  $tmpdata[$key] = $data[$NAME.$num.'_'.$key];
+               }
+            }
+            $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
+                                                         array('html'      => true,
+                                                               'searchopt' => $searchopt[$ID]));
+
+            if (!empty($specific)) {
+               return $specific;
             }
          }
-         $specific = $item->getSpecificValueToDisplay($field, $tmpdata, array('html' => true));
-         if (!empty($specific)) {
-            return $specific;
-         }
       }
-      
       // Manage auto CONCAT id
       $split = self::explodeWithID('$$', $data[$NAME.$num]);
       $split[0] = trim($split[0]);
@@ -4809,6 +4780,15 @@ class Search {
       if (empty($split[0])&& isset($searchopt[$ID]['emptylabel'])) {
          return $searchopt[$ID]['emptylabel'];
       }
+      // Trans field exists
+      if (isset($data[$NAME.$num.'_trans']) && !empty($data[$NAME.$num.'_trans'])) {
+         return Dropdown::getValueWithUnit($data[$NAME.$num.'_trans'], $unit);
+      }
+      // Trans in group concat
+      if (count($split) == 3 && !empty($split[1])) {
+         return Dropdown::getValueWithUnit($split[1], $unit);
+      }
+
       return Dropdown::getValueWithUnit($split[0], $unit);
    }
 
@@ -4990,13 +4970,13 @@ class Search {
     * Clean search options depending of user active profile
     *
     * @param $itemtype              item type to manage
-    * @param $action                action which is used to manupulate searchoption (r/w)
-    *                               (default 'r')
+    * @param $action                action which is used to manupulate searchoption
+    *                               (default READ)
     * @param $withplugins  boolean  get plugins options (true by default)
     *
     * @return clean $SEARCH_OPTION array
    **/
-   static function getCleanedOptions($itemtype, $action='r', $withplugins=true) {
+   static function getCleanedOptions($itemtype, $action=READ, $withplugins=true) {
       global $CFG_GLPI;
 
       $options = &self::getOptions($itemtype, $withplugins);
@@ -5021,9 +5001,9 @@ class Search {
       }
 
       // do not show priority if you don't have right in profile
-      If (($itemtype == 'Ticket')
-          && ($action == 'w')
-          && !Session::haveRight('update_priority', 1)) {
+      if (($itemtype == 'Ticket')
+          && ($action == UPDATE)
+          && !Session::haveRight('ticket', Ticket::CHANGEPRIORITY)) {
          $todel[] = 3;
       }
 
@@ -5492,8 +5472,10 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
 
          case self::PDF_OUTPUT_PORTRAIT :
-            global $PDF_HEADER;
-            $PDF_HEADER[$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
+            global $PDF_TABLE;
+            $PDF_TABLE .= "<th $options>";
+            $PDF_TABLE .= Html::clean($value);
+            $PDF_TABLE .= "</th>\n";
             break;
 
          case self::SYLK_OUTPUT : //sylk
@@ -5546,20 +5528,28 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
-            global $PDF_ARRAY,$PDF_HEADER;
-            $value                 = Html::weblink_extract($value);
-            $PDF_ARRAY[$row][$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
+            global $PDF_TABLE;
+            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
+            $PDF_TABLE .= "<td $extraparam valign='top'>";
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
+            $PDF_TABLE .= "</td>\n";
+
             break;
 
          case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value                  = Html::weblink_extract($value);
+            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
             $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num],
                                           Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case self::CSV_OUTPUT : //csv
+            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $value = Html::weblink_extract($value);
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
@@ -5568,27 +5558,30 @@ class Search {
             //TODO supprimer valign pour mettre class mais conflit avec $extraparam
             $out = "<td $extraparam valign='top'>";
 
-/*            if (!preg_match('/<hr>/',$value)) {
-               $values = preg_split("/<br>/i",$value);
+            if (!preg_match('/'.self::LBHR.'/',$value)) {
+               $values = preg_split('/'.self::LBBR.'/i',$value);
                $line_delimiter = '<br>';
             } else {
-               $values = preg_split("/<hr>/i",$value);
+               $values = preg_split('/'.self::LBHR.'/i',$value);
                $line_delimiter = '<hr>';
             }
-
             $limitto = 20;
             if (count($values) > $limitto) {
                for ( $i=0 ; $i<$limitto ; $i++) {
                   $out .= $values[$i].$line_delimiter;
                }
-               $rand=mt_rand();
+//                $rand=mt_rand();
                $out .= "...&nbsp;";
+               $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+               $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
                $out .= Html::showToolTip($value,array('display'   => false,
                                                       'autoclose' => false));
 
-            } else {*/
-            $out .= $value;
-//             }
+            } else {
+               $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+               $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
+               $out .= $value;
+            }
             $out .= "</td>\n";
       }
       $num++;
@@ -5633,43 +5626,44 @@ class Search {
       $out = "";
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
-            global $PDF_HEADER,$PDF_ARRAY;
-            $pdf     = new Cezpdf('a4','landscape');
-            $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $nb      = count($PDF_ARRAY);
+         case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            if ($type == self::PDF_OUTPUT_LANDSCAPE) {
+               $pdf = new GLPIPDF('L', 'mm', 'A4', true, 'UTF-8', false);
+            } else {
+               $pdf = new GLPIPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            }
+            $pdf->SetCreator('GLPI');
+            $pdf->SetAuthor('GLPI');
+            $pdf->SetTitle($title);
+            $pdf->SetHeaderData('', '', $title, '');
+            $font       = 'helvetica';
+            //$subsetting = true;
+            $fonsize    = 8;
+            if (isset($_SESSION['glpipdffont']) && $_SESSION['glpipdffont']) {
+               $font       = $_SESSION['glpipdffont'];
+               //$subsetting = false;
+            }
+            $pdf->setHeaderFont(Array($font, 'B', 8));
+            $pdf->setFooterFont(Array($font, 'B', 8));
 
-            $tmptxt  = sprintf(_n('%s item', '%s items', $nb), $nb);
-            $pdf->ezStartPageNumbers(750, 10, 10, 'left',
-                                     "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".Toolbox::decodeFromUtf8($tmptxt, 'windows-1252').
-                                       " - {PAGENUM}/{TOTALPAGENUM}");
-            $options = array('fontSize'      => 8,
-                             'colGap'        => 2,
-                             'maxWidth'      => 800,
-                             'titleFontSize' => 8);
-            $pdf->ezTable($PDF_ARRAY, $PDF_HEADER, Toolbox::decodeFromUtf8($title, 'windows-1252'),
-                          $options);
-            $pdf->ezStream();
-            break;
+            //set margins
+            $pdf->SetMargins(10, 15, 10);
+            $pdf->SetHeaderMargin(10);
+            $pdf->SetFooterMargin(10);
 
-         case self::PDF_OUTPUT_PORTRAIT : //pdf
-            global $PDF_HEADER,$PDF_ARRAY;
-            $pdf     = new Cezpdf('a4','portrait');
-            $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $nb      = count($PDF_ARRAY);
+            //set auto page breaks
+            $pdf->SetAutoPageBreak(TRUE, 15);
 
-            $tmptxt  = sprintf(_n('%s item', '%s items', $nb), $nb);
-            $pdf->ezStartPageNumbers(550, 10, 10, 'left',
-                                     "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".Toolbox::decodeFromUtf8($tmptxt, 'windows-1252').
-                                       " - {PAGENUM}/{TOTALPAGENUM}");
-            $options = array('fontSize'      => 8,
-                             'colGap'        => 2,
-                             'maxWidth'      => 565,
-                             'titleFontSize' => 8);
-            $pdf->ezTable($PDF_ARRAY, $PDF_HEADER, Toolbox::decodeFromUtf8($title, 'windows-1252'),
-                          $options);
-            $pdf->ezStream();
+
+            // For standard language
+            //$pdf->setFontSubsetting($subsetting);
+            // set font
+            $pdf->SetFont($font, '', 8);
+            $pdf->AddPage();
+            $PDF_TABLE.='</table>';
+            $pdf->writeHTML($PDF_TABLE, true, false, true, false, '');
+            $pdf->Output('glpi.pdf', 'I');
             break;
 
          case self::SYLK_OUTPUT : //sylk
@@ -5721,9 +5715,8 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
-            global $PDF_ARRAY, $PDF_HEADER;
-            $PDF_ARRAY  = array();
-            $PDF_HEADER = array();
+            global $PDF_TABLE;
+            $PDF_TABLE = "<table nobr=\"true\" cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
             break;
 
          case self::SYLK_OUTPUT : // Sylk
@@ -5778,6 +5771,66 @@ class Search {
 
 
    /**
+    * Print begin of header part
+    *
+    * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @since version 0.85
+    *
+    * @return string to display
+   **/
+   static function showBeginHeader($type) {
+
+      $out = "";
+      switch ($type) {
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $PDF_TABLE .= "<thead>";
+            break;
+
+         case self::SYLK_OUTPUT : //sylk
+         case self::CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $out = "<thead>";
+      }
+      return $out;
+   }
+
+
+   /**
+    * Print end of header part
+    *
+    * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @since version 0.85
+    *
+    * @return string to display
+   **/
+   static function showEndHeader($type) {
+
+      $out = "";
+      switch ($type) {
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $PDF_TABLE .= "</thead>";
+            break;
+
+         case self::SYLK_OUTPUT : //sylk
+         case self::CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $out = "</thead>";
+      }
+      return $out;
+   }
+
+
+   /**
     * Print generic new line
     *
     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
@@ -5792,6 +5845,14 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $style = "";
+            if ($odd) {
+               $style = " style=\"background-color:#DDDDDD;\" ";
+            }
+            $PDF_TABLE .= "<tr nobr=\"true\" $style>";
+            break;
+
          case self::SYLK_OUTPUT : //sylk
          case self::CSV_OUTPUT : //csv
             break;
@@ -5820,6 +5881,10 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $PDF_TABLE.= '</tr>';
+            break;
+
          case self::SYLK_OUTPUT : //sylk
             break;
 
@@ -6001,7 +6066,10 @@ class Search {
             }
          }
       }
-
+      // Manage NULL value
+      if ($tab[0] == self::NULLVALUE) {
+         $tab[0] = NULL;
+      }
       return $tab;
    }
 

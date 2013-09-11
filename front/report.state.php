@@ -35,9 +35,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = 0;

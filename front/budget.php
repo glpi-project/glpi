@@ -34,9 +34,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("budget", "r");
+Session::checkRight("budget", READ);
 
-Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "financial", "budget");
+Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
 
 Search::show('Budget');
 

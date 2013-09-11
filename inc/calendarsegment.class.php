@@ -52,7 +52,7 @@ class CalendarSegment extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -279,6 +279,36 @@ class CalendarSegment extends CommonDBChild {
 
 
    /**
+    * Is the hour passed is a working hour ?
+    *
+    * @param $calendars_id    id of the calendar
+    * @param $day             day number
+    * @param $hour            hour (Format HH:MM::SS)
+    *
+    * @return boolean
+   **/
+   static function isAWorkingHour($calendars_id, $day, $hour) {
+      global $DB;
+
+      $sum = 0;
+      // Do not check hour if day before the end day of after the begin day
+      $query = "SELECT *
+                FROM `glpi_calendarsegments`
+                WHERE `calendars_id` = '$calendars_id'
+                      AND `day` = '$day'
+                      AND `begin` <= '$hour'
+                      AND `end` >= '$hour'";
+ //     Toolbox::logDebug($query);
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+
+   /**
     * Show segments of a calendar
     *
     * @param $calendar Calendar object
@@ -287,11 +317,11 @@ class CalendarSegment extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $ID = $calendar->getField('id');
-      if (!$calendar->can($ID,'r')) {
+      if (!$calendar->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $calendar->can($ID,'w');
+      $canedit = $calendar->can($ID, UPDATE);
       $rand    = mt_rand();
 
 
@@ -330,8 +360,9 @@ class CalendarSegment extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $numrows);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $paramsma = array('num_displayed' => $numrows,
+                           'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -368,7 +399,7 @@ class CalendarSegment extends CommonDBChild {
       echo "</table>";
       if ($canedit && $numrows) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";

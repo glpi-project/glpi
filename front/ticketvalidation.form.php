@@ -40,36 +40,42 @@ if (!isset($_GET["id"])) {
 }
 
 $validation = new Ticketvalidation();
-$ticket     = new Ticket();
-$user       = new User();
+$ticket = new Ticket();
 
 if (isset($_POST["add"])) {
-   $validation->check(-1,'w',$_POST);
-   $validation->add($_POST);
-
-   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));
+   $validation->check(-1, CREATE, $_POST);
+   if (isset($_POST['users_id_validate']) 
+      && count($_POST['users_id_validate']) > 0) {
+      
+      $users = $_POST['users_id_validate'];
+      foreach ($users as $user) {
+         $_POST['users_id_validate'] = $user;
+         $validation->add($_POST);
+         Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $validation->check($_POST['id'],'w');
+   
+   $validation->check($_POST['id'], UPDATE);
    $validation->update($_POST);
+   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));
+   Html::back();
+
+} else if (isset($_POST["purge"])) {
+   $validation->check($_POST['id'], PURGE);
+   $validation->delete($_POST, 1);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
               //TRANS: %s is the user login
-              sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an approval'), $_SESSION["glpiname"]));
    Html::back();
-
-} else if (isset($_POST["delete"])) {
-   $validation->check($_POST['id'], 'd');
-   $validation->delete($_POST);
-
-   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an approval'), $_SESSION["glpiname"]));
-   Html::back();
+   
 }
-
 Html::displayErrorAndDie('Lost');
 ?>

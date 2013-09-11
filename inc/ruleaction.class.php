@@ -37,9 +37,9 @@ if (!defined('GLPI_ROOT')) {
 class RuleAction extends CommonDBChild {
 
    // From CommonDBChild
-   static public $items_id  = 'rules_id';
-   public $dohistory = true;
-
+   static public $items_id        = 'rules_id';
+   public $dohistory              = true;
+   public $auto_message_on_action = false;
 
    /**
     * @since version 0.84
@@ -47,7 +47,7 @@ class RuleAction extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -86,6 +86,38 @@ class RuleAction extends CommonDBChild {
 
    /**
     * @since version 0.84
+    *
+    * @see CommonDBChild::post_addItem()
+   **/
+   function post_addItem() {
+
+      parent::post_addItem();
+      if (isset($this->input['rules_id'])
+          && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))) {
+         $realrule->update(array('id'       => $this->input['rules_id'],
+                                 'date_mod' => $_SESSION['glpi_currenttime']));
+      }
+   }
+
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::post_purgeItem()
+   **/
+   function post_purgeItem() {
+
+      parent::post_purgeItem();
+      if (isset($this->fields['rules_id'])
+          && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))) {
+         $realrule->update(array('id'       => $this->fields['rules_id'],
+                                 'date_mod' => $_SESSION['glpi_currenttime']));
+      }
+   }
+
+
+   /**
+    * @since version 0.84
    **/
    function prepareInputForAdd($input) {
 
@@ -95,24 +127,7 @@ class RuleAction extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-   function post_addItem() {
-      parent::post_addItem();
-      if (isset($this->input['rules_id'])
-         && $realrule = Rule::getRuleObjectByID($this->input['rules_id'])) {
-         $realrule->update(array('id'       => $this->input['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']));
-      }
-   }
 
-   function post_purgeItem() {
-      parent::post_purgeItem();
-      if (isset($this->fields['rules_id'])
-         && $realrule = Rule::getRuleObjectByID($this->fields['rules_id'])) {
-         $realrule->update(array('id'       => $this->fields['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']));
-      }
-   }
-   
    function getSearchOptions() {
 
       $tab                        = array();
@@ -222,8 +237,12 @@ class RuleAction extends CommonDBChild {
             if (isset($values['rules_id'])
                 && !empty($values['rules_id'])
                 && $generic_rule->getFromDB($values['rules_id'])) {
-               return self::dropdownActions($generic_rule->fields["sub_type"], $name,
-                                            $values[$field], false, false);
+               // TODO missing 'field' added r21245
+               return self::dropdownActions(array('subtype'     => $generic_rule->fields["sub_type"],
+                                                  'name'        => $name,
+                                                  'value'       => $values[$field],
+                                                  'alreadyused' => false,
+                                                  'display'     => false));
             }
             break;
 
@@ -293,29 +312,43 @@ class RuleAction extends CommonDBChild {
    /**
     * Display a dropdown with all the possible actions
     *
-    * @param $sub_type
-    * @param $name
-    * @param $value           (default '')
-    * @param $already_used    (default false)
-    * @param $display         (true by default)
+    * @param $options   array of possible options:
+    *    - subtype
+    *    - name
+    *    - field
+    *    - value
+    *    - alreadyused
+    *    - display
    **/
-   static function dropdownActions($sub_type, $name, $value='', $already_used=false,
-                                   $display=true) {
+   static function dropdownActions($options=array()) {
 
-      if ($rule = getItemForItemtype($sub_type)) {
+      $p['subtype']     = '';
+      $p['name']        = '';
+      $p['field']       = '';
+      $p['value']       = '';
+      $p['alreadyused'] = false;
+      $p['display']     = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      if ($rule = getItemForItemtype($p['subtype'])) {
          $actions_options = $rule->getAllActions();
-
          $actions         = array("assign");
          // Manage permit several.
-         if ($already_used) {
-            if (!isset($actions_options[$value]['permitseveral'])) {
+         $field = $p['field'];
+         if ($p['alreadyused']) {
+            if (!isset($actions_options[$field]['permitseveral'])) {
                return false;
             }
-            $actions = $actions_options[$value]['permitseveral'];
+            $actions = $actions_options[$field]['permitseveral'];
 
          } else {
-            if (isset($actions_options[$value]['force_actions'])) {
-               $actions = $actions_options[$value]['force_actions'];
+            if (isset($actions_options[$field]['force_actions'])) {
+               $actions = $actions_options[$field]['force_actions'];
             }
          }
 
@@ -324,8 +357,8 @@ class RuleAction extends CommonDBChild {
             $elements[$action] = self::getActionByID($action);
          }
 
-         return Dropdown::showFromArray($name, $elements, array('value'   => $value,
-                                                                'display' => $display));
+         return Dropdown::showFromArray($p['name'], $elements, array('value'   => $p['value'],
+                                                                     'display' => $p['display']));
       }
    }
 
@@ -397,7 +430,9 @@ class RuleAction extends CommonDBChild {
                                 WHERE `".static::$items_id."` = '".$rules_id."'");
 
          while ($action = $DB->fetch_assoc($res)) {
-            if (isset($actions_options[$action["field"]])) {
+            if (isset($actions_options[$action["field"]])
+                 && ($action["field"] != 'groups_id_validate')
+                 && ($action["field"] != 'users_id_validate')) {
                $actions[$action["field"]] = $action["field"];
             }
          }
@@ -413,16 +448,21 @@ class RuleAction extends CommonDBChild {
 
       $display = false;
 
-      switch ($_POST["action_type"]) {
+      $param['value'] = '';
+      if (isset($options['value'])) {
+         $param['value'] = $options['value'];
+      }
+      
+      switch ($options["action_type"]) {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
          case "append_regex_result" :
-            Html::autocompletionTextField($this, "value");
+            Html::autocompletionTextField($this, "value", $param);
             break;
 
          case 'fromuser' :
          case 'fromitem' :
-            Dropdown::showYesNo("value", 0, 0);
+            Dropdown::showYesNo("value", $param['value'], 0);
             $display = true;
             break;
 
@@ -433,7 +473,7 @@ class RuleAction extends CommonDBChild {
                switch($actions[$options["field"]]['type']) {
                   case "dropdown" :
                      $table   = $actions[$options["field"]]['table'];
-                     $param = array('name' => "value");
+                     $param['name'] = "value";
                      if (isset($actions[$options["field"]]['condition'])) {
                         $param['condition'] = $actions[$options["field"]]['condition'];
                      }
@@ -442,79 +482,181 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_tickettype" :
-                     Ticket::dropdownType('value');
+                     Ticket::dropdownType('value', $param);
                      $display = true;
                      break;
 
                   case "dropdown_assign" :
-                     User::dropdown(array('name'  => 'value',
-                                          'right' => 'own_ticket'));
+                     $param['name']  = 'value';
+                     $param['right'] = 'own_ticket';
+                     User::dropdown($param);
                      $display = true;
                      break;
 
                   case "dropdown_users" :
-                     User::dropdown(array('name'  => 'value',
-                                          'right' => 'all'));
+                     $param['name']  = 'value';
+                     $param['right'] = 'all';
+                     User::dropdown($param);
                      $display = true;
                      break;
 
                   case "dropdown_urgency" :
-                     Ticket::dropdownUrgency(array('name' => 'value'));
+                     $param['name']  = 'value';
+                     Ticket::dropdownUrgency($param);
                      $display = true;
                      break;
 
                   case "dropdown_impact" :
-                     Ticket::dropdownImpact(array('name' => 'value'));
+                     $param['name']  = 'value';
+                     Ticket::dropdownImpact($param);
                      $display = true;
                      break;
 
                   case "dropdown_priority" :
                      if ($_POST["action_type"] != 'compute') {
-                        Ticket::dropdownPriority(array('name' => 'value'));
+                        $param['name']  = 'value';
+                        Ticket::dropdownPriority($param);
                      }
                      $display = true;
                      break;
 
                   case "dropdown_status" :
-                     Ticket::dropdownStatus(array('name' => "value"));
+                     $param['name']  = 'value';
+                     Ticket::dropdownStatus($param);
                      $display = true;
                      break;
 
                   case "yesonly" :
-                     Dropdown::showYesNo("value",0,0);
+                     Dropdown::showYesNo("value",$param['value'],0);
                      $display = true;
                      break;
 
                   case "yesno" :
-                     Dropdown::showYesNo("value");
+                     Dropdown::showYesNo("value", $param['value']);
                      $display = true;
                      break;
 
                   case "dropdown_management":
-                     Dropdown::showGlobalSwitch(0, array('name'                => 'value',
-                                                         'management_restrict' => 2,
-                                                         'withtemplate'        => false));
+                     $param['name']                 = 'value';
+                     $param['management_restrict']  = 2;
+                     $param['withtemplate']         = false;
+                     Dropdown::showGlobalSwitch(0, $param);
                      $display = true;
                      break;
 
                   case "dropdown_users_validate" :
-                     User::dropdown(array('name'   => "value",
-                                          'right'  => array('validate_incident', 'validate_request')));
-                     $display = true;
+                     $rule_data = getAllDatasFromTable('glpi_ruleactions',
+                                                       "action_type = 'add_validation'
+                                                        AND field = 'users_id_validate'");
+                     $used = array();
+                     foreach ($rule_data as $data) {
+                        $used[] = $data['value'];
+                     }
+                     $param['name']  = 'value';
+                     $param['right'] = array('validate_incident', 'validate_request');
+                     $param['used']  = $used;
+                     User::dropdown($param);
+                     $display        = true;
+                     break;
+
+                  case "dropdown_groups_validate" :
+                     $condition = "(SELECT count(`users_id`)
+                                    FROM `glpi_groups_users`
+                                    WHERE `groups_id` = `glpi_groups`.`id`)";
+                     $used = array();
+                     $rule_data = getAllDatasFromTable('glpi_ruleactions',
+                                                       "action_type = 'add_validation'
+                                                        AND field = 'groups_id_validate'");
+                     foreach ($rule_data as $data) {
+                        $used[] = $data['value'];
+                     }
+                     $param['name']      = 'value';
+                     $param['condition'] = $condition;
+                     $param['right']     = array('validate_incident', 'validate_request');
+                     $param['used']      = $used;
+                     Group::dropdown($param);
+                     $display            = true;
+                     break;
+
+                  case "dropdown_validation_percent" :
+                     $ticket = new Ticket();
+                     echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
+                     $display       = true;
                      break;
 
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {
-                        $display = $rule->displayAdditionalRuleAction($actions[$options["field"]]);
+                        $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
                      }
                      break;
                }
             }
 
             if (!$display) {
-               Html::autocompletionTextField($this, "value");
+               Html::autocompletionTextField($this, "value", $param['value']);
             }
       }
+   }
+
+   /** form for rule action
+    *
+    * @since version 0.85
+    *
+    * @param $ID      integer : Id of the action
+    * @param $options array of possible options:
+    *     - rule Object : the rule
+   **/
+   function showForm($ID, $options=array()) {
+      global $CFG_GLPI;
+
+      if (isset($options['parent']) && !empty($options['parent'])) {
+         $rule = $options['parent'];
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, READ);
+      } else {
+         // Create item
+         $options['rules_id'] = $rule->getField('id');
+         $this->check(-1, CREATE, $options);
+      }
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1 center'>";
+      echo "<td>"._n('Action', 'Actions', 1) . "</td><td colspan='3'>";
+      echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".
+             $this->fields["rules_id"]."'>";
+      $used = $this->getAlreadyUsedForRuleID($this->fields["rules_id"], $rule->getType());
+      // On edit : unset selected value
+      if ($ID
+          && isset($used[$this->fields['field']])) {
+         unset($used[$this->fields['field']]);
+      }
+      $rand   = $rule->dropdownActions(array('value' => $this->fields['field'],
+                                             'used'  => $used));
+      $params = array('field'                 => '__VALUE__',
+                      'sub_type'              => $rule->getType(),
+                      'ruleactions_id'        => $this->getID(),
+                      $rule->getRuleIdField() => $this->fields["rules_id"]);
+
+      Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
+                                    $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
+
+      if (isset($this->fields['field']) && !empty($this->fields['field'])) {
+         $params['field']       = $this->fields['field'];
+         $params['action_type'] = $this->fields['action_type'];
+         $params['value']       = $this->fields['value'];
+         echo "<script type='text/javascript' >\n";
+         Ajax::updateItemJsCode("action_span",
+                                 $CFG_GLPI["root_doc"]."/ajax/ruleaction.php",
+                                 $params);
+         echo '</script>';
+      }
+      echo "</td></tr>";
+      echo "<tr><td colspan='4'><span id='action_span'>\n";
+      echo "</span></td>\n";
+      echo "</tr>\n";
+      $this->showFormButtons($options);
    }
 
 }

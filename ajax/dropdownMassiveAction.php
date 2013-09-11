@@ -36,68 +36,16 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-
-if (isset($_POST["action"]) && ($_POST["action"] != '-1')
-    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
-    if (!isset($_POST['is_deleted'])) {
-      $_POST['is_deleted'] = 0;
-    }
-
-   if (!($item = getItemForItemtype($_POST['itemtype']))) {
-      exit();
-   }
-   $checkitem = NULL;
-
-   if (isset($_POST['check_itemtype'])) {
-      if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
-         exit();
-      }
-      if (isset($_POST['check_items_id'])) {
-         if (!$checkitem->getFromDB($_POST['check_items_id'])) {
-            exit();
-         }
-      echo "<input type='hidden' name='check_items_id' value='".$_POST["check_items_id"]."'>";
-      }
-      echo "<input type='hidden' name='check_itemtype' value='".$_POST["check_itemtype"]."'>";
-   }
-
-   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
-   if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
-      echo "<input type='hidden' name='specific_action' value='0'>";
-      if (!isset($actions[$_POST['action']])) {
-         Html::displayRightError();
-         exit();
-      }
-   } else {
-      if (!isset($actions[$_POST['action']])) {
-         echo "<input type='hidden' name='specific_action' value='1'>";
-      } else {
-         echo "<input type='hidden' name='specific_action' value='0'>";
-      }
-   }
-
-   echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
-   echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
-   echo "<input type='hidden' name='is_deleted' value='".$_POST["is_deleted"]."'>";
-   echo '&nbsp;';
-
-   // Plugin specific actions
-   $split = explode('_',$_POST["action"]);
-
-   if (($split[0] == 'plugin') && isset($split[1])) {
-      // Normalized name plugin_name_action
-      // Allow hook from any plugin on any (core or plugin) type
-      Plugin::doOneHook($split[1], 'MassiveActionsDisplay',
-                        array('itemtype' => $_POST["itemtype"],
-                              'action'   => $_POST["action"]));
-
-//    } else if ($plug=isPluginItemType($_POST["itemtype"])) {
-      // non-normalized name
-      // hook from the plugin defining the type
-//       Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
-//                         $_POST["action"]);
-   } else {
-      $item->showMassiveActionsParameters($_POST);
-   }
+try {
+   $ma = new MassiveAction($_POST, $_GET, 'specialize');
+} catch (Exception $e) {
+   echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
+      __s('Warning')."'><br><br>";
+   echo "<span class='b'>".$e->getMessage()."</span><br>";
+   echo "</div>";
+   exit();
 }
+
+$ma->showSubForm();
+
 ?>

@@ -67,7 +67,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
          $tmp['##license.serial##']         = $license['serial'];
          $tmp['##license.expirationdate##'] = Html::convDate($license["expire"]);
          $tmp['##license.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                        "/index.php?redirect=softwarelicense_".$id);
+                                                        "/index.php?redirect=SoftwareLicense_".$id);
          $this->datas['licenses'][] = $tmp;
       }
 

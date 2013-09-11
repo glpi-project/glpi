@@ -51,11 +51,18 @@ class TicketValidation  extends CommonDBChild {
    static public $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
    static public $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
+   static $rightname                 = 'validation';
+
+   const CREATEREQUEST               = 1024;
+   const CREATEINCIDENT              = 2048;
+   const VALIDATEREQUEST             = 4096;
+   const VALIDATEINCIDENT            = 8192;
+
 
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -67,32 +74,45 @@ class TicketValidation  extends CommonDBChild {
 
    static function canCreate() {
 
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1));
+      return Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                           self::CREATEINCIDENT));
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   function canCreateItem() {
+
+      if ($this->canChildItem('canViewItem', 'canView')) {
+          $ticket = new Ticket();
+          if ($ticket->getFromDB($this->fields['tickets_id'])) {
+              if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
+                 return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
+              }
+              if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
+                 return Session::haveRight(self::$rightname, self::CREATEREQUEST);
+              }
+          }
+      }
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1)
-              || Session::haveRight('validate_request', 1)
-              || Session::haveRight('validate_incident', 1));
+      return Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                           self::CREATEINCIDENT,
+                                                           self::VALIDATEREQUEST,
+                                                           self::VALIDATEINCIDENT));
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1)
-              || Session::haveRight('validate_request', 1)
-              || Session::haveRight('validate_incident', 1));
-   }
-
-
-   static function canDelete() {
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1));
+      return Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                           self::CREATEINCIDENT,
+                                                           self::VALIDATEREQUEST,
+                                                           self::VALIDATEINCIDENT));
    }
 
 
@@ -105,8 +125,8 @@ class TicketValidation  extends CommonDBChild {
    **/
    function canDeleteItem() {
 
-      If (($this->fields["users_id"] == Session::getLoginUserID())
-          || Session::haveRight('delete_validations', 1)) {
+      if (($this->fields["users_id"] == Session::getLoginUserID())
+          || Session::haveRight(self::$rightname, DELETE)) {
          return true;
       }
       return false;
@@ -120,8 +140,8 @@ class TicketValidation  extends CommonDBChild {
     */
    function canUpdateItem() {
 
-      if (!Session::haveRight('create_request_validation', 1)
-          && !Session::haveRight('create_incident_validation', 1)
+      if (!Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                         self::CREATEINCIDENT))
           && ($this->fields["users_id_validate"] != Session::getLoginUserID())) {
          return false;
       }
@@ -139,7 +159,7 @@ class TicketValidation  extends CommonDBChild {
       $query = "SELECT `users_id_validate`
                 FROM `glpi_ticketvalidations`
                 WHERE `tickets_id` = '$tickets_id'
-                      AND users_id_validate = '".Session::getLoginUserID()."'";
+                      AND `users_id_validate` = '".Session::getLoginUserID()."'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
@@ -153,16 +173,13 @@ class TicketValidation  extends CommonDBChild {
 
       $hidetab = false;
       // Hide if no rights on validations
-      if (!Session::haveRight('create_incident_validation','1')
-          && !Session::haveRight('create_request_validation','1')
-          && !Session::haveRight('validate_request','1')
-          && !Session::haveRight('validate_incident','1')) {
+      if (!self::canView()) {
          $hidetab = true;
       }
       // No right to create and no validation for current object
       if (!$hidetab
-          && !Session::haveRight('create_incident_validation','1')
-          && !Session::haveRight('create_request_validation','1')
+          && !Session::haveRightsOr(self::$rightname, array(self::CREATEINCIDENT,
+                                                            self::CREATEREQUEST))
           && !self::canValidate($item->getID())) {
          $hidetab = true;
       }
@@ -172,12 +189,14 @@ class TicketValidation  extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";
             // No rights for create only count asign ones
-            if (!Session::haveRight('create_request_validation','1')
-                && !Session::haveRight('create_incident_validation','1')) {
-              $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
+            if (!Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                               self::CREATEINCIDENT))) {
+
+              $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
             }
+            $nb = countElementsInTable($this->getTable(),$restrict);
             return self::createTabEntry(self::getTypeName(2),
-                                        countElementsInTable('glpi_ticketvalidations', $restrict));
+                                        $nb);
          }
          return self::getTypeName(2);
       }
@@ -198,6 +217,7 @@ class TicketValidation  extends CommonDBChild {
       $this->fields["users_id"] = Session::getLoginUserID();
       $this->fields["status"]   = 'waiting';
    }
+
 
 
    function prepareInputForAdd($input) {
@@ -228,6 +248,7 @@ class TicketValidation  extends CommonDBChild {
       $job      = new Ticket();
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"])) {
+
          // Set global validation to waiting
          if (($job->fields['global_validation'] == 'accepted')
              || ($job->fields['global_validation'] == 'none')) {
@@ -255,17 +276,14 @@ class TicketValidation  extends CommonDBChild {
             $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
          }
          if ($mailsend) {
-            $user = new User();
+            $user    = new User();
             $user->getFromDB($this->fields["users_id_validate"]);
             $email = $user->getDefaultEmail();
             if (!empty($email)) {
-               //TRANS: %s is the user name
-               Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'),
-                                                        $user->getName()));
+               $message[] = sprintf(__('Approval request send to %s'), $user->getName());
             } else {
-               Session::addMessageAfterRedirect(sprintf(__('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
-                                                        $user->getName()),
-                                                false, ERROR);
+               $error[] = sprintf(__('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
+                                  $user->getName());
             }
          }
       }
@@ -275,9 +293,8 @@ class TicketValidation  extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      $job = new Ticket();
-      $forbid_fields = array();
-
+      $job              = new Ticket();
+      $forbid_fields    = array();
       if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
          if (($input["status"] == "rejected")
              && (!isset($input["comment_validation"])
@@ -292,11 +309,12 @@ class TicketValidation  extends CommonDBChild {
          } else {
             $input["validation_date"] = $_SESSION["glpi_currenttime"];
          }
-         $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
-                                'comment_submission', 'submission_date');
 
-      } else if (Session::haveRight('create_incident_validation',1)
-                 || Session::haveRight('create_request_validation',1)) { // Update validation request
+         $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
+                                 'comment_submission', 'submission_date');
+
+      } else if (Session::haveRightsOr(self::$rightname, array(self::CREATEINCIDENT,
+                                                               self::CREATEREQUEST))) { // Update validation request
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
                                 'validation_date');
       }
@@ -323,19 +341,20 @@ class TicketValidation  extends CommonDBChild {
       }
 
       if ($job->getFromDB($this->fields["tickets_id"])) {
-         if (count($this->updates) && $donotif) {
+
+         if (count($this->updates)
+             && $donotif) {
             $options  = array('validation_id'     => $this->fields["id"],
                               'validation_status' => $this->fields["status"]);
             NotificationEvent::raiseEvent('validation_answer', $job, $options);
          }
 
-         // Set global validation to accepted to define one
-         if (($job->fields['global_validation'] == 'waiting')
-             || (self::getNumberValidationForTicket($this->fields["tickets_id"]) == 1)
-             || self::isAllValidationsHaveSameStatusForTicket($this->fields["tickets_id"])) {
+          //Set global validation to accepted to define one
+         if ($job->fields['global_validation'] == 'waiting'
+               && in_array("status", $this->updates)) {
 
             $input['id']                = $this->fields["tickets_id"];
-            $input['global_validation'] = $this->fields["status"];
+            $input['global_validation'] = self::computeValidationStatus($job);
             $job->update($input);
          }
       }
@@ -352,6 +371,7 @@ class TicketValidation  extends CommonDBChild {
 
       if ($field == 'status') {
          $username = getUserName($this->fields["users_id_validate"]);
+
          $result   = array('0', '', '');
          if ($this->fields["status"] == 'accepted') {
             //TRANS: %s is the username
@@ -374,11 +394,12 @@ class TicketValidation  extends CommonDBChild {
    function getHistoryNameForItem(CommonDBTM $item, $case) {
 
       $username = getUserName($this->fields["users_id_validate"]);
+
       switch ($case) {
-         case 'add':
+         case 'add' :
             return sprintf(__('Approval request send to %s'), $username);
 
-         case 'delete':
+         case 'delete' :
             return sprintf(__('Cancel the approval request to %s'), $username);
       }
       return '';
@@ -440,18 +461,10 @@ class TicketValidation  extends CommonDBChild {
       }
 
       $tab = self::getAllStatusArray($p['all'], $p['global']);
+      unset($p['all']);
+      unset($p['global']);
 
-      $output = "<select name='$name'>";
-      foreach ($tab as $key => $val) {
-         $output .= "<option value='$key' ".(($p['value'] == $key) ?" selected ":"").">$val</option>";
-      }
-      $output .= "</select>";
-
-      if ($p['display']) {
-         echo $output;
-         return true;
-      }
-      return $output;
+      return Dropdown::showFromArray($name, $tab, $p);
    }
 
 
@@ -542,8 +555,8 @@ class TicketValidation  extends CommonDBChild {
 
       $query = "SELECT COUNT(`id`) AS 'total'
                 FROM `glpi_ticketvalidations`
-                WHERE `users_id_validate` = '$users_id'
-                      AND `status` = 'waiting'";
+                WHERE `status` = 'waiting'
+                      AND `users_id_validate` = '$users_id'";
 
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
@@ -580,15 +593,25 @@ class TicketValidation  extends CommonDBChild {
    **/
    static function showFormMassiveAction() {
 
-      echo "&nbsp;".__('Approver')."&nbsp;";
-      User::dropdown(array('name'   => 'users_id_validate',
-                           'entity' => $_SESSION["glpiactive_entity"],
-                           'right'  => array('validate_request', 'validate_incident')));
+      global $CFG_GLPI;
 
-      echo "<br>".__('Comments')." ";
-      echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
+      $types            = array(0       => Dropdown::EMPTY_VALUE,
+                                'user'  => __('User'),
+                                'group' => __('Group'));
 
-      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+      $rand             = Dropdown::showFromArray("validatortype", $types);
+
+      $paramsmassaction = array('validatortype' => '__VALUE__',
+                                'entity'        => $_SESSION['glpiactive_entity'],
+                                'right'         => array('validate_request', 'validate_incident'));
+
+      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", "show_massiveaction_field",
+                                    $CFG_GLPI["root_doc"].
+                                       "/ajax/dropdownMassiveActionAddValidator.php",
+                                    $paramsmassaction);
+
+      echo "<br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+
    }
 
 
@@ -600,18 +623,63 @@ class TicketValidation  extends CommonDBChild {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight('validate_request',1)
-          && !Session::haveRight('validate_incident',1)
-          && !Session::haveRight('create_incident_validation',1)
-          && !Session::haveRight('create_request_validation',1)) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::VALIDATEINCIDENT,
+                                                        self::VALIDATEREQUEST,
+                                                        self::CREATEINCIDENT,
+                                                        self::CREATEREQUEST))) {
          return false;
       }
 
       $tID    = $ticket->fields['id'];
 
       $tmp    = array('tickets_id' => $tID);
-      $canadd = $this->can(-1,'w',$tmp);
+      $canadd = $this->can(-1, CREATE, $tmp);
       $rand   = mt_rand();
+
+      if ($canadd) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL('Ticket')."'>";
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      echo "<th colspan='3'>".self::getTypeName(2)."</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Global approval status')."</td>";
+      echo "<td colspan='2'>";
+      self::dropdownStatus("global_validation", array('value' => $ticket->fields["global_validation"]));
+      echo "</td>";
+      echo "</td></tr>";
+
+      echo "<tr>";
+      echo "<th colspan='2'>".__('State')."</th>";
+      echo "<th colspan='2'>";
+      echo self::getValidationStats($tID);
+      echo "</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Minimum validation required')."</td>";
+      if ($canadd) {
+         echo "<td>";
+         echo $ticket->getValueToSelect('validation_percent', 'validation_percent', $ticket->fields["validation_percent"]);
+         echo "</td>";
+         echo "<td><input type='submit' name='update' class='submit' value='".
+                              _sx('button','Save')."'>";
+         if (!empty($tID)) {
+            echo "<input type='hidden' name='id' value='$tID'>";
+         }
+         echo "</td></tr>";
+      } else {
+         echo "<td colspan='2'>";
+         echo Dropdown::getValueWithUnit($ticket->fields["validation_percent"],"%");
+         echo "</td>";
+      }
+      echo "</tr>";
+      echo "</table>";
+      if ($canadd) {
+         Html::closeForm();
+      }
 
       echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
 
@@ -638,9 +706,11 @@ class TicketValidation  extends CommonDBChild {
                 FROM `".$this->getTable()."`
                 WHERE `tickets_id` = '".$ticket->getField('id')."'";
       if (!$canadd) {
-         $query .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
+         $query .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
       }
+
       $query .= " ORDER BY submission_date DESC";
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -663,7 +733,7 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</tr>";
 
-         Session::initNavigateListItems('TicketValidation',
+         Session::initNavigateListItems($this->getType(),
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $ticket->getTypeName(1),
                                                 $ticket->fields["name"]));
@@ -671,10 +741,10 @@ class TicketValidation  extends CommonDBChild {
 
 
          while ($row = $DB->fetch_assoc($result)) {
-            $canedit = $this->can($row["id"],'w');
-            Session::addToNavigateListItems('TicketValidation', $row["id"]);
-            $bgcolor = $this->getStatusColor($row['status']);
-            $status  = $this->getStatus($row['status']);
+            $canedit = $this->canEdit($row["id"]);
+            Session::addToNavigateListItems($this->getType(), $row["id"]);
+            $bgcolor = self::getStatusColor($row['status']);
+            $status  = self::getStatus($row['status']);
 
             echo "<tr class='tab_bg_1' ".($canedit
                   ? "style='cursor:pointer' onClick=\"viewEditValidation".$ticket->fields['id'].
@@ -697,7 +767,7 @@ class TicketValidation  extends CommonDBChild {
 
             echo "<div style='background-color:".$bgcolor.";'>".$status."</div></td>";
 
-            echo "<td>". Html::convDateTime($row["submission_date"])."</td>";
+            echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
             echo "<td>".$row["comment_submission"]."</td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
@@ -720,31 +790,34 @@ class TicketValidation  extends CommonDBChild {
     *
     **/
    function showForm($ID, $options=array()) {
+      global $CFG_GLPI;
 
       if ($ID > 0) {
-         $this->check($ID,'w');
+         $this->check($ID, CREATE);
       } else {
          $options['tickets_id'] = $options['parent']->fields["id"];
-         $this->check(-1,'w', $options);
+         $this->check(-1, CREATE, $options);
       }
 
       // No update validation is answer set
-      $validation_admin = (($this->fields["users_id"] == Session::getLoginUserID())
-                          && static::canCreate()
-                          && ($this->fields['status'] == 'waiting'));
-      $validator        = ($this->fields["users_id_validate"] == Session::getLoginUserID());
+      $validation_admin    = (($this->fields["users_id"] == Session::getLoginUserID())
+                             && static::canCreate()
+                             && ($this->fields['status'] == 'waiting'));
+
+      $validator           = ($this->fields["users_id_validate"] == Session::getLoginUserID());
 
       $options['colspan'] = 1;
 
       $this->showFormHeader($options);
+
       if ($validation_admin) {
+
          $ticket = new Ticket();
          $ticket->getFromDB($this->fields['tickets_id']);
-         $validation_right = '';
+
+         $validation_right = 'validate_incident';
          if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
             $validation_right = 'validate_request';
-         } else {
-            $validation_right = 'validate_incident';
          }
 
          echo "<tr class='tab_bg_1'>";
@@ -756,10 +829,18 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
-         User::dropdown(array('name'   => "users_id_validate",
-                              'entity' => $this->getEntityID(),
-                              'right'  => $validation_right,
-                              'value'  => $this->fields["users_id_validate"]));
+
+         if ($ID > 0) {
+            echo getUserName($this->fields["users_id_validate"]);
+            echo "<input type='hidden' name='users_id_validate' value='".$this->fields['users_id_validate']."'>";
+         } else {
+            $users_id_validate = array();
+            $params = array('id'                 => $this->fields["id"],
+                               'entity'             => $this->getEntityID(),
+                               'right'              => $validation_right,
+                               'users_id_validate'  => $users_id_validate);
+            self::dropdownValidator($params);
+         }
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -774,18 +855,27 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>".getUserName($this->fields["users_id_validate"])."</td></tr>";
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Comments')."</td>";
-         echo "<td>". $this->fields["comment_submission"]. "</td></tr>";
+         echo "<td>";
+         echo $this->fields["comment_submission"];
+         echo "</td></tr>";
       }
 
       if ($ID > 0) {
          echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td></tr>";
 
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Status of the approval request')."</td>";
+         $bgcolor = self::getStatusColor($this->fields['status']);
+         echo "<td><span style='background-color:".$bgcolor.";'>". self::getStatus($this->fields["status"])."</span></td></tr>";
+
          if ($validator) {
+
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Status of the approval request')."</td>";
+            echo "<td>".__('Status of my validation')."</td>";
             echo "<td>";
             self::dropdownStatus("status", array('value' => $this->fields["status"]));
             echo "</td></tr>";
@@ -797,13 +887,12 @@ class TicketValidation  extends CommonDBChild {
             echo "</td></tr>";
 
          } else {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Status of the approval request')."</td>";
-            echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Comments')."</td>";
-            echo "<td>".$this->fields["comment_validation"]."</td></tr>";
+            $status = array("rejected","accepted");
+            if (in_array($this->fields["status"],$status)) {
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>".__('Approval comments')."</td>";
+               echo "<td>".$this->fields["comment_validation"]."</td></tr>";
+            }
          }
       }
 
@@ -843,13 +932,13 @@ class TicketValidation  extends CommonDBChild {
       $tab[5]['field']           = 'validation_date';
       $tab[5]['name']            = __('Approval date');
       $tab[5]['datatype']        = 'datetime';
-
+/*
       $tab[6]['table']           = 'glpi_users';
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Approval requester');
       $tab[6]['datatype']        = 'itemlink';
       $tab[6]['right']           = array('create_incident_validation', 'create_request_validation');
-
+*/
       $tab[7]['table']           = 'glpi_users';
       $tab[7]['field']           = 'name';
       $tab[7]['linkfield']       = 'users_id_validate';
@@ -905,5 +994,210 @@ class TicketValidation  extends CommonDBChild {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[UPDATE], $values[CREATE], $values[READ]);
+
+      $values[self::CREATEREQUEST]    = array('short' => __('Create for request'),
+                                              'long'  => __('Create a validation request for a request'));
+      $values[self::CREATEINCIDENT]   = array('short' => __('Create for incident'),
+                                              'long'  => __('Create a validation request for an incident'));
+      $values[self::VALIDATEREQUEST]  = __('Validate a request');
+      $values[self::VALIDATEINCIDENT] = __('Validate an incident');
+
+      if ($interface == 'helpdesk') {
+         unset($values[PURGE]);
+      }
+
+      return $values;
+   }
+
+
+   /**
+    * Dropdown of validator
+    *
+    * @since version 0.85
+    *
+    * @param $options   array of options
+    *  - name                    : select name
+    *  - id                      : ID of object > 0 Update, < 0 New
+    *  - entity                  : ID of entity
+    *  - right                   : validation rights
+    *  - users_id_validate       : ID of user validator
+    *
+    * @return nothing (display)
+    * */
+   static function dropdownValidator(array $options=array()) {
+      global $CFG_GLPI;
+
+      $params['name']               = '';
+      $params['id']                 = 0;
+      $params['entity']             = $_SESSION['glpiactive_entity'];
+      $params['right']              = array('validate_request', 'validate_incident');
+      $params['groups_id']          = 0;
+      $params['users_id_validate']  = array();
+      $params['applyto']            = 'show_validator_field';
+
+      foreach ($options as $key => $val) {
+         $params[$key] = $val;
+      }
+
+      $types = array(0       => Dropdown::EMPTY_VALUE,
+                     'user'  => __('User'),
+                     'group' => __('Group'));
+
+      $type  = '__VALUE__';
+      if (!empty($params['users_id_validate'])) {
+         $type = 'list_users';
+      }
+
+      if ($params['id'] > 0) {
+         unset($types['group']);
+      }
+      $rand = Dropdown::showFromArray("validatortype", $types, array('value' => $type));
+
+      if ($params['id'] > 0) {
+         $params['validatortype'] = $type;
+         Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                          $params);
+      }
+      $params['validatortype'] = '__VALUE__';
+      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", $params['applyto'],
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
+
+      if (!isset($options['applyto'])) {
+         echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
+      }
+   }
+
+   /**
+    * @since version 0.85
+    * Get list of users from a group which have validation rights
+    *
+    * @param $options   array   possible:
+    *       groups_id
+    *       right
+    *       entity
+    *
+    * @return array
+   **/
+   static function getGroupUserHaveRights(array $options=array()) {
+      global $DB;
+
+      $params['entity']             = $_SESSION['glpiactive_entity'];
+      $params['right']              = array('validate_request', 'validate_incident');
+      $params['groups_id']          = 0;
+
+      foreach ($options as $key => $val) {
+         $params[$key] = $val;
+      }
+
+      $list       = array();
+      $restrict   = "";
+
+      $res = User::getSqlSearchResult (false, $params['right'],$params['entity']);
+      while ($data = $DB->fetch_assoc($res)) {
+         $list[] = $data['id'];
+      }
+      if (count($list) > 0) {
+         $restrict = "`glpi_users`.`id` IN ('".implode("', '", $list)."') ";
+      }
+      $users = Group_user::getGroupUsers($params['groups_id'], $restrict);
+
+      return $users;
+   }
+
+
+   /**
+    * Compute the validation status
+    *
+    * @param $job Ticket Class for id & $validation_percent      validation mode for the group (default 0):
+    *                                                             0 - first user validate or reject
+    *                                                             1 - 50% of user validate
+    *                                                             2 - 100% of user validate
+    *
+    * @return validation status
+   **/
+   static function computeValidationStatus(Ticket $job) {
+
+      $validation_status = 'waiting';
+
+      $accepted          = 0;
+      $rejected          = 0;
+
+      // Percent of validation
+      $validation_percent = $job->fields['validation_percent'];
+
+      $statuses = array('accepted' => 0,
+                        'waiting'  => 0,
+                        'rejected' => 0);
+      $restrict = "`tickets_id` = '".$job->getID()."'";
+      $validations = getAllDatasFromTable('glpi_ticketvalidations', $restrict);
+
+      if ($total = count($validations)) {
+         foreach ($validations as $validation) {
+            $statuses[$validation['status']] ++;
+         }
+      }
+
+
+      if ($validation_percent > 0) {
+         if (($statuses['accepted']*100/$total) >= $validation_percent) {
+            $validation_status = 'accepted';
+         } else if (($statuses['rejected']*100/$total) >= $validation_percent) {
+            $validation_status = 'rejected';
+         }
+      } else {
+         if ($statuses['accepted']) {
+            $validation_status = 'accepted';
+         } else if ($statuses['rejected']) {
+            $validation_status = 'rejected';
+         }
+      }
+
+      return $validation_status;
+   }
+
+   /**
+    * Get the validation statistics
+    *
+    * @param $IDt tickets id
+    *
+    * @return statistics array
+   **/
+   static function getValidationStats($tID) {
+
+      $tab = self::getAllStatusArray();
+
+      $nb = countElementsInTable('glpi_ticketvalidations',"`tickets_id` = ".$tID);
+
+      $stats = array();
+      foreach ($tab as $status => $name) {
+         $restrict = "`tickets_id` = '".$tID."' AND `status` = '".$status."'";
+         $validations = countElementsInTable('glpi_ticketvalidations',$restrict);
+         if ($validations > 0) {
+            if (!isset($stats[$status])) {
+               $stats[$status] = 0;
+            }
+            $stats[$status] = $validations;
+         }
+      }
+
+      $list = "";
+      foreach ($stats as $stat => $val) {
+         $list.= $tab[$stat];
+         $list.= sprintf(__('%1$s (%2$d%%) '), " " ,
+                                     HTml::formatNumber($val*100/$nb));
+      }
+
+      return $list;
+   }
 }
 ?>

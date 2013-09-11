@@ -35,13 +35,26 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// TicketFollowup class
 /// TODO extends it from CommonDBChild
+/**
+ * TicketFollowup Class
+**/
 class TicketFollowup  extends CommonDBTM {
 
 
    // From CommonDBTM
    public $auto_message_on_action = false;
+
+   static $rightname              = 'followup';
+
+   const SEEPUBLIC       =    1;
+   const UPDATEMY        =    2;
+   const ADDMYTICKET     =    4;
+   const UPDATEALL       = 1024;
+   const ADDGROUPTICKET  = 2048;
+   const ADDALLTICKET    = 4096;
+   const SEEPRIVATE      = 8192;
+
 
 
    /**
@@ -56,22 +69,17 @@ class TicketFollowup  extends CommonDBTM {
 
    static function canCreate() {
 
-      return (Session::haveRight('global_add_followups', 1)
-              || Session::haveRight('add_followups', 1)
-              || Session::haveRight('own_ticket', 1));
+      return (Session::haveRightsOr(self::$rightname,
+                                    array(self::ADDALLTICKET, self::ADDMYTICKET,
+                                          self::ADDGROUPTICKET))
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('observe_ticket', 1)
-              || Session::haveRight('show_full_ticket', 1)
-              || Session::haveRight('own_ticket', 1));
-   }
-
-
-   static function canDelete() {
-      return (Session::haveRight('delete_followups', 1));
+      return (Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
@@ -80,14 +88,14 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @return boolean
    **/
-   function canDeleteItem() {
+   function canPurgeItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
 
-      if (Session::haveRight('delete_followups',1)) {
+      if (Session::haveRight(self::$rightname, PURGE)) {
          return true;
       }
 
@@ -103,14 +111,14 @@ class TicketFollowup  extends CommonDBTM {
    function canViewItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
-      if (Session::haveRight('show_full_ticket', 1)) {
+      if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
          return true;
       }
       if (!$this->fields['is_private']
-          && Session::haveRight('observe_ticket',1)) {
+          && Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
          return true;
       }
       if ($this->fields["users_id"] === Session::getLoginUserID()) {
@@ -128,7 +136,7 @@ class TicketFollowup  extends CommonDBTM {
    function canCreateItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
       return $ticket->canAddFollowups();
@@ -143,22 +151,22 @@ class TicketFollowup  extends CommonDBTM {
    function canUpdateItem() {
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('update_followups',1)) {
+          && !Session::haveRight(self::$rightname, self::UPDATEALL)) {
          return false;
       }
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
 
       if (($this->fields["users_id"] === Session::getLoginUserID())
-          && Session::haveRight('update_own_followups',1)) {
-            return true;
-
+          && Session::haveRight(self::$rightname, self::UPDATEMY)) {
+         return true;
       }
+
       // Only the technician
-      return (Session::haveRight("update_followups","1")
+      return (Session::haveRight(self::$rightname, self::UPDATEALL)
               || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -168,7 +176,7 @@ class TicketFollowup  extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType() == 'Ticket') {
-         if (Session::haveRight('observe_ticket','1')) {
+         if (Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(self::getTypeName(2),
                                            countElementsInTable('glpi_ticketfollowups',
@@ -263,7 +271,6 @@ class TicketFollowup  extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-//      $input["_isadmin"] = Session::haveRight("global_add_followups","1");
       $input["_job"] = new Ticket();
 
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
@@ -271,12 +278,12 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       // Manage File attached (from mailgate)
-      $docadded = $input["_job"]->addFiles($input["tickets_id"]);
+      $docadded = $input["_job"]->addFiles();
       if (count($docadded) > 0) {
          $input['content'] .= "\n";
          foreach ($docadded as $name) {
             //TRANS: %s is tha document name
-            $input['content'] .= "\n".sprintf(__('Added document: %s'), $name);
+            $input['content'] .= "\n".sprintf(__('Added document: %s'), $name['data']);
          }
       }
 
@@ -332,9 +339,9 @@ class TicketFollowup  extends CommonDBTM {
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"], false,
                                           $this->input["users_id"]);
@@ -442,7 +449,7 @@ class TicketFollowup  extends CommonDBTM {
    function showInTicketSumnary(Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI;
 
-      $canedit = $this->can($this->fields['id'],'w') || $this->can($this->fields['id'],'d');
+      $canedit = $this->canEdit($this->fields['id']);
 
       echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
              ($canedit ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].
@@ -512,13 +519,15 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
          $options['tickets_id'] = $ticket->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
       }
-      $tech = (Session::haveRight("global_add_followups", "1")
+      $tech = (Session::haveRightsOr(self::$rightname,
+                                     array(self::ADDALLTICKET, self::ADDMYTICKET,
+                                           self::ADDGROUPTICKET))
                || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -578,18 +587,17 @@ class TicketFollowup  extends CommonDBTM {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("observe_ticket", "1")
-          && !Session::haveRight("show_full_ticket", "1")) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))) {
          return false;
       }
 
       $tID = $ticket->fields['id'];
 
       // Display existing Followups
-      $showprivate   = Session::haveRight("show_full_ticket", "1");
-      $caneditall    = Session::haveRight("update_followups", "1");
+      $showprivate   = Session::haveRight(self::$rightname, self::SEEPRIVATE);
+      $caneditall    = Session::haveRight(self::$rightname, self::UPDATEALL);
       $tmp           = array('tickets_id' => $tID);
-      $canadd        = $this->can(-1, 'w', $tmp);
+      $canadd        = $this->can(-1, CREATE, $tmp);
 
       $RESTRICT = "";
       if (!$showprivate) {
@@ -658,7 +666,7 @@ class TicketFollowup  extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Print Followups for a job
-      $showprivate = Session::haveRight("show_full_ticket", "1");
+      $showprivate = Session::haveRight(self::$rightname, self::SEEPRIVATE);
 
       $RESTRICT = "";
       if (!$showprivate) {
@@ -770,5 +778,36 @@ class TicketFollowup  extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[UPDATE], $values[CREATE], $values[READ]);
+
+      if ($interface == 'central') {
+         $values[self::UPDATEALL]      = __('Update all');
+         $values[self::ADDALLTICKET]   = __('Add to all tickets');
+         $values[self::SEEPRIVATE]     = __('See private ones');
+      }
+
+      $values[self::ADDGROUPTICKET]
+                                 = array('short' => __('Add followup (associated groups)'),
+                                         'long'  => __('Add a followup to tickets of associated groups'));
+      $values[self::UPDATEMY]    = __('Update followups (author)');
+      $values[self::ADDMYTICKET] = array('short' => __('Add followup (requester)'),
+                                         'long'  => __('Add a followup to tickets (requester)'));
+      $values[self::SEEPUBLIC]   = __('See public ones');
+
+      if ($interface == 'helpdesk') {
+         unset($values[PURGE]);
+      }
+
+      return $values;
+   }
 }
 ?>

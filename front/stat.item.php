@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Html::header(__('Statistics'), '', "maintain", "stat");
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", "1");
+Session::checkRight("statistic", READ);
 
 if (isset($_GET["date1"])) {
    $_POST["date1"] = $_GET["date1"];
@@ -68,11 +68,11 @@ Stat::title();
 echo "<div class='center'><form method='post' name='form' action='stat.item.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateFormItem("date1",$_POST["date1"]);
+Html::showDateField("date1", array('value' => $_POST["date1"]));
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='submit' name='submit' value='".__s('Display report')."'></td></tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2",$_POST["date2"]);
+Html::showDateField("date2", array('value' => $_POST["date2"]));
 echo "</td></tr>";
 echo "</table>";
 Html::closeForm();

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -39,7 +39,6 @@ if (!defined('GLPI_ROOT')) {
  * Class Supplier_Ticket
  *
  * @since version 0.84
- *
 **/
 class Supplier_Ticket extends CommonITILActor {
 
@@ -49,24 +48,28 @@ class Supplier_Ticket extends CommonITILActor {
    static public $itemtype_2 = 'Supplier';
    static public $items_id_2 = 'suppliers_id';
 
+
    /**
     * @param $items_id
     * @param $email
+    *
+    * @since version 0.85
    **/
    function isSupplierEmail($items_id, $email) {
       global $DB;
 
       $query = "SELECT *
-                  FROM `".$this->getTable()."`
-                  LEFT JOIN `glpi_suppliers`
-                  ON (`".$this->getTable()."`.`suppliers_id` = `glpi_suppliers`.`id`)
-                  WHERE `".$this->getTable()."`.`tickets_id` = '".$items_id."'
-                        AND `glpi_suppliers`.`email` = '$email'";
+                FROM `".$this->getTable()."`
+                LEFT JOIN `glpi_suppliers`
+                      ON (`".$this->getTable()."`.`suppliers_id` = `glpi_suppliers`.`id`)
+                WHERE `".$this->getTable()."`.`tickets_id` = '".$items_id."'
+                      AND `glpi_suppliers`.`email` = '$email'";
 
       foreach ($DB->request($query) as $data) {
          return true;
       }
       return false;
    }
+
 }
 ?>

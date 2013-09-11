@@ -35,21 +35,26 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// NetworkPortInstantiation class
-/// Represents the type of a given network port. As such, its ID field is the same one than the ID
-/// of the network port it instantiates. This class don't have any table associated. It just
-/// provides usefull and default methods for the instantiations.
-/// Several kind of instanciations are available for a given port :
-///   - NetworkPortLocal
-///   - NetworkPortEthernet
-///   - NetworkPortWifi
-///   - NetworkPortAggregate
-///   - NetworkPortAlias
-/// @since 0.84
+/**
+ * NetworkPortInstantiation class
+ *
+ * Represents the type of a given network port. As such, its ID field is the same one than the ID
+ * of the network port it instantiates. This class don't have any table associated. It just
+ * provides usefull and default methods for the instantiations.
+ * Several kind of instanciations are available for a given port :
+ *    - NetworkPortLocal
+ *    - NetworkPortEthernet
+ *    - NetworkPortWifi
+ *    - NetworkPortAggregate
+ *    - NetworkPortAlias
+ *
+ * @since 0.84
+ *
+**/
 class NetworkPortInstantiation extends CommonDBChild {
 
    // From CommonDBTM
-   var $auto_message_on_action = false;
+   var $auto_message_on_action   = false;
 
    // From CommonDBChild
    static public $itemtype       = 'NetworkPort';
@@ -60,8 +65,6 @@ class NetworkPortInstantiation extends CommonDBChild {
    public $canHaveVLAN           = true;
    public $canHaveVirtualPort    = true;
    public $haveMAC               = true;
-
-
 
    static function getIndexName() {
       return 'networkports_id';
@@ -637,7 +640,6 @@ class NetworkPortInstantiation extends CommonDBChild {
             $field_name                       = 'networkports_id_list';
             $selectOptions['multiple']        = true;
             $selectOptions['size']            = 4;
-            $selectOptions['mark_unmark_all'] = true;
             $netport_types[]                  = 'NetworkPortAlias';
             break;
       }
@@ -748,17 +750,17 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $device1 = $netport->getItem();
 
-      if (!$device1->can($device1->getID(), 'r')) {
+      if (!$device1->can($device1->getID(), READ)) {
          return false;
       }
-      $canedit      = $device1->can($device1->fields["id"], 'w');
+      $canedit      = $device1->canEdit($device1->fields["id"]);
       $relations_id = 0;
       $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
       if ($oppositePort !== false) {
          $device2 = $oppositePort->getItem();
 
-         if ($device2->can($device2->fields["id"], 'r')) {
+         if ($device2->can($device2->fields["id"], READ)) {
             $networklink = $oppositePort->getLink();
             $tooltip     = Html::showToolTip($oppositePort->fields['comment'],
                                              array('display' => false));
@@ -772,9 +774,9 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                        $device2->getEntityID()) .")";
             }
 
-            // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+            // write rights on dev1 + READ on dev2 OR READ on dev1 + write rights on dev2
             if ($canedit
-                || $device2->can($device2->fields["id"], 'w')) {
+                || $device2->canEdit($device2->fields["id"])) {
                echo "&nbsp;";
                Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Disconnect'),
                                     array('id' => $relations_id));
@@ -849,19 +851,8 @@ class NetworkPortInstantiation extends CommonDBChild {
          }
       }
 
-      $rand = mt_rand();
       echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
-      echo "<select name='NetworkPortConnect_itemtype' id='itemtype$rand'>";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
-      foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
-         if ($item = getItemForItemtype($itemtype)) {
-            echo "<option value='".$itemtype."'>".$item->getTypeName(1)."</option>";
-         } else {
-            unset($CFG_GLPI["networkport_types"][$key]);
-         }
-      }
-      echo "</select>";
+      $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype',$CFG_GLPI["networkport_types"] );
 
       $params = array('itemtype'           => '__VALUE__',
                       'entity_restrict'    => $p['entity'],
@@ -870,7 +861,8 @@ class NetworkPortInstantiation extends CommonDBChild {
                       'myname'             => $p['name'],
                       'instantiation_type' => get_called_class());
 
-      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+      Ajax::updateItemOnSelectEvent("dropdown_NetworkPortConnect_itemtype$rand",
+                                    "show_".$p['name']."$rand",
                                     $CFG_GLPI["root_doc"].
                                        "/ajax/dropdownConnectNetworkPortDeviceType.php",
                                     $params);

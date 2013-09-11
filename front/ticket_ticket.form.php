@@ -38,14 +38,14 @@ $ticket_ticket = new Ticket_Ticket();
 
 Session ::checkCentralAccess();
 
-if (isset($_POST['delete'])) {
-   $ticket_ticket->check($_POST['id'],'d');
+if (isset($_POST['purge'])) {
+   $ticket_ticket->check($_POST['id'], PURGE);
 
-   $ticket_ticket->delete($_POST);
+   $ticket_ticket->delete($_POST, 1);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes link between tickets'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges link between tickets'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 
 }

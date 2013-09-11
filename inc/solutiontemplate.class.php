@@ -28,32 +28,26 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class SolutionTemplate
+/**
+ * SolutionTemplate Class
+**/
 class SolutionTemplate extends CommonDropdown {
 
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'solutiontemplate';
+
 
    static function getTypeName($nb=0) {
       return _n('Solution template', 'Solution templates', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
    }
 
 

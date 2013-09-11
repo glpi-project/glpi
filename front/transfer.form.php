@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("transfer", "r");
+Session::checkRight("transfer", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,24 +42,24 @@ if (empty($_GET["id"])) {
 $transfer = new Transfer();
 
 if (isset($_POST["add"])) {
-   $transfer->check(-1,'w',$_POST);
+   $transfer->check(-1, CREATE, $_POST);
 
    $newID = $transfer->add($_POST);
    Event::log($newID, "transfers", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $transfer->check($_POST["id"],'d');
+} else if (isset($_POST["purge"])) {
+   $transfer->check($_POST["id"], PURGE);
 
-   $transfer->delete($_POST);
+   $transfer->delete($_POST, 1);
    Event::log($_POST["id"], "transfers", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/transfer.php");
 
 } else if (isset($_POST["update"])) {
-   $transfer->check($_POST["id"],'w');
+   $transfer->check($_POST["id"], UPDATE);
 
    $transfer->update($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",
@@ -70,7 +70,8 @@ if (isset($_POST["add"])) {
 
 Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
 
-$transfer->showForm($_GET["id"], array('target' => $transfer->getFormURL()));
+$transfer->display(array('id'     => $_GET["id"],
+                         'target' => $transfer->getFormURL()));
 
 Html::footer();
 ?>

@@ -41,7 +41,7 @@ $user    = new User();
 
 if (isset($_POST["add"])) {
 
-   $right->check(-1,'w',$_POST);
+   $right->check(-1, CREATE, $_POST);
    if ($right->add($_POST)) {
       Event::log($_POST["users_id"], "users", 4, "setup",
                  //TRANS: %s is the user login

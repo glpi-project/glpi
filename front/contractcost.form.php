@@ -45,7 +45,7 @@ if (!isset($_GET["contracts_id"])) {
 
 $cost = new ContractCost();
 if (isset($_POST["add"])) {
-   $cost->check(-1,'w',$_POST);
+   $cost->check(-1, CREATE,$_POST);
 
    if ($newID = $cost->add($_POST)) {
       Event::log($_POST['contracts_id'], "contracts", 4, "financial",
@@ -54,13 +54,13 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $cost->check($_POST["id"],'d');
+} else if (isset($_POST["purge"])) {
+   $cost->check($_POST["id"], PURGE);
 
-   if ($cost->delete($_POST)) {
+   if ($cost->delete($_POST, 1)) {
       Event::log($cost->fields['contracts_id'], "contracts", 4, "financial",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes a cost'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges a cost'), $_SESSION["glpiname"]));
    }
    $contract = new Contract();
    $contract->getFromDB($cost->fields['contracts_id']);
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
                   ($contract->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $cost->check($_POST["id"],'w');
+   $cost->check($_POST["id"], UPDATE);
 
    if ($cost->update($_POST)) {
       Event::log($cost->fields['contracts_id'], "contracts", 4, "financial",

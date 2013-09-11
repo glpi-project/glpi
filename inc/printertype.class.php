@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class PrinterType
 class PrinterType extends CommonDropdown {
 
+   var $can_be_translated = true;
+
    static function getTypeName($nb=0) {
       return _n('Printer type', 'Printer types', $nb);
    }

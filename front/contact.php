@@ -34,9 +34,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("contact_enterprise", "r");
+Session::checkRight("contact_enterprise", READ);
 
-Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contact");
+Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contact");
 
 Search::show('Contact');
 

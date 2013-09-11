@@ -46,7 +46,6 @@ class Ticket_Ticket extends CommonDBRelation {
    static public $items_id_2     = 'tickets_id_2';
 
    static public $check_entity_coherency = false;
-   static public $checkItem_2_Rights     = self::HAVE_VIEW_RIGHT_ON_ITEM ;
 
    // Ticket links
    const LINK_TO        = 1;
@@ -100,7 +99,7 @@ class Ticket_Ticket extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $tickets   = self::getLinkedTicketsTo($ID);
-      $canupdate = Session::haveRight('update_ticket', '1');
+      $canupdate = Session::haveRight('ticket', UPDATE);
 
       $ticket    = new Ticket();
       if (is_array($tickets) && count($tickets)) {
@@ -230,7 +229,7 @@ class Ticket_Ticket extends CommonDBRelation {
          if (count($tickets)) {
             foreach ($tickets as $data) {
                $input['id'] = $data['tickets_id'];
-               if ($ticket->can($input['id'],'w')
+               if ($ticket->can($input['id'], UPDATE)
                    && ($data['link'] == self::DUPLICATE_WITH)
                    && ($ticket->fields['status'] != CommonITILObject::SOLVED)
                    && ($ticket->fields['status'] != CommonITILObject::CLOSED)) {

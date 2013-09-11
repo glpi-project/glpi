@@ -36,7 +36,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("logs", "r");
+Session::checkRight("logs", READ);
 
 Html::header(Event::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "log");
 

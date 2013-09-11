@@ -84,8 +84,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
    }
 
-   $config_object = new Config();
-   $config_ok     = false;
+   $config_object  = new Config();
+   $current_config = array();
 
    if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
        && (isset($TRY_OLD_CONFIG_FIRST) // index case
@@ -99,31 +99,40 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $config_object->forceTable('glpi_config');
 
       if ($config_object->getFromDB(1)) {
-         $config_ok = true;
+         $current_config = $config_object->fields;
       } else {
          $config_object->forceTable('glpi_configs');
          if ($config_object->getFromDB(1)) {
+            if (isset($config_object->fields['context'])) {
+               $current_config = Config::getConfigurationValues('core');
+            } else {
+               $current_config = $config_object->fields;
+            }
             $config_ok = true;
          }
       }
 
    } else { // Normal load process : use normal config table. If problem try old one
       if ($config_object->getFromDB(1)) {
-         $config_ok = true;
+         if (isset($config_object->fields['context'])) {
+            $current_config = Config::getConfigurationValues('core');
+         } else {
+            $current_config = $config_object->fields;
+         }
       } else {
          // Manage glpi_config table before 0.80
          $config_object->forceTable('glpi_config');
          if ($config_object->getFromDB(1)) {
-            $config_ok = true;
+            $current_config = $config_object->fields;
          }
       }
    }
 
-   if ($config_ok) {
-      $CFG_GLPI = array_merge($CFG_GLPI,$config_object->fields);
+   if (count($current_config) > 0) {
+      $CFG_GLPI = array_merge($CFG_GLPI,$current_config);
 
-      if (isset($config_object->fields['priority_matrix'])) {
-         $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],
+      if (isset($CFG_GLPI['priority_matrix'])) {
+         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
                                                           true);
       }
       // Path for icon of document type
@@ -157,6 +166,35 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
 
+   // Check maintenance mode
+   if (isset($CFG_GLPI["maintenance_mode"]) && $CFG_GLPI["maintenance_mode"])  {
+      if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
+         $_SESSION["glpiskipMaintenance"] = 1;
+      }
+
+      if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
+         Session::loadLanguage();
+         if (isCommandLine()) {
+            _e('Service is down for maintenance. It will be back up shortly.');
+            echo "\n";
+
+         } else {
+            Html::nullHeader("MAINTENANCE MODE",$CFG_GLPI["root_doc"]);
+            echo "<div class='center'>";
+
+            echo "<p class='red'>";
+            _e('Service is down for maintenance. It will be back up shortly.');
+            echo "</p>";
+            if (isset($CFG_GLPI["maintenance_text"]) && !empty($CFG_GLPI["maintenance_text"])) {
+               echo "<p>".$CFG_GLPI["maintenance_text"]."</p>";
+            }
+            echo "</div>";
+            Html::nullFooter();
+         }
+         exit();
+      }
+   }
+   // Check version
    if ((!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) != GLPI_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 

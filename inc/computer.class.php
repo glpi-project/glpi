@@ -48,8 +48,9 @@ class Computer extends CommonDBTM {
                                                'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
-   var $devices = array();
+   var $devices                        = array();
 
+   static $rightname                   = 'computer';
 
    /**
     * Name of the type
@@ -58,16 +59,6 @@ class Computer extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Computer', 'Computers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('computer', 'r');
    }
 
 
@@ -82,11 +73,22 @@ class Computer extends CommonDBTM {
 
 
    /**
+    * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuShorcut() {
+      return 'o';
+   }
+
+
+   /**
     * @see CommonGLPI::defineTabs()
    **/
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('ComputerDisk', $ong, $options);
       $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
@@ -332,8 +334,9 @@ class Computer extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // TODO : manage templates for item_devices
          // ADD Devices
-         Item_devices::cloneItem(__CLASS__, $this->input["_oldID"], $this->fields['id']);
+         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
@@ -371,11 +374,12 @@ class Computer extends CommonDBTM {
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete('Computer', $this->fields['id']);
-      
+
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
 
-      Item_Devices::cleanItemDeviceDBOnItemDelete('Computer', $this->fields['id']);
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
+                                                  (!empty($this->input['keep_devices'])));
 
       $disk = new ComputerDisk();
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
@@ -399,7 +403,6 @@ class Computer extends CommonDBTM {
       global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -415,7 +418,9 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_computer`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -522,7 +527,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
       echo "<td >";
-      Domain::dropdown(array('value' => $this->fields["domains_id"]));
+      Domain::dropdown(array('value'  => $this->fields["domains_id"],
+                             'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -598,7 +604,6 @@ class Computer extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -626,14 +631,14 @@ class Computer extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['connect'] = _x('button', 'Connect');
+         $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
+         // TODO : don't we need this action ?
+         //$actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = _x('button', 'Disconnect');
          $actions['install'] = _x('button', 'Install');
       }
 
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
 
       return $actions;
@@ -647,14 +652,10 @@ class Computer extends CommonDBTM {
       switch ($input['action']) {
          case "install" :
             Software::dropdownSoftwareToInstall("softwareversions_id",
-                                                $_SESSION["glpiactive_entity"], 1);
+                                                $_SESSION["glpiactive_entity"]);
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            __s('Install')."'>";
             return true;
-
-         case "connect" :
-            $ci = new Computer_Item();
-            return $ci->showSpecificMassiveActionsParameters($input);
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
@@ -673,25 +674,29 @@ class Computer extends CommonDBTM {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "connect" :
-            $ci = new Computer_Item();
-            return $ci->doSpecificMassiveActions($input);
 
          case "install" :
             if (isset($input['softwareversions_id']) && ($input['softwareversions_id'] > 0)) {
                $inst = new Computer_SoftwareVersion();
                foreach ($input['item'] as $key => $val) {
                   if ($val == 1) {
-                     $input2 = array('computers_id'        => $key,
-                                     'softwareversions_id' => $input['softwareversions_id']);
-                     if ($inst->can(-1, 'w', $input2)) {
-                        if ($inst->add($input2)) {
-                           $res['ok']++;
+                     if ($this->getFromDB($key)) {
+                        $input2 = array('computers_id'        => $key,
+                                        'softwareversions_id' => $input['softwareversions_id']);
+                        if ($inst->can(-1, CREATE, $input2)) {
+                           if ($inst->add($input2)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                           }
                         } else {
-                           $res['ko']++;
+                           $res['noright']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
-                        $res['noright']++;
+                        $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                      }
                   }
                }
@@ -741,6 +746,7 @@ class Computer extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
+      $tab[31]['condition']      = "`is_visible_computer`='1'";
 
       $tab[45]['table']          = 'glpi_operatingsystems';
       $tab[45]['field']          = 'name';

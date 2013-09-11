@@ -51,7 +51,7 @@ class Problem_Ticket extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -79,9 +79,9 @@ class Problem_Ticket extends CommonDBRelation{
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
       if ($donotif) {
          $problem = new Problem();
          if ($problem->getFromDB($this->input["problems_id"])) {
@@ -102,9 +102,9 @@ class Problem_Ticket extends CommonDBRelation{
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
       if ($donotif) {
          $problem = new Problem();
          if ($problem->getFromDB($this->fields["problems_id"])) {
@@ -158,7 +158,7 @@ class Problem_Ticket extends CommonDBRelation{
             $ticket = new Ticket();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'r')) {
+                  if ($this->can($key, READ)) {
                      if ($ticket->getFromDB($this->fields['tickets_id'])
                          && $ticket->canSolve()) {
                         $toupdate                     = array();
@@ -170,12 +170,15 @@ class Problem_Ticket extends CommonDBRelation{
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -197,11 +200,11 @@ class Problem_Ticket extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $problem->getField('id');
-      if (!$problem->can($ID,'r')) {
+      if (!$problem->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $problem->can($ID,'w');
+      $canedit = $problem->canEdit($ID);
 
       $rand = mt_rand();
 
@@ -254,8 +257,10 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         // TODO MassiveAction: specific_actions
          $massiveactionparams = array('num_displayed'    => $numrows,
-                                      'specific_actions' => array('purge'
+                                      'container'        => 'mass'.__CLASS__.$rand,
+                                      'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                                                     => _x('button',
                                                                           'Delete permanently'),
                                                                   'solveticket'
@@ -263,10 +268,10 @@ class Problem_Ticket extends CommonDBRelation{
                                       'extraparams'      => array('problems_id' => $problem->getID()),
                                       'width'            => 1000,
                                       'height'           => 500);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='11'>".Ticket::getTypeName($numrows)."</th>";
+      echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -279,14 +284,17 @@ class Problem_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
+            Ticket::showShort($data['id'], array('followups'              => false,
+                                                 'row_num'                => $i,
+                                                 'type_for_massiveaction' => __CLASS__,
+                                                 'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
       }
       echo "</table>";
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -303,14 +311,13 @@ class Problem_Ticket extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $ticket->getField('id');
-      if (!Session::haveRight("show_all_problem", 1)
-            || !$ticket->can($ID,'r')) {
+      if (!Session::haveRight("problem", Problem::READALL)
+          || !$ticket->can($ID, READ)) {
 
-//      if (!$ticket->can($ID,'r')) {
          return false;
       }
 
-      $canedit = $ticket->can($ID,'w');
+      $canedit = $ticket->can($ID, UPDATE);
 
       $rand = mt_rand();
 
@@ -361,11 +368,12 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => $numrows);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed'  => $numrows,
+                                      'container'      => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='11'>".Problem::getTypeName($numrows)."</th>";
+      echo "<tr><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -378,7 +386,9 @@ class Problem_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($problems as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'], Search::HTML_OUTPUT, $i, $data['linkID']);
+            Problem::showShort($data['id'], array('row_num'                => $i,
+                                                  'type_for_massiveaction' => __CLASS__,
+                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
       }
@@ -386,7 +396,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table>";
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -395,7 +405,7 @@ class Problem_Ticket extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("show_all_problem","1")) {
+      if (Session::haveRight("problem", Problem::READALL)) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Ticket' :

@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class to manage virtual machines
+/**
+ * ComputerVirtualMachine Class
+ *
+ * Class to manage virtual machines
+**/
 class ComputerVirtualMachine extends CommonDBChild {
 
    // From CommonDBChild
@@ -56,7 +60,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
-          && Session::haveRight("computer","r")) {
+          && Computer::canView()) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -67,6 +71,20 @@ class ComputerVirtualMachine extends CommonDBChild {
          return self::getTypeName(2);
       }
       return '';
+   }
+
+
+   /**
+    * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
+   **/
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+
+      return $ong;
    }
 
 
@@ -103,22 +121,21 @@ class ComputerVirtualMachine extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("computer","w")) {
+      if (!Session::haveRight("computer", UPDATE)) {
         return false;
       }
 
       $comp = new Computer();
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
          $comp->getFromDB($this->fields['computers_id']);
       } else {
          // Create item
-         $this->check(-1, 'w', $options);
+         $this->check(-1, CREATE, $options);
          $comp->getFromDB($options['computers_id']);
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       if ($this->isNewID($ID)) {
@@ -193,7 +210,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -211,10 +227,10 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       $ID = $comp->fields['id'];
 
-      if (!$comp->getFromDB($ID) || !$comp->can($ID, "r")) {
+      if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->can($ID, "w");
+      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 
@@ -235,7 +251,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
-               if ($computer->can($host['computers_id'],'r')) {
+               if ($computer->can($host['computers_id'], READ)) {
                   echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
                   echo $computer->fields['name']."</a>";
                   $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
@@ -279,10 +295,10 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       $ID = $comp->fields['id'];
 
-      if (!$comp->getFromDB($ID) || !$comp->can($ID, "r")) {
+      if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->can($ID, "w");
+      $canedit = $comp->canEdit($ID);
 
       echo "<div class='spaced center'>";
 
@@ -320,9 +336,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>";
-               echo Dropdown::getYesNo($vm->isDynamic());
-               echo "</td>";
+               echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
             }
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
@@ -342,7 +356,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<td>";
             if ($link_computer = self::findVirtualMachine($virtualmachine)) {
                $computer = new Computer();
-               if ($computer->can($link_computer,'r')) {
+               if ($computer->can($link_computer, READ)) {
                   $url  = "<a href='computer.form.php?id=".$link_computer."'>";
                   $url .= $computer->fields["name"]."</a>";
 

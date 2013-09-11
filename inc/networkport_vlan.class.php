@@ -53,7 +53,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -103,11 +103,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $port->getID();
-      if (!$port->can($ID, 'r')) {
+      if (!$port->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $port->can($ID, 'w');
+      $canedit = $port->canEdit($ID);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_networkports_vlans`.id as assocID,
@@ -152,8 +152,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed' => $number,
+                                      'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -191,8 +192,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         // TODO check because we switched from $paramsma to $massiveactionparams
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -242,6 +244,47 @@ class NetworkPort_Vlan extends CommonDBRelation {
          self::showForNetworkPort($item);
       }
       return true;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+   **/
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
+
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      // Set the labels for add_item and remove_item
+      $specificities['button_labels']['add']    = __s('Associate');
+      $specificities['button_labels']['remove'] = __s('Dissociate');
+
+      return $specificities;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::showRelationMassiveActionsSubForm()
+   **/
+   static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
+      if ($ma->getAction() == 'add') {
+         echo "<br><br>". __('Tagged'). Html::getCheckbox(array('name' => 'tagged'));
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
+   **/
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+                                                                 array $input) {
+      if ($action == 'add') {
+         return array('tagged' => $input['tagged']);
+      }
+      return array();
    }
 
 }

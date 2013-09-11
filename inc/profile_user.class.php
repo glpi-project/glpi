@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Profile_User class
+/**
+ * Profile_User Class
+**/
 class Profile_User extends CommonDBRelation {
 
    // From CommonDBTM
@@ -59,11 +61,15 @@ class Profile_User extends CommonDBRelation {
    static public $disableAutoEntityForwarding   = true;
 
 
-
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getForbiddenStandardMassiveAction()
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -78,7 +84,7 @@ class Profile_User extends CommonDBRelation {
    function canCreateItem() {
 
       $user = new User();
-      return $user->can($this->fields['users_id'],'r')
+      return $user->can($this->fields['users_id'],READ)
              && Profile::currentUserHaveMoreRightThan(array($this->fields['profiles_id']
                                                                => $this->fields['profiles_id']))
              && Session::haveAccessToEntity($this->fields['entities_id']);
@@ -107,11 +113,11 @@ class Profile_User extends CommonDBRelation {
       global $DB,$CFG_GLPI;
 
       $ID = $user->getField('id');
-      if (!$user->can($ID,'r')) {
+      if (!$user->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $user->can($ID,'w');
+      $canedit = $user->canEdit($ID);
 
       $strict_entities = self::getUserEntities($ID,false);
       if (!Session::haveAccessToOneOfEntities($strict_entities)
@@ -119,7 +125,7 @@ class Profile_User extends CommonDBRelation {
          $canedit = false;
       }
 
-      $canshowentity = Session::haveRight("entity","r");
+      $canshowentity = Entity::canView();
       $rand          = mt_rand();
 
       if ($canedit) {
@@ -166,8 +172,9 @@ class Profile_User extends CommonDBRelation {
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       if ($canedit && $num) {
-         $paramsma = array('num_displayed' => $num);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $paramsma = array('num_displayed' => $num,
+                           'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($paramsma);
       }
 
       if ($num > 0) {
@@ -206,7 +213,7 @@ class Profile_User extends CommonDBRelation {
             echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
 
-            if (Session::haveRight('profile', 'r')) {
+            if (Profile::canView()) {
                $entname = "<a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>".
                             $data["name"]."</a>";
             } else {
@@ -240,7 +247,7 @@ class Profile_User extends CommonDBRelation {
 
       if ($canedit && $num) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       Html::closeForm();
       echo "</div>";
@@ -257,12 +264,12 @@ class Profile_User extends CommonDBRelation {
 
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID, "r")) {
+      if (!$entity->can($ID, READ)) {
          return false;
       }
 
-      $canedit     = $entity->can($ID,"w");
-      $canshowuser = Session::haveRight("user", "r");
+      $canedit     = $entity->canEdit($ID);
+      $canshowuser = User::canView();
       $nb_per_line = 3;
       $rand        = mt_rand();
 
@@ -307,9 +314,10 @@ class Profile_User extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('specific_actions' => array('purge' => _x('button',
-                                                                     'Delete permanently')));
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $paramsma = array('container'        => 'mass'.__CLASS__.$rand,
+                           'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                       'purge' => _x('button', 'Delete permanently')));
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -410,7 +418,7 @@ class Profile_User extends CommonDBRelation {
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -427,9 +435,9 @@ class Profile_User extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID      = $prof->fields['id'];
-      $canedit = Session::haveRight("user", "w");
+      $canedit = Session::haveRightsOr("user", array(CREATE, UPDATE, DELETE, PURGE));
       $rand = mt_rand();
-      if (!$prof->can($ID,'r')) {
+      if (!$prof->can($ID, READ)) {
          return false;
       }
 
@@ -456,8 +464,9 @@ class Profile_User extends CommonDBRelation {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $nb);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $paramsma = array('num_displayed' => $nb,
+                           'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixe'><tr>";
       echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
@@ -572,7 +581,7 @@ class Profile_User extends CommonDBRelation {
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>\n";
@@ -632,7 +641,7 @@ class Profile_User extends CommonDBRelation {
     * @since version 0.84
     *
     * @param $user_ID         integer   user ID
-    * @param $right                     right to check (1 or read or write)
+    * @param $right                     right to check
     * @param $is_recursive              check also using recursive rights (true by default)
     *
     * @return array of entities ID
@@ -645,8 +654,11 @@ class Profile_User extends CommonDBRelation {
                 FROM `glpi_profiles_users`
                 INNER JOIN `glpi_profiles`
                   ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
+                INNER JOIN `glpi_profilerights`
+                  ON (`glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`)
                 WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
-                      AND `glpi_profiles`.`$right` IN ('1','r','w')";
+                  AND `glpi_profilerights`.`name` = '$right'
+                  AND `glpi_profilerights`.`rights` & ". (READ | CREATE | UPDATE | DELETE |PURGE);
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
@@ -865,7 +877,7 @@ class Profile_User extends CommonDBRelation {
          $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
-               if (Session::haveRight('user', 'r')) {
+               if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),
@@ -876,7 +888,7 @@ class Profile_User extends CommonDBRelation {
                break;
 
             case 'Profile' :
-               if (Session::haveRight('user', 'r')) {
+               if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),
@@ -922,5 +934,52 @@ class Profile_User extends CommonDBRelation {
       return true;
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+   **/
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
+
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      $specificities['dropdown_method_2'] = 'dropdownUnder';
+      $specificities['can_remove_all_at_once'] = false;
+
+      return $specificities;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::showRelationMassiveActionsSubForm()
+   **/
+   static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
+      if (($ma->getAction() == 'add') && ($peer_number == 2)) {
+         echo "<br><br>"._n('Entity', 'Entities', 1).':&nbsp;';
+         Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
+         echo "<br><br>".__('Recursive').":&nbsp;";
+         Html::showCheckbox(array('name' => 'is_recursive'));
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
+   **/
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+                                                                 array $input) {
+      $result = array();
+      if (isset($input['entities_id'])) {
+         $result['entities_id'] = $input['entities_id'];
+      }
+      if (isset($input['is_recursive'])) {
+         $result['is_recursive'] = $input['is_recursive'];
+      }
+
+      return $result;
+   }
 }
 ?>

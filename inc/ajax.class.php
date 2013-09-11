@@ -35,34 +35,38 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// class Ajax
+/**
+ * Ajax Class
+**/
 class Ajax {
 
 
    /**
     * Create modal window
-    * After display it using $name.show()
-    * May be constraint to a predefined html item setting renderTo options
+    * After display it using $name.dialog("open");
     *
     * @since version 0.84
     *
     * @param $name            name of the js object
     * @param $url             URL to display in modal
     * @param $options array   of possible options:
-    *          - width (default 800)
-    *          - height (default 400)
-    *          - modal : is a modal window ? (default true)
-    *          - container : specify a html element to render (default empty to html.body)
-    *          - title : window title (default empty)
+    *     - width      (default 800)
+    *     - height     (default 400)
+    *     - modal      is a modal window ? (default true)
+    *     - container  specify a html element to render (default empty to html.body)
+    *     - title      window title (default empty)
+    *     - display    display or get string ? (default true)
    **/
    static function createModalWindow($name, $url, $options=array() ) {
 
-      $param = array('width'       => 800,
-                     'height'      => 400,
-                     'modal'       => true,
-                     'container'   => '',
-                     'title'       => '',
-                     'extraparams' => array());
+      $param = array('width'           => 800,
+                     'height'          => 400,
+                     'modal'           => true,
+                     'container'       => '',
+                     'title'           => '',
+                     'extraparams'     => array(),
+                     'display'         => true,
+                     'js_modal_fields' => '');
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -71,51 +75,67 @@ class Ajax {
             }
          }
       }
-      echo "<script type='text/javascript'>";
-      echo "var $name=new Ext.Window({
-         layout:'fit',
-         width:".$param['width'].",
-         height:".$param['height'].",
-         closeAction:'hide',
-         modal: ".($param['modal']?'true':'false').",
-         ".(!empty($param['container'])?"renderTo: '".$param['container']."',":'')."
-         autoScroll: true,
-         title: \"".addslashes($param['title'])."\",
-         autoLoad: {url: '$url',
-                    scripts: true,
-                    nocache: true";
-         if (is_array($param['extraparams']) && count($param['extraparams'])) {
-            echo ", params: '".Toolbox::append_params($param['extraparams'])."'";
-         }
-         echo "}";
 
-     echo " }); ";
-      echo "</script>";
+      $out  = "<script type='text/javascript'>\n";
+      $out .= "var $name=";
+      if (!empty($param['container'])) {
+         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
+      } else {
+         $out .= "$('<div />')";
+      }
+      $out .= ".dialog({\n
+         width:".$param['width'].",\n
+         autoOpen: false,\n
+         height:".$param['height'].",\n
+         modal: ".($param['modal']?'true':'false').",\n
+         title: \"".addslashes($param['title'])."\",\n
+         open: function (){
+            var fields = ";
+      if (is_array($param['extraparams']) && count($param['extraparams'])) {
+         $out .= json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+      } else {
+         $out .= '{}';
+      }
+      $out .= ";\n";
+      if (!empty($param['js_modal_fields'])) {
+         $out .= $param['js_modal_fields']."\n";
+      }
+      $out .= "            $(this).load('$url', fields);
+         }
+      });\n";
+      $out .= "</script>\n";
+
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
 
    /**
     * Create fixed modal window
-    * After display it using $name.show()
-    * May be constraint to a predefined html item setting container options
+    * After display it using $name.dialog("open");
     *
     * @since version 0.84
     *
     * @param $name            name of the js object
     * @param $options array   of possible options:
-    *          - width (default 800)
-    *          - height (default 400)
-    *          - modal : is a modal window ? (default true)
-    *          - container : specify a html element to render (default empty to html.body)
-    *          - title : window title (default empty)
+    *          - width       (default 800)
+    *          - height      (default 400)
+    *          - modal       is a modal window ? (default true)
+    *          - container   specify a html element to render (default empty to html.body)
+    *          - title       window title (default empty)
+    *          - display     display or get string ? (default true)
    **/
    static function createFixedModalWindow($name, $options=array() ) {
 
       $param = array('width'     => 800,
                      'height'    => 400,
                      'modal'     => true,
-                     'container'  => '',
-                     'title'     => '');
+                     'container' => '',
+                     'title'     => '',
+                     'display'   => true);
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -124,59 +144,92 @@ class Ajax {
             }
          }
       }
-      echo "<script type='text/javascript'>";
-      echo "var $name=new Ext.Window({
-         layout:'fit',
-         width:".$param['width'].",
-         height:".$param['height'].",
-         closeAction:'hide',
-         modal: ".($param['modal']?'true':'false').",
-         ".(!empty($param['container'])?"applyTo: '".$param['container']."',":'')."
-         autoScroll: true,
-         title: \"".addslashes($param['title'])."\"
-         }); ";
-      echo "</script>";
-   }
 
-
-   /**
-    * Call from a popup Windows, refresh the dropdown in main window
-   **/
-   static function refreshDropdownPopupInMainWindow() {
-
-      if (isset($_SESSION["glpipopup"]["rand"])) {
-         echo "<script type='text/javascript' >\n";
-         echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
-         echo "</script>";
+      $out  =  "<script type='text/javascript'>\n";
+      $out .= "var $name=";
+      if (!empty($param['container'])) {
+         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
+      } else {
+         $out .= "$('<div></div>')";
       }
-   }
+      $out .= ".dialog({\n
+         width:".$param['width'].",\n
+         autoOpen: false,\n
+         height:".$param['height'].",\n
+         modal: ".($param['modal']?'true':'false').",\n
+         title: \"".addslashes($param['title'])."\"\n
+         });\n";
+      $out .= "</script>";
 
-
-   /**
-    * Call from a popup Windows, refresh the dropdown in main window
-   **/
-   static function refreshPopupMainWindow() {
-
-      // $_SESSION["glpipopup"]["rand"] is not use here but do check to be sure that
-      // we are in popup
-      if (isset($_SESSION["glpipopup"]["rand"])) {
-         echo "<script type='text/javascript' >\n";
-         echo "window.opener.location.reload(true)";
-         echo "</script>";
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
       }
+
    }
 
 
    /**
-    * Call from a popup Windows, refresh the tab in main window
+    * Create modal window in Iframe
+    * After display it using Html::jsGetElementbyID($domid).dialog("open");
     *
-    * @since version 0.84
+    * @since version 0.85
+    *
+    * @param $domid           DOM ID of the js object
+    * @param $url             URL to display in modal
+    * @param $options array   of possible options:
+    *          - width          (default 800)
+    *          - height         (default 400)
+    *          - modal          is a modal window ? (default true)
+    *          - title          window title (default empty)
+    *          - display        display or get string ? (default true)
+    *          - reloadonclose  reload main page on close ? (default false)
    **/
-   static function refreshPopupTab() {
+   static function createIframeModalWindow($domid, $url, $options=array() ) {
 
-      echo "<script type='text/javascript' >\n";
-      echo "window.opener.reloadTab()";
-      echo "</script>";
+      $param = array('width'         => 1050,
+                     'height'        => 500,
+                     'modal'         => true,
+                     'title'         => '',
+                     'display'       => true,
+                     'reloadonclose' => false);
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            if (isset($param[$key])) {
+               $param[$key] = $val;
+            }
+         }
+      }
+      $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
+
+      $out  = "<div id=\"$domid\">";
+      $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
+                frameBorder='0' scrolling='auto'></iframe></div>";
+
+      $out .= "<script type='text/javascript'>
+            $('#$domid').dialog({
+               modal: true,
+               autoOpen: false,
+               height: ".$param['height'].",
+               width: ".$param['width'].",
+               draggable: true,
+               resizeable: true,
+               open: function(ev, ui){
+               $('#Iframe$domid').attr('src','$url');},";
+      if ($param['reloadonclose']) {
+         $out .= "close: function(ev, ui) { window.location.reload() },";
+      }
+
+      $out.= "title: \"".addslashes($param['title'])."\"});
+            </script>";
+
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
 
@@ -185,6 +238,7 @@ class Ajax {
     *
     * @param $id   ID of the ajax item
     * @param $size size of the input text field (default 4)
+    * @deprecated since version 0.85
    **/
    static function displaySearchTextForDropdown($id, $size=4) {
       echo self::getSearchTextForDropdown($id, $size);
@@ -197,14 +251,17 @@ class Ajax {
     *
     * @param $id   ID of the ajax item
     * @param $size size of the input text field (default 4)
+    * @deprecated since version 0.85
    **/
    static function getSearchTextForDropdown($id, $size=4) {
       global $CFG_GLPI;
 
       //TRANS: %s is the character used as wildcard in ajax search
-      return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
-             "\" type='text' ondblclick=\"this.value='".
-             $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+//       return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
+//              "\" type='text' ondblclick=\"this.value='".
+//              $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+      return "<input title=\"".sprintf(__s('Search (%s for all)'), '*').
+             "\" type='text' ondblclick=\"this.value='*';\" id='search_$id' name='____data_$id' size='$size'>\n";
    }
 
 
@@ -218,103 +275,86 @@ class Ajax {
     *                                  tabs is array('key' => array('title'=> 'x',
     *                                                                url    => 'url_toload',
     *                                                                params => 'url_params')...
-    * @param $type                     for active tab
-    * @param $size                     width of tabs panel (default 950)
+    * @param $type                     itemtype for active tab
+    * @param $ID                       ID of element for active tab (default 0)
+    * @param $orientation              orientation of tabs (default vertical may also be horizontal)
     *
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $size=950) {
+                              $type, $ID=0, $orientation='vertical') {
       global $CFG_GLPI;
 
+      /// TODO need to clean params !!
       $active_tabs = Session::getActiveTab($type);
 
-      if (count($tabs)>0) {
-         echo "<script type='text/javascript'>
+      $rand = mt_rand();
+      if (count($tabs) > 0) {
 
-               var tabpanel = new Ext.TabPanel({
-               applyTo: '$tabdiv_id',
-               width:$size,
-               enableTabScroll: true,
-               resizeTabs: false,
-               collapsed: true,
-               plain: true,
-               plugins: [{
-                   ptype: 'tabscrollermenu',
-                   maxText  : 50,
-                   pageSize : 30
-               }],
-               items: [";
-               $first = true;
-               $default_tab = $active_tabs;
-
-               if (!isset($tabs[$active_tabs])) {
-                  $default_tab = key($tabs);
+         echo "<div id='tabs$rand' class='center'>";
+         echo "<ul>";
+         $current = 0;
+         $selected_tab = 0;
+         foreach ($tabs as $key => $val) {
+            if ($key == $active_tabs) {
+               $selected_tab = $current;
+            }
+            echo "<li><a title=\"".str_replace(array('<sup>', '</sup>'),'',$val['title'])."\" ";
+            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
+            // extract sup information
+            $title = '';
+            $limit = 18;
+            // No title strip for horizontal menu
+            if ($orientation == 'vertical') {
+               if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
+                  $title = Html::resume_text(trim($regs[1]),$limit).$regs[2];
+               } else {
+                  $title = Html::resume_text(trim($val['title']),$limit);
                }
+            } else {
+               $title = $val['title'];
+            }
+            echo $title."</a></li>";
+            $current ++;
+         }
+         echo "</ul>";
+         echo "<div class='loadingindicator' id='loadingindicator$rand'>".__('Loading...')."</div>";
 
-               foreach ($tabs as $key => $val) {
-                  if ($first) {
-                     $first = false;
-                  } else {
-                     echo ",";
-                  }
+         echo "</div>";
 
-                  echo "{
-                     title: \"".addslashes($val['title'])."\",
-                     id: '$key',";
-                  if (!empty($key) && $key != 'empty') {
-                     echo "autoLoad: {url: '".$val['url']."',
-                           scripts: true,
-                           nocache: true";
-                           if (isset($val['params'])) {
-                              echo ", params: '".$val['params']."'";
-                           }
-                     echo "},";
-                  }
+         echo "<script type='text/javascript'>";
+//          echo "$.ajaxSetup({
+//                   cache:false,
+//
+//                   success: function() {}
+//                });  ";
+         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST',
+          // Show loading indicator
+                  beforeSend: function() {
+                     $('#loadingindicator$rand').show()
+                  },
+                  complete: function() {
+                     $('#loadingindicator$rand').hide()
+                  }},
+         activate : function( event, ui ){
+            //  Get future value
+            var newIndex = ui.newTab.parent().children().index(ui.newTab);
+            $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+            { itemtype: '$type', id: '$ID', tab: newIndex });
+            }});";
+         if ($orientation=='vertical') {
+            echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
+         }
+         echo "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
 
-                  echo "  listeners:{ // Force glpi_tab storage
-                          beforeshow : function(panel) {
-                           /* clean content because append data instead of replace it : no more problem */
-                           /* Problem with IE6... But clean data for tabpanel before show. Do it on load default tab ?*/
-                           /*tabpanel.body.update('');*/
-                           /* update active tab*/
-                           Ext.Ajax.request({
-                              url : '".$CFG_GLPI['root_doc'].
-                                     "/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=".
-                                     urlencode($key)."',
-                              success: function(objServerResponse) {
-                              //alert(objServerResponse.responseText);
-                           }
-                           });
-                        }
-                     }";
-                  echo "}";
-               } // Foreach tabs
-            echo "]});";
-
-            echo "/// Define view point";
-            echo "tabpanel.expand();";
-
-            echo "// force first load
-               function loadDefaultTab() {
-                  tabpanel.body=Ext.get('$tabdivcontent_id');
-                  // See before
-                  tabpanel.body.update('');
-                  tabpanel.setActiveTab('$default_tab');";
-            echo "}";
-
-            echo "// force reload
-               function reloadTab(add) {
-                  var tab = tabpanel.getActiveTab();
-                  var opt = tab.autoLoad;
-                  if (add) {
-                     if (opt.params)
-                        opt.params = opt.params + '&' + add;
-                     else
-                        opt.params = add;
-                  }
-                  tab.getUpdater().update(opt);";
-            echo "}";
+         /// TODO : add new parameters to default URL !!
+         echo "// force reload
+            function reloadTab(add) {
+               var current_index = $('#tabs$rand').tabs('option','selected');
+               $('#tabs$rand').tabs('option', 'ajaxOptions', { data: add });
+               $('#tabs$rand').tabs( 'load' , current_index);
+               $('#tabs$rand').tabs('option', 'ajaxOptions', { data: {} });
+            }";
          echo "</script>";
       }
    }
@@ -385,14 +425,17 @@ class Ajax {
       global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
-         $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
+//          $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
+         $forceloadfor = array('*');
       }
       // Need to define min size for text search
       if ($minsize < 0) {
-         $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
+//          $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
+         $minsize = 0;
       }
       if ($buffertime < 0) {
-         $buffertime = $CFG_GLPI['ajax_buffertime_load'];
+         $buffertime = 0;
+//         $buffertime = $CFG_GLPI['ajax_buffertime_load'];
       }
 
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
@@ -426,20 +469,31 @@ class Ajax {
       $output = '';
       foreach ($zones as $zone) {
          foreach ($events as $event) {
-            $output .= "
-               Ext.get('$zone').on(
+            if ($buffertime > 0) {
+               $output .= "var last$zone$event = 0;";
+            }
+            $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
                 '$event',
-                function() {";
+                function(event) {";
+                  /// TODO manage buffer time !! ?
+                  if ($buffertime > 0) {
+//                      $output.= "var elapsed = new Date().getTime() - last$zone$event;
+//                            last$zone$event = new Date().getTime();
+//                            if (elapsed < $buffertime) {
+//                               return;
+//                            }";
+                  }
+
                   $condition = '';
                   if ($minsize >= 0) {
-                     $condition = " Ext.get('$zone').getValue().length >= $minsize ";
+                     $condition = Html::jsGetElementbyID(Html::cleanId($zone)).".val().length >= $minsize ";
                   }
                   if (count($forceloadfor)) {
                      foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
                            $condition .= " || ";
                         }
-                        $condition .= "Ext.get('$zone').getValue() == '$value'";
+                        $condition .= Html::jsGetElementbyID(Html::cleanId($zone)).".val() == '$value'";
                      }
                   }
                   if (!empty($condition)) {
@@ -449,11 +503,7 @@ class Ajax {
                   if (!empty($condition)) {
                      $output .= "}";
                   }
-
                $output .=  "}";
-               if ($buffertime > 0) {
-                  $output.= ", this, { buffer : $buffertime }";
-               }
             $output .=");\n";
          }
       }
@@ -468,22 +518,34 @@ class Ajax {
    /**
     * Javascript code for update an item (Javascript code only)
     *
-    * @param $options array of options
+    * @param $options    array    of options
     *  - toupdate : array / Update a specific item on select change on dropdown
     *               (need value_fieldname, to_update,
     *                url (@see Ajax::updateItemOnSelectEvent for information)
     *                and may have moreparams)
+    * @param $display    boolean  display or get string (default true)
    **/
-   static function commonDropdownUpdateItem($options) {
+   static function commonDropdownUpdateItem($options, $display=true) {
 
+      $field     = '';
+      $fieldname = '';
+
+      $output    = '';
+      // Old scheme
       if (isset($options["update_item"])
           && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
+         $field     = "update_item";
+         $fieldname = 'myname';
+      }
+      // New scheme
+      if (isset($options["toupdate"])
+          && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))) {
+         $field     = "toupdate";
+         $fieldname = 'name';
+      }
 
-         if (!is_array($options["update_item"])) {
-            $datas = Toolbox::decodeArrayFromInput($options["update_item"]);
-         } else {
-            $datas = $options["update_item"];
-         }
+      if (!empty($field)) {
+         $datas = $options[$field];
          if (is_array($datas) && count($datas)) {
             // Put it in array
             if (isset($datas['to_update'])) {
@@ -504,10 +566,16 @@ class Ajax {
                   }
                }
 
-             self::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
-                                           $data['to_update'], $data['url'], $paramsupdate);
+             $output .= self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
+                                                      $data['to_update'], $data['url'],
+                                                      $paramsupdate, $display);
             }
          }
+      }
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
       }
    }
 
@@ -526,123 +594,38 @@ class Ajax {
    static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="",
                                     $display=true) {
 
-      // Get it from a Ext.Element object
-      $out = "Ext.get('$toupdate').load({
-          url: '$url',
-          scripts: true";
-
+      $out = Html::jsGetElementbyID($toupdate).".load('$url'\n";
       if (count($parameters)) {
-         $out .= ",
-             params:'";
+         $out .= ",{";
          $first = true;
          foreach ($parameters as $key => $val) {
             if ($first) {
                $first = false;
             } else {
-               $out .= "&";
+               $out .= ",";
             }
 
-            $out .= $key."=";
-            if (is_array($val)) {
-               $out .=  Toolbox::prepareArrayForInput($val);
-            } else if (preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
-               $out .=  "'+Ext.get('".$toobserve[$regs[1]]."').getValue()+'";
+            $out .= $key.":";
+            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
+               $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 
-            } else if ($val==="__VALUE__") {
-               $out .=  "'+Ext.get('$toobserve').getValue()+'";
+            } else if (!is_array($val) && $val==="__VALUE__") {
+               $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)).".val()";
 
             } else {
-               if (preg_match("/['\"]/",$val)) {
-                  $out .=  rawurlencode($val);
-               } else {
-                  $out .=  $val;
-               }
+               $out .=  json_encode($val);
             }
          }
-         $out .= "'\n";
+         $out .= "}\n";
+
       }
-      $out .= "});";
+      $out.= ")\n";
       if ($display) {
          echo $out;
       } else {
          return $out;
       }
    }
-
-
-   /**
-    * Complete Dropdown system using ajax to get datas
-    *
-    * @param $use_ajax              Use ajax search system (if not display a standard dropdown)
-    * @param $relativeurl           Relative URL to the root directory of GLPI
-    * @param $params       array    of parameters to send to ajax URL
-    * @param $default               Default datas to print in case of $use_ajax (default '&nbsp;')
-    * @param $rand                  Random parameter used (default 0)
-    * @param $display      boolean  display or get string (default true)
-
-   **/
-   static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0,
-                            $display=true) {
-      global $CFG_GLPI, $DB;
-
-      $initparams = $params;
-      if ($rand == 0) {
-         $rand = mt_rand();
-      }
-      $locoutput = '';
-      if ($use_ajax) {
-         $locoutput .= self::getSearchTextForDropdown($rand);
-         $locoutput .= self::updateItemOnInputTextEvent("search_$rand", "results_$rand",
-                                                        $CFG_GLPI["root_doc"].$relativeurl,
-                                                        $params,
-                                                        $CFG_GLPI['ajax_min_textsearch_load'],
-                                                        $CFG_GLPI['ajax_buffertime_load'],
-                                                        array(), false);
-      }
-      $locoutput .=  "<span id='results_$rand'>\n";
-      if (!$use_ajax) {
-         // Save post datas if exists
-         $oldpost = array();
-         if (isset($_POST) && count($_POST)) {
-            $oldpost = $_POST;
-         }
-         $_POST = $params;
-         $_POST["searchText"] = $CFG_GLPI["ajax_wildcard"];
-         ob_start();
-         include (GLPI_ROOT.$relativeurl);
-         $locoutput .= ob_get_contents();
-         ob_end_clean();
-
-         // Restore $_POST datas
-         if (count($oldpost)) {
-            $_POST = $oldpost;
-         }
-      } else {
-         $locoutput .=  $default;
-      }
-
-      $locoutput .=  "</span>\n";
-      $locoutput .=  "<script type='text/javascript'>";
-      $locoutput .=  "function update_results_$rand() {";
-      if ($use_ajax) {
-         $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
-                                              $initparams, "search_$rand", false);
-      } else {
-         $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
-         $locoutput               .= self::updateItemJsCode("results_$rand",
-                                                            $CFG_GLPI['root_doc'].$relativeurl,
-                                                            $initparams, '', false);
-      }
-      $locoutput .=  "}";
-      $locoutput .=  "</script>";
-
-      if ($display) {
-         echo $locoutput;
-      } else {
-         return $locoutput;
-      }
-   }
-
 
    /**
     * Javascript code for update an item

@@ -35,21 +35,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// ITILCategory class
+/**
+ * ITILCategory class
+**/
 class ITILCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory       = true;
+   var $can_be_translated  = true;
 
+   static $rightname       = 'itilcategory';
 
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
-   }
 
 
    function getAdditionalFields() {
@@ -98,10 +94,8 @@ class ITILCategory extends CommonTreeDropdown {
                          'list'      => true),
                   );
 
-      if (!Session::haveRight("edit_all_problem", "1")
-          && !Session::haveRight("show_all_problem", "1")
-          && !Session::haveRight("show_my_problem", "1")
-          && !Session::haveRight("delete_problem", "1")) {
+      if (!Session::haveRightsOr('problem', array(CREATE, UPDATE, DELETE,
+                                                  Problem::READALL, Problem::READMY))) {
 
          unset($tab[7]);
       }
@@ -172,12 +166,12 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[78]['forcegroupby']  = true;
       $tab[78]['massiveaction'] = false;
       $tab[78]['joinparams']    = array('jointype' => 'child');
-
+      
       $tab[79]['table']         = 'glpi_knowbaseitemcategories';
       $tab[79]['field']         = 'completename';
       $tab[79]['name']          = __('Knowledge base');
       $tab[79]['datatype']      = 'dropdown';
-
+      
       return $tab;
    }
 
@@ -242,7 +236,7 @@ class ITILCategory extends CommonTreeDropdown {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("entity_dropdown","r")) {
+      if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
                $ong[1] = $this->getTypeName(2);
@@ -273,7 +267,7 @@ class ITILCategory extends CommonTreeDropdown {
       $ID           = $tt->fields['id'];
 
       if (!$tt->getFromDB($ID)
-          || !$tt->can($ID, "r")) {
+          || !$tt->can($ID, READ)) {
          return false;
       }
       $ttm  = new self();

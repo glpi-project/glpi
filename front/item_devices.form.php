@@ -37,16 +37,12 @@ include ('../inc/includes.php');
 Session::checkCentralAccess();
 
 if (isset($_POST["add"])) {
-   if (isset($_POST['devicetype'])) {
-      if ($link = getItemForItemtype('Item_'.$_POST['devicetype'])) {
-         $link->addDevices(1, $_POST['itemtype'], $_POST['items_id'], $_POST['devices_id']);
-      }
-   }
+   Item_Devices::addDevicesFromPOST($_POST);
    Html::back();
 } else if (isset($_POST["updateall"])) {
    Item_Devices::updateAll($_POST, false);
    Html::back();
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    Item_Devices::updateAll($_POST, true);
    Html::back();
 }

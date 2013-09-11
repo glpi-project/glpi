@@ -36,24 +36,23 @@ include ('../inc/includes.php');
 $ic = new Infocom();
 
 if (isset($_POST['add'])) {
-   $ic->check(-1, 'w', $_POST);
+   $ic->check(-1, CREATE, $_POST);
 
    $newID = $ic->add($_POST, false);
    Event::log($newID, "infocom", 4, "financial",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $ic->check($_POST["id"],'d');
-
-   $ic->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $ic->check($_POST["id"], PURGE);
+   $ic->delete($_POST, 1);
    Event::log($_POST["id"], "infocom", 4, "financial",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $ic->check($_POST["id"],'w');
+   $ic->check($_POST["id"], UPDATE);
 
    $ic->update($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",
@@ -62,7 +61,7 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else {
-   Session::checkRight("infocom", "r");
+   Session::checkRight("infocom", READ);
 
    Html::popHeader(Infocom::getTypeName(), $_SERVER['PHP_SELF']);
 
@@ -78,12 +77,7 @@ if (isset($_POST['add'])) {
       }
    }
 
-   if (isset($_GET["update"]) && ($_GET["update"] == 1)) {
-      $withtemplate = 0;
-   } else {
-      $withtemplate = 2;
-   }
-   Infocom::showForItem($item, $withtemplate);
+   Infocom::showForItem($item, 0);
 
    Html::popFooter();
 }

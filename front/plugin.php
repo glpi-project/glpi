@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 
 /**
  * Obsolete function provided to detect compatibility issue
@@ -87,7 +87,7 @@ function haveRight() {
 
 $plugin = new Plugin();
 
-Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugins");
+Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
 $plugin->listPlugins();
 

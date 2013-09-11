@@ -39,6 +39,8 @@ Session::checkLoginUser();
 Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
 
 Search::manageGetValues('DocumentType');
+
+$_GET['target'] = $_SERVER['PHP_SELF'];
 Search::showList('DocumentType',$_GET);
 
 Html::popFooter();

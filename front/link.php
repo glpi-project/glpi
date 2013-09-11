@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("link", "r");
+Session::checkRight("link", READ);
 
 Html::header(Link::getTypeName(2), $_SERVER['PHP_SELF'], "config", "link");
 

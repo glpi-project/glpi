@@ -67,7 +67,7 @@ if (isset($_POST["update"])
    }
 
    $pref = new Preference();
-   $pref->show();
+   $pref->display();
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
       Html::footer();
