@@ -84,8 +84,10 @@ class Session {
             }
          }
          self::destroy();
+         session_regenerate_id();
          self::start();
          $_SESSION = $save;
+         $_SESSION['valid_id'] = session_id();
          // Define default time :
          $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 
@@ -657,6 +659,21 @@ class Session {
 
 
    /**
+    * Global check of session to prevent PHP vulnerability
+    *
+    * @since version 0.85
+    *
+    * @see https://wiki.php.net/rfc/strict_sessions
+   **/
+   static function checkValidSessionId(){
+      if (!isset($_SESSION['valid_id'])
+         || $_SESSION['valid_id'] !== session_id()) {
+         die(__('Invalid use of session ID'));
+      }
+      return true;
+   }
+   
+   /**
     * Check if I have access to the central interface
     *
     * @return Nothing : display error if not permit
@@ -664,6 +681,7 @@ class Session {
    static function checkCentralAccess() {
       global $CFG_GLPI;
 
+      self::checkValidSessionId();
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          // Gestion timeout session
@@ -681,9 +699,11 @@ class Session {
    static function checkFaqAccess() {
       global $CFG_GLPI;
 
-      if (($CFG_GLPI["use_public_faq"] == 0)
-          && !self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-         Html::displayRightError();
+      if (!$CFG_GLPI["use_public_faq"]) {
+         self::checkValidSessionId();
+         if (!self::haveRight('knowbase', KnowbaseItem::READFAQ))) {
+            Html::displayRightError();
+         }
       }
    }
 
@@ -696,6 +716,7 @@ class Session {
    static function checkHelpdeskAccess() {
       global $CFG_GLPI;
 
+      self::checkValidSessionId();
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
          // Gestion timeout session
@@ -712,6 +733,7 @@ class Session {
    static function checkLoginUser() {
       global $CFG_GLPI;
 
+      self::checkValidSessionId();
       if (!isset($_SESSION["glpiname"])) {
          // Gestion timeout session
          self::redirectIfNotLoggedIn();
@@ -731,6 +753,7 @@ class Session {
    static function checkRight($module, $right) {
       global $CFG_GLPI;
 
+      self::checkValidSessionId();
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
          self::redirectIfNotLoggedIn();
@@ -751,6 +774,8 @@ class Session {
    static function checkSeveralRightsOr($modules) {
       global $CFG_GLPI;
 
+      self::checkValidSessionId();
+      
       $valid = false;
       if (count($modules)) {
          foreach ($modules as $mod => $right) {
