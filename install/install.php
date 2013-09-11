@@ -570,8 +570,8 @@ if (!isset($_POST["install"])) {
          if (empty($_POST["newdatabasename"])) {
             $_POST["newdatabasename"] = "";
          }
-         step4($_POST["databasename"],
-               $_POST["newdatabasename"]);
+         step4($DB->escape($_POST["databasename"]),
+               $DB->escape($_POST["newdatabasename"]));
          break;
 
       case "Etape_4" : // finish installation
