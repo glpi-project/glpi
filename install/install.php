@@ -233,6 +233,9 @@ function step3($host, $user, $password, $update) {
       Html::closeForm();
 
    } else {
+      $_SESSION['db_access'] = array('host'     => $host,
+                                     'user'     => $user,
+                                     'password' => $password);
       echo  "<h3>".__('Database connection successful')."</h3>";
 
       if ($update == "no") {
@@ -252,9 +255,11 @@ function step3($host, $user, $password, $update) {
          echo "<p><input type='radio' name='databasename' value='0'>";
          _e('Create a new database or use an existing one:');
          echo "&nbsp;<input type='text' name='newdatabasename'></p>";
+         /*
          echo "<input type='hidden' name='db_host' value='". $host ."'>";
          echo "<input type='hidden' name='db_user' value='". $user ."'>";
          echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
+         */
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                __('Continue')."'></p>";
@@ -271,9 +276,11 @@ function step3($host, $user, $password, $update) {
             echo $row['Database'].".</p>";
          }
 
+         /*
          echo "<input type='hidden' name='db_host' value='". $host ."'>";
          echo "<input type='hidden' name='db_user' value='". $user ."'>";
          echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
+         */
          echo "<input type='hidden' name='install' value='update_1'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                 __('Continue')."'></p>";
@@ -286,7 +293,11 @@ function step3($host, $user, $password, $update) {
 
 
 //Step 4 Create and fill database.
-function step4 ($host, $user, $password, $databasename, $newdatabasename) {
+function step4 ($databasename, $newdatabasename) {
+
+   $host     = $_SESSION['db_access']['host'];
+   $user     = $_SESSION['db_access']['user'];
+   $password = $_SESSION['db_access']['password'];
 
    //display the form to return to the previous step.
    echo "<h3>".__('Initialization of the database')."</h3>";
@@ -452,7 +463,11 @@ function create_conn_file($host, $user, $password, $DBname) {
 }
 
 
-function update1($host, $user, $password, $DBname) {
+function update1($DBname) {
+
+   $host     = $_SESSION['db_access']['host'];
+   $user     = $_SESSION['db_access']['user'];
+   $password = $_SESSION['db_access']['password'];
 
    if (create_conn_file($host,$user,$password,$DBname) && !empty($DBname)) {
       $from_install = true;
@@ -553,7 +568,7 @@ if (!isset($_POST["install"])) {
          if (empty($_POST["newdatabasename"])) {
             $_POST["newdatabasename"] = "";
          }
-         step4($_POST["db_host"], $_POST["db_user"], $_POST["db_pass"], $_POST["databasename"],
+         step4($_POST["databasename"],
                $_POST["newdatabasename"]);
          break;
 
@@ -566,7 +581,7 @@ if (!isset($_POST["install"])) {
          if (empty($_POST["databasename"])) {
             $_POST["databasename"] = "";
          }
-         update1($_POST["db_host"], $_POST["db_user"], $_POST["db_pass"], $_POST["databasename"]);
+         update1($_POST["databasename"]);
          break;
    }
 }
