@@ -219,9 +219,9 @@ function step3($host, $user, $password, $update) {
    echo "<h3>".__('Test of the connection at the database')."</h3>";
    $link = new mysqli($host, $user, $password);
 
-   if (!$link || empty($host) || empty($user)) {
+   if (($link->connect_error) || empty($host) || empty($user)) {
       echo "<p>".__("Can't connect to the database")."\n <br>".
-           sprintf(__('The server answered: %s'), $link->error)."</p>";
+           sprintf(__('The server answered: %s'), $link->connect_error)."</p>";
 
       if (empty($host) || empty($user)) {
          echo "<p>".__('The server or/and user field is empty')."</p>";
