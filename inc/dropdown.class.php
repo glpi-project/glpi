@@ -1301,27 +1301,6 @@ class Dropdown {
                                        $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
                                        $param);
 
-
-/*                                       
-      $out = "<select name='$myname' id='$field_id'>\n";
-
-      if (count($params['toadd'])) {
-         foreach ($params['toadd'] as $key => $val) {
-            $out .=  "<option value='$key' ".(($key == $params['value']) ?" selected ":"").">";
-            $out .= $val."</option>";
-         }
-      }
-
-      for ($i=$params['min'] ; $i<=$params['max'] ; $i+=$params['step']) {
-         $txt = $i;
-         if (isset($params['unit'])) {
-            $txt = self::getValueWithUnit($i,$params['unit']);
-         }
-         $out .= "<option value='$i' ".(($i == $params['value']) ?" selected ":"").">$txt</option>";
-      }
-      $out .= "</select>";
-      $out .= Html::jsAdaptDropdown($field_id);*/
-
       if ($p['display']) {
          echo $out;
          return $p['rand'];
