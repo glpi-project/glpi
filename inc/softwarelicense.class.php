@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// License class
+/**
+ * SoftwareLicense Class
+**/
 class SoftwareLicense extends CommonDBTM {
 
    // From CommonDBTM
@@ -43,19 +45,12 @@ class SoftwareLicense extends CommonDBTM {
 
    static protected $forward_entity_to = array('Infocom');
 
+   static $rightname                   = 'software';
+
+
 
    static function getTypeName($nb=0) {
       return _n('License', 'Licenses', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('software', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('software', 'r');
    }
 
 
@@ -127,6 +122,7 @@ class SoftwareLicense extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
@@ -154,10 +150,6 @@ class SoftwareLicense extends CommonDBTM {
          $softwares_id = $options['softwares_id'];
       }
 
-      if (!Session::haveRight("software","w")) {
-         return false;
-      }
-
       if ($ID < 0) {
          // Create item
          $this->fields['softwares_id'] = $softwares_id;
@@ -171,7 +163,6 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -227,14 +218,22 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('quantity', 'Number')."</td>";
       echo "<td>";
-      Dropdown::showInteger("number", $this->fields["number"], 1, 1000, 1,
-                            array(-1 => __('Unlimited')));
+      Dropdown::showNumber("number", array('value' => $this->fields["number"],
+                                           'min'   => 1,
+                                           'max'   => 1000,
+                                           'step'  => 1,
+                                           'toadd' => array(-1 => __('Unlimited'))));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Expiration')."</td>";
       echo "<td>";
-      Html::showDateFormItem('expire', $this->fields["expire"]);
+      Html::showDateField('expire', array('value' => $this->fields["expire"]));
+      if ($ID
+          && is_null($this->fields["expire"])) {
+         echo "<br>".__('Never expire')."&nbsp;";
+         Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiratoin date'));
+      }
       Alert::displayLastAlert('SoftwareLicense', $ID);
       echo "</td></tr>\n";
 
@@ -247,7 +246,6 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -277,11 +275,10 @@ class SoftwareLicense extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 
@@ -526,31 +523,31 @@ class SoftwareLicense extends CommonDBTM {
       $license       = new self();
       $computer      = new Computer();
 
-      if (!$software->can($softwares_id,"r")) {
+      if (!$software->can($softwares_id, READ)) {
          return false;
       }
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       } else {
          $start = 0;
       }
 
 
-      if (isset($_POST["order"]) && ($_POST["order"] == "DESC")) {
+      if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
 
-      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
-         $sort = "`".$_POST["sort"]."`";
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
+         $sort = "`".$_GET["sort"]."`";
       } else {
          $sort = "`entity` $order, `name`";
       }
 
 
       // Righ type is enough. Can add a License on a software we have Read access
-      $canedit             = Session::haveRight("software", "w");
+      $canedit             = Software::canUpdate();
       $showmassiveactions  = $canedit;
 
       // Total Number of events
@@ -608,14 +605,15 @@ class SoftwareLicense extends CommonDBTM {
          if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed'
-                                              => $num_displayed,
-                                            'extraparams'
-                                              => array('options'
-                                                        => array('condition'
-                                                                 => "`glpi_softwareversions`.`softwares_id` = $softwares_id")));
+               $massiveactionparams
+                  = array('num_displayed' => $num_displayed,
+                          'container'     => 'mass'.__CLASS__.$rand,
+                          'extraparams'   => array('options'
+                                                   => array('condition'
+                                                            => "`glpi_softwareversions`.`softwares_id`
+                                                                  = $softwares_id")));
 
-               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+               Html::showMassiveActions($massiveactionparams);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
@@ -671,7 +669,7 @@ class SoftwareLicense extends CommonDBTM {
                }
                echo "<tr class='tab_bg_2".($expired?'_2':'')."'>";
 
-               if ($license->can($data['id'], "w")) {
+               if ($license->canEdit($data['id'])) {
                   echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
                } else {
                   echo "<td>&nbsp;</td>";
@@ -724,7 +722,7 @@ class SoftwareLicense extends CommonDBTM {
 
             if ($showmassiveactions) {
                $massiveactionparams['ontop'] = false;
-               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+               Html::showMassiveActions($massiveactionparams);
 
                Html::closeForm();
             }

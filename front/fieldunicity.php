@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight('config', 'r');
+Session::checkRight('config', READ);
 Html::header(FieldUnicity::getTypeName(2), $_SERVER['PHP_SELF'], "config", "control",
              "FieldUnicity");
 

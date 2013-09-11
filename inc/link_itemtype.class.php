@@ -47,7 +47,7 @@ class Link_Itemtype extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -64,11 +64,11 @@ class Link_Itemtype extends CommonDBChild {
 
       $links_id = $link->getField('id');
 
-      $canedit  = $link->can($links_id, 'w');
+      $canedit  = $link->canEdit($links_id);
       $rand     = mt_rand();
 
-      if (!Session::haveRight("link","r")
-          || !$link->can($links_id, 'r')) {
+      if (!Link::canView()
+          || !$link->can($links_id, READ)) {
          return false;
       }
 
@@ -109,8 +109,9 @@ class Link_Itemtype extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => $numrows);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed'  => $numrows,
+                                      'container'      => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -137,7 +138,7 @@ class Link_Itemtype extends CommonDBChild {
       echo "</table>";
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -169,5 +170,22 @@ class Link_Itemtype extends CommonDBChild {
       return true;
    }
 
+
+   /**
+    *
+    * Remove all associations for an itemtype
+    *
+    * @since 0.85
+    *
+    * @param $itemtype itemtype for which all link associations must be removed
+    */
+   static function deleteForItemtype($itemtype) {
+      global $DB;
+
+      $query = "DELETE
+                FROM `".self::getTable()."`
+                WHERE `itemtype` LIKE '%Plugin$itemtype%'";
+      $DB->query($query);
+   }
 }
 ?>

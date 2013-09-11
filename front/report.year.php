@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 
 Report::title();
 
@@ -43,38 +43,40 @@ Report::title();
 
 echo "<form name='form' method='post' action='report.year.list.php'>";
 
-echo "<table class='tab_cadre' >";
-echo "<tr><th colspan='2'><big>".__("Equipment's report by year")."</big></th></tr>";
+echo "<table class='tab_cadre_fixe'>";
+echo "<tr><th colspan='4'>".__("Equipment's report by year")."</th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 
 echo "<tr class='tab_bg_2'>";
-echo "<td width='150' class='center'>";
-echo "<p class='b'>".__('Item type')."</p> ";
-echo "<p><select name='item_type[]' size='8' multiple>";
-echo "<option value='0' selected>".__('All')."</option>";
-echo "<option value='Computer'>"._n('Computer', 'Computers', 2)."</option>";
-echo "<option value='Printer'>"._n('Printer', 'Printers', 2)."</option>";
-echo "<option value='NetworkEquipment'>"._n('Network', 'Networks', 2)."</option>";
-echo "<option value='Monitor'>"._n('Monitor', 'Monitors', 2)."</option>";
-echo "<option value='Peripheral'>"._n('Device', 'Devices', 2)."</option>";
-echo "<option value='SoftwareLicense'>"._n('License', 'Licenses', 2)."</option>";
-echo "<option value='Phone'>"._n('Phone', 'Phones', 2)."</option>";
-echo "</select> </p></td>";
-
-echo "<td width='150' class='center'><p class='b'>".__('Date')."</p> ";
-echo "<p><select name='annee[]' size='8' multiple>";
-echo "<option value='toutes' selected>".__('All')."</option>";
-$y = date("Y");
-for ($i=$y-10 ; $i<$y+10 ; $i++) {
-   echo " <option value='$i'>$i</option>";
+echo "<td width='20%' class='b center'>".__('Item type')."</td>";
+echo "<td width='30%'>";
+$values = array(0 => __('All'));
+foreach ($CFG_GLPI["contract_types"] as $itemtype) {
+   if ($item = getItemForItemtype($itemtype)) {
+      $values[$itemtype] = $item->getTypeName();
+   }
 }
-echo "</select></p></td></tr>";
+Dropdown::showFromArray('item_type',$values, array('value'    => 0,
+                                                   'multiple' => true));
+echo "</td>";
 
-echo "<tr class='tab_bg_2'><td colspan='2' class='center'>";
+echo "<td width='20%' class='center'><p class='b'>".__('Date')."</p></td>";
+echo "<td width='30%'>";
+$y = date("Y");
+$values = array( 0 => __('All'));
+for ($i=($y-10) ; $i<($y+10) ; $i++) {
+   $values[$i] = $i;
+}
+Dropdown::showFromArray('year',$values, array('value'    => $y,
+                                              'multiple' => true));
+echo "</td></tr>";
+
+echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
 echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'></td></tr>";
 
 echo "</table>";
+
 Html::closeForm();
 
 Html::footer();

@@ -49,11 +49,9 @@ $rulecollection = RuleCollection::getClassByType($sub_type);
 if ($rulecollection->isRuleRecursive()) {
    $rulecollection->setEntity($_SESSION['glpiactive_entity']);
 }
-$rulecollection->checkGlobal('r');
+$rulecollection->checkGlobal(READ);
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","display");
-}
+Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
 
 // Need for RuleEngines
 foreach ($_POST as $key => $val) {
@@ -70,7 +68,5 @@ if (isset($_POST["test_all_rules"])) {
    $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST);
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::footer();
-}
+Html::popFooter();
 ?>

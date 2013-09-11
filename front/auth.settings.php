@@ -33,11 +33,11 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 
 $config = new Config();
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "extauth",
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth",
              "settings");
 $config->showFormAuthentication();
 

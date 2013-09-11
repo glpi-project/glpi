@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -36,10 +36,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Class Change_Supplier
+ * Change_Supplier Class
+ *
+ * Relation between Changes and Suppliers
  *
  * @since version 0.84
- *
 **/
 class Change_Supplier extends CommonITILActor {
 

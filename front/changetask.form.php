@@ -34,5 +34,7 @@
 
 include ('../inc/includes.php');
 
+$task = new ChangeTask();
+
 include (GLPI_ROOT . "/front/commonitiltask.form.php");
 ?>

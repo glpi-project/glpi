@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// class Session
+/**
+ * Session Class
+**/
 class Session {
 
    // GLPI MODE
@@ -73,7 +75,8 @@ class Session {
 
       if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
-         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens');
+         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+                         'glpiskipMaintenance');
          $save   = array();
          foreach ($tosave as $t) {
             if (isset($_SESSION[$t])) {
@@ -83,8 +86,9 @@ class Session {
          self::destroy();
          self::start();
          $_SESSION = $save;
-         // Define default time
+         // Define default time :
          $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+
          // Normal mode for this request
          $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
          // Check ID exists and load complete user from DB (plugins...)
@@ -92,7 +96,11 @@ class Session {
              && $auth->user->getFromDB($auth->user->fields['id'])) {
 
             if (!$auth->user->fields['is_deleted']
-                && $auth->user->fields['is_active']) {
+                && ($auth->user->fields['is_active']
+                    && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                        || is_null($auth->user->fields['begin_date']))
+                    && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
+                        || is_null($auth->user->fields['end_date'])))) {
                $_SESSION["glpiID"]              = $auth->user->fields['id'];
                $_SESSION["glpiname"]            = $auth->user->fields['name'];
                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
@@ -123,6 +131,8 @@ class Session {
                if (empty($_SESSION["glpilanguage"])) {
                   $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
                }
+               $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+
                self::loadLanguage();
 
                // glpiprofiles -> other available profile with link to the associated entities
@@ -420,6 +430,9 @@ class Session {
          }
       }
       // Clean specific datas
+      if (isset($_SESSION['glpimenu'])) {
+         unset($_SESSION['glpimenu']);
+      }
       if (isset($_SESSION['glpi_faqcategories'])) {
          unset($_SESSION['glpi_faqcategories']);
       }
@@ -436,7 +449,7 @@ class Session {
    static function initEntityProfiles($userID) {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_profiles`.*
+      $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
                 FROM `glpi_profiles_users`
                 INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
@@ -556,7 +569,6 @@ class Session {
       $TRANSLATE = new Zend\I18n\Translator\Translator;
       try {
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
-         $TRANSLATE->setCache($cache);
 
       } catch (Zend\Cache\Exception\ExtensionNotLoadedException $e) {
          // ignore when APC not available
@@ -564,34 +576,6 @@ class Session {
       }
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
-      // Test APC version, if is enable with special check for cli
-//      if (version_compare(phpversion('apc'), '3.1.6') >= 0
-//          && ini_get('apc.enabled')
-//          && (!isCommandLine() || ini_get('apc.enable_cli'))) { // Try from APC cache
-////          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-//         $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc',
-//                                                           'plugins' => array('exception_handler'
-//                                                                               => array('throw_exceptions'
-//                                                                                         => false))));
-//         $TRANSLATE->setCache($cache);
-//         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-//
-//      } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
-//         // TODO : use xcache adapter of Zend when available (2.1)
-//         // see http://framework.zend.com/issues/browse/ZF2-543
-//         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-//         if (@xcache_isset($key)) {
-//            $TRANSLATE = unserialize(xcache_get($key));
-//         }
-//         if (!$TRANSLATE) {
-//            $TRANSLATE = new Zend\I18n\Translator\Translator;
-//            $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-//         }
-//         $tmp = xcache_set($key, serialize($TRANSLATE));
-//      } else {
-//         $TRANSLATE = new Zend\I18n\Translator\Translator;
-//         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-//      }
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
@@ -627,6 +611,7 @@ class Session {
     * @return Boolean
    **/
    static function isCron() {
+
       return (isset($_SESSION["glpicronuserrunning"])
               && (isCommandLine()
                   || strpos($_SERVER['PHP_SELF'], 'cron.php')
@@ -657,6 +642,21 @@ class Session {
 
 
    /**
+    * Redirect User to login if not logged in
+    *
+    * @since version 0.85
+    *
+    * @return nothing, just redirect if not logged in
+   **/
+   static function redirectIfNotLoggedIn() {
+
+      if (!self::getLoginUserID()) {
+         Html::redirectToLogin();
+      }
+   }
+
+
+   /**
     * Check if I have access to the central interface
     *
     * @return Nothing : display error if not permit
@@ -667,10 +667,7 @@ class Session {
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -685,7 +682,7 @@ class Session {
       global $CFG_GLPI;
 
       if (($CFG_GLPI["use_public_faq"] == 0)
-          && !self::haveRight("faq", "r")) {
+          && !self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
          Html::displayRightError();
       }
    }
@@ -702,14 +699,10 @@ class Session {
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
-
 
    /**
     * Check if I am logged in
@@ -721,10 +714,7 @@ class Session {
 
       if (!isset($_SESSION["glpiname"])) {
          // Gestion timeout session
-         if (!Session::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -743,10 +733,7 @@ class Session {
 
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -754,6 +741,8 @@ class Session {
 
    /**
     * Check if I have one of the right specified
+    *
+    * You can't use this function if several rights for same module name
     *
     * @param $modules array of modules where keys are modules and value are right
     *
@@ -780,10 +769,7 @@ class Session {
 
       if (!$valid) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -904,19 +890,51 @@ class Session {
 
       //If GLPI is using the slave DB -> read only mode
       if ($DB->isSlave()
-          && ($right == "w")) {
+          && ($right & (CREATE | UPDATE | DELETE | PURGE))) {
          return false;
       }
 
-      $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
-                       "r" => array("r", "w"),
-                       "w" => array("w"),
-                       "1" => array("1"),
-                       "0" => array("0", "1")); // ne doit pas arriver non plus
+      if (isset($_SESSION["glpiactiveprofile"][$module])) {
+         return intval($_SESSION["glpiactiveprofile"][$module]) & $right;
+      }
 
-      if (isset($_SESSION["glpiactiveprofile"][$module])
-          && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
-         return true;
+      return false;
+   }
+
+
+   /**
+    * Have I all rights of array $rights to module $module (conpare to session variable)
+    *
+    * @param $module           Module to check
+    * @param $rights   array   Rights to check
+    *
+    * @return Boolean : session variable have more than the right specified for the module
+    **/
+   static function haveRightsAnd($module, $rights=array()) {
+
+      foreach ($rights as $right) {
+         if (!Session::haveRight($module, $right)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+
+   /**
+    * Have I one right of array $rights to module $module (conpare to session variable)
+    *
+    * @param $module           Module to check
+    * @param $rights   array   Rights to check
+    *
+    * @return Boolean : session variable have more than the right specified for the module
+    **/
+   static function haveRightsOr($module, $rights=array()) {
+
+      foreach ($rights as $right) {
+         if (Session::haveRight($module, $right)) {
+            return true;
+         }
       }
       return false;
    }
@@ -975,6 +993,7 @@ class Session {
             if (!empty($toadd)) {
                switch ($message_type) {
                   case ERROR :
+                  case WARNING :
                      $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3><span class='red'>$toadd</span></h3>";
                      break;
 
@@ -1033,9 +1052,9 @@ class Session {
    static function isReadOnlyAccount() {
 
       foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {
-         if (is_string($val)
+         if (is_numeric($val)
              && ($name != 'search_config')
-             && ($val == 'w')) {
+             && ($val & ~READ)) {
             return false;
          }
       }
@@ -1120,5 +1139,23 @@ class Session {
       Session::cleanCSRFTokens();
       return false;
    }
+
+
+   /**
+    * Is field having translations ?
+    *
+    *
+    * @since 0.85
+    * @param $itemtype   itemtype
+    * @param $field      field
+    *
+    * @return boolean
+   **/
+   static function haveTranslations($itemtype, $field) {
+
+      return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
+              && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
+   }
+
 }
 ?>

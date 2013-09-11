@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("document", "r");
+Session::checkRight("document", READ);
 
-Html::header(Document::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "document");
+Html::header(Document::getTypeName(2), $_SERVER['PHP_SELF'], "management", "document");
 
 Search::show('Document');
 

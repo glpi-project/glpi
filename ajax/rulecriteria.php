@@ -59,11 +59,14 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
          $allow_condition = array();
       }
 
-      $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"],
-                                                   array('criterion'        => $_POST["criteria"],
-                                                         'allow_conditions' => $allow_condition));
-
-      echo "&nbsp;&nbsp;";
+      $condparam = array('criterion'        => $_POST["criteria"],
+                         'allow_conditions' => $allow_condition);
+      if (isset($_POST['condition'])) {
+         $condparam['value'] = $_POST['condition'];
+      }
+      echo "<table width='100%'><tr><td width='30%'>";
+      $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $condparam);
+      echo "</td><td>";
       echo "<span id='condition_span$randcrit'>\n";
       echo "</span>\n";
 
@@ -75,9 +78,13 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
                                     $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
                                     $paramscriteria);
 
+      if (isset($_POST['pattern'])) {
+         $paramscriteria['value'] = $_POST['pattern'];
+      }
       Ajax::updateItem("condition_span$randcrit",
                        $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php", $paramscriteria,
                        "dropdown_condition$randcrit");
+      echo "</td></tr></table>";
    }
 }
 ?>

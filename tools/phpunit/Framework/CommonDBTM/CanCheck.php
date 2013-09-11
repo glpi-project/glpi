@@ -33,7 +33,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
     */
    public function testPrinter() {
       global $DB;
-      
+
       $DB->connect();
 
       $ent0 = $this->sharedFixture['entity'][0];
@@ -64,59 +64,59 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       // Super admin
       Session::changeProfile(4);
       $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-      $this->assertEquals('w', $_SESSION['glpiactiveprofile']['printer']);
+      $this->assertEquals(31, $_SESSION['glpiactiveprofile']['printer']);
 
       // See all
       $this->assertTrue(Session::changeActiveEntities("all"));
 
-      $this->assertTrue($printer->can($id[0],'r'), "Fail can read Printer 1");
-      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
-      $this->assertTrue($printer->can($id[2],'r'), "Fail can read Printer 3");
-      $this->assertTrue($printer->can($id[3],'r'), "Fail can read Printer 4");
+      $this->assertTrue($printer->can($id[0], READ), "Fail can read Printer 1");
+      $this->assertTrue($printer->can($id[1], READ), "Fail can read Printer 2");
+      $this->assertTrue($printer->can($id[2], READ), "Fail can read Printer 3");
+      $this->assertTrue($printer->can($id[3], READ), "Fail can read Printer 4");
 
-      $this->assertTrue($printer->can($id[0],'w'), "Fail can write Printer 1");
-      $this->assertTrue($printer->can($id[1],'w'), "Fail can write Printer 2");
-      $this->assertTrue($printer->can($id[2],'w'), "Fail can write Printer 3");
-      $this->assertTrue($printer->can($id[3],'w'), "Fail can write Printer 4");
+      $this->assertTrue($printer->canEdit($id[0]), "Fail can write Printer 1");
+      $this->assertTrue($printer->canEdit($id[1]), "Fail can write Printer 2");
+      $this->assertTrue($printer->canEdit($id[2]), "Fail can write Printer 3");
+      $this->assertTrue($printer->canEdit($id[3]), "Fail can write Printer 4");
 
       // See only in main entity
       $this->assertTrue(Session::changeActiveEntities($ent0));
 
-      $this->assertTrue($printer->can($id[0],'r'), "Fail can read Printer 1");
-      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
-      $this->assertFalse($printer->can($id[2],'r'), "Fail can't read Printer 3");
-      $this->assertFalse($printer->can($id[3],'r'), "Fail can't read Printer 1");
+      $this->assertTrue($printer->can($id[0], READ), "Fail can read Printer 1");
+      $this->assertTrue($printer->can($id[1], READ), "Fail can read Printer 2");
+      $this->assertFalse($printer->can($id[2], READ), "Fail can't read Printer 3");
+      $this->assertFalse($printer->can($id[3], READ), "Fail can't read Printer 1");
 
-      $this->assertTrue($printer->can($id[0],'w'), "Fail can write Printer 1");
-      $this->assertTrue($printer->can($id[1],'w'), "Fail can write Printer 2");
-      $this->assertFalse($printer->can($id[2],'w'), "Fail can't write Printer 1");
-      $this->assertFalse($printer->can($id[3],'w'), "Fail can't write Printer 1");
+      $this->assertTrue($printer->canEdit($id[0]), "Fail can write Printer 1");
+      $this->assertTrue($printer->canEdit($id[1]), "Fail can write Printer 2");
+      $this->assertFalse($printer->canEdit($id[2]), "Fail can't write Printer 1");
+      $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 1");
 
       // See only in child entity 1 + parent if recursive
       $this->assertTrue(Session::changeActiveEntities($ent1));
 
-      $this->assertFalse($printer->can($id[0],'r'), "Fail can't read Printer 1");
-      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
-      $this->assertTrue($printer->can($id[2],'r'), "Fail can read Printer 3");
-      $this->assertFalse($printer->can($id[3],'r'), "Fail can't read Printer 4");
+      $this->assertFalse($printer->can($id[0], READ), "Fail can't read Printer 1");
+      $this->assertTrue($printer->can($id[1], READ), "Fail can read Printer 2");
+      $this->assertTrue($printer->can($id[2], READ), "Fail can read Printer 3");
+      $this->assertFalse($printer->can($id[3], READ), "Fail can't read Printer 4");
 
-      $this->assertFalse($printer->can($id[0],'w'), "Fail can't write Printer 1");
-      $this->assertFalse($printer->can($id[1],'w'), "Fail can't write Printer 2");
-      $this->assertTrue($printer->can($id[2],'w'), "Fail can write Printer 2");
-      $this->assertFalse($printer->can($id[3],'w'), "Fail can't write Printer 2");
+      $this->assertFalse($printer->canEdit($id[0]), "Fail can't write Printer 1");
+      $this->assertFalse($printer->canEdit($id[1]), "Fail can't write Printer 2");
+      $this->assertTrue($printer->canEdit($id[2]), "Fail can write Printer 2");
+      $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 2");
 
       // See only in child entity 2 + parent if recursive
       $this->assertTrue(Session::changeActiveEntities($ent2));
 
-      $this->assertFalse($printer->can($id[0],'r'), "Fail can't read Printer 1");
-      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
-      $this->assertFalse($printer->can($id[2],'r'), "Fail can't read Printer 3");
-      $this->assertTrue($printer->can($id[3],'r'), "Fail can read Printer 4");
+      $this->assertFalse($printer->can($id[0], READ), "Fail can't read Printer 1");
+      $this->assertTrue($printer->can($id[1], READ), "Fail can read Printer 2");
+      $this->assertFalse($printer->can($id[2], READ), "Fail can't read Printer 3");
+      $this->assertTrue($printer->can($id[3], READ), "Fail can read Printer 4");
 
-      $this->assertFalse($printer->can($id[0],'w'), "Fail can't write Printer 1");
-      $this->assertFalse($printer->can($id[1],'w'), "Fail can't write Printer 2");
-      $this->assertFalse($printer->can($id[2],'w'), "Fail can't write Printer 3");
-      $this->assertTrue($printer->can($id[3],'w'), "Fail can write Printer 4");
+      $this->assertFalse($printer->canEdit($id[0]), "Fail can't write Printer 1");
+      $this->assertFalse($printer->canEdit($id[1]), "Fail can't write Printer 2");
+      $this->assertFalse($printer->canEdit($id[2]), "Fail can't write Printer 3");
+      $this->assertTrue($printer->canEdit($id[3]), "Fail can write Printer 4");
    }
 
    /**
@@ -124,7 +124,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
     */
    public function testContact_Supplier() {
       global $DB;
-      
+
       $DB->connect();
 
       $ent0 = $this->sharedFixture['entity'][0];
@@ -134,7 +134,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       // Super admin
       Session::changeProfile(4);
       $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-      $this->assertEquals('w', $_SESSION['glpiactiveprofile']['contact_enterprise']);
+      $this->assertEquals(31, $_SESSION['glpiactiveprofile']['contact_enterprise']);
 
       // See all
       $this->assertTrue(Session::changeActiveEntities("all"));
@@ -186,139 +186,139 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $rel = new Contact_Supplier();
       $input = array('contacts_id' =>  $idc[0],    // root
                      'suppliers_id' => $ids[0]);   // root
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[0] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[0]);
-      $this->assertTrue($rel->can($idr[0],'r'));
-      $this->assertTrue($rel->can($idr[0],'w'));
+      $this->assertTrue($rel->can($idr[0], READ));
+      $this->assertTrue($rel->canEdit($idr[0]));
 
       $input = array('contacts_id' =>  $idc[0],    // root
                      'suppliers_id' => $ids[1]);   // root + rec
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[1] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[1]);
-      $this->assertTrue($rel->can($idr[1],'r'));
-      $this->assertTrue($rel->can($idr[1],'w'));
+      $this->assertTrue($rel->can($idr[1], READ));
+      $this->assertTrue($rel->canEdit($idr[1]));
 
       $input = array('contacts_id' =>  $idc[0],    // root
                      'suppliers_id' => $ids[2]);   // child 1
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[0],    // root
                      'suppliers_id' => $ids[3]);   // child 2
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[1],    // root + rec
                      'suppliers_id' => $ids[0]);   // root
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[2] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[2]);
-      $this->assertTrue($rel->can($idr[2],'r'));
-      $this->assertTrue($rel->can($idr[2],'w'));
+      $this->assertTrue($rel->can($idr[2], READ));
+      $this->assertTrue($rel->canEdit($idr[2]));
 
       $input = array('contacts_id' =>  $idc[1],    // root + rec
                      'suppliers_id' => $ids[1]);   // root + rec
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[3] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[3]);
-      $this->assertTrue($rel->can($idr[3],'r'));
-      $this->assertTrue($rel->can($idr[3],'w'));
+      $this->assertTrue($rel->can($idr[3], READ));
+      $this->assertTrue($rel->canEdit($idr[3]));
 
       $input = array('contacts_id' =>  $idc[1],    // root + rec
                      'suppliers_id' => $ids[2]);   // child 1
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[4] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[4]);
-      $this->assertTrue($rel->can($idr[4],'r'));
-      $this->assertTrue($rel->can($idr[4],'w'));
+      $this->assertTrue($rel->can($idr[4], READ));
+      $this->assertTrue($rel->canEdit($idr[4]));
 
       $input = array('contacts_id' =>  $idc[1],    // root + rec
                      'suppliers_id' => $ids[3]);   // child 2
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[5] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[5]);
-      $this->assertTrue($rel->can($idr[5],'r'));
-      $this->assertTrue($rel->can($idr[5],'w'));
+      $this->assertTrue($rel->can($idr[5], READ));
+      $this->assertTrue($rel->canEdit($idr[5]));
 
       $input = array('contacts_id' =>  $idc[2],    // Child 1
                      'suppliers_id' => $ids[0]);   // root
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[2],    // Child 1
                      'suppliers_id' => $ids[1]);   // root + rec
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[6] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[6]);
-      $this->assertTrue($rel->can($idr[6],'r'));
-      $this->assertTrue($rel->can($idr[6],'w'));
+      $this->assertTrue($rel->can($idr[6], READ));
+      $this->assertTrue($rel->canEdit($idr[6]));
 
       $input = array('contacts_id' =>  $idc[2],    // Child 1
                      'suppliers_id' => $ids[2]);   // Child 1
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[7] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[7]);
-      $this->assertTrue($rel->can($idr[7],'r'));
-      $this->assertTrue($rel->can($idr[7],'w'));
+      $this->assertTrue($rel->can($idr[7], READ));
+      $this->assertTrue($rel->canEdit($idr[7]));
 
       $input = array('contacts_id' =>  $idc[2],    // Child 1
                      'suppliers_id' => $ids[3]);   // Child 2
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       // See only in child entity 2 + parent if recursive
       $this->assertTrue(Session::changeActiveEntities($ent2));
 
-      $this->assertFalse($rel->can($idr[0],'r'));  // root / root
-      $this->assertFalse($rel->can($idr[0],'w'));
-      $this->assertFalse($rel->can($idr[1],'r'));  // root / root rec
-      $this->assertFalse($rel->can($idr[1],'w'));
-      $this->assertFalse($rel->can($idr[2],'r'));  // root rec / root
-      $this->assertFalse($rel->can($idr[2],'w'));
-      $this->assertTrue($rel->can($idr[3],'r'));   // root rec / root rec
-      $this->assertFalse($rel->can($idr[3],'w'));
-      $this->assertFalse($rel->can($idr[4],'r'));  // root rec / child 1
-      $this->assertFalse($rel->can($idr[4],'w'));
-      $this->assertTrue($rel->can($idr[5],'r'));   // root rec / child 2
-      $this->assertTrue($rel->can($idr[5],'w'));
-      $this->assertFalse($rel->can($idr[6],'r'));  // child 1 / root rec
-      $this->assertFalse($rel->can($idr[6],'w'));
-      $this->assertFalse($rel->can($idr[7],'r'));  // child 1 / child 1
-      $this->assertFalse($rel->can($idr[7],'w'));
+      $this->assertFalse($rel->can($idr[0], READ));  // root / root
+      $this->assertFalse($rel->canEdit($idr[0]));
+      $this->assertFalse($rel->can($idr[1], READ));  // root / root rec
+      $this->assertFalse($rel->canEdit($idr[1]));
+      $this->assertFalse($rel->can($idr[2], READ));  // root rec / root
+      $this->assertFalse($rel->canEdit($idr[2]));
+      $this->assertTrue($rel->can($idr[3], READ));   // root rec / root rec
+      $this->assertFalse($rel->canEdit($idr[3]));
+      $this->assertFalse($rel->can($idr[4], READ));  // root rec / child 1
+      $this->assertFalse($rel->canEdit($idr[4]));
+      $this->assertTrue($rel->can($idr[5], READ));   // root rec / child 2
+      $this->assertTrue($rel->canEdit($idr[5]));
+      $this->assertFalse($rel->can($idr[6], READ));  // child 1 / root rec
+      $this->assertFalse($rel->canEdit($idr[6]));
+      $this->assertFalse($rel->can($idr[7], READ));  // child 1 / child 1
+      $this->assertFalse($rel->canEdit($idr[7]));
 
       $input = array('contacts_id' =>  $idc[0],    // root
                      'suppliers_id' => $ids[0]);   // root
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[0],    // root
                      'suppliers_id' => $ids[1]);   // root + rec
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[1],    // root + rec
                      'suppliers_id' => $ids[0]);   // root
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[3],    // Child 2
                      'suppliers_id' => $ids[0]);   // root
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[3],    // Child 2
                      'suppliers_id' => $ids[1]);   // root + rec
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[7] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[7]);
-      $this->assertTrue($rel->can($idr[7],'r'));
-      $this->assertTrue($rel->can($idr[7],'w'));
+      $this->assertTrue($rel->can($idr[7], READ));
+      $this->assertTrue($rel->canEdit($idr[7]));
 
       $input = array('contacts_id' =>  $idc[3],    // Child 2
                      'suppliers_id' => $ids[2]);   // Child 1
-      $this->assertFalse($rel->can(-1,'w',$input));
+      $this->assertFalse($rel->can(-1, CREATE,$input));
 
       $input = array('contacts_id' =>  $idc[3],    // Child 2
                      'suppliers_id' => $ids[3]);   // Child 3
-      $this->assertTrue($rel->can(-1,'w',$input));
+      $this->assertTrue($rel->can(-1, CREATE, $input));
       $idr[8] = $rel->add($input);
       $this->assertGreaterThan(0, $idr[8]);
-      $this->assertTrue($rel->can($idr[8],'r'));
-      $this->assertTrue($rel->can($idr[8],'w'));
+      $this->assertTrue($rel->can($idr[8], READ));
+      $this->assertTrue($rel->canEdit($idr[8]));
    }
 
    /**
@@ -326,7 +326,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
     */
    public function testEntity() {
       global $DB;
-      
+
       $DB->connect();
 
       $ent0 = $this->sharedFixture['entity'][0];
@@ -339,70 +339,72 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
 
       $this->assertTrue(Session::changeActiveEntities("all"));
 
-      $this->assertTrue($entity->can(0,'r'), "Fail: can't read root entity");
-      $this->assertTrue($entity->can($ent0,'r'), "Fail: can't read entity 0");
-      $this->assertTrue($entity->can($ent1,'r'), "Fail: can't read entity 1");
-      $this->assertTrue($entity->can($ent2,'r'), "Fail: can't read entity 2");
-      $this->assertTrue($entity->can($ent3,'r'), "Fail: can't read entity 2.1");
-      $this->assertTrue($entity->can($ent4,'r'), "Fail: can't read entity 2.2");
+      $this->assertTrue($entity->can(0, READ), "Fail: can't read root entity");
+      $this->assertTrue($entity->can($ent0, READ), "Fail: can't read entity 0");
+      $this->assertTrue($entity->can($ent1, READ), "Fail: can't read entity 1");
+      $this->assertTrue($entity->can($ent2, READ), "Fail: can't read entity 2");
+      $this->assertTrue($entity->can($ent3, READ), "Fail: can't read entity 2.1");
+      $this->assertTrue($entity->can($ent4, READ), "Fail: can't read entity 2.2");
 
-      $this->assertTrue($entity->can(0,'w'), "Fail: can't write root entity");
-      $this->assertTrue($entity->can($ent0,'w'), "Fail: can't write entity 0");
-      $this->assertTrue($entity->can($ent1,'w'), "Fail: can't write entity 1");
-      $this->assertTrue($entity->can($ent2,'w'), "Fail: can't write entity 2");
-      $this->assertTrue($entity->can($ent3,'w'), "Fail: can't write entity 2.1");
-      $this->assertTrue($entity->can($ent4,'w'), "Fail: can't write entity 2.2");
+      $this->assertTrue($entity->canEdit(0), "Fail: can't write root entity");
+      $this->assertTrue($entity->canEdit($ent0), "Fail: can't write entity 0");
+      $this->assertTrue($entity->canEdit($ent1), "Fail: can't write entity 1");
+      $this->assertTrue($entity->canEdit($ent2), "Fail: can't write entity 2");
+      $this->assertTrue($entity->canEdit($ent3), "Fail: can't write entity 2.1");
+      $this->assertTrue($entity->canEdit($ent4), "Fail: can't write entity 2.2");
 
       $input=array('entities_id' => $ent1);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
       $input=array('entities_id' => $ent3);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2.1");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2.1");
       $input=array('entities_id' => 99999);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in not existing entity");
       $input=array('entities_id' => -1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in not existing entity");
 
       $this->assertTrue(Session::changeActiveEntities($ent2,true));
 
-      $this->assertTrue($entity->can(0,'r'), "Fail: can't read root entity");
-      $this->assertTrue($entity->can($ent0,'r'), "Fail: can't read entity 0");
-      $this->assertFalse($entity->can($ent1,'r'), "Fail: can read entity 1");
-      $this->assertTrue($entity->can($ent2,'r'), "Fail: can't read entity 2");
-      $this->assertTrue($entity->can($ent3,'r'), "Fail: can't read entity 2.1");
-      $this->assertTrue($entity->can($ent4,'r'), "Fail: can't read entity 2.2");
-      $this->assertFalse($entity->can(99999,'r'), "Fail: can read not existing entity");
+      $this->assertTrue($entity->can(0, READ), "Fail: can't read root entity");
+      $this->assertTrue($entity->can($ent0, READ), "Fail: can't read entity 0");
+      $this->assertFalse($entity->can($ent1, READ), "Fail: can read entity 1");
+      $this->assertTrue($entity->can($ent2, READ), "Fail: can't read entity 2");
+      $this->assertTrue($entity->can($ent3, READ), "Fail: can't read entity 2.1");
+      $this->assertTrue($entity->can($ent4, READ), "Fail: can't read entity 2.2");
+      $this->assertFalse($entity->can(99999, READ), "Fail: can read not existing entity");
 
-      $this->assertFalse($entity->can(0,'w'), "Fail: can write root entity");
-      $this->assertFalse($entity->can($ent0,'w'), "Fail: can write entity 0");
-      $this->assertFalse($entity->can($ent1,'w'), "Fail: can write entity 1");
-      $this->assertTrue($entity->can($ent2,'w'), "Fail: can't write entity 2");
-      $this->assertTrue($entity->can($ent3,'w'), "Fail: can't write entity 2.1");
-      $this->assertTrue($entity->can($ent4,'w'), "Fail: can't write entity 2.2");
-      $this->assertFalse($entity->can(99999,'w'), "Fail: can write not existing entity");
+      $this->assertFalse($entity->canEdit(0), "Fail: can write root entity");
+      $this->assertFalse($entity->canEdit($ent0), "Fail: can write entity 0");
+      $this->assertFalse($entity->canEdit($ent1), "Fail: can write entity 1");
+      $this->assertTrue($entity->canEdit($ent2), "Fail: can't write entity 2");
+      $this->assertTrue($entity->canEdit($ent3), "Fail: can't write entity 2.1");
+      $this->assertTrue($entity->canEdit($ent4), "Fail: can't write entity 2.2");
+      $this->assertFalse($entity->canEdit(99999), "Fail: can write not existing entity");
 
       $input=array('entities_id' => $ent1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
       $input=array('entities_id' => $ent3);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2.1");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2.1");
       $input=array('entities_id' => 99999);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $this->assertFalse($entity->can(-1, CREATE, $input),
+                         "Fail: can create entity in not existing entity");
       $input=array('entities_id' => -1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $this->assertFalse($entity->can(-1, CREATE, $input),
+                         "Fail: can create entity in not existing entity");
 
       $this->assertTrue(Session::changeActiveEntities($ent2,false));
       $input=array('entities_id' => $ent1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
       // next should be false (or not).... but check is done on glpiactiveprofile
       // will require to save current state in session - this is probably acceptable
       // this allow creation when no child defined yet (no way to select tree in this case)
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
       $input=array('entities_id' => $ent3);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in 2.1");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in 2.1");
    }
 }
 ?>

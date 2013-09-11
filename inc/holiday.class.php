@@ -28,28 +28,23 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Holiday
+/**
+ * Holiday Class
+**/
 class Holiday extends CommonDropdown {
+
+   static $rightname = 'calendar';
+
 
    static function getTypeName($nb=0) {
       return _n('Close time','Close times',$nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('calendar', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('calendar', 'r');
    }
 
 

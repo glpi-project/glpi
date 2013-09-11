@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -43,18 +43,12 @@ class Contact extends CommonDBTM{
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'contact_enterprise';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Contact', 'Contacts', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('contact_enterprise', 'w');
-   }
-
-   static function canView() {
-      return Session::haveRight('contact_enterprise', 'r');
    }
 
 
@@ -68,6 +62,7 @@ class Contact extends CommonDBTM{
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Contact_Supplier', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
@@ -139,7 +134,6 @@ class Contact extends CommonDBTM{
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -223,47 +217,8 @@ class Contact extends CommonDBTM{
 
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_contact_supplier" :
-            $contactsupplier = new Contact_Supplier();
-            return $contactsupplier->doSpecificMassiveActions($input);
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "add_contact_supplier" :
-            $contactsupplier = new Contact_Supplier();
-            return $contactsupplier->showSpecificMassiveActionsParameters($input);
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
    }
 
 
@@ -276,13 +231,13 @@ class Contact extends CommonDBTM{
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['add_contact_supplier'] = _x('button', 'Add a supplier');
+         $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Add a supplier');
       }
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 
@@ -417,7 +372,7 @@ class Contact extends CommonDBTM{
 
       include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
-      if (!$this->can($this->fields['id'],'r')) {
+      if (!$this->can($this->fields['id'], READ)) {
          return false;
       }
 

@@ -33,12 +33,12 @@
 
 include ('../inc/includes.php');
 
-Session ::checkRight('tickettemplate','w');
+Session ::checkRight('tickettemplate', UPDATE);
 
 $item = new TicketTemplateHiddenField();
 
 if (isset($_POST["add"])) {
-   $item->check(-1, 'w', $_POST);
+   $item->check(-1, UPDATE, $_POST);
 
    if ($item->add($_POST)) {
       Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",

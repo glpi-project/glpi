@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("monitor", "r");
+Session::checkRight("monitor", READ);
 
-Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "monitor");
+Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "monitor");
 
 Search::show('Monitor');
 

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("computer", "r");
+Session::checkRight("computer", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -46,16 +46,20 @@ if (!isset($_GET["withtemplate"])) {
 $computer = new Computer();
 //Add a new computer
 if (isset($_POST["add"])) {
-   $computer->check(-1, 'w', $_POST);
+   $computer->check(-1, CREATE, $_POST);
    if ($newID = $computer->add($_POST)) {
       Event::log($newID, "computers", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($computer->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 // delete a computer
 } else if (isset($_POST["delete"])) {
-   $computer->check($_POST['id'], 'd');
+   $computer->check($_POST['id'], DELETE);
    $ok = $computer->delete($_POST);
    if ($ok) {
       Event::log($_POST["id"], "computers", 4, "inventory",
@@ -65,7 +69,7 @@ if (isset($_POST["add"])) {
    $computer->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $computer->check($_POST['id'], 'd');
+   $computer->check($_POST['id'], PURGE);
    if ($computer->restore($_POST)) {
       Event::log($_POST["id"],"computers", 4, "inventory",
                  //TRANS: %s is the user login
@@ -74,7 +78,7 @@ if (isset($_POST["add"])) {
    $computer->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $computer->check($_POST['id'], 'd');
+   $computer->check($_POST['id'], PURGE);
    if ($computer->delete($_POST,1)) {
       Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
@@ -84,7 +88,7 @@ if (isset($_POST["add"])) {
 
 //update a computer
 } else if (isset($_POST["update"])) {
-   $computer->check($_POST['id'], 'w');
+   $computer->check($_POST['id'], UPDATE);
    $computer->update($_POST);
    Event::log($_POST["id"], "computers", 4, "inventory",
               //TRANS: %s is the user login
@@ -93,9 +97,10 @@ if (isset($_POST["add"])) {
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
 } else {//print computer information
-   Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
+   Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "assets", "computer");
    //show computer form to add
-   $computer->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $computer->display(array('id'           => $_GET["id"],
+                            'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

@@ -66,7 +66,7 @@ class NotificationTargetConsumableItem extends NotificationTarget {
          $tmp['##consumable.reference##'] = $consumable['ref'];
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
          $tmp['##consumable.url##']       = urldecode($CFG_GLPI["url_base"].
-                                                      "/index.php?redirect=consumableitem_".$id);
+                                                      "/index.php?redirect=ConsumableItem_".$id);
          $this->datas['consumables'][] = $tmp;
       }
 

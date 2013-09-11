@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Html::header(__('Statistics'), '', "maintain", "stat");
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", "1");
+Session::checkRight("statistic", READ);
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
    exit;
@@ -109,31 +109,31 @@ $items = array(__('Requester')       => $requester,
                                               'suppliers_id_assign'
                                                    => array('title' => __('Supplier'))));
 
-$INSELECT = "";
+$values = array();
 foreach ($items as $label => $tab) {
-   $INSELECT .= "<optgroup label=\"$label\">";
    foreach ($tab as $key => $val) {
-      $INSELECT .= "<option value='$key' ".(($key == $_GET["type"])?"selected":"").">".$val['title'].
-                   "</option>";
+      $values[$label][$key] = $val['title'];
    }
-   $INSELECT .= "</optgroup>";
 }
 
 echo "<div class='center'><form method='get' name='form' action='stat.tracking.php'>";
-echo "<table class='tab_cadre'>";
-echo "<tr class='tab_bg_2'><td rowspan='2' class='center'>";
-echo "<select name='type'>".$INSELECT."</select></td>";
+// Keep it first param
+echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
+
+echo "<table class='tab_cadre_fixe'>";
+echo "<tr class='tab_bg_2'><td rowspan='2' class='center' width='30%'>";
+Dropdown::showFromArray('type', $values, array('value' => $_GET['type']));
+echo "</td>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateFormItem("date1", $_GET["date1"]);
+Html::showDateField("date1", array('value' => $_GET["date1"]));
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
 echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2", $_GET["date2"]);
+Html::showDateField("date2", array('value' => $_GET["date2"]));
 echo "</td><td class='center'>";
 echo "<input type='hidden' name='value2' value='".$_GET["value2"]."'>";
 Dropdown::showYesNo('showgraph', $_GET['showgraph']);
@@ -158,8 +158,8 @@ Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat
                  'Stat', $params);
 
 if (!$_GET['showgraph']) {
-   Stat::show($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"], $_GET['start'],
-              $val, $_GET['value2']);
+   Stat::showTable($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"], $_GET['start'],
+                   $val, $_GET['value2']);
 
 } else {
    $data = Stat::getDatas($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"],

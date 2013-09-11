@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Disk class
+/**
+ * Disk Class
+**/
 class ComputerDisk extends CommonDBChild {
 
    // From CommonDBChild
@@ -62,7 +64,7 @@ class ComputerDisk extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'Computer')
-          && Session::haveRight("computer","r")) {
+          && Computer::canView()) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -85,6 +87,20 @@ class ComputerDisk extends CommonDBChild {
 
       self::showForComputer($item, $withtemplate);
       return true;
+   }
+
+
+   /**
+    * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
+   **/
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+
+      return $ong;
    }
 
 
@@ -125,20 +141,19 @@ class ComputerDisk extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("computer", "w")) {
-        return false;
+      if (!Session::haveRight("computer", UPDATE)) {
+         return false;
       }
 
       $comp = new Computer();
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
          $comp->getFromDB($this->fields['computers_id']);
       } else {
-         $this->check(-1, 'w', $options);
+         $this->check(-1, CREATE, $options);
          $comp->getFromDB($options['computers_id']);
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       if ($this->isNewID($ID)) {
@@ -192,7 +207,6 @@ class ComputerDisk extends CommonDBChild {
       echo "&nbsp;".__('Mio')."</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
 
@@ -213,10 +227,10 @@ class ComputerDisk extends CommonDBChild {
       $ID = $comp->fields['id'];
 
       if (!$comp->getFromDB($ID)
-          || !$comp->can($ID, "r")) {
+          || !$comp->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->can($ID, "w");
+      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 
@@ -261,9 +275,7 @@ class ComputerDisk extends CommonDBChild {
                echo "<tr class='tab_bg_2'>";
                echo "<td>".$disk->getLink()."</td>";
                if (Plugin::haveImport()) {
-                  echo "<td>";
-                  echo Dropdown::getYesNo($data['is_dynamic']);
-                  echo "</td>";
+                  echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
                }
                echo "<td>".$data['device']."</td>";
                echo "<td>".$data['mountpoint']."</td>";

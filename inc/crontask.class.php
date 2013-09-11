@@ -46,6 +46,7 @@ class CronTask extends CommonDBTM{
    private $timer           = 0.0;
    private $startlog        = 0;
    private $volume          = 0;
+   static $rightname        = 'config';
 
    // Class constant
    const STATE_DISABLE = 0;
@@ -56,12 +57,23 @@ class CronTask extends CommonDBTM{
    const MODE_EXTERNAL = 2;
 
 
+
+   /**
+    * @see CommonGLPI::getForbiddenActionsForMenu()
+    *
+    * @since version 0.85
+   **/
+   static function getForbiddenActionsForMenu() {
+      return array('add');
+   }
+
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'delete';
-      $forbidden[] = 'purge';
-      $forbidden[] = 'restore';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore';
       return $forbidden;
    }
 
@@ -74,19 +86,10 @@ class CronTask extends CommonDBTM{
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('CronTaskLog', $ong, $options);
 
       return $ong;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 
@@ -373,11 +376,10 @@ class CronTask extends CommonDBTM{
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config","r") || !$this->getFromDB($ID)) {
+      if (!Config::canView() || !$this->getFromDB($ID)) {
          return false;
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -436,14 +438,21 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Run period')."</td><td>";
-      Dropdown::showInteger('hourmin', $this->fields['hourmin'], 0, 24);
+      Dropdown::showNumber('hourmin', array('value' => $this->fields['hourmin'],
+                                            'min'   => 0,
+                                            'max'   => 24));
       echo "&nbsp;->&nbsp;";
-      Dropdown::showInteger('hourmax', $this->fields['hourmax'], 0, 24);
+      Dropdown::showNumber('hourmax', array('value' => $this->fields['hourmax'],
+                                            'min'   => 0,
+                                            'max'   => 24));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Number of days this action logs are stored')."</td><td>";
-      Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'], 10, 360, 10,
-                            array(0 => __('Infinite')));
+      Dropdown::showNumber('logs_lifetime', array('value' => $this->fields['logs_lifetime'],
+                                                  'min'   => 10,
+                                                  'max'   => 360,
+                                                  'step'  => 10,
+                                                  'toadd' => array(0 => __('Infinite'))));
       echo "</td><td>".__('Last run')."</td><td>";
 
       if (empty($this->fields['lastrun'])) {
@@ -462,7 +471,9 @@ class CronTask extends CommonDBTM{
          echo "&nbsp;</td><td>&nbsp;";
       } else {
          echo $label."&nbsp;</td><td>";
-         Dropdown::showInteger('param', $this->fields['param'],0,400,1);
+         Dropdown::showNumber('param', array('value' => $this->fields['param'],
+                                             'min'   => 0,
+                                             'max'   => 400));
       }
       echo "</td><td>".__('Next run')."</td><td>";
 
@@ -522,7 +533,6 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -714,6 +724,12 @@ class CronTask extends CommonDBTM{
     * @return the name of last task launched
    **/
    static public function launch($mode, $max=1, $name='') {
+      global $CFG_GLPI;
+
+      // No cron in maintenance mode
+      if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
+         return false;
+      }
 
       $crontask = new self();
       $taskname = '';
@@ -973,12 +989,12 @@ class CronTask extends CommonDBTM{
    function showHistory() {
       global $DB, $CFG_GLPI;
 
-      if (isset($_POST["crontasklogs_id"]) && $_POST["crontasklogs_id"]) {
-         return $this->showHistoryDetail($_POST["crontasklogs_id"]);
+      if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
+         return $this->showHistoryDetail($_GET["crontasklogs_id"]);
       }
 
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       } else {
          $start = 0;
       }
@@ -1166,45 +1182,42 @@ class CronTask extends CommonDBTM{
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['reset'] = __('Reset last run');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'reset'] = __('Reset last run');
       }
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
+      switch ($ma->getAction()) {
          case 'reset' :
-            if (Session::haveRight('config', 'w')) {
-               foreach ($input["item"] as $key => $val) {
-                  if (($val == 1)
-                      && $this->getFromDB($key)) {
-                     if ($this->resetDate()) {
-                        $res['ok']++;
+            if (Config::canUpdate()) {
+               foreach ($ids as $key) {
+                  if ($item->getFromDB($key)) {
+                     if ($item->resetDate()) {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['ko']++;
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   }
                }
             } else {
-               $res['noright']++;
+               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -1329,6 +1342,70 @@ class CronTask extends CommonDBTM{
 
 
    /**
+    * Circular logs
+    *
+    * @since version 0.85
+    *
+    * @param $task for log
+   **/
+   static function cronCircularlogs($task) {
+
+      $actionCode = 0; // by default
+      $error      = false ;
+      $task->setVolume(0); // start with zero
+
+      // compute date in the past for the archived log to be deleted
+      $firstdate = date("Ymd", time() - ($task->fields['param'] * DAY_TIMESTAMP)); // compute current date - param as days and format it like YYYYMMDD
+
+      // first look for bak to delete
+      $dir       = GLPI_LOG_DIR."/*.bak" ;
+      $findfiles = glob( $dir ) ;
+      foreach ($findfiles as $file) {
+         $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
+         // now depending on the format of the name we delete the file (for agging archives) or rename it (will add Ymd.log to the end of the file)
+         $match = null;
+         if ( preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0 ) {
+            if ( $match[1] < $firstdate ) {
+               $task->addVolume(1);
+               if ( unlink($file) ) {
+                  $task->log( sprintf(__('Delete archived log file: %s'), $shortfile)) ;
+                  $actionCode = 1 ;
+               } else {
+                  $task->log( sprintf(__('Unable to delete archived log file: %s'), $shortfile)) ;
+                  $error = true ;
+               }
+            }
+         }
+      }
+
+      // second look for log to archive
+      $dir       = GLPI_LOG_DIR."/*.log" ;
+      $findfiles = glob( $dir ) ;
+      foreach ($findfiles as $file) {
+         $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
+         // rename the file
+         $newfilename  = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
+         $shortnewfile = str_replace(GLPI_LOG_DIR.'/','',$newfilename);
+
+         $task->addVolume(1);
+         if (!file_exists($newfilename) && rename($file, $newfilename )) {
+            $task->log( sprintf(__('Archive log file: %1$s to %2$s'), $shortfile, $shortnewfile));
+            $actionCode = 1 ;
+         } else {
+            $task->log(sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),
+                                 $shortfile, $shortnewfile)) ;
+            $error = true ;
+         }
+      }
+
+      if ($error) {
+         return -1 ;
+      }
+      return $actionCode;
+   }
+
+
+   /**
     * Garbage collector for cleaning graph files
     *
     * @param $task for log
@@ -1360,6 +1437,37 @@ class CronTask extends CommonDBTM{
       return 0;
    }
 
+   /**
+    * Garbage collector for cleaning tmp files
+    *
+    * @param $task for log
+   **/
+   static function cronTemp($task) {
+      global $CFG_GLPI;
+
+      // max time to keep the file session
+      $maxlifetime = HOUR_TIMESTAMP;
+      $nb          = 0;
+      foreach (glob(GLPI_TMP_DIR."/*") as $filename) {
+         if ((filemtime($filename) + $maxlifetime) < time()) {
+            // Delete session file if not delete before
+            if (@unlink($filename)) {
+               $nb++;
+            }
+         }
+      }
+
+      $task->setVolume($nb);
+      if ($nb) {
+         $task->log(sprintf(_n('Clean %1$d temporary file created since more than %2$s seconds',
+                               'Clean %1$d temporary files created since more than %2$s seconds',
+                               $nb)."\n",
+                            $nb, $maxlifetime));
+         return 1;
+      }
+
+      return 0;
+   }
 
    /**
     * Clean log cron function
@@ -1474,8 +1582,15 @@ class CronTask extends CommonDBTM{
          case 'graph' :
             return array('description' => __('Clean generated graphics'));
 
+         case 'temp' :
+            return array('description' => __('Clean temporary files'));
+
          case 'watcher' :
             return array('description' => __('Monitoring of automatic actions'));
+
+         case 'circularlogs' :
+            return array('description' => __("Archives log files and deletes agging ones"),
+                         'parameter'   => __("Number of days to keep archived logs"));
       }
    }
 

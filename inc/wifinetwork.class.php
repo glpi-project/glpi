@@ -28,7 +28,7 @@
 */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -40,6 +40,9 @@ if (!defined('GLPI_ROOT')) {
 class WifiNetwork extends CommonDropdown {
 
    public $dohistory = true;
+
+   static $rightname = 'internet';
+
 
 
    static function getWifiCardVersion() {
@@ -71,16 +74,6 @@ class WifiNetwork extends CommonDropdown {
       return array(''               => Dropdown::EMPTY_VALUE,
                    'infrastructure' => __('Infrastructure (with access point)'),
                    'ad-hoc'         => __('Ad-hoc (without access point)'));
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('internet', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('internet', 'r');
    }
 
 

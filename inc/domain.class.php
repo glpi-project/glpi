@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -38,8 +38,15 @@ if (!defined('GLPI_ROOT')) {
 /// Class Domain
 class Domain extends CommonDropdown {
 
+   var $can_be_translated = true;
+
+   static $rightname = 'domain';
+
+
+
    static function getTypeName($nb=0) {
       return _n('Domain', 'Domains', $nb);
    }
+
 }
 ?>

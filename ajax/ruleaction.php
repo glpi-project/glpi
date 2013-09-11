@@ -55,14 +55,30 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
    if (!isset($_POST[$item->getRuleIdField()])) {
       exit();
    }
-   $ra           = getItemForItemtype($item->getRuleActionClass());
-   $used         = $ra->getAlreadyUsedForRuleID($_POST[$item->getRuleIdField()], $item->getType());
-   $already_used = in_array($_POST["field"], $used);
 
-   $randaction   = RuleAction::dropdownActions($_POST["sub_type"], "action_type", $_POST["field"],
-                                               $already_used);
+   // Existing action
+   if ($_POST['ruleactions_id'] > 0) {
+      $already_used = false;
+   } else { // New action
+      $ra           = getItemForItemtype($item->getRuleActionClass());
+      $used         = $ra->getAlreadyUsedForRuleID($_POST[$item->getRuleIdField()], $item->getType());
+      $already_used = in_array($_POST["field"], $used);
+   }
 
-   echo "&nbsp;&nbsp;";
+   echo "<table width='100%'><tr><td width='30%'>";
+
+   $action_type = '';
+   if (isset($_POST["action_type"])) {
+      $action_type = $_POST["action_type"];
+   }
+
+   $randaction = RuleAction::dropdownActions(array('subtype'     => $_POST["sub_type"],
+                                                   'name'        => "action_type",
+                                                   'field'       => $_POST["field"],
+                                                   'value'       => $action_type,
+                                                   'alreadyused' => $already_used));
+
+   echo "</td><td>";
    echo "<span id='action_type_span$randaction'>\n";
    echo "</span>\n";
 
@@ -73,7 +89,12 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
    Ajax::updateItemOnSelectEvent("dropdown_action_type$randaction", "action_type_span$randaction",
                                  $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php", $paramsaction);
 
+   if (isset($_POST['value'])) {
+      $paramsaction['value'] = $_POST['value'];
+   }
+
    Ajax::updateItem("action_type_span$randaction", $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",
                     $paramsaction, "dropdown_action_type$randaction");
+   echo "</td></tr></table>";
 }
 ?>

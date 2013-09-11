@@ -33,14 +33,13 @@
 
 include ("../inc/includes.php");
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 
 Report::title();
 
-$items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
-               'SoftwareLicense');
+$items = $CFG_GLPI["contract_types"];
 
 # Titre
 echo "<div class='center b spaced'><big>".__('Device list')."</big></div>";
@@ -97,10 +96,10 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                          WHERE $template_condition ".
                                getEntitiesRestrictRequest("AND",$itemtable);
 
-         if (isset($_POST["annee"][0]) && ($_POST["annee"][0] != 'toutes')) {
+         if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
             $query[$val] .= " AND ( ";
             $first        = true;
-            foreach ($_POST["annee"] as $key2 => $val2) {
+            foreach ($_POST["year"] as $key2 => $val2) {
                if (!$first) {
                   $query[$val] .= " OR ";
                } else {

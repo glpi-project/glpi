@@ -438,24 +438,6 @@ function toggleCheckboxes( container_id ) {
    return true;
 }
 
-
-/**
- * select all options inside the given select
- * 
- * @since version 0.84
- *
- * @param    select_id    DOM select id
-**/
-function selectAllOptions(select_id) {
-
-   var options = document.getElementById(select_id).getElementsByTagName('option');
-   for (var j=0 ; j<options.length ; j++ ) {
-      options[j].selected = true;
-   }
-   return true;
-}
-
-
 /**
  * display "other" text input field in case of selecting "other" option
  * 
@@ -476,21 +458,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
 }
 
 
-/**
- * unselect all option inside the given select
- * 
- * @since version 0.84
- *
- * @param    select_id    DOM select id
-**/
-function unselectAllOptions(select_id) {
 
-   var options = document.getElementById(select_id).getElementsByTagName('option');
-   for (var j=0 ; j<options.length ; j++ ) {
-      options[j].selected = false;
-   }
-   return true;
-}
 
 
 /**
@@ -703,3 +671,81 @@ function submitGetLink(target,fields) {
     myForm.submit() ;
     document.body.removeChild(myForm) ;
 }
+
+
+/**
+ * @since version 0.85
+ *
+ * @param id
+**/
+function selectAll(id) {
+   var element =$('#'+id);var selected = [];
+   element.find('option').each(function(i,e){
+      selected[selected.length]=$(e).attr('value');
+   });
+   element.select2('val', selected);
+}
+
+/**
+ * @since version 0.85
+ *
+ * @param id
+**/
+function deselectAll(id) {
+   $('#'+id).val('').trigger('change');
+}
+
+
+/**
+ * Set all the checkbox that refere to the criterion
+ *
+ * @since version 0.85
+ *
+ * @param criterion jquery criterion
+ * @param reference the new reference object, boolean, id ... (default toggle)
+ *
+**/
+function massiveUpdateCheckbox(criterion, reference) {
+    if (typeof(reference) == 'undefined') {
+        var value = null;
+    } else if (typeof(reference) == 'boolean') {
+        var value = reference;
+    } else if (typeof(reference) == 'string') {
+        var value = $('#' + reference).prop('checked');
+    } else if (typeof(reference) == 'object') {
+        var value = $(reference).prop('checked');
+    }
+    if (typeof(value) == 'undefined') {
+        return false;
+    }
+    $(criterion).each(function() {
+        if (typeof(reference) == 'undefined') {
+            value = !$(this).prop('checked');
+        }
+        $(this).prop('checked', value);
+    });
+    return true;
+}
+
+
+$(function(){
+
+        $("body").delegate('td','mouseover mouseleave', function(e) {
+                var table = $(this).parent().parent();
+                var col = $(this).parent().children().index($(this));
+                var row = $(this).parent().parent().children().index($(this).parent());
+                if (e.type == 'mouseover') {
+                        $(this).addClass("hover");
+//                         $(this).parent().addClass("rowHover");
+                        $(this).parent().children().addClass("columnHover");
+                        $("tr td:nth-child("+(col+1)+")", table).addClass("columnHover");
+                }
+                else {
+                        $(this).removeClass("hover");
+                        $(this).parent().children().removeClass("columnHover");
+//                         $(this).parent().removeClass("rowHover");
+                        $("tr td:nth-child("+(col+1)+")", table).removeClass("columnHover");
+                }
+        });
+
+});

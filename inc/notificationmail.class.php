@@ -28,72 +28,17 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
-
 /**
- *  NotificationMail class extends phpmail and implements the NotificationInterface
+ *  NotificationMail class implements the NotificationInterface
 **/
-class NotificationMail extends phpmailer implements NotificationInterface {
-
-   //! mailing type (new,attrib,followup,finish)
-   var $mailtype           = NULL;
-   /** Job class variable - job to be mailed
-    * @see Job
-    */
-   var $job                = NULL;
-   /** User class variable - user who make changes
-    * @see User
-    */
-   var $user =              NULL;
-   /// Is the followupadded private ?
-   var $followupisprivate  = NULL;
-
-   /// Set default variables for all new objects
-   var $WordWrap           = 80;
-   /// Defaut charset
-   var $CharSet            = "utf-8";
-
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      global $CFG_GLPI;
-
-      // Comes from config
-      $this->SetLanguage("en", GLPI_PHPMAILER_DIR . "/language/");
-
-      if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-         $this->Mailer = "smtp";
-         $this->Host   = $CFG_GLPI['smtp_host'].':'.$CFG_GLPI['smtp_port'];
-
-         if ($CFG_GLPI['smtp_username'] != '') {
-            $this->SMTPAuth = true;
-            $this->Username = $CFG_GLPI['smtp_username'];
-            $this->Password = Toolbox::decrypt($CFG_GLPI['smtp_passwd'], GLPIKEY);
-         }
-
-         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
-            $this->SMTPSecure = "ssl";
-         }
-
-         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
-            $this->SMTPSecure = "tls";
-         }
-      }
-
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         $this->do_debug = 3;
-      }
-   }
-
+class NotificationMail implements NotificationInterface {
 
    /**
     * Determine if email is valid
@@ -166,11 +111,12 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    static function testNotification() {
       global $CFG_GLPI;
 
-      $mmail = new self();
+      $mmail = new GLPIMailer();
+
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
       // For exchange
       $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
-      $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
+      $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"], false);
       $mmail->AddAddress($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->Subject = "[GLPI] ".__('Mail test');
       $mmail->Body    = __('This is a test email.')."\n-- \n".$CFG_GLPI["mailing_signature"];
@@ -185,74 +131,59 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
 
    /**
-    * Format the mail sender to send
-    *
-    * @return mail sender email string
-   **/
-   function getEntityAdminAddress() {
-      global $CFG_GLPI,$DB;
-
-      $query = "SELECT `admin_email` AS email
-                FROM `glpi_entities`
-                WHERE `id` = '".$this->job->fields["entities_id"]."'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            $data = $DB->fetch_assoc($result);
-            if (self::isUserAddressValid($data["email"])) {
-               return $data["email"];
-            }
-         }
-      }
-      return $CFG_GLPI["admin_email"];
-   }
-
-
-   /**
     * @param $options   array
    **/
    function sendNotification($options=array()) {
 
-      $mmail = new self();
-      $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
-      // For exchange
-      $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
+      $data = array();
+      $data['itemtype']                             = $options['_itemtype'];
+      $data['items_id']                             = $options['_items_id'];
+      $data['notificationtemplates_id']             = $options['_notificationtemplates_id'];
+      $data['entities_id']                          = $options['_entities_id'];
 
-      $mmail->SetFrom($options['from'], $options['fromname'], false);
+      $data["headers"]['Auto-Submitted']            = "auto-generated";
+      $data["headers"]['X-Auto-Response-Suppress']  = "OOF, DR, NDR, RN, NRN";
+
+      $data['sender']                               = $options['from'];
+      $data['sendername']                           = $options['fromname'];
 
       if ($options['replyto']) {
-         $mmail->AddReplyTo($options['replyto'], $options['replytoname']);
-      }
-      $mmail->Subject  = $options['subject'];
-
-      if (empty($options['content_html'])) {
-         $mmail->isHTML(false);
-         $mmail->Body = $options['content_text'];
-      } else {
-         $mmail->isHTML(true);
-         $mmail->Body    = $options['content_html'];
-         $mmail->AltBody = $options['content_text'];
+         $data['replyto']       = $options['replyto'];
+         $data['replytoname']   = $options['replytoname'];
       }
 
-      $mmail->AddAddress($options['to'], $options['toname']);
+      $data['name']                                 = $options['subject'];
+
+      $data['body_text']                            = $options['content_text'];
+      if (!empty($options['content_html'])) {
+         $data['body_html'] = $options['content_html'];
+      }
+
+      $data['recipient']                            = $options['to'];
+      $data['recipientname']                        = $options['toname'];
 
       if (!empty($options['messageid'])) {
-         $mmail->MessageID = "<".$options['messageid'].">";
+         $data['messageid'] = $options['messageid'];
       }
-      
-      $messageerror = __('Error in sending the email');
 
-      if (!$mmail->Send()) {
+      if (isset($options['documents'])) {
+         $data['documents'] = json_encode($options['documents']);
+      }
+
+      $mailqueue = new QueuedMail();
+
+      if (!$mailqueue->add(Toolbox::addslashes_deep($data))) {
          $senderror = true;
-         Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
+         Session::addMessageAfterRedirect(__('Error inserting email to queue'), true);
       } else {
          //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-         Toolbox::logInFile("mail", sprintf(__('%1$s: %2$s'),
-                                            sprintf(__('An email was sent to %s'), $options['to']),
-                                            $options['subject']."\n"));
+         Toolbox::logInFile("mail",
+                            sprintf(__('%1$s: %2$s'),
+                                    sprintf(__('An email to %s was added to queue'),
+                                            $options['to']),
+                                    $options['subject']."\n"));
       }
 
-      $mmail->ClearAddresses();
       return true;
    }
 

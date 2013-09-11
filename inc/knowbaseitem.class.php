@@ -35,8 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSE knowledgebase
-
+/**
+ * KnowbaseItem Class
+**/
 class KnowbaseItem extends CommonDBTM {
 
    // For visibility checks
@@ -45,22 +46,38 @@ class KnowbaseItem extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+   const KNOWBASEADMIN = 1024;
+   const READFAQ       = 2048;
+   const PUBLISHFAQ    = 4096;
+
+   static $rightname   = 'knowbase';
+
 
    static function getTypeName($nb=0) {
       return __('Knowledge base');
    }
 
 
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuShorcut() {
+      return 'b';
+   }
+
+
    static function canCreate() {
-      return (Session::haveRight('knowbase', 'w') || Session::haveRight('faq', 'w'));
+
+      return Session::haveRightsOr(self::$rightname, array(CREATE, self::PUBLISHFAQ));
    }
 
 
    static function canView() {
       global $CFG_GLPI;
 
-      return (Session::haveRight('knowbase', 'r')
-              || Session::haveRight('faq', 'r')
+      return (Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -71,28 +88,31 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
-      if (Session::haveRight('knowbase_admin', '1')) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          return true;
       }
 
       if ($this->fields["is_faq"]) {
-         return (((Session::haveRight('knowbase', 'r') || Session::haveRight('faq', 'r'))
+         return ((Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))
                   && $this->haveVisibilityAccess())
                  || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
-      return (Session::haveRight("knowbase", "r") && $this->haveVisibilityAccess());
+      return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
    }
 
 
    function canUpdateItem() {
 
       // Personal knowbase or visibility and write access
-      return (Session::haveRight('knowbase_admin', '1')
+      return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
               || ($this->fields['users_id'] == Session::getLoginUserID())
-              || ((($this->fields["is_faq"] && Session::haveRight("faq", "w"))
-                   || (!$this->fields["is_faq"] && Session::haveRight("knowbase", "w")))
+              || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
+                   || (!$this->fields["is_faq"]
+                       && Session::haveRight(self::$rightname, UPDATE)))
                   && $this->haveVisibilityAccess()));
    }
+
+
    /**
     * Get the search page URL for the current classe
     *
@@ -113,11 +133,13 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
-  function defineTabs($options=array()) {
+   function defineTabs($options=array()) {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
+
+      $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
 
       return $ong;
    }
@@ -129,13 +151,14 @@ class KnowbaseItem extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong[1] = $this->getTypeName(1);
-               if ($item->canUpdate()) {
+               if ($item->canUpdateItem()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $ong[2] = self::createTabEntry(__('Targets'),
                                                     $item->countVisibilities());
                   } else {
                      $ong[2] = __('Targets');
                   }
+                  $ong[3] = __('Edit');
                }
                return $ong;
          }
@@ -149,11 +172,15 @@ class KnowbaseItem extends CommonDBTM {
       if ($item->getType() == __CLASS__) {
          switch($tabnum) {
             case 1 :
-               $item->showMenu();
+               $item->showFull();
                break;
 
             case 2 :
                $item->showVisibility();
+               break;
+
+            case 3 :
+               $item->showForm($item->getID());
                break;
          }
       }
@@ -168,8 +195,8 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function post_getEmpty() {
 
-      if (Session::haveRight("faq", "w")
-          && !Session::haveRight("knowbase", "w")) {
+      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+          && !Session::haveRight("knowbase", UPDATE)) {
          $this->fields["is_faq"] = 1;
       }
    }
@@ -211,45 +238,6 @@ class KnowbaseItem extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "deletevisibility":
-            foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('Entity_KnowbaseItem', 'Group_KnowbaseItem',
-                                         'KnowbaseItem_Profile', 'KnowbaseItem_User'))) {
-                  $item = new $type();
-                  foreach ($items as $key => $val) {
-                     if ($item->can($key,'w')) {
-                        if ($item->delete(array('id' => $key))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['noright']++;
-                     }
-                  }
-               }
-            }
-
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
 
 
    /**
@@ -299,8 +287,7 @@ class KnowbaseItem extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public knowbaseitem right : no visibility check
-      if (!Session::haveRight('faq', 'r')
-          && !Session::haveRight('knowbase', 'r') ) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::READFAQ, READ))) {
          return false;
       }
 
@@ -309,7 +296,7 @@ class KnowbaseItem extends CommonDBTM {
          return true;
       }
       // Admin
-      if (Session::haveRight('knowbase_admin', '1')) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          return true;
       }
       // Users
@@ -497,12 +484,12 @@ class KnowbaseItem extends CommonDBTM {
          $input["name"] = __('New item');
       }
 
-      if (Session::haveRight("faq", "w")
-          && !Session::haveRight("knowbase", "w")) {
+      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+          && !Session::haveRight(self::$rightname, UPDATE)) {
          $input["is_faq"] = 1;
       }
-      if (!Session::haveRight("faq", "w")
-          && Session::haveRight("knowbase", "w")) {
+      if (!Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+          && Session::haveRight(self::$rightname, UPDATE)) {
          $input["is_faq"] = 0;
       }
       return $input;
@@ -534,133 +521,96 @@ class KnowbaseItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       // show kb item form
-      if (!Session::haveRight("knowbase","w" )
-          && !Session::haveRight("faq","w")) {
+      if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
          return false;
       }
 
       $this->initForm($ID, $options);
-      $canedit = $this->can($ID,'w');
-      $canrecu = $this->can($ID,'recursive');
+      $canedit = $this->can($ID, UPDATE);
 
-      if ($canedit) {
-         // Load ticket solution
-         if (empty($ID)
-             && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
-             && isset($options['item_items_id']) && !empty($options['item_items_id'])) {
+      // Load ticket solution
+      if (empty($ID)
+          && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
+          && isset($options['item_items_id']) && !empty($options['item_items_id'])) {
 
-            if ($item = getItemForItemtype($options['item_itemtype'])) {
-               if ($item->getFromDB($options['item_items_id'])) {
-                  $this->fields['name']   = $item->getField('name');
-                  $this->fields['answer'] = $item->getField('solution');
-                  if ($item->isField('itilcategories_id')) {
-                     $ic = new ItilCategory();
-                     if ($ic->getFromDB($item->getField('itilcategories_id'))) {
-                        $this->fields['knowbaseitemcategories_id']
-                              = $ic->getField('knowbaseitemcategories_id');
-                     }
+         if ($item = getItemForItemtype($options['item_itemtype'])) {
+            if ($item->getFromDB($options['item_items_id'])) {
+               $this->fields['name']   = $item->getField('name');
+               $this->fields['answer'] = $item->getField('solution');
+               if ($item->isField('itilcategories_id')) {
+                  $ic = new ItilCategory();
+                  if ($ic->getFromDB($item->getField('itilcategories_id'))) {
+                     $this->fields['knowbaseitemcategories_id']
+                           = $ic->getField('knowbaseitemcategories_id');
                   }
                }
             }
          }
-         echo "<div id='contenukb'>";
-         Html::initEditorSystem('answer');
-
-         echo "<form method='post' id='form_kb' name='form_kb' action=\"".$this->getFormUrl()."\">";
-
-         if (!empty($ID)) {
-            echo "<input type='hidden' name='id' value='$ID'>\n";
-         }
-
-         echo "<fieldset>";
-         echo "<legend>".__('Category name')."</legend>";
-         echo "<div class='center'>".__('Select a category for this item')."&nbsp;";
-         KnowbaseItemCategory::dropdown(array('value' => $this->fields["knowbaseitemcategories_id"]));
-         echo "</div></fieldset>";
-
-         echo "<fieldset>";
-         echo "<legend>".__('Subject')."</legend>";
-         echo "<div class='center'>";
-         echo "<textarea cols='80' rows='2' name='name'>".$this->fields["name"]."</textarea>";
-         echo "</div></fieldset>";
-
-         echo "<fieldset>";
-         echo "<legend>".__('Content')."</legend>";
-         echo "<div class='center spaced'>";
-         echo "<textarea cols='80' rows='30' id='answer' name='answer'>".$this->fields["answer"];
-         echo "</textarea></div></fieldset>";
-
-
-         if (!empty($ID)) {
-            echo "<fieldset>";
-            echo "<legend></legend>";
-            echo "<div class='baskb'>";
-            if ($this->fields["users_id"]) {
-               //TRANS: %s is the writer name
-               printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
-            }
-
-            echo "<span class='baskb_right'>";
-            if ($this->fields["date_mod"]) {
-               //TRANS: %s is the datetime of update
-               printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-            }
-
-            echo "</span><br>";
-
-            if ($this->fields["date"]) {
-               //TRANS: %s is the datetime of insertion
-               printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
-            }
-
-            echo "<span class='baskb_right'>";
-            //TRANS: %d is the number of view
-            printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
-            echo "</span></div>";
-
-            echo "</fieldset>";
-         }
-
-         echo "<p class='center'>";
-
-//          if (Session::isMultiEntitiesMode()) {
-//             _e('Entity');
-//             Entity::dropdown(array('value'    => $this->fields["entities_id"],
-//                                    'comments' => 0 ));
-//             _e('Child entities: ');
-//             if ($canrecu) {
-//                Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-//             } else {
-//                echo Dropdown::getYesNo($this->fields["is_recursive"]);
-//             }
-//          }
-//          echo "<br><br>" .
-         echo __('Put this item in the FAQ')."&nbsp;";
-
-         if (Session::haveRight("faq","w")
-             && Session::haveRight("knowbase","w")) {
-            Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
-         } else {
-            echo Dropdown::getYesNo($this->fields["is_faq"]);
-         }
-
-         echo "<br><br>";
-         if ($ID > 0) {
-            echo "<input type='submit' class='submit' name='update' value=\""._sx('button','Save')."\">";
-         } else {
-            echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
-            echo "<input type='submit' class='submit' name='add' value=\""._sx('button','Add')."\">";
-         }
-
-         echo "<span class='big_space'>";
-         echo "<input type='reset' class='submit' value=\""._sx('button','Blank')."\"></span>";
-         echo "</p>";
-         Html::closeForm();
-         echo "</div>";
-         return true;
       }
-      //  ELSE Cannot edit
-      return false;
+
+      Html::initEditorSystem('answer');
+      $this->initForm($ID, $options);
+      $this->showFormHeader($options);
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Category name')."</td>";
+      echo "<td>";
+      echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
+      KnowbaseItemCategory::dropdown(array('value' => $this->fields["knowbaseitemcategories_id"]));
+      echo "</td>";
+      echo "<td>";
+      if ($this->fields["date"]) {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+      }
+      echo "</td><td>";
+      if ($this->fields["date_mod"]) {
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+      }
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Put this item in the FAQ')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
+      echo "</td>";
+      echo "<td>";
+      if ($this->fields["users_id"]) {
+         //TRANS: %s is the writer name
+         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
+      }
+      echo "</td><td>";
+      //TRANS: %d is the number of view
+      printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Subject')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='100' rows='1' name='name'>".$this->fields["name"]."</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Content')."</td>";
+      echo "<td colspan='3'>";
+
+      $cols = 100;
+      $rows = 30;
+      if (isset($options['_in_modal']) && $options['_in_modal']) {
+         $rows = 15;
+         echo Html::hidden('_in_modal', array('value' => 1));
+      }
+
+      echo "<textarea cols='$cols' rows='$rows' id='answer' name='answer'>".$this->fields["answer"];
+      echo "</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
+
+      $this->showFormButtons($options);
+      return true;
    } // function showForm
 
 
@@ -680,67 +630,6 @@ class KnowbaseItem extends CommonDBTM {
          unset($_SESSION['glpi_faqcategories']);
       }
    }
-
-
-   /**
-    * Print out an HTML Menu for knowbase item
-    *
-    * @return nothing (display the form)
-   **/
-   function showMenu() {
-      global $CFG_GLPI;
-
-      $ID = $this->fields['id'];
-      if (!$this->can($ID,'r')
-          || (Session::getLoginUserID() === false)) {
-         return false;
-      }
-
-      $edit    = $this->can($ID, 'w');
-      $isFAQ   = $this->fields["is_faq"];
-      $editFAQ = Session::haveRight("faq", "w");
-
-      echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>";
-      if ($isFAQ) {
-         _e('This item is part of the FAQ');
-      } else {
-         _e('This item is not part of the FAQ');
-      }
-      echo "</th></tr>\n";
-
-      if ($edit) {
-         echo "<tr class='tab_bg_1'>";
-         if ($editFAQ) {
-            echo "<td class='center' width='33%'>";
-            if ($isFAQ) {
-               Html::showSimpleForm(static::getFormURL(), 'update',
-                                    __('Delete this item from the FAQ'),
-                                    array('id'     => $ID,
-                                          'is_faq' => 0),
-                                    $CFG_GLPI["root_doc"]."/pics/faqremove.png");
-            } else  {
-               Html::showSimpleForm(static::getFormURL(), 'update', __('Put this item in the FAQ'),
-                                    array('id'     => $ID,
-                                          'is_faq' => 1),
-                                    $CFG_GLPI["root_doc"]."/pics/faqadd.png");
-            }
-            echo "</td>\n";
-         }
-         echo "<td class='center' width='34%'><a href=\"".
-               $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".__s('Edit').
-               "\" title=\"".__s('Edit')."\"></a></td>\n";
-         echo "<td class='center' width='33%'>";
-         Html::showSimpleForm(static::getFormURL(), 'delete', _x('button', 'Delete permanently'),
-                              array('id' => $ID), $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '',
-                              __("Are you sure you want to delete this item?"));
-
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</table><br>";
-   }
-
 
    /**
     * Increase the view counter of the current knowbaseitem
@@ -762,24 +651,23 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out (html) show item : question and answer
     *
-    * @param $linkusers_id       display users_id link (true by default)
     * @param $options      array of options
     *
     * @return nothing (display item : question and answer)
    **/
-   function showFull($linkusers_id=true, $options=array()) {
+   function showFull($options=array()) {
       global $DB, $CFG_GLPI;
 
-      if (!$this->can($this->fields['id'],'r')) {
+      if (!$this->can($this->fields['id'], READ)) {
          return false;
       }
 
+      $linkusers_id = true;
       // show item : question and answer
-      if (!Session::haveRight("user", "r")) {
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+          || !User::canView()) {
          $linkusers_id = false;
       }
-
-      $inpopup = strpos($_SERVER['PHP_SELF'],"popup.php");
 
       $this->updateCounter();
 
@@ -787,26 +675,29 @@ class KnowbaseItem extends CommonDBTM {
       $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
                                                             $knowbaseitemcategories_id);
 
-      if (!$inpopup) {
-         $this->showTabs($options);
-      }
-      $options['colspan'] = 2;
-      $options['canedit'] = 0; // Hide the buttons
-      $this->showFormHeader($options);
-
       $tmp = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
-      echo $this->fields["name"];
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         echo KnowbaseItemTranslation::getTranslatedValue($this, 'name');
+      } else {
+         echo $this->fields["name"];
+      }
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div id='kbanswer'>";
-      echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["answer"]);
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+      } else {
+         $answer = $this->fields["answer"];
+      }
+      echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
       echo "</div>";
       echo "</td></tr>";
 
@@ -827,26 +718,28 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["date"]) {
          //TRANS: %s is the datetime of update
          printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+         echo "<br>";
       }
-
-      if ($this->countVisibilities() == 0) {
-         echo "<br><span class='red'>".__('Unpublished')."</span>";
-      }
-      echo "</th>";
-      echo "<th class='tdkb' colspan='2'>";
-
       if ($this->fields["date_mod"]) {
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-         echo "<br>";
       }
-      echo sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]).
-           "</th></tr>";
 
-      $this->showFormButtons($options);
-      if (!$inpopup) {
-         $this->addDivForTabs();
+      echo "</th>";
+      echo "<th class='tdkb' colspan='2'>";
+      if ($this->countVisibilities() == 0) {
+         echo "<span class='red'>".__('Unpublished')."</span><br>";
       }
+
+      printf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
+      echo "<br>";
+      if ($this->fields["is_faq"]) {
+         _e('This item is part of the FAQ');
+      } else {
+         _e('This item is not part of the FAQ');
+      }
+      echo "</th></tr>";
+      echo "</table>";
 
       return true;
    }
@@ -863,8 +756,7 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight("knowbase","r")
-          && !Session::haveRight("faq","r")) {
+          && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
          return false;
       }
 
@@ -912,8 +804,7 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight("knowbase","r")
-          && !Session::haveRight("faq","r")) {
+          && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
          return false;
       }
 
@@ -925,7 +816,7 @@ class KnowbaseItem extends CommonDBTM {
             $params[$key] = $val;
          }
       }
-      $faq = !Session::haveRight("knowbase","r");
+      $faq = !Session::haveRight(self::$rightname, READ);
 
       // Category select not for anonymous FAQ
       if (Session::getLoginUserID()
@@ -961,8 +852,7 @@ class KnowbaseItem extends CommonDBTM {
    function showManageForm($options) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("knowbase","w")
-          && !Session::haveRight("faq","w")) {
+      if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
          return false;
       }
       $params['unpublished'] = 'my';
@@ -972,7 +862,7 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-      $faq = !Session::haveRight("knowbase","w");
+      $faq = !Session::haveRight(self::$rightname, UPDATE);
 
       echo "<div>";
       echo "<form method='get' action='".$this->getSearchURL()."'>";
@@ -980,7 +870,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       $values = array('myunpublished' => __('My unpublished articles'),
                       'allmy'         => __('All my articles'));
-      if (Session::haveRight('knowbase_admin', '1')) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          $values['allunpublished'] = __('All unpublished articles');
       }
       Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
@@ -1004,11 +894,11 @@ class KnowbaseItem extends CommonDBTM {
    **/
    static function getListRequest(array $params, $type='search') {
       global $DB;
-
       // Lists kb Items
-      $where = "";
-      $order = "";
-      $score = "";
+      $where     = "";
+      $order     = "";
+      $score     = "";
+      $addselect = "";
       $join  = self::addVisibilityJoins(true);
 
       switch ($type) {
@@ -1067,10 +957,15 @@ class KnowbaseItem extends CommonDBTM {
             if (strlen($params["contains"]) > 0) {
                $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
 
-               $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
+               $addscore = '';
+               if (KnowbaseItemTranslation::isKbTranslationActive()) {
+                  $addscore = ",`glpi_knowbaseitemtranslations`.`name`,
+                                 `glpi_knowbaseitemtranslations`.`answer`";
+               }
+               $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
                            AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
 
-               $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
+               $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
                           AGAINST('$search' IN BOOLEAN MODE) ";
 
                $order   = "ORDER BY `SCORE` DESC";
@@ -1094,8 +989,14 @@ class KnowbaseItem extends CommonDBTM {
                                    /* 8 */   "/\)/",
                                    /* 9 */   "/\-/");
                   $contains = preg_replace($search1,"", $params["contains"]);
+                  $addwhere = '';
+                  if (KnowbaseItemTranslation::isKbTranslationActive()) {
+                     $addwhere = " OR `glpi_knowbaseitemtranslations`.`name` ".Search::makeTextSearch($contains)."
+                                    OR `glpi_knowbaseitemtranslations`.`answer` ".Search::makeTextSearch($contains);
+                  }
                   $where   .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
-                                 OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
+                                 OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains)."
+                                 $addwhere)";
                } else {
                   $where = $where_1;
                }
@@ -1109,8 +1010,17 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
+      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+         $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
+                     ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
+                           AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
+                          `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
+      }
+
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
+                       $addselect
                        $score
                 FROM `glpi_knowbaseitems`
                 $join
@@ -1134,7 +1044,7 @@ class KnowbaseItem extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Default values of parameters
-      $params['faq']                       = !Session::haveRight("knowbase","r");
+      $params['faq']                       = !Session::haveRight(self::$rightname, READ);
       $params["start"]                     = "0";
       $params["knowbaseitemcategories_id"] = "0";
       $params["contains"]                  = "";
@@ -1148,13 +1058,13 @@ class KnowbaseItem extends CommonDBTM {
       $ki = new self();
       switch ($type) {
          case 'myunpublished' :
-            if (!Session::haveRight('knowbase','w') && !Session::haveRight('faq','w')) {
+            if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
                return false;
             }
             break;
 
          case 'allunpublished' :
-            if (!Session::haveRight('knowbase_admin',1)) {
+            if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
                return false;
             }
             break;
@@ -1168,7 +1078,6 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $query = self::getListRequest($params, $type);
-
       // Get it from database
       if ($result = $DB->query($query)) {
          $KbCategory = new KnowbaseItemCategory();
@@ -1256,30 +1165,44 @@ class KnowbaseItem extends CommonDBTM {
                $row_num++;
                echo Search::showNewLine($output_type, $i%2);
 
+               $item = new self;
+               $item->getFromDB($data["id"]);
+               $name   = $data["name"];
+               $answer = $data["answer"];
+               // Manage translations
+               if (isset($data['transname']) && !empty($data['transname'])) {
+                  $name   = $data["transname"];
+               }
+               if (isset($data['transanswer']) && !empty($data['transanswer'])) {
+                  $answer = $data["transanswer"];
+               }
+
                if ($output_type == Search::HTML_OUTPUT) {
+                  $toadd = '';
                   if (isset($options['item_itemtype'])
                       && isset($options['item_items_id'])) {
-                     $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-                              "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
-                              "'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
-                              "w.focus();\"" ;
+                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"" ;
+                     $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
+                                                            $CFG_GLPI["root_doc"].
+                                                               "/front/knowbaseitem.form.php?id=".$data["id"],
+                                                            array('display' => false));
                   } else {
                      $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".
                                     $data["id"]."\" ";
                   }
 
                   echo Search::showItem($output_type,
-                                        "<div class='kb'><a ".
+                                        "<div class='kb'>$toadd<a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                          " $href>".Html::resume_text($data["name"], 80)."</a></div>
+                                          " $href>".Html::resume_text($name, 80)."</a></div>
                                           <div class='kb_resume'>".
-                                          Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["answer"])),
+                                          Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($answer)),
                                                             600)."</div>",
                                         $item_num, $row_num);
                } else {
-                  echo Search::showItem($output_type, $data["name"], $item_num, $row_num);
+                  echo Search::showItem($output_type, $name, $item_num, $row_num);
                   echo Search::showItem($output_type,
-                     Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
+                     Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($answer,
                                                                                                ENT_QUOTES,
                                                                                                "UTF-8"))),
                                 $item_num, $row_num);
@@ -1347,7 +1270,7 @@ class KnowbaseItem extends CommonDBTM {
    static function showRecentPopular($type) {
       global $DB, $CFG_GLPI;
 
-      $faq = !Session::haveRight("knowbase","r");
+      $faq = !Session::haveRight(self::$rightname, READ);
 
       if ($type == "recent") {
          $orderby = "ORDER BY `date` DESC";
@@ -1361,6 +1284,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $faq_limit = "";
+      $addselect = "";
       // Force all joins for not published to verify no visibility set
       $join = self::addVisibilityJoins(true);
 
@@ -1387,13 +1311,22 @@ class KnowbaseItem extends CommonDBTM {
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
-      $query = "SELECT DISTINCT `glpi_knowbaseitems`.*
+
+      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+         $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
+                     ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
+                           AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
+                          `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
+      }
+
+
+      $query = "SELECT DISTINCT `glpi_knowbaseitems`.* $addselect
                 FROM `glpi_knowbaseitems`
                 $join
                 $faq_limit
                 $orderby
                 LIMIT 10";
-
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -1401,10 +1334,15 @@ class KnowbaseItem extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>".$title."</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
+            $name = $data['name'];
+
+            if (isset($data['transname']) && !empty($data['transname'])) {
+               $name = $data['transname'];
+            }
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
-                  Html::resume_text($data["name"],80)."</a></td></tr>";
+                  Html::resume_text($name,80)."</a></td></tr>";
          }
          echo "</table>";
       }
@@ -1493,7 +1431,7 @@ class KnowbaseItem extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->can($ID, UPDATE);
 
       echo "<div class='center'>";
 
@@ -1532,16 +1470,17 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed'
-                              => $nb,
-                           'specific_actions'
-                              => array('deletevisibility' => _x('button', 'Delete permanently')) );
+         $paramsma = array('num_displayed'    => $nb,
+                           'container'        => 'mass'.__CLASS__.$rand,
+                           'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                       'delete' => _x('button',
+                                                                      'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm']
                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -1561,8 +1500,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('KnowbaseItem_User',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1579,8 +1517,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Group_KnowbaseItem',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1611,8 +1548,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Entity_KnowbaseItem',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1638,8 +1574,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('KnowbaseItem_Profile',$data["id"]);
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
@@ -1666,7 +1601,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
 
@@ -1676,6 +1611,22 @@ class KnowbaseItem extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'central') {
+         $values = parent::getRights();
+         $values[self::KNOWBASEADMIN] = __('Knowledge base administration');
+      }
+      $values[self::READFAQ]       = __('Read the FAQ');
+      $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
+      return $values;
+   }
 
 }
 ?>

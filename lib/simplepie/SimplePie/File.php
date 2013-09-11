@@ -69,7 +69,6 @@ class SimplePie_File
 	{
             /// Patch GLPI
             global $CFG_GLPI;
-            
 		if (class_exists('idna_convert'))
 		{
 			$idn = new idna_convert();
@@ -110,13 +109,12 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_REFERER, $url);
 				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
-				
-				/// Patch GLPI
-				if (!empty($CFG_GLPI["proxy_name"])) {
+                                /// Patch GLPI
+                                if (!empty($CFG_GLPI["proxy_name"])) {
                                   curl_setopt($fp, CURLOPT_PROXY, $CFG_GLPI["proxy_name"]);
                                   curl_setopt($fp, CURLOPT_PROXYPORT, $CFG_GLPI["proxy_port"]);
                                }
-
+                               
 				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))
 				{
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);

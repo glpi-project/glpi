@@ -35,13 +35,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES Networking
 
+/**
+ * Network equipment Class
+**/
 class NetworkEquipment extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
+   static $rightname                   = 'networking';
 
 
    /**
@@ -54,13 +58,30 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('networking', 'w');
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since version 0.85
+   **/
+   static function getAdditionalMenuOptions() {
+
+      if (static::canView()) {
+         $options['networkport']['title'] = NetworkPort::getTypeName(2);
+         $options['networkport']['page']  = NetworkPort::getFormURL(false);
+
+         return $options;
+      }
+      return false;
    }
 
 
-   static function canView() {
-      return Session::haveRight('networking', 'r');
+   /**
+    * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuName() {
+      return _n('Network', 'Networks', 2);
    }
 
 
@@ -73,7 +94,11 @@ class NetworkEquipment extends CommonDBTM {
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
+                                                  (!empty($this->input['keep_devices'])));
    }
+
 
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
@@ -88,6 +113,8 @@ class NetworkEquipment extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -121,6 +148,10 @@ class NetworkEquipment extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // TODO : manage templates for item_devices
+         // ADD Devices
+         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -213,7 +244,6 @@ class NetworkEquipment extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -229,7 +259,9 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_networkequipment`='1'"));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -331,7 +363,8 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
       echo "<td>";
-      Domain::dropdown(array('value' => $this->fields["domains_id"]));
+      Domain::dropdown(array('value'  => $this->fields["domains_id"],
+                             'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -344,9 +377,7 @@ class NetworkEquipment extends CommonDBTM {
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='3'>";
-         _e('Automatic inventory');
-         echo "</td>";
+         echo "<td rowspan='3'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='3'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
@@ -380,7 +411,6 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -394,11 +424,10 @@ class NetworkEquipment extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 
@@ -436,6 +465,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
+      $tab[31]['condition']      = "`is_visible_networkequipment`='1'";
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';

@@ -60,7 +60,9 @@ class Vlan extends CommonDropdown {
    function displaySpecificTypeField($ID, $field=array()) {
 
       if ($field['name'] == 'tag') {
-         Dropdown::showInteger('tag', $this->fields['tag'], 1, (pow(2,12) - 2));
+         Dropdown::showNumber('tag', array('value' => $this->fields['tag'],
+                                           'min'   => 1,
+                                           'max'   => (pow(2,12) - 2)));
       }
    }
 

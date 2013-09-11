@@ -38,7 +38,7 @@ Session::checkLoginUser();
 $inquest = new TicketSatisfaction();
 
 if (isset($_POST["update"])) {
-   $inquest->check($_POST["tickets_id"], 'w');
+   $inquest->check($_POST["tickets_id"], UPDATE);
    $inquest->update($_POST);
 
    Event::log($inquest->getField('tickets_id'), "ticket", 4, "tracking",

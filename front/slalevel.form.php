@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {
-   $item->check($_POST["id"], 'w');
+   $item->check($_POST["id"], UPDATE);
 
    $item->update($_POST);
 
@@ -48,24 +48,26 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add"])) {
-   $item->check(-1, 'w', $_POST);
+   $item->check(-1, CREATE, $_POST);
 
-   if ($item->add($_POST)) {
+   if ($newID = $item->add($_POST)) {
       Event::log($_POST["slas_id"], "slas", 4, "setup",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($item->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
 
    if (isset($_POST['id'])) {
-      $item->check($_POST['id'], 'd');
-      $ok = $item->delete($_POST);
-      if ($ok) {
+      $item->check($_POST['id'], PURGE);
+      if ($item->delete($_POST, 1)) {
          Event::log($_POST["id"], "slas", 4, "setup",
                     //TRANS: %s is the user login
-                    sprintf(__('%s deletes a sla level'), $_SESSION["glpiname"]));
+                    sprintf(__('%s purges a sla level'), $_SESSION["glpiname"]));
       }
       $item->redirectToList();
    }
@@ -73,17 +75,16 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add_action"])) {
-/// TODO create specific form
-   $item->check($_POST['slalevels_id'], 'w');
+   $item->check($_POST['slalevels_id'], UPDATE);
 
    $action = new SlaLevelAction();
    $action->add($_POST);
 
    Html::back();
 
-} else if (isset($_POST["add_criteria"])) {
+}  else if (isset($_POST["add_criteria"])) {
 
-   $item->check($_POST['slalevels_id'], 'w');
+   $item->check($_POST['slalevels_id'], UPDATE);
    $criteria = new SlaLevelCriteria();
    $criteria->add($_POST);
 
@@ -92,8 +93,7 @@ if (isset($_POST["update"])) {
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) { //print computer information
    Html::header(SlaLevel::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
-   $item->showForm($_GET["id"]);
+   $item->display(array('id' => $_GET["id"]));
    Html::footer();
 }
-Html::displayErrorAndDie('Lost');
 ?>

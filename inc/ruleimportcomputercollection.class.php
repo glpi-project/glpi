@@ -39,7 +39,7 @@ class RuleImportComputerCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
-   static public $right        = 'rule_import';
+   static $rightname           = 'rule_import';
    public $menu_option         = 'linkcomputer';
 
 

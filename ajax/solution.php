@@ -50,8 +50,10 @@ if (isset($_POST['value']) && ($_POST['value'] > 0)) {
       echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'>";
       echo $template->getField('content');
       echo "</textarea>\n";
-      echo "<script type='text/javascript'>document.getElementById('".$_POST["type_id"]."').
-             value = ".$template->getField('solutiontypes_id')."</script>";
+      echo "<script type='text/javascript'>".
+               Html::jsSetDropdownValue($_POST["type_id"],
+                                        $template->getField('solutiontypes_id')).
+           "</script>";
    }
 
 } else {

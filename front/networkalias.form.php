@@ -43,19 +43,20 @@ if (empty($_GET["networknames_id"])) {
 }
 
 if (isset($_POST["add"])) {
-   $alias->check(-1,'w',$_POST);
+   $alias->check(-1, CREATE, $_POST);
 
-   if ($newID=$alias->add($_POST)) {
-      Ajax::refreshPopupTab();
+   if ($newID = $alias->add($_POST)) {
       Event::log($newID, $alias->getType(), 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($alias->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $alias->check($_POST["id"],'w');
+   $alias->check($_POST["id"], UPDATE);
    $alias->update($_POST);
-   Ajax::refreshPopupMainWindow();
 
    Event::log($_POST["id"], $alias->getType(), 4, "setup",
               //TRANS: %s is the user login
@@ -63,20 +64,20 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-if (isset($_GET['popup'])) {
+if (isset($_GET['_in_modal'])) {
    Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
-   if (isset($_GET["rand"])) {
-      $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
-   }
    $alias->showForm($_GET["id"], $_GET);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-   echo "</div>";
    Html::popFooter();
 
 } else {
-   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory');
+   if (!isset($_GET["id"])) {
+      $_GET["id"] = "";
+   }
 
-   $alias->showForm($_GET["id"],$_GET);
+   Session::checkRight("internet", UPDATE);
+   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'assets');
+
+   $alias->display($_GET);
    Html::footer();
 }
 ?>

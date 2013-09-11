@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("contact_enterprise", "r");
+Session::checkRight("contact_enterprise", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = -1;
@@ -46,20 +46,23 @@ if (isset($_GET['getvcard'])) {
    if ($_GET["id"] < 0) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/contact.php");
    }
-   $contact->check($_GET["id"],'r');
+   $contact->check($_GET["id"], READ);
    $contact->generateVcard();
 
 } else if (isset($_POST["add"])) {
-   $contact->check(-1,'w',$_POST);
+   $contact->check(-1, CREATE, $_POST);
 
    if ($newID = $contact->add($_POST)) {
       Event::log($newID, "contacts", 4, "financial",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($contact->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $contact->check($_POST["id"],'d');
+   $contact->check($_POST["id"], DELETE);
 
    if ($contact->delete($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
@@ -69,7 +72,7 @@ if (isset($_GET['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $contact->check($_POST["id"],'d');
+   $contact->check($_POST["id"], PURGE);
 
    if ($contact->restore($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
@@ -79,7 +82,7 @@ if (isset($_GET['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $contact->check($_POST["id"],'d');
+   $contact->check($_POST["id"], PURGE);
 
    if ($contact->delete($_POST,1)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
@@ -89,7 +92,7 @@ if (isset($_GET['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $contact->check($_POST["id"],'w');
+   $contact->check($_POST["id"], UPDATE);
 
    if ($contact->update($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
@@ -99,8 +102,8 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else {
-   Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contact");
-   $contact->showForm($_GET["id"]);
+   Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contact");
+   $contact->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

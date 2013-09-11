@@ -56,7 +56,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -82,7 +82,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate","r")) {
+          && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
@@ -175,10 +175,10 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       $ID = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
          return false;
       }
-      $canedit           = $tt->can($ID, "w");
+      $canedit           = $tt->canEdit($ID);
       $ttm               = new self();
       $used              = $ttm->getMandatoryFields($ID);
       $fields            = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
@@ -234,8 +234,9 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed'  => $numrows);
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            $massiveactionparams = array('num_displayed' => $numrows,
+                                         'container'     => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>";
@@ -273,7 +274,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          echo "</table>";
          if ($canedit && $numrows) {
             $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
          echo "</div>";

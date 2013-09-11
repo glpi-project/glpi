@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
  */
 class NotificationMailSetting extends CommonDBTM {
 
-   var $table = 'glpi_configs';
+   var $table              = 'glpi_configs';
 
-   protected $displaylist = false;
+   protected $displaylist  = false;
+
+   static $rightname       = 'config';
+
 
 
    // Temproray hack for this class in 0.84
@@ -102,7 +105,7 @@ class NotificationMailSetting extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Config::canUpdate()) {
          return false;
       }
       if (!$CFG_GLPI['use_mailing']) {
@@ -110,19 +113,7 @@ class NotificationMailSetting extends CommonDBTM {
       }
 
       $this->getFromDB($ID);
-      $this->showTabs($options);
-      $this->addDivForTabs();
       return true;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 
@@ -194,14 +185,17 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";
          echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
          echo "</td>";
-         echo "<td >" . __('SMTP login (optional)') . "</td>";
-         echo "<td><input type='text' name='smtp_username' size='40' value='" .
-                    $CFG_GLPI["smtp_username"] . "'></td></tr>";
-
          //TRANS: SMTP port
-         echo "<tr class='tab_bg_2'><td >" . __('Port') . "</td>";
+         echo "<td >" . __('Port') . "</td>";
          echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_2'>";
+         echo "<td >" . __('SMTP login (optional)') . "</td>";
+         echo "<td><input type='text' name='smtp_username' size='40' value='" .
+                    $CFG_GLPI["smtp_username"] . "'></td>";
+         
          echo "<td >" . __('SMTP password (optional)') . "</td>";
          echo "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
          echo "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".__('Clear');

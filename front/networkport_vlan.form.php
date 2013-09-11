@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 Session::checkCentralAccess();
 $npv = new NetworkPort_Vlan();
 if (isset($_POST["add"])) {
-   $npv->check(-1,'w',$_POST);
+   $npv->check(-1, UPDATE, $_POST);
 
    if (isset($_POST["vlans_id"]) && ($_POST["vlans_id"] > 0)) {
       $npv->assignVlan($_POST["networkports_id"], $_POST["vlans_id"],

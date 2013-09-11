@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Contracts and Items
+/**
+ * Contract_Item Class
+ *
+ * Relation between Contracts and Items
+**/
 class Contract_Item extends CommonDBRelation{
 
    // From CommonDBRelation
@@ -53,7 +57,7 @@ class Contract_Item extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -256,7 +260,7 @@ class Contract_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       // Can exists on template
-      if (Session::haveRight("contract","r")) {
+      if (Contract::canView()) {
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -345,11 +349,12 @@ class Contract_Item extends CommonDBRelation{
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
-      if (!Session::haveRight("contract","r") || !$item->can($ID,"r")) {
+      if (!Contract::canView()
+          || !$item->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $item->can($ID,"w");
+      $canedit = $item->can($ID, UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contracts_items`.*
@@ -383,7 +388,7 @@ class Contract_Item extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a contract')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='right'>";
+         echo "<tr class='tab_bg_1'><td>";
          Contract::dropdown(array('entity' => $item->getEntityID(),
                                   'used'   => $used));
 
@@ -399,8 +404,9 @@ class Contract_Item extends CommonDBRelation{
       if ($withtemplate != 2) {
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => $number);
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            $massiveactionparams = array('num_displayed' => $number,
+                                         'container'     => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($massiveactionparams);
          }
       }
       echo "<table class='tab_cadre_fixe'>";
@@ -469,8 +475,9 @@ class Contract_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number && ($withtemplate != 2)) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         // TODO check because we switched from $paramsma to $massiveactionparams
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -491,10 +498,10 @@ class Contract_Item extends CommonDBRelation{
 
       $instID = $contract->fields['id'];
 
-      if (!$contract->can($instID,'r')) {
+      if (!$contract->can($instID, READ)) {
          return false;
       }
-      $canedit = $contract->can($instID,'w');
+      $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`
@@ -567,9 +574,13 @@ class Contract_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td class='right'>";
-         Dropdown::showAllItems("items_id", 0, 0,
-                                ($contract->fields['is_recursive']?-1:$contract->fields['entities_id']),
-                                $CFG_GLPI["contract_types"], false, true);
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+                                                         => $CFG_GLPI["contract_types"],
+                                                     'entity_restrict'
+                                                         => ($contract->fields['is_recursive']
+                                                             ?-1 :$contract->fields['entities_id']),
+                                                     'checkright'
+                                                         => true));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
@@ -582,8 +593,8 @@ class Contract_Item extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $totalnb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array();
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
        echo "<tr>";
@@ -663,12 +674,27 @@ class Contract_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         // TODO check because we switched from $paramsma to $massiveactionparams
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+   **/
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
+
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      $specificities['itemtypes'] = $CFG_GLPI['contract_types'];
+
+      return $specificities;
+   }
 }
 ?>

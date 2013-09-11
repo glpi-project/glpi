@@ -38,26 +38,10 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
-   static public $right        = 'rule_dictionnary_printer';
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'printer';
 
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       //Init cache system values
-//       $this->initCache("glpi_rulecacheprinters",
-//                        array("name"               => "old_value",
-//                              "manufacturer"       => "manufacturer"),
-//                        array("name"               => "new_value",
-//                              "manufacturer"       => "new_manufacturer",
-//                              "_ignore_import"     => "ignore_import",
-//                              "is_global"          => "is_global"));
-//    }
-
+   static $rightname           = 'rule_dictionnary_printer';
 
    /**
     * @see RuleCollection::getTitle()
@@ -344,8 +328,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
                                        AND `items_id` = '$new_printers_id'
                                        AND `computers_id`='".$connection["computers_id"]."'")) {
             //Direct connection doesn't exists in the target printer : move it
-            $computeritem->update(array ('id'       => $connection['id'],
-                                         'items_id' => $new_printers_id));
+            $computeritem->update(array('id'       => $connection['id'],
+                                        'items_id' => $new_printers_id));
          } else {
             //Direct connection already exists in the target printer : delete it
             $computeritem->delete($connection);

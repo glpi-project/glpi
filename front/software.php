@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "r");
+Session::checkRight("software", READ);
 
-Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
+Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
 
 Search::show('Software');
 

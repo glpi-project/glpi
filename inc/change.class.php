@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Change class
+/**
+ * Change Class
+**/
 class Change extends CommonITILObject {
 
    // From CommonDBTM
@@ -46,11 +48,17 @@ class Change extends CommonITILObject {
    public $grouplinkclass     = 'Change_Group';
    public $supplierlinkclass  = 'Change_Supplier';
 
+   static $rightname          = 'change';
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
    const IMPACT_MASK_FIELD    = 'impact_mask';
    const STATUS_MATRIX_FIELD  = 'change_status';
+
+
+   const READMY               = 1;
+   const READALL              = 1024;
+
 
 
    /**
@@ -64,17 +72,17 @@ class Change extends CommonITILObject {
 
 
    function canAdminActors() {
-      return Session::haveRight('edit_all_change', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssign() {
-      return Session::haveRight('edit_all_change', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssignToMe() {
-      return Session::haveRight('edit_all_change', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
@@ -83,8 +91,8 @@ class Change extends CommonITILObject {
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray())
-              && (Session::haveRight("edit_all_change", "1")
-                  || (Session::haveRight('show_my_change', 1)
+              && (Session::haveRight(self::$rightname, UPDATE)
+                  || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(CommonITILActor::ASSIGN,
@@ -92,14 +100,8 @@ class Change extends CommonITILObject {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('edit_all_change', '1');
-   }
-
-
    static function canView() {
-      return (Session::haveRight('edit_all_change', '1')
-              || Session::haveRight('show_my_change', '1'));
+      return Session::haveRightsOr(self::$rightname, array(self::READALL, self::READMY));
    }
 
 
@@ -113,8 +115,8 @@ class Change extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return (Session::haveRight('edit_all_change', 1)
-              || (Session::haveRight('show_my_change', 1)
+      return (Session::haveRight(self::$rightname, self::READALL)
+              || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -152,7 +154,7 @@ class Change extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight('edit_all_change', 1);
+      return Session::haveRight(self::$rightname, CREATE);
    }
 
 
@@ -183,9 +185,13 @@ class Change extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               return array (1 => __('Analysis'),
-                             2 => __('Plans'),
-                             3 => __('Solution'));
+               $ong = array(1 => __('Analysis'),
+                            2 => __('Plans'),
+                            3 => __('Solution'));
+               if ($item->canUpdate()) {
+                  $ong[4] = __('Statistics');
+               }
+               return $ong;
          }
       }
       return '';
@@ -219,6 +225,9 @@ class Change extends CommonITILObject {
                   }
                   $item->showSolutionForm($_POST['load_kb_sol']);
                   break;
+               case 4 :
+                  $item->showStats();
+                  break;                  
             }
             break;
       }
@@ -227,9 +236,9 @@ class Change extends CommonITILObject {
 
 
    function defineTabs($options=array()) {
-
+      $ong = array();
       // show related tickets and changes
-      $ong['empty'] = $this->getTypeName(1);
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
@@ -562,6 +571,63 @@ class Change extends CommonITILObject {
 //                                           => array('table'      => 'glpi_changetasks',
 //                                                    'joinparams' => array('jointype' => 'child')));
 
+//       $tab[92]['table']          = 'glpi_changetasks';
+//       $tab[92]['field']          = 'is_private';
+//       $tab[92]['name']           = __('Private task');
+//       $tab[92]['datatype']       = 'bool';
+//       $tab[92]['forcegroupby']   = true;
+//       $tab[92]['splititems']     = true;
+//       $tab[92]['massiveaction']  = false;
+//       $tab[92]['joinparams']     = array('jointype' => 'child');
+// 
+//       $tab[94]['table']          = 'glpi_users';
+//       $tab[94]['field']          = 'name';
+//       $tab[94]['name']           = __('Writer');
+//       $tab[94]['datatype']       = 'itemlink';
+//       $tab[94]['right']          = 'all';
+//       $tab[94]['forcegroupby']   = true;
+//       $tab[94]['massiveaction']  = false;
+//       $tab[94]['joinparams']     = array('beforejoin'
+//                                           => array('table'      => 'glpi_changetasks',
+//                                                    'joinparams' => array('jointype' => 'child')));
+//       $tab[95]['table']          = 'glpi_users';
+//       $tab[95]['field']          = 'name';
+//       $tab[95]['linkfield']      = 'users_id_tech';
+//       $tab[95]['name']           = __('Technician');
+//       $tab[95]['datatype']       = 'itemlink';
+//       $tab[95]['right']          = 'own_ticket';
+//       $tab[95]['forcegroupby']   = true;
+//       $tab[95]['massiveaction']  = false;
+//       $tab[95]['joinparams']     = array('beforejoin'
+//                                           => array('table'      => 'glpi_changetasks',
+//                                                    'joinparams' => array('jointype'  => 'child')));
+// 
+//       $tab[96]['table']          = 'glpi_changetasks';
+//       $tab[96]['field']          = 'actiontime';
+//       $tab[96]['name']           = __('Duration');
+//       $tab[96]['datatype']       = 'timestamp';
+//       $tab[96]['massiveaction']  = false;
+//       $tab[96]['forcegroupby']   = true;
+//       $tab[96]['joinparams']     = array('jointype' => 'child');
+// 
+//       $tab[97]['table']          = 'glpi_changetasks';
+//       $tab[97]['field']          = 'date';
+//       $tab[97]['name']           = __('Date');
+//       $tab[97]['datatype']       = 'datetime';
+//       $tab[97]['massiveaction']  = false;
+//       $tab[97]['forcegroupby']   = true;
+//       $tab[97]['joinparams']     = array('jointype' => 'child');
+// 
+//       $tab[33]['table']          = 'glpi_changetasks';
+//       $tab[33]['field']          = 'state';
+//       $tab[33]['name']           = __('Status');
+//       $tab[33]['datatype']       = 'specific';
+//       $tab[33]['searchtype']     = 'equals';
+//       $tab[33]['searchequalsonfield'] = true;
+//       $tab[33]['massiveaction']  = false;
+//       $tab[33]['forcegroupby']   = true;
+//       $tab[33]['joinparams']     = array('jointype' => 'child');
+      
       $tab['solution']          = _n('Solution', 'Solutions', 1);
 
       $tab[23]['table']         = 'glpi_solutiontypes';
@@ -663,7 +729,7 @@ class Change extends CommonITILObject {
    static function getNewStatusArray() {
       return array(self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL);
    }
-   
+
    /**
     * Get the ITIL object test, qualification or accepted status list
     * To be overridden by class
@@ -686,6 +752,10 @@ class Change extends CommonITILObject {
       if (!static::canView()) {
         return false;
       }
+
+      // In percent
+      $colsize1 = '13';
+      $colsize2 = '37';
 
       // Set default options
       if (!$ID) {
@@ -738,105 +808,96 @@ class Change extends CommonITILObject {
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
       }
 
       $showuserlink = 0;
-      if (Session::haveRight('user','r')) {
+      if (User::canView()) {
          $showuserlink = 1;
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr>";
-      echo "<th class='left' colspan='2'>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
+      echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
 
-      echo "<table>";
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Opening date')."</span></td>";
-      echo "<td>";
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
-      Html::showDateTimeFormItem("date", $date, 1, false);
+      Html::showDateTimeField("date", array('value'      => $date,
+                                            'timestep'   => 1,
+                                            'maybeempty' => false));
+      echo "</td>";
+      echo "<th width='$colsize1%'>".__('Due date')."</th>";
+      echo "<td width='$colsize2%' class='left'>";
+
+      if ($this->fields["due_date"] == 'NULL') {
+         $this->fields["due_date"] = '';
+      }
+      Html::showDateTimeField("due_date", array('value'    => $this->fields["due_date"],
+                                                'timestep' => 1));
 
       echo "</td></tr>";
+      
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('By')."</span></td><td>";
+         echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
                               'value'  => $this->fields["users_id_recipient"],
                               'entity' => $this->fields["entities_id"],
                               'right'  => 'all'));
-         echo "</td></tr>";
-      }
-      echo "</table>";
-      echo "</th>";
-
-      echo "<th class='left' colspan='2'>";
-      echo "<table>";
-
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
-         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
+         echo "</td>";
+         echo "<th>".__('Last update')."</th>";
+         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater'] > 0) {
-            //TRANS: %s is the user name
-            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+            printf(__('%1$s: %2$s'), __('By'),
+                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
-         echo "</span>";
          echo "</td></tr>";
       }
 
-      // SLA
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Due date')."</span></td>";
-      echo "<td>";
-      if ($this->fields["due_date"] == 'NULL') {
-         $this->fields["due_date"] = '';
-      }
-      Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
-      echo "</td></tr>";
-
-      if ($ID) {
-         switch ($this->fields["status"]) {
-            case self::CLOSED :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
-               echo "<td>";
-               Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
-               echo "</td></tr>";
-               break;
-
-            case self::SOLVED :
-            case self::OBSERVED :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Resolution date')."</span></td>";
-               echo "<td>";
-               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
-               echo "</td></tr>";
-               break;
+      if ($ID
+          && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+              || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".__('Date of solving')."</th>";
+         echo "<td>";
+         Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
+                                                    'timestep'   => 1,
+                                                    'maybeempty' => false));
+         echo "</td>";
+         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
+            echo "<th>".__('Closing date')."</th>";
+            echo "<td>";
+            Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
+                                                       'timestep'   => 1,
+                                                       'maybeempty' => false));
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
+         echo "</tr>";
       }
-
       echo "</table>";
-      echo "</th></tr>";
-
+      
+      echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
       echo "<tr>";
-      echo "<th>".__('Status')."</th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Status')."</th>";
+      echo "<td width='$colsize2%'>";
       self::dropdownStatus(array('value'    => $this->fields["status"],
                                  'showtype' => 'allowed'));
       echo "</td>";
-      echo "<th>".__('Urgency')."</th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Urgency')."</th>";
+      echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency(array('value' => $this->fields["urgency"]));
       echo "</td>";
@@ -866,8 +927,10 @@ class Change extends CommonITILObject {
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
       $params = array('urgency'  => '__VALUE0__',
                       'impact'   => '__VALUE1__',
-                      'priority' => $idpriority);
-      Ajax::updateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
+                      'priority' => 'dropdown_priority'.$idpriority);
+      Ajax::updateItemOnSelectEvent(array('dropdown_urgency'.$idurgency,
+                                          'dropdown_impact'.$idimpact),
+                                    $idajax,
                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
       echo "</tr>";
@@ -877,14 +940,14 @@ class Change extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".__('Title')."</th>";
+      echo "<th width='$colsize1%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
-      echo "Ext.get('name$rand').setDisplayed('none');";
+      echo Html::jsHide("name$rand");
       $params = array('maxlength' => 250,
-                      'size'      => 50,
+                      'size'      => 110,
                       'name'      => 'name',
                       'data'      => rawurlencode($this->fields["name"]));
       Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
@@ -904,7 +967,6 @@ class Change extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -913,9 +975,9 @@ class Change extends CommonITILObject {
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
-      echo "Ext.get('desc$rand').setDisplayed('none');";
+      echo Html::jsHide("desc$rand");
       $params = array('rows'  => 6,
-                      'cols'  => 50,
+                      'cols'  => 110,
                       'name'  => 'content',
                       'data'  => rawurlencode($this->fields["content"]));
       Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
@@ -935,11 +997,9 @@ class Change extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
       $options['colspan'] = 3;
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
 
@@ -951,8 +1011,8 @@ class Change extends CommonITILObject {
    **/
    function showAnalysisForm() {
 
-      $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+      $this->check($this->getField('id'), READ);
+      $canedit = $this->canEdit($this->getField('id'));
 
       $options            = array();
       $options['canedit'] = false;
@@ -961,7 +1021,7 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Impacts')."</td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='80'>";
+         echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='110'>";
          echo $this->getField('impactcontent');
          echo "</textarea>";
       } else {
@@ -972,7 +1032,7 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Control list')."</td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='controlistcontent' name='controlistcontent' rows='6' cols='80'>";
+         echo "<textarea id='controlistcontent' name='controlistcontent' rows='6' cols='110'>";
          echo $this->getField('controlistcontent');
          echo "</textarea>";
       } else {
@@ -991,8 +1051,8 @@ class Change extends CommonITILObject {
    **/
    function showPlanForm() {
 
-      $this->check($this->getField('id'), 'r');
-      $canedit            = $this->can($this->getField('id'), 'w');
+      $this->check($this->getField('id'), READ);
+      $canedit            = $this->canEdit($this->getField('id'));
 
       $options            = array();
       $options['canedit'] = false;
@@ -1001,7 +1061,7 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Deployment plan')."</td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='80'>";
+         echo "<textarea id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='110'>";
          echo $this->getField('rolloutplancontent');
          echo "</textarea>";
       } else {
@@ -1012,7 +1072,7 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Backup plan')."</td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='backoutplancontent' name='backoutplancontent' rows='6' cols='80'>";
+         echo "<textarea id='backoutplancontent' name='backoutplancontent' rows='6' cols='110'>";
          echo $this->getField('backoutplancontent');
          echo "</textarea>";
       } else {
@@ -1023,7 +1083,7 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Checklist')."</td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='checklistcontent' name='checklistcontent' rows='6' cols='80'>";
+         echo "<textarea id='checklistcontent' name='checklistcontent' rows='6' cols='110'>";
          echo $this->getField('checklistcontent');
          echo "</textarea>";
       } else {
@@ -1037,5 +1097,38 @@ class Change extends CommonITILObject {
 
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[READ]);
+
+      $values[self::READALL] = __('See all');
+      $values[self::READMY]  = __('See (author)');
+
+      return $values;
+   }
+
+
+   /**
+    * Number of tasks of the problem
+    *
+    * @return followup count
+   **/
+   function numberOfTasks() {
+      global $DB;
+      // Set number of followups
+      $query = "SELECT COUNT(*)
+                FROM `glpi_changetasks`
+                WHERE `changes_id` = '".$this->fields["id"]."'";
+      $result = $DB->query($query);
+
+      return $DB->result($result, 0, 0);
+   }   
 }
 ?>

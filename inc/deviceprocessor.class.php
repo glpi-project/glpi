@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -128,6 +128,7 @@ class DeviceProcessor extends CommonDevice {
       }
    }
 
+
    /**
     * Criteria used for import function
     *
@@ -136,10 +137,11 @@ class DeviceProcessor extends CommonDevice {
     * @since version 0.84
    **/
    function getImportCriteria() {
+
       return array('designation'          => 'equal',
                    'manufacturers_id'     => 'equal',
                    'frequence'            => 'delta:10');
    }
-   
+
 }
 ?>

@@ -73,7 +73,7 @@ if (isset($_GET["redirect"])) {
 }
 
 $central = new Central();
-$central->show();
+$central->display();
 
 Html::footer();
 ?>

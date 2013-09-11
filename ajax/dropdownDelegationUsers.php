@@ -52,11 +52,6 @@ if ($_POST["nodelegate"] == 1) {
    $_POST['_right'] = "delegate";
 }
 
-if (isset($_POST['_users_id_requester_notif']) && !empty($_POST['_users_id_requester_notif'])) {
-   $_POST['_users_id_requester_notif']
-            = Toolbox::decodeArrayFromInput($_POST['_users_id_requester_notif']);
-}
-
 $ticket = new Ticket();
 $ticket->showActorAddFormOnCreate(Ticket_User::REQUESTER, $_POST);
 ?>

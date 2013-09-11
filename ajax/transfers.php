@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("transfer", "r");
+Session::checkRight("transfer", READ);
 
 if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
    $transfer = new Transfer();

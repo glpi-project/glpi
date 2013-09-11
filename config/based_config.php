@@ -100,6 +100,11 @@ if (!defined("GLPI_GRAPH_DIR")) {
    define("GLPI_GRAPH_DIR",GLPI_ROOT . "/files/_graphs");
 }
 
+// Path for picture storage
+if (!defined("GLPI_PICTURE_DIR")) {
+   define("GLPI_PICTURE_DIR",GLPI_ROOT . "/files/_pictures");
+}
+
 // Path for temp storage
 if (!defined("GLPI_TMP_DIR")) {
    define("GLPI_TMP_DIR",GLPI_ROOT . "/files/_tmp");
@@ -126,6 +131,14 @@ if (!defined("GLPI_PHPMAILER_DIR")) {
 
    # if PHPMailer installed, use (in config_path.php)
    # define("GLPI_PHPMAILER_DIR", "/usr/share/php/phpmailer");
+}
+
+// Default tcpdf installation dir
+if (!defined("GLPI_TCPDF_DIR")) {
+   define("GLPI_TCPDF_DIR", GLPI_ROOT."/lib/tcpdf");
+
+   # if PHPMailer installed, use (in config_path.php)
+   # define("GLPI_TCPDF_DIR", "/usr/share/php/tcpdf");
 }
 
 // Default EZ Components path to base.php
@@ -175,5 +188,13 @@ if (!defined('GLPI_HTMLAWED')) {
 
    # if htmLawed available in system, use (in config_path.php)
    # define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
+}
+
+// Default path to password_compat
+if (!defined('GLPI_PASSWORD_COMPAT')) {
+   define('GLPI_PASSWORD_COMPAT', GLPI_ROOT.'/lib/password_compat/password.php');
+
+   # if password_compat available in system, use (in config_path.php)
+   # define('GLPI_PASSWORD_COMPAT', '/usr/share/php/password_compat/password.php');
 }
 ?>

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("contact_enterprise", "r");
+Session::checkRight("contact_enterprise", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
@@ -43,16 +43,19 @@ if (!isset($_GET["id"])) {
 $ent = new Supplier();
 
 if (isset($_POST["add"])) {
-   $ent->check(-1,'w',$_POST);
+   $ent->check(-1, CREATE, $_POST);
 
    if ($newID = $ent->add($_POST)) {
       Event::log($newID, "suppliers", 4, "financial",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($ent->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $ent->check($_POST["id"],'d');
+   $ent->check($_POST["id"], DELETE);
    $ent->delete($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
@@ -60,7 +63,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $ent->check($_POST["id"],'d');
+   $ent->check($_POST["id"], PURGE);
    $ent->restore($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
@@ -69,7 +72,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $ent->check($_POST["id"],'d');
+   $ent->check($_POST["id"], PURGE);
    $ent->delete($_POST,1);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
@@ -78,7 +81,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $ent->check($_POST["id"],'w');
+   $ent->check($_POST["id"], UPDATE);
    $ent->update($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
@@ -86,8 +89,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Supplier::getTypeName(2), '', "financial", "supplier");
-   $ent->showForm($_GET["id"]);
+   Html::header(Supplier::getTypeName(2), '', "management", "supplier");
+   $ent->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

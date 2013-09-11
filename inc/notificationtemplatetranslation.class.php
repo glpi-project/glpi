@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class Notification
+/**
+ * NotificationTemplateTranslation Class
+**/
 class NotificationTemplateTranslation extends CommonDBChild {
 
    // From CommonDBChild
@@ -56,7 +58,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -80,7 +82,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $ong['empty'] = $this->getTypeName(1); // History as single tab seems "strange"
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -90,7 +92,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function showForm($ID, $options) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Config::canUpdate()) {
          return false;
       }
       $notificationtemplates_id = -1;
@@ -108,19 +110,19 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       Html::initEditorSystem('content_html');
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".NotificationTemplate::getTypeName()."</td>";
       echo "<td colspan='2'><a href='".Toolbox::getItemTypeFormURL('NotificationTemplate').
                            "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
-      echo "</td><td>".
-           "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-             "/front/popup.php?popup=list_notificationtags&amp;sub_type=".
-             $template->getField('itemtype')."' ,'glpipopup', 'height=400, width=1000, top=100, ".
-             "left=100, scrollbars=yes' );w.focus();\">".__('Show list of available tags')."</a>".
-           "</td></tr>";
+      echo "</td><td>";
+      $rand = mt_rand();
+      Ajax::createIframeModalWindow("tags".$rand,
+                                    $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
+                                       $template->getField('itemtype'));
+      echo "<a class='vsubmit' href='#' onClick=\"".Html::jsGetElementbyID("tags".$rand).".dialog('open');\">".__('Show list of available tags')."</a>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Language') . "</td><td colspan='3'>";
@@ -159,7 +161,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
              $template->getField('id')."'>";
       echo "</td></tr>";
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 
@@ -172,7 +173,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $nID     = $template->getField('id');
-      $canedit = Session::haveRight("config", "w");
+      $canedit = Config::canUpdate();
 
       if ($canedit) {
          echo "<div class='center'>".
@@ -191,8 +192,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($canedit) {
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array();
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $paramsma = array('container' => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($paramsma);
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -233,7 +234,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       if ($canedit) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -391,7 +392,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          switch ($item->getType()) {
             case 'NotificationTemplate' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(_n('Translation', 'Translations',2),
                                               countElementsInTable($this->getTable(),
                                                                    "notificationtemplates_id
                                                                         = '".$item->getID()."'"));

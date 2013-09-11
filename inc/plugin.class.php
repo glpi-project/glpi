@@ -47,6 +47,29 @@ class Plugin extends CommonDBTM {
    const TOBECLEANED    = 5;
    const NOTUPDATED     = 6;
 
+   static $rightname = 'config';
+
+
+
+   /**
+    * @since version 0.85
+    *
+    * @param $nb
+   **/
+   static function getTypeName($nb=0) {
+      return _n('Plugin', 'Plugins', $nb);
+   }
+
+
+   /**
+    * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuName() {
+      return static::getTypeName(2);
+   }
+
 
    /**
     * Retrieve an item from the database using its directory
@@ -585,6 +608,7 @@ class Plugin extends CommonDBTM {
          CronTask::Unregister($this->fields['directory']);
          self::load($this->fields['directory'],true);
          FieldUnicity::deleteForItemtype($this->fields['directory']);
+         Link_Itemtype::deleteForItemtype($this->fields['directory']);
 
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
@@ -674,6 +698,10 @@ class Plugin extends CommonDBTM {
                }
             }
          }  // exists _check_config
+         // reset menu
+         if (isset($_SESSION['glpimenu'])) {
+            unset($_SESSION['glpimenu']);
+         }
       } // getFromDB
    }
 
@@ -984,10 +1012,10 @@ class Plugin extends CommonDBTM {
 
       foreach (array('contract_types', 'directconnect_types', 'document_types', 'helpdesk_visible_types',
                      'infocom_types', 'linkgroup_tech_types', 'linkgroup_types', 'linkuser_tech_types',
-                     'linkuser_types', 'networkport_instantiations',
+                     'linkuser_types', 'location_types', 'networkport_instantiations',
                      'networkport_types', 'notificationtemplates_types', 'planning_types',
                      'reservation_types', 'rulecollections_types', 'systeminformations_types',
-                     'ticket_types', 'unicity_types') as $att) {
+                     'ticket_types', 'unicity_types', 'link_types') as $att) {
 
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);

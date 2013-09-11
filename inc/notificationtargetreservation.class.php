@@ -103,7 +103,7 @@ class NotificationTargetReservation extends NotificationTarget {
             }
             $this->datas['##reservation.url##']
                         = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=".
-                                    strtolower($itemtype)."_".$reservationitem->getField('id'));
+                                    $itemtype."_".$reservationitem->getField('id'));
          }
 
       } else {
@@ -117,7 +117,7 @@ class NotificationTargetReservation extends NotificationTarget {
                $tmp['##reservation.item##']           = $item['item_name'];
                $tmp['##reservation.expirationdate##'] = Html::convDateTime($item['end']);
                $tmp['##reservation.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                                  "/index.php?redirect=reservation_".
+                                                                  "/index.php?redirect=Reservation_".
                                                                   $id);
             }
             $this->datas['reservations'][] = $tmp;

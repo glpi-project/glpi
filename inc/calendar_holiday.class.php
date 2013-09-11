@@ -54,7 +54,7 @@ class Calendar_Holiday extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -68,11 +68,11 @@ class Calendar_Holiday extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $calendar->getField('id');
-      if (!$calendar->can($ID,'r')) {
+      if (!$calendar->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $calendar->can($ID,'w');
+      $canedit = $calendar->can($ID, UPDATE);
 
       $rand    = mt_rand();
 
@@ -118,8 +118,9 @@ class Calendar_Holiday extends CommonDBRelation {
 
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $numrows);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $paramsma = array('num_displayed' => $numrows,
+                           'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -163,7 +164,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       if ($canedit && $numrows) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -171,7 +172,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
 
    /**
-    * Duplicate all holidays from a calendar to his clone
+    * Duplicate all holidays from a calendar to its clone
     *
     * @param $oldid
     * @param $newid

@@ -52,10 +52,7 @@ function update0831to084() {
                                                                    'update' => '`networking`'));
 
    $backup_tables = false;
-   $newtables     = array(/*'glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
-                          'glpi_changes_problems', 'glpi_changes_suppliers',
-                          'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks',*/ 'glpi_contractcosts',
+   $newtables     = array('glpi_contractcosts',
                           'glpi_entities_rssfeeds', 'glpi_groups_rssfeeds',
                           'glpi_problems_suppliers', 'glpi_profiles_rssfeeds',
                           'glpi_rssfeeds_users', 'glpi_rssfeeds',
@@ -154,7 +151,7 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'tickets and problems status'));
 
-   $status = array ('new'           => CommonITILObject::INCOMING,
+   $status  = array('new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
                     'plan'          => CommonITILObject::PLANNED,
                     'waiting'       => CommonITILObject::WAITING,
@@ -166,8 +163,6 @@ function update0831to084() {
                     'approbation'   => CommonITILObject::APPROVAL,
                     'test'          => CommonITILObject::TEST,
                     'qualification' => CommonITILObject::QUALIFICATION);
-                    
-   // Update field in tables
    foreach (array('glpi_tickets', 'glpi_problems') as $table) {
       // Migrate datas
       foreach ($status as $old => $new) {
@@ -182,38 +177,38 @@ function update0831to084() {
 
    // Migrate templates
    $query = "SELECT `glpi_notificationtemplatetranslations`.*
-               FROM `glpi_notificationtemplatetranslations`
-               INNER JOIN `glpi_notificationtemplates`
+             FROM `glpi_notificationtemplatetranslations`
+             INNER JOIN `glpi_notificationtemplates`
                   ON (`glpi_notificationtemplates`.`id`
                         = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
-               WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%storestatus=%'
-                     OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%storestatus=%'
-                     OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%storestatus=%'";
+             WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%storestatus=%'
+                   OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%storestatus=%'
+                   OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%storestatus=%'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $subject = $data['subject'];
-            $text = $data['content_text'];
-            $html = $data['content_html'];
+            $text    = $data['content_text'];
+            $html    = $data['content_html'];
             foreach ($status as $old => $new) {
                $subject = str_replace("storestatus=$old","storestatus=$new",$subject);
-               $text = str_replace("storestatus=$old","storestatus=$new",$text);
-               $html = str_replace("storestatus=$old","storestatus=$new",$html);
+               $text    = str_replace("storestatus=$old","storestatus=$new",$text);
+               $html    = str_replace("storestatus=$old","storestatus=$new",$html);
             }
             $query = "UPDATE `glpi_notificationtemplatetranslations`
-                        SET `subject` = '".addslashes($subject)."',
-                           `content_text` = '".addslashes($text)."',
-                           `content_html` = '".addslashes($html)."'
-                        WHERE `id` = ".$data['id']."";
+                      SET `subject` = '".addslashes($subject)."',
+                          `content_text` = '".addslashes($text)."',
+                          `content_html` = '".addslashes($html)."'
+                      WHERE `id` = ".$data['id']."";
             $DB->queryOrDie($query, "0.84 fix tags usage for storestatus");
          }
       }
    }
-   
+
    // Update Rules
-   $changes = array();
-   $changes['RuleTicket']              = 'status';
+   $changes                = array();
+   $changes['RuleTicket']  = 'status';
 
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $field) {
@@ -226,13 +221,13 @@ function update0831to084() {
          if ($DB->numrows($result)>0) {
             // Get rule string
             $rules = $DB->result($result,0,0);
-            
+
             // Update actions
             foreach ($status as $old => $new) {
                $query = "UPDATE `glpi_ruleactions`
                          SET `value` = '$new'
                          WHERE `field` = '$field'
-                              AND `value` = '$old'
+                               AND `value` = '$old'
                                AND `rules_id` IN ($rules)";
 
                $DB->queryOrDie($query, "0.84 update datas for rules actions");
@@ -240,8 +235,7 @@ function update0831to084() {
          }
       }
    }
-   
-   
+
    // Update glpi_profiles : ticket_status
    foreach ($DB->request('glpi_profiles') as $data) {
       $fields_to_decode = array('ticket_status','problem_status');
@@ -1020,7 +1014,8 @@ function update0831to084() {
                                        AND `itemtype_link` IN ('Reminder', 'Knowbase')";
 
    foreach ($cleancondition as $name => $condition) {
-      $query = "DELETE FROM `glpi_logs`
+      $query = "DELETE
+                FROM `glpi_logs`
                 WHERE $condition";
       $DB->queryOrDie($query, "0.84 clean logs for $name");
    }
@@ -1031,13 +1026,12 @@ function update0831to084() {
    $migration->renameTable('glpi_ocsservers', 'ocs_glpi_ocsservers');
    $migration->renameTable('glpi_registrykeys', 'ocs_glpi_registrykeys');
 
-
    // Migrate RuleOcs to RuleImportEntity
    $query = "UPDATE `glpi_rules`
              SET `sub_type` = 'RuleImportEntity'
              WHERE `sub_type` = 'RuleOcs'";
    $DB->queryOrDie($query, "0.84 update datas for old OCS rules");
-   
+
    $migration->copyTable('glpi_rules', 'ocs_glpi_rules');
    $migration->copyTable('glpi_ruleactions', 'ocs_glpi_ruleactions');
    $migration->copyTable('glpi_rulecriterias', 'ocs_glpi_rulecriterias');
@@ -1045,30 +1039,34 @@ function update0831to084() {
    // Delete OCS rules
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    $query = "SELECT GROUP_CONCAT(`id`)
-               FROM `glpi_rules`
-               WHERE `sub_type` = 'RuleImportEntity'
-               GROUP BY `sub_type`";
+             FROM `glpi_rules`
+             WHERE `sub_type` = 'RuleImportEntity'
+             GROUP BY `sub_type`";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
          // Get rule string
          $rules = $DB->result($result,0,0);
-         $query = "DELETE FROM `glpi_ruleactions`
-                     WHERE `rules_id` IN ($rules)";
+         $query = "DELETE
+                   FROM `glpi_ruleactions`
+                   WHERE `rules_id` IN ($rules)";
 
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
 
-         $query = "DELETE FROM `glpi_rulecriterias`
-                     WHERE `rules_id` IN ($rules)";
+         $query = "DELETE
+                   FROM `glpi_rulecriterias`
+                   WHERE `rules_id` IN ($rules)";
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
 
-         $query = "DELETE FROM `glpi_rules`
-                     WHERE `id` IN ($rules)";
+         $query = "DELETE
+                   FROM `glpi_rules`
+                   WHERE `id` IN ($rules)";
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
       }
-   }   
+   }
+
    // copy table to keep value of fields deleted after
    $migration->copyTable('glpi_profiles', 'ocs_glpi_profiles');
-   
+
    $migration->dropField('glpi_profiles', 'ocsng');
    $migration->dropField('glpi_profiles', 'sync_ocsng');
    $migration->dropField('glpi_profiles', 'view_ocsng');
@@ -1107,7 +1105,7 @@ function update0831to084() {
                               true);
    $migration->displayWarning("You can delete ocs_* tables if you do not use OCS synchronisation.",
                               true);
-   
+
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
    $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
@@ -1203,7 +1201,7 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 
-   $changes = array();
+   $changes                            = array();
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
    $changes['RuleDictionnarySoftware'] = array('_ignore_ocs_import' => '_ignore_import');
    $changes['RuleImportEntity']        = array('_ignore_ocs_import' => '_ignore_import');
@@ -1220,7 +1218,6 @@ function update0831to084() {
          if ($DB->numrows($result)>0) {
             // Get rule string
             $rules = $DB->result($result,0,0);
-            
             // Update actions
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_ruleactions`
@@ -1308,8 +1305,6 @@ function update0831to084() {
              SET   `itemtype` = 'ConsumableItem'
              WHERE `itemtype` = 'Consumable'";
    $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Consumable");
-
-
 
    $migration->createRule(array('sub_type'      => 'RuleTicket',
                                 'entities_id'   => 0,
@@ -1472,7 +1467,7 @@ function update0831to084() {
       }
    }
 
-   // Clean unlinked ticket_problem 
+   // Clean unlinked ticket_problem
    $query = "DELETE
              FROM `glpi_problems_tickets`
              WHERE `glpi_problems_tickets`.`tickets_id`
@@ -1522,7 +1517,6 @@ function update0831to084() {
                               FROM `".getTableForItemType($type)."`)";
       $DB->queryOrDie($query, "0.84 clean glpi_items_problems");
    }
-   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
@@ -2060,6 +2054,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `fqdns_id` int(11) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `FQDN` (`name`,`fqdns_id`),
@@ -2163,8 +2159,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             break;
 
        }
-      // In case of unknown Interface Type, we should have to set instantiation_type to ''
-      // Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
+      /// In case of unknown Interface Type, we should have to set instantiation_type to ''
+      /// Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
       if (!empty($instantiation_type)) {
          $query = "UPDATE `glpi_networkports`
                    SET `instantiation_type` = '$instantiation_type'

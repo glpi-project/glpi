@@ -45,22 +45,25 @@ if (!isset($_GET["computers_id"])) {
 
 $disk = new ComputerDisk();
 if (isset($_POST["add"])) {
-   $disk->check(-1,'w',$_POST);
+   $disk->check(-1, CREATE, $_POST);
 
    if ($newID = $disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a volume'), $_SESSION["glpiname"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($disk->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"],'d');
+} else if (isset($_POST["purge"])) {
+   $disk->check($_POST["id"], PURGE);
 
-   if ($disk->delete($_POST)) {
+   if ($disk->delete($_POST, 1)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes a volume'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges a volume'), $_SESSION["glpiname"]));
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
@@ -68,7 +71,7 @@ if (isset($_POST["add"])) {
                   ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"],'w');
+   $disk->check($_POST["id"], UPDATE);
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
@@ -78,8 +81,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Computer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
-   $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"]));
+   Html::header(Computer::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "computer");
+   $disk->display(array('id'           => $_GET["id"],
+                        'computers_id' => $_GET["computers_id"]));
    Html::footer();
 }
 ?>

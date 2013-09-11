@@ -89,7 +89,7 @@ class ContractCost extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'Contract')
-          && Session::haveRight("contract","r")) {
+          && Contract::canView()) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -194,11 +194,11 @@ class ContractCost extends CommonDBChild {
    function showForm($ID, $options=array()) {
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
          $options['contracts_id'] = $options['parent']->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
          $this->initBasedOnPrevious();
       }
 
@@ -217,7 +217,7 @@ class ContractCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Begin date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("begin_date", $this->fields['begin_date']);
+      Html::showDateField("begin_date", array('value' => $this->fields['begin_date']));
       echo "</td>";
       $rowspan = 3;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
@@ -228,7 +228,7 @@ class ContractCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("end_date", $this->fields['end_date']);
+      Html::showDateField("end_date", array('value' => $this->fields['end_date']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
@@ -256,10 +256,10 @@ class ContractCost extends CommonDBChild {
       $ID = $contract->fields['id'];
 
       if (!$contract->getFromDB($ID)
-          || !$contract->can($ID, "r")) {
+          || !$contract->can($ID, READ)) {
          return false;
       }
-      $canedit = $contract->can($ID, "w");
+      $canedit = $contract->can($ID, UPDATE);
 
       echo "<div class='center'>";
 

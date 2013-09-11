@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -39,17 +39,11 @@ if (!defined('GLPI_ROOT')) {
 class Location extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory       = true;
+   var $can_be_translated  = true;
 
+   static $rightname       = 'location';
 
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
-   }
 
 
    function getAdditionalFields() {
@@ -88,7 +82,7 @@ class Location extends CommonTreeDropdown {
       $tab[91]['name']          = __('Building number');
       $tab[91]['massiveaction'] = false;
       $tab[91]['datatype']      = 'string';
-      
+
 
       $tab[92]['table']         = 'glpi_locations';
       $tab[92]['field']         = 'room';
@@ -133,6 +127,7 @@ class Location extends CommonTreeDropdown {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
+      $this->addStandardTab(__CLASS__,$ong, $options);
 
       return $ong;
    }
@@ -142,6 +137,134 @@ class Location extends CommonTreeDropdown {
 
       Rule::cleanForItemAction($this);
       Rule::cleanForItemCriteria($this, 'users_locations');
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonTreeDropdown::getTabNameForItem()
+   **/
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               $ong    = array();
+               $ong[1] = $this->getTypeName(2);
+               $ong[2] = _n('Item', 'Items', 2);
+               return $ong;
+         }
+      }
+      return '';
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showChildren();
+               break;
+            case 2 :
+               $item->showItems();
+               break;
+         }
+      }
+      return true;
+   }
+
+
+   /**
+    * Print the HTML array of items for a location
+    *
+    * @since version 0.85
+    *
+    * @return Nothing (display)
+   **/
+   function showItems() {
+      global $DB, $CFG_GLPI;
+
+      $locations_id = $this->fields['id'];
+      $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
+
+      if (!$this->can($locations_id, READ)) {
+         return false;
+      }
+
+      $first = 1;
+      $query = '';
+
+      if ($crit) {
+         $table = getTableForItemType($crit);
+         $query = "SELECT `$table`.`id`, '$crit' AS type
+                   FROM `$table`
+                   WHERE `$table`.`locations_id` = '$locations_id' ".
+                         getEntitiesRestrictRequest(" AND", $table, "entities_id");
+      } else {
+         foreach ($CFG_GLPI['location_types'] as $type) {
+            $table = getTableForItemType($type);
+            $query .= ($first ? "SELECT " : " UNION SELECT  ")."`id`, '$type' AS type
+                      FROM `$table`
+                      WHERE `$table`.`locations_id` = '$locations_id' ".
+                            getEntitiesRestrictRequest(" AND", $table, "entities_id");
+            $first = 0;
+         }
+      }
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
+      }
+      // Mini Search engine
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Type')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo __('Type')."&nbsp;";
+      Dropdown::showItemType($CFG_GLPI['location_types'],
+                             array('value'      => $crit,
+                                   'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
+      echo "</td></tr></table>";
+
+      if ($number) {
+         echo "<div class='spaced'>";
+         Html::printAjaxPager('',  $start, $number);
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('Type')."</th>";
+         echo "<th>".__('Entity')."</th>";
+         echo "<th>".__('Name')."</th>";
+         echo "<th>".__('Serial number')."</th>";
+         echo "<th>".__('Inventory number')."</th>";
+         echo "</tr>";
+
+         $DB->data_seek($result, $start);
+         for ($row=0 ; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']) ; $row++) {
+            $item = getItemForItemtype($data['type']);
+            $item->getFromDB($data['id']);
+            toolbox::logdebug("item", $item);
+            echo "<tr><td class='center top'>".$item->getTypeName()."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                 $item->getEntityID());
+            echo "</td><td class='center'>".$item->getLink()."</td>";
+            echo "<td class='center'>".
+                  (isset($item->fields["serial"])? "".$item->fields["serial"]."" :"-");
+            echo "</td>";
+            echo "<td class='center'>".
+                  (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-");
+            echo "</td></tr>";
+         }
+      } else {
+         echo "<p class='center b'>".__('No item found')."</p>";
+      }
+      echo "</table></div>";
+
    }
 
 }

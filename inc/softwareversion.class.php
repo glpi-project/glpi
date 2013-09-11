@@ -56,13 +56,13 @@ class SoftwareVersion extends CommonDBChild {
 
       $csv = new Computer_SoftwareVersion();
       $csv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
    }
 
 
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Computer_SoftwareVersion',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 
@@ -99,19 +99,14 @@ class SoftwareVersion extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("software","r")) {
-         return false;
-      }
-
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
          $softwares_id = $this->fields['softwares_id'];
       } else {
          $softwares_id = $options['softwares_id'];
-         $this->check(-1, 'w', $options);
+         $this->check(-1, CREATE, $options);
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', 2)."</td>";
@@ -137,7 +132,9 @@ class SoftwareVersion extends CommonDBChild {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_softwareversion`='1'"));
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
@@ -146,7 +143,6 @@ class SoftwareVersion extends CommonDBChild {
          $options['candel'] = false;
       }
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -176,6 +172,7 @@ class SoftwareVersion extends CommonDBChild {
       $tab[31]['field']    = 'completename';
       $tab[31]['name']     = __('Status');
       $tab[31]['datatype'] = 'dropdown';
+      $tab[31]['condition']      = "`is_visible_softwareversion`='1'";
 
       return $tab;
    }
@@ -193,7 +190,7 @@ class SoftwareVersion extends CommonDBChild {
     * @return nothing (print out an HTML select box)
    **/
    static function dropdown($options=array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0
       $p['softwares_id'] = 0;
@@ -207,18 +204,38 @@ class SoftwareVersion extends CommonDBChild {
          }
       }
 
-      $rand   = mt_rand();
-      $params = array('softwares_id' => $p['softwares_id'],
-                      'myname'       => $p['name'],
-                      'value'        => $p['value'],
-                      'used'         => $p['used']);
+      $where = '';
+      if (count($p['used'])) {
+         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$p['used'])."')";
+      }
+      // Make a select box
+      $query = "SELECT DISTINCT `glpi_softwareversions`.*,
+                              `glpi_states`.`name` AS sname
+                FROM `glpi_softwareversions`
+                LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
+                WHERE `glpi_softwareversions`.`softwares_id` = '".$p['softwares_id']."'
+                      $where
+                ORDER BY `name`";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
 
-      $default = "<select name='".$p['name']."'><option value='0'>".Dropdown::EMPTY_VALUE."</option>
-                  </select>";
+      $values = array(0 => Dropdown::EMPTY_VALUE);
+      if ($number) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $ID     = $data['id'];
+            $output = $data['name'];
 
-      Ajax::dropdown(false,"/ajax/dropdownInstallVersion.php", $params, $default, $rand);
+            if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+               $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
+            }
+            if (!empty($data['sname'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
+            }
+            $values = array($ID => $output);
+         }
+      }
 
-      return $rand;
+      return Dropdown::showFromArray($p['name'], $values);
    }
 
 
@@ -234,10 +251,10 @@ class SoftwareVersion extends CommonDBChild {
 
       $softwares_id = $soft->getField('id');
 
-      if (!$soft->can($softwares_id,'r')) {
+      if (!$soft->can($softwares_id, READ)) {
          return false;
       }
-      $canedit = $soft->can($softwares_id,"w");
+      $canedit = $soft->canEdit($softwares_id);
 
       echo "<div class='spaced'>";
 

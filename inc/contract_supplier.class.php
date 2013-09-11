@@ -53,7 +53,7 @@ class Contract_Supplier extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -91,7 +91,7 @@ class Contract_Supplier extends CommonDBRelation {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Supplier' :
-               if (Session::haveRight("contract","r")) {
+               if (Contract::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(Contract::getTypeName(2),
                                                  self::countForSupplier($item));
@@ -101,7 +101,7 @@ class Contract_Supplier extends CommonDBRelation {
                break;
 
             case 'Contract' :
-               if (Session::haveRight("contact_enterprise","r")) {
+               if (Session::haveRight("contact_enterprise", READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(Supplier::getTypeName(2),
                                                  self::countForContract($item));
@@ -143,11 +143,11 @@ class Contract_Supplier extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $supplier->fields['id'];
-      if (!Session::haveRight("contract","r")
-          || !$supplier->can($ID,'r')) {
+      if (!Contract::canView()
+          || !$supplier->can($ID, READ)) {
          return false;
       }
-      $canedit = $supplier->can($ID,'w');
+      $canedit = $supplier->can($ID, UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_contracts`.*,
@@ -197,8 +197,9 @@ class Contract_Supplier extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('container'     => 'mass'.__CLASS__.$rand,
+                                      'num_displayed' => $number);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -251,8 +252,8 @@ class Contract_Supplier extends CommonDBRelation {
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $massiveactionparams['ontop'] =false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -273,11 +274,11 @@ class Contract_Supplier extends CommonDBRelation {
 
       $instID = $contract->fields['id'];
 
-      if (!$contract->can($instID,'r')
-          || !Session::haveRight("contact_enterprise","r")) {
+      if (!$contract->can($instID, READ)
+          || !Session::haveRight("contact_enterprise", READ)) {
          return false;
       }
-      $canedit = $contract->can($instID,'w');
+      $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_contracts_suppliers`.`id`,
@@ -330,8 +331,9 @@ class Contract_Supplier extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         $massiveactionparams = array('num_displayed' => $number,
+                                      'container'     => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -381,8 +383,8 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

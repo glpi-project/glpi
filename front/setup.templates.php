@@ -43,7 +43,19 @@ if (isset($_GET["itemtype"])) {
    $link = Toolbox::getItemTypeFormURL($_GET["itemtype"]);
    $item = str_replace(".form.php","",$link);
    $item = str_replace("front/","",$item);
-   Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], "inventory", $item);
+
+   // Get right sector
+   $sector = 'assets';
+   if (isset($_SESSION['glpimenu'])) {
+      foreach ($_SESSION['glpimenu'] as $key => $val) {
+         if (isset($val['types']) && in_array($_GET["itemtype"], $val['types'])) {
+            $sector = $key;
+            break;
+         }
+      }
+   }
+   
+   Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], $sector, $item);
 
    CommonDBTM::listTemplates($_GET["itemtype"], $link, $_GET["add"]);
 

@@ -33,10 +33,10 @@
 
 
 include ('../inc/includes.php');
+Session::checkRight("config", UPDATE);
 
-Session::checkRight("config", "w");
 $config = new Config();
-
+$_POST['id'] = 1;
 if (!empty($_POST["update_auth"])) {
    $config->update($_POST);
    Html::back();
@@ -47,6 +47,6 @@ if (!empty($_POST["update"])) {
 }
 
 Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");
-$config->showForm(1);
+$config->display(array('id' => 1));
 Html::footer();
 ?>

@@ -64,7 +64,11 @@ if (isset($_GET['docid'])) { // docid for document
    if (count($splitter) == 2) {
       $send = false;
       if (($splitter[0] == "_dumps")
-          && Session::haveRight("backup","w")) {
+          && Session::haveRight("backup", CREATE)) {
+         $send = true;
+      }
+
+      if ($splitter[0] == "_pictures") {
          $send = true;
       }
 

@@ -40,24 +40,40 @@ if (!defined('GLPI_ROOT')) {
  * This class is used to manage the various types of consumables.
  * @see Consumable
  * @author Julien Dombre
- */
+*/
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Consumable', 'Infocom');
 
-   static function getTypeName($nb=0) {
+   static $rightname                   = 'consumable';
 
+
+   static function getTypeName($nb=0) {
       return _n('Consumable model', 'Consumable models', $nb);
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('consumable', 'w');
+   /**
+    * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuName() {
+      return Consumable::getTypeName(2);
    }
 
 
-   static function canView() {
-      return Session::haveRight('consumable', 'r');
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since version 0.85
+   **/
+   static function getAdditionalMenuLinks() {
+
+      if (static::canView()) {
+         return array('summary' => '/front/consumableitem.php?synthese=yes');
+      }
+      return false;
    }
 
 
@@ -81,7 +97,7 @@ class ConsumableItem extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $class = new Alert();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);     
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -96,6 +112,7 @@ class ConsumableItem extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Consumable', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Document_Item',$ong, $options);
@@ -121,7 +138,6 @@ class ConsumableItem extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -176,14 +192,16 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Alert threshold')."</td>";
       echo "<td>";
-      Dropdown::showInteger('alarm_threshold', $this->fields["alarm_threshold"], 0, 100, 1,
-                            array('-1' => __('Never')));
+      Dropdown::showNumber('alarm_threshold', array('value' => $this->fields["alarm_threshold"],
+                                                    'min'   => 0,
+                                                    'max'   => 100,
+                                                    'step'  => 1,
+                                                    'toadd' => array('-1' => __('Never'))));
 
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -197,11 +215,10 @@ class ConsumableItem extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

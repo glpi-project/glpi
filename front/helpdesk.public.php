@@ -67,16 +67,17 @@ if (isset($_GET["redirect"])) {
 }
 
 // redirect if no create ticket right
-if (!Session::haveRight('create_ticket',1)) {
-   if (Session::haveRight('observe_ticket',1)
-       || Session::haveRight('validate_request',1)
-       || Session::haveRight('validate_incident',1)) {
+if (!Session::haveRight('ticket', CREATE)) {
+   if (Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
+       || Session::haveRight('task', TicketTask::SEEPUBLIC)
+       || Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
+                                                    TicketValidation::VALIDATEINCIDENT))) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
 
-   } else if (Session::haveRight('reservation_helpdesk',1)) {
+   } else if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
 
-   } else if (Session::haveRight('faq','r')) {
+   } else if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
    }
 }
@@ -94,19 +95,19 @@ if (isset($_GET['create_ticket'])) {
    echo "<table class='tab_cadre_central'><tr>";
    echo "<td class='top'><br>";
    echo "<table>";
-   if (Session::haveRight('create_ticket',1)) {
+   if (Session::haveRight('ticket', CREATE)) {
       echo "<tr><td class='top' width='450px'>";
       Ticket::showCentralCount(true);
       echo "</td></tr>";
    }
 
-   if (Session::haveRight("reminder_public","r")) {
+   if (Session::haveRight("reminder_public", READ)) {
       echo "<tr><td class='top' width='450px'>";
       Reminder::showListForCentral(false);
       echo "</td></tr>";
    }
 
-   if (Session::haveRight("rssfeed_public","r")) {
+   if (Session::haveRight("rssfeed_public", READ)) {
       echo "<tr><td class='top' width='450px'>";
       RSSFeed::showListForCentral(false);
       echo "</td></tr>";
@@ -117,7 +118,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<table>";
 
    // Show KB items
-   if (Session::haveRight("faq","r")) {
+   if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
       echo "<tr><td class='top' width='450px'>";
       KnowbaseItem::showRecentPopular("popular");
       echo "</td></tr>";

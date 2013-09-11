@@ -81,7 +81,8 @@ if (isset($_POST['type']) && !empty($_POST['type'])
 
       case 'Profile' :
          $params             = array('rand'      => $rand,
-                                     'condition' => "`".$_POST['right']."` IN ('r','w')");
+                                     'condition' => "`".$_POST['rights']."` & ".
+                                                    (READ | CREATE | UPDATE | PURGE));
          $params['toupdate'] = array('value_fieldname'
                                                   => 'value',
                                      'to_update'  => "subvisibility$rand",

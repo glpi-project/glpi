@@ -32,22 +32,9 @@
 */
 
 class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDropdownCollection {
-
-
    public $item_table  = "glpi_operatingsystemversions";
    public $menu_option = "os_version";
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_operatingsystemversions";
-//       $this->initCache("glpi_rulecacheoperatingsystemversions");
-//       $this->menu_option = "os_version";
-//    }
-
-
+   
    /**
     * @see RuleCollection::getTitle()
    **/

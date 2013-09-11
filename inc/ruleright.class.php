@@ -34,11 +34,15 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Rule class for Rights management
+/**
+ * RuleRight Class
+ *
+ * Rule class for Rights management
+**/
 class RuleRight extends Rule {
 
    // From Rule
-   static public $right        = 'rule_ldap';
+   static $rightname           = 'rule_ldap';
    public $orderby             = "name";
    public $specific_parameters = true;
 
@@ -48,15 +52,6 @@ class RuleRight extends Rule {
       return 'glpi_rules';
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('rule_ldap', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('rule_ldap', 'r');
-   }
 
 
    /**
@@ -214,7 +209,7 @@ class RuleRight extends Rule {
             if ($right != '') {
                foreach ($entity as $entID) {
                   $output["_ldap_rules"]["rules_entities_rights"][] = array($entID, $right,
-                                                                           $is_recursive);
+                                                                            $is_recursive);
                }
             } else {
                foreach ($entity as $entID) {

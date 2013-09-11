@@ -28,18 +28,55 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class State
+/**
+ * State Class
+**/
 class State extends CommonTreeDropdown {
+
+   protected $visibility_fields = array('Computer'         => 'is_visible_computer',
+                                        'SoftwareVersion'  => 'is_visible_softwareversion',
+                                        'Monitor'          => 'is_visible_monitor',
+                                        'Printer'          => 'is_visible_printer',
+                                        'Peripheral'       => 'is_visible_peripheral',
+                                        'Phone'            => 'is_visible_phone',
+                                        'NetworkEquipment' => 'is_visible_networkequipment');
+   var $can_be_translated       = true;
+
+   static $rightname            = 'state';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Status of items', 'Statuses of items', $nb);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonTreeDropdown::getAdditionalFields()
+   **/
+   function getAdditionalFields() {
+
+      $fields   = parent::getAdditionalFields();
+      $fields[] = array('label' => __('Visibility'),
+                        'name'  => 'header',
+                        'list'  => false);
+
+      foreach ($this->visibility_fields as $type => $field) {
+         $fields[] = array('name'  => $field,
+                           'label' => $type::getTypeName(2),
+                           'type'  => 'bool',
+                           'list'  => true);
+      }
+      return $fields;
    }
 
 
@@ -123,7 +160,8 @@ class State extends CommonTreeDropdown {
          echo "<th>".__('Total')."</th>";
          echo "</tr>";
          $query = "SELECT *
-                   FROM `glpi_states`
+                   FROM `glpi_states` ".
+                   getEntitiesRestrictRequest("WHERE", "glpi_states",'','',true)."
                    ORDER BY `completename`";
          $result = $DB->query($query);
 
@@ -185,8 +223,97 @@ class State extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getEmpty()
+   **/
+   function getEmpty() {
+
+      parent::getEmpty();
+      //initialize is_visible_* fields at true to keep the same behavior as in older versions
+      foreach ($this->visibility_fields as $type => $field) {
+         $this->fields[$field] = 1;
+      }
+   }
+
+
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonTreeDropdown::prepareInputForAdd()
+   **/
+   function prepareInputForAdd($input) {
+
+      $input = parent::prepareInputForAdd($input);
+
+      $state = new self();
+      // Get visibility information from parent if not set
+      if (isset($input['states_id']) && $state->getFromDB($input['states_id'])) {
+         foreach ($this->visibility_fields as $type => $field) {
+            if (!isset($input[$field]) && isset($state->fields[$field])) {
+               $input[$field] = $state->fields[$field];
+            }
+         }
+      }
+      return $input;
+   }
+
+
+   /**
+    * Get search function for the class
+    *
+    * @since version 0.85
+    *
+    * @return array of search option
+   **/
+   function getSearchOptions() {
+
+      $tab                 = parent::getSearchOptions();
+
+      $tab[21]['table']    = $this->getTable();
+      $tab[21]['field']    = 'is_visible_computer';
+      $tab[21]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Computer::getTypeName(2));
+      $tab[21]['datatype'] = 'bool';
+
+      $tab[22]['table']    = $this->getTable();
+      $tab[22]['field']    = 'is_visible_softwareversion';
+      $tab[22]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
+                                     SoftwareVersion::getTypeName(2));
+      $tab[22]['datatype'] = 'bool';
+
+      $tab[23]['table']    = $this->getTable();
+      $tab[23]['field']    = 'is_visible_monitor';
+      $tab[23]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Monitor::getTypeName(2));
+      $tab[23]['datatype'] = 'bool';
+
+      $tab[24]['table']    = $this->getTable();
+      $tab[24]['field']    = 'is_visible_printer';
+      $tab[24]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Printer::getTypeName(2));
+      $tab[24]['datatype'] = 'bool';
+
+      $tab[25]['table']    = $this->getTable();
+      $tab[25]['field']    = 'is_visible_peripheral';
+      $tab[25]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Peripheral::getTypeName(2));
+      $tab[25]['datatype'] = 'bool';
+
+      $tab[26]['table']    = $this->getTable();
+      $tab[26]['field']    = 'is_visible_phone';
+      $tab[26]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Phone::getTypeName(2));
+      $tab[26]['datatype'] = 'bool';
+
+      $tab[27]['table']    = $this->getTable();
+      $tab[27]['field']    = 'is_visible_networkequipment';
+      $tab[27]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
+                                     NetworkEquipment::getTypeName(2));
+      $tab[27]['datatype'] = 'bool';
+
+      return $tab;
    }
 
 }

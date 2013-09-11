@@ -33,10 +33,9 @@
 
 class RuleDictionnaryDropdownCollection extends RuleCollection {
 
-   // From RuleCollection
-//   public $rule_class_name = 'RuleDictionnaryDropdown';
-   static public $right     = 'rule_dictionnary_dropdown';
-   public $menu_type        = 'dictionnary';
+   static $rightname = 'rule_dictionnary_dropdown';
+
+   public $menu_type = 'dictionnary';
 
    // Specific ones
    /// dropdown table

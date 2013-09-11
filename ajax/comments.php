@@ -59,7 +59,7 @@ if (isset($_POST["table"])
 
          if (isset($_POST['withlink'])) {
             echo "<script type='text/javascript' >\n";
-            echo "Ext.get('".$_POST['withlink']."').dom.href='".$tmpname['link']."';";
+            echo Html::jsGetElementbyID($_POST['withlink']).".attr('href', '".$tmpname['link']."');";
             echo "</script>\n";
          }
          break;

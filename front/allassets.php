@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 
-Html::header(__('Global'), $_SERVER['PHP_SELF'], "inventory", "allassets");
+Html::header(__('Global'), $_SERVER['PHP_SELF'], "assets", "allassets");
 
 Search::show('AllAssets');
 

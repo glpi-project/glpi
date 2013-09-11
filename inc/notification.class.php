@@ -110,15 +110,58 @@ class Notification extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'notification';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Notification', 'Notifications', $nb);
    }
 
 
+   /**
+    *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
+   **/
+   static function getMenuContent() {
+      global $CFG_GLPI;
+
+      $menu = array();
+
+      if (Notification::canView()
+          || Config::canView()) {
+         $menu['title']                                      = _n('Notification', 'Notifications', 2);
+         $menu['page']                                       = '/front/setup.notification.php';
+         $menu['options']['notification']['title']           = _n('Notification', 'Notifications', 2);
+         $menu['options']['notification']['page']            = '/front/notification.php';
+         $menu['options']['notification']['links']['add']    = '/front/notification.form.php';
+         $menu['options']['notification']['links']['search'] = '/front/notification.php';
+
+         $menu['options']['config']['title'] = __('Setup');
+         $menu['options']['config']['page']  = '/front/notificationmailsetting.form.php';
+
+         $menu['options']['notificationtemplate']['title']
+                        = _n('Notification template', 'Notification templates', 2);
+         $menu['options']['notificationtemplate']['page']
+                        = '/front/notificationtemplate.php';
+         $menu['options']['notificationtemplate']['links']['add']
+                        = '/front/notificationtemplate.form.php';
+         $menu['options']['notificationtemplate']['links']['search']
+                        = '/front/notificationtemplate.php';
+
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
+
+
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTarget', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -130,7 +173,6 @@ class Notification extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -149,7 +191,7 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
-      if (Session::haveRight('config', 'w')
+      if (Config::canUpdate()
           && ($this->getEntityID() == 0)) {
          $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
                                           array('value' => $this->fields['itemtype']));
@@ -187,7 +229,6 @@ class Notification extends CommonDBTM {
       echo "</span></td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 
@@ -312,21 +353,11 @@ class Notification extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('notification', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('notification', 'r');
-   }
-
-
    function canViewItem() {
 
       if ((($this->fields['itemtype'] == 'Crontask')
            || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Session::haveRight('config', 'w')) {
+          && !Config::canView()) {
           return false;
       }
       return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
@@ -342,7 +373,7 @@ class Notification extends CommonDBTM {
 
       if ((($this->fields['itemtype'] == 'Crontask')
            || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Session::haveRight('config', 'w')) {
+          && !Config::canUpdate()) {
           return false;
       }
       return Session::haveAccessToEntity($this->getEntityID());
@@ -415,7 +446,7 @@ class Notification extends CommonDBTM {
 
       $mail = new NotificationMail();
       $mail->sendNotification($mailing_options);
-      $mail->ClearAddresses();
+//       $mail->ClearAddresses();
    }
 
 
@@ -457,6 +488,7 @@ class Notification extends CommonDBTM {
 
       return $DB->request($query);
    }
+
 
 }
 ?>

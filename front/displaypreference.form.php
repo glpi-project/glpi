@@ -35,12 +35,11 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "display");
-}
 
-Session::checkSeveralRightsOr(array("search_config_global" => "w",
-                                    "search_config"        => "w"));
+Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+
+Session::haveRightsOr('serach_config', array(DisplayPreference::PERSONAL,
+                                             DisplayPreference::GENERAL));
 
 $setupdisplay = new DisplayPreference();
 
@@ -50,8 +49,8 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["add"])) {
    $setupdisplay->add($_POST);
 
-} else if (isset($_POST["delete"]) || isset($_POST["delete_x"])) {
-   $setupdisplay->delete($_POST);
+} else if (isset($_POST["purge"]) || isset($_POST["purge_x"])) {
+   $setupdisplay->delete($_POST, 1);
 
 } else if (isset($_POST["up"]) || isset($_POST["up_x"])) {
    $setupdisplay->orderItem($_POST,'up');
@@ -61,14 +60,9 @@ if (isset($_POST["activate"])) {
 }
 
 // Datas may come from GET or POST : use REQUEST
-if ((strpos($_SERVER['PHP_SELF'],"popup")
-    && $_REQUEST["itemtype"])) {
-   $setupdisplay->showTabs(array('displaytype' => $_REQUEST['itemtype']));
-   echo "<div id='tabcontent'>&nbsp;</div>";
-   echo "<script type='text/javascript'>loadDefaultTab();</script>";
+if (isset($_REQUEST["itemtype"])) {
+   $setupdisplay->display(array('displaytype' => $_REQUEST['itemtype']));
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::footer();
-}
+Html::popFooter();
 ?>

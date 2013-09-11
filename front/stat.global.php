@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "maintain", "stat");
+Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
-Session::checkRight("statistic", "1");
+Session::checkRight("statistic", READ);
 
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
@@ -60,16 +60,18 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 }
 
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";
+// Keep it at first parameter
+echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
+
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
-Html::showDateFormItem("date1", $_GET["date1"]);
+Html::showDateField("date1", array('value' => $_GET["date1"]));
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
 
 echo "<input type='submit' class='submit' value=\"".__s('Display report')."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2",$_GET["date2"]);
+Html::showDateField("date2", array('value' => $_GET["date2"]));
 echo "</td></tr>";
 echo "</table></div>";
 

@@ -33,10 +33,10 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", READ);
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
-   Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
+   Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 
    Report::title();
 
@@ -45,15 +45,18 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    echo "<div class='center spaced'><h2>".sprintf(__('Network report by location: %s'),$name).
         "</h2></div>";
 
-   Report::reportForNetworkInformations(
-       "`glpi_locations`
-       INNER JOIN `glpi_netpoints` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`)
-       INNER JOIN `glpi_networkportethernets` ON (`glpi_networkportethernets`.`netpoints_id` = `glpi_netpoints`.`id`)",
-       "PORT_1.`id` = `glpi_networkportethernets`.`networkports_id`",
-       getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"]),
-       "`glpi_locations`.`completename`, PORT_1.`name`",
-       "`glpi_netpoints`.`name` AS extra,",
-       Netpoint::getTypeName());
+   Report::reportForNetworkInformations("`glpi_locations`
+                                          INNER JOIN `glpi_netpoints`
+                                             ON (`glpi_netpoints`.`locations_id`
+                                                   = `glpi_locations`.`id`)
+                                          INNER JOIN `glpi_networkportethernets`
+                                             ON (`glpi_networkportethernets`.`netpoints_id`
+                                                   = `glpi_netpoints`.`id`)",
+                                        "PORT_1.`id` = `glpi_networkportethernets`.`networkports_id`",
+                                        getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"]),
+                                        "`glpi_locations`.`completename`, PORT_1.`name`",
+                                        "`glpi_netpoints`.`name` AS extra, ",
+                                        Netpoint::getTypeName());
 
    Html::footer();
 

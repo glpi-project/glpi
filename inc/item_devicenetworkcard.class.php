@@ -46,10 +46,21 @@ class Item_DeviceNetworkCard extends Item_Devices {
 
    static protected $notable = false;
 
+
+
    static function getSpecificities() {
+
       return array('mac' => array('long name'  => __('MAC address'),
                                   'short name' => __('MAC address'),
                                   'size'       => 18));
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function itemAffinity() {
+      return array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
    }
 
 }

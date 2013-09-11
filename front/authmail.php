@@ -33,9 +33,9 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 
-Html::header(AuthMail::getTypeName(2), $_SERVER['PHP_SELF'],"config","extauth","imap");
+Html::header(AuthMail::getTypeName(2), $_SERVER['PHP_SELF'],"config","auth","imap");
 
 if (Toolbox::canUseImapPop()) {
    Search::show('AuthMail');

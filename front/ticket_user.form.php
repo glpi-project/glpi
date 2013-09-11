@@ -35,22 +35,33 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-$ticket_user = new Ticket_User();
+$link = new Ticket_User();
 
 Session ::checkLoginUser();
+Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $ticket_user->check($_POST["id"], 'w');
+   $link->check($_POST["id"], UPDATE);
 
-   $ticket_user->update($_POST);
+   $link->update($_POST);
    echo "<script type='text/javascript' >\n";
-   echo "window.opener.location.reload();";
-   echo "window.close()";
+   echo "window.parent.location.reload();";
    echo "</script>";
 
+} else if (isset($_POST['delete'])) {
+   $link->check($_POST['id'], DELETE);
+   $link->delete($_POST);
+
+   Event::log($link->fields['tickets_id'], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$link->fields['tickets_id']);
+
 } else if (isset($_GET["id"])) {
-   $ticket_user->showUserNotificationForm($_GET["id"]);
+   $link->showUserNotificationForm($_GET["id"]);
 } else {
    Html::displayErrorAndDie('Lost');
 }
+
+Html::popFooter();
 ?>

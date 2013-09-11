@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("networking", "r");
+Session::checkRight("networking", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,15 +44,19 @@ if (!isset($_GET["withtemplate"])) {
 
 $netdevice = new NetworkEquipment();
 if (isset($_POST["add"])) {
-   $netdevice->check(-1,'w',$_POST);
+   $netdevice->check(-1, CREATE,$_POST);
 
-   $newID = $netdevice->add($_POST);
-   Event::log($newID, "networkequipment", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $netdevice->add($_POST)) {
+      Event::log($newID, "networkequipment", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($netdevice->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $netdevice->check($_POST["id"],'d');
+   $netdevice->check($_POST["id"], DELETE);
    $netdevice->delete($_POST);
 
    Event::log($_POST["id"], "networkequipment", 4, "inventory",
@@ -62,7 +66,7 @@ if (isset($_POST["add"])) {
    $netdevice->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $netdevice->check($_POST["id"],'d');
+   $netdevice->check($_POST["id"], PURGE);
 
    $netdevice->restore($_POST);
    Event::log($_POST["id"], "networkequipment", 4, "inventory",
@@ -71,7 +75,7 @@ if (isset($_POST["add"])) {
    $netdevice->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $netdevice->check($_POST["id"],'d');
+   $netdevice->check($_POST["id"], PURGE);
 
    $netdevice->delete($_POST,1);
    Event::log($_POST["id"], "networkequipment", 4, "inventory",
@@ -80,7 +84,7 @@ if (isset($_POST["add"])) {
    $netdevice->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $netdevice->check($_POST["id"],'w');
+   $netdevice->check($_POST["id"], UPDATE);
 
    $netdevice->update($_POST);
    Event::log($_POST["id"], "networkequipment", 4, "inventory",
@@ -89,8 +93,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(NetworkEquipment::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "networking");
-   $netdevice->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   Html::header(NetworkEquipment::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "networkequipment");
+   $netdevice->display(array('id'           => $_GET["id"],
+                             'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

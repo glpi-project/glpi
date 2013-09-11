@@ -44,6 +44,9 @@ class NetworkPortMigration extends CommonDBChild {
    static public $items_id        = 'items_id';
    static public $mustBeAttached  = true;
 
+   static $rightname              = 'networking';
+
+
 
    static function getTypeName($nb=0) {
       return __('Network port migration');
@@ -52,27 +55,6 @@ class NetworkPortMigration extends CommonDBChild {
 
    static function canCreate() {
       return false;
-   }
-
-
-   static function canUpdate() {
-
-      return (Session::haveRight('networking','w')
-              && parent::canUpdate());
-   }
-
-
-   static function canView() {
-
-      return (Session::haveRight('networking','r')
-              && parent::canView());
-   }
-
-
-   static function canDelete() {
-
-      return (Session::haveRight('networking','w')
-              && parent::canDelete());
    }
 
 
@@ -111,6 +93,18 @@ class NetworkPortMigration extends CommonDBChild {
       parent::post_deleteItem();
    }
 
+   /**
+    * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
+   **/
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+      return $ong;
+   }
+
 
    static function getMotives() {
 
@@ -128,11 +122,11 @@ class NetworkPortMigration extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
 
-      if (!Session::haveRight("networking", "r")) {
+      if (!self::canView()) {
          return false;
       }
 
-      $this->check($ID,'r');
+      $this->check($ID, READ);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) > 0) {
@@ -317,7 +311,6 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<$interface_cell></$interface_cell></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
    }
 
 
@@ -371,8 +364,8 @@ class NetworkPortMigration extends CommonDBChild {
                $networkport = new NetworkPort();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($networkport->can($key,'w')
-                         && $this->can($key,'d')) {
+                     if ($networkport->canEdit($key)
+                         && $this->can($key, DELETE)) {
                         if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
                            $instantiation             = $networkport->getInstantiation();
                            $input2                    = $this->fields;
@@ -383,12 +376,15 @@ class NetworkPortMigration extends CommonDBChild {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }

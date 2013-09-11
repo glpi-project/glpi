@@ -29,7 +29,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// LDAP criteria class
 class RuleRightParameter extends CommonDropdown {
 
-   var $refresh_page = true;
+   static $rightname = 'rule_ldap';
 
    /**
     * @see CommonDBTM::prepareInputForAdd()
@@ -49,16 +49,6 @@ class RuleRightParameter extends CommonDropdown {
       //because the are retieved in lower case  from the directory
       $input["value"] = Toolbox::strtolower($input["value"]);
       return $input;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('rule_ldap', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('rule_ldap', 'r');
    }
 
 

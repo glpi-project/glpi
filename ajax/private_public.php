@@ -61,14 +61,17 @@ if (isset($_POST['is_private'])) {
          } else {
             $val = $_SESSION['glpiactive_entity'];
          }
+         echo "<table width='100%'>";
+         echo "<tr><td>";
          echo "<input type='hidden' name='is_private' value='0'>\n";
-         echo __('Public')."&nbsp;";
+         _e('Public');
+         echo "</td><td>";
          Entity::dropdown(array('value' => $val));
-         echo "&nbsp;";
-         _e('Child entities');
-         echo "&nbsp;";
+         echo "</td><td>". __('Child entities')."</td><td>";
          Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
-         echo "&nbsp;<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
+         echo "</td><td>";
+         echo "<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
+         echo "</td></tr></table>";
          break;
    }
 }

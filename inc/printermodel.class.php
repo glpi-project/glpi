@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class PrinterModel extends CommonDropdown {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
-
+   var $can_be_translated = true;
 
    static function getTypeName($nb=0) {
       return _n('Printer model', 'Printer models', $nb);
@@ -47,13 +47,10 @@ class PrinterModel extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
-
       // Temporary solution to clean wrong updated items
-      $query = "DELETE
-                FROM `glpi_cartridgeitems_printermodels`
-                WHERE `printermodels_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $cpm = new CartridgeItem_PrinterModel();
+      $cpm->deleteByCriteria(array('printermodels_id' => $this->fields['id']));
+      
    }
 
 

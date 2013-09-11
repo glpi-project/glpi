@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -41,15 +41,15 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$rulecollection->checkGlobal('r');
+$rulecollection->checkGlobal(READ);
 
 if (isset($_POST["action"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(UPDATE);
    $rulecollection->changeRuleOrder($_POST["id"],$_POST["action"]);
    Html::back();
 // POST and GET needed to manage reload
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(UPDATE);
 
    // Current time
    $start = explode(" ",microtime());
@@ -113,8 +113,6 @@ if (isset($_POST["action"])) {
 Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], 'admin', $rulecollection->menu_type,
              $rulecollection->menu_option);
 
-$rulecollection->showTabs();
-echo "<div id='tabcontent'>&nbsp;</div>";
-echo "<script type='text/javascript'>loadDefaultTab();</script>";
+$rulecollection->display();
 Html::footer();
 ?>

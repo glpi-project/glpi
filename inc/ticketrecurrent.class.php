@@ -35,32 +35,28 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Ticket Recurrent class
-/// since version 0.83
+/**
+ * Ticket Recurrent class
+ *
+ * @since version 0.83
+**/
 class TicketRecurrent extends CommonDropdown {
 
    // From CommonDBTM
    public $dohistory              = true;
 
    // From CommonDropdown
-   public $first_level_menu       = "maintain";
+   public $first_level_menu       = "helpdesk";
    public $second_level_menu      = "ticketrecurrent";
 
    public $display_dropdowntitle  = false;
 
+   static $rightname              = 'ticketrecurrent';
+
+
 
    static function getTypeName($nb=0) {
       return __('Recurrent tickets');
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('ticketrecurrent', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('ticketrecurrent', 'r');
    }
 
 
@@ -81,10 +77,10 @@ class TicketRecurrent extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("tickettemplate","r")) {
+      if (Session::haveRight('tickettemplate', READ)) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
-               $ong[1] = self::getTypeName(2);
+               $ong[1] = _n('Information', 'Information', 2);
                return $ong;
          }
       }
@@ -95,7 +91,8 @@ class TicketRecurrent extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('TicketRecurrent', $ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -308,6 +305,7 @@ class TicketRecurrent extends CommonDropdown {
    **/
    function computeNextCreationDate($begin_date, $end_date, $periodicity, $create_before,
                                     $calendars_id) {
+
       if (empty($begin_date)) {
          return 'NULL';
       }
@@ -316,7 +314,6 @@ class TicketRecurrent extends CommonDropdown {
             return 'NULL';
          }
       }
-
       $check = true;
       if (preg_match('/([0-9]+)MONTH/',$periodicity)
           || preg_match('/([0-9]+)YEAR/',$periodicity)) {
@@ -329,7 +326,7 @@ class TicketRecurrent extends CommonDropdown {
                                           false, ERROR);
          return 'NULL';
       }
-      
+
       if ($periodicity <> 0) {
          // Standard time computation
          $timestart  = strtotime($begin_date) - $create_before;
@@ -409,6 +406,7 @@ class TicketRecurrent extends CommonDropdown {
                       AND `glpi_ticketrecurrents`.`is_active` = 1
                       AND (`glpi_ticketrecurrents`.`end_date` IS NULL
                            OR `glpi_ticketrecurrents`.`end_date` > NOW())";
+
       foreach ($DB->request($query) as $data) {
          if (self::createTicket($data)) {
             $tot++;

@@ -57,7 +57,7 @@ if (Session::getLoginUserID()) {
 if (isset($_GET["id"])) {
    $kb = new KnowbaseItem();
    if ($kb->getFromDB($_GET["id"])) {
-      $kb->showFull(false);
+      $kb->showFull();
    }
 
 } else {
@@ -68,7 +68,7 @@ if (isset($_GET["id"])) {
    }
 
    $kb = new Knowbase();
-   $kb->show($_GET);
+   $kb->display($_GET);
 }
 
 Html::helpFooter();

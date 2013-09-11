@@ -32,23 +32,9 @@
 */
 
 class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection {
-
-
    public $item_table  = "glpi_peripheralmodels";
    public $menu_option = "model.peripheral";
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table  = "glpi_peripheralmodels";
-//       $this->initCache("glpi_rulecacheperipheralmodels", array("name"         => "old_value",
-//                                                                "manufacturer" => "manufacturer"));
-//       $this->menu_option = "model.peripheral";
-//    }
-
-
+   
    /**
     * @see RuleCollection::getTitle()
    **/

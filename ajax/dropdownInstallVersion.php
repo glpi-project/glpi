@@ -38,7 +38,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownInstallVersion.php")) {
    Html::header_nocache();
 }
 
-Session::checkRight("software", "w");
+Session::checkRight("software", UPDATE);
 
 if ($_POST['softwares_id'] > 0) {
    if (!isset($_POST['value'])) {
@@ -48,11 +48,7 @@ if ($_POST['softwares_id'] > 0) {
    $where = '';
    if (isset($_POST['used'])) {
 
-      if (is_array($_POST['used'])) {
-         $used = $_POST['used'];
-      } else {
-         $used = Toolbox::decodeArrayFromInput($_POST['used']);
-      }
+      $used = $_POST['used'];
 
       if (count($used)) {
          $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$used)."')";
@@ -69,11 +65,7 @@ if ($_POST['softwares_id'] > 0) {
    $result = $DB->query($query);
    $number = $DB->numrows($result);
 
-   echo "<select name='".$_POST['myname']."' size='1'>";
-   echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
-   $today = date("Y-m-d");
-
+   $values = array(0 => Dropdown::EMPTY_VALUE);
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
          $ID = $data['id'];
@@ -85,10 +77,11 @@ if ($_POST['softwares_id'] > 0) {
          if (!empty($data['sname'])) {
             $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
          }
-         echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
-               Html::cleanInputText($output)."\">".$output."</option>";
+         $values = array($ID => $output);
+
       }
    }
-   echo "</select>&nbsp;";
+
+   Dropdown::showFromArray($_POST['myname'], $values);
 }
 ?>

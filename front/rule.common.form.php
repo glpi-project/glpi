@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 $rule = $rulecollection->getRuleClass();
-$rulecollection->checkGlobal('r');
+$rulecollection->checkGlobal(READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,20 +44,14 @@ if (!isset($_GET["id"])) {
 $rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
-if (isset($_POST["add_criteria"])) {
-   $rulecollection->checkGlobal('w');
-   $rulecriteria->add($_POST);
-
-   Html::back();
-
-} else if (isset($_POST["add_action"])) {
-   $rulecollection->checkGlobal('w');
+if (isset($_POST["add_action"])) {
+   $rulecollection->checkGlobal(CREATE);
    $ruleaction->add($_POST);
 
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(UPDATE);
    $rule->update($_POST);
 
    Event::log($_POST['id'], "rules", 4, "setup",
@@ -66,17 +60,17 @@ if (isset($_POST["add_criteria"])) {
    Html::back();
 
 } else if (isset($_POST["add"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(CREATE);
 
    $newID = $rule->add($_POST);
    Event::log($newID, "rules", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
    Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
 
-} else if (isset($_POST["delete"])) {
-   $rulecollection->checkGlobal('w');
+} else if (isset($_POST["purge"])) {
+   $rulecollection->checkGlobal(PURGE);
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
-   $rule->delete($_POST);
+   $rule->delete($_POST, 1);
 
    Event::log($_POST["id"], "rules", 4, "setup",
               //TRANS: %s is the user login
@@ -87,6 +81,6 @@ if (isset($_POST["add_criteria"])) {
 Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], 'admin',
              $rulecollection->menu_type, $rulecollection->menu_option);
 
-$rule->showForm($_GET["id"]);
+$rule->display(array('id' => $_GET["id"]));
 Html::footer();
 ?>

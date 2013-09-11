@@ -48,7 +48,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
 } else {
    $TRY_OLD_CONFIG_FIRST = true;
-
    include (GLPI_ROOT . "/inc/includes.php");
    $_SESSION["glpicookietest"] = 'testcookie';
 
@@ -93,7 +92,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "</div>";
 
    echo "<div id='boxlogin'>";
-   echo "<form action='".$CFG_GLPI["root_doc"]."/login.php' method='post'>";
+   echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {
@@ -122,7 +121,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '</span></p>';
     if ($CFG_GLPI["use_mailing"]
        && countElementsInTable('glpi_notifications',
-                               "`itemtype`='User' AND `event`='passwordforget' AND `is_active`=1")) {
+                               "`itemtype`='User'
+                                AND `event`='passwordforget'
+                                AND `is_active`=1")) {
       echo '<div id="forget"><a href="front/lostpassword.php?lostpassword=1">'.
              __('Forgotten password?').'</a></div>';
    }

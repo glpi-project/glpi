@@ -35,8 +35,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Predefined fields for ticket template class
-/// since version 0.83
+
+/**
+ * TicketTemplatePredefinedField Class
+ *
+ * Predefined fields for ticket template class
+ *
+ * @since version 0.83
+**/
 class TicketTemplatePredefinedField extends CommonDBChild {
 
    // From CommonDBChild
@@ -51,7 +57,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -123,7 +129,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate","r")) {
+          && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
@@ -165,12 +171,28 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = array();
-
+      $multiple       = self::getMultiplePredefinedValues();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
-            $fields[$allowed_fields[$rule['num']]] = $rule['value'];
+            if (in_array($rule['num'], $multiple)) {
+               $fields[$allowed_fields[$rule['num']]][] = $rule['value'];
+            } else {
+               $fields[$allowed_fields[$rule['num']]] = $rule['value'];
+            }
          }
       }
+      return $fields;
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function getMultiplePredefinedValues() {
+
+      $ticket = new Ticket();
+      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
+
       return $fields;
    }
 
@@ -190,11 +212,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $ID = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
          return false;
       }
 
-      $canedit       = $tt->can($ID, "w");
+      $canedit       = $tt->canEdit($ID);
 
       $ttp           = new self();
       $used_fields   = $ttp->getPredefinedFields($ID, true);
@@ -242,6 +264,14 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
             // Force validation request as used
             $used[-2] = -2;
+            // Unset multiple items
+            $multiple = self::getMultiplePredefinedValues();
+            foreach ($multiple as $val) {
+               if (isset($used[$val])) {
+                  unset($used[$val]);
+               }
+            }
+
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                               'toadd'));
             echo "</td><td class='top'>";
@@ -271,8 +301,9 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed'  => $numrows);
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            $massiveactionparams = array('num_displayed' => $numrows,
+                                         'container'     => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>";
@@ -314,7 +345,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          echo "</table>";
          if ($canedit && $numrows) {
             $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
          echo "</div>";

@@ -28,14 +28,18 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// LDAP criteria class
+/**
+ * NotImportedEmail Class
+**/
 class NotImportedEmail extends CommonDBTM {
+
+   static $rightname = 'config';
 
    const MATCH_NO_RULE = 0;
    const USER_UNKNOWN  = 1;
@@ -45,20 +49,10 @@ class NotImportedEmail extends CommonDBTM {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'delete';
-      $forbidden[] = 'purge';
-      $forbidden[] = 'restore';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore';
       return $forbidden;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'w');
    }
 
 

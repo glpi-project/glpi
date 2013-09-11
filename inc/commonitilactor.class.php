@@ -41,8 +41,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
    static public $logs_for_item_2     = false;
-
-
+   var $auto_message_on_action        = false;
 
    // Requester
    const REQUESTER = 1;
@@ -148,16 +147,16 @@ abstract class CommonITILActor extends CommonDBRelation {
    function showUserNotificationForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      $this->check($ID,'w');
+      $this->check($ID, UPDATE);
 
       if (!isset($this->fields['users_id'])) {
          return false;
       }
       $item = new static::$itemtype_1();
 
-      echo "<br><form method='post' action='".$this->getFormURL()."'>";
+      echo "<br><form method='post' action='".$_SERVER['PHP_SELF']."'>";
       echo "<div class='center'>";
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadre' width='80%'>";
       echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."</td>";
       echo "<td>";
       if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
@@ -189,17 +188,16 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       } else if (count($emails) > 1) {
          // Several emails : select in the list
-         echo "<select name='alternative_email' value=''>";
-         echo "<option value='' ".(empty($this->fields['alternative_email'])?'selected':'').">".
-                "$default_email</option>";
+         $emailtab = array();
          foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
-               echo "<option value='$new_email' ".
-                     ($this->fields['alternative_email'] == $new_email?'selected':'').
-                     ">$new_email</option>";
+               $emailtab[$new_email] = $new_email;
+            } else {
+               $emailtab[''] = $new_email;
             }
          }
-         echo "</select>";
+         Dropdown::showFromArray("alternative_email",$emailtab,
+                                 array('value'   => $this->fields['alternative_email']));
       } else {
          echo "<input type='text' size='40' name='alternative_email' value='".
                 $this->fields['alternative_email']."'>";
@@ -210,7 +208,6 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<td class='center' colspan='2'>";
       echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
-      echo "<input type='hidden' name='itemtype' value='".static::$itemtype_1."'>";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -223,9 +220,9 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
 
       $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 

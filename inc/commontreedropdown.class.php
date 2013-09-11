@@ -58,9 +58,15 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
+
       $this->addStandardTab($this->getType(), $ong, $options);
       if ($this->dohistory) {
          $this->addStandardTab('Log',$ong, $options);
+      }
+
+      if (DropdownTranslation::canBeTranslated($this)) {
+         $this->addStandardTab('DropdownTranslation',$ong, $options);
       }
 
       return $ong;
@@ -370,7 +376,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB, $CFG_GLPI;
 
       $ID            = $this->getID();
-      $this->check($ID, 'r');
+      $this->check($ID, READ);
       $fields        = $this->getAdditionalFields();
       $nb            = count($fields);
       $entity_assign = $this->isEntityAssign();
@@ -525,7 +531,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                if ($parent->getFromDB($input['parent'])) {
                   foreach ($input["item"] as $key => $val) {
                      if (($val == 1)
-                         && $this->can($key,'w')) {
+                         && $this->can($key, UPDATE)) {
                         // Check if parent is not a child of the original one
                         if (!in_array($parent->getID(), getSonsOf($this->getTable(),
                                       $this->getID()))) {
@@ -534,12 +540,15 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("link", "r");
+Session::checkRight("link", READ);
 
 if (isset($_GET["lID"])) {
    $query = "SELECT `glpi_links`.`id`, `glpi_links`.`link`, `glpi_links`.`data`

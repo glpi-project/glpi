@@ -68,7 +68,6 @@ class Manufacturer extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-
       // Rules use manufacturer intread of manufacturers_id
       Rule::cleanForItemAction($this, 'manufacturer');
    }

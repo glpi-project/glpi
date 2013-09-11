@@ -588,12 +588,12 @@ function addTracking($type, $ID, $ID_entity) {
                          'users_id'          => $users[1],
                          'content'           => "task $i '".Toolbox::getRandomString(15),
                          'is_private'        => mt_rand(0,1),
-                         'state'             => $state));
+                         'state'             => $state,
+                         'users_id_tech'    => $users[1]));
 
          if ($status == CommonITILObject::PLANNED && $doplan) {
             $params['plan'] = array('begin'       => date("Y-m-d H:i:s", $date3),
-                                    'end'         => $endtask,
-                                    'users_id'    => $users[1]);
+                                    'end'         => $endtask);
          }
          $tt->add($params);
          $i++;
@@ -698,19 +698,6 @@ function generateGlobalDropdowns() {
          $val = $items[$i];
       } else {
          $val = "type d' contact $i";
-      }
-      $dp->add(toolbox::addslashes_deep(array('name'    => $val,
-                                              'comment' => "comment $val")));
-   }
-
-
-   $items = array("SP2MI", "CAMPUS"," IUT86", "PRESIDENCE", "CEAT", "D'omaine");
-   $dp    = new Domain();
-   for ($i=0 ; $i<$MAX['domain'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
-      } else {
-         $val = "domain '$i";
       }
       $dp->add(toolbox::addslashes_deep(array('name'    => $val,
                                               'comment' => "comment $val")));
@@ -938,15 +925,23 @@ function generateGlobalDropdowns() {
 
    $items = array('Bureautique', 'Calcul', "logiciel d'antivirus", 'Multimédia');
    $dp    = new SoftwareCategory();
-   for ($i=0 ; $i<$MAX['softwarecategory'] ; $i++) {
+   for ($i=0 ; $i<max(1,pow($MAX['softwarecategory'],1/2)) ; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
-         $val = "category ' $i";
+         $val = "category $i";
       }
-      $dp->add(toolbox::addslashes_deep(array('name'    => $val,
-                                              'comment' => "comment $val")));
+      $newID = $dp->add(toolbox::addslashes_deep(array('name'    => $val,
+                                                       'comment' => "comment $val")));
+
+      for ($j=0 ; $j<mt_rand(0,pow($MAX['softwarecategory'],1/2)) ; $j++) {
+         $newID2 = $dp->add(toolbox::addslashes_deep(array('name'    => "s-category '$j",
+                                                           'comment' => "comment d' $val s-category $j",
+                                                           'softwarecategories_id'
+                                                                     => $newID)));
+      }
    }
+   $MAX['rubdocs'] = getMaxItem('glpi_softwarecategories');
 
    $dp = new SoftwareLicenseType();
    for ($i=0 ; $i<$MAX['licensetype'] ; $i++) {
@@ -955,19 +950,6 @@ function generateGlobalDropdowns() {
                                               'comment' => "comment '$val")));
    }
 
-
-   $items = array("Reparation", "En stock", "En fonction", "Retour SAV", "En attente d'");
-   $dp    = new State();
-   for ($i=0 ; $i<$MAX['state'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
-      } else {
-         $val = "Etat d'$i";
-      }
-      $dp->add(toolbox::addslashes_deep(array('name'    => $val,
-                                              'comment' => "comment $val")));
-   }
-   regenerateTreeCompleteName("glpi_states");
 
    $items = array("SIC", "LMS", "LMP", "LEA", "SP2MI", "STIC", "MATH", "ENS-MECA", "POUBELLE",
                   "WIFI");
@@ -1408,6 +1390,56 @@ function generate_entity($ID_entity) {
 
    $current_year = date("Y");
 
+
+   // DOMAIN
+   $items = array("SP2MI", "CAMPUS"," IUT86", "PRESIDENCE", "CEAT", "D'omaine");
+   $dp    = new Domain();
+   $FIRST["domain"] = getMaxItem("glpi_domains")+1;
+
+   for ($i=0 ; $i<$MAX['domain'] ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "domain $ID_entity '$i";
+      }
+      $dp->add(toolbox::addslashes_deep(array('name'         => $val,
+                                              'entities_id'  => $ID_entity,
+                                              'is_recursive' => 1,
+                                              'comment'      => "comment $val")));
+   }
+   $LAST["domain"] = getMaxItem("glpi_domains");
+
+
+   // STATUS
+   $items = array("Reparation", "En stock", "En fonction", "Retour SAV", "En attente d'");
+   $dp    = new State();
+   $FIRST["state"] = getMaxItem("glpi_states")+1;
+   for ($i=0 ; $i<$MAX['state'] ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "State $ID_entity '$i";
+      }
+      $state_id = $dp->add(toolbox::addslashes_deep(array('name'         => $val,
+                                              'entities_id'  => $ID_entity,
+                                              'is_recursive' => 1,
+                                              'comment'      => "comment $val")));
+
+      // generate sub status
+      for ($j=0 ; $j<$MAX['state'] ; $j++) {
+         $val2 = "Sub $val $j";
+
+         $dp->add(toolbox::addslashes_deep(array('name'         => $val2,
+                                                 'entities_id'  => $ID_entity,
+                                                 'is_recursive' => 1,
+                                                 'states_id'    => $state_id,
+                                                 'comment'      => "comment $val")));
+      }
+
+   }
+   $LAST["state"]      = getMaxItem("glpi_states");
+
+
    // glpi_groups
    $FIRST["groups"] = getMaxItem("glpi_groups")+1;
    $group           = new Group();
@@ -1448,12 +1480,11 @@ function generate_entity($ID_entity) {
    $FIRST["users_sadmin"] = getMaxItem("glpi_users")+1;
    $user                  = new User();
    $gu                    = new Group_User();
-
    for ($i=0 ; $i<$MAX['users_sadmin'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "sadmin '$i-$ID_entity",
-                                   'password'           => "sadmin '$i",
-                                   'password2'          => "sadmin '$i",
+                             array('name'               => "sadmin$i-$ID_entity",
+                                   'password'           => "sadmin'$i",
+                                   'password2'          => "sadmin'$i",
                                    'phone'              => "tel $i",
                                    'phone2'             => "tel2 $i",
                                    'mobile'             => "mobile $i",
@@ -1473,14 +1504,13 @@ function generate_entity($ID_entity) {
       $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups'])));
    }
-
    $LAST["users_sadmin"] = getMaxItem("glpi_users");
    $FIRST["users_admin"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_admin'] ; $i++) {
 
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "admin'$i-$ID_entity",
+                             array('name'               => "admin$i-$ID_entity",
                                    'password'           => "admin'$i",
                                    'password2'          => "admin'$i",
                                    'phone'              => "tel $i",
@@ -1511,7 +1541,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0 ; $i<$MAX['users_normal'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "normal'$i-$ID_entity",
+                             array('name'               => "normal$i-$ID_entity",
                                    'password'           => "normal'$i",
                                    'password2'          => "normal'$i",
                                    'phone'              => "tel $i",
@@ -1538,7 +1568,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0 ; $i<$MAX['users_postonly'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "postonly'$i-$ID_entity",
+                             array('name'               => "postonly$i-$ID_entity",
                                    'password'           => "postonly'$i",
                                    'password2'          => "postonly'$i",
                                    'phone'              => "tel $i",
@@ -1647,8 +1677,8 @@ function generate_entity($ID_entity) {
                   $newID5 = $loc->add(toolbox::addslashes_deep(
                                       array('entities_id'     => $ID_entity,
                                             'is_recursive'    => 1,
-                                            'name'            => "sss-location' $m",
-                                            'comment'         => "comment sss-location' $m",
+                                            'name'            => "ssss-location' $m",
+                                            'comment'         => "comment ssss-location' $m",
                                             'building'        => "building $i",
                                             'room'            => "room' $l-$m",
                                             'locations_id'    => $newID4)));
@@ -2094,6 +2124,7 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['type_of_consumables'] ; $i++) {
       $consID = $ci->add(toolbox::addslashes_deep(
                          array('entities_id'             => $ID_entity,
+                               'is_recursive'            => mt_rand(0,1),
                                'name'                    => "consumable type' $i",
                                'ref'                     => "ref d' $i",
                                'locations_id'            => mt_rand($FIRST["locations"],
@@ -2152,6 +2183,7 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['type_of_cartridges'] ; $i++) {
       $cartID = $ct->add(toolbox::addslashes_deep(
                          array('entities_id'       => $ID_entity,
+                               'is_recursive'      => mt_rand(0,1),
                                'name'              => "cartridge ' type $i",
                                'ref'               => "ref '$i",
                                'locations_id'      => mt_rand($FIRST["locations"], $LAST['locations']),
@@ -2206,7 +2238,7 @@ function generate_entity($ID_entity) {
       $techID     = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
       $gtechID    = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
       $infoIP     = getNextIP();
-      $domainID   = mt_rand(1,$MAX['domain']);
+      $domainID   = mt_rand($FIRST['domain'],$LAST['domain']);
       $networkID  = mt_rand(1,$MAX['network']);
 
       // insert networking
@@ -2237,7 +2269,7 @@ function generate_entity($ID_entity) {
                                'groups_id'                     => mt_rand($FIRST["groups"],
                                                                           $LAST["groups"]),
                                'states_id'                     => (mt_rand(0,100)<$percent['state']
-                                                                     ?mt_rand(1,$MAX['state']):0)
+                                                                     ?mt_rand($FIRST['state'],$LAST['state']):0)
                            )));
       $NET_LOC[$data['id']] = $netwID;
       addDocuments('NetworkEquipment', $netwID);
@@ -2286,7 +2318,7 @@ function generate_entity($ID_entity) {
                                                               $LAST['users_admin']),
                                 'groups_id'        => mt_rand($FIRST["groups"], $LAST["groups"]),
                                 'states_id'        => (mt_rand(0,100)<$percent['state']
-                                                         ?mt_rand(1,$MAX['state']):0)
+                                                         ?mt_rand($FIRST['state'],$LAST['state']):0)
                            )));
 
       addDocuments('Printer', $printID);
@@ -2378,7 +2410,7 @@ function generate_entity($ID_entity) {
       $userID    = mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
       $groupID   = mt_rand($FIRST["groups"],$LAST["groups"]);
       $gtechID   = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
-      $domainID  = mt_rand(1,$MAX['domain']);
+      $domainID  = mt_rand($FIRST['domain'],$LAST['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
       $compID = $c->add(toolbox::addslashes_deep(
@@ -2408,7 +2440,7 @@ function generate_entity($ID_entity) {
                               'users_id'                       => $userID,
                               'groups_id'                      => $groupID,
                               'states_id'                      => (mt_rand(0,100)<$percent['state']
-                                                                     ?mt_rand(1,$MAX['state']):0),
+                                                                     ?mt_rand($FIRST['state'],$LAST['state']):0),
                               'uuid'                           => Toolbox::getRandomString(30)
                            )));
 
@@ -2533,7 +2565,7 @@ function generate_entity($ID_entity) {
                                'users_id'          => $userID,
                                'groups_id'         => $groupID,
                                'states_id'         => (mt_rand(0,100)<$percent['state']
-                                                         ?mt_rand(1,$MAX['state']):0)
+                                                         ?mt_rand($FIRST['state'],$LAST['state']):0)
                            )));
 
       addDocuments('Monitor', $monID);
@@ -2575,7 +2607,7 @@ function generate_entity($ID_entity) {
                                  'users_id'              => $userID,
                                  'groups_id'             => $groupID,
                                  'states_id'             => (mt_rand(0,100)<$percent['state']
-                                                               ?mt_rand(1,$MAX['state']):0)
+                                                               ?mt_rand($FIRST['state'],$LAST['state']):0)
                            )));
 
       addDocuments('Phone', $telID);
@@ -2613,7 +2645,7 @@ function generate_entity($ID_entity) {
                                         'users_id'          => $userID,
                                         'groups_id'         => $groupID,
                                         'states_id'         => (mt_rand(0,100)<$percent['state']
-                                                                  ?mt_rand(1,$MAX['state']):0)
+                                                                  ?mt_rand($FIRST['state'],$LAST['state']):0)
                                     )));
 
          addDocuments('Peripheral', $periphID);
@@ -2662,7 +2694,7 @@ function generate_entity($ID_entity) {
                                                                  $LAST['users_postonly']),
                                   'groups_id'         => mt_rand($FIRST["groups"], $LAST["groups"]),
                                   'states_id'         => (mt_rand(0,100)<$percent['state']
-                                                            ?mt_rand(1,$MAX['state']):0)
+                                                            ?mt_rand($FIRST['state'],$LAST['state']):0)
                               )));
 
          addDocuments('Printer', $printID);
@@ -2749,7 +2781,7 @@ function generate_entity($ID_entity) {
                                                                     $LAST['users_normal']),
                                      'groups_id'         => mt_rand($FIRST["groups"], $LAST["groups"]),
                                      'states_id'         => (mt_rand(0,100)<$percent['state']
-                                                               ?mt_rand(1,$MAX['state']):0)
+                                                               ?mt_rand($FIRST['state'],$LAST['state']):0)
                                  )));
 
       addDocuments('Peripheral', $periphID);
@@ -2851,7 +2883,7 @@ function generate_entity($ID_entity) {
                                         'name'                 => $version,
                                         'comment'              => "comment '$version",
                                         'states_id'            => (mt_rand(0,100)<$percent['state']
-                                                                     ?mt_rand(1,$MAX['state']):0),
+                                                                     ?mt_rand($FIRST['state'],$LAST['state']):0),
                                         'operatingsystems_id'  => $os)));
 
          $val3    = min($LAST["computers"]-$FIRST['computers'], mt_rand(1,$MAX['softwareinstall']));

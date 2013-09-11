@@ -33,14 +33,14 @@
 
 $AJAX_INCLUDE = 1;
 
-include ('../inc/includes.php');
+include ("../inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['node'])) {
+if (isset($_GET['node'])) {
 
    if ($_SESSION['glpiactiveprofile']['interface']=='helpdesk') {
       $target = "helpdesk.public.php";
@@ -54,84 +54,76 @@ if (isset($_POST['node'])) {
    $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
    // Root node
-   if ($_POST['node'] == -1) {
+   if ($_GET['node'] == -1) {
       $pos = 0;
 
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $ID                = $entity['id'];
-         $is_recursive      = $entity['is_recursive'];
-         $path['text']      = Dropdown::getDropdownName("glpi_entities", $ID);
-         $path['id']        = $ID;
-         $path['position']  = $pos;
-         $pos++;
-         $path['draggable'] = false;
-         $path['href']      = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$ID;
-         // Check if node is a leaf or a folder.
-         $path['leaf']      = true;
-         $path['cls']       = 'file';
+         $path                         = array();
+         $ID                           = $entity['id'];
+         $is_recursive                 = $entity['is_recursive'];
+
+         $path['data']['title']        = Dropdown::getDropdownName("glpi_entities", $ID);
+         $path['attr']['id']           = $ID;
+         $path['data']['attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$ID;
 
          if ($is_recursive) {
-            $query2 = "SELECT COUNT(`id`)
+            $query2 = "SELECT count(*)
                        FROM `glpi_entities`
                        WHERE `entities_id` = '$ID'";
             $result2 = $DB->query($query2);
-
-            if ($DB->result($result2,0,0) >0) {
-               $path['leaf']     = false;
-               $path['cls']      = 'folder';
-               $path['text']    .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
-                                           $CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".
-                                           $ID."&amp;is_recursive=1'>".
-                                   "<img alt=\"".__s('Show all')."\" src='".
-                                     $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
-               $path['expanded'] = isset($ancestors[$ID]);
+            if ($DB->result($result2,0,0) > 0) {
+               $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
+                                                 $CFG_GLPI["root_doc"]."/front/".$target.
+                                                 "?active_entity=".$ID."&amp;is_recursive=1'>".
+                                         "<img alt=\"".__s('Show all')."\" src='".
+                                           $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+               if (isset($ancestors[$ID])) {
+                  $path['state'] = 'open';
+               } else {
+                  $path['state'] = 'closed';
+               }
             }
          }
          $nodes[] = $path;
       }
-
    } else { // standard node
       $query = "SELECT *
                 FROM `glpi_entities`
-                WHERE `entities_id` = '".$_POST['node']."'
+                WHERE `entities_id` = '".$_GET['node']."'
                 ORDER BY `name`";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            $pos = 0;
-
             while ($row = $DB->fetch_assoc($result)) {
-               $path['text']      = $row['name'];
-               $path['id']        = $row['id'];
-               $path['position']  = $pos;
-               $pos++;
-               $path['draggable'] = false;
-               $path['href']      = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$row['id'];
+               $path = array();
+               $path['data']['title']        = $row['name'];
+               $path['attr']['id']           = $row['id'];
+               $path['data']['attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".
+                                                $row['id'];
 
-               // Check if node is a leaf or a folder.
-               $query2 = "SELECT COUNT(`id`)
+               $query2 = "SELECT count(*)
                           FROM `glpi_entities`
                           WHERE `entities_id` = '".$row['id']."'";
                $result2 = $DB->query($query2);
+               if ($DB->result($result2,0,0) > 0) {
+                  $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
+                                                    $CFG_GLPI["root_doc"]."/front/".$target.
+                                                    "?active_entity=".$row['id']."&amp;is_recursive=1'>".
+                                            "<img alt=\"".__s('Show all')."\" src='".
+                                              $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
 
-               if ($DB->result($result2,0,0) >0) {
-                  $path['leaf']     = false;
-                  $path['cls']      = 'folder';
-                  $path['text']    .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
-                                              $CFG_GLPI["root_doc"]."/front/".$target.
-                                              "?active_entity=".$row['id']."&amp;is_recursive=1'>".
-                                       "<img alt=\"".__s('Show all')."\" src='".
-                                         $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
-                  $path['expanded'] = isset($ancestors[$row['id']]);
-               } else {
-                  $path['leaf'] = true;
-                  $path['cls']  = 'file';
+                  if (isset($ancestors[$row['id']])) {
+                     $path['state'] = 'open';
+                  } else {
+                     $path['state'] = 'closed';
+                  }
                }
                $nodes[] = $path;
             }
          }
       }
+
    }
-   print json_encode($nodes);
+   echo json_encode($nodes);
 }
 ?>

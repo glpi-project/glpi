@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("group", "r");
+Session::checkRight("group", READ);
 
 Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
 

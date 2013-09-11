@@ -32,23 +32,9 @@
 */
 
 class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_networkequipmenttypes";
-   public $menu_option = "type.networking";
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_networkequipmentmodels";
-//       $this->initCache("glpi_rulecachenetworkequipmentmodels",
-//                        array("name"         => "old_value",
-//                              "manufacturer" => "manufacturer"));
-//       $this->menu_option = "model.networking";
-//       //$this->rule_class_name = 'RuleDictionnaryNetworkEquipmentModel';
-//    }
-
-
+   public $item_table  = "glpi_networkequipmentmodels";
+   public $menu_option = "model.networking";
+   
    /**
     * @see RuleCollection::getTitle()
    **/

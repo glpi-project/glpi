@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -39,7 +39,7 @@ class RuleMailCollectorCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
-   static public $right        = 'rule_mailcollector';
+   static $rightname           = 'rule_mailcollector';
    public $menu_option         = 'mailcollector';
 
 

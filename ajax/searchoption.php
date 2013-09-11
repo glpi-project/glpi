@@ -71,7 +71,7 @@ if (isset($_POST["itemtype"])
    $dropdownname = "searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
    $searchopt    = array();
 
-   echo "<table><tr><td>";
+   echo "<table width='100%'><tr><td width='20%'>";
    if (count($actions)>0) {
 
       // get already get search options
@@ -83,9 +83,11 @@ if (isset($_POST["itemtype"])
       }
       $randsearch = Dropdown::showFromArray("searchtype".$addmeta."[".$_POST["num"]."]",
                                             $actions,
-                                            array('value' => $_POST["searchtype"]));
+                                            array('value'  => $_POST["searchtype"],
+                                                  'width'  => '100%'));
+      $fieldsearch_id = Html::cleanId("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
    }
-   echo "</td><td>";
+   echo "</td><td width='80%'>";
    echo "<span id='span$dropdownname'>\n";
 
    $_POST['value']      = stripslashes($_POST['value']);
@@ -103,7 +105,7 @@ if (isset($_POST["itemtype"])
                          'searchopt'  => $searchopt,
                          'meta'       => $_POST['meta']);
 
-   Ajax::updateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch",
+   Ajax::updateItemOnSelectEvent($fieldsearch_id,
                                  "span$dropdownname",
                                  $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
                                  $paramsaction);

@@ -28,19 +28,24 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Blacklist class
-/// @since version 0.84
+/**
+ * Blacklist Class
+ *
+ * @since version 0.84
+**/
 class Blacklist extends CommonDropdown {
 
    // From CommonDBTM
    public $dohistory = true;
+
+   static $rightname = 'config';
 
    const IP     = 1;
    const MAC    = 2;
@@ -50,12 +55,15 @@ class Blacklist extends CommonDropdown {
 
 
    static function canCreate() {
-      return Session::haveRight('config', 'w');
+      return static::canUpdate();
    }
 
 
-   static function canView() {
-      return Session::haveRight('config', 'r');
+   /**
+    * @since version 0.85
+   **/
+   static function canPurge() {
+      return static::canUpdate();
    }
 
 

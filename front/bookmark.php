@@ -28,8 +28,15 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
+
+if (!defined('GLPI_ROOT')) {
+   include ('../inc/includes.php');
+}
+
+
+Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
 if (!isset($_GET["type"])) {
    $_GET["type"] = -1;
@@ -43,65 +50,71 @@ if (!isset($_GET["url"])) {
    $_GET["url"] = "";
 }
 
+if (!isset($_GET["action"])) {
+   $_GET["action"] = "";
+}
+
 $bookmark = new Bookmark();
 
+
 if (isset($_POST["add"])) {
-   $bookmark->check(-1, 'w', $_POST);
+   $bookmark->check(-1, CREATE, $_POST);
 
    $bookmark->add($_POST);
-   $_GET["action"] = "load";
-   // Force popup on load.
-   $_SESSION["glpipopup"]["name"] = "load_bookmark";
+
 } else if (isset($_POST["update"])) {
-   $bookmark->check($_POST["id"], 'w');   // Right to update the bookmark
-   $bookmark->check(-1, 'w', $_POST);     // Right when entity change
+   $bookmark->check($_POST["id"], UPDATE);   // Right to update the bookmark
+   $bookmark->check(-1, CREATE, $_POST);     // Right when entity change
 
    $bookmark->update($_POST);
-   $_GET["action"] = "load";
+   $_GET["action"] = "";
 
 } else if ($_GET["action"] == "edit"
            && isset($_GET['mark_default'])
            && isset($_GET["id"])) {
-   $bookmark->check($_GET["id"], 'r');
+   $bookmark->check($_GET["id"], READ);
 
    if ($_GET["mark_default"] > 0) {
       $bookmark->mark_default($_GET["id"]);
    } else if ($_GET["mark_default"] == 0) {
       $bookmark->unmark_default($_GET["id"]);
    }
-   $_GET["action"] = "load";
+   $_GET["action"] = "";
 
 } else if (($_GET["action"] == "load")
            && isset($_GET["id"]) && ($_GET["id"] > 0)) {
-   $bookmark->check($_GET["id"], 'r');
+   $bookmark->check($_GET["id"], READ);
    $bookmark->load($_GET["id"]);
+   $_GET["action"] = "";
 
-} else if (isset($_POST["delete"])) {
-   $bookmark->check($_POST["id"], 'd');
+} else if (isset($_POST["action"])
+           && (($_POST["action"] == "up") || ($_POST["action"] == "down"))) {
+   Session::checkLoginUser();
+   $bookmark->changeBookmarkOrder($_POST['id'], $_POST["action"]);
+   $_GET["action"] = "";
 
-   $bookmark->delete($_POST);
-   $_GET["action"] = "load";
-
-} 
+} else if (isset($_POST["purge"])) {
+   $bookmark->check($_POST["id"], PURGE);
+   $bookmark->delete($_POST, 1);
+   $_GET["action"] = "";
+}
 
 if ($_GET["action"] == "edit") {
 
    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
       // Modify
-      $bookmark->check($_GET["id"], 'w');
+      $bookmark->check($_GET["id"], UPDATE);
       $bookmark->showForm($_GET['id']);
    } else {
       // Create
-      $bookmark->check(-1, 'w');
+      $bookmark->check(-1, CREATE);
       $bookmark->showForm(0, array('type'     => $_GET["type"],
                                    'url'      => rawurldecode($_GET["url"]),
                                    'itemtype' => $_GET["itemtype"]));
    }
 } else {
-   echo '<br>';
-
-   $bookmark->showTabs();
-   echo "<div id='tabcontent'>&nbsp;</div>";
-   echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   $bookmark->display();
 }
+
+Html::popFooter();
 ?>

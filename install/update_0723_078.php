@@ -2998,7 +2998,7 @@ function update0723to078() {
              CHANGE `sub_type` `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
    $DB->queryOrDie($query, "0.78 change subtype from INT(11) to VARCHAR(255) in glpi_rules");
 
-   $subtypes = array (0  => 'RuleOcs',
+   $subtypes  = array(0  => 'RuleOcs',
                       1  => 'RuleRight',
                       2  => 'RuleTicket',
                       3  => 'RuleSoftwareCategory',
@@ -4601,7 +4601,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                 CHANGE `mailingtype` `type` INT( 11 ) NOT NULL DEFAULT '0'";
       $DB->queryOrDie($query, "0.78 change field mailingtype in type");
 
-      $fields = array ('new'              => array('itemtype'  => 'Ticket',
+      $fields  = array('new'              => array('itemtype'  => 'Ticket',
                                                    'newaction' => 'new'),
                        'update'           => array('itemtype'  => 'Ticket',
                                                    'newaction' => 'update'),

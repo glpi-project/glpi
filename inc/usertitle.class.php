@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class UserTitle
 class UserTitle extends CommonDropdown {
 
+   var $can_be_translated = true;
+
    static function getTypeName($nb=0) {
       return _n('User title', 'Users titles',$nb);
    }

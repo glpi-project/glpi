@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("sla", "r");
+Session::checkRight("sla", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,16 +42,20 @@ if (empty($_GET["id"])) {
 $sla = new SLA();
 
 if (isset($_POST["add"])) {
-   $sla->check(-1, 'w');
-   $newID = $sla->add($_POST);
+   $sla->check(-1, CREATE);
 
-   Event::log($newID, "slas", 4, "setup",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $sla->add($_POST)) {
+      Event::log($newID, "slas", 4, "setup",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($sla->getFormURL()."?id=".$newID);
+      }
+   }
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
-} else if (isset($_POST["delete"])) {
-   $sla->check($_POST["id"], 'd');
-   $sla->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $sla->check($_POST["id"], PURGE);
+   $sla->delete($_POST, 1);
 
    Event::log($_POST["id"], "slas", 4, "setup",
               //TRANS: %s is the user login
@@ -59,7 +63,7 @@ if (isset($_POST["add"])) {
    $sla->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $sla->check($_POST["id"], 'w');
+   $sla->check($_POST["id"], UPDATE);
    $sla->update($_POST);
 
    Event::log($_POST["id"], "slas", 4, "setup",
@@ -70,7 +74,7 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(SLA::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
 
-   $sla->showForm($_GET["id"]);
+   $sla->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

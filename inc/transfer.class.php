@@ -61,14 +61,20 @@ class Transfer extends CommonDBTM {
                               'DeviceNetworkCard', 'DevicePci', 'DevicePowerSupply',
                               'DeviceProcessor', 'DeviceSoundCard');
 
-
-   static function canCreate() {
-      return Session::haveRight('transfer', 'w');
-   }
+   static $rightname = 'transfer';
 
 
-   static function canView() {
-      return Session::haveRight('transfer', 'r');
+   /**
+    * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
+   **/
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+
+      return $ong;
    }
 
 
@@ -2942,19 +2948,18 @@ class Transfer extends CommonDBTM {
       global $CFG_GLPI;
 
       $edit_form = true;
-      if (!strpos($_SERVER['PHP_SELF'],"transfer.form.php")) {
+      if (!strpos($_SERVER['HTTP_REFERER'],"transfer.form.php")) {
          $edit_form = false;
       }
 
       $this->initForm($ID, $options);
 
       $params = array();
-      if (!Session::haveRight("transfer","w")) {
+      if (!Session::haveRightsOr("transfer", array(CREATE, UPDATE, PURGE))) {
          $params['readonly'] = true;
       }
 
       if ($edit_form) {
-         $this->showTabs($options);
          $this->showFormHeader($options);
 
       } else {
@@ -3162,7 +3167,6 @@ class Transfer extends CommonDBTM {
 
       if ($edit_form) {
          $this->showFormButtons($options);
-         $this->addDivForTabs();
       } else {
          echo "</table></div>";
          Html::closeForm();
@@ -3247,6 +3251,7 @@ class Transfer extends CommonDBTM {
          _e('No selected element or badly defined operation');
       }
    }
+
 
 }
 ?>

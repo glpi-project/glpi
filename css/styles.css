@@ -37,7 +37,7 @@ body {
    font-size: 12px;
    margin: 0;
    padding: 0;
-   background:  #dfdfdf repeat-x;
+   background:  #f8f7f3 repeat-x;
    
 }
 
@@ -97,6 +97,16 @@ sup {
 
 .right {
    text-align:right;
+}
+
+.floatright {
+   position: relative;
+   float: right;
+}
+
+.floatleft {
+   position: relative;
+   float: left;
 }
 
 .center-h {
@@ -184,6 +194,9 @@ hr {
    cursor:pointer;
  }
 
+.invisible {
+   display: none;
+}
 
 /* ################--------------- Tabs ---------------#################### */
 
@@ -199,11 +212,11 @@ hr {
 
 #page {
    /*margin: 0 auto; text-align:center;*/
-   margin: 25px 10px;
+  /* margin: 25px 10px;*/
    background: #FFFFFF  repeat-x top left;
-   -moz-border-radius: 8px;
-   -webkit-border-radius: 8px;
-   border-radius: 8px;
+   -moz-border-radius: 0 0 8px 8px;
+   -webkit-border-radius: 0 0 8px 8px;
+   border-radius: 0 0 8px 8px;
    -moz-box-shadow: 0px 7px 10px #4D4D4D;
    -webkit-box-shadow: 0px 7px 10px #4D4D4D;
    box-shadow: 0px 7px 10px #4D4D4D;
@@ -217,9 +230,10 @@ hr {
    padding:0; 
 }
 
-#page {
+/*#page {
    margin-top:15px;
 }
+* */
 
 
 /* ################--------------- form ---------------#################### */
@@ -235,10 +249,10 @@ option {
 
 select {
    font-size: 11px;
-   border: 1px solid #888888;
    color: black;
    background-color: white;
    line-height: 19px; /* do not set height because using multiple select*/
+  border: 1px solid #bbb;
 }
 
 textarea, input {
@@ -246,12 +260,10 @@ textarea, input {
    color: black;
    border: 1px solid #888888;
    font-size: 11px;
-   
 }
 
 input {
    height: 17px;
-   padding: 2px;
    vertical-align: middle;
 }
 
@@ -434,22 +446,19 @@ td { }
 
 .tab_cadre_central {
    margin: 0 auto;
-   -moz-border-radius: 4px;
-   -webkit-border-radius: 4px;
-   -o-border-radius: 4px;
-   border: 1px solid #bbbbbb;
+   /*border: 1px solid #bbbbbb;*/
    z-index:1;
    text-align: left;
    font-size: 11px;
    width:950px;
    /* background-color: #FFF4DF; */
-   background : url("../pics/fond-central.png") repeat-x top right ;
+  /* background : url("../pics/fond-central.png") repeat-x top right ;
    -moz-border-radius: 5px;
    -webkit-border-radius: 5px;
    border-radius: 5px;
    -moz-box-shadow: 0px 2px 5px #666;
    -webkit-box-shadow: 0px 2px 5px #666;
-   box-shadow: 0px 2px 5px #666;
+   box-shadow: 0px 2px 5px #666;*/
 }
 
 .tab_cadre_navigation {
@@ -534,13 +543,29 @@ td { }
    padding: 3px 5px;
 }
 
-.tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover {
-   background-color: #FFF4DF;
-}
+/* .tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover { */
+/*    background-color: #FFF4DF; */
+/*  } */
 
 .tab_cadrehov_pointer tr:hover {
    cursor: pointer;
-   background-color: #FFF4DF;
+/*    background-color: #FFF4DF; */
+}
+
+/* Table Hover Effects */
+.tab_cadrehov td.columnHead, .tab_cadrehov tr.rowHover, .tab_cadrehov td.columnHover,
+.tab_cadrehov_pointer td.columnHead, .tab_cadrehov_pointer tr.rowHover, .tab_cadrehov_pointer td.columnHover,
+.tab_cadre_fixehov td.columnHead, .tab_cadre_fixehov tr.rowHover, .tab_cadre_fixehov td.columnHover{
+   background:#E1D39E;
+   opacity: 0.5;
+   filter : alpha(opacity=10);
+}
+.tab_cadrehov tr.rowHover td.columnHead, .tab_cadrehov td.hover,
+.tab_cadrehov_pointer tr.rowHover td.columnHead, .tab_cadrehov_pointer td.hover,
+.tab_cadre_fixehov tr.rowHover td.columnHead, .tab_cadre_fixehov td.hover {
+   background:#E1D39E;
+   opacity: 0.5;
+   filter : alpha(opacity=10);
 }
 
 .tab_check {
@@ -661,6 +686,24 @@ td.nopadding {
    padding:0;
 }
 
+
+
+td.rotate {
+  -moz-transform: rotate(-70.0deg);  /* FF3.5+ */
+  -o-transform: rotate(-70.0deg);  /* Opera 10.5 */
+  -webkit-transform: rotate(-70.0deg);  /* Saf3.1+, Chrome */
+  -ms-transform:rotate(-70deg); /* IE 9 */
+  width: 10%;
+  height: 80px;
+  <!--[if lte IE 7]>
+   filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
+  <![endif]-->
+  <!--[if lte IE 8]>
+   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
+  <![endif]-->
+  
+}
+
 /* ################--------------- Pager  ---------------#################### */
 
 .tab_cadre_pager {
@@ -692,30 +735,11 @@ td.nopadding {
 }
 
 
-
-
-
-/* ################--------------- Autocompletion  ---------------#################### */
-
-ul.autocomp {
-   list-style-type: none;
-   margin:0;
-   margin-left:3px;
-   padding:3px;
-   text-align:left;
+.navigationheader {
+   margin-left: 170px;
+   float: center;
 }
 
-ul.autocomp li.selected { 
-   background-color: #FFF6CF; 
-}
-
-li.auto_comp {
-   list-style-type: none;
-   display:block;
-   margin:0;
-   padding:2px;
-   height:16px;
-}
 
 
 
@@ -764,6 +788,66 @@ li.auto_comp {
 
 
 
+/* ################--------------- User Picture ---------------#################### */
+.tooltip {
+   font-size: 11px !important;
+}
+.tooltip:contains(img) {
+   white-space: nowrap;
+   height: 100px !important;
+   border:10px solid red;
+}
+
+.tooltip_picture_border {
+   padding:2px;
+   border-radius: 51px;
+   border: 5px inset #D0D99D;
+   _border: 3px solid #D0D99D;
+   width:72px;
+   height:72px;
+   position: absolute;
+}  
+.tooltip_picture {
+   width:71px;
+   height:71px;
+   border-radius:50px;
+}
+.tooltip_text {
+   margin-left:90px;
+   min-height: 85px;
+}
+
+.user_picture_border {
+   padding:2px;
+   border-radius: 6px;
+   border: 5px inset #D0D99D;
+   width:232px;
+   height:232px;
+   margin-right:5px;
+   background-color: #FFF
+}
+.user_picture {
+   margin: 0 auto;
+   width:230px;
+   height:230px;
+   border-radius: 5px;
+}
+
+.user_picture_border_small {
+   padding:2px;
+   border-radius: 6px;
+   border: 3px inset #D0D99D;
+   width:72px;
+   height:72px;
+   margin-right:5px;
+   background-color: #FFF
+}
+.user_picture_small {
+   margin: 0 auto;
+   width:71px;
+   height:71px;
+   border-radius: 5px;
+}
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
 /* 2 space */
@@ -889,6 +973,55 @@ li.auto_comp {
    list-style-type: decimal;
 }
 
+
+#kbanswer p {
+   margin: 1.12em 0
+}
+
+#kbanswer h1 {
+   font-size: 2em;
+   margin: .67em 0
+}
+
+#kbanswer h2 {
+   font-size: 1.5em;
+   margin: .75em 0;
+   font-weight: bolder;
+}
+
+#kbanswer h3 {
+   font-size: 1.17em;
+   margin: .83em 0;
+   font-weight: bolder;
+}
+
+#kbanswer h4 {
+   margin: 1.12em 0;
+   font-weight: bolder;
+}
+
+#kbanswer h5 {
+   font-size: .83em;
+   margin: 1.5em 0;
+   font-weight: bolder;
+}
+
+#kbanswer h6 {
+   font-size: .75em;
+   margin: 1.67em 0;
+   font-weight: bolder;
+}
+
+#kbanswer address {
+   font-style: italic;
+}
+
+#kbanswer pre {
+   font-family: monospace;
+   white-space: pre;
+}
+
+
 .tdkb_result {
    vertical-align:top;
    text-align:left;
@@ -1009,16 +1142,24 @@ a.icon_nav_move:hover img {
 /* ################--------------- Menu navigation  ---------------#################### */
 
 div#menu_navigate {
-   margin: 0 auto;
+   margin: auto;
    z-index:1;
    font-size: 10px;
-   width:950px;
+   width:900px;
 }
 
 div#menu_navigate li {
    margin-left:2px;
    display:block;
    float:left;
+   padding:2px;
+}
+
+div#menu_navigate li.info {
+   margin-left:2px;
+   display:block;
+   float:left;
+   font-size: 12px;
    padding:2px;
 }
 
@@ -1196,7 +1337,6 @@ div#tabcontent {
    background: url(../pics/login_logo_glpi.png)  no-repeat; 
 }
 
-
 #boxlogin {
    position:relative;
    margin:auto;
@@ -1330,14 +1470,14 @@ div#tabcontent {
 
 div#header {
    background: #f1f4e3 url("../pics/fd_nav1.png") 0 0 repeat-x;
-   margin: 0px 10px 10px 10px;
+  /* margin: 0px 10px 10px 10px;
    -moz-border-radius: 0px 0px 8px 8px;
    -webkit-border-radius: 0px 0px 8px 8px;
    border-radius: 0px 0px 8px 8px;
    -moz-box-shadow: 0px 7px 10px #4D4D4D;
    -webkit-box-shadow: 0px 7px 10px #4D4D4D;
    box-shadow: 0px 7px 10px #4D4D4D;
-   padding-bottom: 8px;
+   padding-bottom: 8px;*/
 }
 
 div#c_preference {
@@ -1640,10 +1780,10 @@ div#c_ssmenu2  a.here {
 
 
 div#show_all_menu {
-   display: none;
-   position: absolute;
-   top:20px; 
-   left:5px;
+/*   display: none;*/
+/*   position: absolute;*/
+/*   top:20px;*/ 
+/*   left:5px;*/
    border: 1px solid  #CC9900;
    background: url("../pics/fd_hoverlink.png") 0 0 repeat;
    -moz-border-radius: 5px;
@@ -1652,10 +1792,10 @@ div#show_all_menu {
    -moz-box-shadow: 0px 0px 4px #000000;
    -webkit-box-shadow: 0px 0px 4px #000000;
    box-shadow: 0px 0px 4px #000000;
-   padding: 5px;
+/*   padding: 5px;*/
    font-size: 11px;
    text-align: left;
-   z-index:1000;
+/*   z-index:1000;*/
 }
 
 
@@ -1691,6 +1831,8 @@ div#show_all_menu .tab_bg_1 a:hover {
 /* ################--------------- Footer  ---------------#################### */
 
 #footer {
+   margin-top:10px;
+   margin-bottom:10px;
    background: url("../pics/fd_footer.png") 0 0 repeat-x;
    font-size: 9px;	
    color :#757575;
@@ -1750,7 +1892,15 @@ div#show_all_menu .tab_bg_1 a:hover {
    z-index: 100;
 }
 
-#debug-float a {
+#maintenance-float {
+   top: 0px;
+   left: 280px;
+   position: absolute;
+   z-index: 100;
+}
+
+
+#debug-float a, #maintenance-float a {
    border-top: 1px solid #cecece;
    border-bottom: 2px solid #4a4a4a;
    border-left: 1px solid #cecece;
@@ -1766,7 +1916,7 @@ div#show_all_menu .tab_bg_1 a:hover {
    color:red;
 }
 
-#debug-float a:hover {
+#debug-float a:hover, #maintenance-float a:hover {
    background-color: #fc3;
    border-bottom: 2px solid #36f;
 }
@@ -1781,9 +1931,9 @@ div#show_all_menu .tab_bg_1 a:hover {
 }
 
 #debug h1, #debugajax h1 {
-   font-size:14px; 
+   font-size:18px; 
    text-align:center; 
-   background-color:#efefe7;
+   /*background-color:#efefe7;*/
    padding: 5px;
 }
 
@@ -1798,49 +1948,12 @@ div#show_all_menu .tab_bg_1 a:hover {
    margin:0;
 }
 
-#kbanswer p {
-   margin: 1.12em 0
+
+/* Restore default behavior : drop user agent CSS*/
+:focus {
+  outline-width: 0;
 }
 
-#kbanswer h1 {
-   font-size: 2em;
-   margin: .67em 0
-}
-
-#kbanswer h2 {
-   font-size: 1.5em;
-   margin: .75em 0;
-   font-weight: bolder;
-}
-
-#kbanswer h3 {
-   font-size: 1.17em;
-   margin: .83em 0;
-   font-weight: bolder;
-}
-
-#kbanswer h4 {
-   margin: 1.12em 0;
-   font-weight: bolder;
-}
-
-#kbanswer h5 {
-   font-size: .83em;
-   margin: 1.5em 0;
-   font-weight: bolder;
-}
-
-#kbanswer h6 {
-   font-size: .75em;
-   margin: 1.67em 0;
-   font-weight: bolder;
-}
-
-#kbanswer address {
-   font-style: italic;
-}
-
-#kbanswer pre {
-   font-family: monospace;
-   white-space: pre;
+.nostyle:focus {
+  outline-width: 5px;
 }

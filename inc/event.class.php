@@ -28,15 +28,20 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Event class
+/**
+ * Event Class
+**/
 class Event extends CommonDBTM {
+
+   static $rightname = 'logs';
+
 
 
    static function getTypeName($nb=0) {
@@ -155,9 +160,13 @@ class Event extends CommonDBTM {
                break;
 
             case "infocom" :
-               echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
-                     "/front/infocom.form.php?id=".$items_id."','infocoms','location=infocoms,width=".
-                     "1000,height=400,scrollbars=no')\">".$items_id."</a>";
+               $rand = mt_rand();
+               echo " <a href='#' onClick=\"".Html::jsGetElementbyID('infocom'.$rand).".dialog('open');\">$items_id</a>";
+               Ajax::createIframeModalWindow('infocom'.$rand,
+                                             $CFG_GLPI["root_doc"]."/front/infocom.form.php".
+                                                "?id=".$items_id,
+                                             array('height' => 600));
+                                       
                break;
 
             case "devices" :
@@ -211,7 +220,6 @@ class Event extends CommonDBTM {
                 WHERE `message` LIKE '".$usersearch."%'
                 ORDER BY `date` DESC
                 LIMIT 0,".intval($_SESSION['glpilist_limit']);
-
       // Get results
       $result = $DB->query($query);
 

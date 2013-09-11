@@ -84,7 +84,25 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $itemtype = $this->getItilObjectItemType();
       $item     = new $itemtype();
-      if (!$item->can($this->getField($item->getForeignKeyField()),'r')) {
+      if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
+         return false;
+      }
+      return true;
+   }
+
+
+   /**
+    * can update the parent ITIL Object ?
+    *
+    * @since version 0.85
+    *
+    * @return boolean
+   **/
+   function canUpdateITILItem() {
+
+      $itemtype = $this->getItilObjectItemType();
+      $item     = new $itemtype();
+      if (!$item->can($this->getField($item->getForeignKeyField()), UPDATE)) {
          return false;
       }
       return true;
@@ -119,7 +137,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             return Planning::getState($values[$field]);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
-   }   
+   }
 
    /**
     * @since version 0.84
@@ -213,10 +231,17 @@ abstract class CommonITILTask  extends CommonDBTM {
           && ($uid = Session::getLoginUserID())) { // Change from task form
          $input["users_id"] = $uid;
       }
+
+      $itemtype      = $this->getItilObjectItemType();
+      $input["_job"] = new $itemtype();
+
+      if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
+         return false;
+      }
+
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
          $input["end"]           = $input['plan']["end"];
-         $input["users_id_tech"] = $input['plan']["users_id"];
 
          $timestart              = strtotime($input["begin"]);
          $timeend                = strtotime($input["end"]);
@@ -231,6 +256,22 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"],
                                        array($this->getType() => array($input["id"])));
+
+         $calendars_id = Entity::getUsedConfig('calendars_id', $input["_job"]->fields['entities_id']);
+         $calendar     = new Calendar();
+
+         // Using calendar
+         if (($calendars_id > 0)
+             && $calendar->getFromDB($calendars_id)) {
+            if (!$calendar->isAWorkingHour(strtotime($input["begin"]))) {
+               Session::addMessageAfterRedirect(__('Begin of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+            if (!$calendar->isAWorkingHour(strtotime($input["end"]))) {
+               Session::addMessageAfterRedirect(__('End of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+         }
       }
 
       return $input;
@@ -299,7 +340,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
          $input["end"]           = $input['plan']["end"];
-         $input["users_id_tech"] = $input['plan']["users_id"];
 
          $timestart              = strtotime($input["begin"]);
          $timeend                = strtotime($input["end"]);
@@ -354,11 +394,27 @@ abstract class CommonITILTask  extends CommonDBTM {
          Planning::checkAlreadyPlanned($this->fields["users_id_tech"], $this->fields["begin"],
                                        $this->fields["end"],
                                        array($this->getType() => array($this->fields["id"])));
+
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->input["_job"]->fields['entities_id']);
+         $calendar     = new Calendar();
+
+         // Using calendar
+         if (($calendars_id > 0)
+             && $calendar->getFromDB($calendars_id)) {
+            if (!$calendar->isAWorkingHour(strtotime($this->fields["begin"]))) {
+               Session::addMessageAfterRedirect(__('Begin of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+            if (!$calendar->isAWorkingHour(strtotime($this->fields["end"]))) {
+               Session::addMessageAfterRedirect(__('End of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+         }
       }
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
 
       $this->input["_job"]->updateDateMod($this->input[$this->input["_job"]->getForeignKeyField()]);
 
@@ -641,7 +697,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                      $interv[$key]['itemtype']  = $itemtype;
                      $interv[$data["begin"]."$$$".$i]["url"]
                                                 = $CFG_GLPI["url_base"]."/index.php?redirect=".
-                                                   strtolower($parentitemtype)."_".
+                                                   $parentitemtype."_".
                                                    $item->fields[$parentitem->getForeignKeyField()];
 
                      $interv[$key][$item->getForeignKeyField()] = $data["id"];
@@ -835,7 +891,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate=false) {
       global $DB, $CFG_GLPI;
 
-      $canedit = $this->can($this->fields['id'],'w');
+      $canedit = $this->canEdit($this->fields['id']);
 
       echo "<tr class='tab_bg_";
       if ($this->maybePrivate()
@@ -898,7 +954,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          _e('None');
       } else {
-         echo "<table>";
+         echo "<table width='100%'>";
          if (isset($this->fields["state"])) {
             echo "<tr><td>".__('State')."</td><td>";
             echo Planning::getState($this->fields["state"])."</td></tr>";
@@ -940,34 +996,35 @@ abstract class CommonITILTask  extends CommonDBTM {
       $fkfield = $item->getForeignKeyField();
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
          $options[$fkfield] = $item->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
       }
 
-      $canplan = Session::haveRight("show_planning", "1");
+      $canplan = Session::haveRight("planning", Planning::READMY);
 
       $this->showFormHeader($options);
 
-      $rowspan = 5 ;
+      $rowspan = 3 ;
       if ($this->maybePrivate()) {
          $rowspan++;
       }
-      // Recall
-      if (!empty($this->fields["begin"])) {
+      if (isset($this->fields["state"])) {
          $rowspan++;
       }
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='$rowspan' class='middle right'>".__('Description')."</td>";
+      echo "<td rowspan='$rowspan' class='middle'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
            "<textarea name='content' cols='50' rows='$rowspan'>".$this->fields["content"].
            "</textarea></td>";
       if ($ID > 0) {
          echo "<td>".__('Date')."</td>";
          echo "<td>";
-         Html::showDateTimeFormItem("date", $this->fields["date"], 1, false);
+         Html::showDateTimeField("date", array('value'      => $this->fields["date"],
+                                               'timestep'   => 1,
+                                               'maybeempty' => false));
       } else {
          echo "<td colspan='2'>&nbsp;";
       }
@@ -1014,23 +1071,41 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('By')."</td>";
+      echo "<td class='center'>";
+      $rand_user          = mt_rand();
+      $params             = array('name'   => "users_id_tech",
+                                  'value'  => $this->fields["users_id_tech"],
+                                  'right'  => "own_ticket",
+                                  'rand'   => $rand_user,
+                                  'entity' => $item->fields["entities_id"]);
+
+      $params['toupdate'] = array('value_fieldname'
+                                              => 'users_id',
+                                  'to_update' => "user_available$rand_user",
+                                  'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
+
+
+      User::dropdown($params);
+      echo "</td>\n";
       echo "<td>".__('Planning')."</td>";
       echo "<td>";
 
       if (!empty($this->fields["begin"])) {
 
-         if (Session::haveRight('show_planning', 1)) {
+         if (Session::haveRight('planning', Planning::READMY)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan".$ID."() {\n";
-            echo "Ext.get('plan').setDisplayed('none');";
-            $params = array('form'     => 'followups',
-                            'users_id' => $this->fields["users_id_tech"],
-                            'id'       => $this->fields["id"],
-                            'begin'    => $this->fields["begin"],
-                            'end'      => $this->fields["end"],
-                            'entity'   => $item->fields["entities_id"],
-                            'itemtype' => $this->getType(),
-                            'items_id' => $this->getID());
+            echo Html::jsHide('plan');
+            $params = array('form'      => 'followups',
+                            'users_id'  => $this->fields["users_id_tech"],
+                            'id'        => $this->fields["id"],
+                            'begin'     => $this->fields["begin"],
+                            'end'       => $this->fields["end"],
+                            'rand_user' => $rand_user,
+                            'entity'    => $item->fields["entities_id"],
+                            'itemtype'  => $this->getType(),
+                            'items_id'  => $this->getID());
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php",
                                    $params);
             echo "}";
@@ -1046,20 +1121,20 @@ abstract class CommonITILTask  extends CommonDBTM {
                 Html::convDateTime($this->fields["end"]));
          echo "<br>".getUserName($this->fields["users_id_tech"]);
 
-         if (Session::haveRight('show_planning', 1)) {
+         if (Session::haveRight('planning', Planning::READMY)) {
             echo "</span>";
             echo "</div>\n";
             echo "<div id='viewplan'></div>\n";
          }
 
       } else {
-         if (Session::haveRight('show_planning', 1)) {
+         if (Session::haveRight('planning', Planning::READMY)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlanUpdate() {\n";
-            echo "Ext.get('plan').setDisplayed('none');";
+            echo Html::jsHide('plan');
             $params = array('form'     => 'followups',
-                            'users_id' => Session::getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"],
+                            'rand_user' => $rand_user,
                             'itemtype' => $this->getType(),
                             'items_id' => $this->getID());
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
@@ -1081,7 +1156,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (!empty($this->fields["begin"])
           && PlanningRecall::isAvailable()) {
 
-         echo "<tr class='tab_bg_1'><td>"._x('Planning','Reminder')."</td><td>";
+         echo "<tr class='tab_bg_1'><td>"._x('Planning','Reminder')."</td><td class='center'>";
          PlanningRecall::dropdown(array('itemtype' => $this->getType(),
                                         'items_id' => $this->getID()));
          echo "</td></tr>";
@@ -1111,7 +1186,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $showprivate = $this->canViewPrivates();
       $caneditall  = $this->canEditAll();
       $tmp         = array($item->getForeignKeyField() => $tID);
-      $canadd      = $this->can(-1, 'w', $tmp);
+      $canadd      = $this->can(-1, CREATE, $tmp);
 
       $RESTRICT = "";
       if ($this->maybePrivate() && !$showprivate) {

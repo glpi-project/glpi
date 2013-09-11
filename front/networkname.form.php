@@ -36,28 +36,33 @@ include ('../inc/includes.php');
 $nn = new NetworkName();
 
 if (isset($_POST["add"])) {
-   $nn->check(-1, 'w', $_POST);
-   $newID = $nn->add($_POST);
-   Event::log($newID, "networkname", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
+   $nn->check(-1, CREATE, $_POST);
+
+   if ($newID = $nn->add($_POST)) {
+      Event::log($newID, "networkname", 5, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($nn->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $nn->check($_POST['id'], 'd');
-   $nn->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $nn->check($_POST['id'], PURGE);
+   $nn->delete($_POST, 1);
    Event::log($_POST["id"], "networkname", 5, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    if ($node = getItemForItemtype($nn->fields["itemtype"])) {
-      if ($node->can($nn->fields["items_id"], 'r')) {
+      if ($node->can($nn->fields["items_id"], READ)) {
          Html::redirect($node->getLinkURL());
       }
    }
    $nn->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $nn->check($_POST['id'], 'w');
+   $nn->check($_POST['id'], UPDATE);
    $nn->update($_POST);
    Event::log($_POST["id"], "networkname", 4, "inventory",
               //TRANS: %s is the user login
@@ -65,24 +70,24 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unaffect"])) {
-   $nn->check($_POST['id'], 'w');
+   $nn->check($_POST['id'], UPDATE);
    $nn->unaffectAddressByID($_POST['id']);
    Event::log($_POST["id"], "networkname", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    if ($node = getItemForItemtype($nn->fields["itemtype"])) {
-      if ($node->can($nn->fields["items_id"], 'r')) {
+      if ($node->can($nn->fields["items_id"], READ)) {
          Html::redirect($node->getLinkURL());
       }
    }
    $nn->redirectToList();
 
 } else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
-   $nn->check($_POST['addressID'],'w');
+   $nn->check($_POST['addressID'], UPDATE);
 
    if ((!empty($_POST['itemtype'])) && (!empty($_POST['items_id']))) {
       if ($node = getItemForItemtype($_POST['itemtype'])) {
-         $node->check($_POST['items_id'],'w');
+         $node->check($_POST['items_id'], UPDATE);
       }
       NetworkName::affectAddress($_POST['addressID'], $_POST['items_id'], $_POST['itemtype']);
       Event::log(0, "networkport", 5, "inventory",
@@ -104,11 +109,11 @@ if (isset($_POST["add"])) {
       $_GET["itemtype"] = "";
    }
 
-   Session::checkRight("internet","w");
-   Html::header(NetworkName::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'dropdowns',
-                'NetworkName');
+   Session::checkRight("internet", UPDATE);
+   Html::header(NetworkName::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'commondropdown',
+               'NetworkName');
 
-   $nn->showForm($_GET["id"], $_GET);
+   $nn->display($_GET);
    Html::footer();
 }
 ?>

@@ -92,6 +92,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canCreate() {
+
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 
@@ -100,6 +104,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canView() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
+         return false;
+      }
       return static::canChild('canView');
    }
 
@@ -108,6 +115,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canUpdate() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 
@@ -116,6 +126,20 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canDelete() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
+         return false;
+      }
+      return static::canChild('canUpdate');
+   }
+
+
+   /**
+    * @since version 0.85
+    **/
+   static function canPurge() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 
@@ -672,11 +696,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             }
             $canedit = $item->canUpdate();
          } else {
-            if (!$item->can($items_id,'r')) {
+            if (!$item->can($items_id, READ)) {
                return false;
             }
 
-            $canedit = $item->can($items_id,"w");
+            $canedit = $item->can($items_id, UPDATE);
          }
       }
 
@@ -688,8 +712,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
          echo "&nbsp;<script type='text/javascript'>var $child_count_js_var=1; </script>";
          echo "<span id='add".$lower_name."button'>".
               "<img title=\"".__s('Add')."\" alt=\"". __s('Add').
-                "\" onClick=\"var row = Ext.get('$div_id');
-                             row.createChild('<br>" .
+                "\" onClick=\"var row = ".Html::jsGetElementByID($div_id).";
+                             row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
                             $child_count_js_var++;\"
                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
@@ -725,11 +749,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             }
             $canedit = $item->canUpdate();
          } else {
-            if (!$item->can($items_id,'r')) {
+            if (!$item->can($items_id, READ)) {
                return false;
             }
 
-            $canedit = $item->can($items_id,"w");
+            $canedit = $item->can($items_id, UPDATE);
          }
       }
 
@@ -781,5 +805,26 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
    }
 
+
+   /**
+    * Affect a CommonDBChild to a given item. By default, unaffect it
+    *
+    * @param $id          integer   the id of the CommonDBChild to affect
+    * @param $items_id    integer   the id of the new item (default 0)
+    * @param $itemtype    string    the type of the new item (default '')
+    *
+    * @return boolean : true on success
+   **/
+   function affectChild($id, $items_id=0, $itemtype='') {
+
+      $input = array(static::getIndexName() => $id,
+                     static::$items_id      => $items_id);
+
+      if (preg_match('/^itemtype/', static::$itemtype)) {
+         $input[static::$itemtype] = $itemtype;
+      }
+
+      return $this->update($input);
+   }
 }
 ?>

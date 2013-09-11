@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 $notificationmail = new NotificationMailSetting();
 
 if (!empty($_POST["test_smtp_send"])) {
@@ -46,9 +46,9 @@ if (!empty($_POST["test_smtp_send"])) {
    Html::back();
 }
 
-Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing", "config");
+Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification", "config");
 
-$notificationmail->showForm(1);
+$notificationmail->display(array('id' => 1));
 
 Html::footer();
 ?>

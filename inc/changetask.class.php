@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -47,23 +47,17 @@ class ChangeTask extends CommonITILTask {
 
 
    static function canCreate() {
-
-      return (Session::haveRight('show_my_change', '1')
-              || Session::haveRight('edit_all_change', '1'));
+      return Session::haveRight('change', UPDATE);
    }
 
 
    static function canView() {
-
-      return (Session::haveRight('show_all_change', 1)
-              || Session::haveRight('show_my_change', 1));
+      return Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
    }
 
 
    static function canUpdate() {
-
-      return (Session::haveRight('edit_all_change', 1)
-             || Session::haveRight('show_my_change', 1));
+      return Session::haveRight('change', UPDATE);
    }
 
 
@@ -73,8 +67,8 @@ class ChangeTask extends CommonITILTask {
 
 
    function canEditAll() {
-      return Session::haveRight('edit_all_change', 1);
-   }
+      return Session::haveRightsOr('change', array(CREATE, UPDATE, DELETE, PURGE));
+         }
 
 
    /**
@@ -101,8 +95,8 @@ class ChangeTask extends CommonITILTask {
       $change = new Change();
 
       if ($change->getFromDB($this->fields['changes_id'])) {
-         return (Session::haveRight("edit_all_change", "1")
-                 || (Session::haveRight("show_my_change", "1")
+         return (Session::haveRight('change', UPDATE)
+                 || (Session::haveRight('change', Change::READMY)
                      && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
                              && $change->haveAGroup(CommonITILActor::ASSIGN,
@@ -125,7 +119,7 @@ class ChangeTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('edit_all_change', 1)) {
+          && !Session::haveRight('change', UPDATE)) {
          return false;
       }
 
@@ -134,11 +128,11 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to delete the current task ?
+    * Is the current user have right to purge the current task ?
     *
     * @return boolean
    **/
-   function canDeleteItem() {
+   function canPurgeItem() {
       return $this->canUpdateItem();
    }
 

@@ -33,20 +33,20 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reservation_helpdesk", "1");
+Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
-   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "reservation");
+   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
 if (isset($_POST["update"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-   if (Session::haveRight("reservation_central","w")
+   if (Session::haveRight("reservation", UPDATE)
        || (Session::getLoginUserID() === $_POST["users_id"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item']   = key($_POST["items"]);
@@ -58,9 +58,9 @@ if (isset($_POST["update"])) {
       }
    }
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $reservationitems_id = key($_POST["items"]);
-   if ($rr->delete($_POST)) {
+   if ($rr->delete($_POST, 1)) {
       Event::log($_POST["id"], "reservation", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
@@ -110,7 +110,7 @@ if (isset($_POST["update"])) {
             $input['end']      = $end;
             $input['users_id'] = $_POST['users_id'];
 
-            if (Session::haveRight("reservation_central","w")
+            if (Session::haveRight("reservation", UPDATE)
                 || (Session::getLoginUserID() === $input["users_id"])) {
                unset($rr->fields["id"]);
                if ($newID = $rr->add($input)) {
@@ -184,15 +184,15 @@ if (isset($_POST["update"])) {
 //    }
 
 } else if (isset($_GET["id"])) {
-   if (!isset($_GET['date'])) {
-      $_GET['date'] = date('Y-m-d');
+   if (!isset($_GET['begin'])) {
+      $_GET['begin'] = date('Y-m-d H:00:00');
    }
    if (empty($_GET["id"])
        && (!isset($_GET['item']) || (count($_GET['item']) == 0 ))) {
       Html::back();
    }
    if (!empty($_GET["id"])
-       || (isset($_GET['item']) && isset($_GET['date']))) {
+       || (isset($_GET['item']) && isset($_GET['begin']))) {
       $rr->showForm($_GET['id'], $_GET);
    }
 }

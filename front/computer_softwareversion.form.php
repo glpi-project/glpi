@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "w");
+Session::checkRight("software", UPDATE);
 $inst = new Computer_SoftwareVersion();
 
 // From Computer - Software tab (add form)
@@ -42,12 +42,13 @@ if (isset($_POST["add"])) {
    if (isset($_POST["computers_id"]) && $_POST["computers_id"]
        && isset($_POST["softwareversions_id"]) && $_POST["softwareversions_id"]) {
 
-      $inst->add(array('computers_id'        => $_POST["computers_id"],
-                       'softwareversions_id' => $_POST["softwareversions_id"]));
+      if ($newID = $inst->add(array('computers_id'        => $_POST["computers_id"],
+                                    'softwareversions_id' => $_POST["softwareversions_id"]))) {
 
-      Event::log($_POST["computers_id"], "computers", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s installs software'), $_SESSION["glpiname"]));
+         Event::log($_POST["computers_id"], "computers", 5, "inventory",
+                    //TRANS: %s is the user login
+                    sprintf(__('%s installs software'), $_SESSION["glpiname"]));
+      }
    }
    Html::back();
 

@@ -41,16 +41,89 @@ abstract class CommonDropdown extends CommonDBTM {
    // For delete operation (entity will overload this value)
    public $must_be_replace = false;
 
-   //Indicates if only the dropdown or the whole page is refreshed when a new dropdown value
-   //is added using popup window
-   public $refresh_page = false;
-
    //Menu & navigation
    public $first_level_menu  = "config";
-   public $second_level_menu = "dropdowns";
+   public $second_level_menu = "CommonDropdown";
    public $third_level_menu  = "";
 
    public $display_dropdowntitle  = true;
+
+   //This dropdown can be translated
+   public $can_be_translated = false;
+
+   static $rightname = 'dropdown';
+
+
+   /**
+    * @since version 0.85
+    *
+    * @param $nb
+   **/
+   static function getTypeName($nb=0) {
+      return _n('Dropdown', 'Dropdowns', $nb);
+   }
+
+
+   /**
+    * Is translation enabled for this itemtype
+    *
+    * @since 0.85
+    *
+    * @return true if translation is available, false otherwise
+   **/
+   function maybeTranslated () {
+      return $this->can_be_translated;
+   }
+
+
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuShorcut() {
+      return 'n';
+   }
+
+
+   /**
+    *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
+   **/
+   static function getMenuContent() {
+      global $CFG_GLPI;
+
+      $menu = array();
+      if (get_called_class() == 'CommonDropdown') {
+         $menu['title']             = static::getTypeName(2);
+         $menu['shortcut']          = 'n';
+         $menu['page']              = '/front/dropdown.php';
+         $menu['config']['default'] = '/front/dropdown.php';
+
+         $dps = Dropdown::getStandardDropdownItemTypes();
+         $menu['options'] = array();
+
+         foreach ($dps as $tab) {
+            foreach ($tab as $key => $val) {
+               if ($tmp = getItemForItemtype($key)) {
+                  $menu['options'][$key]['title']           = $val;
+                  $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
+                  $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                  if ($tmp->canCreate()) {
+                     $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
+                  }
+               }
+            }
+         }
+         if (count($menu['options'])) {
+            return $menu;
+         }
+      } else {
+         return parent::getMenuContent();
+      }
+      return false;
+   }
 
 
    /**
@@ -64,35 +137,16 @@ abstract class CommonDropdown extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       if ($this->dohistory) {
          $this->addStandardTab('Log',$ong, $options);
       }
 
+      if (DropdownTranslation::canBeTranslated($this)) {
+         $this->addStandardTab('DropdownTranslation',$ong, $options);
+      }
+
       return $ong;
-   }
-
-
-   /**
-    * Have I the right to "create" the Object
-    *
-    * MUST be overloaded for entity_dropdown
-    *
-    * @return booleen
-   **/
-   static function canCreate() {
-      return Session::haveRight('dropdown', 'w');
-   }
-
-
-   /**
-    * Have I the right to "view" the Object
-    *
-    * MUST be overloaded for entity_dropdown
-    *
-    * @return booleen
-   **/
-   static function canView() {
-      return Session::haveRight('dropdown', 'r');
    }
 
 
@@ -150,12 +204,11 @@ abstract class CommonDropdown extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1,'w');
+         $this->check(-1, CREATE);
       }
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
@@ -163,8 +216,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
-///    TODO MoYo : Why add this field ?
-//    echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
          // Awfull hack for CommonDevice where name is designation
          Html::autocompletionTextField($this, "designation");
@@ -186,6 +237,14 @@ abstract class CommonDropdown extends CommonDBTM {
             break;
          }
 
+         if (!isset($field['type'])) {
+            $field['type'] = '';
+         }
+
+         if ($field['name'] == 'header') {
+            echo "<tr class='tab_bg_1'><th colspan='2'>".$field['label']."</th></tr>";
+            continue;
+         }
 
          echo "<tr class='tab_bg_1'><td>".$field['label'];
          if (isset($field['comment']) && !empty($field['comment'])) {
@@ -193,9 +252,7 @@ abstract class CommonDropdown extends CommonDBTM {
             Html::showToolTip($field['comment']);
          }
          echo "</td><td>";
-         if (!isset($field['type'])) {
-            $field['type'] = '';
-         }
+
          switch ($field['type']) {
             case 'UserDropdown' :
                $param = array('name'   => $field['name'],
@@ -225,12 +282,21 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'textarea' :
-               echo "<textarea name='".$field['name']."' cols='40' rows='3'>".
+               $cols = 40;
+               $rows = 3;
+
+               if (isset($field['rows'])) {
+                  $rows = $field['rows'];
+               }
+               if (isset($field['cols'])) {
+                  $cols = $field['cols'];
+               }
+               echo "<textarea name='".$field['name']."' cols='$cols' rows='$rows'>".
                      $this->fields[$field['name']]."</textarea >";
                break;
 
             case 'integer' :
-               Dropdown::showInteger($field['name'], $this->fields[$field['name']]);
+               Dropdown::showNumber($field['name'], array('value' => $this->fields[$field['name']]));
                break;
 
             case 'timestamp' :
@@ -275,11 +341,12 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'date' :
-               Html::showDateFormItem($field['name'], $this->fields[$field['name']]);
+               Html::showDateField($field['name'], array('value' => $this->fields[$field['name']]));
                break;
 
             case 'datetime' :
-               Html::showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
+               Html::showDateTimeField($field['name'],
+                                       array('value' => $this->fields[$field['name']]));
                break;
 
             case 'password':
@@ -301,7 +368,6 @@ abstract class CommonDropdown extends CommonDBTM {
          $options['candel'] = false;
       }
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -317,106 +383,6 @@ abstract class CommonDropdown extends CommonDBTM {
          return false;
       }
       return true;
-   }
-
-
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-
-      if ($isadmin
-          &&  $this->maybeRecursive()
-          && (count($_SESSION['glpiactiveentities']) > 1)) {
-         $actions['merge'] = __('Transfer and merge');
-      }
-
-      return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case 'merge' :
-            echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Merge')."'>\n";
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-    **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case 'merge' :
-            $fk = $this->getForeignKeyField();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->can($key,'w')) {
-                     if ($this->getEntityID() == $_SESSION['glpiactive_entity']) {
-                        if ($this->update(array('id'           => $key,
-                                                'is_recursive' => 1))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $input2 = $this->fields;
-
-                        // Remove keys (and name, tree dropdown will use completename)
-                        if ($this instanceof CommonTreeDropdown) {
-                           unset($input2['id'], $input2['name'], $input2[$fk]);
-                        } else {
-                           unset($input2['id']);
-                        }
-                        // Change entity
-                        $input2['entities_id']  = $_SESSION['glpiactive_entity'];
-                        $input2['is_recursive'] = 1;
-                        $input2 = Toolbox::addslashes_deep($input2);
-                        // Import new
-                        if ($newid = $this->import($input2)) {
-
-                           // Delete old
-                           if ($newid > 0) {
-                              // delete with purge for dropdown with dustbin (Budget)
-                              $this->delete(array('id'        => $key,
-                                                '_replace_by' => $newid), 1);
-                           }
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     }
-                  } else {
-                     $res['noright']++;
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
@@ -550,8 +516,8 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";
-         echo "<input type='hidden' name='forcedelete' value='1'>";
-         echo "<input class='submit' type='submit' name='delete'
+         echo "<input type='hidden' name='forcepurge' value='1'>";
+         echo "<input class='submit' type='submit' name='purge'
                 value=\""._sx('button','Confirm')."\">";
          echo "</td>";
          echo "<td><input class='submit' type='submit' name='annuler'
@@ -711,13 +677,97 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function refreshParentInfos() {
+   /**
+    * @see CommonDBTM::getSpecificMassiveActions()
+    **/
+   function getSpecificMassiveActions($checkitem=NULL) {
 
-      if (!$this->refresh_page) {
-         Ajax::refreshDropdownPopupInMainWindow();
-      } else {
-         Ajax::refreshPopupMainWindow();
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
+      if ($isadmin
+          &&  $this->maybeRecursive()
+          && (count($_SESSION['glpiactiveentities']) > 1)) {
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Transfer and merge');
       }
+
+      return $actions;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'merge' :
+            echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
+            echo "<br><br>".Html::submit(_sx('button', 'Merge'), array('name' => 'massiveaction'));
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'merge' :
+            $fk = $item->getForeignKeyField();
+            foreach ($ids as $key) {
+               if ($item->can($key, UPDATE)) {
+                  if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                     if ($item->update(array('id'           => $key,
+                                             'is_recursive' => 1))) {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $input2 = $item->fields;
+
+                     // Remove keys (and name, tree dropdown will use completename)
+                     if ($item instanceof CommonTreeDropdown) {
+                        unset($input2['id'], $input2['name'], $input2[$fk]);
+                     } else {
+                        unset($input2['id']);
+                     }
+                     // Change entity
+                     $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                     $input2['is_recursive'] = 1;
+                     $input2 = Toolbox::addslashes_deep($input2);
+                     // Import new
+                     if ($newid = $item->import($input2)) {
+
+                        // Delete old
+                        if ($newid > 0) {
+                           // delete with purge for dropdown with dustbin (Budget)
+                           $item->delete(array('id'        => $key,
+                                               '_replace_by' => $newid), 1);
+                        }
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
 ?>

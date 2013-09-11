@@ -33,17 +33,18 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 
 $config = new Config();
 
 //Update CAS configuration
 if (isset($_POST["update"])) {
+   $_POST['id'] = 1;
    $config->update($_POST);
    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'],"config","extauth","others");
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", "others");
 
 Auth::showOtherAuthList();
 

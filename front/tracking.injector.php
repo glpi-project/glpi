@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 if (empty($_POST["_type"])
     || ($_POST["_type"] != "Helpdesk")
     || !$CFG_GLPI["use_anonymous_helpdesk"]) {
-   Session::checkRight("create_ticket", "1");
+   Session::checkRight("ticket", CREATE);
 }
 
 $track = new Ticket();
@@ -54,7 +54,7 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
 } else if ($_POST["_from_helpdesk"]) {
    Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
 } else {
-   Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "maintain", "tracking");
+   Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
 }
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {

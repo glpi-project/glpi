@@ -41,7 +41,7 @@ if (!isset($_GET["id"])) {
 
 $notificationtemplate = new NotificationTemplate();
 if (isset($_POST["add"])) {
-   $notificationtemplate->check(-1,'w',$_POST);
+   $notificationtemplate->check(-1, CREATE,$_POST);
 
    $newID = $notificationtemplate->add($_POST);
    Event::log($newID, "notificationtemplates", 4, "notification",
@@ -52,9 +52,9 @@ if (isset($_POST["add"])) {
    $url     .="?notificationtemplates_id=$newID";
    Html::redirect($url);
 
-} else if (isset($_POST["delete"])) {
-   $notificationtemplate->check($_POST["id"],'d');
-   $notificationtemplate->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $notificationtemplate->check($_POST["id"], PURGE);
+   $notificationtemplate->delete($_POST, 1);
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               //TRANS: %s is the user login
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $notificationtemplate->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $notificationtemplate->check($_POST["id"],'w');
+   $notificationtemplate->check($_POST["id"], UPDATE);
 
    $notificationtemplate->update($_POST);
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
@@ -71,9 +71,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
+   Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification",
                 "notificationtemplate");
-   $notificationtemplate->showForm($_GET["id"]);
+   $notificationtemplate->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

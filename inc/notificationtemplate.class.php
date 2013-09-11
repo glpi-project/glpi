@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class Notification
+/**
+ * NotificationTemplate Class
+**/
 class NotificationTemplate extends CommonDBTM {
 
    // From CommonDBTM
@@ -47,29 +49,36 @@ class NotificationTemplate extends CommonDBTM {
    //Store templates for each language
    public $templates_by_languages = array();
 
+   static $rightname = 'config';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Notification template', 'Notification templates', $nb);
    }
 
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function canPurge() {
+      return static::canUpdate();
+   }
+
+
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 
@@ -84,7 +93,7 @@ class NotificationTemplate extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Config::canUpdate()) {
          return false;
       }
 
@@ -101,7 +110,6 @@ class NotificationTemplate extends CommonDBTM {
          }
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -125,7 +133,6 @@ class NotificationTemplate extends CommonDBTM {
       echo "<textarea cols='60' rows='5' name='css' >".$this->fields["css"]."</textarea></td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 
@@ -208,9 +215,10 @@ class NotificationTemplate extends CommonDBTM {
       } else {
          $additionnaloption =  array();
       }
-      $tid = $language;
+      $tid  = $language;
       $tid .= serialize($additionnaloption);
-      $tid = sha1($tid);
+
+      $tid  = sha1($tid);
 
       if (!isset($this->templates_by_languages[$tid])) {
          //Switch to the desired language
@@ -239,16 +247,18 @@ class NotificationTemplate extends CommonDBTM {
 
             // Decode html chars to have clean text
             $template_datas['content_text']
-                       = Html::entity_decode_deep($template_datas['content_text']);
-            $save_data = $data;
-            $data      = Html::entity_decode_deep($data);
+                                       = Html::entity_decode_deep($template_datas['content_text']);
+            $save_data                 = $data;
+            $data                      = Html::entity_decode_deep($data);
 
             $template_datas['subject'] = Html::entity_decode_deep($template_datas['subject']);
             $this->signature           = Html::entity_decode_deep($this->signature);
 
-            $lang['subject']     = $target->getSubjectPrefix($event) .
-                                    self::process($template_datas['subject'], $data);
-            $lang['content_html'] = '';
+            $lang['subject']           = $target->getSubjectPrefix($event) .
+                                          self::process($template_datas['subject'], $data);
+            $lang['content_html']      = '';
+            $add_header                = $target->getContentHeader();
+            $add_footer                = $target->getContentFooter();
 
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
@@ -267,6 +277,15 @@ class NotificationTemplate extends CommonDBTM {
                $signature_html = Html::entities_deep($this->signature);
                $signature_html = Html::nl2br_deep($signature_html);
 
+               $template_datas['content_html'] = self::process($template_datas['content_html'],
+                                                               $data_html);
+               if (get_class($target->obj) == 'Ticket') {
+                  $Ticket = new Ticket();
+                  $template_datas['content_html']
+                          = $Ticket->convertContentForNotification($template_datas['content_html'],
+                                                                   $options['item']);
+               }
+
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
                         'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>".
@@ -278,17 +297,20 @@ class NotificationTemplate extends CommonDBTM {
                            ".$this->fields['css']."
                          </style>
                         </head>
-                        <body>".self::process($template_datas['content_html'], $data_html).
+                        <body>\n".$add_header."\n<br><br>".
+                        $template_datas['content_html'].
                      "<br><br>-- \n<br>".$signature_html.
                      //TRANS %s is the GLPI version
-                     "<br>$footer_string</body></html>";
+                     "<br>$footer_string".
+                     "<br><br>\n".$add_footer."<br><br>".
+                     "\n</body></html>";
             }
 
             $lang['content_text']
-                  = Html::clean(self::process($template_datas['content_text'],
+                  = $add_header."\n\n".Html::clean(self::process($template_datas['content_text'],
                                              $data)."\n\n-- \n".$this->signature.
                                              "\n".sprintf(__('Automatically generated by GLPI %s'),
-                                                          GLPI_VERSION));
+                                                          GLPI_VERSION))."\n\n".$add_footer;
             $this->templates_by_languages[$tid] = $lang;
          }
       }
@@ -310,7 +332,7 @@ class NotificationTemplate extends CommonDBTM {
       $output = "";
 
       // clean data for strtr
-      foreach ($data as $field=>$value) {
+      foreach ($data as $field => $value) {
          if (!is_array($value)) {
             $cleandata[$field] = $value;
          }
@@ -491,6 +513,11 @@ class NotificationTemplate extends CommonDBTM {
       $mailing_options['content_html'] = $template_data['content_html'];
       $mailing_options['content_text'] = $template_data['content_text'];
       $mailing_options['items_id']     = $target->obj->getField('id');
+      if ($target->obj->getType() == 'Ticket') {
+         if (isset($target->obj->documents)) {
+            $mailing_options['documents'] = $target->obj->documents;
+         }
+      }
 
       return $mailing_options;
    }

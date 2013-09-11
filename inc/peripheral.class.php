@@ -35,14 +35,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASS peripheral
 
+/**
+ * Peripheral Class
+**/
 class Peripheral extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
 
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
+   static $rightname                   = 'peripheral';
 
 
    /**
@@ -52,16 +56,6 @@ class Peripheral extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Device', 'Devices', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('peripheral', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('peripheral', 'r');
    }
 
 
@@ -78,6 +72,8 @@ class Peripheral extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -110,6 +106,10 @@ class Peripheral extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // TODO : manage templates for item_devices
+         // ADD Devices
+         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -147,8 +147,12 @@ class Peripheral extends CommonDBTM {
             }
          }
       }
+
       $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
+                                                  (!empty($this->input['keep_devices'])));
    }
 
 
@@ -167,7 +171,6 @@ class Peripheral extends CommonDBTM {
 
       $target       = $this->getFormURL();
       $withtemplate = $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -183,7 +186,9 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_peripheral`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -313,9 +318,7 @@ class Peripheral extends CommonDBTM {
       }
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='1'>";
-         _e('Automatic inventory');
-         echo "</td>";
+         echo "<td rowspan='1'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='1'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
@@ -323,7 +326,6 @@ class Peripheral extends CommonDBTM {
       echo "</tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -348,58 +350,14 @@ class Peripheral extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if ($isadmin) {
-         $actions['connect']    = _x('button', 'Connect');
-         $actions['disconnect'] = _x('button', 'Disconnect');
+
+      if (static::canUpdate()) {
+         Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+         MassiveAction::getAddTransferList($actions);
       }
-      if (Session::haveRight('transfer','r')
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
-      }
+
       return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "connect" :
-         case "disconnect" :
-            $ci = new Computer_Item();
-            return $ci->showSpecificMassiveActionsParameters($input);
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "connect" :
-         case "disconnect" :
-            $ci = new Computer_Item();
-            return $ci->doSpecificMassiveActions($input);
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
@@ -436,6 +394,7 @@ class Peripheral extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']        = 'dropdown';
+      $tab[31]['condition']      = "`is_visible_peripheral`='1'";
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';

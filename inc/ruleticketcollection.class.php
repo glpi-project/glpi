@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicketCollection extends RuleCollection {
 
    // From RuleCollection
-   static public $right                          = 'entity_rule_ticket';
+   static $rightname                             = 'rule_ticket';
    public $use_output_rule_process_as_next_input = true;
    public $menu_option                           = 'ticket';
 
@@ -52,11 +52,9 @@ class RuleTicketCollection extends RuleCollection {
 
    /**
     * @since version 0.84
-   **/
+    **/
    static function canView() {
-
-      return (Session::haveRight('entity_rule_ticket', 'r')
-              || Session::haveRight('rule_ticket', 'r'));
+      return Session::haveRightsOr(self::$rightname, array(READ, RuleTicket::PARENT));
    }
 
 
@@ -84,7 +82,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::showInheritedTab()
    **/
    function showInheritedTab() {
-      return (Session::haveRight('rule_ticket','r') && ($this->entity));
+      return (Session::haveRight(self::$rightname, RuleTicket::PARENT) && ($this->entity));
    }
 
 
@@ -92,7 +90,8 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::showChildrensTab()
    **/
    function showChildrensTab() {
-      return (Session::haveRight('entity_rule_ticket','r')
+
+      return (Session::haveRight(self::$rightname, READ)
               && (count($_SESSION['glpiactiveentities']) > 1));
    }
 

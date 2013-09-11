@@ -479,9 +479,9 @@ function update0803to083() {
    // Update Itemtype datas in tables
    $itemtype_tables = array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences");
 
-   $typestochange = array ('TicketSolutionTemplate' => 'SolutionTemplate',
-                           'TicketSolutionType'     => 'SolutionType',
-                           'TicketCategory'         => 'ITILCategory',);
+   $typestochange = array('TicketSolutionTemplate' => 'SolutionTemplate',
+                          'TicketSolutionType'     => 'SolutionType',
+                          'TicketCategory'         => 'ITILCategory',);
 
    foreach ($itemtype_tables as $table) {
       foreach ($typestochange as $key => $val) {

@@ -35,13 +35,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// NetworkPort class : There is two parts for a given NetworkPort. The first one, generic, only
-/// contains the link to the item, the name, and the type of network port. All specific
-/// characteristics are owned by the instanciation of the network port : NetworkPortInstantiation.
-/// Whenever a port is display (through its form or though item port listing), the NetworkPort class
-/// load its instantiation from the instantiation database to display the elements.
-/// Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
-/// port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
+
+/**
+ * NetworkPort Class
+ *
+ * There is two parts for a given NetworkPort.
+ * The first one, generic, only contains the link to the item, the name and the type of network port.
+ * All specific characteristics are owned by the instanciation of the network port : NetworkPortInstantiation.
+ * Whenever a port is display (through its form or though item port listing), the NetworkPort class
+ * load its instantiation from the instantiation database to display the elements.
+ * Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
+ * port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
+**/
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild
@@ -53,43 +58,13 @@ class NetworkPort extends CommonDBChild {
 
    static protected $forward_entity_to = array('NetworkName');
 
-
-   static function canCreate() {
-      return (Session::haveRight('networking','w')
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-      return (Session::haveRight('networking','r')
-              && parent::canView());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canUpdate() {
-
-      return (Session::haveRight('networking','w')
-              && parent::canUpdate());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canDelete() {
-
-      return (Session::haveRight('networking','w')
-              && parent::canDelete());
-   }
+   static $rightname                   = 'networking';
 
 
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
 
@@ -391,6 +366,7 @@ class NetworkPort extends CommonDBChild {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -462,8 +438,8 @@ class NetworkPort extends CommonDBChild {
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      if (!Session::haveRight('networking','r')
-          || !$item->can($items_id, 'r')) {
+      if (!NetworkEquipment::canView()
+          || !$item->can($items_id, READ)) {
          return false;
       }
 
@@ -473,7 +449,7 @@ class NetworkPort extends CommonDBChild {
       if ($itemtype == 'NetworkPort') {
          $canedit = false;
       } else {
-         $canedit = $item->can($items_id, 'w');
+         $canedit = $item->canEdit($items_id);
       }
       $showmassiveactions = false;
       if ($withtemplate != 2) {
@@ -533,7 +509,6 @@ class NetworkPort extends CommonDBChild {
          // Manage NetworkportMigration
          $porttypes[] = '';
       }
-
       $display_options = self::getDisplayOptions($itemtype);
       $table           = new HTMLTableMain();
       $number_port     = self::countForItem($item);
@@ -543,7 +518,7 @@ class NetworkPort extends CommonDBChild {
       // Make table name and add the correct show/hide parameters
       $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
 
-      // Add the link to the popup to display the options ...
+      // Add the link to the modal to display the options ...
       $table_namelink = self::getDisplayOptionsLink($itemtype);
 
       $table_name = sprintf(__('%1$s - %2$s'), $table_name, $table_namelink);
@@ -692,8 +667,7 @@ class NetworkPort extends CommonDBChild {
                       && $canedit
                       && !empty($portType)) {
                      $ce_checkbox =  $t_row->addCell($c_checkbox,
-                                                     "<input type='checkbox' name='item[" .
-                                                       $netport->fields["id"]."]' value='1'>");
+                                                     Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"]));
                   } else {
                      $ce_checkbox = NULL;
                   }
@@ -754,9 +728,10 @@ class NetworkPort extends CommonDBChild {
           && $showmassiveactions) {
          $massiveactionparams = array('num_displayed'  => $number_port,
                                       'check_itemtype' => $itemtype,
+                                      'container'      => 'mass'.__CLASS__.$rand,
                                       'check_items_id' => $items_id);
 
-         Html::showMassiveActions('NetworkPort', $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       $table->display(array('display_thead' => false,
@@ -770,7 +745,7 @@ class NetworkPort extends CommonDBChild {
 
       if ($showmassiveactions) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions('NetworkPort', $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
 
          Html::closeForm();
       }
@@ -785,7 +760,7 @@ class NetworkPort extends CommonDBChild {
          $options['several'] = false;
       }
 
-      if (!Session::haveRight("networking", "r")) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -798,8 +773,6 @@ class NetworkPort extends CommonDBChild {
       } else {
          $lastItem_entities_id = $_SESSION['glpiactive_entity'];
       }
-
-      $this->showTabs();
 
       $options['entities_id'] = $lastItem_entities_id;
       $this->showFormHeader($options);
@@ -839,9 +812,9 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";
          echo __('from') . "&nbsp;";
-         Dropdown::showInteger('from_logical_number', 0, 0, 100);
+         Dropdown::showNumber('from_logical_number', array('value' => 0));
          echo "&nbsp;".__('to') . "&nbsp;";
-         Dropdown::showInteger('to_logical_number', 0, 0, 100);
+         Dropdown::showNumber('to_logical_number', array('value' => 0));
          echo "</td></tr>\n";
       }
 
@@ -862,7 +835,6 @@ class NetworkPort extends CommonDBChild {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
    }
 
 
@@ -939,9 +911,9 @@ class NetworkPort extends CommonDBChild {
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $actions['assign_vlan']   = __('Associate a VLAN');
-         $actions['unassign_vlan'] = __('Dissociate a VLAN');
-         $actions['move_port']     = _x('button', 'Move');
+         $vlan_prefix = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $actions[$vlan_prefix.'add']    = __('Associate a VLAN');
+         $actions[$vlan_prefix.'remove'] = __('Dissociate a VLAN');
      }
       return $actions;
    }
@@ -952,19 +924,6 @@ class NetworkPort extends CommonDBChild {
    function showSpecificMassiveActionsParameters($input=array()) {
 
       switch ($input['action']) {
-         case "assign_vlan" :
-         Vlan::dropdown();
-         echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
-         echo "&nbsp;<input type='submit' name='assign_vlan' class='submit' value='".
-                      __s('Associate')."'>";
-            return true;
-
-         case "unassign_vlan" :
-            Vlan::dropdown();
-            echo "&nbsp;<input type='submit' name='unassign_vlan' class='submit' value='".
-                         __s('Dissociate')."'>";
-            return true;
-
          case "move_port" :
             Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
             echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
@@ -987,49 +946,6 @@ class NetworkPort extends CommonDBChild {
                    'noright' => 0);
       switch ($input['action']) {
 
-         case "assign_vlan" :
-            if (!empty($input["vlans_id"])) {
-               $networkportvlan = new NetworkPort_Vlan();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->can($key,'w')) {
-                        if ($networkportvlan->assignVlan($key, $input["vlans_id"],
-                                                         (isset($input['tagged']) ? '1' : '0'))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['noright']++;
-                     }
-                  }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
-
-         case "unassign_vlan" :
-            if (!empty($input["vlans_id"])) {
-               $networkportvlan = new NetworkPort_Vlan();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->can($key,'w')) {
-                        if ($networkportvlan->unassignVlan($key, $input["vlans_id"])) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['noright']++;
-                     }
-                  }
-               }
-            } else {
-               $nbko++;
-            }
-            break;
-
          // Interest of this massive action ? Replace switch by another : don't re-create manually all ports
          case "move_port" :
             if (isset($input["items_id"]) && !empty($input["items_id"])) {
@@ -1040,17 +956,20 @@ class NetworkPort extends CommonDBChild {
                         $input2['id']       = $key;
                         $input2['items_id'] = $input["items_id"];
                         $input2['itemtype'] = 'NetworkEquipment';
-                        if ($this->can($input2['id'],'w')) {
+                        if ($this->can($input2['id'], UPDATE)) {
                            if ($this->update($input2)) {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $this->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['noright']++;
+                           $this->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                      }
                   }
                }
@@ -1094,13 +1013,13 @@ class NetworkPort extends CommonDBChild {
       $tab[4]['name']           = __('MAC address');
       $tab[4]['datatype']       = 'mac';
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'instantiation_type';
-      $tab[5]['name']          = __('Network port type');
-      $tab[5]['datatype']      = 'itemtypename';
-      $tab[5]['itemtype_list'] = 'networkport_instantiations';
-      $tab[5]['massiveaction'] = false;
-      
+      $tab[5]['table']          = $this->getTable();
+      $tab[5]['field']          = 'instantiation_type';
+      $tab[5]['name']           = __('Network port type');
+      $tab[5]['datatype']       = 'itemtypename';
+      $tab[5]['itemtype_list']  = 'networkport_instantiations';
+      $tab[5]['massiveaction']  = false;
+
       $tab[9]['table']          = 'glpi_netpoints';
       $tab[9]['field']          = 'name';
       $tab[9]['name']           = _n('Network outlet', 'Network outlets', 1);
@@ -1182,7 +1101,7 @@ class NetworkPort extends CommonDBChild {
       global $CFG_GLPI;
 
       // Can exists on template
-      if (Session::haveRight('networking','r')) {
+      if (NetworkEquipment::canView()) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
@@ -1237,6 +1156,24 @@ class NetworkPort extends CommonDBChild {
          self::showForItem($item);
          return true;
       }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
+   **/
+   static function getConnexityMassiveActionsSpecificities() {
+
+      $specificities = parent::getConnexityMassiveActionsSpecificities();
+
+      $specificities['reaffect']  = true;
+      $specificities['itemtypes'] = array('Computer', 'NetworkEquipment');
+
+      $specificities['normalized']['unaffect'] = array();
+      $specificities['action_name']['affect']  = _x('button', 'Move');
+
+      return $specificities;
    }
 
 }

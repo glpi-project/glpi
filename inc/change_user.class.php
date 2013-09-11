@@ -28,14 +28,18 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Change_User
+/**
+ * Change_User Class
+ *
+ * Relation between Changes and Users
+**/
 class Change_User extends CommonITILActor {
 
    // From CommonDBRelation
