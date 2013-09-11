@@ -291,61 +291,63 @@ class Document extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='6'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
+      if ($ID > 0) {
+         echo "<td>".__('Current file')."</td>";
+         echo "<td>".$this->getDownloadLink('',45);
+         echo "<input type='hidden' name='current_filepath' value='".$this->fields["filepath"]."'>";
+         echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
+         echo "</td>";
+      } else {
+         echo "<td colspan=2>&nbsp;</td>";
+      }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Heading')."</td>";
       echo "<td>";
       DocumentCategory::dropdown(array('value' => $this->fields["documentcategories_id"]));
-      echo "</td></tr>";
-
+      echo "</td>";
       if ($ID > 0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Current file')."</td>";
-         echo "<td>".$this->getDownloadLink('',45);
-         echo "<input type='hidden' name='current_filepath' value='".$this->fields["filepath"]."'>";
-         echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
-         echo "</td></tr>";
+         echo "<td>".sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'))."</td>";
+         echo "<td>".$this->fields["sha1sum"];
+         echo "</td>";
+      } else {
+         echo "<td colspan=2>&nbsp;</td>";
       }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
-      echo "<td>";
-      echo Html::file();
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Use a FTP installed file')."</td>";
-      echo "<td>";
-      $this->showUploadedFilesDropdown("upload_file");
-      echo "</td></tr>";
-
+      echo "</tr>";
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Web Link')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "link");
+      echo "</td>";
+      echo "<td rowspan='3' class='middle'>".__('Comments')."</td>";
+      echo "<td class='middle' rowspan='3'>";
+      echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('MIME type')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mime");
-
-      if ($ID > 0) {
-         echo "</td><td>".sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'))."</td>";
-         echo "<td>".$this->fields["sha1sum"];
-      }
       echo "</td></tr>";
-
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Blacklisted for import')."</td>";
       echo "<td>";
       Dropdown::showYesNo("is_blacklisted", $this->fields["is_blacklisted"]);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Use a FTP installed file')."</td>";
+      echo "<td>";
+      $this->showUploadedFilesDropdown("upload_file");
+      echo "</td>";
+      
+      echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
+      echo "<td>";
+      echo Html::file();
+      echo "</td></tr>";
 
       $this->showFormButtons($options);
 

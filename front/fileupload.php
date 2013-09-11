@@ -47,17 +47,24 @@ $upload_handler = new UploadHandler(array('upload_dir'        => GLPI_ROOT.'/fil
                                           'image_versions'    => array()), false);
 $response = $upload_handler->post(false);
 
-// clean compute size
+// clean compute display filesize
 if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
-   foreach ($response[$_GET['name']] as $key => $val) {
-      if (isset($val->size)) {
-         $response[$_GET['name']][$key]->filesize = Toolbox::getSize($val->size);
+   foreach ($response[$_GET['name']] as $key => &$val) {
+      if (isset($val->name)) {
+         $val->display = $val->name;
       }
+      if (isset($val->size)) {
+         $val->filesize = Toolbox::getSize($val->size);
+         if (isset($_GET['showfilesize']) && $_GET['showfilesize']) {
+            $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
+         }
+      }
+      
    }
 }
 
 // Ajout du Doc + generation tag + autre traitement
-Toolbox::logDebug($response);
+
 
 $upload_handler->generate_response($response);
 ?>
