@@ -4784,14 +4784,17 @@ class Html {
       }
       $randupload = mt_rand();
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
-      $out = "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
+      $out = "<div class='fileupload' id='dropdoc$randupload'>";
+      $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
+      $out .= "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
                $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name']."&showfilesize=".$p['showfilesize']."'>";
 
       $script = "var fileindex$randupload = 0;
          $('#fileupload$randupload').fileupload({
 //             forceIframeTransport: true,
 //             replaceFileInput: false,
-            dataType: 'json',";
+            dataType: 'json',
+            dropZone: $('#dropdoc$randupload'),";
       if ($p['onlyimages']) {
          $script .= "acceptFileTypes: '/(\.|\/)(gif|jpe?g|png)$/i',";
       }
@@ -4829,6 +4832,7 @@ class Html {
       if ($addshowfilecontainer) {
          $out .= "<div id='".$p['showfilecontainer']."'></div>";
       }
+      $out .= "</div>";
       return $out;
    }
 

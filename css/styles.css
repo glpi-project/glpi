@@ -1099,7 +1099,13 @@ a.icon_nav_move:hover img {
    -o-border-radius: 5px;
 }
 
-
+/* ################--------------- File upload  ---------------#################### */
+.fileupload {
+   text-align:center;
+   border:1px dashed #cccccc;
+/*    background-color: #d7d7d2; */
+/*    font-size:9px; */
+}
 
 /* ################--------------- planning  ---------------#################### */
 
