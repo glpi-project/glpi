@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-09-03 07:48+0200\n"
-"PO-Revision-Date: 2013-09-03 05:49+0000\n"
+"PO-Revision-Date: 2013-09-11 06:53+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
@@ -1945,7 +1945,7 @@ msgstr ""
 
 #: front/migration_cleaner.php:44 inc/html.class.php:1384
 msgid "Migration cleaner"
-msgstr ""
+msgstr "Vyčistenie po prenose"
 
 #: front/migration_cleaner.php:49
 msgid "\"Migration cleaner\" tool"
@@ -13859,7 +13859,7 @@ msgstr "Ad-hoc"
 
 #: inc/wifinetwork.class.php:60
 msgid "Managed"
-msgstr ""
+msgstr "Spravované"
 
 #: inc/wifinetwork.class.php:61
 msgid "Master"

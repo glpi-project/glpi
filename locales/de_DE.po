@@ -10,13 +10,14 @@
 # Mathieu Simon <mathieu.sim@gmail.com>, 2012-2013
 # thofl <thofl@hotmail.com>, 2013
 # thofl <thofl@hotmail.com>, 2012
+# tblinstrub <tblinstrub@christ-ag.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-09-03 07:48+0200\n"
-"PO-Revision-Date: 2013-09-03 05:49+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-09-11 09:22+0000\n"
+"Last-Translator: tblinstrub <tblinstrub@christ-ag.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/GLPI/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2374,8 +2375,8 @@ msgstr "Übertragen"
 #: front/rule.php:68 inc/blacklist.class.php:76 inc/dropdown.class.php:661
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Blacklist"
+msgstr[1] "Blacklists"
 
 #: front/search.php:37 inc/html.class.php:2077 inc/html.class.php:2257
 #: inc/html.class.php:2261
@@ -4699,7 +4700,7 @@ msgstr "Aus diesem Problem eine Änderung erzeugen"
 
 #: inc/change_problem.class.php:232 inc/problem_ticket.class.php:340
 msgid "Add a problem"
-msgstr ""
+msgstr "Ein Problem hinzufügen"
 
 #: inc/change_problem.class.php:256 inc/html.class.php:1197
 #: inc/notificationtargetticket.class.php:689
@@ -5501,8 +5502,8 @@ msgstr[1] "Domains"
 #: inc/operatingsystemversion.class.php:43
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating system"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Betriebssystem-Version"
+msgstr[1] "Betriebssystem-Versionen"
 
 #: inc/computer.class.php:548 inc/computer.class.php:772
 #: install/update_0681_07.php:1414
@@ -5742,7 +5743,7 @@ msgstr "Lösen"
 
 #: inc/computer_item.class.php:443
 msgid "Connect an item"
-msgstr ""
+msgstr "Ein Element verbinden"
 
 #: inc/computer_item.class.php:467 inc/computer_item.class.php:602
 #: inc/monitor.class.php:381 inc/peripheral.class.php:355
@@ -5753,7 +5754,7 @@ msgstr "Lösen"
 
 #: inc/computer_item.class.php:578
 msgid "Connect a computer"
-msgstr ""
+msgstr "Ein Computer verbinden"
 
 #: inc/computer_item.class.php:648
 msgid "Not connected"
@@ -5796,7 +5797,7 @@ msgstr "Betroffene Lizenzen nicht installierter Software"
 #: inc/computervirtualmachine.class.php:312
 msgctxt "quantity"
 msgid "Processors number"
-msgstr ""
+msgstr "Anzahl der Prozessoren"
 
 #: inc/computervirtualmachine.class.php:181
 #: inc/computervirtualmachine.class.php:314
@@ -5924,7 +5925,7 @@ msgstr "Globale Suche"
 #: inc/profile.class.php:693 inc/profile.class.php:1450
 #: inc/transfer.class.php:3008
 msgid "Assets"
-msgstr ""
+msgstr "Inventar"
 
 #: inc/config.class.php:345
 msgid "Enable the financial and administrative information by default"
@@ -6090,7 +6091,7 @@ msgstr "Zeitbegrenzung der Ausarbeitungen"
 
 #: inc/config.class.php:599
 msgid "Default file size limit imported by the mails receiver"
-msgstr ""
+msgstr "Maximale Größe der über ein Mail-Gateway importierten Dateien"
 
 #: inc/config.class.php:605
 msgid "Default heading when adding a document to a ticket"
@@ -6106,7 +6107,7 @@ msgstr "Tickets aufbewahren, wenn verknüpftes Gerät aus dem Inventar endgülti
 
 #: inc/config.class.php:617
 msgid "Show personnal information in new ticket form (simplified interface)"
-msgstr ""
+msgstr "Zeige personelle Informationen bei neuen Tickets (einfache Ansicht)"
 
 #: inc/config.class.php:623
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -6880,7 +6881,7 @@ msgstr ""
 
 #: inc/contractcost.class.php:287 inc/ticketcost.class.php:363
 msgid "Add a new cost"
-msgstr ""
+msgstr "Neue Kosten hinzufügen"
 
 #: inc/contract_item.class.php:88
 msgid "Link Contract/Item"
@@ -6890,7 +6891,7 @@ msgstr[1] ""
 
 #: inc/contract_item.class.php:154
 msgid "Associated item ID"
-msgstr ""
+msgstr "Verbundenes Element ID"
 
 #: inc/contract_item.class.php:384 inc/contract_supplier.class.php:181
 msgid "Add a contract"
@@ -6971,7 +6972,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:724
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Für GLPI werden mindestens 64MB benötigt.."
 
 #: inc/crontask.class.php:729
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -7008,7 +7009,7 @@ msgstr ""
 
 #: inc/crontask.class.php:783
 msgid "Nothing to launch"
-msgstr ""
+msgstr "Nichts zu starten"
 
 #: inc/crontask.class.php:791
 msgid "Can't get DB lock"
@@ -7366,7 +7367,7 @@ msgstr "Sie haben noch keine persönliche Ansicht definiert, möchten Sie diese 
 #: inc/displaypreference.class.php:299 inc/displaypreference.class.php:451
 #: inc/search.class.php:879 inc/search.class.php:880
 msgid "Select default items to show"
-msgstr "Wählen Sie die Geräte, die standardmäßig angezeigt werden sollen"
+msgstr "Wählen Sie die Einträge, die standardmäßig angezeigt werden sollen"
 
 #: inc/displaypreference.class.php:366 inc/displaypreference.class.php:368
 #: inc/displaypreference.class.php:531 inc/displaypreference.class.php:533
@@ -7447,7 +7448,7 @@ msgstr ""
 #: inc/document.class.php:372
 #, php-format
 msgid "%s Mio max"
-msgstr ""
+msgstr "%s MB max"
 
 #: inc/document.class.php:646
 msgctxt "quantity"
@@ -8505,8 +8506,8 @@ msgstr[1] "Erinnerungen"
 #: inc/html.class.php:1323 inc/reminder.class.php:1053
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Persönliche Erinnerung"
+msgstr[1] "Persönliche Erinnerungen"
 
 #: inc/html.class.php:1366 inc/profile.class.php:775
 #: inc/profile.class.php:1558 inc/report.class.php:49
@@ -8568,8 +8569,8 @@ msgstr "Andere"
 #: inc/profile.class.php:1592
 msgid "External link"
 msgid_plural "External links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Externer Link"
+msgstr[1] "Externe Links"
 
 #: inc/html.class.php:2018 inc/html.class.php:2059
 msgid "My settings"
@@ -8659,8 +8660,8 @@ msgstr "einem bestimmten Datum"
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "- %d Stunde"
+msgstr[1] "- %d Stunden"
 
 #: inc/html.class.php:3665 inc/slalevel.class.php:358
 #, php-format
@@ -8730,29 +8731,29 @@ msgstr[1] "- %d Jahre"
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "+ %d Stunde"
+msgstr[1] "+ %d Stunden"
 
 #: inc/html.class.php:3706 inc/slalevel.class.php:354
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "+ %d Tag"
+msgstr[1] "+ %d Tage"
 
 #: inc/html.class.php:3710
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "+ %d Woche"
+msgstr[1] "+ %d Wochen"
 
 #: inc/html.class.php:3714
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "+ %d Monat"
+msgstr[1] "+ %d Monate"
 
 #: inc/html.class.php:3718
 #, php-format
@@ -8894,7 +8895,7 @@ msgstr "Lebenszeit"
 #: inc/infocom.class.php:1118
 #, php-format
 msgid "Valid to %s"
-msgstr ""
+msgstr "Gültig bis %s"
 
 #: inc/infocom.class.php:1384
 msgid "Comments on financial and administrative information"
@@ -9138,7 +9139,7 @@ msgstr "Editieren"
 
 #: inc/knowbaseitem.class.php:736
 msgid "Are you sure you want to delete this item?"
-msgstr ""
+msgstr "Dieses Element wirklich löschen?"
 
 #: inc/knowbaseitem.class.php:833
 msgid "Unpublished"
@@ -9239,7 +9240,7 @@ msgstr ""
 
 #: inc/link_itemtype.class.php:153 inc/link_itemtype.class.php:157
 msgid "Associated hardware types"
-msgstr ""
+msgstr "Assoziierte Hardwaretypen"
 
 #: inc/location.class.php:62 inc/location.class.php:88
 #: inc/location.class.php:120
@@ -9385,11 +9386,11 @@ msgstr ""
 
 #: inc/log.class.php:418
 msgid "Install the software"
-msgstr ""
+msgstr "Software installieren"
 
 #: inc/log.class.php:425
 msgid "Uninstall the software"
-msgstr ""
+msgstr "Software deinstallieren"
 
 #: inc/log.class.php:435
 msgid "Disconnect the item"
@@ -9488,7 +9489,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:577
 msgid "Could not connect to mailgate server"
-msgstr ""
+msgstr "Verbindung zum Mailgateway fehlgeschlagen"
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:587
@@ -9527,13 +9528,13 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1425
 msgid "Number of emails to retrieve"
-msgstr ""
+msgstr "Anzahl zu holender E-Mails"
 
 #: inc/mailcollector.class.php:1542
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
-msgstr ""
+msgstr "Ihre E-Mail konnte nicht verarbeiter werden.\nWenn das Problem weiterhin besteht, kontaktieren Sie Ihren Systemadministrator"
 
 #: inc/mailcollector.class.php:1553
 msgid "List of not imported emails"
@@ -10133,7 +10134,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:416
 msgid "Technician in charge of the ticket"
-msgstr ""
+msgstr "Für das Ticket zuständiger Techniker"
 
 #: inc/notificationtargetcommonitilobject.class.php:419
 #: inc/notificationtargetreservation.class.php:61
@@ -10262,7 +10263,7 @@ msgstr "Fehler bei der Ausführung. Ein Eingreifen ist notwendig."
 
 #: inc/notificationtargetdbconnection.class.php:56
 msgid "Desynchronization MySQL replica"
-msgstr ""
+msgstr "Desynchronisation des MySQL-Replikats"
 
 #: inc/notificationtargetdbconnection.class.php:67
 msgid "Can't connect to the database."
@@ -10421,8 +10422,8 @@ msgstr "Automatische Erinnerungen von SLAs"
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ohne Antwort wird das Ticket in %s Tag automatisch geschlossen"
+msgstr[1] "Ohne Antwort wird das Ticket in %s Tagen automatisch geschlossen"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:481
@@ -10561,7 +10562,7 @@ msgstr ""
 #: inc/notificationtemplatetranslation.class.php:299
 #: inc/notificationtemplatetranslation.class.php:487
 msgid "Email text body"
-msgstr ""
+msgstr "Textteil der E-Mail"
 
 #: inc/notificationtemplatetranslation.class.php:147
 msgid "(leave the field empty for a generation from HTML)"
@@ -10969,8 +10970,8 @@ msgstr ""
 #, php-format
 msgid "%d associated document"
 msgid_plural "%d associated documents"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d verbundenes Dokument"
+msgstr[1] "%d verbundene Dokumente"
 
 #: inc/problem.class.php:1569
 msgctxt "problem"
@@ -11001,8 +11002,8 @@ msgstr "Letzten Probleme"
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Letztes %d Problem"
+msgstr[1] "Letzten %d Probleme"
 
 #: inc/problem.class.php:1922 inc/problem.class.php:1964
 msgid "No problem found."
@@ -11135,8 +11136,8 @@ msgstr ""
 #: inc/reminder.class.php:1079
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Öffentliche Erinnerung"
+msgstr[1] "Öffentliche Erinnerungen"
 
 #: inc/profile.class.php:654 inc/profile.class.php:764
 #: inc/profile.class.php:1974 inc/rssfeed.class.php:893
@@ -11295,7 +11296,7 @@ msgstr "Alle Probleme aktualisieren"
 
 #: inc/profile.class.php:1030 inc/profile.class.php:1930
 msgid "Delete all problems"
-msgstr ""
+msgstr "Alle Probleme löschen"
 
 #: inc/profile.class.php:1085 inc/profile.class.php:1901
 msgid "Life cycle of tickets"
@@ -11457,12 +11458,12 @@ msgstr "Zum Kalender hinzufügen"
 #: inc/reminder.class.php:982
 #, php-format
 msgid "Start at %s"
-msgstr ""
+msgstr "Startet um %s:"
 
 #: inc/reminder.class.php:987
 #, php-format
 msgid "End at %s"
-msgstr ""
+msgstr "Endet um %s:"
 
 #: inc/report.class.php:61
 msgid "Default report"
@@ -12310,11 +12311,11 @@ msgstr ""
 
 #: inc/search.class.php:1548 inc/search.class.php:1550
 msgid "Show the dustbin"
-msgstr ""
+msgstr "Papierkorb anzeigen"
 
 #: inc/search.class.php:1548 inc/search.class.php:1550
 msgid "Don't show deleted items"
-msgstr "Wiederherstellen"
+msgstr "Gelöschte Elemente verbergen"
 
 #: inc/search.class.php:5385 inc/search.class.php:5431
 msgid "before"
@@ -12371,7 +12372,7 @@ msgstr "Ausführung"
 
 #: inc/slalevel.class.php:213
 msgid "Automatic reminders of SLA"
-msgstr ""
+msgstr "Automatische Erinnerungen von SLAs"
 
 #: inc/slalevel.class.php:331
 #, php-format
@@ -12402,7 +12403,7 @@ msgstr "Upgrade"
 
 #: inc/software.class.php:315
 msgid "Recalculate the category"
-msgstr ""
+msgstr "Kategorie neu berechnen"
 
 #: inc/software.class.php:503
 msgid "Number of installations"
@@ -12418,7 +12419,7 @@ msgstr "Versionskommentare"
 
 #: inc/software.class.php:577
 msgid "License name"
-msgstr ""
+msgstr "Lizenzname"
 
 #: inc/software.class.php:586
 msgid "License serial number"
@@ -12488,11 +12489,11 @@ msgstr "Reale Dauer der Bearbeitung des Tickets"
 
 #: inc/stat.class.php:410
 msgid "Number of opened tickets"
-msgstr ""
+msgstr "Anzahl der geöffneten Tickets"
 
 #: inc/stat.class.php:411
 msgid "Number of solved tickets"
-msgstr ""
+msgstr "Anzahl der gelösten Tickets"
 
 #: inc/stat.class.php:412
 msgid "Number of late tickets"
@@ -12732,7 +12733,7 @@ msgstr "Beschreibung der Anforderung oder der Störung"
 
 #: inc/ticket.class.php:3381
 msgid "Inform me about the actions taken"
-msgstr ""
+msgstr "Benachrichtigung bei Änderung oder Rückfrage?"
 
 #: inc/ticket.class.php:3456
 msgid "Submit message"
@@ -12781,7 +12782,7 @@ msgstr "Zu bearbeitende Tickets"
 
 #: inc/ticket.class.php:4797 inc/ticket.class.php:4934
 msgid "Your observed tickets"
-msgstr ""
+msgstr "Ihre überwachten Tickets"
 
 #: inc/ticket.class.php:4816 inc/ticket.class.php:4951
 msgid "Your tickets in progress"
@@ -12800,8 +12801,8 @@ msgstr "Ihre abgelehnten Tickets"
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d neues Ticket"
+msgstr[1] "%d neue Tickets"
 
 #: inc/ticket.class.php:5127 inc/ticket.class.php:5316
 #: inc/ticket.class.php:5363
@@ -12890,7 +12891,7 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:727
 msgid "Refuse the solution"
-msgstr ""
+msgstr "Lösung ablehnen"
 
 #: inc/ticketrecurrent.class.php:160 inc/ticketrecurrent.class.php:267
 msgid "Preliminary creation"
@@ -13173,7 +13174,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:960
 msgid "Allocated memory"
-msgstr ""
+msgstr "Zugewiesener Speicher"
 
 #: inc/toolbox.class.php:963
 msgid "A minimum of 64MB is commonly required for GLPI."
@@ -13520,7 +13521,7 @@ msgstr "Profil zuweisen"
 #: inc/user.class.php:2175
 msgctxt "button"
 msgid "Change the authentication method"
-msgstr ""
+msgstr "Authentifizierungsmethode ändern"
 
 #: inc/user.class.php:2392
 msgid "Last login"
@@ -13772,7 +13773,7 @@ msgstr "Standardbenutzername und Passwort sind:"
 
 #: install/install.php:430
 msgid "glpi/glpi for the administrator account"
-msgstr ""
+msgstr "glpi/glpi für den Administrator-Zugriff"
 
 #: install/install.php:431
 msgid "tech/tech for the technician account"
