@@ -754,6 +754,7 @@ class User extends CommonDBTM {
                   // reinit translations
                   if ($f == 'language') {
                      $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+                     unset($_SESSION['glpimenu']);
                   }
                }
             }
