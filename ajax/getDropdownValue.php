@@ -59,11 +59,6 @@ if (isset($_GET['displaywith'])) {
    }
 }
 
-// No define value
-if (!isset($_GET['value'])) {
-   $_GET['value'] = '';
-}
-
 if (!isset($_GET['permit_select_parent'])) {
    $_GET['permit_select_parent'] = false;
 }
@@ -99,14 +94,12 @@ if ($_GET['page'] > 1) {
 }
 $LIMIT = "LIMIT $start,$limit";
 
-
-$where .=" AND `$table`.`id` NOT IN ('".$_GET['value']."'";
-
 if (isset($_GET['used'])) {
    $used = $_GET['used'];
 
    if (count($used)) {
-      $where .= ",'".implode("','",$used)."'";
+      $where .=" AND `$table`.`id` NOT IN ('";
+      $where .= implode("','",$used)."' ) ";
    }
 }
 
@@ -116,7 +109,7 @@ if (isset($_GET['toadd'])) {
    $toadd = array();
 }
 
-$where .= ") ";
+// $where .= ") ";
 
 if (isset($_GET['condition']) && ($_GET['condition'] != '')) {
    $where .= " AND ".$_GET['condition']." ";
@@ -231,7 +224,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `$table`.`completename`
              $LIMIT";
-
+   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
       // Empty search text : display first
       if ($_GET['page'] == 1 && empty($_GET['searchText'])) {

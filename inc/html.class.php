@@ -4325,7 +4325,7 @@ class Html {
    **/
    static function jsAjaxDropdown($name, $field_id, $url, $params=array()) {
       global $CFG_GLPI;
-
+      
       if (!isset($params['value'])) {
          $value = 0;
       } else {
@@ -4351,13 +4351,14 @@ class Html {
 
       $options = array('value' => $value, 'id' => $field_id);
       if (!empty($params['specific_tags'])) {
-         foreach ($params['specific_tags'] as $tag => $value) {
-            if (is_array($value)) {
-               $value = implode(' ', $value);
+         foreach ($params['specific_tags'] as $tag => $val) {
+            if (is_array($val)) {
+               $val = implode(' ', $val);
             }
-            $options[$tag] = $value;
+            $options[$tag] = $val;
          }
       }
+
       $output = Html::hidden($name, $options);
 
       $js = "";
@@ -4437,7 +4438,7 @@ class Html {
          $js .= " $('#$field_id').on('change', function(e) {".
                   stripslashes($on_change)."});";
       }
-
+      
       $output .= Html::scriptBlock($js);
       return $output;
    }
