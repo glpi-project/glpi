@@ -4757,15 +4757,19 @@ class Html {
     *    - name       : string  : field name (default filename)
     *    - multiple   : boolean : allow multiple file upload (default false)
     *    - onlyimages : boolean :  restrict to image files (default false)
+    *    - showfilecontainer : string :  DOM ID of the container showing file uploaded : use selector to display
+    *    - showfilesize : boolean :  show file size with file name
     *
     * @return string input file field
    **/
    static function file($options = array()) {
       global $CFG_GLPI;
 
-      $p['name']       = 'filename';
-      $p['multiple']   = false;
-      $p['onlyimages'] = false;
+      $p['name']              = 'filename';
+      $p['multiple']          = false;
+      $p['onlyimages']        = false;
+      $p['showfilecontainer'] = '';
+      $p['showfilesize']      = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -4773,10 +4777,15 @@ class Html {
          }
       }
 
+      $addshowfilecontainer = false;
+      if (empty($p['showfilecontainer'])) {
+         $addshowfilecontainer = true;
+         $p['showfilecontainer'] = "filedata$randupload";
+      }
       $randupload = mt_rand();
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       $out = "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
-               $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name']."'>";
+               $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name']."&showfilesize=".$p['showfilesize']."'>";
 
       $script = "var fileindex$randupload = 0;
          $('#fileupload$randupload').fileupload({
@@ -4798,12 +4807,12 @@ class Html {
                   $.each(data.result.".$p['name'].", function (index, file) {
                      if (file.error == undefined) {\n";
       if ($p['multiple']) {
-         $script.= "$('<p/>').text(file.name+' '+file.filesize).appendTo('#filedata$randupload');\n
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata$randupload');\n
+         $script.= "$('<p/>').text(file.display).appendTo('#".$p['showfilecontainer']."');\n
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#".$p['showfilecontainer']."');\n
                     fileindex$randupload = fileindex$randupload+1;\n";
       } else {
-         $script.= "$('#filedata$randupload').text(file.name+' '+file.filesize);\n
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata$randupload');\n";
+         $script.= "$('#".$p['showfilecontainer']."').text(file.display);\n
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#".$p['showfilecontainer']."');\n";
       }
 
       $script.="        $('#progress$randupload .uploadbar').text('".__('Upload successful')."');\n
@@ -4816,8 +4825,10 @@ class Html {
             }
          });";
       $out .= Html::scriptBlock($script);
-      $out .=  "<div id='progress$randupload'><div class='uploadbar' style='width: 0%;'></div></div>
-               <div id='filedata$randupload'></div>";
+      $out .=  "<div id='progress$randupload'><div class='uploadbar' style='width: 0%;'></div></div>";
+      if ($addshowfilecontainer) {
+         $out .= "<div id='".$p['showfilecontainer']."'></div>";
+      }
       return $out;
    }
 
