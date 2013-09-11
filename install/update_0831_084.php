@@ -1788,7 +1788,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
 
 
    if (!TableExists('origin_glpi_networkequipments')) {
-      if (TableExists('glpi_networkportethernets')) {
+      // remove of mac field from glpi_networkequipments is done at the end of migration
+      // framework process
+      if (!FieldExists('glpi_networkequipments', 'mac')) {
          // Nothing to be done : migration of NetworkPort already OK !
 
          // But don't add display preference for NetworkPortMigration if none exists
@@ -2447,6 +2449,10 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $migration->dropTable("glpi_networkportinterfaces");
       unset($ADDTODISPLAYPREF['NetworkPortMigration']);
    }
+
+   // We migrate glpi_networkequipments: mac field presence is used to check if framework has
+   // already been migrated
+   $migration->migrationOneTable('glpi_networkequipments');
 
    foreach ($originTables as $table) {
       $migration->dropTable($table);
