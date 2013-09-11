@@ -164,6 +164,13 @@ class Central extends CommonGLPI {
             Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             echo "</th></tr>";
          }
+         if (file_exists(GLPI_ROOT . "/install/install.php")) {
+            echo "<tr><th colspan='2'>";
+            $message = sprintf(__('For security reasons, please remove file: %s'),
+                               "install/install.php");
+            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+            echo "</th></tr>";
+         }         
       }
 
       if ($DB->isSlave()
