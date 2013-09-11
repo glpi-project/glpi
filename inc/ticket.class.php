@@ -174,7 +174,7 @@ class Ticket extends CommonITILObject {
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
          $opt['searchtype'][0] = 'equals';
-         $opt['contains'][0]   = CommonITILObject::WAITING;
+         $opt['contains'][0]   = 'waiting';
          $opt['link'][0]       = 'AND';
 
          $opt['field'][1]      = 59; // validation aprobator
