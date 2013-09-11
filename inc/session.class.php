@@ -701,7 +701,7 @@ class Session {
 
       if (!$CFG_GLPI["use_public_faq"]) {
          self::checkValidSessionId();
-         if (!self::haveRight('knowbase', KnowbaseItem::READFAQ))) {
+         if (!self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
             Html::displayRightError();
          }
       }
