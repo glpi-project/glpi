@@ -148,16 +148,15 @@ function update084to085() {
 
       foreach ($DB->request($query) as $profile) {
          $profiles_id = $profile['id'];
+
          foreach ($rights as $right) {
-            if ($profile[$right] == NULL) {
-               $new_right = 0;
-            } else {
-               if (($profile[$right] == 'r')
-                   || ($profile[$right] == '1')) {
-                  $new_right = READ;
-               } else if ($profile[$right] == 'w') {
-                  $new_right = ALLSTANDARDRIGHT;
-               }
+            $new_right = 0;
+
+            if (($profile[$right] == 'r')
+                  || ($profile[$right] == '1')) {
+               $new_right = READ;
+            } else if ($profile[$right] == 'w') {
+               $new_right = ALLSTANDARDRIGHT;
             }
 
             $query = "INSERT INTO `glpi_profilerights`
@@ -363,7 +362,10 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'update_ticket'";
    $DB->queryOrDie($query, "0.85 delete update_ticket right");
-
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_all_ticket'";
+   $DB->queryOrDie($query, "0.85 delete show_all_ticket right");
 
    // delete delete_ticket
    foreach ($DB->request("glpi_profilerights",
