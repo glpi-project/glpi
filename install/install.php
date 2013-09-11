@@ -354,6 +354,9 @@ function step4 ($databasename, $newdatabasename) {
 
    $link = new mysqli($host, $user, $password);
 
+   $databasename = $link->real_escape_string($databasename);
+   $newdatabasename = $link->real_escape_string($newdatabasename);
+   
    if (!empty($databasename)) { // use db already created
       $DB_selected = $link->select_db($databasename);
 
@@ -570,8 +573,8 @@ if (!isset($_POST["install"])) {
          if (empty($_POST["newdatabasename"])) {
             $_POST["newdatabasename"] = "";
          }
-         step4($DB->escape($_POST["databasename"]),
-               $DB->escape($_POST["newdatabasename"]));
+         step4($_POST["databasename"],
+               $_POST["newdatabasename"]);
          break;
 
       case "Etape_4" : // finish installation
