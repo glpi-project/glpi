@@ -1120,5 +1120,20 @@ class Session {
       Session::cleanCSRFTokens();
       return false;
    }
+
+   /**
+    * Check CSRF data
+    *
+    * @since version 0.84.2
+    *
+    * @param $data array $_POST datas
+    *
+    * @return nothing : display error if not permit 
+   **/
+   static public function checkCSRF($data) {
+      if (GLPI_USE_CSRF_CHECK && (!Session::validateCSRF($data))) {
+         Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
+      }
+   }
 }
 ?>

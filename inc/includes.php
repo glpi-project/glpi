@@ -159,17 +159,7 @@ if (isset($_REQUEST['glpilist_limit'])) {
 if (!defined('DO_NOT_CHECK_HTTP_REFERER')
     && !isCommandLine()
     && isset($_POST) && is_array($_POST) && count($_POST)) {
-   if (!isset($_SERVER['HTTP_REFERER'])
-       || !is_array($url = parse_url($_SERVER['HTTP_REFERER']))
-       || !isset($url['host'])
-       || (($url['host'] != $_SERVER['SERVER_NAME'])
-           && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
-               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))
-       || !isset($url['path'])
-       || (!empty($CFG_GLPI['root_doc'])
-           && strpos($url['path'], $CFG_GLPI['root_doc']) !== 0)) {
-      Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."), true);
-   }
+   Toolbox::checkValidReferer();
 }
 
 // Security : check CSRF token
@@ -179,11 +169,10 @@ if (GLPI_USE_CSRF_CHECK
     /*&& Plugin::isAllPluginsCSRFCompliant()*/) {
    // No ajax pages
    if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/plugins/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'])) {
-      if (!Session::validateCSRF($_POST)) {
-         Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."), true);
-      }
+      Session::checkCSRF($_POST);
    }
 }
+
 // SET new global Token
 $CURRENTCSRFTOKEN = '';
 ?>

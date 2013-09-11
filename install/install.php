@@ -518,10 +518,11 @@ if (!isset($_POST["install"])) {
    }
 
 } else {
+
+   // Check valid Referer :
+   Toolbox::checkValidReferer();
    // Check CSRF: ensure nobody strap first page that checks if config file exists ...
-   if (GLPI_USE_CSRF_CHECK && (!Session::validateCSRF($_POST))) {
-      Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
-   }
+   Session::checkCSRF($_POST);
 
    // DB clean
    if (isset($_POST["db_pass"])) {
