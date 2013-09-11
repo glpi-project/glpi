@@ -59,7 +59,7 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
             $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
          }
       }
-      
+      $val->id = 'doc'.$_GET['name'].mt_rand();
    }
 }
 

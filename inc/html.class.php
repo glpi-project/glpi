@@ -4809,15 +4809,15 @@ class Html {
             done: function (e, data) {
                   $.each(data.result.".$p['name'].", function (index, file) {
                      if (file.error == undefined) {\n";
-      if ($p['multiple']) {
-         $script.= "$('<p/>').text(file.display).appendTo('#".$p['showfilecontainer']."');\n
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#".$p['showfilecontainer']."');\n
-                    fileindex$randupload = fileindex$randupload+1;\n";
-      } else {
-         $script.= "$('#".$p['showfilecontainer']."').text(file.display);\n
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#".$p['showfilecontainer']."');\n";
-      }
+      $script.= "var p = $('<p/>').attr('id',file.id).text(file.display).appendTo('#".$p['showfilecontainer']."');\n
+                 var resetp = \"$('#\"+file.id+\"').text('');\";
+                 $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo(p);\n
+                 $('<img src=\"".$CFG_GLPI['root_doc']."/pics/delete.png\">').attr('onclick', resetp).appendTo(p);\n";
 
+      if ($p['multiple']) {
+         $script.= "fileindex$randupload = fileindex$randupload+1;\n";
+      }
+      
       $script.="        $('#progress$randupload .uploadbar').text('".__('Upload successful')."');\n
                         $('#progress$randupload .uploadbar').css('width', '100%');\n
                      } else {\n
