@@ -1252,25 +1252,57 @@ class Dropdown {
     *     - toadd     array of values to add at the beginning
     *     - unit : string unit to used
     *     - display : boolean if false get string
+    *     - width   : specific width needed (default 80%)
+    *     - on_change    : string / value to transmit to "onChange"
+    *     - used         : array / Already used items ID: not to display in dropdown (default empty)
    **/
    static function showNumber($myname, $options=array()) {
+      global $CFG_GLPI;
 
-      $params['value']   = 0;
-      $params['rand']    = mt_rand();
-      $params['min']     = 0;
-      $params['max']     = 100;
-      $params['step']    = 1;
-      $params['toadd']   = array();
-      $params['unit']    = '';
-      $params['display'] = true;
+      $p['value']     = 0;
+      $p['rand']      = mt_rand();
+      $p['min']       = 0;
+      $p['max']       = 100;
+      $p['step']      = 1;
+      $p['toadd']     = array();
+      $p['unit']      = '';
+      $p['display']   = true;
+      $p['width']     = '80%';
+      $p['on_change'] = '';
+      $p['used']      = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $params[$key] = $val;
+            $p[$key] = $val;
          }
       }
-      $field_id = Html::cleanId("$myname".$param['rand']);
+      if (($p['value'] < $p['min']) && !isset($p['toadd'][$p['value']])) {
+         $p['value'] = $p['min'];
+      }
 
+      $field_id = Html::cleanId("dropdown_".$myname.$p['rand']);
+      if (!isset($p['toadd'][$p['value']])) {
+         $valuename = self::getValueWithUnit($p['value'],$p['unit']);
+      } else {
+         $valuename = $p['toadd'][$p['value']];
+      }
+      $param    = array('value'               => $p['value'],
+                        'valuename'           => $valuename,
+                        'width'               => $p['width'],
+                        'on_change'           => $p['on_change'],
+                        'used'                => $p['used'],
+                        'unit'                => $p['unit'],
+                        'min'                 => $p['min'],
+                        'max'                 => $p['max'],
+                        'step'                => $p['step'],
+                        'toadd'               => $p['toadd']);
+
+      $out   = Html::jsAjaxDropdown($myname, $field_id,
+                                       $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
+                                       $param);
+
+
+/*                                       
       $out = "<select name='$myname' id='$field_id'>\n";
 
       if (count($params['toadd'])) {
@@ -1288,11 +1320,11 @@ class Dropdown {
          $out .= "<option value='$i' ".(($i == $params['value']) ?" selected ":"").">$txt</option>";
       }
       $out .= "</select>";
-      $out .= Html::jsAdaptDropdown($field_id);
+      $out .= Html::jsAdaptDropdown($field_id);*/
 
-      if ($params['display']) {
+      if ($p['display']) {
          echo $out;
-         return $params['rand'];
+         return $p['rand'];
       }
       return $out;
    }

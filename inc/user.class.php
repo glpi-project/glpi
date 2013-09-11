@@ -3032,7 +3032,7 @@ class User extends CommonDBTM {
     *    - ldap_import
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
-    *    - width               : specific width needed (default 80%)
+    *    - width        : specific width needed (default 80%)
     *
     * @return rand value if displayed / string if not
    **/
