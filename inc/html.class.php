@@ -4798,11 +4798,11 @@ class Html {
                   $.each(data.result.".$p['name'].", function (index, file) {
                      if (file.error == undefined) {\n";
       if ($p['multiple']) {
-         $script.= "$('<p/>').text(file.name).appendTo('#filedata$randupload');\n
+         $script.= "$('<p/>').text(file.name+' '+file.filesize).appendTo('#filedata$randupload');\n
                     $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata$randupload');\n
                     fileindex$randupload = fileindex$randupload+1;\n";
       } else {
-         $script.= "$('#filedata$randupload').text(file.name);\n
+         $script.= "$('#filedata$randupload').text(file.name+' '+file.filesize);\n
                     $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata$randupload');\n";
       }
 

@@ -36,7 +36,8 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/config/config.php");
 
 Session::checkLoginUser();
-
+// Load Language file
+Session::loadLanguage();
 
 require_once (GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 
@@ -45,7 +46,18 @@ $upload_handler = new UploadHandler(array('upload_dir'        => GLPI_ROOT.'/fil
                                           'orient_image'      => false,
                                           'image_versions'    => array()), false);
 $response = $upload_handler->post(false);
+
+// clean compute size
+if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
+   foreach ($response[$_GET['name']] as $key => $val) {
+      if (isset($val->size)) {
+         $response[$_GET['name']][$key]->filesize = Toolbox::getSize($val->size);
+      }
+   }
+}
+
 // Ajout du Doc + generation tag + autre traitement
+Toolbox::logDebug($response);
 
 $upload_handler->generate_response($response);
 ?>
