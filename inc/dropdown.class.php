@@ -1269,8 +1269,9 @@ class Dropdown {
             $params[$key] = $val;
          }
       }
+      $field_id = Html::cleanId("$myname".$param['rand']);
 
-      $out = "<select name='$myname' id='$myname".$params['rand']."'>\n";
+      $out = "<select name='$myname' id='$field_id'>\n";
 
       if (count($params['toadd'])) {
          foreach ($params['toadd'] as $key => $val) {
@@ -1287,7 +1288,7 @@ class Dropdown {
          $out .= "<option value='$i' ".(($i == $params['value']) ?" selected ":"").">$txt</option>";
       }
       $out .= "</select>";
-      $out .= Html::jsAdaptDropdown("$myname".$params['rand']);
+      $out .= Html::jsAdaptDropdown($field_id);
 
       if ($params['display']) {
          echo $out;

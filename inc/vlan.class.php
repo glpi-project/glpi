@@ -80,6 +80,8 @@ class Vlan extends CommonDropdown {
       $tab[11]['field']    = 'tag';
       $tab[11]['name']     = __('ID TAG');
       $tab[11]['datatype'] = 'number';
+      $tab[11]['min']      = 1;
+      $tab[11]['max']      = 4094;
 
       return $tab;
    }
