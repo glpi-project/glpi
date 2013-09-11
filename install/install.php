@@ -508,17 +508,18 @@ if (isset($_POST["language"])) {
 
 Session::loadLanguage();
 
-if (!isset($_POST["install"])) {
-   $_SESSION = array();
-
+function checkConfigFile() {
    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Html::redirect($CFG_GLPI['root_doc'] ."/index.php");
       die();
-
-   } else {
-      header_html("Select your language");
-      choose_language();
    }
+}
+
+if (!isset($_POST["install"])) {
+   $_SESSION = array();
+   checkConfigFile();
+   header_html("Select your language");
+   choose_language();
 
 } else {
 
@@ -536,16 +537,19 @@ if (!isset($_POST["install"])) {
 
    switch ($_POST["install"]) {
       case "lang_select" : // lang ok, go accept licence
+         checkConfigFile();
          header_html(__('License'));
          acceptLicense();
          break;
 
       case "License" : // licence  ok, go choose installation or Update
+         checkConfigFile();
          header_html(__('Beginning of the installation'));
          step0();
          break;
 
       case "Etape_0" : // choice ok , go check system
+         checkConfigFile();
          //TRANS %s is step number
          header_html(sprintf(__('Step %d'), 0));
          $_SESSION["Test_session_GLPI"] = 1;
@@ -553,6 +557,7 @@ if (!isset($_POST["install"])) {
          break;
 
       case "Etape_1" : // check ok, go import mysql settings.
+         checkConfigFile();
          // check system ok, we can use specific parameters for debug
          Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
@@ -561,11 +566,13 @@ if (!isset($_POST["install"])) {
          break;
 
       case "Etape_2" : // mysql settings ok, go test mysql settings and select database.
+         checkConfigFile();
          header_html(sprintf(__('Step %d'), 2));
          step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
          break;
 
       case "Etape_3" : // Create and fill database
+         checkConfigFile();
          header_html(sprintf(__('Step %d'), 3));
          if (empty($_POST["databasename"])) {
             $_POST["databasename"] = "";
