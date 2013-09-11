@@ -430,7 +430,7 @@ function step7() {
 
    $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
    $query = "UPDATE `glpi_configs`
-             SET `value`     = '$url_base'
+             SET `value`     = '".$DB->escape($url_base)."'
              WHERE `context` = 'core'
                AND `name`    = 'url_base'";
    $DB->query($query);
