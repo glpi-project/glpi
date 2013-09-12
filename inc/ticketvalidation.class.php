@@ -793,7 +793,7 @@ class TicketValidation  extends CommonDBChild {
       global $CFG_GLPI;
 
       if ($ID > 0) {
-         $this->check($ID, CREATE);
+         $this->canEdit($ID);
       } else {
          $options['tickets_id'] = $options['parent']->fields["id"];
          $this->check(-1, CREATE, $options);
