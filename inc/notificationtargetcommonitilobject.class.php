@@ -835,7 +835,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
        $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity($item->getTable(),
                                                                                    $this->getEntity(),
                                                                                    $restrict);
-
        // Document
        $query = "SELECT `glpi_documents`.*
                  FROM `glpi_documents`
@@ -857,9 +856,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
              $datas['documents'][] = $tmp;
           }
        }
-               $datas['##ticket.urlsatisfaction##']
-                     = $this->formatURL($options['additionnaloption']['usertype'],
-                                        "ticket_".$item->getField("id").'_Ticket$3');
 
        $datas["##$objettype.urldocument##"]
              = $this->formatURL($options['additionnaloption']['usertype'],
