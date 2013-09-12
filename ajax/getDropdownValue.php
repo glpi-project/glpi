@@ -224,7 +224,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `$table`.`completename`
              $LIMIT";
-   Toolbox::logDebug($query);
+
    if ($result = $DB->query($query)) {
       // Empty search text : display first
       if ($_GET['page'] == 1 && empty($_GET['searchText'])) {

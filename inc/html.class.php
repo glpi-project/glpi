@@ -4776,13 +4776,13 @@ class Html {
             $p[$key] = $val;
          }
       }
-
+      $randupload = mt_rand();
       $addshowfilecontainer = false;
       if (empty($p['showfilecontainer'])) {
          $addshowfilecontainer = true;
          $p['showfilecontainer'] = "filedata$randupload";
       }
-      $randupload = mt_rand();
+      
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       $out = "<div class='fileupload' id='dropdoc$randupload'>";
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
