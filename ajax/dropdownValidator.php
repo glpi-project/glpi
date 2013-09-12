@@ -70,17 +70,11 @@ if (isset($_POST["validatortype"])) {
          break;
 
       case 'list_users' :
-         if(!empty($_POST['groups_id'])) {
+         $opt = array('groups_id'   => $_POST["groups_id"],
+                        'right'     => $_POST['right'],
+                        'entity'    => $_POST["entity"]);
 
-            $opt = array('groups_id'   => $_POST["groups_id"],
-                           'right'     => $_POST['right'],
-                           'entity'    => $_POST["entity"]);
-
-            $data_users = TicketValidation::getGroupUserHaveRights($opt);
-
-         } else {
-            $data_users = $_POST['users_id_validate'];
-         }
+         $data_users = TicketValidation::getGroupUserHaveRights($opt);
 
          $users           = array();
          $param['values'] = array();
@@ -88,44 +82,24 @@ if (isset($_POST["validatortype"])) {
             $users[$data['id']] = formatUserName($data['id'], $data['name'], $data['realname'],
                                                  $data['firstname']);
          }
-         // Display selected users
-         if (!empty($_POST['users_id_validate'])){
-            $current = $_POST['users_id_validate'];
-            foreach($current as $data){
-               $current[$data['id']] = formatUserName($data['id'],
-                                                    $data['name'],
-                                                    $data['realname'],
-                                                    $data['firstname']);
-            }
-
-            $tabselect = array();
-            foreach ($users as $k => $v) {
-               if (isset($current[$k])) {
-                  $tabselect[] = $k;
-               }
-            }
-            $param['values'] =  $tabselect;
-         // Dislpay all users
-         } else if (isset($_POST['all_users']) && $_POST['all_users']){
+            
+         // Display all users
+         if (isset($_POST['all_users'])
+             && $_POST['all_users']) {
             $param['values'] =  array_keys($users);
-         // Dislpay no users
-         } else if (isset($_POST['all_users']) && !$_POST['all_users']){
-            $users = array();
          }
 
          $param['multiple']= true;
          $param['display'] = true;
          $param['size']    = count($users);
 
-         $users            = Toolbox::stripslashes_deep($users);
-
-         $rand             = Dropdown::showFromArray(!empty($_POST['name']) ? $_POST['name']
-                                                                            :'users_id_validate',
+         $users = Toolbox::stripslashes_deep($users);
+         $rand  = Dropdown::showFromArray(!empty($_POST['name']) ? $_POST['name']:'users_id_validate',
                                                      $users, $param);
 
          // Display all/none buttons to select all or no users in group
          if (!empty($_POST['groups_id'])){
-            echo "<a id='all_users' class='vsubmit'>".__('All')."</a>";
+            echo "<br><br><a id='all_users' class='vsubmit'>".__('All')."</a>";
             $param_button['validatortype']      = 'list_users';
             $param_button['name']               = !empty($_POST['name']) ? $_POST['name']:'';
             $param_button['users_id_validate']  = '';
