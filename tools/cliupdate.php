@@ -265,6 +265,7 @@ switch ($current_version) {
       update084to0841();
       break;
          
+   case "0.84.1" :
    case GLPI_VERSION :
       break;
 
