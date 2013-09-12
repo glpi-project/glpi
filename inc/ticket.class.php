@@ -951,6 +951,14 @@ class Ticket extends CommonITILObject {
             $input['content'] = $this->convertTagToImage($input['content']);
          }
       }
+      //TODO Use modal ?
+      if (isset($input['status'])
+          && (in_array($input["status"], self::getSolvedStatusArray())
+               || in_array($input["status"], self::getClosedStatusArray()))
+                  && $input["status"] != $this->fields['status']
+                     && $this->fields['global_validation'] == "waiting") {
+         Session::addMessageAfterRedirect(__('This ticket is waiting for approval, do you really want to resolve or close it?'), false, ERROR);
+      }
 
       $input = parent::prepareInputForUpdate($input);
 
@@ -1515,6 +1523,23 @@ class Ticket extends CommonITILObject {
 
          $validation          = new TicketValidation();
 
+         // Validation user added on ticket form 
+         if(isset($this->input['users_id_validate'])){
+            if (array_key_exists('groups_id', $this->input['users_id_validate'])) {
+               foreach($this->input['users_id_validate'] as $key => $validation_to_add){
+                  if(is_numeric($key)){
+                     $validations_to_send['validation_users']['user'][] = $validation_to_add;
+                  }
+               }
+            } else {
+               foreach($this->input['users_id_validate'] as $key => $validation_to_add){
+                  if(is_numeric($key)){
+                     $validations_to_send['validation_users']['user'][] = $validation_to_add;
+                  }
+               }
+            }
+         }
+         
          foreach ($validations_to_send as $validate_id) {
             $values = array();
             if (is_array($validate_id)) {
@@ -4370,10 +4395,14 @@ class Ticket extends CommonITILObject {
          }
 
          if (!empty($validation_right)) {
-            User::dropdown(array('name'   => "_add_validation",
-                                 'entity' => $this->fields['entities_id'],
-                                 'right'  => $validation_right,
-                                 'value'  => $values['_add_validation']));
+            echo "<input type='hidden' name='_add_validation' value='".
+                   $values['_add_validation']."'>";
+            $users_id_validate = array();
+            $params = array('name'                 => "users_id_validate",
+                              'entity'             => $this->fields['entities_id'],
+                              'right'              => $validation_right,
+                              'users_id_validate'  => $users_id_validate);
+            TicketValidation::dropdownValidator($params);
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
          if ($tt->isPredefinedField('global_validation')) {

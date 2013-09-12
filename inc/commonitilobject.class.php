@@ -750,6 +750,16 @@ abstract class CommonITILObject extends CommonDBTM {
                $this->fields['status'] = self::SOLVED;
                $this->input['status']  = self::SOLVED;
             }
+            //TODO Use modal ?
+            if (isset($this->input['status'])
+                && ($this->input["status"] == self::SOLVED
+                     || $this->input["status"] == self::CLOSED)
+                        && (isset($this->fields['global_validation']) 
+                              && $this->fields['global_validation'] == "waiting")) {
+
+               Session::addMessageAfterRedirect(__('This ticket is waiting for approval, do you really want to resolve or close it?'), false, ERROR);
+            }
+         
          } else {
 
             $this->fields['status'] = self::SOLVED;
