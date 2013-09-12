@@ -835,33 +835,33 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
        $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity($item->getTable(),
                                                                                    $this->getEntity(),
                                                                                    $restrict);
-       // Document
-       $query = "SELECT `glpi_documents`.*
-                 FROM `glpi_documents`
-                 LEFT JOIN `glpi_documents_items`
-                      ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                 WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
-                       AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
-
-
-       $datas["documents"] = array();
-       if ($result = $DB->query($query)) {
-          while ($data = $DB->fetch_assoc($result)) {
-             $tmp                        = array();
-             $tmp['##document.id##']     = $data['id'];
-             $tmp['##document.name##']     = $data['name'];
-             $tmp['##document.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                            "document_".$data['id']);
-             $tmp['##document.filename##'] = $data['filename'];
-             $datas['documents'][] = $tmp;
-          }
-       }
-
-       $datas["##$objettype.urldocument##"]
-             = $this->formatURL($options['additionnaloption']['usertype'],
-                                $objettype."_".$item->getField("id").'_Document_Item$1');
-
-       $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
+//        // Document
+//        $query = "SELECT `glpi_documents`.*
+//                  FROM `glpi_documents`
+//                  LEFT JOIN `glpi_documents_items`
+//                       ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
+//                  WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
+//                        AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+// 
+// 
+//        $datas["documents"] = array();
+//        if ($result = $DB->query($query)) {
+//           while ($data = $DB->fetch_assoc($result)) {
+//              $tmp                        = array();
+//              $tmp['##document.id##']     = $data['id'];
+//              $tmp['##document.name##']     = $data['name'];
+//              $tmp['##document.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+//                                                             "document_".$data['id']);
+//              $tmp['##document.filename##'] = $data['filename'];
+//              $datas['documents'][] = $tmp;
+//           }
+//        }
+// 
+//        $datas["##$objettype.urldocument##"]
+//              = $this->formatURL($options['additionnaloption']['usertype'],
+//                                 $objettype."_".$item->getField("id").'_Document_Item$1');
+// 
+//        $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
 
 
       return $datas;
@@ -912,7 +912,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', 2),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
-                    $objettype.'.numberofdocuments' => __('Number of documents')
+//                     $objettype.'.numberofdocuments' => __('Number of documents')
                    );
 
       foreach ($tags as $tag => $label) {
@@ -925,7 +925,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       //Foreach global tags
       $tags = array('log'       => __('Historical'),
                     'authors'   => _n('Requester', 'Requesters', 2),
-                    'documents' => _n('Document', 'Documents', 2));
+//                     'documents' => _n('Document', 'Documents', 2)
+                    );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -963,16 +964,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                             __('Field')),
                     $objettype.'.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                             _x('name', 'Update')),
-                    'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('ID')),
-                    'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('ID')),
-                    'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('File')),
-                    'document.name'          => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Name')),
-                    $objettype.'.urldocument'    => sprintf(__('%1$s: %2$s'), _n('Document', 'Documents', 2),
-                                                            __('URL')),
+//                     'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
+//                                                             __('ID')),
+//                     'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
+//                                                             __('ID')),
+//                     'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
+//                                                             __('File')),
+//                     'document.name'          => sprintf(__('%1$s: %2$s'), __('Document'),
+//                                                             __('Name')),
+//                     $objettype.'.urldocument'    => sprintf(__('%1$s: %2$s'), _n('Document', 'Documents', 2),
+//                                                             __('URL')),
       );
 
       foreach ($tags as $tag => $label) {
