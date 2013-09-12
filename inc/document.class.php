@@ -1249,7 +1249,7 @@ class Document extends CommonDBTM {
                       'initMsg'    => __('Paste an image')." (ctrl+v)",
                       'errorMsg'   => __('Item not found'));
 
-      html::initImagePasteSystem($params);
+      Html::initImagePasteSystem($params);
       echo "</div>\n";
    }
 
