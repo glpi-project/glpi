@@ -660,6 +660,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.authors##"] = '';
+      $datas['authors']                = array();
       if ($item->countUsers(CommonITILActor::REQUESTER)) {
          $users = array();
          foreach ($item->getUsers(CommonITILActor::REQUESTER) as $tmpusr) {
@@ -847,13 +848,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["documents"] = array();
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $tmp                        = array();
-            $tmp['##document.id##']     = $data['id'];
-            $tmp['##document.name##']     = $data['name'];
-            $tmp['##document.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                           "document_".$data['id']);
+            $tmp                         = array();
+            $tmp['##document.id##']      = $data['id'];
+            $tmp['##document.name##']    = $data['name'];
+            $tmp['##document.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
+                                                            "document_".$data['id']);
             $tmp['##document.filename##'] = $data['filename'];
-            $datas['documents'][] = $tmp;
+            $datas['documents'][]         = $tmp;
          }
       }
 
@@ -911,6 +912,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', 2),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
+                    $objettype.'.numberofdocuments'     => __('Number of documents'),
                    );
 
       foreach ($tags as $tag => $label) {
