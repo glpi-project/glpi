@@ -951,14 +951,6 @@ class Ticket extends CommonITILObject {
             $input['content'] = $this->convertTagToImage($input['content']);
          }
       }
-      //TODO Use modal ?
-      if (isset($input['status'])
-          && (in_array($input["status"], self::getSolvedStatusArray())
-               || in_array($input["status"], self::getClosedStatusArray()))
-                  && $input["status"] != $this->fields['status']
-                     && $this->fields['global_validation'] == "waiting") {
-         Session::addMessageAfterRedirect(__('This ticket is waiting for approval, do you really want to resolve or close it?'), false, ERROR);
-      }
 
       $input = parent::prepareInputForUpdate($input);
 
@@ -4326,8 +4318,9 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize2%'>";
       echo $tt->getBeginHiddenFieldValue('status');
       if ($canstatus) {
-         self::dropdownStatus(array('value' => $this->fields["status"],
-                                    'showtype' => 'allowed'));
+         self::dropdownStatus(array('value'     => $this->fields["status"],
+                                    'showtype'  => 'allowed'));
+         TicketValidation::alertValidation($this, 'ticket');
       } else {
          echo self::getStatus($this->fields["status"]);
       }
