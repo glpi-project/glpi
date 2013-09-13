@@ -157,7 +157,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          //Add the group in the notified users list
          $this->getAddressesByGroup(2, $data['groups_id']);
       }
-   }   
+   }
 
    /**
     * Add linked group supervisor to the notified user list
@@ -403,7 +403,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           __('Manager of the group in charge of the ticket'));
          $this->addTarget(Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
-                          __('Group in charge of the ticket without manager'));                          
+                          __('Group in charge of the ticket without manager'));
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
          $this->addTarget(Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
                  __('Requester group without manager'));
@@ -614,7 +614,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @param $simple          (false by default)
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $objettype = strtolower($item->getType());
 
@@ -680,7 +680,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                } else {
                   $tmp['##author.location##'] = '';
                }
-               
+
                if ($user_tmp->getField('usertitles_id')) {
                   $tmp['##author.title##']
                                     = Dropdown::getDropdownName('glpi_usertitles',
@@ -835,6 +835,34 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                                    $this->getEntity(),
                                                                                    $restrict);
 
+      // Document
+      $query = "SELECT `glpi_documents`.*
+                FROM `glpi_documents`
+                LEFT JOIN `glpi_documents_items`
+                    ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
+                WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
+                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+
+
+      $datas["documents"] = array();
+      if ($result = $DB->query($query)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $tmp                        = array();
+            $tmp['##document.id##']     = $data['id'];
+            $tmp['##document.name##']     = $data['name'];
+            $tmp['##document.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                           "document_".$data['id']);
+            $tmp['##document.filename##'] = $data['filename'];
+            $datas['documents'][] = $tmp;
+         }
+      }
+
+      $datas["##$objettype.urldocument##"]
+          = $this->formatURL($options['additionnaloption']['usertype'],
+      $objettype."_".$item->getField("id").'_Document_Item$1');
+
+      $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
+
       return $datas;
    }
 
@@ -869,7 +897,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.phone2'                     => __('Phone 2'),
                     'author.email'                      => _n('Email', 'Emails', 1),
                     'author.title'                      => _x('person','Title'),
-                    'author.category'                   => __('Category'),                    
+                    'author.category'                   => __('Category'),
                     $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.lastupdater'           => __('Last updater'),
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
@@ -917,21 +945,32 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags without lang
-      $tags = array($objettype.'.urlapprove'  => __('Web link to approval the solution'),
-                    $objettype.'.entity'      => sprintf(__('%1$s (%2$s)'),
-                                                         __('Entity'), __('Complete name')),
-                    $objettype.'.shortentity' => sprintf(__('%1$s (%2$s)'),
-                                                         __('Entity'), __('Name')),
-                    $objettype.'.numberoflogs'    => sprintf(__('%1$s: %2$s'), __('Historical'),
+      $tags = array($objettype.'.urlapprove'     => __('Web link to approval the solution'),
+                    $objettype.'.entity'         => sprintf(__('%1$s (%2$s)'),
+                                                            __('Entity'), __('Complete name')),
+                    $objettype.'.shortentity'    => sprintf(__('%1$s (%2$s)'),
+                                                            __('Entity'), __('Name')),
+                    $objettype.'.numberoflogs'   => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                              __('Number of items')),
-                    $objettype.'.log.date'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         __('Date')),
-                    $objettype.'.log.user'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                          __('User')),
-                    $objettype.'.log.field'   => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         __('Field')),
-                    $objettype.'.log.content' => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                         _x('name', 'Update')));
+                    $objettype.'.log.date'       => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('Date')),
+                    $objettype.'.log.user'       => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('User')),
+                    $objettype.'.log.field'      => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            __('Field')),
+                    $objettype.'.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                            _x('name', 'Update')),
+                    'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('ID')),
+                    'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('ID')),
+                    'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('File')),
+                    'document.name'              => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Name')),
+                     $objettype.'.urldocument'   => sprintf(__('%1$s: %2$s'),
+                                                            _n('Document', 'Documents', 2),
+                                                            __('URL')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
