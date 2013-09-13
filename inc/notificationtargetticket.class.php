@@ -494,7 +494,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
          $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
-
+         $datas['validations'] = array();
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
