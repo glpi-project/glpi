@@ -493,7 +493,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       $query = "SELECT `glpi_documents_items`.`id` AS assocID,
-                       `glpi_documents_items`.`date_mod` AS assocdate,
+                       `glpi_documents`.`date_mod` AS assocdate,
                        `glpi_entities`.`id` AS entityID,
                        `glpi_entities`.`completename` AS entity,
                        `glpi_documentcategories`.`completename` AS headings,
@@ -518,7 +518,7 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Document') {
          $query .= "UNION
                     SELECT `glpi_documents_items`.`id` AS assocID,
-                           `glpi_documents_items`.`date_mod` AS assocdate,
+                           `glpi_documents`.`date_mod` AS assocdate,
                            `glpi_entities`.`id` AS entityID,
                            `glpi_entities`.`completename` AS entity,
                            `glpi_documentcategories`.`completename` AS headings,
