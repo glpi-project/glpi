@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS);
+Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "user", "ldap");
 

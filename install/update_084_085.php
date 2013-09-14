@@ -179,7 +179,7 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . User::IMPORTEXTAUTHUSERS ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'User'";
+                       AND `name` = 'user'";
       $DB->queryOrDie($query, "0.85 update user with import_externalauth_users right");
    }
    $query = "DELETE
