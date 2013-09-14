@@ -276,7 +276,6 @@ class RuleImportComputer extends Rule {
             }
          }
       }
-
       foreach ($global_criteria as $criterion) {
          $criteria = $this->getCriteriaByID($criterion);
          if (!empty($criteria)) {
@@ -309,10 +308,10 @@ class RuleImportComputer extends Rule {
       }
 
       //Build the request to check if the machine exists in GLPI
-      if (is_array($input['params']['entities_id'])) {
-         $where_entity = implode($input['params']['entities_id'],',');
+      if (is_array($input['entities_id'])) {
+         $where_entity = implode($input['entities_id'],',');
       } else {
-         $where_entity = $input['params']['entities_id'];
+         $where_entity = $input['entities_id'];
       }
 
       $sql_where = '1';
