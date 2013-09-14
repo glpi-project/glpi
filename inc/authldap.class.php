@@ -288,7 +288,6 @@ class AuthLDAP extends CommonDBTM {
                   $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $id));
                }
             }
-            $ma->setRedirect($CFG_GLPI['root_doc']."/front/ldap.import.php");
             return;
       }
 
