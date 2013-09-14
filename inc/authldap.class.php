@@ -238,9 +238,8 @@ class AuthLDAP extends CommonDBTM {
                !$group->canGlobal(UPDATE)) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-               break;
+               return;
             }
-            $done = array();
             foreach ($ids as $id) {
                if (isset($input["dn"][$id])) {
                   $group_dn = $input["dn"][$id];
@@ -259,98 +258,41 @@ class AuthLDAP extends CommonDBTM {
                                    'entities_id'  => $entity,
                                    'is_recursive' => $is_recursive,
                                    'type'         => $input['ldap_import_type'][$id]);
-                  if (AuthLdap::ldapImportGroup($group_dn,$options)) {
+                  if (AuthLdap::ldapImportGroup($group_dn, $options)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   }  else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION,$group_dn));
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $group_dn));
                   }
                }
+               // Clean history as id does not correspond to group
                $_SESSION['glpimassiveactionselected'] = array();
             }
+            return;
+
+         case 'import' :
+         case 'sync' :
+            if (!Session::haveRight("user", User::IMPORTEXTAUTHUSERS)) {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               return;
+            }
+            foreach ($ids as $id) {
+               if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                            'value'  => $id),
+                                                      $_SESSION['ldap_import']['mode'],
+                                                      $_SESSION['ldap_import']['authldaps_id'], true)) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               }  else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $id));
+               }
+            }
+            $ma->setRedirect($CFG_GLPI['root_doc']."/front/ldap.import.php");
             return;
       }
 
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
-
-
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-      global $CFG_GLPI;
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "import" :
-         case "sync" :
-            if (!Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
-               $res['noright']++;
-            } else if (isset($_GET['multiple_actions'])
-                       && isset($_SESSION["glpi_massiveaction"])) {
-
-               if ($count = count($input["item"])) {
-                  $i = $input["ldap_process_count"]-$count+1;
-                  Html::createProgressBar();
-                  Html::changeProgressBarPosition($i, $input["ldap_process_count"],
-                                                  sprintf(__('%1$s/%2$s'),
-                                                          $i, $input["ldap_process_count"]));
-                  $key = key($input["item"]);
-                  unset($input["item"][$key]);
-                  if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                               'value'  => '--'.$key),
-                                                         $input["mode"],
-                                                         $input["authldaps_id"], true)) {
-                     $input['res']['ok']++;
-                  }  else {
-                     $input['res']['ko']++;
-                     $input['res']['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION,$key);
-                  }
-                  if (count($input["item"])) {
-                     // more to do -> redirect
-                     $_SESSION['glpi_massiveaction']['POST'] = $input;
-                     Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
-                  } else { // Nothing to do redirect
-                     Html::changeProgressBarPosition(100, 100, __('Successful importation'));
-                     $res = $input['res'];
-                     $_SESSION['ldap_import']['action'] = 'show';
-                  }
-
-               }
-            } else {
-               if (count($input['item']) > 0) {
-                  $input["ldap_process_count"]  = 0;
-                  $input["authldaps_id"]        = $_SESSION['ldap_import']['authldaps_id'];
-                  $input["mode"]                = $_SESSION['ldap_import']['mode'];
-                  $input['res']                 = array('ok'       => 0,
-                                                        'ko'       => 0,
-                                                        'noright'  => 0,
-                                                        'messages' => array());
-                  foreach ($input['item'] as $key => $val) {
-                     if ($val) {
-                        $input["ldap_process_count"]++;
-                     }
-                  }
-                  $_SESSION['glpi_massiveaction']['POST'] = $input;
-                  Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
-               } else {
-                  $res['ko'] ++;
-               }
-            }
-            $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.import.php";
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-   //   print_r($res);
-      return $res;
    }
 
 
@@ -1287,10 +1229,10 @@ class AuthLDAP extends CommonDBTM {
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {
                $textbutton  = _x('button','Synchronize');
-               $form_action = 'sync';
+               $form_action = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'sync';
             } else {
                $textbutton  = _x('button','Import');
-               $form_action = 'import';
+               $form_action = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'import';
             }
             // TODO MassiveAction: specific_actions
 
@@ -1731,7 +1673,6 @@ class AuthLDAP extends CommonDBTM {
                if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
                   Html::showCheckbox(array('name'          => "ldap_import_recursive[$dn_index]",
-                                           'value'         => '1',
                                            'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
                   echo "</td>";
                } else {

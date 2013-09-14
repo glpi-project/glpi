@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-Session::checkRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS);
+Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 // Need REQUEST to manage initial walues and posted ones
 AuthLdap::manageValuesInSession($_REQUEST);

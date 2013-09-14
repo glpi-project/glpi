@@ -76,7 +76,7 @@ class User extends CommonDBTM {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (Session::haveRight('import_externalauth_users', self::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.php";
          return $options;
@@ -1722,7 +1722,7 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("import_externalauth_users", self::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -3129,7 +3129,7 @@ class User extends CommonDBTM {
       }
       $output .= Ajax::commonDropdownUpdateItem($p, false);
 
-      if (Session::haveRight('import_externalauth_users', self::IMPORTEXTAUTHUSERS)
+      if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
@@ -3157,7 +3157,7 @@ class User extends CommonDBTM {
    **/
    static function showAddExtAuthForm() {
 
-      if (!Session::haveRight("import_externalauth_users", self::IMPORTEXTAUTHUSERS)) {
+      if (!Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
          return false;
       }
 
