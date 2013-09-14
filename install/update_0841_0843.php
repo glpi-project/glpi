@@ -65,6 +65,57 @@ function update0841to0843() {
                                  true);
    }
 
+   // Upgrade ticket bookmarks and clean _glpi_csrf_token
+   $status = array ('new'           => CommonITILObject::INCOMING,
+                    'assign'        => CommonITILObject::ASSIGNED,
+                    'plan'          => CommonITILObject::PLANNED,
+                    'waiting'       => CommonITILObject::WAITING,
+                    'solved'        => CommonITILObject::SOLVED,
+                    'closed'        => CommonITILObject::CLOSED,
+                    'accepted'      => CommonITILObject::ACCEPTED,
+                    'observe'       => CommonITILObject::OBSERVED,
+                    'evaluation'    => CommonITILObject::EVALUATION,
+                    'approbation'   => CommonITILObject::APPROVAL,
+                    'test'          => CommonITILObject::TEST,
+                    'qualification' => CommonITILObject::QUALIFICATION);
+   
+   $query = "SELECT *
+             FROM `glpi_bookmarks`";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $num     = 0;
+            $num2    = 0;
+            $options = array();
+            parse_str($data["query"], $options);
+
+            // unset _glpi_csrf_token
+            if (isset($options['_glpi_csrf_token'])) {
+               unset($options['_glpi_csrf_token']);
+            }
+            // update ticket statuses
+            if (($data['itemtype'] = 'Ticket'
+               || $data['itemtype'] = 'Problem')
+                  && $data['type'] == Bookmark::SEARCH) {
+               foreach ($options['field'] as $key => $val) {
+                  if ($val == 12 && isset($options['contains'][$key])) {
+                     if (isset($status[$options['contains'][$key]])) {
+                        $options['contains'][$key] = $status[$options['contains'][$key]];
+                     }
+                  }
+               }
+            }
+
+            $query2 = "UPDATE `glpi_bookmarks`
+                        SET `query` = '".addslashes(Toolbox::append_params($options))."'
+                        WHERE `id` = '".$data['id']."'";
+
+            $DB->queryOrDie($query2, "0.84.3 update bookmarks");
+         }
+      }
+   }
+   
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

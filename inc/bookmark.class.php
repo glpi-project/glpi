@@ -293,7 +293,7 @@ class Bookmark extends CommonDBTM {
          case self::SEARCH :
             $fields_toclean = array('add_search_count', 'add_search_count2', 'delete_search_count',
                                     'delete_search_count2', 'glpisearchcount', 'glpisearchcount2',
-                                    'start');
+                                    'start', '_glpi_csrf_token');
             foreach ($fields_toclean as $field) {
                if (isset($query_tab[$field])) {
                   unset($query_tab[$field]);
