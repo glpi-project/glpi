@@ -849,6 +849,7 @@ class MassiveAction {
             if (isset($this->messaget_after_redirect)) {
                $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->messaget_after_redirect;
                Html::displayMessageAfterRedirect();
+               unset($this->messaget_after_redirect);
             }
 
             $processor = $this->processor;

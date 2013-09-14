@@ -78,8 +78,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (!$withtemplate) {
          if ($item->getType()==$this->getType()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable($this->getTable(),
-                                          "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
+               $nb = countElementsInTable($this->getTable(), "`".$this->getForeignKeyField().
+                                                             "` = '".$item->getID()."'");
                return self::createTabEntry($this->getTypeName(2), $nb);
            }
            return $this->getTypeName(2);
@@ -485,7 +485,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['move_under'] = _x('button', 'Move');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_under'] =
+                                                   _x('button', 'Move');
       }
 
       return $actions;
@@ -493,72 +494,74 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
 
-      switch ($input['action']) {
+      switch ($ma->getAction()) {
          case 'move_under' :
+            $itemtype = $ma->getItemType(true);
             _e('As child of');
-            Dropdown::show($input['itemtype'], array('name'     => 'parent',
-                                                     'comments' => 0,
-                                                     'entity'   => $_SESSION['glpiactive_entity']));
+            Dropdown::show($itemtype, array('name'     => 'parent',
+                                            'comments' => 0,
+                                            'entity'   => $_SESSION['glpiactive_entity']));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
 
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
-
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $input = $ma->getInput();
 
-      switch ($input['action']) {
+      switch ($ma->getAction()) {
          case 'move_under' :
             if (isset($input['parent'])) {
-               $fk     = $this->getForeignKeyField();
-               $parent = new $input["itemtype"]();
-               if ($parent->getFromDB($input['parent'])) {
-                  foreach ($input["item"] as $key => $val) {
-                     if (($val == 1)
-                         && $this->can($key, UPDATE)) {
-                        // Check if parent is not a child of the original one
-                        if (!in_array($parent->getID(), getSonsOf($this->getTable(),
-                                      $this->getID()))) {
-                           if ($this->update(array('id' => $key,
-                                                   $fk  => $input['parent']))) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
+               $fk     = $item->getForeignKeyField();
+               $parent = clone $item;
+               if (!$parent->getFromDB($input['parent'])) {
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                  $ma->addMessage($parent->getErrorMessage(ERROR_NOT_FOUND));
+                  return;
+               }
+               foreach ($ids as $id) {
+                  if ($item->can($id, UPDATE)) {
+                     // Check if parent is not a child of the original one
+                     if (!in_array($parent->getID(), getSonsOf($item->getTable(),
+                                                               $item->getID()))) {
+                        if ($item->update(array('id' => $id,
+                                                $fk  => $parent->getID()))) {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                      }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+               $ma->addMessage($parent->getErrorMessage(ERROR_COMPAT));
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
