@@ -73,48 +73,40 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "delete_for_user" :
+      switch ($ma->getAction()) {
+         case 'delete_for_user' :
+            $input = $ma->getInput();
             if (isset($input['users_id'])) {
                $user = new User();
                $user->getFromDB($input['users_id']);
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     //Get software name and manufacturer
-                     if ($input['users_id'] == Session::getLoginUserID()) {
-                        //Process rules
-                        if ($this->deleteByCriteria(array('users_id' => $input['users_id'],
-                                                          'itemtype' => $key))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $user->getErrorMessage(ERROR_ON_ACTION);
-                        }
+               foreach ($ids as $id) {
+                  if ($input['users_id'] == Session::getLoginUserID()) {
+                     if ($item->deleteByCriteria(array('users_id' => $input['users_id'],
+                                                       'itemtype' => $id))) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $user->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($user->getErrorMessage(ERROR_ON_ACTION));
                      }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($user->getErrorMessage(ERROR_RIGHT));
                   }
                }
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -598,11 +590,14 @@ class DisplayPreference extends CommonDBTM {
          $paramsma = array('width'            => 400,
                            'height'           => 200,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('delete_for_user'
-                                                         => _x('button', 'Delete permanently')));
+                           'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'delete_for_user'
+                                                       => _x('button', 'Delete permanently')),
+                           'extraparams'      => array('massive_action_fields' => array('users_id')));
 
          Html::showMassiveActions($paramsma);
-         echo "<input type='hidden' name='users_id' value='$users_id'>";
+         
+         echo Html::hidden('users_id', array('value'                 => $users_id,
+                                             'data-glpicore-ma-tags' => 'common'));
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<th width='10'>";
