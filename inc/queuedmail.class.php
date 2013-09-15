@@ -138,6 +138,12 @@ class QueuedMail extends CommonDBTM {
         $input['headers'] = '';
       }
 
+      if (isset($input['documents']) && is_array($input['documents']) && count($input['documents'])) {
+         $input["documents"] = exportArrayToDB($input['documents']);
+      } else {
+        $input['documents'] = '';
+      }
+      
       // Force items_id to integer
       if (!isset($input['items_id']) || empty($input['items_id'])) {
          $input['items_id'] = 0;
@@ -358,22 +364,25 @@ class QueuedMail extends CommonDBTM {
             $mmail->Body    = $this->fields['body_html'];
             $mmail->AltBody = $this->fields['body_text'];
 
-            $doc = new Document();
-            foreach (json_decode($this->fields['documents'], true) as $docID) {
-               $doc->getFromDB($docID);
-               // Add embeded image if tag present
-               if (!empty($doc->fields['tag'])) {
-                  $mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                           $doc->fields['tag'],
-                                           $doc->fields['filename'],
-                                           'base64',
-                                           $doc->fields['mime']);
-               // Else Add attached document
-               } else {
-                  $mmail->AddAttachment(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                        $doc->fields['filename'],
-                                        'base64',
-                                        $doc->fields['mime']);
+            $documents = importArrayFromDB($this->fields['documents']);
+            if (is_array($documents) && count($documents)) {
+               $doc = new Document();
+               foreach ($documents as $docID) {
+                  $doc->getFromDB($docID);
+                  // Add embeded image if tag present
+                  if (!empty($doc->fields['tag'])) {
+                     $mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                                             $doc->fields['tag'],
+                                             $doc->fields['filename'],
+                                             'base64',
+                                             $doc->fields['mime']);
+                  // Else Add attached document
+                  } else {
+                     $mmail->AddAttachment(GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                                          $doc->fields['filename'],
+                                          'base64',
+                                          $doc->fields['mime']);
+                  }
                }
             }
          }
