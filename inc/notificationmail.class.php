@@ -167,7 +167,7 @@ class NotificationMail implements NotificationInterface {
       }
 
       if (isset($options['documents'])) {
-         $data['documents'] = json_encode($options['documents']);
+         $data['documents'] = $options['documents'];
       }
 
       $mailqueue = new QueuedMail();
