@@ -78,7 +78,7 @@ class QueuedMail extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin && !$is_deleted) {
-         $actions['sendmail'] = _x('button', 'Send');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'sendmail'] = _x('button', 'Send');
       }
 
       return $actions;
@@ -86,35 +86,29 @@ class QueuedMail extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "sendmail" :
-            foreach ($input['item'] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->canEdit($key)) {
-                     if ($this->sendMailById($key)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                     }
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      switch ($ma->getAction()) {
+         case 'sendmail' :
+            foreach ($ids as $id) {
+               if ($item->canEdit($id)) {
+                  if ($item->sendMailById($id)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $res['noright']++;
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                }
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+         
+            return;
       }
-      return $res;
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
