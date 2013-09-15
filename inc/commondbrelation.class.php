@@ -1320,7 +1320,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       // If the fields provided by showMassiveActionsSubForm are not valid then quit !
       if (!isset($item_number)) {
-         $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+         $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
          $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
          return;
       }
@@ -1348,7 +1348,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       // $peer not valid => not in DB or try to remove all at once !
       if (($peer === false) || ($peer->isNewItem())) {
          if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
-            $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             if ($peer instanceof CommonDBTM) {
                $ma->addMessage($peer->getErrorMessage(ERROR_NOT_FOUND));
             } else {
@@ -1379,7 +1379,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
             // remove all at once only available for remove !
             if (!$peer) {
-               $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                return;
             }
@@ -1387,7 +1387,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             foreach ($ids as $key) {
 
                if (!$item->getFromDB($key)) {
-                  $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   continue;
                }

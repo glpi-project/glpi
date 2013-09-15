@@ -164,13 +164,13 @@ class Cartridge extends CommonDBChild {
             foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
                   if ($item->uninstall($key)) {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_OK);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                   } else {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
@@ -183,18 +183,18 @@ class Cartridge extends CommonDBChild {
                   if ($item->can($key, UPDATE)) {
                      if ($item->update(array('id' => $key,
                                              'pages' => $input['pages']))) {
-                        $ma->itemDone($item->getType(), $key, self::ACTION_OK);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
             } else {
-               $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
             return;
 

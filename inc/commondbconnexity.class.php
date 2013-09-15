@@ -636,23 +636,23 @@ abstract class CommonDBConnexity extends CommonDBTM {
                         if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                         } else {
-                           $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                      } else {
-                        $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else if ($item instanceof CommonDBChild) {
                      if ($item->affectChild($key)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   }
                } else {
-                  $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
@@ -661,7 +661,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
          case 'affect':
 
             if (!$specificities['reaffect']) {
-               $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                return;
             }
@@ -685,14 +685,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
             if (preg_match('/^itemtype/', $peertype)) {
                if (!in_array($input['peertype'], $specificities['itemtypes'])) {
-                  $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   return;
                }
                $input2[$peertype] = $input['peertype'];
             } else {
                if ($peertype != $input['peertype']) {
-                  $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   return;
                }
@@ -701,7 +701,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             foreach ($ids as $key) {
 
                if (!$item->getFromDB($key)) {
-                  $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   continue;
                }
@@ -709,13 +709,13 @@ abstract class CommonDBConnexity extends CommonDBTM {
                if (preg_match('/^itemtype/', $peertype)) {
                   if (($input2[$peertype] == $item->fields[$peertype])
                       && ($input2[$peers_id] == $item->fields[$peers_id])) {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
                      continue;
                   }
                } else {
                   if ($input2[$peers_id] == $item->fields[$peers_id]) {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
                      continue;
                   }
@@ -724,13 +724,13 @@ abstract class CommonDBConnexity extends CommonDBTM {
                $input2[$item->getIndexName()] = $item->getID();
                if ($item->can($item->getID(), UPDATE, $input2)) {
                   if ($item->update($input2)) {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_OK);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                   } else {
-                     $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
