@@ -2651,7 +2651,8 @@ class Search {
 
       $inittable = $table;
       $addtable  = '';
-      if (($table != getTableForItemType($itemtype))
+      if ($table != 'asset_types'
+          && ($table != getTableForItemType($itemtype))
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
