@@ -2364,21 +2364,23 @@ class User extends CommonDBTM {
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-         $actions['change_authtype']        = _x('button', 'Change the authentication method');
-         $actions['force_user_ldap_update'] = __('Force synchronization');
+         $prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $actions[$prefix.'change_authtype']        = _x('button', 'Change the authentication method');
+         $actions[$prefix.'force_user_ldap_update'] = __('Force synchronization');
       }
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "change_authtype" :
+      switch ($ma->getAction()) {
+         case 'change_authtype':
             $rand             = Auth::dropdown(array('name' => 'authtype'));
             $paramsmassaction = array('authtype' => '__VALUE__');
 
@@ -2387,86 +2389,68 @@ class User extends CommonDBTM {
                                              "/ajax/dropdownMassiveActionAuthMethods.php",
                                           $paramsmassaction);
             echo "<span id='show_massiveaction_field'><br><br>";
-            echo "<input type='submit' name='massiveaction' class='submit' value='".
-                   _sx('button','Post')."'>";
-            echo "</span>\n";
+            echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
             return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
       return false;
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "force_user_ldap_update" :
-            if (self::canUpdate()) {
-               $ids = array();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->getFromDB($key)) {
-                        if (($this->fields["authtype"] == Auth::LDAP)
-                            || ($this->fields["authtype"] == Auth::EXTERNAL)) {
-                           if (AuthLdap::ldapImportUserByServerId(array('method'
-                                                                           => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                        'value'
-                                                                           => $this->fields["name"]),
-                                                                        1, $this->fields["auths_id"])) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        }
+      switch ($ma->getAction()) {
+         case 'force_user_ldap_update':
+            foreach ($ids as $id) { 
+               if ($item->can($id, UPDATE)) {
+                  if (($item->fields["authtype"] == Auth::LDAP)
+                      || ($item->fields["authtype"] == Auth::EXTERNAL)) {
+                     if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                                  'value'  => $item->fields["name"]),
+                                                            1, $item->fields["auths_id"])) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
-            } else {
-               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-               $res['noright']++;
             }
-            break;
+            return;
 
-         case "change_authtype" :
+         case 'change_authtype' :
+            $input = $ma->getInput();
             if (!isset($input["authtype"])
                 || !isset($input["auths_id"])) {
-               return false;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+               $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               return;
             }
             if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-               $ids = array();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     $ids[] = $key;
-                  }
-               }
                if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
-                  $res['ok']++;
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                } else {
-                  $res['ko']++;
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                }
             } else {
-               $res['noright']++;
-               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 

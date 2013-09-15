@@ -943,11 +943,11 @@ class MassiveAction {
                   if ($item->delete(array("id" => $id))) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $ma->itemDone($item->getType(), $id, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $ma->itemDone($item->getType(), $id, self::ACTION_NORIGHT);
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
@@ -959,11 +959,11 @@ class MassiveAction {
                   if ($item->restore(array("id" => $id))) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $ma->itemDone($item->getType(), $id, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $ma->itemDone($item->getType(), $id, self::ACTION_NORIGHT);
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
@@ -987,11 +987,11 @@ class MassiveAction {
                   if ($item->delete($delete_array, $force)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $ma->itemDone($item->getType(), $id, self::ACTION_KO);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $ma->itemDone($item->getType(), $id, self::ACTION_NORIGHT);
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
@@ -1042,19 +1042,19 @@ class MassiveAction {
                                                            => $input[$input["field"]]))) {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                               } else {
-                                 $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                               }
                            } else {
-                              $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                              $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                            }
                         } else {
-                           $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                            $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                         }
                      } else {
-                        $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                      }
                   }
@@ -1099,15 +1099,15 @@ class MassiveAction {
                                                           => $input[$input["field"]]))) {
                               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                            } else {
-                              $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                              $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                               $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                            }
                         } else {
-                           $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                            $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                         }
                      } else {
-                        $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                      }
                   }
@@ -1167,9 +1167,9 @@ class MassiveAction {
     * @param $id id or array of ids of the item(s) that have been done.
     * @param $result:
     *                self::NO_ACTION      in case of no specific action (used internally for older actions)
-    *                self::ACTION_OK      everything is OK for the action
-    *                self::ACTION_KO      something went wrong for the action
-    *                self::ACTION_NORIGHT not anough right for the action
+    *                MassiveAction::ACTION_OK      everything is OK for the action
+    *                MassiveAction::ACTION_KO      something went wrong for the action
+    *                MassiveAction::ACTION_NORIGHT not anough right for the action
    **/
    function itemDone($itemtype, $id, $result) {
 
@@ -1195,13 +1195,13 @@ class MassiveAction {
       }
 
       switch ($result) {
-         case self::ACTION_OK:
+         case MassiveAction::ACTION_OK:
             $this->results['ok'] += $number;
             break;
-         case self::ACTION_KO:
+         case MassiveAction::ACTION_KO:
             $this->results['ko'] += $number;
             break;
-         case self::ACTION_NORIGHT:
+         case MassiveAction::ACTION_NORIGHT:
             $this->results['noright'] += $number;
             break;
       }
