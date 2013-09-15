@@ -1,3 +1,4 @@
+
 <?php
 /*
  * @version $Id$
@@ -706,6 +707,7 @@ class Search {
                   $QUERY .= " UNION ";
                }
                $tmpquery = "";
+
                // AllAssets case
                if ($itemtype == 'AllAssets') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
@@ -3892,6 +3894,7 @@ class Search {
       if ($meta) {
          $NAME = "META_";
       }
+
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
       $linkfield = $searchopt[$ID]["linkfield"];
@@ -5148,15 +5151,15 @@ class Search {
                $search[$itemtype][70]['field']         = 'name';
                $search[$itemtype][70]['name']          = __('User');
 
-               $search[$itemtype][17]['table']         = 'asset_types';
-               $search[$itemtype][17]['field']         = 'contact';
-               $search[$itemtype][17]['name']          = __('Alternate username');
-               $search[$itemtype][17]['datatype']      = 'string';
+               $search[$itemtype][7]['table']         = 'asset_types';
+               $search[$itemtype][7]['field']         = 'contact';
+               $search[$itemtype][7]['name']          = __('Alternate username');
+               $search[$itemtype][7]['datatype']      = 'string';
 
-               $search[$itemtype][18]['table']         = 'asset_types';
-               $search[$itemtype][18]['field']         = 'contact_num';
-               $search[$itemtype][18]['name']          = __('Alternate username number');
-               $search[$itemtype][18]['datatype']      = 'string';
+               $search[$itemtype][8]['table']         = 'asset_types';
+               $search[$itemtype][8]['field']         = 'contact_num';
+               $search[$itemtype][8]['name']          = __('Alternate username number');
+               $search[$itemtype][8]['datatype']      = 'string';
 
                $search[$itemtype][71]['table']         = 'glpi_groups';
                $search[$itemtype][71]['field']         = 'completename';

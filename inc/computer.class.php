@@ -798,15 +798,15 @@ class Computer extends CommonDBTM {
       $tab[90]['massiveaction']  = false;
       $tab[90]['datatype']       = 'text';
 
-      $tab[17]['table']          = $this->getTable();
-      $tab[17]['field']          = 'contact';
-      $tab[17]['name']           = __('Alternate username');
-      $tab[17]['datatype']       = 'string';
+      $tab[7]['table']          = $this->getTable();
+      $tab[7]['field']          = 'contact';
+      $tab[7]['name']           = __('Alternate username');
+      $tab[7]['datatype']       = 'string';
 
-      $tab[18]['table']          = $this->getTable();
-      $tab[18]['field']          = 'contact_num';
-      $tab[18]['name']           = __('Alternate username number');
-      $tab[18]['datatype']       = 'string';
+      $tab[8]['table']          = $this->getTable();
+      $tab[8]['field']          = 'contact_num';
+      $tab[8]['name']           = __('Alternate username number');
+      $tab[8]['datatype']       = 'string';
 
       $tab[70]['table']          = 'glpi_users';
       $tab[70]['field']          = 'name';
@@ -866,14 +866,14 @@ class Computer extends CommonDBTM {
       $items_device_joinparams   = array('jointype'          => 'itemtype_item',
                                          'specific_itemtype' => 'Computer');
 
-      $tab[7]['table']           = 'glpi_deviceprocessors';
-      $tab[7]['field']           = 'designation';
-      $tab[7]['name']            = __('Processor');
-      $tab[7]['forcegroupby']    = true;
-      $tab[7]['usehaving']       = true;
-      $tab[7]['massiveaction']   = false;
-      $tab[7]['datatype']        = 'string';
-      $tab[7]['joinparams']      = array('beforejoin'
+      $tab[17]['table']           = 'glpi_deviceprocessors';
+      $tab[17]['field']           = 'designation';
+      $tab[17]['name']            = __('Processor');
+      $tab[17]['forcegroupby']    = true;
+      $tab[17]['usehaving']       = true;
+      $tab[17]['massiveaction']   = false;
+      $tab[17]['datatype']        = 'string';
+      $tab[17]['joinparams']      = array('beforejoin'
                                           => array('table'      => 'glpi_items_deviceprocessors',
                                                    'joinparams' => $items_device_joinparams));
 

@@ -107,6 +107,31 @@ function update0841to0843() {
                }
             }
 
+            // Fix computer / allassets bookmarks : 17 -> 7 / 18 -> 8 / 7 -> 17
+            if (($data['itemtype'] = 'Computer'
+               || $data['itemtype'] = 'AllAssets')
+                  && $data['type'] == Bookmark::SEARCH) {
+               foreach ($options['field'] as $key => $val) {
+                  switch ($val) {
+                     case 17 :
+                        if (isset($options['contains'][$key])) {
+                           $options['field'][$key] = 7;
+                        }
+                        break;                        
+                     case 18 :
+                        if (isset($options['contains'][$key])) {
+                           $options['field'][$key] = 8;
+                        }
+                        break;                        
+                     case 7 :
+                        if (isset($options['contains'][$key])) {
+                           $options['field'][$key] = 17;
+                        }
+                        break;
+                  }
+               }
+            }
+            
             $query2 = "UPDATE `glpi_bookmarks`
                         SET `query` = '".addslashes(Toolbox::append_params($options))."'
                         WHERE `id` = '".$data['id']."'";
