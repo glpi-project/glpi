@@ -707,7 +707,6 @@ class Search {
                   $QUERY .= " UNION ";
                }
                $tmpquery = "";
-
                // AllAssets case
                if ($itemtype == 'AllAssets') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
@@ -2711,7 +2710,9 @@ class Search {
 
       $inittable = $table;
       $addtable  = '';
-      if (($table != getTableForItemType($itemtype))
+      
+      if ($table != 'asset_types'
+          && ($table != getTableForItemType($itemtype))
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
          $table   .= $addtable;
@@ -2729,7 +2730,7 @@ class Search {
           && (getTableForItemType($itemtype) != $table)) {
          $table .= "_".$itemtype;
       }
-
+      
       // Hack to allow search by ID on every sub-table
       if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
          return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".
