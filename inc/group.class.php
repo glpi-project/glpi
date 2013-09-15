@@ -332,13 +332,15 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-      global $CFG_GLPI;
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($input['action']) {
-         case "changegroup" :
+      $input = $ma->getInput();
+
+      switch ($ma->getAction()) {
+         case 'changegroup' :
             if (isset($input['is_tech'])
                 && isset($input['check_items_id'])
                 && isset($input['check_itemtype'])) {
@@ -354,59 +356,45 @@ class Group extends CommonTreeDropdown {
                   }
                }
             }
-            break;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
+            return true;
       }
       return false;
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "changegroup" :
+      switch ($ma->getAction()) {
+         case 'changegroup':
+            $input = $ma->getInput();
             if (isset($input["field"])
                 && isset($input['groups_id'])) {
-               foreach ($input['item'] as $type => $ids) {
-                  if ($item = getItemForItemtype($type)) {
-                     foreach ($ids as $id => $val) {
-                        if ($val && $item->can($id, UPDATE)) {
-                           if ($item->update(array('id'      => $id,
+               foreach ($ids as $id) {
+                  if ($item->can($id, UPDATE)) {
+                     if ($item->update(array('id'            => $id,
                                              $input["field"] => $input["groups_id"]))) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
-                        }
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+               $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $baseitem, $ids);
    }
 
 
@@ -694,15 +682,19 @@ class Group extends CommonTreeDropdown {
          Html::printAjaxPager('', $start, $nb);
 
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         echo "<input type='hidden' name='field' value='$field'>";
+         echo Html::hidden('field', array('value'                 => $field,
+                                          'data-glpicore-ma-tags' => 'common'));
 
          // TODO MassiveAction: specific_actions
          $paramsma = array('num_displayed'    => $nb,
                            'check_itemtype'   => 'Group',
                            'check_items_id'   => $ID,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'extraparams'      => array('is_tech' => $tech),
-                           'specific_actions' => array('changegroup' => __('Move')) );
+                           'extraparams'      => array('is_tech' => $tech,
+                                                       'massive_action_fields' => array('field')),
+                           'specific_actions' => array(__CLASS__.
+                                                       MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                       'changegroup' => __('Move')) );
          Html::showMassiveActions($paramsma);
 
          echo "<table class='tab_cadre_fixe'>";
@@ -723,8 +715,7 @@ class Group extends CommonTreeDropdown {
             }
             echo "<tr class='tab_bg_1'><td>";
             if ($item->canEdit($data['items_id'])) {
-               echo "<input type='checkbox' name='item[".$data['itemtype']."][".$data['items_id']."]'
-                      value='1'>";
+               Html::showMassiveActionCheckBox($data['itemtype'], $data['items_id']);
             }
             echo "</td><td>".$item->getTypeName(1);
             echo "</td><td>".$item->getLink(array('comments' => true));
