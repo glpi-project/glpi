@@ -118,7 +118,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (isset($input['name']) && !NotificationMail::isUserAddressValid($input['name'])) {
-         Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
       }
 
       return $input;
@@ -697,12 +697,12 @@ class MailCollector  extends CommonDBTM {
       } else {
          $tkt['content'] = $body;
       }
-      
+
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
       }
-      
+
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
@@ -723,7 +723,7 @@ class MailCollector  extends CommonDBTM {
           && preg_match('/\[.+#(\d+)\]/',$head['subject'],$match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
-      
+
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
@@ -802,7 +802,7 @@ class MailCollector  extends CommonDBTM {
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
-      
+
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
          $rule_options['headers']             = $head;
@@ -1279,8 +1279,8 @@ class MailCollector  extends CommonDBTM {
          }
 
          //try to avoid conflict between inline image and attachment
-         $i = 2;            
-         while(!empty($this->files['filename']['tmp_name']) 
+         $i = 2;
+         while(!empty($this->files['filename']['tmp_name'])
                && in_array($path.$filename, $this->files['filename']['tmp_name'])) {
             //replace filename with name_(num).EXT by name_(num+1).EXT
             $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
@@ -1289,11 +1289,11 @@ class MailCollector  extends CommonDBTM {
             } else {
                //the previous regex didn't found _num pattern, so add it with this one
                $filename = preg_replace("/(.*)(\.[a-zA-Z0-9]*)$/", "$1_".$i."$2", $filename);
-            } 
+            }
             $i++;
          }
 
-         
+
          $filename = $this->decodeMimeString($filename);
 
          if ($structure->bytes > $maxsize) {
@@ -1370,7 +1370,7 @@ class MailCollector  extends CommonDBTM {
    function getBody($mid) {// Get Message Body
 
       $this->getStructure($mid);
-      
+
       $body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
 
       if ($body == "") {

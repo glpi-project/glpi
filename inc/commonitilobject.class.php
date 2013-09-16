@@ -553,7 +553,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          && !NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
 
                         $input['_itil_requester']['alternative_email'] = '';
-                        Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
+                        Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
                      }
 
                      if ((isset($input['_itil_requester']['alternative_email'])
@@ -600,7 +600,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          && !NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
 
                         $input['_itil_observer']['alternative_email'] = '';
-                        Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
+                        Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
                      }
                      if ((isset($input['_itil_observer']['alternative_email'])
                           && $input['_itil_observer']['alternative_email'])
@@ -2350,7 +2350,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tab[4]['right']       = 'id';
       }
-      
+
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'completename';
       $tab[71]['datatype']      = 'dropdown';
@@ -2384,7 +2384,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tab[22]['right']       = 'id';
       }
-      
+
       $tab['observer']          = __('Watcher');
 
       $tab[66]['table']         = 'glpi_users';
@@ -4148,7 +4148,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $linktable = $linkclass->getTable();
 
       $showlink = User::canView();
-      
+
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
