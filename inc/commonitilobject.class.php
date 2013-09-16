@@ -557,7 +557,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          && !NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
 
                         $input['_itil_requester']['alternative_email'] = '';
-                        Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
+                        Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
                      }
 
                      if ((isset($input['_itil_requester']['alternative_email'])
@@ -604,7 +604,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          && !NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
 
                         $input['_itil_observer']['alternative_email'] = '';
-                        Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
+                        Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
                      }
                      if ((isset($input['_itil_observer']['alternative_email'])
                           && $input['_itil_observer']['alternative_email'])
@@ -3349,7 +3349,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Alert if validation waiting
       TicketValidation::alertValidation($this, 'solution');
-      
+
       $this->showFormHeader($options);
 
       $show_template = $canedit;
