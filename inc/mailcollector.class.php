@@ -144,7 +144,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (isset($input['name']) && !NotificationMail::isUserAddressValid($input['name'])) {
-         Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
       }
 
       return $input;
