@@ -739,7 +739,6 @@ class Rule extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-      toolbox::logdebug($options);
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);
       } else {
