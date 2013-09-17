@@ -448,7 +448,6 @@ class Problem extends CommonITILObject {
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
-      toolbox::logdebug("actions", $actions);
       return $actions;
    }
 
