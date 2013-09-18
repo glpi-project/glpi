@@ -362,10 +362,7 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'update_ticket'";
    $DB->queryOrDie($query, "0.85 delete update_ticket right");
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'show_all_ticket'";
-   $DB->queryOrDie($query, "0.85 delete show_all_ticket right");
+
 
    // delete delete_ticket
    foreach ($DB->request("glpi_profilerights",
@@ -851,7 +848,7 @@ function update084to085() {
                          "`name` = 'edit_all_problem' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE . PURGE ."
+                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE . " | " . PURGE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'problem'";
          $DB->queryOrDie($query, "0.85 update problem with edit_all_problem right");
