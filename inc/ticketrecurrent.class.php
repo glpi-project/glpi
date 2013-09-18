@@ -459,7 +459,8 @@ class TicketRecurrent extends CommonDropdown {
          }
          // Set entity
          $input['entities_id'] = $data['entities_id'];
-
+         $input['_auto_import'] = true;
+         
          $ticket = new Ticket();
          $input  = Toolbox::addslashes_deep($input);
          if ($tid = $ticket->add($input)) {
