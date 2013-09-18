@@ -493,6 +493,37 @@ class TicketCost extends CommonDBChild {
       echo "</div><br>";
    }
 
+   /**
+    * Get costs summary values
+    *
+    * @param $ID      integer ID of the ticket
+    * @since version 0.84.3
+    * @return array of costs and actiontime
+   **/
+   static function getCostsSummary($ID) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `glpi_ticketcosts`
+                WHERE `tickets_id` = '$ID'
+                ORDER BY `begin_date`";
+      $tab = array('totalcost'   => 0,
+                  'actiontime'   => 0,
+                  'costfixed'    => 0,
+                  'costtime'     => 0,
+                  'costmaterial' => 0
+             );
+
+      foreach ($DB->request($query) as $data) {
+         $tab['actiontime']   += $data['actiontime'];
+         $tab['costfixed']    += $data['cost_fixed'];
+         $tab['costmaterial'] += $data['cost_material'];
+         $tab['costtime']     += ($data['actiontime']*$data['cost_time']/HOUR_TIMESTAMP);
+         $tab['totalcost']    +=  self::computeTotalCost($data['actiontime'], $data['cost_time'],
+                                                         $data['cost_fixed'], $data['cost_material']);
+      }
+      return $tab;
+   }   
 
    /**
     * Computer total cost of a ticket
