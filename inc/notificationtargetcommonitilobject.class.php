@@ -846,6 +846,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
       $datas["documents"] = array();
+      $addtodownloadurl = '';
+      if ($item->getType() == 'Ticket') {
+         $addtodownloadurl = "&amp;tickets_id=".$item->fields['id'];
+      }
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
             $tmp                          = array();
@@ -855,6 +859,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             
             $tmp['##document.url##']      = $this->formatURL($options['additionnaloption']['usertype'],
                                                             "document_".$data['id']);
+            $downloadurl = "/front/document.send.php?docid=".$data['id'];
+            
+            $tmp['##document.downloadurl##'] = $this->formatURL($options['additionnaloption']['usertype'],
+                                                                  $downloadurl.$addtodownloadurl);
             $tmp['##document.heading##']  = Dropdown::getDropdownName('glpi_documentcategories',
                                                                      $data['documentcategories_id']);
                                                             
@@ -969,6 +977,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                             _x('name', 'Update')),
                     'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('URL')),
+                    'document.downloadurl'       => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Download URL')),
                     'document.heading'           => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Heading')),                                                            
                     'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
