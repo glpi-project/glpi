@@ -1,4 +1,3 @@
-
 <?php
 /*
  * @version $Id$
@@ -2710,7 +2709,7 @@ class Search {
 
       $inittable = $table;
       $addtable  = '';
-      
+
       if ($table != 'asset_types'
           && ($table != getTableForItemType($itemtype))
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
@@ -2730,7 +2729,7 @@ class Search {
           && (getTableForItemType($itemtype) != $table)) {
          $table .= "_".$itemtype;
       }
-      
+
       // Hack to allow search by ID on every sub-table
       if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
          return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".
@@ -4633,7 +4632,7 @@ class Search {
                    $out .= (empty($out)?'':'<br>').Html::timestampToString($val,$withseconds, $withdays);
                }
                return $out;
-               
+
             case "email" :
                $split         = explode('$$$$', $data[$NAME.$num]);
                $out           = '';
@@ -4802,7 +4801,7 @@ class Search {
             return $specific;
          }
       }
-      
+
       // Manage auto CONCAT id
       $split = self::explodeWithID('$$', $data[$NAME.$num]);
       $split[0] = trim($split[0]);
