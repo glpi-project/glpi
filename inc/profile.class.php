@@ -48,7 +48,7 @@ class Profile extends CommonDBTM {
                                           'password_update', 'reminder_public',
                                           'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'task', 'ticket',
-                                          'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
+                                          'tickettemplates_id', 'ticket_cost',
                                           'ticketvalidation');
 
 
@@ -366,31 +366,33 @@ class Profile extends CommonDBTM {
    **/
    function cleanProfile() {
 
-      if ((self::$helpdesk_rights == 'reservation')
-          && !ReservationItem::RESERVEANITEM) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'ticket')
-          && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'followup')
-          && !Session::haveRightsOr('followup',
-                                    array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
-                                          TicketFollowup::SEEPUBLIC, TicketFollowup::ADDGROUPTICKET))) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'task')
-         && !Session::haveRight('followup', TicketTask::SEEPUBLIC)) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'ticketvalidation')
-            && !Session::haveRightsOr('ticketvalidation', array(TicketValidation::CREATEREQUEST,
-                                                          TicketValidation::CREATEINCIDENT,
-                                                          TicketValidation::VALIDATEREQUEST,
-                                                          TicketValidation::VALIDATEINCIDENT))) {
-         return false;
-      }
+   /// TODO MoYo : do not understand why this (commented lines)?
+   /// self::$helpdesk_rights is an array so == is not appropriate
+//       if ((self::$helpdesk_rights == 'reservation')
+//           && !ReservationItem::RESERVEANITEM) {
+//          return false;
+//       }
+//       if ((self::$helpdesk_rights == 'ticket')
+//           && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
+//          return false;
+//       }
+//       if ((self::$helpdesk_rights == 'followup')
+//           && !Session::haveRightsOr('followup',
+//                                     array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
+//                                           TicketFollowup::SEEPUBLIC, TicketFollowup::ADDGROUPTICKET))) {
+//          return false;
+//       }
+//       if ((self::$helpdesk_rights == 'task')
+//          && !Session::haveRight('followup', TicketTask::SEEPUBLIC)) {
+//          return false;
+//       }
+//       if ((self::$helpdesk_rights == 'ticketvalidation')
+//             && !Session::haveRightsOr('ticketvalidation', array(TicketValidation::CREATEREQUEST,
+//                                                           TicketValidation::CREATEINCIDENT,
+//                                                           TicketValidation::VALIDATEREQUEST,
+//                                                           TicketValidation::VALIDATEINCIDENT))) {
+//          return false;
+//       }
 
 
       if ($this->fields["interface"] == "helpdesk") {
@@ -427,6 +429,7 @@ class Profile extends CommonDBTM {
             }
          }
       }
+      Toolbox::logDebug($this->fields);
    }
 
 
