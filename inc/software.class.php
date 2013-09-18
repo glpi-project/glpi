@@ -370,9 +370,8 @@ class Software extends CommonDBTM {
                      $output = array();
                      $output = $softcatrule->processAllRules(null, $output, $params);
                      //Process rules
-                     if (isset($output['id'])
-                         && isset($output['softwarecategories_id'])
-                         && $this->update(array('id'       => $output['id'],
+                     if (isset($output['softwarecategories_id'])
+                         && $this->update(array('id'       => $key,
                                                 'softwarecategories_id'
                                                            => $output['softwarecategories_id']))) {
                         $res['ok']++;
