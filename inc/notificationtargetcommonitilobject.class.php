@@ -965,7 +965,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                             _x('name', 'Update')),
                     'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('ID')),
+                                                            __('URL')),
                     'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('ID')),
                     'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
