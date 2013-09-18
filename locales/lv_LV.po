@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2013-09-12 21:08+0200\n"
-"PO-Revision-Date: 2013-09-12 19:09+0000\n"
+"POT-Creation-Date: 2013-09-18 23:03+0200\n"
+"PO-Revision-Date: 2013-09-18 21:03+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/GLPI/language/lv_LV/)\n"
 "MIME-Version: 1.0\n"
@@ -106,7 +106,7 @@ msgstr "Pieslēgties atkārtoti"
 #: inc/commondbtm.class.php:2798 inc/commondbtm.class.php:3770
 #: inc/commondbtm.class.php:3776 inc/commonitilobject.class.php:1468
 #: inc/commonitiltask.class.php:859 inc/computer_softwarelicense.class.php:464
-#: inc/computer_softwareversion.class.php:419 inc/consumable.class.php:644
+#: inc/computer_softwareversion.class.php:419 inc/consumable.class.php:647
 #: inc/contract.class.php:354 inc/contract.class.php:365
 #: inc/contract.class.php:382 inc/contract.class.php:390
 #: inc/contract.class.php:398 inc/contract.class.php:410
@@ -125,12 +125,12 @@ msgstr "Pieslēgties atkārtoti"
 #: inc/networkportinstantiation.class.php:707
 #: inc/notificationtargetcommonitilobject.class.php:595
 #: inc/notificationtargetcontract.class.php:63
-#: inc/notificationtargetcontract.class.php:110 inc/problem.class.php:1638
+#: inc/notificationtargetcontract.class.php:110 inc/problem.class.php:1637
 #: inc/reservation.class.php:453 inc/reservation.class.php:678
 #: inc/reservation.class.php:946 inc/reservationitem.class.php:302
 #: inc/reservationitem.class.php:380 inc/reservationitem.class.php:462
-#: inc/search.class.php:1002 inc/search.class.php:3977
-#: inc/search.class.php:4006 inc/search.class.php:4172 inc/stat.class.php:1248
+#: inc/search.class.php:1002 inc/search.class.php:3980
+#: inc/search.class.php:4009 inc/search.class.php:4175 inc/stat.class.php:1248
 #: inc/stat.class.php:1251 inc/stat.class.php:1254 inc/stat.class.php:1455
 #: inc/ticket.class.php:2397 inc/ticket.class.php:2738
 #: inc/ticket.class.php:2741 inc/ticket.class.php:2744
@@ -202,15 +202,15 @@ msgstr "%1$s - Tīkla punkts %2$s"
 #: inc/networkalias.class.php:311 inc/networkequipment.class.php:357
 #: inc/networkequipment.class.php:496 inc/networkport.class.php:677
 #: inc/networkport_vlan.class.php:180 inc/notificationevent.class.php:172
-#: inc/notificationtargetcommonitilobject.class.php:953
-#: inc/notificationtargetcommonitilobject.class.php:955
-#: inc/problem.class.php:1762 inc/profile_user.class.php:182
+#: inc/notificationtargetcommonitilobject.class.php:956
+#: inc/notificationtargetcommonitilobject.class.php:958
+#: inc/problem.class.php:1761 inc/profile_user.class.php:182
 #: inc/profile_user.class.php:199 inc/profile_user.class.php:318
 #: inc/profile_user.class.php:465 inc/rulecachedcollection.class.php:154
 #: inc/rule.class.php:1617 inc/rulemailcollector.class.php:210
 #: inc/rulemailcollector.class.php:215 inc/search.class.php:1156
-#: inc/search.class.php:4440 inc/search.class.php:4458
-#: inc/search.class.php:4539 inc/search.class.php:4565
+#: inc/search.class.php:4443 inc/search.class.php:4461
+#: inc/search.class.php:4542 inc/search.class.php:4568
 #: inc/session.class.php:351 inc/session.class.php:354
 #: inc/supplier.class.php:500 inc/ticket.class.php:1457
 #: inc/ticket.class.php:2736 inc/ticket.class.php:2819
@@ -218,7 +218,7 @@ msgstr "%1$s - Tīkla punkts %2$s"
 #: inc/ticket.class.php:2941 inc/ticket.class.php:3437
 #: inc/ticket.class.php:3826 inc/ticket.class.php:5312
 #: inc/ticket.class.php:5588 inc/ticket.class.php:5695
-#: inc/ticketcost.class.php:401 inc/ticketfollowup.class.php:427
+#: inc/ticketcost.class.php:402 inc/ticketfollowup.class.php:427
 #: inc/tickettemplatemandatoryfield.class.php:217
 #: inc/tickettemplatemandatoryfield.class.php:219 inc/user.class.php:2440
 #: inc/user.class.php:2469 inc/user.class.php:3125 inc/user.class.php:3201
@@ -313,39 +313,56 @@ msgstr "Nosūtīt sekojumus uz epastu"
 #: inc/notificationtarget.class.php:345 inc/notificationtarget.class.php:717
 #: inc/notificationtarget.class.php:739 inc/notificationtarget.class.php:742
 #: inc/notificationtarget.class.php:746
-#: inc/notificationtargetcommonitilobject.class.php:882
-#: inc/notificationtargetcommonitilobject.class.php:957
-#: inc/notificationtargetcommonitilobject.class.php:959
-#: inc/notificationtargetcommonitilobject.class.php:961
-#: inc/notificationtargetcommonitilobject.class.php:963
-#: inc/notificationtargetcommonitilobject.class.php:965
+#: inc/notificationtargetcommonitilobject.class.php:885
+#: inc/notificationtargetcommonitilobject.class.php:960
+#: inc/notificationtargetcommonitilobject.class.php:962
+#: inc/notificationtargetcommonitilobject.class.php:964
+#: inc/notificationtargetcommonitilobject.class.php:966
+#: inc/notificationtargetcommonitilobject.class.php:968
+#: inc/notificationtargetcommonitilobject.class.php:970
+#: inc/notificationtargetcommonitilobject.class.php:972
+#: inc/notificationtargetcommonitilobject.class.php:974
+#: inc/notificationtargetcommonitilobject.class.php:976
+#: inc/notificationtargetcommonitilobject.class.php:978
+#: inc/notificationtargetcommonitilobject.class.php:980
+#: inc/notificationtargetcommonitilobject.class.php:982
 #: inc/notificationtargetcontract.class.php:173
 #: inc/notificationtargetproblem.class.php:256
 #: inc/notificationtargetproblem.class.php:257
 #: inc/notificationtargetproblem.class.php:258
 #: inc/notificationtargetproblem.class.php:259
 #: inc/notificationtargetproblem.class.php:260
-#: inc/notificationtargetticket.class.php:616
-#: inc/notificationtargetticket.class.php:618
-#: inc/notificationtargetticket.class.php:620
-#: inc/notificationtargetticket.class.php:623
-#: inc/notificationtargetticket.class.php:721
-#: inc/notificationtargetticket.class.php:723
-#: inc/notificationtargetticket.class.php:725
-#: inc/notificationtargetticket.class.php:728
-#: inc/notificationtargetticket.class.php:731
-#: inc/notificationtargetticket.class.php:734
-#: inc/notificationtargetticket.class.php:737
-#: inc/notificationtargetticket.class.php:740
-#: inc/notificationtargetticket.class.php:741
-#: inc/notificationtargetticket.class.php:742
-#: inc/notificationtargetticket.class.php:743
-#: inc/notificationtargetticket.class.php:745
+#: inc/notificationtargetticket.class.php:632
+#: inc/notificationtargetticket.class.php:634
+#: inc/notificationtargetticket.class.php:636
+#: inc/notificationtargetticket.class.php:638
+#: inc/notificationtargetticket.class.php:640
+#: inc/notificationtargetticket.class.php:642
+#: inc/notificationtargetticket.class.php:644
+#: inc/notificationtargetticket.class.php:646
+#: inc/notificationtargetticket.class.php:648
+#: inc/notificationtargetticket.class.php:650
+#: inc/notificationtargetticket.class.php:664
+#: inc/notificationtargetticket.class.php:666
+#: inc/notificationtargetticket.class.php:668
+#: inc/notificationtargetticket.class.php:671
+#: inc/notificationtargetticket.class.php:770
+#: inc/notificationtargetticket.class.php:772
+#: inc/notificationtargetticket.class.php:774
+#: inc/notificationtargetticket.class.php:777
+#: inc/notificationtargetticket.class.php:780
+#: inc/notificationtargetticket.class.php:783
+#: inc/notificationtargetticket.class.php:786
+#: inc/notificationtargetticket.class.php:789
+#: inc/notificationtargetticket.class.php:790
+#: inc/notificationtargetticket.class.php:791
+#: inc/notificationtargetticket.class.php:792
+#: inc/notificationtargetticket.class.php:794
 #: inc/notificationtemplatetranslation.class.php:375 inc/plugin.class.php:449
 #: inc/plugin.class.php:486 inc/plugin.class.php:499 inc/plugin.class.php:515
 #: inc/plugin.class.php:523 inc/plugin.class.php:545
-#: inc/problem.class.php:1151 inc/problem.class.php:1308
-#: inc/problem.class.php:1632 inc/problem.class.php:1654
+#: inc/problem.class.php:1150 inc/problem.class.php:1307
+#: inc/problem.class.php:1631 inc/problem.class.php:1653
 #: inc/profile_user.class.php:338 inc/profile_user.class.php:463
 #: inc/reminder.class.php:933 inc/reminder.class.php:959
 #: inc/reminder.class.php:973 inc/reminder.class.php:983
@@ -388,7 +405,7 @@ msgstr "%1$s: %2$s"
 #: inc/dropdown.class.php:327 inc/dropdown.class.php:342
 #: inc/entity.class.php:454 inc/entity.class.php:972 inc/html.class.php:1938
 #: inc/notification.class.php:397 inc/notificationevent.class.php:217
-#: inc/notificationtargetcommonitilobject.class.php:899
+#: inc/notificationtargetcommonitilobject.class.php:902
 #: inc/ruleright.class.php:266 inc/supplier.class.php:149
 #: inc/supplier.class.php:305 inc/user.class.php:1701 inc/user.class.php:1974
 #: inc/user.class.php:2352 inc/user.class.php:3384 inc/useremail.class.php:53
@@ -425,7 +442,7 @@ msgstr[2] "E-pasti"
 #: inc/problem_ticket.class.php:350 inc/profile_user.class.php:140
 #: inc/profile_user.class.php:289 inc/reservation.class.php:758
 #: inc/reservationitem.class.php:394 inc/rule.class.php:667
-#: inc/rule.class.php:714 inc/rule.class.php:2181 inc/ruleright.class.php:94
+#: inc/rule.class.php:714 inc/rule.class.php:2182 inc/ruleright.class.php:94
 #: inc/slalevel.class.php:128 inc/ticket.class.php:4539
 #: inc/ticketfollowup.class.php:497
 #: inc/tickettemplatehiddenfield.class.php:214
@@ -460,7 +477,7 @@ msgstr "Ievadiet lietotājvārda, ierīces vai sērijas numura pirmos simbolus"
 #: front/report.contract.php:68 front/report.year.php:55
 #: front/report.year.php:67 inc/change.class.php:620
 #: inc/commonglpi.class.php:533 inc/config.class.php:308
-#: inc/notificationtemplatetranslation.class.php:353 inc/problem.class.php:743
+#: inc/notificationtemplatetranslation.class.php:353 inc/problem.class.php:742
 #: inc/profile_user.class.php:513 inc/search.class.php:835
 #: inc/search.class.php:1228 inc/search.class.php:1664
 #: inc/ticket.class.php:2629 inc/ticketvalidation.class.php:411
@@ -478,7 +495,7 @@ msgstr "Rādīt visu"
 
 #: ajax/massiveaction.php:80 inc/html.class.php:3200 inc/html.class.php:3217
 #: inc/ruleaction.class.php:71 inc/rule.class.php:610 inc/rule.class.php:649
-#: inc/rule.class.php:652 inc/rule.class.php:2453
+#: inc/rule.class.php:652 inc/rule.class.php:2454
 msgid "Action"
 msgid_plural "Actions"
 msgstr[0] "Darbības"
@@ -492,8 +509,8 @@ msgstr "Pieejamība"
 #: ajax/planning.php:69 inc/change.class.php:774
 #: inc/commonitiltask.class.php:910
 #: inc/notificationtargetproblem.class.php:206
-#: inc/notificationtargetticket.class.php:589 inc/problem.class.php:1299
-#: inc/problem.class.php:1308 inc/reminder.class.php:690
+#: inc/notificationtargetticket.class.php:617 inc/problem.class.php:1298
+#: inc/problem.class.php:1307 inc/reminder.class.php:690
 #: inc/reminder.class.php:959 inc/reservation.class.php:690
 #: inc/reservation.class.php:1084 inc/reservation.class.php:1132
 #: inc/reservation.class.php:1195 inc/reservation.class.php:1250
@@ -513,7 +530,7 @@ msgstr "Iesniedzējs"
 #: inc/notificationtargetplanningrecall.class.php:147
 #: inc/notificationtargetproblem.class.php:207
 #: inc/notificationtargetreservation.class.php:150
-#: inc/notificationtargetticket.class.php:590 inc/reservation.class.php:703
+#: inc/notificationtargetticket.class.php:618 inc/reservation.class.php:703
 #: inc/reservation.class.php:1082 inc/reservation.class.php:1130
 #: inc/reservation.class.php:1192 inc/reservation.class.php:1247
 #: inc/ticketrecurrent.class.php:146 inc/ticketrecurrent.class.php:252
@@ -557,7 +574,7 @@ msgstr "Publisks"
 #: inc/knowbaseitem.class.php:1480 inc/networkequipment.class.php:536
 #: inc/notification.class.php:308 inc/printer.class.php:730
 #: inc/profile_user.class.php:826 inc/rule.class.php:318 inc/sla.class.php:230
-#: inc/software.class.php:522 inc/supplier.class.php:342
+#: inc/software.class.php:521 inc/supplier.class.php:342
 msgid "Child entities"
 msgstr "Apakšnodaļas"
 
@@ -579,7 +596,8 @@ msgstr "Uzstādīt kā privātu"
 #: inc/notificationtargetproblem.class.php:208
 #: inc/notificationtargetreservation.class.php:151
 #: inc/notificationtargetreservation.class.php:170
-#: inc/notificationtargetticket.class.php:591 inc/reservation.class.php:1083
+#: inc/notificationtargetticket.class.php:619
+#: inc/notificationtargetticket.class.php:639 inc/reservation.class.php:1083
 #: inc/reservation.class.php:1131 inc/reservation.class.php:1193
 #: inc/reservation.class.php:1248 inc/ticketcost.class.php:276
 #: inc/ticketcost.class.php:376 inc/ticketrecurrent.class.php:150
@@ -632,9 +650,9 @@ msgstr "Bez ierobežojuma"
 #: inc/networkalias.class.php:295 inc/networkequipment.class.php:530
 #: inc/networkport_vlan.class.php:165 inc/notification.class.php:302
 #: inc/notificationtargetcartridgeitem.class.php:87
-#: inc/notificationtargetcommonitilobject.class.php:941
-#: inc/notificationtargetcommonitilobject.class.php:954
-#: inc/notificationtargetcommonitilobject.class.php:956
+#: inc/notificationtargetcommonitilobject.class.php:944
+#: inc/notificationtargetcommonitilobject.class.php:957
+#: inc/notificationtargetcommonitilobject.class.php:959
 #: inc/notificationtargetconsumableitem.class.php:60
 #: inc/notificationtargetconsumableitem.class.php:88
 #: inc/notificationtargetcontract.class.php:160
@@ -644,8 +662,8 @@ msgstr "Bez ierobežojuma"
 #: inc/notificationtargetreservation.class.php:171
 #: inc/notificationtargetsoftwarelicense.class.php:89
 #: inc/peripheral.class.php:515 inc/phone.class.php:571
-#: inc/printer.class.php:718 inc/problem.class.php:543
-#: inc/problem.class.php:1564 inc/profile.class.php:1219
+#: inc/printer.class.php:718 inc/problem.class.php:542
+#: inc/problem.class.php:1563 inc/profile.class.php:1219
 #: inc/profile.class.php:1695 inc/profile_user.class.php:181
 #: inc/profile_user.class.php:820 inc/reminder.class.php:1259
 #: inc/reservationitem.class.php:208 inc/rssfeed.class.php:1092
@@ -654,8 +672,8 @@ msgstr "Bez ierobežojuma"
 #: inc/ruledictionnarysoftware.class.php:178
 #: inc/ruleimportentity.class.php:161 inc/rulemailcollector.class.php:194
 #: inc/ruleright.class.php:300 inc/rulerightcollection.class.php:153
-#: inc/ruleticket.class.php:343 inc/search.class.php:5182
-#: inc/sla.class.php:224 inc/software.class.php:497 inc/software.class.php:895
+#: inc/ruleticket.class.php:343 inc/search.class.php:5185
+#: inc/sla.class.php:224 inc/software.class.php:496 inc/software.class.php:894
 #: inc/softwarelicense.class.php:635 inc/softwarelicense.class.php:767
 #: inc/stat.class.php:1434 inc/supplier.class.php:336
 #: inc/supplier.class.php:423 inc/ticket.class.php:1983
@@ -672,7 +690,7 @@ msgstr[2] "Nodaļas"
 #: ajax/ticketassigninformation.php:63 ajax/ticketassigninformation.php:64
 #: ajax/ticketassigninformation.php:85 ajax/ticketassigninformation.php:86
 #: inc/change.class.php:618 inc/commonitilobject.class.php:2903
-#: inc/commonitilobject.class.php:2904 inc/problem.class.php:741
+#: inc/commonitilobject.class.php:2904 inc/problem.class.php:740
 #: inc/ticket.class.php:2627
 msgid "Processing"
 msgstr "Apstrādā"
@@ -713,16 +731,18 @@ msgstr "Derīgie tagi"
 
 #: ajax/ticketsatisfaction.php:88 inc/entity.class.php:726
 #: inc/notificationtargetcartridgeitem.class.php:86
-#: inc/notificationtargetcommonitilobject.class.php:879
+#: inc/notificationtargetcommonitilobject.class.php:882
+#: inc/notificationtargetcommonitilobject.class.php:971
+#: inc/notificationtargetcommonitilobject.class.php:983
 #: inc/notificationtargetcontract.class.php:173
 #: inc/notificationtargetcrontask.class.php:87
 #: inc/notificationtargetplanningrecall.class.php:145
 #: inc/notificationtargetproblem.class.php:258
 #: inc/notificationtargetreservation.class.php:140
 #: inc/notificationtargetsoftwarelicense.class.php:90
-#: inc/notificationtargetticket.class.php:722
-#: inc/notificationtargetticket.class.php:724
-#: inc/notificationtargetticket.class.php:733
+#: inc/notificationtargetticket.class.php:771
+#: inc/notificationtargetticket.class.php:773
+#: inc/notificationtargetticket.class.php:782
 #: inc/notificationtargetuser.class.php:118 inc/rssfeed.class.php:424
 #: inc/rssfeed.class.php:639
 msgid "URL"
@@ -848,8 +868,8 @@ msgid "Check if a new version is available"
 msgstr "Pārbaudīt, vai ir pieejama jauna versija"
 
 #: front/backup.php:573 front/report.contract.list.php:116
-#: front/report.year.list.php:128 inc/notificationtargetticket.class.php:582
-#: inc/problem.class.php:1123 inc/ticket.class.php:5076
+#: front/report.year.list.php:128 inc/notificationtargetticket.class.php:610
+#: inc/problem.class.php:1122 inc/ticket.class.php:5076
 msgid "Deleted"
 msgstr "Dzēsts"
 
@@ -866,7 +886,9 @@ msgid "XML Dump"
 msgstr "Arhivēšana XML failā (XML Dump)"
 
 #: front/backup.php:588 inc/document.class.php:324 inc/document.class.php:817
-#: inc/document_item.class.php:671 inc/ticket.class.php:3437
+#: inc/document_item.class.php:671
+#: inc/notificationtargetcommonitilobject.class.php:977
+#: inc/ticket.class.php:3437
 msgid "File"
 msgstr "Datne"
 
@@ -882,14 +904,14 @@ msgstr "Izmērs"
 #: inc/crontask.class.php:1013 inc/crontask.class.php:1068
 #: inc/document_item.class.php:675 inc/event.class.php:240
 #: inc/event.class.php:293 inc/knowbaseitem.class.php:1433
-#: inc/log.class.php:268 inc/notificationtargetcommonitilobject.class.php:960
+#: inc/log.class.php:268 inc/notificationtargetcommonitilobject.class.php:963
 #: inc/notificationtargetfieldunicity.class.php:86
 #: inc/notificationtargetproblem.class.php:257
-#: inc/notificationtargetticket.class.php:617
-#: inc/notificationtargetticket.class.php:621
-#: inc/notificationtargetticket.class.php:741
-#: inc/notimportedemail.class.php:195 inc/problem.class.php:672
-#: inc/problem.class.php:1560 inc/ticket.class.php:2057
+#: inc/notificationtargetticket.class.php:665
+#: inc/notificationtargetticket.class.php:669
+#: inc/notificationtargetticket.class.php:790
+#: inc/notimportedemail.class.php:195 inc/problem.class.php:671
+#: inc/problem.class.php:1559 inc/ticket.class.php:2057
 #: inc/ticket.class.php:2065 inc/ticket.class.php:2345
 #: inc/ticket.class.php:5150 inc/ticketfollowup.class.php:534
 #: inc/ticketfollowup.class.php:636 inc/ticketfollowup.class.php:680
@@ -917,16 +939,16 @@ msgstr "Dzēst datni %s?"
 #: inc/computer_softwarelicense.class.php:449
 #: inc/computer_softwareversion.class.php:441
 #: inc/computer_softwareversion.class.php:711
-#: inc/computer_softwareversion.class.php:790 inc/consumable.class.php:466
+#: inc/computer_softwareversion.class.php:790 inc/consumable.class.php:469
 #: inc/displaypreference.class.php:398 inc/displaypreference.class.php:400
 #: inc/displaypreference.class.php:401 inc/displaypreference.class.php:563
 #: inc/displaypreference.class.php:604 inc/document.class.php:696
 #: inc/infocom.class.php:1149 inc/item_devices.class.php:185
 #: inc/knowbaseitem.class.php:734 inc/knowbaseitem.class.php:1538
-#: inc/netpoint.class.php:342 inc/networkname.class.php:804
+#: inc/netpoint.class.php:342 inc/networkname.class.php:805
 #: inc/problem_ticket.class.php:260 inc/profile_user.class.php:311
 #: inc/reminder.class.php:1180 inc/reservation.class.php:764
-#: inc/rssfeed.class.php:1014 inc/rule.class.php:2221
+#: inc/rssfeed.class.php:1014 inc/rule.class.php:2222
 #: inc/ticket.class.php:3907 inc/ticket.class.php:4523
 #: inc/ticket_ticket.class.php:114 inc/transfer.class.php:2990
 #: inc/transfer.class.php:2995 inc/transfer.class.php:3012
@@ -1054,7 +1076,7 @@ msgstr "%s attīra objektu"
 #: front/user.form.php:107
 #, php-format
 msgid "%s updates an item"
-msgstr "%s atjaunināja objektu"
+msgstr "%s atjaunoja vienību"
 
 #: front/budget.form.php:110 front/dropdown.common.form.php:125
 #: front/group.form.php:76 front/ldap.group.import.php:74
@@ -1099,7 +1121,7 @@ msgstr "%s uzstāda kasetni"
 #: front/cartridge.form.php:80
 #, php-format
 msgid "%s updates a cartridge"
-msgstr "%s atjaunināja kasetni"
+msgstr "%s atjaunoja kasetni"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:43
@@ -1201,7 +1223,7 @@ msgstr "%s atjaunoja virtuālo darbstaciju"
 msgid "%s adds consumables"
 msgstr "%s pievieno izlietojamos materiālus"
 
-#: front/consumableitem.form.php:95 inc/consumable.class.php:64
+#: front/consumableitem.form.php:95 inc/consumable.class.php:67
 #: inc/entity.class.php:1335 inc/html.class.php:1096 inc/profile.class.php:718
 #: inc/profile.class.php:1489 inc/search.class.php:1018
 msgid "Consumable"
@@ -1242,7 +1264,7 @@ msgstr "KLŪDA: %s ir tikai lasāma"
 
 #: front/cron.php:44
 msgid "run script as apache user"
-msgstr ""
+msgstr "Palaist skriptu ar Apache lietotāju tiesībām"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:50
@@ -1272,9 +1294,9 @@ msgstr "Uzdevums %s izpildīts"
 #: inc/knowbaseitem.class.php:1589 inc/knowbaseitem.class.php:1596
 #: inc/knowbaseitem.class.php:1621 inc/knowbaseitem.class.php:1624
 #: inc/knowbaseitem.class.php:1648 inc/knowbaseitem.class.php:1655
-#: inc/networkportinstantiation.class.php:765 inc/problem.class.php:1162
-#: inc/problem.class.php:1193 inc/problem.class.php:1690
-#: inc/problem.class.php:1715 inc/problem.class.php:1768
+#: inc/networkportinstantiation.class.php:765 inc/problem.class.php:1161
+#: inc/problem.class.php:1192 inc/problem.class.php:1689
+#: inc/problem.class.php:1714 inc/problem.class.php:1767
 #: inc/profile_user.class.php:217 inc/profile_user.class.php:380
 #: inc/profile_user.class.php:536 inc/reminder.class.php:1110
 #: inc/reminder.class.php:1230 inc/reminder.class.php:1238
@@ -1290,13 +1312,13 @@ msgstr "Uzdevums %s izpildīts"
 #: inc/search.class.php:1290 inc/search.class.php:1310
 #: inc/search.class.php:1313 inc/search.class.php:1359
 #: inc/search.class.php:1360 inc/search.class.php:1366
-#: inc/search.class.php:1367 inc/search.class.php:3919
-#: inc/search.class.php:3959 inc/search.class.php:3980
-#: inc/search.class.php:4009 inc/search.class.php:4462
+#: inc/search.class.php:1367 inc/search.class.php:3922
+#: inc/search.class.php:3962 inc/search.class.php:3983
+#: inc/search.class.php:4012 inc/search.class.php:4465
 #: inc/ticket.class.php:2485 inc/ticket.class.php:5487
 #: inc/ticket.class.php:5513 inc/ticket.class.php:5596
 #: inc/ticket.class.php:5645 inc/ticket.class.php:5698
-#: inc/ticketcost.class.php:405 inc/ticket_ticket.class.php:119
+#: inc/ticketcost.class.php:406 inc/ticket_ticket.class.php:119
 #: inc/ticket_ticket.class.php:121 inc/toolbox.class.php:961
 #: inc/toolbox.class.php:1094 inc/useremail.class.php:164
 #: install/update_0681_07.php:543 install/update_0681_07.php:546
@@ -1321,7 +1343,7 @@ msgstr "Nākošā darbība: %s"
 
 #: front/crontask.php:49
 msgid "No action pending"
-msgstr ""
+msgstr "Nav izpildāmo uzdevumu"
 
 #: front/device.php:38 front/device.php:42 inc/commondevice.class.php:87
 #: inc/computer.class.php:864 inc/dropdown.class.php:628
@@ -1388,7 +1410,7 @@ msgstr[2] "Programmatūras"
 #: inc/ruledictionnaryprinter.class.php:124
 #: inc/ruledictionnaryprinter.class.php:148
 #: inc/ruledictionnaryprintermodel.class.php:61
-#: inc/ruleimportcomputer.class.php:119 inc/search.class.php:5173
+#: inc/ruleimportcomputer.class.php:119 inc/search.class.php:5176
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "Ražotājs"
@@ -1412,7 +1434,7 @@ msgstr[2] "Printeri"
 #: inc/monitor.class.php:230 inc/monitor.class.php:457
 #: inc/networkequipment.class.php:267 inc/networkequipment.class.php:432
 #: inc/notificationtargetproblem.class.php:219
-#: inc/notificationtargetticket.class.php:574 inc/peripheral.class.php:221
+#: inc/notificationtargetticket.class.php:601 inc/peripheral.class.php:221
 #: inc/peripheral.class.php:432 inc/phone.class.php:220
 #: inc/phone.class.php:463 inc/printer.class.php:323 inc/printer.class.php:589
 #: inc/ruledictionnarycomputermodel.class.php:57
@@ -1505,11 +1527,11 @@ msgstr[2] "Tālruņa modeļi"
 #: inc/link_itemtype.class.php:120 inc/monitor.class.php:204
 #: inc/monitor.class.php:452 inc/networkequipment.class.php:241
 #: inc/networkequipment.class.php:427 inc/networkname.class.php:241
-#: inc/networkport.class.php:1116 inc/notification.class.php:150
+#: inc/networkport.class.php:1117 inc/notification.class.php:150
 #: inc/notification.class.php:285 inc/notificationtarget.class.php:1210
 #: inc/notificationtargetcontract.class.php:159
 #: inc/notificationtargetfieldunicity.class.php:87
-#: inc/notificationtargetticket.class.php:566
+#: inc/notificationtargetticket.class.php:593
 #: inc/notificationtemplate.class.php:112
 #: inc/notificationtemplate.class.php:146
 #: inc/notificationtemplatetranslation.class.php:337
@@ -1592,7 +1614,7 @@ msgstr[2] "Tālruņa tipi"
 #: inc/dropdown.class.php:728 inc/html.class.php:1745
 #: inc/operatingsystem.class.php:43 inc/report.class.php:200
 #: inc/ruledictionnaryoperatingsystem.class.php:54
-#: inc/ruledictionnaryoperatingsystem.class.php:66 inc/software.class.php:557
+#: inc/ruledictionnaryoperatingsystem.class.php:66 inc/software.class.php:556
 #: inc/softwareversion.class.php:135 inc/softwareversion.class.php:167
 #: inc/softwareversion.class.php:262
 msgid "Operating system"
@@ -1616,7 +1638,7 @@ msgstr[2] "Servispakas"
 #: inc/computer_softwareversion.class.php:894 inc/plugin.class.php:329
 #: inc/ruledictionnaryoperatingsystemversion.class.php:57
 #: inc/ruledictionnaryoperatingsystemversion.class.php:70
-#: inc/ruledictionnarysoftware.class.php:166 inc/software.class.php:526
+#: inc/ruledictionnarysoftware.class.php:166 inc/software.class.php:525
 #: inc/softwareversion.class.php:50
 msgid "Version"
 msgid_plural "Versions"
@@ -1659,7 +1681,7 @@ msgstr "Neatļauts datnes nosaukums"
 #: front/dropdown.common.form.php:96
 #, php-format
 msgid "%s replaces an item"
-msgstr ""
+msgstr "%s aizvietoja vienību"
 
 #: front/dropdown.common.form.php:116 front/massiveaction.php:157
 #: inc/profile_user.class.php:93 inc/transfer.class.php:3247
@@ -1693,10 +1715,10 @@ msgstr "Meklēt"
 #: inc/monitor.class.php:477 inc/networkequipment.class.php:283
 #: inc/networkequipment.class.php:452
 #: inc/notificationtargetproblem.class.php:220
-#: inc/notificationtargetticket.class.php:575 inc/peripheral.class.php:237
+#: inc/notificationtargetticket.class.php:602 inc/peripheral.class.php:237
 #: inc/peripheral.class.php:452 inc/phone.class.php:236
 #: inc/phone.class.php:483 inc/printer.class.php:339 inc/printer.class.php:609
-#: inc/search.class.php:5153
+#: inc/search.class.php:5156
 msgid "Alternate username"
 msgstr "Alternatīvs lietotājvārds"
 
@@ -1716,7 +1738,7 @@ msgstr "Piesaistītais elements"
 #: inc/change.class.php:406 inc/commondbrelation.class.php:278
 #: inc/commondbtm.class.php:3710 inc/commondropdown.class.php:441
 #: inc/commontreedropdown.class.php:574 inc/computer.class.php:724
-#: inc/computer_softwarelicense.class.php:63 inc/consumable.class.php:497
+#: inc/computer_softwarelicense.class.php:63 inc/consumable.class.php:500
 #: inc/consumableitem.class.php:222 inc/contact.class.php:308
 #: inc/contract.class.php:541 inc/contract_item.class.php:148
 #: inc/crontask.class.php:1224 inc/document.class.php:811
@@ -1725,16 +1747,17 @@ msgstr "Piesaistītais elements"
 #: inc/infocom.class.php:1521 inc/knowbaseitem.class.php:1422
 #: inc/link.class.php:167 inc/log.class.php:268 inc/monitor.class.php:444
 #: inc/networkequipment.class.php:419 inc/networkname.class.php:247
-#: inc/networkport.class.php:1083 inc/networkport.class.php:1122
-#: inc/notificationtargetcommonitilobject.class.php:877
+#: inc/networkport.class.php:1084 inc/networkport.class.php:1123
+#: inc/notificationtargetcommonitilobject.class.php:880
+#: inc/notificationtargetcommonitilobject.class.php:975
 #: inc/notificationtargetproblem.class.php:256
-#: inc/notificationtargetticket.class.php:727
-#: inc/notificationtargetticket.class.php:740 inc/peripheral.class.php:419
-#: inc/phone.class.php:450 inc/printer.class.php:576 inc/problem.class.php:476
-#: inc/problem.class.php:1151 inc/problem.class.php:1632
+#: inc/notificationtargetticket.class.php:776
+#: inc/notificationtargetticket.class.php:789 inc/peripheral.class.php:419
+#: inc/phone.class.php:450 inc/printer.class.php:576 inc/problem.class.php:475
+#: inc/problem.class.php:1150 inc/problem.class.php:1631
 #: inc/profile_user.class.php:794 inc/reservationitem.class.php:156
-#: inc/search.class.php:5104 inc/search.class.php:5125 inc/sla.class.php:208
-#: inc/software.class.php:431 inc/softwarelicense.class.php:765
+#: inc/search.class.php:5107 inc/search.class.php:5128 inc/sla.class.php:208
+#: inc/software.class.php:430 inc/softwarelicense.class.php:765
 #: inc/supplier.class.php:259 inc/ticket.class.php:1744
 #: inc/ticket.class.php:1866 inc/ticket.class.php:3824
 #: inc/ticket.class.php:4478 inc/ticket.class.php:5426
@@ -1760,10 +1783,10 @@ msgstr "ID"
 #: inc/networkequipment.class.php:277 inc/networkequipment.class.php:442
 #: inc/notificationtargetproblem.class.php:216
 #: inc/notificationtargetsoftwarelicense.class.php:88
-#: inc/notificationtargetticket.class.php:571 inc/peripheral.class.php:231
+#: inc/notificationtargetticket.class.php:598 inc/peripheral.class.php:231
 #: inc/peripheral.class.php:442 inc/phone.class.php:230
 #: inc/printer.class.php:333 inc/printer.class.php:599
-#: inc/ruleimportcomputer.class.php:113 inc/search.class.php:5136
+#: inc/ruleimportcomputer.class.php:113 inc/search.class.php:5139
 #: inc/softwarelicense.class.php:198 inc/softwarelicense.class.php:301
 #: inc/softwarelicense.class.php:640 inc/softwarelicense.class.php:766
 #: inc/supplier.class.php:425 inc/user.class.php:3093 inc/user.class.php:3168
@@ -1780,10 +1803,10 @@ msgstr "Sērijas numurs"
 #: inc/monitor.class.php:250 inc/monitor.class.php:472
 #: inc/networkequipment.class.php:287 inc/networkequipment.class.php:447
 #: inc/notificationtargetproblem.class.php:217
-#: inc/notificationtargetticket.class.php:572 inc/peripheral.class.php:241
+#: inc/notificationtargetticket.class.php:599 inc/peripheral.class.php:241
 #: inc/peripheral.class.php:447 inc/phone.class.php:239
 #: inc/phone.class.php:478 inc/printer.class.php:343 inc/printer.class.php:604
-#: inc/search.class.php:5140 inc/softwarelicense.class.php:210
+#: inc/search.class.php:5143 inc/softwarelicense.class.php:210
 #: inc/softwarelicense.class.php:306 inc/supplier.class.php:426
 #: inc/user.class.php:3094 inc/user.class.php:3169
 msgid "Inventory number"
@@ -1863,7 +1886,7 @@ msgstr "Tīkla koks veiksmīgi atjaunināts"
 #: front/ipnetwork_vlan.form.php:46 front/networkport_vlan.form.php:46
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr ""
+msgstr "%s saistīja VLAN ar tīkla portu"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:110 front/reminder.form.php:99
@@ -1933,7 +1956,7 @@ msgstr "Operācija neizdevās"
 #: front/massiveaction.php:142 front/massiveaction.php:148
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d problēmas autorizējoties, %2$d atteices)"
 
 #: front/massiveaction.php:147
 msgid "Operation performed partially successful"
@@ -1969,13 +1992,13 @@ msgstr "Nodzēst tīkla portu kļūdas pēc migrācijas"
 #: front/phone.form.php:97 front/printer.form.php:97
 #, php-format
 msgid "%s sets unitary management"
-msgstr ""
+msgstr "%s nosaka vienotu vadību"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:43 front/networkport.form.php:63
 #, php-format
 msgid "%s adds an item"
-msgstr ""
+msgstr "%s pievieno vienību"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:90
@@ -1987,7 +2010,7 @@ msgstr "%s piesaista tīkla nosaukumu vienībai"
 #: front/networkport.form.php:91
 #, php-format
 msgid "%s adds several network ports"
-msgstr ""
+msgstr "%s pievieno vairākus  tīkla portus"
 
 #. TRANS: %s is the user login
 #: front/networkportmigration.form.php:67
@@ -2131,13 +2154,15 @@ msgstr "Aparatūras saraksts ar līgumiem"
 #: inc/networkalias.class.php:293 inc/networkequipment.class.php:221
 #: inc/networkequipment.class.php:413 inc/networkname.class.php:181
 #: inc/networkport.class.php:610 inc/networkport.class.php:848
-#: inc/networkport.class.php:1076 inc/networkport_vlan.class.php:164
+#: inc/networkport.class.php:1077 inc/networkport_vlan.class.php:164
 #: inc/notification.class.php:136 inc/notification.class.php:261
 #: inc/notificationtarget.class.php:1207
-#: inc/notificationtargetcommonitilobject.class.php:956
+#: inc/notificationtargetcommonitilobject.class.php:959
+#: inc/notificationtargetcommonitilobject.class.php:981
 #: inc/notificationtargetcontract.class.php:155
 #: inc/notificationtargetcrontask.class.php:88
 #: inc/notificationtargetsoftwarelicense.class.php:87
+#: inc/notificationtargetticket.class.php:633
 #: inc/notificationtargetuser.class.php:115
 #: inc/notificationtemplate.class.php:107
 #: inc/notificationtemplate.class.php:140 inc/peripheral.class.php:175
@@ -2146,14 +2171,14 @@ msgstr "Aparatūras saraksts ar līgumiem"
 #: inc/printer.class.php:570 inc/profile.class.php:508
 #: inc/profile.class.php:1418 inc/reservationitem.class.php:149
 #: inc/rssfeed.class.php:410 inc/rssfeed.class.php:631 inc/rule.class.php:279
-#: inc/rule.class.php:408 inc/rule.class.php:2168
+#: inc/rule.class.php:408 inc/rule.class.php:2169
 #: inc/rulecollection.class.php:416 inc/rulecollection.class.php:445
 #: inc/rulecriteria.class.php:123 inc/ruledictionnaryprinter.class.php:120
 #: inc/ruledictionnaryprinter.class.php:142 inc/ruleright.class.php:81
-#: inc/search.class.php:5098 inc/search.class.php:5119 inc/sla.class.php:148
+#: inc/search.class.php:5101 inc/search.class.php:5122 inc/sla.class.php:148
 #: inc/sla.class.php:202 inc/slalevel.class.php:112 inc/slalevel.class.php:155
-#: inc/slalevel.class.php:263 inc/software.class.php:206
-#: inc/software.class.php:425 inc/software.class.php:894
+#: inc/slalevel.class.php:270 inc/software.class.php:206
+#: inc/software.class.php:424 inc/software.class.php:893
 #: inc/softwarelicense.class.php:194 inc/softwarelicense.class.php:296
 #: inc/softwarelicense.class.php:629 inc/softwareversion.class.php:130
 #: inc/softwareversion.class.php:162 inc/supplier.class.php:117
@@ -2177,7 +2202,7 @@ msgstr "Nosaukums"
 #: inc/monitor.class.php:199 inc/netpoint.class.php:48
 #: inc/networkequipment.class.php:236
 #: inc/notificationtargetproblem.class.php:218
-#: inc/notificationtargetticket.class.php:573 inc/peripheral.class.php:190
+#: inc/notificationtargetticket.class.php:600 inc/peripheral.class.php:190
 #: inc/phone.class.php:189 inc/printer.class.php:292
 #: inc/ruleimportentity.class.php:165 inc/ruleticket.class.php:476
 #: inc/software.class.php:215 inc/ticket.class.php:1978
@@ -2199,7 +2224,7 @@ msgstr "Pirkuma datums"
 #: front/report.contract.list.php:122 front/report.infocom.php:128
 #: front/report.year.list.php:134 inc/commondbtm.class.php:2633
 #: inc/infocom.class.php:535 inc/infocom.class.php:1318
-#: inc/search.class.php:4147
+#: inc/search.class.php:4150
 msgid "Warranty expiration date"
 msgstr "Garantijas beigu datums"
 
@@ -2221,7 +2246,7 @@ msgstr "Aparatūra ar līgumiem"
 #: inc/crontask.class.php:1262 inc/notificationtargetinfocom.class.php:88
 #: inc/notificationtargetplanningrecall.class.php:146
 #: inc/notificationtargetreservation.class.php:139
-#: inc/notificationtargetticket.class.php:569 inc/ruleticket.class.php:337
+#: inc/notificationtargetticket.class.php:596 inc/ruleticket.class.php:337
 #: inc/search.class.php:1022
 msgid "Item type"
 msgstr "Ieraksta tips"
@@ -2247,7 +2272,7 @@ msgstr[2] "Tīkli"
 #: inc/contract_supplier.class.php:344 inc/db.function.php:1196
 #: inc/dropdown.class.php:309 inc/dropdown.class.php:334
 #: inc/entity.class.php:448 inc/entity.class.php:951 inc/html.class.php:1113
-#: inc/notificationtargetcommonitilobject.class.php:897 inc/phone.class.php:52
+#: inc/notificationtargetcommonitilobject.class.php:900 inc/phone.class.php:52
 #: inc/profile.class.php:722 inc/profile.class.php:1494
 #: inc/supplier.class.php:127 inc/supplier.class.php:300
 #: inc/transfer.class.php:3111 inc/user.class.php:1733 inc/user.class.php:1859
@@ -2336,7 +2361,7 @@ msgstr "Pēc aparatūras"
 
 #: front/report.networking.php:75
 msgid "By network outlet"
-msgstr "By drop"
+msgstr "Pēc tīkla punkta"
 
 #: front/report.switch.list.php:47
 #, php-format
@@ -2364,8 +2389,8 @@ msgstr "Aprīkojuma atskaite pēc gada"
 #: inc/computer_softwareversion.class.php:495
 #: inc/computer_softwareversion.class.php:746
 #: inc/computer_softwareversion.class.php:894 inc/entity.class.php:1465
-#: inc/plugin.class.php:330 inc/software.class.php:563
-#: inc/software.class.php:897 inc/softwarelicense.class.php:48
+#: inc/plugin.class.php:330 inc/software.class.php:562
+#: inc/software.class.php:896 inc/softwarelicense.class.php:48
 #: install/install.php:541
 msgid "License"
 msgid_plural "Licenses"
@@ -2392,7 +2417,7 @@ msgid "Replay the rules dictionary"
 msgstr ""
 
 #: front/rule.common.php:76 inc/migration.class.php:81
-#: inc/software.class.php:936 install/update.php:129
+#: inc/software.class.php:935 install/update.php:129
 msgid "Work in progress..."
 msgstr "Darbs tiek veikts..."
 
@@ -2498,19 +2523,19 @@ msgstr ""
 
 #: front/setup.templates.php:46 inc/html.class.php:2274
 msgid "Manage templates..."
-msgstr "Pārvaldīt sagataves..."
+msgstr "Pārvaldīt veidnes..."
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:46
 #, php-format
 msgid "%s updates a sla level"
-msgstr ""
+msgstr "%s atjaunoja sla līmeni"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:68
 #, php-format
 msgid "%s deletes a sla level"
-msgstr ""
+msgstr "%s dzēsa sla līmeni"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:52
@@ -2635,8 +2660,8 @@ msgstr "Pieteikumi"
 
 #: front/stat.global.php:227 front/stat.global.php:244
 #: front/stat.graph.php:465 front/stat.graph.php:481
-#: inc/notificationtargetticket.class.php:651
-#: inc/notificationtargetticket.class.php:723 inc/stat.class.php:392
+#: inc/notificationtargetticket.class.php:699
+#: inc/notificationtargetticket.class.php:772 inc/stat.class.php:392
 #: inc/ticket.class.php:457 inc/ticket.class.php:2122
 #: inc/ticketsatisfaction.class.php:45
 msgid "Satisfaction"
@@ -2644,7 +2669,7 @@ msgstr "Apmierinātība"
 
 #: front/stat.graph.php:77 front/stat.graph.php:85
 #: inc/commonitilobject.class.php:2430 inc/commonitilobject.class.php:2578
-#: inc/commonitiltask.class.php:501 inc/problem.class.php:653
+#: inc/commonitiltask.class.php:501 inc/problem.class.php:652
 #: inc/ruleticket.class.php:300 inc/ruleticket.class.php:398
 #: inc/ticket.class.php:2326 install/update_05_051.php:73
 msgid "Technician"
@@ -2678,9 +2703,9 @@ msgstr[2] "Piegādātāji"
 #: inc/knowbaseitem.class.php:1467 inc/knowbaseitem.class.php:1568
 #: inc/log.class.php:269 inc/monitor.class.php:261 inc/monitor.class.php:487
 #: inc/networkequipment.class.php:298 inc/networkequipment.class.php:462
-#: inc/notificationtargetcommonitilobject.class.php:962
+#: inc/notificationtargetcommonitilobject.class.php:965
 #: inc/notificationtargetproblem.class.php:222
-#: inc/notificationtargetticket.class.php:577
+#: inc/notificationtargetticket.class.php:604
 #: inc/notificationtargetuser.class.php:51 inc/peripheral.class.php:252
 #: inc/peripheral.class.php:462 inc/phone.class.php:250
 #: inc/phone.class.php:498 inc/planning.class.php:62 inc/printer.class.php:354
@@ -2690,8 +2715,8 @@ msgstr[2] "Piegādātāji"
 #: inc/profile_user.class.php:812 inc/profile_user.class.php:874
 #: inc/profile_user.class.php:890 inc/reminder.class.php:1209
 #: inc/reservationitem.class.php:175 inc/rssfeed.class.php:1043
-#: inc/rulemailcollector.class.php:142 inc/search.class.php:5149
-#: inc/software.class.php:248 inc/software.class.php:480
+#: inc/rulemailcollector.class.php:142 inc/search.class.php:5152
+#: inc/software.class.php:248 inc/software.class.php:479
 #: inc/ticketfollowup.class.php:765 inc/user.class.php:51
 #: install/update_0713_072.php:553
 msgid "User"
@@ -2709,14 +2734,14 @@ msgstr[2] "Lietotāji"
 #: inc/db.function.php:1218 inc/knowbaseitem.class.php:799
 #: inc/knowbaseitem.class.php:936 inc/knowbaseitem.class.php:1179
 #: inc/knowbaseitem.class.php:1240 inc/knowbaseitem.class.php:1428
-#: inc/notificationtargetcommonitilobject.class.php:880
-#: inc/notificationtargetcommonitilobject.class.php:901
+#: inc/notificationtargetcommonitilobject.class.php:883
+#: inc/notificationtargetcommonitilobject.class.php:904
 #: inc/notificationtargetproblem.class.php:204
-#: inc/notificationtargetticket.class.php:587 inc/problem.class.php:538
-#: inc/problem.class.php:1349 inc/problem.class.php:1571
+#: inc/notificationtargetticket.class.php:615 inc/problem.class.php:537
+#: inc/problem.class.php:1348 inc/problem.class.php:1570
 #: inc/rulesoftwarecategory.class.php:92 inc/ruleticket.class.php:257
 #: inc/ruleticket.class.php:374 inc/software.class.php:219
-#: inc/software.class.php:450 inc/ticket.class.php:1945
+#: inc/software.class.php:449 inc/ticket.class.php:1945
 #: inc/ticket.class.php:3342 inc/ticket.class.php:4040
 #: inc/ticket.class.php:5161 inc/user.class.php:1745 inc/user.class.php:2485
 msgid "Category"
@@ -2735,14 +2760,14 @@ msgstr "Kategorijas"
 #: inc/networkequipment.class.php:320 inc/networkequipment.class.php:468
 #: inc/notificationtarget.class.php:345 inc/notificationtarget.class.php:739
 #: inc/notificationtargetproblem.class.php:223
-#: inc/notificationtargetticket.class.php:578 inc/peripheral.class.php:279
+#: inc/notificationtargetticket.class.php:605 inc/peripheral.class.php:279
 #: inc/peripheral.class.php:468 inc/phone.class.php:277
 #: inc/phone.class.php:504 inc/planning.class.php:63 inc/printer.class.php:378
 #: inc/printer.class.php:625 inc/profile.class.php:1211
 #: inc/profile.class.php:1690 inc/reminder.class.php:1227
 #: inc/reservationitem.class.php:182 inc/rssfeed.class.php:1060
-#: inc/rulemailcollector.class.php:143 inc/search.class.php:5163
-#: inc/software.class.php:256 inc/software.class.php:486
+#: inc/rulemailcollector.class.php:143 inc/search.class.php:5166
+#: inc/software.class.php:256 inc/software.class.php:485
 #: inc/user.class.php:2382 inc/user.class.php:3207
 msgid "Group"
 msgid_plural "Groups"
@@ -2753,9 +2778,9 @@ msgstr[2] "Grupas"
 #: front/stat.graph.php:174 front/stat.tracking.php:88
 #: inc/change.class.php:430 inc/change.class.php:861
 #: inc/commonitiltask.class.php:813 inc/commonitiltask.class.php:822
-#: inc/notificationtargetcommonitilobject.class.php:887
-#: inc/problem.class.php:500 inc/problem.class.php:1364
-#: inc/problem.class.php:1567 inc/ruleticket.class.php:353
+#: inc/notificationtargetcommonitilobject.class.php:890
+#: inc/problem.class.php:499 inc/problem.class.php:1363
+#: inc/problem.class.php:1566 inc/ruleticket.class.php:353
 #: inc/ruleticket.class.php:442 inc/ticket.class.php:1896
 #: inc/ticket.class.php:4283 inc/ticket.class.php:5157
 msgid "Priority"
@@ -2763,8 +2788,8 @@ msgstr "Svarīgums"
 
 #: front/stat.graph.php:181 front/stat.tracking.php:86
 #: inc/change.class.php:418 inc/change.class.php:838 inc/config.class.php:654
-#: inc/notificationtargetcommonitilobject.class.php:885
-#: inc/problem.class.php:488 inc/problem.class.php:1342
+#: inc/notificationtargetcommonitilobject.class.php:888
+#: inc/problem.class.php:487 inc/problem.class.php:1341
 #: inc/ruleticket.class.php:347 inc/ruleticket.class.php:436
 #: inc/ticket.class.php:1884 inc/ticket.class.php:3370
 #: inc/ticket.class.php:4125
@@ -2774,8 +2799,8 @@ msgstr "Steidzamība"
 #: front/stat.graph.php:188 front/stat.tracking.php:87
 #: inc/change.class.php:424 inc/change.class.php:499 inc/change.class.php:852
 #: inc/config.class.php:636
-#: inc/notificationtargetcommonitilobject.class.php:886
-#: inc/problem.class.php:494 inc/problem.class.php:1356
+#: inc/notificationtargetcommonitilobject.class.php:889
+#: inc/problem.class.php:493 inc/problem.class.php:1355
 #: inc/ruleticket.class.php:350 inc/ruleticket.class.php:439
 #: inc/ticket.class.php:1890 inc/ticket.class.php:4194
 msgid "Impact"
@@ -2785,7 +2810,7 @@ msgstr "Ietekme"
 #: inc/authldap.class.php:784 inc/authldap.class.php:924
 #: inc/authldap.class.php:2752 inc/contact.class.php:215
 #: inc/contact.class.php:369 inc/db.function.php:1212
-#: inc/notificationtargetcommonitilobject.class.php:900
+#: inc/notificationtargetcommonitilobject.class.php:903
 #: inc/user.class.php:1762 inc/user.class.php:2480
 msgctxt "person"
 msgid "Title"
@@ -2794,8 +2819,8 @@ msgstr "Amats"
 #: front/stat.graph.php:203 front/stat.tracking.php:89
 #: inc/change.class.php:569 inc/commonitilobject.class.php:3423
 #: inc/commonitilobject.class.php:3499 inc/dropdown.class.php:667
-#: inc/notificationtargetcommonitilobject.class.php:910
-#: inc/problem.class.php:692 inc/solutiontemplate.class.php:63
+#: inc/notificationtargetcommonitilobject.class.php:913
+#: inc/problem.class.php:691 inc/solutiontemplate.class.php:63
 #: inc/solutiontemplate.class.php:85 inc/solutiontype.class.php:42
 #: inc/ticket.class.php:2365
 msgid "Solution type"
@@ -2805,8 +2830,8 @@ msgstr[1] "Risinājuma tips"
 msgstr[2] "Risinājuma tipi"
 
 #: front/stat.graph.php:219 front/stat.tracking.php:93
-#: inc/dropdown.class.php:668 inc/notificationtargetticket.class.php:568
-#: inc/notificationtargetticket.class.php:597 inc/requesttype.class.php:43
+#: inc/dropdown.class.php:668 inc/notificationtargetticket.class.php:595
+#: inc/notificationtargetticket.class.php:625 inc/requesttype.class.php:43
 #: inc/ruleticket.class.php:331 inc/ticket.class.php:1972
 #: inc/ticket.class.php:2165 inc/ticket.class.php:4110
 #: inc/ticketfollowup.class.php:749
@@ -2835,8 +2860,8 @@ msgid "Next"
 msgstr "Nākamā"
 
 #: front/stat.graph.php:351 inc/itilcategory.class.php:162
-#: inc/notificationtargetproblem.class.php:211 inc/problem.class.php:708
-#: inc/search.class.php:5199 inc/stat.class.php:1436
+#: inc/notificationtargetproblem.class.php:211 inc/problem.class.php:707
+#: inc/search.class.php:5202 inc/stat.class.php:1436
 msgid "Number of tickets"
 msgstr "Pieteikumu skaits"
 
@@ -2857,7 +2882,7 @@ msgstr "Atrisināto pieteikumu skaits"
 #: front/stat.location.php:194 front/stat.location.php:195
 #: front/stat.tracking.php:198 front/stat.tracking.php:199
 msgid "Number solved late"
-msgstr ""
+msgstr "Pieteikumu skaits, atrisināti ar nokavēšanos"
 
 #: front/stat.location.php:206 front/stat.location.php:207
 #: front/stat.tracking.php:211 front/stat.tracking.php:212
@@ -2870,14 +2895,14 @@ msgstr "Numuru aizvērt"
 #: inc/group.class.php:223 inc/group.class.php:426
 #: inc/notificationtargetcommonitilobject.class.php:399
 #: inc/notificationtargetcommonitilobject.class.php:418
-#: inc/notificationtargetcommonitilobject.class.php:893
-#: inc/notificationtargetcommonitilobject.class.php:895
-#: inc/notificationtargetcommonitilobject.class.php:927
+#: inc/notificationtargetcommonitilobject.class.php:896
+#: inc/notificationtargetcommonitilobject.class.php:898
+#: inc/notificationtargetcommonitilobject.class.php:930
 #: inc/notificationtargetplanningrecall.class.php:51
 #: inc/notificationtargetreservation.class.php:62
-#: inc/notificationtargetticket.class.php:614
-#: inc/notimportedemail.class.php:183 inc/problem.class.php:1010
-#: inc/problem.class.php:1568 inc/rulemailcollector.class.php:94
+#: inc/notificationtargetticket.class.php:662
+#: inc/notimportedemail.class.php:183 inc/problem.class.php:1009
+#: inc/problem.class.php:1567 inc/rulemailcollector.class.php:94
 #: inc/ruleticket.class.php:270 inc/ruleticket.class.php:382
 #: inc/ticket.class.php:2073 inc/ticket.class.php:4958
 #: inc/ticket.class.php:5158 inc/ticketfollowup.class.php:680
@@ -2892,12 +2917,12 @@ msgstr[2] "Iesniedzēji"
 #: inc/knowbaseitem.class.php:822 inc/knowbaseitem.class.php:1238
 #: inc/notificationtargetcommonitilobject.class.php:400
 #: inc/notificationtargetcommonitilobject.class.php:403
-#: inc/notificationtargetcommonitilobject.class.php:902
+#: inc/notificationtargetcommonitilobject.class.php:905
 #: inc/notificationtargetplanningrecall.class.php:140
 #: inc/notificationtargetproblem.class.php:200
 #: inc/notificationtargetreservation.class.php:149
-#: inc/notificationtargetticket.class.php:583
-#: inc/notificationtargetticket.class.php:595 inc/problem.class.php:642
+#: inc/notificationtargetticket.class.php:611
+#: inc/notificationtargetticket.class.php:623 inc/problem.class.php:641
 #: inc/reminder.class.php:400 inc/ticket.class.php:2188
 #: inc/ticket.class.php:2315 inc/ticketfollowup.class.php:638
 msgid "Writer"
@@ -2928,16 +2953,16 @@ msgstr "Atrašanās vietu koks"
 #: inc/link.class.php:157 inc/mailcollector.class.php:316
 #: inc/monitor.class.php:434 inc/networkequipment.class.php:409
 #: inc/networkport.class.php:425 inc/networkport.class.php:562
-#: inc/networkport.class.php:1072 inc/networkportethernet.class.php:181
+#: inc/networkport.class.php:1073 inc/networkportethernet.class.php:181
 #: inc/networkportwifi.class.php:133 inc/notification.class.php:257
 #: inc/notificationtemplate.class.php:136
 #: inc/notificationtemplatetranslation.class.php:276
 #: inc/peripheral.class.php:409 inc/phone.class.php:440
-#: inc/printer.class.php:566 inc/problem.class.php:459
+#: inc/printer.class.php:566 inc/problem.class.php:458
 #: inc/profile.class.php:1414 inc/profile_user.class.php:790
 #: inc/reminder.class.php:389 inc/reservationitem.class.php:145
-#: inc/rssfeed.class.php:406 inc/search.class.php:5094
-#: inc/search.class.php:5115 inc/sla.class.php:198 inc/software.class.php:421
+#: inc/rssfeed.class.php:406 inc/search.class.php:5097
+#: inc/search.class.php:5118 inc/sla.class.php:198 inc/software.class.php:420
 #: inc/softwareversion.class.php:158 inc/supplier.class.php:249
 #: inc/ticket.class.php:1849 inc/ticketfollowup.class.php:740
 #: inc/transfer.class.php:78 inc/user.class.php:2325
@@ -2947,7 +2972,7 @@ msgstr "Īpašības"
 #: front/stat.tracking.php:101 inc/commonitilobject.class.php:2208
 #: inc/commonitilobject.class.php:2424 inc/commonitilobject.class.php:3032
 #: inc/group.class.php:227 inc/group.class.php:431
-#: inc/notificationtargetcommonitilobject.class.php:940
+#: inc/notificationtargetcommonitilobject.class.php:943
 msgid "Assigned to"
 msgstr "Piešķirts"
 
@@ -2975,7 +3000,7 @@ msgstr "%s apstiprināja vai noraidīja lēmumu"
 #: front/ticketfollowup.form.php:67
 #, php-format
 msgid "%s updates a followup"
-msgstr "%s atjaunināja sekojumu"
+msgstr "%s atjaunoja sekojumu"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:76
@@ -3091,7 +3116,7 @@ msgstr "Ietekme no augstākstāvošās nodaļas"
 #: inc/entity.class.php:1749 inc/entity.class.php:2107
 #: inc/entity.class.php:2118 inc/entity.class.php:2142
 #: inc/entity.class.php:2165 inc/infocom.class.php:1614
-#: inc/notificationtargetticket.class.php:263 inc/profile.class.php:537
+#: inc/notificationtargetticket.class.php:266 inc/profile.class.php:537
 #: inc/sla.class.php:160 inc/softwarelicense.class.php:245
 #: inc/transfer.class.php:2986
 msgid "Never"
@@ -3120,7 +3145,7 @@ msgstr "Katru mēnesi"
 #: inc/entity.class.php:1486 inc/entity.class.php:2045
 #: inc/entity.class.php:2130 inc/entity.class.php:2286
 #: inc/plugin.class.php:432 inc/ruleimportcomputer.class.php:177
-#: inc/search.class.php:3196
+#: inc/search.class.php:3198
 msgid "No"
 msgstr "Nē"
 
@@ -3128,7 +3153,7 @@ msgstr "Nē"
 #: inc/config.class.php:310 inc/config.class.php:803
 #: inc/dropdown.class.php:590 inc/dropdown.class.php:608
 #: inc/plugin.class.php:429 inc/rule.class.php:1597
-#: inc/ruleimportcomputer.class.php:203 inc/search.class.php:3198
+#: inc/ruleimportcomputer.class.php:203 inc/search.class.php:3200
 msgid "Yes"
 msgstr "Jā"
 
@@ -3333,12 +3358,13 @@ msgstr "Vārds"
 #: inc/netpoint.class.php:355 inc/networkalias.class.php:129
 #: inc/networkalias.class.php:387 inc/networkequipment.class.php:326
 #: inc/networkequipment.class.php:480 inc/networkname.class.php:201
-#: inc/networkport.class.php:824 inc/networkport.class.php:1111
+#: inc/networkport.class.php:824 inc/networkport.class.php:1112
 #: inc/networkportmigration.class.php:287 inc/notification.class.php:141
 #: inc/notification.class.php:297
 #: inc/notificationtargetreservation.class.php:152
-#: inc/notificationtargetticket.class.php:619
-#: inc/notificationtargetticket.class.php:624
+#: inc/notificationtargetticket.class.php:635
+#: inc/notificationtargetticket.class.php:667
+#: inc/notificationtargetticket.class.php:672
 #: inc/notificationtemplate.class.php:118
 #: inc/notificationtemplate.class.php:153 inc/peripheral.class.php:285
 #: inc/peripheral.class.php:480 inc/phone.class.php:283
@@ -3350,9 +3376,9 @@ msgstr "Vārds"
 #: inc/reservationitem.class.php:169 inc/reservationitem.class.php:304
 #: inc/rssfeed.class.php:452 inc/rssfeed.class.php:650 inc/rule.class.php:307
 #: inc/rule.class.php:428 inc/ruledictionnaryprinter.class.php:128
-#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5144
+#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5147
 #: inc/sla.class.php:151 inc/sla.class.php:219 inc/software.class.php:242
-#: inc/software.class.php:439 inc/softwarelicense.class.php:222
+#: inc/software.class.php:438 inc/softwarelicense.class.php:222
 #: inc/softwarelicense.class.php:343 inc/softwareversion.class.php:125
 #: inc/softwareversion.class.php:172 inc/softwareversion.class.php:264
 #: inc/supplier.class.php:131 inc/supplier.class.php:325
@@ -3376,7 +3402,7 @@ msgstr "Administratīvais numurs"
 #: inc/authldap.class.php:912 inc/authldap.class.php:2750
 #: inc/contact.class.php:168 inc/contact.class.php:319
 #: inc/contact_supplier.class.php:412 inc/dropdown.class.php:314
-#: inc/notificationtargetcommonitilobject.class.php:898
+#: inc/notificationtargetcommonitilobject.class.php:901
 #: inc/user.class.php:1750 inc/user.class.php:1867 inc/user.class.php:2037
 #: inc/user.class.php:2372
 msgid "Phone 2"
@@ -3438,12 +3464,12 @@ msgstr "Noklusētās vērtības"
 #: inc/monitor.class.php:499 inc/networkequipment.class.php:474
 #: inc/notificationtargetplanningrecall.class.php:141
 #: inc/peripheral.class.php:474 inc/phone.class.php:510
-#: inc/printer.class.php:631 inc/problem.class.php:532
-#: inc/problem.class.php:1305 inc/problem.class.php:1561
+#: inc/printer.class.php:631 inc/problem.class.php:531
+#: inc/problem.class.php:1304 inc/problem.class.php:1560
 #: inc/profile.class.php:534 inc/profile.class.php:1424
 #: inc/reminder.class.php:447 inc/reservationitem.class.php:188
-#: inc/rssfeed.class.php:468 inc/search.class.php:5167 inc/sla.class.php:158
-#: inc/software.class.php:455 inc/softwarelicense.class.php:243
+#: inc/rssfeed.class.php:468 inc/search.class.php:5170 inc/sla.class.php:158
+#: inc/software.class.php:454 inc/softwarelicense.class.php:243
 #: inc/ticket.class.php:1939 inc/ticket.class.php:3976
 #: inc/ticket.class.php:5151 inc/transfer.class.php:88
 #: inc/transfer.class.php:2984 inc/user.class.php:2434
@@ -3462,10 +3488,10 @@ msgstr "Noklusējuma serveris"
 #: inc/notification.class.php:145 inc/notification.class.php:292
 #: inc/notificationtarget.class.php:1209 inc/reservationitem.class.php:142
 #: inc/rssfeed.class.php:430 inc/rssfeed.class.php:657 inc/rule.class.php:302
-#: inc/rule.class.php:422 inc/rule.class.php:2233
+#: inc/rule.class.php:422 inc/rule.class.php:2234
 #: inc/rulecollection.class.php:418 inc/rulecollection.class.php:447
 #: inc/ruleright.class.php:333 inc/slalevel.class.php:125
-#: inc/slalevel.class.php:157 inc/slalevel.class.php:267
+#: inc/slalevel.class.php:157 inc/slalevel.class.php:274
 #: inc/ticketrecurrent.class.php:138 inc/ticketrecurrent.class.php:242
 #: inc/user.class.php:1737 inc/user.class.php:2362
 msgid "Active"
@@ -3538,7 +3564,7 @@ msgid "Maximum number of results"
 msgstr "Maksimālais rezultātu skaists"
 
 #: inc/authldap.class.php:524 inc/contract.class.php:253
-#: inc/search.class.php:4348 inc/softwarelicense.class.php:231
+#: inc/search.class.php:4351 inc/softwarelicense.class.php:231
 #: inc/softwarelicense.class.php:315 inc/softwarelicense.class.php:688
 #: inc/softwarelicense.class.php:712
 msgid "Unlimited"
@@ -3610,7 +3636,7 @@ msgid "Test of connection to LDAP directory"
 msgstr "Pārbaudīt vai iespējams pieslēgties LDAP direktorijai"
 
 #: inc/authldap.class.php:722 inc/authmail.class.php:224
-#: inc/rule.class.php:1959 inc/rulecollection.class.php:754
+#: inc/rule.class.php:1960 inc/rulecollection.class.php:754
 msgctxt "button"
 msgid "Test"
 msgstr "Pārbaudīt"
@@ -3621,15 +3647,15 @@ msgstr ""
 
 #: inc/authldap.class.php:813
 msgid "Import entities from LDAP directory"
-msgstr ""
+msgstr "Importēt nodaļas no LDAP koka"
 
 #: inc/authldap.class.php:815
 msgid "Attribute representing entity"
-msgstr ""
+msgstr "Atribūtu pārstāvošā nodaļa"
 
 #: inc/authldap.class.php:820
 msgid "Search filter for entities"
-msgstr ""
+msgstr "Meklēšanas filtrs nodaļām"
 
 #: inc/authldap.class.php:1125 inc/authldap.class.php:1139
 #: inc/authldap.class.php:2698
@@ -3659,11 +3685,11 @@ msgstr ""
 
 #: inc/authldap.class.php:1310 inc/authldap.class.php:1362
 msgid "Last update in GLPI"
-msgstr ""
+msgstr "Pēdējo reizi GLPI atjaunināts"
 
 #: inc/authldap.class.php:1374 inc/authldap.class.php:1379
 msgid "No user to be synchronized"
-msgstr ""
+msgstr "Nav lietotāju ko sinhronizēt"
 
 #: inc/authldap.class.php:1375 inc/authldap.class.php:1380
 msgid "No user to be imported"
@@ -3675,7 +3701,7 @@ msgstr "Grupas DN"
 
 #: inc/authldap.class.php:1688
 msgid "Destination entity"
-msgstr ""
+msgstr "Mērķa nodaļa"
 
 #: inc/authldap.class.php:1727 inc/authldap.class.php:1730
 msgid "No group to be imported"
@@ -3725,7 +3751,7 @@ msgstr "Meklēšanas kritēriji lietotājiem"
 
 #: inc/authldap.class.php:2798
 msgid "No directory selected"
-msgstr ""
+msgstr "Mape nav izvēlēta"
 
 #: inc/authldap.class.php:2803
 msgid "No directory associated to entity: impossible search"
@@ -3738,11 +3764,11 @@ msgstr "Saglabāt (Preserve)"
 
 #: inc/authldap.class.php:2969
 msgid "Put in dustbin"
-msgstr "DZĒST"
+msgstr "DZĒST ATKRITNĒ"
 
 #: inc/authldap.class.php:2970
 msgid "Withdraw dynamic authorizations and groups"
-msgstr ""
+msgstr "Atsaukt dinamiskās autorizācijas un grupas"
 
 #: inc/authldap.class.php:2971
 msgid "Disable"
@@ -3861,8 +3887,8 @@ msgstr "Jauna kartiņa"
 #: inc/commonitiltask.class.php:992 inc/commonitiltask.class.php:1162
 #: inc/notificationtargetplanningrecall.class.php:143
 #: inc/notificationtargetproblem.class.php:201
-#: inc/notificationtargetticket.class.php:584
-#: inc/notificationtargetticket.class.php:594 inc/ticketfollowup.class.php:431
+#: inc/notificationtargetticket.class.php:612
+#: inc/notificationtargetticket.class.php:622 inc/ticketfollowup.class.php:431
 #: inc/ticketfollowup.class.php:548 inc/ticketfollowup.class.php:640
 #: inc/ticketfollowup.class.php:760
 msgid "Private"
@@ -3909,8 +3935,9 @@ msgstr "Saglabāt grāmatzīmes"
 #: inc/contractcost.class.php:234 inc/contractcost.class.php:298
 #: inc/html.class.php:1252 inc/infocom.class.php:962
 #: inc/infocom.class.php:1295 inc/infocom.class.php:1510
-#: inc/profile.class.php:753 inc/profile.class.php:1531
-#: inc/ticketcost.class.php:308 inc/ticketcost.class.php:377
+#: inc/notificationtargetticket.class.php:651 inc/profile.class.php:753
+#: inc/profile.class.php:1531 inc/ticketcost.class.php:308
+#: inc/ticketcost.class.php:377
 msgid "Budget"
 msgid_plural "Budgets"
 msgstr[0] "Budžets"
@@ -3939,8 +3966,8 @@ msgstr[2] "Vienības"
 #: inc/contract.class.php:658 inc/document.class.php:838
 #: inc/entity.class.php:576 inc/monitor.class.php:510
 #: inc/networkequipment.class.php:485 inc/peripheral.class.php:485
-#: inc/phone.class.php:521 inc/printer.class.php:683 inc/problem.class.php:595
-#: inc/profile.class.php:1499 inc/software.class.php:444
+#: inc/phone.class.php:521 inc/printer.class.php:683 inc/problem.class.php:594
+#: inc/profile.class.php:1499 inc/software.class.php:443
 #: inc/supplier.class.php:330
 msgid "Notes"
 msgstr "Piezīmes"
@@ -3954,7 +3981,7 @@ msgstr "Nav piesaistīta elementa"
 #: inc/notificationtargetproblem.class.php:215
 #: inc/notificationtargetreservation.class.php:138
 #: inc/notificationtargetreservation.class.php:154
-#: inc/notificationtargetticket.class.php:570 inc/supplier.class.php:419
+#: inc/notificationtargetticket.class.php:597 inc/supplier.class.php:419
 msgid "Associated item"
 msgid_plural "Associated items"
 msgstr[0] "Saistītais objekts"
@@ -4011,12 +4038,12 @@ msgstr[2] "Saistītie objekti"
 #: inc/document_item.class.php:693 inc/group_user.class.php:207
 #: inc/group_user.class.php:450 inc/ipaddress.class.php:283
 #: inc/item_problem.class.php:235 inc/netpoint.class.php:365
-#: inc/networkalias.class.php:392 inc/networkname.class.php:798
+#: inc/networkalias.class.php:392 inc/networkname.class.php:799
 #: inc/networkport.class.php:526 inc/notificationtarget.class.php:1219
 #: inc/notificationtemplatetranslation.class.php:187
-#: inc/problem.class.php:1905 inc/problem_ticket.class.php:276
+#: inc/problem.class.php:1904 inc/problem_ticket.class.php:276
 #: inc/problem_ticket.class.php:375 inc/profile_user.class.php:325
-#: inc/rule.class.php:2239 inc/search.class.php:1245 inc/search.class.php:1249
+#: inc/rule.class.php:2240 inc/search.class.php:1245 inc/search.class.php:1249
 #: inc/search.class.php:1277 inc/search.class.php:1296
 #: inc/search.class.php:1322 inc/search.class.php:1326
 #: inc/search.class.php:1354 inc/search.class.php:1373
@@ -4031,12 +4058,12 @@ msgstr "%1$s = %2$s"
 #: inc/budget.class.php:442 inc/budget.class.php:577 inc/budget.class.php:605
 #: inc/cartridge.class.php:328 inc/change_item.class.php:231
 #: inc/computer_softwarelicense.class.php:302
-#: inc/computer_softwareversion.class.php:615 inc/consumable.class.php:621
-#: inc/consumable.class.php:659 inc/contract_item.class.php:661
+#: inc/computer_softwareversion.class.php:615 inc/consumable.class.php:624
+#: inc/consumable.class.php:662 inc/contract_item.class.php:661
 #: inc/item_problem.class.php:235 inc/rulecachedcollection.class.php:154
 #: inc/softwarelicense.class.php:711 inc/softwareversion.class.php:282
 #: inc/stat.class.php:464 inc/state.class.php:123 inc/state.class.php:171
-#: inc/supplier.class.php:529 inc/ticketcost.class.php:437
+#: inc/supplier.class.php:529 inc/ticketcost.class.php:439
 msgid "Total"
 msgstr "Pavisam"
 
@@ -4087,7 +4114,7 @@ msgstr "Sākuma laiks"
 #: inc/holiday.class.php:62 inc/holiday.class.php:86 inc/html.class.php:4208
 #: inc/html.class.php:4209 inc/html.class.php:4370 inc/html.class.php:4371
 #: inc/planning.class.php:420 inc/reminder.class.php:705
-#: inc/search.class.php:4154
+#: inc/search.class.php:4157
 msgid "End"
 msgstr "Līdz"
 
@@ -4121,7 +4148,7 @@ msgstr "Pievienot grafikam"
 
 #: inc/calendarsegment.class.php:314 inc/calendarsegment.class.php:343
 #: inc/config.class.php:943 inc/config.class.php:961
-#: inc/notificationtargetcommonitilobject.class.php:939
+#: inc/notificationtargetcommonitilobject.class.php:942
 #: inc/planning.class.php:327 inc/reservation.class.php:1002
 msgid "Day"
 msgid_plural "Days"
@@ -4131,7 +4158,7 @@ msgstr[2] "Dienas"
 
 #. TRANS: select action 'update' (before doing it)
 #: inc/cartridge.class.php:77 inc/commondbtm.class.php:3401
-#: inc/rule.class.php:2219
+#: inc/rule.class.php:2220
 msgctxt "button"
 msgid "Update"
 msgstr "Saglabāt"
@@ -4193,11 +4220,11 @@ msgid "No cartridge"
 msgstr "Nav kasetnes"
 
 #: inc/cartridge.class.php:515 inc/commondbtm.class.php:3406
-#: inc/consumable.class.php:467 inc/infocom.class.php:933
+#: inc/consumable.class.php:470 inc/infocom.class.php:933
 msgid "Enable the financial and administrative information"
 msgstr "Aktivizēt finansiālo un administratīvo informāciju"
 
-#: inc/cartridge.class.php:516 inc/consumable.class.php:469
+#: inc/cartridge.class.php:516 inc/consumable.class.php:472
 msgid "Back to stock"
 msgstr "Atgriezt noliktavā"
 
@@ -4206,7 +4233,7 @@ msgid "Worn cartridges"
 msgstr "Nolietotas kasetnes"
 
 #: inc/cartridge.class.php:538 inc/commonitiltask.class.php:903
-#: inc/consumable.class.php:498 inc/contact.class.php:200
+#: inc/consumable.class.php:501 inc/contact.class.php:200
 #: inc/contact.class.php:354 inc/entity.class.php:490 inc/entity.class.php:986
 #: inc/supplier.class.php:169 inc/supplier.class.php:285
 #: inc/ticketvalidation.class.php:648
@@ -4214,12 +4241,12 @@ msgid "State"
 msgstr "Stāvoklis"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:776
-#: inc/cartridge.class.php:924 inc/consumable.class.php:499
+#: inc/cartridge.class.php:924 inc/consumable.class.php:502
 msgid "Add date"
 msgstr "Pievienot datumu"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:777
-#: inc/cartridge.class.php:927 inc/consumable.class.php:501
+#: inc/cartridge.class.php:927 inc/consumable.class.php:504
 msgid "Use date"
 msgstr "Izlietots"
 
@@ -4233,7 +4260,7 @@ msgid "Printer counter"
 msgstr "Printera izdruku skaitītājs"
 
 #. TRANS: Always plural
-#: inc/cartridge.class.php:548 inc/consumable.class.php:504
+#: inc/cartridge.class.php:548 inc/consumable.class.php:507
 #: inc/entity.class.php:1419 inc/infocom.class.php:61
 #: inc/infocom.class.php:949 inc/infocom.class.php:1220
 #: inc/transfer.class.php:3062 install/update_0723_078.php:4823
@@ -4327,7 +4354,7 @@ msgstr "Izdrukātas lapas "
 #: inc/contract.class.php:611 inc/contract.class.php:612
 #: inc/contract.class.php:613 inc/contract.class.php:614
 #: inc/contract_supplier.class.php:243 inc/dropdown.class.php:1189
-#: inc/infocom.class.php:1107 inc/search.class.php:4096
+#: inc/infocom.class.php:1107 inc/search.class.php:4099
 #: inc/ticketrecurrent.class.php:190 inc/ticketrecurrent.class.php:219
 #, php-format
 msgid "%d month"
@@ -4356,8 +4383,8 @@ msgstr "Atsauce"
 #: inc/peripheral.class.php:201 inc/peripheral.class.php:502
 #: inc/phone.class.php:200 inc/phone.class.php:543 inc/printer.class.php:303
 #: inc/printer.class.php:705 inc/reservationitem.class.php:201
-#: inc/search.class.php:5178 inc/software.class.php:224
-#: inc/software.class.php:467
+#: inc/search.class.php:5181 inc/software.class.php:224
+#: inc/software.class.php:466
 msgid "Technician in charge of the hardware"
 msgstr "Atbildīgais tehniķis"
 
@@ -4371,7 +4398,7 @@ msgstr "Atbildīgais tehniķis"
 #: inc/notificationtargetreservation.class.php:60 inc/peripheral.class.php:214
 #: inc/peripheral.class.php:509 inc/phone.class.php:213
 #: inc/phone.class.php:550 inc/printer.class.php:316 inc/printer.class.php:712
-#: inc/software.class.php:235 inc/software.class.php:474
+#: inc/software.class.php:235 inc/software.class.php:473
 msgid "Group in charge of the hardware"
 msgstr "Par datortehniku atbildīgā grupa"
 
@@ -4413,7 +4440,7 @@ msgstr ""
 #: inc/cartridgeitem.class.php:429
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr ""
+msgstr "%s: brīdinājums par kasetni netika nosūtīts"
 
 #: inc/cartridgeitem_printermodel.class.php:153
 msgid "Add a compatible printer model"
@@ -4432,10 +4459,10 @@ msgstr "Pievienot saderīgu printera modeli"
 #: inc/itilcategory.class.php:328 inc/knowbaseitem.class.php:1334
 #: inc/netpoint.class.php:331 inc/networkalias.class.php:376
 #: inc/notificationtarget.class.php:1245 inc/profile_user.class.php:237
-#: inc/rule.class.php:2211 inc/search.class.php:5617
-#: inc/software.class.php:914 inc/softwarelicense.class.php:570
+#: inc/rule.class.php:2212 inc/search.class.php:5620
+#: inc/software.class.php:913 inc/softwarelicense.class.php:570
 #: inc/softwarelicense.class.php:733 inc/softwareversion.class.php:293
-#: inc/state.class.php:183 inc/ticketcost.class.php:444
+#: inc/state.class.php:183 inc/ticketcost.class.php:446
 #: inc/tickettemplatehiddenfield.class.php:251
 #: inc/tickettemplatemandatoryfield.class.php:270
 #: inc/tickettemplatepredefinedfield.class.php:310
@@ -4487,7 +4514,7 @@ msgstr "Drošības apsvērumu dēļ lūdzu nomainiet paroles noklusētajiem liet
 #: inc/central.class.php:169
 #, php-format
 msgid "For security reasons, please remove file: %s"
-msgstr ""
+msgstr "Drošības apsvērumu dēļ, lūdzu, noņemiet datni: %s"
 
 #: inc/central.class.php:179 inc/central.class.php:180 inc/html.class.php:2391
 msgid "MySQL replica: read only"
@@ -4501,7 +4528,7 @@ msgstr[1] "Izmaiņas"
 msgstr[2] "Izmaiņas"
 
 #: inc/change.class.php:186 inc/problem.class.php:213
-#: inc/problem.class.php:224 inc/problem.class.php:573
+#: inc/problem.class.php:224 inc/problem.class.php:572
 msgid "Analysis"
 msgstr "Analīze"
 
@@ -4510,9 +4537,9 @@ msgid "Plans"
 msgstr "Plāns"
 
 #: inc/change.class.php:188 inc/change.class.php:565 inc/change.class.php:575
-#: inc/notificationtargetcommonitilobject.class.php:911
+#: inc/notificationtargetcommonitilobject.class.php:914
 #: inc/problem.class.php:214 inc/problem.class.php:225
-#: inc/problem.class.php:688 inc/problem.class.php:697
+#: inc/problem.class.php:687 inc/problem.class.php:696
 #: inc/ticket.class.php:452 inc/ticket.class.php:2361
 #: inc/ticket.class.php:2370
 msgid "Solution"
@@ -4523,12 +4550,12 @@ msgstr[2] "Risinājumi"
 
 #: inc/change.class.php:393 inc/change.class.php:880
 #: inc/change_ticket.class.php:143 inc/change_ticket.class.php:255
-#: inc/notificationtargetcommonitilobject.class.php:878
+#: inc/notificationtargetcommonitilobject.class.php:881
 #: inc/notificationtargetplanningrecall.class.php:142
 #: inc/notificationtargetproblem.class.php:259
-#: inc/notificationtargetticket.class.php:736
-#: inc/notificationtargetticket.class.php:744 inc/problem.class.php:463
-#: inc/problem.class.php:1383 inc/problem.class.php:1572
+#: inc/notificationtargetticket.class.php:785
+#: inc/notificationtargetticket.class.php:793 inc/problem.class.php:462
+#: inc/problem.class.php:1382 inc/problem.class.php:1571
 #: inc/reminder.class.php:393 inc/reminder.class.php:678
 #: inc/ruleticket.class.php:247 inc/ticket.class.php:1853
 #: inc/ticket.class.php:3422 inc/ticket.class.php:4351
@@ -4543,20 +4570,20 @@ msgstr "Virsraksts"
 #: inc/commonitiltask.class.php:1159 inc/commonitiltask.class.php:1184
 #: inc/crontask.class.php:396 inc/crontask.class.php:1016
 #: inc/crontask.class.php:1072 inc/crontask.class.php:1230
-#: inc/notificationtargetcommonitilobject.class.php:881
-#: inc/notificationtargetcommonitilobject.class.php:883
+#: inc/notificationtargetcommonitilobject.class.php:884
+#: inc/notificationtargetcommonitilobject.class.php:886
 #: inc/notificationtargetcrontask.class.php:89
 #: inc/notificationtargetplanningrecall.class.php:144
 #: inc/notificationtargetproblem.class.php:203
 #: inc/notificationtargetproblem.class.php:260
-#: inc/notificationtargetticket.class.php:586
-#: inc/notificationtargetticket.class.php:596
-#: inc/notificationtargetticket.class.php:739
-#: inc/notificationtargetticket.class.php:746 inc/problem.class.php:470
-#: inc/problem.class.php:1011 inc/problem.class.php:1412
+#: inc/notificationtargetticket.class.php:614
+#: inc/notificationtargetticket.class.php:624
+#: inc/notificationtargetticket.class.php:788
+#: inc/notificationtargetticket.class.php:795 inc/problem.class.php:469
+#: inc/problem.class.php:1010 inc/problem.class.php:1411
 #: inc/reminder.class.php:414 inc/reminder.class.php:793
-#: inc/rule.class.php:291 inc/rule.class.php:412 inc/rule.class.php:2171
-#: inc/rule.class.php:2232 inc/rulecollection.class.php:417
+#: inc/rule.class.php:291 inc/rule.class.php:412 inc/rule.class.php:2172
+#: inc/rule.class.php:2233 inc/rulecollection.class.php:417
 #: inc/rulecollection.class.php:446 inc/ruleimportcomputer.class.php:111
 #: inc/ruleright.class.php:84 inc/ruleticket.class.php:252
 #: inc/ticket.class.php:1860 inc/ticket.class.php:2145
@@ -4578,19 +4605,19 @@ msgstr "Apraksts"
 #: inc/crontask.class.php:1069 inc/crontask.class.php:1238
 #: inc/monitor.class.php:193 inc/monitor.class.php:462
 #: inc/networkequipment.class.php:230 inc/networkequipment.class.php:437
-#: inc/notificationtargetcommonitilobject.class.php:884
+#: inc/notificationtargetcommonitilobject.class.php:887
 #: inc/notificationtargetplanningrecall.class.php:148
 #: inc/notificationtargetproblem.class.php:209
-#: inc/notificationtargetticket.class.php:592 inc/peripheral.class.php:184
+#: inc/notificationtargetticket.class.php:620 inc/peripheral.class.php:184
 #: inc/peripheral.class.php:437 inc/phone.class.php:183
 #: inc/phone.class.php:468 inc/plugin.class.php:331 inc/printer.class.php:286
-#: inc/printer.class.php:594 inc/problem.class.php:482
-#: inc/problem.class.php:680 inc/problem.class.php:1337
-#: inc/problem.class.php:1559 inc/reminder.class.php:407
+#: inc/printer.class.php:594 inc/problem.class.php:481
+#: inc/problem.class.php:679 inc/problem.class.php:1336
+#: inc/problem.class.php:1558 inc/reminder.class.php:407
 #: inc/reminder.class.php:710 inc/report.class.php:91
-#: inc/ruleticket.class.php:446 inc/search.class.php:5109
-#: inc/search.class.php:5130 inc/slalevel.class.php:240
-#: inc/software.class.php:538 inc/softwareversion.class.php:139
+#: inc/ruleticket.class.php:446 inc/search.class.php:5112
+#: inc/search.class.php:5133 inc/slalevel.class.php:247
+#: inc/software.class.php:537 inc/softwareversion.class.php:139
 #: inc/softwareversion.class.php:177 inc/softwareversion.class.php:261
 #: inc/state.class.php:112 inc/ticket.class.php:1872 inc/ticket.class.php:2049
 #: inc/ticket.class.php:2353 inc/ticket.class.php:4096
@@ -4604,35 +4631,35 @@ msgstr[2] "Statusi"
 
 #: inc/change.class.php:436 inc/change.class.php:764
 #: inc/commonitilobject.class.php:3705
-#: inc/notificationtargetcommonitilobject.class.php:889
+#: inc/notificationtargetcommonitilobject.class.php:892
 #: inc/notificationtargetproblem.class.php:202
-#: inc/notificationtargetticket.class.php:585
-#: inc/notificationtargetticket.class.php:593 inc/problem.class.php:507
-#: inc/problem.class.php:1275 inc/ticket.class.php:1902
+#: inc/notificationtargetticket.class.php:613
+#: inc/notificationtargetticket.class.php:621 inc/problem.class.php:506
+#: inc/problem.class.php:1274 inc/ticket.class.php:1902
 #: inc/ticket.class.php:3845 inc/ticket.class.php:3847
 msgid "Opening date"
 msgstr "Pieteikšanas datums"
 
 #: inc/change.class.php:442 inc/commonitilobject.class.php:3718
-#: inc/notificationtargetcommonitilobject.class.php:890
-#: inc/problem.class.php:513 inc/problem.class.php:1323
+#: inc/notificationtargetcommonitilobject.class.php:893
+#: inc/problem.class.php:512 inc/problem.class.php:1322
 #: inc/ticket.class.php:1908
 msgid "Closing date"
 msgstr "Aizvēršanas datums"
 
 #: inc/change.class.php:448 inc/change.class.php:800
 #: inc/commonitilobject.class.php:3708
-#: inc/notificationtargetcommonitilobject.class.php:892
-#: inc/problem.class.php:519 inc/problem.class.php:1288
-#: inc/problem.class.php:1654 inc/slalevel.class.php:186
-#: inc/slalevel.class.php:363 inc/ticket.class.php:1914
+#: inc/notificationtargetcommonitilobject.class.php:895
+#: inc/problem.class.php:518 inc/problem.class.php:1287
+#: inc/problem.class.php:1653 inc/slalevel.class.php:186
+#: inc/slalevel.class.php:370 inc/ticket.class.php:1914
 #: inc/ticket.class.php:3866 inc/ticket.class.php:3868
 #: inc/ticket.class.php:5452
 msgid "Due date"
 msgstr "Izpildes termiņš"
 
 #: inc/change.class.php:455 inc/change.class.php:821
-#: inc/commonitilobject.class.php:3713 inc/problem.class.php:526
+#: inc/commonitilobject.class.php:3713 inc/problem.class.php:525
 #: inc/ticket.class.php:1933 inc/ticket.class.php:3992
 msgid "Resolution date"
 msgstr "Rezolūcijas datums"
@@ -4640,15 +4667,15 @@ msgstr "Rezolūcijas datums"
 #: inc/change.class.php:479 inc/change.class.php:859
 #: inc/commonitiltask.class.php:508 inc/crontask.class.php:933
 #: inc/crontask.class.php:1014
-#: inc/notificationtargetcommonitilobject.class.php:888
+#: inc/notificationtargetcommonitilobject.class.php:891
 #: inc/notificationtargetproblem.class.php:205
-#: inc/notificationtargetticket.class.php:588 inc/problem.class.php:549
-#: inc/problem.class.php:1362 inc/ticket.class.php:1989
+#: inc/notificationtargetticket.class.php:616 inc/problem.class.php:548
+#: inc/problem.class.php:1361 inc/ticket.class.php:1989
 #: inc/ticket.class.php:4315
 msgid "Total duration"
 msgstr "Atvēlētais laiks"
 
-#: inc/change.class.php:487 inc/problem.class.php:557
+#: inc/change.class.php:487 inc/problem.class.php:556
 msgid "Last edit by"
 msgstr "Pēdējoreiz rediģēja"
 
@@ -4696,7 +4723,7 @@ msgid "Accepted"
 msgstr "Pieņemts"
 
 #: inc/change.class.php:604 inc/commonitilobject.class.php:3756
-#: inc/problem.class.php:733 inc/ticket.class.php:2620
+#: inc/problem.class.php:732 inc/ticket.class.php:2620
 msgid "Pending"
 msgstr "Gaida izpildi"
 
@@ -4743,20 +4770,20 @@ msgstr "Iesniedzējs %s"
 msgid "Close date"
 msgstr "Aizvēršanas datums"
 
-#: inc/change.class.php:895 inc/problem.class.php:1398
+#: inc/change.class.php:895 inc/problem.class.php:1397
 #: inc/reminder.class.php:558 inc/reminder.class.php:604
 #: inc/rssfeed.class.php:549 inc/ticket.class.php:4371
 #: inc/ticket.class.php:4388
 msgid "Without title"
 msgstr "Bez virsraksta"
 
-#: inc/change.class.php:928 inc/problem.class.php:1429
+#: inc/change.class.php:928 inc/problem.class.php:1428
 #: inc/ticket.class.php:4420
 msgid "Empty description"
 msgstr "Nav apraksta"
 
 #: inc/change.class.php:962 inc/notificationtargetproblem.class.php:212
-#: inc/problem.class.php:577 inc/problem.class.php:1474
+#: inc/problem.class.php:576 inc/problem.class.php:1473
 msgid "Impacts"
 msgstr "Ietekme"
 
@@ -4778,21 +4805,21 @@ msgstr "Pievienot izmaiņas"
 
 #: inc/change_problem.class.php:127
 msgid "Create a change from this problem"
-msgstr ""
+msgstr "Izveidot izmaiņu no šīs problēmas"
 
 #: inc/change_problem.class.php:232 inc/problem_ticket.class.php:340
 msgid "Add a problem"
 msgstr "Pievienot problēmu"
 
 #: inc/change_problem.class.php:256 inc/html.class.php:1197
-#: inc/notificationtargetticket.class.php:686
-#: inc/notificationtargetticket.class.php:698
-#: inc/notificationtargetticket.class.php:740
-#: inc/notificationtargetticket.class.php:741
-#: inc/notificationtargetticket.class.php:742
-#: inc/notificationtargetticket.class.php:743
-#: inc/notificationtargetticket.class.php:745 inc/problem.class.php:62
-#: inc/problem.class.php:1109 inc/profile.class.php:1014
+#: inc/notificationtargetticket.class.php:735
+#: inc/notificationtargetticket.class.php:747
+#: inc/notificationtargetticket.class.php:789
+#: inc/notificationtargetticket.class.php:790
+#: inc/notificationtargetticket.class.php:791
+#: inc/notificationtargetticket.class.php:792
+#: inc/notificationtargetticket.class.php:794 inc/problem.class.php:62
+#: inc/problem.class.php:1108 inc/profile.class.php:1014
 #: inc/stat.class.php:1502
 msgid "Problem"
 msgid_plural "Problems"
@@ -4820,7 +4847,7 @@ msgstr "Pievienot pieteikumu"
 
 #: inc/change_ticket.class.php:235
 msgid "Create a change from this ticket"
-msgstr ""
+msgstr "Izveidot izmaiņu no šī pieteikuma"
 
 #: inc/commondbchild.class.php:212 inc/networkportinstantiation.class.php:519
 msgid "Item not linked to an object"
@@ -4898,7 +4925,7 @@ msgstr "Apstiprināt reālu dzēšanu?"
 #: inc/ticket.class.php:4527 inc/transfer.class.php:2994
 msgctxt "button"
 msgid "Put in dustbin"
-msgstr "DZĒST"
+msgstr "DZĒST ATKRITNĒ"
 
 #. TRANS: %s is the template name
 #: inc/commondbtm.class.php:2049 inc/computer.class.php:579
@@ -4907,11 +4934,11 @@ msgstr "DZĒST"
 #: inc/printer.class.php:467 inc/software.class.php:267
 #, php-format
 msgid "Created from the template %s"
-msgstr "Izveidot pēc sagataves %s"
+msgstr "Izveidot pēc veidnes %s"
 
 #: inc/commondbtm.class.php:2053
 msgid "Template name"
-msgstr "Sagataves nosaukums"
+msgstr "Veidnes nosaukums"
 
 #: inc/commondbtm.class.php:2081
 msgid "You are not allowed to change the visibility flag for child entities."
@@ -4927,11 +4954,11 @@ msgstr "Karodziņa maiņa aizliegta, jo tam ir piesaistīti ieraksti."
 
 #: inc/commondbtm.class.php:2094
 msgid "Change visibility in child entities"
-msgstr ""
+msgstr "Mainīt redzamību apakšnodaļās"
 
 #: inc/commondbtm.class.php:2565 inc/commontreedropdown.class.php:568
 #: inc/db.function.php:486 inc/entity.class.php:424
-#: inc/notificationtargetcommonitilobject.class.php:954
+#: inc/notificationtargetcommonitilobject.class.php:957
 msgid "Complete name"
 msgstr "Pilns vārds"
 
@@ -4941,10 +4968,10 @@ msgstr "Pilns vārds"
 #: inc/monitor.class.php:482 inc/networkequipment.class.php:273
 #: inc/networkequipment.class.php:457
 #: inc/notificationtargetproblem.class.php:221
-#: inc/notificationtargetticket.class.php:576 inc/peripheral.class.php:227
+#: inc/notificationtargetticket.class.php:603 inc/peripheral.class.php:227
 #: inc/peripheral.class.php:457 inc/phone.class.php:226
 #: inc/phone.class.php:488 inc/printer.class.php:329 inc/printer.class.php:614
-#: inc/search.class.php:5158
+#: inc/search.class.php:5161
 msgid "Alternate username number"
 msgstr "Alternatīvā lietotājvārda numurs"
 
@@ -4975,7 +5002,7 @@ msgstr "Vismaz vienā lauciņā norādīta nekorekta vērtība"
 #: inc/commondbtm.class.php:3731
 #, php-format
 msgid "Impossible record for %s"
-msgstr ""
+msgstr "Neiespējami ierakstīt %s"
 
 #: inc/commondbtm.class.php:3734
 #, php-format
@@ -4984,42 +5011,42 @@ msgstr ""
 
 #: inc/commondbtm.class.php:3737
 msgid "Other item exist"
-msgstr ""
+msgstr "Ir citas vienības"
 
 #: inc/commondbtm.class.php:3776
 msgid "Item in the dustbin"
-msgstr ""
+msgstr "Vienības atkritnē"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:3902
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
-msgstr ""
+msgstr "%1$s mēģināja pievienot jau esošu vienību: %2$s"
 
 #: inc/commondbtm.class.php:4233 inc/entity.class.php:1389
-#: inc/entity.class.php:1434 inc/search.class.php:4751 inc/user.class.php:2430
+#: inc/entity.class.php:1434 inc/search.class.php:4754 inc/user.class.php:2430
 msgid "Default value"
 msgstr "Noklusētā vērtība"
 
 #: inc/commondbtm.class.php:4527
 msgid "Choose a template"
-msgstr "Izvēlieties sagatavi"
+msgstr "Izvēlieties veidni"
 
 #: inc/commondbtm.class.php:4529
 msgid "Blank Template"
-msgstr "Tukša sagatave"
+msgstr "Tukša veidne"
 
 #: inc/commondbtm.class.php:4532
 msgid "Templates"
-msgstr "Sagataves"
+msgstr "Veidnes"
 
 #: inc/commondbtm.class.php:4559
 msgid "Add a template..."
-msgstr "Pievienot sagatavi..."
+msgstr "Pievienot veidni..."
 
 #: inc/commondropdown.class.php:334
 msgid "Transfer and merge"
-msgstr ""
+msgstr "Pārvietot un apvienot"
 
 #: inc/commondropdown.class.php:350
 msgctxt "button"
@@ -5032,7 +5059,7 @@ msgstr "Tu nevari izdzēst šo vietu, jo tā nav tukša (apakšvietas!)"
 
 #: inc/commondropdown.class.php:543
 msgid "Caution: you're about to remove a heading used for one or more items."
-msgstr ""
+msgstr "Uzmanību: jūs gatavojaties likvidēt vienas vai vairāku vienību virsrakstus"
 
 #: inc/commondropdown.class.php:548
 msgid ""
@@ -5286,7 +5313,7 @@ msgstr "Ļoti zems"
 #: inc/commonitilobject.class.php:2207 inc/commonitilobject.class.php:2388
 #: inc/commonitilobject.class.php:2394 inc/commonitilobject.class.php:2998
 #: inc/notificationtargetcommonitilobject.class.php:422
-#: inc/notificationtargetcommonitilobject.class.php:912
+#: inc/notificationtargetcommonitilobject.class.php:915
 #: inc/ruleticket.class.php:319 inc/ruleticket.class.php:421
 msgid "Watcher"
 msgid_plural "Watchers"
@@ -5308,7 +5335,7 @@ msgstr "Gaidīšanas laiks"
 
 #: inc/commonitilobject.class.php:2357 inc/commonitilobject.class.php:2588
 #: inc/notificationtargetcommonitilobject.class.php:417
-#: inc/notificationtargetcommonitilobject.class.php:906
+#: inc/notificationtargetcommonitilobject.class.php:909
 #: inc/ruleticket.class.php:294 inc/ruleticket.class.php:390
 msgid "Requester group"
 msgid_plural "Requester groups"
@@ -5318,7 +5345,7 @@ msgstr[2] "Pieprasītāja grupa"
 
 #: inc/commonitilobject.class.php:2410 inc/commonitilobject.class.php:2592
 #: inc/notificationtargetcommonitilobject.class.php:421
-#: inc/notificationtargetcommonitilobject.class.php:908
+#: inc/notificationtargetcommonitilobject.class.php:911
 #: inc/ruleticket.class.php:325 inc/ruleticket.class.php:430
 msgid "Watcher group"
 msgid_plural "Watcher groups"
@@ -5327,10 +5354,10 @@ msgstr[1] "Novērotāja grupas"
 msgstr[2] "Novērotāja grupas"
 
 #: inc/commonitilobject.class.php:2446
-#: inc/notificationtargetcommonitilobject.class.php:905
+#: inc/notificationtargetcommonitilobject.class.php:908
 #: inc/ruleticket.class.php:313 inc/ruleticket.class.php:415
 msgid "Assigned to a supplier"
-msgstr ""
+msgstr "Piešķirt piegādātaju"
 
 #: inc/commonitilobject.class.php:2462 inc/ruleticket.class.php:306
 #: inc/ruleticket.class.php:407
@@ -5347,7 +5374,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:2574
 msgid "Watcher user"
-msgstr ""
+msgstr "Novērotājs"
 
 #: inc/commonitilobject.class.php:2596
 #: inc/notificationtargetcommonitilobject.class.php:420
@@ -5391,7 +5418,7 @@ msgstr[2] "Laiks"
 
 #: inc/commonitiltask.class.php:100
 #: inc/notificationtargetproblem.class.php:233
-#: inc/notificationtargetticket.class.php:683 inc/problem.class.php:600
+#: inc/notificationtargetticket.class.php:731 inc/problem.class.php:599
 #: inc/ticket.class.php:2273
 msgid "Task"
 msgid_plural "Tasks"
@@ -5404,7 +5431,7 @@ msgstr[2] "Uzdevumi"
 #: inc/reservation.class.php:274
 msgid ""
 "Error in entering dates. The starting date is later than the ending date"
-msgstr ""
+msgstr "Kļūda datumu ievadē. Sākuma datums nevar būt pēc beigu datuma"
 
 #: inc/commonitiltask.class.php:459 inc/commonitiltask.class.php:462
 #: inc/profile_user.class.php:844 inc/profile_user.class.php:851
@@ -5413,7 +5440,7 @@ msgstr ""
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: inc/commonitiltask.class.php:483 inc/problem.class.php:622
+#: inc/commonitiltask.class.php:483 inc/problem.class.php:621
 #: inc/ticket.class.php:2296
 msgid "Task category"
 msgstr "Uzdevuma kategorija"
@@ -5460,7 +5487,7 @@ msgstr "Atkārtot pēc %s"
 #: inc/commonitiltask.class.php:899 inc/commonitiltask.class.php:1075
 #: inc/dbconnection.class.php:428 inc/group_user.class.php:173
 #: inc/group_user.class.php:250 inc/htmltablemain.class.php:238
-#: inc/planningrecall.class.php:247 inc/search.class.php:4363
+#: inc/planningrecall.class.php:247 inc/search.class.php:4366
 msgid "None"
 msgstr "Nekas"
 
@@ -5470,10 +5497,10 @@ msgstr "No"
 
 #: inc/commonitiltask.class.php:1000 inc/commonitiltask.class.php:1159
 #: inc/contract.class.php:354 inc/contract.class.php:563
-#: inc/crontask.class.php:1070 inc/problem.class.php:664
-#: inc/reservation.class.php:710 inc/ticket.class.php:2337
-#: inc/ticket.class.php:2397 inc/ticketcost.class.php:271
-#: inc/ticketcost.class.php:378
+#: inc/crontask.class.php:1070 inc/notificationtargetticket.class.php:641
+#: inc/problem.class.php:663 inc/reservation.class.php:710
+#: inc/ticket.class.php:2337 inc/ticket.class.php:2397
+#: inc/ticketcost.class.php:271 inc/ticketcost.class.php:378
 msgid "Duration"
 msgstr "Ilgums"
 
@@ -5519,7 +5546,7 @@ msgstr ""
 #: inc/computer_softwarelicense.class.php:447
 #: inc/computer_softwareversion.class.php:116
 #: inc/computer_softwareversion.class.php:439 inc/group.class.php:339
-#: inc/networkport.class.php:944 inc/rule.class.php:225
+#: inc/networkport.class.php:945 inc/rule.class.php:225
 msgctxt "button"
 msgid "Move"
 msgstr "Pārvietot"
@@ -5534,7 +5561,7 @@ msgstr "Alternatīvais lietotājvārds atjaunināts. Saistītajiem objektiem nor
 msgid ""
 "User or group updated. The connected items have been moved in the same "
 "values."
-msgstr ""
+msgstr "Lietotājs vai grupa atjaunināta. Saistītās vienības atjauninātas izmantojot šo informāciju."
 
 #: inc/computer.class.php:265 inc/computer_item.class.php:185
 msgid ""
@@ -5614,7 +5641,7 @@ msgstr "Operētājsistēmas seriālais numurs"
 #: inc/computervirtualmachine.class.php:132
 #: inc/computervirtualmachine.class.php:306 inc/ipaddress.class.php:1016
 #: inc/item_devices.class.php:179 inc/networkequipment.class.php:348
-#: inc/networkname.class.php:535 inc/networkport.class.php:429
+#: inc/networkname.class.php:536 inc/networkport.class.php:429
 #: inc/networkport.class.php:615 inc/peripheral.class.php:317
 #: inc/phone.class.php:327 inc/printer.class.php:454
 msgid "Automatic inventory"
@@ -5886,7 +5913,7 @@ msgstr "Izmantoto datoru skaists"
 msgid "Affected computers"
 msgstr "Ietekmētie datori"
 
-#: inc/computer_softwareversion.class.php:55 inc/software.class.php:896
+#: inc/computer_softwareversion.class.php:55 inc/software.class.php:895
 #: inc/softwareversion.class.php:263
 msgid "Installation"
 msgid_plural "Installations"
@@ -5915,7 +5942,7 @@ msgstr "Darbstacija"
 
 #: inc/computervirtualmachine.class.php:227
 msgid "List of host machines"
-msgstr ""
+msgstr "Host datoru saraksts"
 
 #: inc/computervirtualmachine.class.php:300
 msgid "No virtual machine associated with the computer"
@@ -6006,7 +6033,7 @@ msgstr "Simbols, kuru nospiest, lai liktu pilnībā atvērties izkrītošajām i
 #: inc/config.class.php:285
 msgid ""
 "Maximum number of items to display in the dropdown when wildcard is not used"
-msgstr ""
+msgstr "Lielākais rādāmo vienību skaits izkrītošajās izvēlnēs, ja netiek lietota 'wildcard"
 
 #: inc/config.class.php:291
 msgid "Search engine"
@@ -6074,15 +6101,15 @@ msgstr "Ierobežot printeru pārvaldīšanu"
 
 #: inc/config.class.php:385
 msgid "Automatic transfer of computers"
-msgstr ""
+msgstr "Automātiska datoru pārnese"
 
 #: inc/config.class.php:387
 msgid "Template for the automatic transfer of computers in another entity"
-msgstr ""
+msgstr "Sagatave automātiskai datoru pārnešanai uz citu nodaļu"
 
 #: inc/config.class.php:391
 msgid "No automatic transfer"
-msgstr ""
+msgstr "Nav automātiskas pārnešanas"
 
 #: inc/config.class.php:398
 msgid "Automatically update of the elements related to the computers"
@@ -6165,19 +6192,19 @@ msgstr "Mysql parole"
 
 #: inc/config.class.php:541
 msgid "Use the slave for the search engine"
-msgstr ""
+msgstr "Lietot sekundāro meklēšanas dzinēju"
 
 #: inc/config.class.php:543
 msgid "If synced (all changes)"
-msgstr ""
+msgstr "Ja sinhronizēts (visas izmaiņas)"
 
 #: inc/config.class.php:544
 msgid "If synced (current user changes)"
-msgstr ""
+msgstr "Ja sinhronizēts (pašreizējā lietotāja izmaiņas)"
 
 #: inc/config.class.php:545
 msgid "If synced or read-only account"
-msgstr ""
+msgstr "Ja sinhronizēts vai tikai lasāms konta"
 
 #: inc/config.class.php:546
 msgid "Always"
@@ -6187,7 +6214,7 @@ msgstr "Vienmēr"
 #: inc/dropdown.class.php:663 inc/entity.class.php:291 inc/event.class.php:124
 #: inc/html.class.php:1135 inc/profile.class.php:115 inc/profile.class.php:562
 #: inc/profile.class.php:838 inc/profile.class.php:1382
-#: inc/profile.class.php:1715 inc/search.class.php:5194
+#: inc/profile.class.php:1715 inc/search.class.php:5197
 msgid "Assistance"
 msgstr "Atbalsts"
 
@@ -6529,7 +6556,7 @@ msgstr "Pārbaudu rakstīšanas tiesības dump datnēm"
 
 #: inc/config.class.php:1529
 msgid "Checking write permissions for automatic actions files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības automātisko darbību datnēm"
 
 #: inc/config.class.php:1531
 msgid "Checking write permissions for cache files"
@@ -6537,27 +6564,27 @@ msgstr "Pārbaudu rakstīšanas tiesības kešatmiņas datnēm"
 
 #: inc/config.class.php:1533
 msgid "Checking write permissions for graphic files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības grafiskām datnēm"
 
 #: inc/config.class.php:1535
 msgid "Checking write permissions for lock files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības slēgtām datnēm"
 
 #: inc/config.class.php:1537
 msgid "Checking write permissions for plugins document files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības spraudņa dokumenta datnēm"
 
 #: inc/config.class.php:1539
 msgid "Checking write permissions for temporary files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības pagaidu datnēm"
 
 #: inc/config.class.php:1541
 msgid "Checking write permissions for rss files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības RSS datnēm"
 
 #: inc/config.class.php:1543
 msgid "Checking write permissions for upload files"
-msgstr ""
+msgstr "Pārbaudu rakstīšanas tiesības augšupielādētām datnēm"
 
 #: inc/config.class.php:1551
 msgid "The directory could not be created."
@@ -6580,7 +6607,7 @@ msgstr "Datne tika izveidota, taču to nav iespējams dzēst."
 #: inc/rssfeed.class.php:605
 #, php-format
 msgid "Check permissions to the directory: %s"
-msgstr ""
+msgstr "Pārbaudīt tiesības mapei: %s"
 
 #: inc/config.class.php:1573 inc/config.class.php:1575
 msgid "A file and a directory have be created and deleted - Perfect!"
@@ -6588,35 +6615,35 @@ msgstr "Izdevās izveidot un dzēst datni un mapi!"
 
 #: inc/config.class.php:1584
 msgid "Checking write permissions for log files"
-msgstr "Pārbauda žurnāla failu ierakstu"
+msgstr "Pārbaudu rakstīšanas tiesības žurnāla datnēm"
 
 #: inc/config.class.php:1592 inc/config.class.php:1593
 msgid "A file was created - Perfect!"
 msgstr "Fails tika izveidots - lieliski!"
 
-#: inc/consumable.class.php:186 inc/consumable.class.php:471
+#: inc/consumable.class.php:189 inc/consumable.class.php:474
 msgctxt "button"
 msgid "Give"
 msgstr "Izsniegt"
 
 #. TRANS: %s is the user login
-#: inc/consumable.class.php:230
+#: inc/consumable.class.php:233
 #, php-format
 msgid "%s gives a consumable"
 msgstr "%s saņēma izlietojamos materiālus"
 
 #. TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is
 #. old number
-#: inc/consumable.class.php:326
+#: inc/consumable.class.php:329
 #, php-format
 msgid "Total: %1$d, New: %2$d, Used: %3$d"
 msgstr "Kopā: %1$d, Jauni: %2$d, Lietoti: %3$d"
 
-#: inc/consumable.class.php:334 inc/consumable.class.php:336
+#: inc/consumable.class.php:337 inc/consumable.class.php:339
 msgid "No consumable"
 msgstr "Nav izlietojamā materiāla"
 
-#: inc/consumable.class.php:389
+#: inc/consumable.class.php:392
 msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
@@ -6624,7 +6651,7 @@ msgstr[0] "Jauni"
 msgstr[1] "Jauns"
 msgstr[2] "Jauni"
 
-#: inc/consumable.class.php:392
+#: inc/consumable.class.php:395
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
@@ -6632,28 +6659,28 @@ msgstr[0] "Lietoti"
 msgstr[1] "Lietots"
 msgstr[2] "Lietoti"
 
-#: inc/consumable.class.php:420
+#: inc/consumable.class.php:423
 msgctxt "button"
 msgid "Add consumables"
 msgstr "Pievienot izlietojamos materiālus"
 
-#: inc/consumable.class.php:486
+#: inc/consumable.class.php:489
 msgid "Used consumables"
 msgstr "Izlietojamie materiāli lietošanā"
 
-#: inc/consumable.class.php:502
+#: inc/consumable.class.php:505
 msgid "Given to"
 msgstr "Izsniegts"
 
-#: inc/consumable.class.php:615
+#: inc/consumable.class.php:618
 msgid "Give to"
 msgstr "Izsniegt uz"
 
-#: inc/consumable.class.php:625
+#: inc/consumable.class.php:628
 msgid "In stock"
 msgstr "Noliktavā"
 
-#: inc/consumable.class.php:670
+#: inc/consumable.class.php:673
 msgid "No consumable found"
 msgstr "Izlietojamais materiāls netika atrasts"
 
@@ -6815,7 +6842,7 @@ msgstr "Sākotnējais līguma termiņš"
 
 #: inc/contract.class.php:212 inc/contract.class.php:410
 #: inc/contract.class.php:582 inc/contract.class.php:1331
-#: inc/notificationtargetcontract.class.php:45 inc/search.class.php:4157
+#: inc/notificationtargetcontract.class.php:45 inc/search.class.php:4160
 msgid "Notice"
 msgstr "Paziņojums"
 
@@ -6883,8 +6910,18 @@ msgstr "Periodiskums"
 #: inc/contract.class.php:725 inc/contract.class.php:733
 #: inc/contract.class.php:741 inc/contractcost.class.php:49
 #: inc/contractcost.class.php:212 inc/contractcost.class.php:299
-#: inc/ticket.class.php:2376 inc/ticket.class.php:2397
-#: inc/ticketcost.class.php:49
+#: inc/notificationtargetticket.class.php:632
+#: inc/notificationtargetticket.class.php:634
+#: inc/notificationtargetticket.class.php:636
+#: inc/notificationtargetticket.class.php:638
+#: inc/notificationtargetticket.class.php:640
+#: inc/notificationtargetticket.class.php:642
+#: inc/notificationtargetticket.class.php:644
+#: inc/notificationtargetticket.class.php:646
+#: inc/notificationtargetticket.class.php:648
+#: inc/notificationtargetticket.class.php:650
+#: inc/notificationtargetticket.class.php:732 inc/ticket.class.php:2376
+#: inc/ticket.class.php:2397 inc/ticketcost.class.php:49
 msgid "Cost"
 msgid_plural "Costs"
 msgstr[0] "Izmaksa"
@@ -6901,7 +6938,7 @@ msgctxt "button"
 msgid "Remove an item"
 msgstr "Noņemt objektu"
 
-#: inc/contract.class.php:630 inc/software.class.php:628
+#: inc/contract.class.php:630 inc/software.class.php:627
 #: inc/softwarelicense.class.php:235 inc/softwarelicense.class.php:338
 #: inc/softwarelicense.class.php:660
 msgid "Expiration"
@@ -6912,26 +6949,28 @@ msgid "Expiration date + notice"
 msgstr "Izbeigšanās datums + brīdinājums"
 
 #: inc/contract.class.php:679 inc/notificationtargetcontract.class.php:157
-#: inc/problem.class.php:564
+#: inc/problem.class.php:563
 msgctxt "quantity"
 msgid "Number of items"
-msgstr ""
+msgstr "Vienību skaits"
 
 #: inc/contract.class.php:688
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Saistītais piegādātājs"
+msgstr[1] "Saistītie piegādātāji"
 msgstr[2] "Saistītie piegādātāji"
 
 #: inc/contract.class.php:700 inc/contractcost.class.php:342
-#: inc/ticket.class.php:2380 inc/ticketcost.class.php:382
+#: inc/notificationtargetticket.class.php:609
+#: inc/notificationtargetticket.class.php:649 inc/ticket.class.php:2380
+#: inc/ticketcost.class.php:382
 msgid "Total cost"
 msgstr "Kopējās izmaksas"
 
 #: inc/contract.class.php:717 inc/contractcost.class.php:218
-#: inc/contractcost.class.php:296 inc/ticketcost.class.php:264
-#: inc/ticketcost.class.php:375
+#: inc/contractcost.class.php:296 inc/notificationtargetticket.class.php:637
+#: inc/ticketcost.class.php:264 inc/ticketcost.class.php:375
 msgid "Begin date"
 msgstr "Sākuma datums"
 
@@ -6961,11 +7000,11 @@ msgstr "Sūtīt brīdinājumus par līgumiem"
 
 #: inc/contract.class.php:980
 msgid "Contract entered in notice time"
-msgstr ""
+msgstr "Līguma darbības beigas"
 
 #: inc/contract.class.php:985
 msgid "Contract ended"
-msgstr ""
+msgstr "Līgums beidzies"
 
 #: inc/contract.class.php:1057
 msgid "Contract entered in notice time for period"
@@ -6989,7 +7028,7 @@ msgstr "Īpašas piezīmes"
 msgid "Express"
 msgstr "Ekspress"
 
-#: inc/contract.class.php:1332 inc/search.class.php:4160
+#: inc/contract.class.php:1332 inc/search.class.php:4163
 msgid "End + Notice"
 msgstr "Beigas + Paziņojums"
 
@@ -7031,7 +7070,7 @@ msgstr[2] "Automātiskās darbības"
 #: inc/crontask.class.php:179 inc/crontask.class.php:427
 #: inc/crontask.class.php:1245
 msgid "Run mode"
-msgstr ""
+msgstr "Darbības režīms"
 
 #: inc/crontask.class.php:238
 msgid "Action completed, partially processed"
@@ -7059,11 +7098,11 @@ msgstr "Izslēgts spraudnis"
 
 #: inc/crontask.class.php:438
 msgid "Run period"
-msgstr ""
+msgstr "Darbības periods"
 
 #: inc/crontask.class.php:444 inc/crontask.class.php:1287
 msgid "Number of days this action logs are stored"
-msgstr ""
+msgstr "Cik dienas saglabāt šīs darbības žurnālu"
 
 #: inc/crontask.class.php:446 inc/crontask.class.php:1292
 msgid "Infinite"
@@ -7148,18 +7187,18 @@ msgstr "Darbību skaits"
 #, php-format
 msgid "%s start"
 msgid_plural "%s starts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s palaists"
+msgstr[1] "%s palaisti"
+msgstr[2] "%s palaisti"
 
 #. TRANS: %s is the number of stops
 #: inc/crontask.class.php:895
 #, php-format
 msgid "%s stop"
 msgid_plural "%s stops"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s apstādināts"
+msgstr[1] "%s apstādināti"
+msgstr[2] "%s apstādināti"
 
 #: inc/crontask.class.php:918
 msgid "Minimal time"
@@ -7187,7 +7226,7 @@ msgstr "Minimālais skaits"
 
 #: inc/crontask.class.php:942 inc/crontask.class.php:946
 #: inc/crontask.class.php:950 inc/crontask.class.php:955
-#: inc/search.class.php:5641 inc/search.class.php:5661
+#: inc/search.class.php:5644 inc/search.class.php:5664
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
@@ -7222,7 +7261,7 @@ msgid "Last run list"
 msgstr "Pēdējo palaišanu saraksts"
 
 #: inc/crontask.class.php:1015 inc/crontask.class.php:1071
-#: inc/fieldunicity.class.php:554 inc/problem.class.php:1109
+#: inc/fieldunicity.class.php:554 inc/problem.class.php:1108
 #: inc/softwarelicense.class.php:228 inc/softwarelicense.class.php:312
 #: inc/softwarelicense.class.php:644 inc/stat.class.php:389
 #: inc/ticket.class.php:5062
@@ -7344,7 +7383,7 @@ msgstr ""
 #: inc/dbconnection.class.php:382
 #, php-format
 msgid "Mysql server: %s can't connect to the database"
-msgstr ""
+msgstr "Mysql serveris: %s nevar pieslēgties datubāzei"
 
 #. TRANS: %1$s is the server name, %2$s is the time
 #: inc/dbconnection.class.php:385
@@ -7438,7 +7477,7 @@ msgstr[2] "Cietie diski"
 
 #: inc/deviceharddrive.class.php:50 inc/deviceharddrive.class.php:72
 msgid "Capacity by default"
-msgstr ""
+msgstr "Noklusētā ietilpība"
 
 #: inc/deviceharddrive.class.php:54 inc/deviceharddrive.class.php:77
 #: inc/deviceharddrive.class.php:112
@@ -7452,7 +7491,7 @@ msgstr "Kešatmiņa"
 
 #: inc/devicememory.class.php:50 inc/devicememory.class.php:69
 msgid "Size by default"
-msgstr ""
+msgstr "Noklusētais izmērs"
 
 #: inc/devicememory.class.php:54 inc/devicememory.class.php:74
 #: inc/devicememory.class.php:105 inc/deviceprocessor.class.php:54
@@ -7499,7 +7538,7 @@ msgstr "Jauda"
 
 #: inc/deviceprocessor.class.php:50 inc/deviceprocessor.class.php:66
 msgid "Frequency by default"
-msgstr ""
+msgstr "Noklusētā frekvence"
 
 #: inc/displaypreference.class.php:288
 msgid "No personal criteria. Create personal parameters?"
@@ -7532,8 +7571,17 @@ msgstr[1] "Dokumentu virsrakti"
 msgstr[2] "Dokumentu virsrakti"
 
 #: inc/document.class.php:50 inc/document.class.php:155
-#: inc/event.class.php:133 inc/html.class.php:1302 inc/profile.class.php:743
-#: inc/profile.class.php:1516 inc/transfer.class.php:3144
+#: inc/event.class.php:133 inc/html.class.php:1302
+#: inc/notificationtargetcommonitilobject.class.php:931
+#: inc/notificationtargetcommonitilobject.class.php:970
+#: inc/notificationtargetcommonitilobject.class.php:972
+#: inc/notificationtargetcommonitilobject.class.php:974
+#: inc/notificationtargetcommonitilobject.class.php:976
+#: inc/notificationtargetcommonitilobject.class.php:978
+#: inc/notificationtargetcommonitilobject.class.php:980
+#: inc/notificationtargetcommonitilobject.class.php:982
+#: inc/profile.class.php:743 inc/profile.class.php:1516
+#: inc/transfer.class.php:3144
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "Dokuments"
@@ -7565,11 +7613,13 @@ msgid "Use a FTP installed file"
 msgstr "Lietot uz FTP novietotu datni"
 
 #: inc/document.class.php:335 inc/document.class.php:823
+#: inc/notificationtargetcommonitilobject.class.php:979
 msgid "Web Link"
 msgstr "Interneta saite"
 
 #: inc/document.class.php:341 inc/document.class.php:844
 #: inc/document_item.class.php:598 inc/document_item.class.php:673
+#: inc/notificationtargetcommonitilobject.class.php:973
 msgid "Heading"
 msgstr "Virsraksts"
 
@@ -7594,6 +7644,7 @@ msgid "%s Mio max"
 msgstr "maksimāli %s MiB"
 
 #: inc/document.class.php:646
+#: inc/notificationtargetcommonitilobject.class.php:918
 msgctxt "quantity"
 msgid "Number of documents"
 msgstr "Dokumentu skaits"
@@ -7604,7 +7655,7 @@ msgstr ""
 
 #: inc/document.class.php:919 inc/document.class.php:1156
 msgid "Upload directory doesn't exist"
-msgstr ""
+msgstr "Lejupielādes mape neeksistē"
 
 #. TRANS: %1$s is the curent filename, %2$s is its directory
 #: inc/document.class.php:949 inc/document.class.php:1043
@@ -7648,7 +7699,7 @@ msgstr "Neatļauts datnes tips"
 #: inc/document.class.php:1096
 #, php-format
 msgid "The directory %s doesn't exist."
-msgstr ""
+msgstr "Mape %s neeksistē."
 
 #: inc/document.class.php:1105
 #, php-format
@@ -7660,7 +7711,7 @@ msgstr "Izveidot mapi %s"
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
-msgstr ""
+msgstr "Nevarēja izveidot mapi %s. Pārbaudi, vai Tev ir nepieciešamās piekļuves tiesības"
 
 #: inc/document.class.php:1152
 msgid "No file available"
@@ -7668,7 +7719,7 @@ msgstr "Nav datnes"
 
 #: inc/document_item.class.php:392 inc/entity.class.php:1517
 #: inc/event.class.php:123 inc/html.class.php:1143 inc/html.class.php:2634
-#: inc/notificationtargetcommonitilobject.class.php:882
+#: inc/notificationtargetcommonitilobject.class.php:885
 #: inc/notificationtargetproblem.class.php:234
 #: inc/notificationtargetproblem.class.php:245
 #: inc/notificationtargetproblem.class.php:256
@@ -7697,7 +7748,7 @@ msgstr "Pievienot jaunu datni"
 #: inc/document_item.class.php:642
 msgctxt "button"
 msgid "Associate an existing document"
-msgstr ""
+msgstr "Saistīt ar esošo dokumentu"
 
 #: inc/document_item.class.php:672
 msgid "Web link"
@@ -7731,13 +7782,13 @@ msgstr[2] "Dokumenta tipi"
 #: inc/dropdown.class.php:528
 #, php-format
 msgid "Error reading directory %s"
-msgstr ""
+msgstr "Kļūda, lasot mapi %s"
 
 #. TRANS: %s is the store path
 #: inc/dropdown.class.php:533
 #, php-format
 msgid "Error: %s is not a directory"
-msgstr ""
+msgstr "Kļūda: %s nav mape"
 
 #: inc/dropdown.class.php:559 inc/dropdown.class.php:562
 msgid "GMT"
@@ -7857,7 +7908,7 @@ msgstr[2] "Atjaunināšanas avoti"
 
 #: inc/dropdown.class.php:737 inc/networkport.class.php:876
 msgid "Networking"
-msgstr ""
+msgstr "Tīkla struktūra"
 
 #: inc/dropdown.class.php:740 inc/networkequipment.class.php:342
 #: inc/networkequipment.class.php:491
@@ -7871,7 +7922,7 @@ msgstr[2] "Aparātprogrammatūra"
 
 #: inc/dropdown.class.php:741 inc/netpoint.class.php:55
 #: inc/netpoint.class.php:294 inc/netpoint.class.php:308
-#: inc/netpoint.class.php:417 inc/networkport.class.php:1106
+#: inc/netpoint.class.php:417 inc/networkport.class.php:1107
 #: inc/networkportethernet.class.php:136 inc/networkportethernet.class.php:360
 #: inc/networkportinstantiation.class.php:551
 msgid "Network outlet"
@@ -7880,7 +7931,7 @@ msgstr[0] "Tīkla punkts"
 msgstr[1] "Tīkla punkts"
 msgstr[2] "Tīkla punkti"
 
-#: inc/dropdown.class.php:745 inc/networkport.class.php:923
+#: inc/dropdown.class.php:745 inc/networkport.class.php:924
 #: inc/networkportinstantiation.class.php:125 inc/vlan.class.php:47
 msgid "VLAN"
 msgstr "VLAN"
@@ -8079,15 +8130,15 @@ msgstr "Eksportēt"
 
 #: inc/entity.class.php:460 inc/entity.class.php:1052
 msgid "LDAP directory information attribute representing the entity"
-msgstr ""
+msgstr "LDAP atribūts, kas norāda atbilstošo nodaļu "
 
 #: inc/entity.class.php:466 inc/entity.class.php:1045
 msgid "Information in inventory tool (TAG) representing the entity"
-msgstr ""
+msgstr "Informācija (TAG) no inventarizācijas rīka kas norāda nodaļu"
 
 #: inc/entity.class.php:472 inc/entity.class.php:1070
 msgid "LDAP directory of an entity"
-msgstr ""
+msgstr "LDAP koks, kas attiecas uz nodaļu"
 
 #: inc/entity.class.php:513
 msgid "Search filter (if needed)"
@@ -8154,7 +8205,7 @@ msgstr ""
 #: inc/infocom.class.php:1129 inc/infocom.class.php:1527
 #: inc/notificationtargetinfocom.class.php:43
 msgid "Alarms on financial and administrative information"
-msgstr ""
+msgstr "Brīdinājumus par finanšu un administratīvo informāciju"
 
 #: inc/entity.class.php:616 inc/entity.class.php:1447
 msgid "Send financial and administrative information alarms before"
@@ -8163,10 +8214,10 @@ msgstr ""
 #: inc/entity.class.php:623 inc/entity.class.php:1501
 #: inc/reservationitem.class.php:409
 msgid "Alerts on reservations"
-msgstr ""
+msgstr "Brīdinājumi par rezervācijām"
 
 #: inc/entity.class.php:630 inc/entity.class.php:1746
-#: inc/notificationtargetticket.class.php:602
+#: inc/notificationtargetticket.class.php:630
 msgid "Automatic closing of solved tickets after"
 msgstr "Automātiska pieteikumu aizvēršana pēc"
 
@@ -8255,25 +8306,25 @@ msgstr "%s pievieno vienību"
 
 #: inc/entity.class.php:1037
 msgid "Values for the generic rules for assignment to entities"
-msgstr ""
+msgstr "Vērtības vispārējiem nodaļu piesaistīšanas nosacījumiem"
 
 #: inc/entity.class.php:1041
 msgid ""
 "These parameters are used as actions in generic rules for assignment to "
 "entities"
-msgstr ""
+msgstr "Šie parametri tiek lietoti kā darbības vispārējos nosacījumos sasaistīšanai ar nodaļām"
 
 #: inc/entity.class.php:1059
 msgid "Mail domain surrogates entity"
-msgstr ""
+msgstr "E-pasta domēna 'surogāta' nodaļa"
 
 #: inc/entity.class.php:1066
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr ""
+msgstr "Interfeisā lietotās vērtības lietotāju meklēšanai LDAP kokā"
 
 #: inc/entity.class.php:1078
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr ""
+msgstr "Ar nodaļu saistītais LDAP filtrs (ja nepieciešams)"
 
 #: inc/entity.class.php:1121
 msgid "Autofill dates for financial and administrative information"
@@ -8297,25 +8348,25 @@ msgstr "Aizpildīt, kad pāriet uz stāvokli %s"
 #: inc/entity.class.php:1136 inc/entity.class.php:2188
 #: inc/entity.class.php:2319
 msgid "Copy the start date of warranty"
-msgstr ""
+msgstr "Kopēt garantijas sākuma datumu"
 
 #: inc/entity.class.php:1148 inc/entity.class.php:1175
 #: inc/entity.class.php:2191 inc/entity.class.php:2321
 #: inc/entity.class.php:2334
 msgid "Copy the date of purchase"
-msgstr ""
+msgstr "Kopēt pirkuma datumu"
 
 #: inc/entity.class.php:1157 inc/entity.class.php:1176
 #: inc/entity.class.php:2194 inc/entity.class.php:2323
 #: inc/entity.class.php:2335
 msgid "Copy the order date"
-msgstr ""
+msgstr "Kopēt pasūtījuma datumu"
 
 #: inc/entity.class.php:1165 inc/entity.class.php:1177
 #: inc/entity.class.php:2197 inc/entity.class.php:2325
 #: inc/entity.class.php:2336
 msgid "Copy the delivery date"
-msgstr ""
+msgstr "Kopēt piegādes datumu"
 
 #: inc/entity.class.php:1191 inc/entity.class.php:2225
 #: inc/entity.class.php:2359
@@ -8379,11 +8430,11 @@ msgstr "Ārējs apsekojums"
 
 #: inc/entity.class.php:2046
 msgid "Based on the item then the category"
-msgstr ""
+msgstr "Vispirms vienība, tad kategorija"
 
 #: inc/entity.class.php:2047
 msgid "Based on the category then the item"
-msgstr ""
+msgstr "Vispirms kategorija, tad vienība"
 
 #: inc/event.class.php:120 inc/html.class.php:1510 inc/profile.class.php:1246
 #: inc/rule.class.php:103 inc/rulecollection.class.php:1137
@@ -8398,7 +8449,7 @@ msgid "Security"
 msgstr "Drošība"
 
 #: inc/event.class.php:135 inc/html.class.php:1398 inc/html.class.php:2009
-#: inc/html.class.php:2676 inc/search.class.php:5251
+#: inc/html.class.php:2676 inc/search.class.php:5254
 msgid "Plugins"
 msgstr "Papildus spraudņi (plugins)"
 
@@ -8433,12 +8484,12 @@ msgstr "Līmenis"
 #, php-format
 msgid "%1$s login since %2$s"
 msgid_plural "%1$s logins since %2$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%1$s pieslēdzās sistēmais no %2$s"
+msgstr[1] "%1$s pieslēdzās sistēmais no %2$s"
+msgstr[2] "%1$s pieslēdzās sistēmais no %2$s"
 
 #: inc/fieldblacklist.class.php:62 inc/fieldblacklist.class.php:88
-#: inc/log.class.php:269 inc/notificationtargetcommonitilobject.class.php:964
+#: inc/log.class.php:269 inc/notificationtargetcommonitilobject.class.php:967
 #: inc/ruleaction.class.php:129 inc/rule.class.php:617
 msgid "Field"
 msgid_plural "Fields"
@@ -8466,13 +8517,13 @@ msgstr "Dublikāti"
 
 #: inc/fieldunicity.class.php:443
 msgid "It's mandatory to select a type and at least one field"
-msgstr ""
+msgstr "Ir nepieciešams izvēlēties tipu un vismaz vienu lauku"
 
 #: inc/fieldunicity.class.php:547 inc/fieldunicity.class.php:572
 #: inc/notificationevent.class.php:224 inc/stat.class.php:1148
 #: inc/user.class.php:3563
 msgid "No item to display"
-msgstr ""
+msgstr "Nav datu ko attēlot"
 
 #: inc/fqdn.class.php:63 inc/fqdn.class.php:207
 msgid "FQDN"
@@ -8525,12 +8576,12 @@ msgstr "Pievienot lietotāju"
 #: inc/group.class.php:303
 msgctxt "button"
 msgid "Add a supervisor"
-msgstr ""
+msgstr "Pievienot uzraugu"
 
 #: inc/group.class.php:304
 msgctxt "button"
 msgid "Add a delegatee"
-msgstr ""
+msgstr "Pievienot pārstāvi"
 
 #: inc/group.class.php:410 inc/group.class.php:495
 msgid "Attribute of the user containing its groups"
@@ -8538,7 +8589,7 @@ msgstr ""
 
 #: inc/group.class.php:415 inc/group.class.php:501
 msgid "Attribute value"
-msgstr ""
+msgstr "Atribūta vērtība"
 
 #: inc/group.class.php:451 inc/group_user.class.php:162
 #: inc/group_user.class.php:198 inc/group_user.class.php:294
@@ -8552,14 +8603,14 @@ msgstr "Vadītājs"
 #: inc/group_user.class.php:422 inc/group_user.class.php:471
 #: inc/group_user.class.php:672
 msgid "Delegatee"
-msgstr ""
+msgstr "Pārstāvis"
 
 #: inc/group.class.php:660 inc/group_user.class.php:427
-#: inc/problem.class.php:1843 inc/ticket.class.php:5237
+#: inc/problem.class.php:1842 inc/ticket.class.php:5237
 msgid "Child groups"
 msgstr "Apakšgrupas"
 
-#: inc/group.class.php:693 inc/networkport.class.php:970
+#: inc/group.class.php:693 inc/networkport.class.php:971
 #: inc/rule.class.php:196
 msgid "Move"
 msgstr "Pārvietot"
@@ -8570,7 +8621,7 @@ msgstr "Pārvietot"
 #: inc/knowbaseitem.class.php:1651
 #: inc/notificationtargetcontract.class.php:161 inc/reminder.class.php:1233
 #: inc/reminder.class.php:1290 inc/rssfeed.class.php:1066
-#: inc/rssfeed.class.php:1123 inc/rule.class.php:2452
+#: inc/rssfeed.class.php:1123 inc/rule.class.php:2453
 #: inc/search.class.php:1314 inc/stat.class.php:1360
 #, php-format
 msgid "%1$s / %2$s"
@@ -8598,7 +8649,7 @@ msgstr "Pievienot lietotāju"
 
 #: inc/group_user.class.php:419 inc/rule.class.php:686 inc/rule.class.php:689
 #: inc/rule.class.php:771 inc/rule.class.php:778 inc/rule.class.php:824
-#: inc/rule.class.php:1474 inc/rule.class.php:1918 inc/rule.class.php:2452
+#: inc/rule.class.php:1474 inc/rule.class.php:1919 inc/rule.class.php:2453
 #: inc/rulecollection.class.php:732 inc/rulecriteria.class.php:72
 #: inc/rulerightparameter.class.php:68 inc/rulerightparameter.class.php:85
 msgid "Criterion"
@@ -8700,7 +8751,7 @@ msgstr[2] "Atskaites"
 
 #: inc/html.class.php:1388 inc/networkportmigration.class.php:49
 msgid "Network port migration"
-msgstr ""
+msgstr "Tīkla portu migrācija"
 
 #: inc/html.class.php:1706
 msgid "Peripheral type"
@@ -8723,7 +8774,7 @@ msgstr[0] "Profils"
 msgstr[1] "Profili"
 msgstr[2] "Profili"
 
-#: inc/html.class.php:1907 inc/notificationtargetticket.class.php:567
+#: inc/html.class.php:1907 inc/notificationtargetticket.class.php:594
 #: inc/profile.class.php:1387 inc/ruleticket.class.php:455
 #: inc/sla.class.php:49 inc/ticket.class.php:2007 inc/ticket.class.php:2011
 #: inc/ticket.class.php:3877 inc/ticket.class.php:3929
@@ -8824,13 +8875,13 @@ msgstr "Iezīmēt visus kā"
 
 #: inc/html.class.php:3183
 msgid "Selection too large, massive action disabled."
-msgstr ""
+msgstr "Izvēle pārlieku apjomīga, masveida darbības atspējotas."
 
 #: inc/html.class.php:3185
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
-msgstr ""
+msgstr "Lai palielinātu limitu, mainiet PHP konfigurācijas max_input_vars vai suhosin.post.max_vars parametrus."
 
 #: inc/html.class.php:3646
 msgid "Now"
@@ -8844,7 +8895,7 @@ msgstr "Šodien"
 msgid "Specify a date"
 msgstr "Norādīt datumu"
 
-#: inc/html.class.php:3660 inc/slalevel.class.php:346
+#: inc/html.class.php:3660 inc/slalevel.class.php:353
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
@@ -8852,7 +8903,7 @@ msgstr[0] "- %d stunda"
 msgstr[1] "- %d stunda"
 msgstr[2] "- %d stundas"
 
-#: inc/html.class.php:3665 inc/slalevel.class.php:358
+#: inc/html.class.php:3665 inc/slalevel.class.php:365
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
@@ -8920,7 +8971,7 @@ msgstr[0] "- %d gads"
 msgstr[1] "- %d gads"
 msgstr[2] "- %d gadi"
 
-#: inc/html.class.php:3701 inc/slalevel.class.php:342
+#: inc/html.class.php:3701 inc/slalevel.class.php:349
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
@@ -8928,7 +8979,7 @@ msgstr[0] "+ %d stundas"
 msgstr[1] "+ %d stunda"
 msgstr[2] "+ %d stunda"
 
-#: inc/html.class.php:3706 inc/slalevel.class.php:354
+#: inc/html.class.php:3706 inc/slalevel.class.php:361
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
@@ -9091,7 +9142,7 @@ msgstr "Derīgs līdz %s"
 
 #: inc/infocom.class.php:1384
 msgid "Comments on financial and administrative information"
-msgstr ""
+msgstr "Komentārs finanšu un administratīvai informācijai"
 
 #: inc/ipaddress.class.php:134 inc/ruleimportcomputer.class.php:104
 msgid "IP address"
@@ -9164,12 +9215,12 @@ msgstr ""
 msgid "Invalid gateway address"
 msgstr "Nederīga vārtejas adrese"
 
-#: inc/ipnetwork_vlan.class.php:135 inc/networkport.class.php:942
+#: inc/ipnetwork_vlan.class.php:135 inc/networkport.class.php:943
 #: inc/networkport_vlan.class.php:135
 msgid "Associate a VLAN"
 msgstr "Pievienot VLAN"
 
-#: inc/ipnetwork_vlan.class.php:140 inc/networkname.class.php:715
+#: inc/ipnetwork_vlan.class.php:140 inc/networkname.class.php:716
 #: inc/networkport_vlan.class.php:143
 msgctxt "button"
 msgid "Associate"
@@ -9186,7 +9237,7 @@ msgstr "Ietilpība"
 
 #: inc/item_devicenetworkcard.class.php:50
 #: inc/item_devicenetworkcard.class.php:51 inc/networkport.class.php:889
-#: inc/networkport.class.php:1094 inc/report.class.php:357
+#: inc/networkport.class.php:1095 inc/report.class.php:357
 #: inc/report.class.php:360 inc/ruleimportcomputer.class.php:102
 msgid "MAC address"
 msgstr "MAC adrese"
@@ -9217,28 +9268,28 @@ msgstr "Redzams vienkāršotajā saskarnē"
 
 #: inc/itilcategory.class.php:80 inc/itilcategory.class.php:142
 msgid "Visible for an incident"
-msgstr ""
+msgstr "Redzams incedentā"
 
 #: inc/itilcategory.class.php:84 inc/itilcategory.class.php:147
 msgid "Visible for a request"
-msgstr ""
+msgstr "Redzams pieprasījumā"
 
 #: inc/itilcategory.class.php:88 inc/itilcategory.class.php:152
 msgid "Visible for a problem"
-msgstr ""
+msgstr "Redzams problēmā"
 
 #: inc/itilcategory.class.php:92 inc/itilcategory.class.php:131
 msgid "Template for a request"
-msgstr ""
+msgstr "Pieprasījuma veidne"
 
 #: inc/itilcategory.class.php:96 inc/itilcategory.class.php:137
 msgid "Template for an incident"
-msgstr ""
+msgstr "Incidentu veidne"
 
-#: inc/itilcategory.class.php:170 inc/notificationtargetticket.class.php:601
-#: inc/search.class.php:5211 inc/ticket.class.php:2423
+#: inc/itilcategory.class.php:170 inc/notificationtargetticket.class.php:629
+#: inc/search.class.php:5214 inc/ticket.class.php:2423
 msgid "Number of problems"
-msgstr ""
+msgstr "Problēmu skaits"
 
 #: inc/itilcategory.class.php:186
 msgid "Ticket category"
@@ -9252,8 +9303,8 @@ msgstr[2] "Pieteikumu kategorijas"
 msgid "Incident"
 msgstr "Incidents"
 
-#: inc/itilcategory.class.php:302 inc/notificationtargetticket.class.php:616
-#: inc/notificationtargetticket.class.php:618 inc/ticket.class.php:2032
+#: inc/itilcategory.class.php:302 inc/notificationtargetticket.class.php:664
+#: inc/notificationtargetticket.class.php:666 inc/ticket.class.php:2032
 #: inc/ticket.class.php:2057 inc/ticket.class.php:2580
 #: inc/ticket.class.php:2598 inc/ticketvalidation.class.php:649
 #: inc/ticketvalidation.class.php:651
@@ -9343,7 +9394,7 @@ msgstr "Nepublicēts"
 
 #: inc/knowbaseitem.class.php:981
 msgid "My unpublished articles"
-msgstr ""
+msgstr "Mani nepublicētie raksti"
 
 #: inc/knowbaseitem.class.php:982
 msgid "All my articles"
@@ -9351,7 +9402,7 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:984
 msgid "All unpublished articles"
-msgstr ""
+msgstr "Visi nepublicētie raksti"
 
 #: inc/knowbaseitem.class.php:1308
 msgid "Use as a solution"
@@ -9363,7 +9414,7 @@ msgstr "Jaunākie raksti"
 
 #: inc/knowbaseitem.class.php:1357
 msgid "Last updated entries"
-msgstr ""
+msgstr "Pēdējo reizi atjaunots ieraksts"
 
 #: inc/knowbaseitem.class.php:1360
 msgid "Most popular questions"
@@ -9390,7 +9441,7 @@ msgstr "Pievienot mērķauditoriju"
 msgid ""
 "Caution! You are not the author of this element. Delete targets can result "
 "in loss of access to that element."
-msgstr ""
+msgstr "Brīdinājums! Jūs neesat šī elementa autors. Dzēšanas rezultātā var zust piekļuve šim elementam."
 
 #: inc/knowbaseitem.class.php:1554 inc/notificationevent.class.php:215
 #: inc/notificationtarget.class.php:175 inc/notificationtarget.class.php:263
@@ -9409,12 +9460,12 @@ msgstr[2] "Saņēmēji"
 #: inc/reminder.class.php:1265 inc/reminder.class.php:1295
 #: inc/rssfeed.class.php:1072 inc/rssfeed.class.php:1098
 #: inc/rssfeed.class.php:1128 inc/rule.class.php:1360
-#: inc/search.class.php:3980 inc/search.class.php:4009
+#: inc/search.class.php:3983 inc/search.class.php:4012
 msgid "R"
 msgstr "R"
 
 #: inc/link.class.php:61 inc/link.class.php:65
-#: inc/notificationtargetticket.class.php:730
+#: inc/notificationtargetticket.class.php:779
 msgid "Link"
 msgid_plural "Links"
 msgstr[0] "Saite"
@@ -9477,15 +9528,15 @@ msgstr ""
 
 #: inc/lock.class.php:393
 msgid "Unlock monitors"
-msgstr "Atslēgt monitoru(s)"
+msgstr "Atslēgt monitorus"
 
 #: inc/lock.class.php:394
 msgid "Unlock peripherals"
-msgstr ""
+msgstr "Atslēgt perifērijas"
 
 #: inc/lock.class.php:395
 msgid "Unlock printers"
-msgstr "Atslēgt printeri(us)"
+msgstr "Atslēgt printerus"
 
 #: inc/lock.class.php:396
 msgid "Unlock software"
@@ -9493,15 +9544,15 @@ msgstr "Atslēgt programmatūru"
 
 #: inc/lock.class.php:397
 msgid "Unlock network ports"
-msgstr ""
+msgstr "Atslēgt tīkla portus"
 
 #: inc/lock.class.php:398
 msgid "Unlock network names"
-msgstr ""
+msgstr "Atslēgt tīkla vārdus"
 
 #: inc/lock.class.php:399
 msgid "Unlock IP addresses"
-msgstr ""
+msgstr "Atslēgt IP adreses"
 
 #: inc/lock.class.php:400
 msgid "Unlock volumes"
@@ -9509,18 +9560,18 @@ msgstr "Atslēgt sējumus"
 
 #: inc/lock.class.php:401
 msgid "Unlock devices"
-msgstr ""
+msgstr "Atslēgt ierīces"
 
 #: inc/lock.class.php:402
 msgid "Unlock virtual machines"
-msgstr ""
+msgstr "Atslēgt virtuālās darbstacijas"
 
-#: inc/log.class.php:73 inc/notificationtargetcommonitilobject.class.php:926
-#: inc/notificationtargetcommonitilobject.class.php:957
-#: inc/notificationtargetcommonitilobject.class.php:959
-#: inc/notificationtargetcommonitilobject.class.php:961
-#: inc/notificationtargetcommonitilobject.class.php:963
-#: inc/notificationtargetcommonitilobject.class.php:965
+#: inc/log.class.php:73 inc/notificationtargetcommonitilobject.class.php:929
+#: inc/notificationtargetcommonitilobject.class.php:960
+#: inc/notificationtargetcommonitilobject.class.php:962
+#: inc/notificationtargetcommonitilobject.class.php:964
+#: inc/notificationtargetcommonitilobject.class.php:966
+#: inc/notificationtargetcommonitilobject.class.php:968
 #: inc/transfer.class.php:2998
 msgid "Historical"
 msgstr "Vēsturiski"
@@ -9530,7 +9581,7 @@ msgid "No historical"
 msgstr "Nav vēsturisku"
 
 #. TRANS: a noun, modification, change
-#: inc/log.class.php:271 inc/notificationtargetcommonitilobject.class.php:966
+#: inc/log.class.php:271 inc/notificationtargetcommonitilobject.class.php:969
 msgctxt "name"
 msgid "Update"
 msgstr "Saglabāt"
@@ -9550,7 +9601,7 @@ msgstr ""
 
 #: inc/log.class.php:348
 msgid "Unlock the item"
-msgstr ""
+msgstr "Atslēgt vienības"
 
 #: inc/log.class.php:352
 msgid "Restore the item"
@@ -9582,7 +9633,7 @@ msgstr ""
 
 #: inc/log.class.php:411
 msgid "Unlock the component"
-msgstr ""
+msgstr "Atslēgt komponentus"
 
 #: inc/log.class.php:418
 msgid "Install the software"
@@ -9598,7 +9649,7 @@ msgstr "atvieno vienību"
 
 #: inc/log.class.php:445
 msgid "Connect the item"
-msgstr ""
+msgstr "Pievienot vienību"
 
 #: inc/log.class.php:459
 msgid "Add a link with an item"
@@ -9614,7 +9665,7 @@ msgstr ""
 
 #: inc/log.class.php:486
 msgid "Unlock a link with an item"
-msgstr ""
+msgstr "Atslēgt saiti uz vienību"
 
 #: inc/log.class.php:506 inc/notificationtargetfieldunicity.class.php:56
 msgid "Update the item"
@@ -9626,7 +9677,7 @@ msgstr ""
 
 #: inc/log.class.php:536
 msgid "Unlock an item"
-msgstr ""
+msgstr "Atslēgt vienības"
 
 #: inc/log.class.php:574
 msgid "Update of the field"
@@ -9677,7 +9728,7 @@ msgstr "Saņemt epasta pieteikumus tūlīt"
 #: inc/mailcollector.class.php:434
 #, php-format
 msgid "Email %s not found. Impossible import."
-msgstr ""
+msgstr "E-pasts %s nav atrasts. Neiespējami importēt."
 
 #. TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
 #: inc/mailcollector.class.php:568
@@ -9724,7 +9775,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1424
 msgid "Retrieve email (Mails receivers)"
-msgstr ""
+msgstr "Saņemt e-pastu (pasta saņēmēji)"
 
 #: inc/mailcollector.class.php:1425
 msgid "Number of emails to retrieve"
@@ -9734,7 +9785,7 @@ msgstr ""
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
-msgstr ""
+msgstr "Jūsu e-pastu nevar apstrādāt.\nJa problēma saglabājas, sazinieties ar administratoru"
 
 #: inc/mailcollector.class.php:1553
 msgid "List of not imported emails"
@@ -9747,15 +9798,15 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1593
 msgid "No import"
-msgstr ""
+msgstr "Neimportēt"
 
 #: inc/migration.class.php:194
 msgid "default_value must be 0 or 1"
-msgstr ""
+msgstr "default_value jābūt 0 vai 1"
 
 #: inc/migration.class.php:229
 msgid "default_value must be numeric"
-msgstr ""
+msgstr "default_value jābūt skaitlim"
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
@@ -9794,9 +9845,9 @@ msgstr ""
 #: install/update_0831_084.php:2444
 #, php-format
 msgid "Change of the database layout - %s"
-msgstr ""
+msgstr "Datubāzes izkārtojuma izmaiņas - %s"
 
-#: inc/migration.class.php:587 inc/software.class.php:1007
+#: inc/migration.class.php:587 inc/software.class.php:1006
 #: install/update.php:137
 msgid "Task completed."
 msgstr "Darbs pabeigts."
@@ -9876,8 +9927,8 @@ msgid ""
 "network port"
 msgstr ""
 
-#: inc/networkname.class.php:174 inc/networkname.class.php:458
-#: inc/networkname.class.php:805 inc/networkport.class.php:965
+#: inc/networkname.class.php:174 inc/networkname.class.php:459
+#: inc/networkname.class.php:806 inc/networkport.class.php:966
 msgid "Dissociate"
 msgstr "Nošķirt"
 
@@ -9887,25 +9938,25 @@ msgid ""
 "available networks."
 msgstr ""
 
-#: inc/networkname.class.php:433
+#: inc/networkname.class.php:434
 msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage "
 "them."
 msgstr ""
 
-#: inc/networkname.class.php:705
+#: inc/networkname.class.php:706
 msgid "Add a network name"
 msgstr "Pievienot datortīkla vārdu"
 
-#: inc/networkname.class.php:710
+#: inc/networkname.class.php:711
 msgid "Not associated"
-msgstr ""
+msgstr "Nav piesaistīts"
 
-#: inc/networkname.class.php:719
+#: inc/networkname.class.php:720
 msgid "Create a new network name"
 msgstr ""
 
-#: inc/networkname.class.php:823
+#: inc/networkname.class.php:824
 msgid "No network name found"
 msgstr "nav atrasts datortīkla vārds"
 
@@ -9957,27 +10008,27 @@ msgid "No network port found"
 msgstr "nav atrasts datortīkla ports"
 
 #: inc/networkport.class.php:831 inc/networkport.class.php:837
-#: inc/networkport.class.php:1089
+#: inc/networkport.class.php:1090
 msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] "Porta numurs"
 msgstr[1] "Porta numuri"
 msgstr[2] "Porta numuri"
 
-#: inc/networkport.class.php:897 inc/networkport.class.php:1099
+#: inc/networkport.class.php:897 inc/networkport.class.php:1100
 msgid "Network port type"
 msgstr "Datortīkla porta tips"
 
-#: inc/networkport.class.php:943
+#: inc/networkport.class.php:944
 msgid "Dissociate a VLAN"
 msgstr "Atvienot VLAN"
 
-#: inc/networkport.class.php:957 inc/networkport_vlan.class.php:141
+#: inc/networkport.class.php:958 inc/networkport_vlan.class.php:141
 #: inc/networkport_vlan.class.php:166 inc/vlan.class.php:153
 msgid "Tagged"
 msgstr "Marķēts"
 
-#: inc/networkport.class.php:959
+#: inc/networkport.class.php:960
 msgid "Associate"
 msgstr "Piesaistīt"
 
@@ -10195,7 +10246,7 @@ msgstr "Paziņošanas metode"
 
 #: inc/notification.class.php:267 inc/notificationevent.class.php:44
 #: inc/notificationtargetcartridgeitem.class.php:82
-#: inc/notificationtargetcommonitilobject.class.php:913
+#: inc/notificationtargetcommonitilobject.class.php:916
 #: inc/notificationtargetconsumableitem.class.php:84
 #: inc/notificationtargetcontract.class.php:154
 #: inc/notificationtargetinfocom.class.php:87
@@ -10233,7 +10284,7 @@ msgstr "Kļūda sūtot e-pastu"
 #: inc/notificationmail.class.php:251
 #, php-format
 msgid "An email was sent to %s"
-msgstr ""
+msgstr "E-pasts tika nosūtīts uz %s"
 
 #: inc/notificationmailsetting.class.php:167
 msgid "Response name (if needed)"
@@ -10296,15 +10347,15 @@ msgstr "Atlikušas"
 #: inc/notificationtarget.class.php:369
 #, php-format
 msgid "Manager of group %s"
-msgstr ""
+msgstr "Vadītājs grupai %s"
 
 #: inc/notificationtarget.class.php:742
 msgid "Manager of group"
-msgstr ""
+msgstr "Grupas vadītājs"
 
 #: inc/notificationtarget.class.php:746
 msgid "Group without manager"
-msgstr ""
+msgstr "Grupa bez vadītāja"
 
 #: inc/notificationtarget.class.php:764
 #: inc/notificationtargetdbconnection.class.php:51
@@ -10333,7 +10384,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:411
 msgid "Requester group without manager"
-msgstr ""
+msgstr "Pieprasītāja grupa bez vadītāja"
 
 #: inc/notificationtargetcommonitilobject.class.php:416
 msgid "Technician in charge of the ticket"
@@ -10350,7 +10401,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:425
 msgid "Watcher group without manager"
-msgstr ""
+msgstr "Novērotāja grupa bez vadītāja"
 
 #: inc/notificationtargetcommonitilobject.class.php:429
 #: inc/ticketvalidation.class.php:650 inc/ticketvalidation.class.php:751
@@ -10367,7 +10418,7 @@ msgstr "Apstiprinātājs"
 
 #: inc/notificationtargetcommonitilobject.class.php:434
 msgid "Technician in charge of the task"
-msgstr ""
+msgstr "Tehniķis, kas atbild par uzdevumu"
 
 #: inc/notificationtargetcommonitilobject.class.php:435
 msgid "Task author"
@@ -10375,53 +10426,53 @@ msgstr "Uzdevuma autors"
 
 #: inc/notificationtargetcommonitilobject.class.php:441
 msgid "Followup author"
-msgstr ""
-
-#: inc/notificationtargetcommonitilobject.class.php:891
-#: inc/problem.class.php:1318
-msgid "Date of solving"
-msgstr ""
+msgstr "Sekojuma autors"
 
 #: inc/notificationtargetcommonitilobject.class.php:894
+#: inc/problem.class.php:1317
+msgid "Date of solving"
+msgstr "Risināšanas datums"
+
+#: inc/notificationtargetcommonitilobject.class.php:897
 msgid "Requester ID"
 msgstr "Iesniedzēja ID"
 
-#: inc/notificationtargetcommonitilobject.class.php:896
+#: inc/notificationtargetcommonitilobject.class.php:899
 #: inc/ruleticket.class.php:276
 msgid "Requester location"
 msgstr "Iesniedzēja atrašanās vieta"
 
-#: inc/notificationtargetcommonitilobject.class.php:903
+#: inc/notificationtargetcommonitilobject.class.php:906
 #: inc/ticket.class.php:1998
 msgid "Last updater"
 msgstr ""
 
-#: inc/notificationtargetcommonitilobject.class.php:904
+#: inc/notificationtargetcommonitilobject.class.php:907
 msgid "Assigned to technicians"
 msgstr "Piešķirt tehniķim"
 
-#: inc/notificationtargetcommonitilobject.class.php:909
+#: inc/notificationtargetcommonitilobject.class.php:912
 msgid "Assigned to groups"
 msgstr ""
 
-#: inc/notificationtargetcommonitilobject.class.php:914
+#: inc/notificationtargetcommonitilobject.class.php:917
 msgid "Number of unresolved items"
 msgstr ""
 
-#: inc/notificationtargetcommonitilobject.class.php:942
+#: inc/notificationtargetcommonitilobject.class.php:945
 msgid "No defined category"
 msgstr "Kategorija nav definēta"
 
-#: inc/notificationtargetcommonitilobject.class.php:952
+#: inc/notificationtargetcommonitilobject.class.php:955
 msgid "Web link to approval the solution"
 msgstr ""
 
-#: inc/notificationtargetcommonitilobject.class.php:958
+#: inc/notificationtargetcommonitilobject.class.php:961
 msgid "Number of items"
-msgstr ""
+msgstr "Vienību skaits"
 
-#: inc/notificationtargetcommonitilobject.class.php:993
-#: inc/notificationtargetticket.class.php:764
+#: inc/notificationtargetcommonitilobject.class.php:1000
+#: inc/notificationtargetticket.class.php:813
 msgid "Status value in database"
 msgstr "Statusa vērtība datubāzē"
 
@@ -10462,11 +10513,11 @@ msgstr ""
 #: inc/notificationtargetcrontask.class.php:104
 msgid ""
 "The following automatic actions are in error. They require intervention."
-msgstr ""
+msgstr "Automātisko darbību izpilde ir traucēta un ir nepieciešama kļūdu novēršana."
 
 #: inc/notificationtargetdbconnection.class.php:56
 msgid "Desynchronization MySQL replica"
-msgstr ""
+msgstr "MySQL replikācijas desinhronizācija"
 
 #: inc/notificationtargetdbconnection.class.php:67
 msgid "Can't connect to the database."
@@ -10483,11 +10534,11 @@ msgstr ""
 #: inc/notificationtargetfieldunicity.class.php:43
 #: inc/notificationtargetfieldunicity.class.php:89
 msgid "Alert on duplicate record"
-msgstr ""
+msgstr "Paziņot ja ieraksts jau eksistē"
 
 #: inc/notificationtargetfieldunicity.class.php:70
 msgid "Item successfully added but duplicate record on"
-msgstr ""
+msgstr "Vienība veiksmīgi pievienota, taču tai ir dublikāts"
 
 #: inc/notificationtargetfieldunicity.class.php:84
 msgid "Doer"
@@ -10495,7 +10546,7 @@ msgstr ""
 
 #: inc/notificationtargetfieldunicity.class.php:85
 msgid "Intended action"
-msgstr ""
+msgstr "Paredzētā darbība"
 
 #: inc/notificationtargetinfocom.class.php:90
 #: inc/notificationtargetsoftwarelicense.class.php:85
@@ -10512,7 +10563,7 @@ msgstr "Jauna problēma"
 
 #: inc/notificationtargetproblem.class.php:52
 msgid "Update of a problem"
-msgstr ""
+msgstr "Papildināt problēmu"
 
 #: inc/notificationtargetproblem.class.php:53
 msgid "Problem solved"
@@ -10526,7 +10577,7 @@ msgstr "Jauns uzdevums"
 #: inc/notificationtargetproblem.class.php:55
 #: inc/notificationtargetticket.class.php:192
 msgid "Update of a task"
-msgstr ""
+msgstr "Papildināt uzdevumu"
 
 #: inc/notificationtargetproblem.class.php:56
 #: inc/notificationtargetticket.class.php:193
@@ -10535,24 +10586,24 @@ msgstr "Uzdevuma dzēšana"
 
 #: inc/notificationtargetproblem.class.php:57
 msgid "Closure of a problem"
-msgstr ""
+msgstr "Problēmas slēgšana"
 
 #: inc/notificationtargetproblem.class.php:58
 msgid "Deleting a problem"
 msgstr "Dzēst problēmu"
 
 #: inc/notificationtargetproblem.class.php:210
-#: inc/notificationtargetticket.class.php:599 inc/ticket.class.php:2286
+#: inc/notificationtargetticket.class.php:627 inc/ticket.class.php:2286
 msgid "Number of tasks"
 msgstr "Uzdevuma numurs"
 
-#: inc/notificationtargetproblem.class.php:213 inc/problem.class.php:583
-#: inc/problem.class.php:1485
+#: inc/notificationtargetproblem.class.php:213 inc/problem.class.php:582
+#: inc/problem.class.php:1484
 msgid "Causes"
 msgstr "Iemesli"
 
-#: inc/notificationtargetproblem.class.php:214 inc/problem.class.php:589
-#: inc/problem.class.php:1496
+#: inc/notificationtargetproblem.class.php:214 inc/problem.class.php:588
+#: inc/problem.class.php:1495
 msgid "Symptoms"
 msgstr "Simptomi"
 
@@ -10562,7 +10613,7 @@ msgstr "Jauna rezervācija"
 
 #: inc/notificationtargetreservation.class.php:45
 msgid "Update of a reservation"
-msgstr ""
+msgstr "Papildināt rezervāciju"
 
 #: inc/notificationtargetreservation.class.php:46
 msgid "Deletion of a reservation"
@@ -10581,7 +10632,7 @@ msgid "Ticket solved"
 msgstr "Atrisināts pieteikums"
 
 #: inc/notificationtargetticket.class.php:186
-#: inc/notificationtargetticket.class.php:721
+#: inc/notificationtargetticket.class.php:770
 msgid "Validation request"
 msgstr "Apstiprināt pieprasījumu"
 
@@ -10595,7 +10646,7 @@ msgstr "Jauns pieteikuma sekojums"
 
 #: inc/notificationtargetticket.class.php:189
 msgid "Update of a followup"
-msgstr ""
+msgstr "Papildināt sekojumu"
 
 #: inc/notificationtargetticket.class.php:190
 msgid "Deletion of a followup"
@@ -10610,72 +10661,75 @@ msgid "Deletion of a ticket"
 msgstr "Pieteikuma dzēšana"
 
 #: inc/notificationtargetticket.class.php:196
-#: inc/notificationtargetticket.class.php:715 inc/ticket.class.php:5790
+#: inc/notificationtargetticket.class.php:764 inc/ticket.class.php:5790
 msgid "Not solved tickets"
 msgstr "Neatrisināti pieteikumi"
 
 #: inc/notificationtargetticket.class.php:197
 msgid "Automatic reminders of SLAs"
-msgstr ""
+msgstr "Automātiski SLA atgādinājumi"
 
 #. TRANS: %s is the number of days before auto closing
-#: inc/notificationtargetticket.class.php:269
-#: inc/notificationtargetticket.class.php:700
+#: inc/notificationtargetticket.class.php:272
+#: inc/notificationtargetticket.class.php:749
 #, php-format
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Bez atbildēšanas, pieteikums tiks automātiski aizvērts pēc %s dienas"
+msgstr[1] "Bez atbildēšanas, pieteikums tiks automātiski aizvērts pēc %s dienām"
+msgstr[2] "Bez atbildēšanas, pieteikums tiks automātiski aizvērts pēc %s dienām"
 
 #. TRANS: %s is the user name
-#: inc/notificationtargetticket.class.php:477
+#: inc/notificationtargetticket.class.php:480
 #, php-format
 msgid "An approval request has been submitted by %s"
 msgstr ""
 
 #. TRANS: %s is the user name
-#: inc/notificationtargetticket.class.php:481
+#: inc/notificationtargetticket.class.php:484
 #, php-format
 msgid "An answer to an an approval request was produced by %s"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:579 inc/ticket.class.php:2389
+#: inc/notificationtargetticket.class.php:606
+#: inc/notificationtargetticket.class.php:643 inc/ticket.class.php:2389
 #: inc/ticketcost.class.php:283 inc/ticketcost.class.php:379
 msgid "Time cost"
 msgstr "Maksa par laiku"
 
-#: inc/notificationtargetticket.class.php:580 inc/ticket.class.php:2405
+#: inc/notificationtargetticket.class.php:607
+#: inc/notificationtargetticket.class.php:645 inc/ticket.class.php:2405
 #: inc/ticketcost.class.php:295 inc/ticketcost.class.php:380
 msgid "Fixed cost"
 msgstr "Fiksētas izmaksas"
 
-#: inc/notificationtargetticket.class.php:581 inc/ticket.class.php:2413
+#: inc/notificationtargetticket.class.php:608
+#: inc/notificationtargetticket.class.php:647 inc/ticket.class.php:2413
 #: inc/ticketcost.class.php:302 inc/ticketcost.class.php:381
 msgid "Material cost"
 msgstr "Materiālu izmaksas"
 
-#: inc/notificationtargetticket.class.php:598 inc/ticket.class.php:2155
+#: inc/notificationtargetticket.class.php:626 inc/ticket.class.php:2155
 msgid "Number of followups"
-msgstr ""
+msgstr "Sekojuma skaits"
 
-#: inc/notificationtargetticket.class.php:600
+#: inc/notificationtargetticket.class.php:628
 msgid "Number of linked tickets"
-msgstr ""
+msgstr "Saistīto pieteikumu skaits"
 
-#: inc/notificationtargetticket.class.php:603
+#: inc/notificationtargetticket.class.php:631
 msgid "Global approval status"
 msgstr "Globālais apstiprināšanas statuss"
 
-#: inc/notificationtargetticket.class.php:615
+#: inc/notificationtargetticket.class.php:663
 #: inc/ticketvalidation.class.php:788 inc/ticketvalidation.class.php:801
 msgid "Status of the approval request"
-msgstr ""
+msgstr "Apstiprinājuma pieprasījuma statuss"
 
-#: inc/notificationtargetticket.class.php:620
-#: inc/notificationtargetticket.class.php:623
-#: inc/notificationtargetticket.class.php:684 inc/rule.class.php:1477
+#: inc/notificationtargetticket.class.php:668
+#: inc/notificationtargetticket.class.php:671
+#: inc/notificationtargetticket.class.php:733 inc/rule.class.php:1477
 #: inc/rule.class.php:1498 inc/rulecollection.class.php:984
 #: inc/rulerightcollection.class.php:81
 msgid "Validation"
@@ -10684,40 +10738,40 @@ msgstr[0] "Apstiprināšana"
 msgstr[1] "Apstiprināšana"
 msgstr[2] "Apstiprināšana"
 
-#: inc/notificationtargetticket.class.php:622
+#: inc/notificationtargetticket.class.php:670
 msgid "Decision-maker"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:634
+#: inc/notificationtargetticket.class.php:682
 msgid "A validation request has been submitted"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:635
+#: inc/notificationtargetticket.class.php:683
 msgid "An answer to a validation request was produced"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:649
+#: inc/notificationtargetticket.class.php:697
 msgid "Creation date of the satisfaction survey"
 msgstr "Apmierinātības apsekojuma izveidošanas datums"
 
-#: inc/notificationtargetticket.class.php:650
+#: inc/notificationtargetticket.class.php:698
 #: inc/ticketsatisfaction.class.php:151
 msgid "Response date to the satisfaction survey"
 msgstr "Reaģēšanas datums uz apmierinātības aptauju"
 
-#: inc/notificationtargetticket.class.php:652
+#: inc/notificationtargetticket.class.php:700
 msgid "Comments to the satisfaction survey"
 msgstr "Komentāri apmierinātības apsekojumam"
 
-#: inc/notificationtargetticket.class.php:661
+#: inc/notificationtargetticket.class.php:709
 msgid "Survey type"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:671
+#: inc/notificationtargetticket.class.php:719
 msgid "Invitation to fill out the survey"
 msgstr "Uzaicinājums aizpildīt apsekojumu"
 
-#: inc/notificationtargetticket.class.php:682 inc/ticket.class.php:2135
+#: inc/notificationtargetticket.class.php:730 inc/ticket.class.php:2135
 #: inc/ticketfollowup.class.php:53
 msgid "Followup"
 msgid_plural "Followups"
@@ -10725,13 +10779,13 @@ msgstr[0] "Sekojums"
 msgstr[1] "Sekojumi"
 msgstr[2] "Sekojumi"
 
-#: inc/notificationtargetticket.class.php:685
-#: inc/notificationtargetticket.class.php:697
-#: inc/notificationtargetticket.class.php:726
-#: inc/notificationtargetticket.class.php:729
-#: inc/notificationtargetticket.class.php:732
-#: inc/notificationtargetticket.class.php:735
-#: inc/notificationtargetticket.class.php:738 inc/ticket.class.php:2216
+#: inc/notificationtargetticket.class.php:734
+#: inc/notificationtargetticket.class.php:746
+#: inc/notificationtargetticket.class.php:775
+#: inc/notificationtargetticket.class.php:778
+#: inc/notificationtargetticket.class.php:781
+#: inc/notificationtargetticket.class.php:784
+#: inc/notificationtargetticket.class.php:787 inc/ticket.class.php:2216
 #: inc/ticket.class.php:4464
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
@@ -10758,9 +10812,9 @@ msgstr "CSS"
 #: inc/notificationtemplatetranslation.class.php:49
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] "Sagataves tulkojums"
-msgstr[1] "Sagataves tulkojumi"
-msgstr[2] "Sagataves tulkojumi"
+msgstr[0] "Veidnes tulkojums"
+msgstr[1] "Veidnes tulkojumi"
+msgstr[2] "Veidnes tulkojumi"
 
 #: inc/notificationtemplatetranslation.class.php:122
 msgid "Show list of available tags"
@@ -10770,17 +10824,17 @@ msgstr "Rādīt pieejamo tagu sarakstu"
 #: inc/notificationtemplatetranslation.class.php:299
 #: inc/notificationtemplatetranslation.class.php:487
 msgid "Email text body"
-msgstr ""
+msgstr "E-pasta teksta ķermenis"
 
 #: inc/notificationtemplatetranslation.class.php:147
 msgid "(leave the field empty for a generation from HTML)"
-msgstr ""
+msgstr "(atstāt tukšu lauku, lai ģenerētu tā saturu no HTML)"
 
 #: inc/notificationtemplatetranslation.class.php:154
 #: inc/notificationtemplatetranslation.class.php:292
 #: inc/notificationtemplatetranslation.class.php:488
 msgid "Email HTML body"
-msgstr ""
+msgstr "E-pasta HTML ķermenis"
 
 #: inc/notificationtemplatetranslation.class.php:180
 msgid "Add a new translation"
@@ -10818,9 +10872,9 @@ msgstr "Priekšskatījums"
 #: inc/notimportedemail.class.php:66
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atteiktais e-pasts"
+msgstr[1] "Atteiktie e-pasti"
+msgstr[2] "Atteiktie e-pasti"
 
 #: inc/notimportedemail.class.php:79
 msgid "Delete emails"
@@ -10828,24 +10882,24 @@ msgstr "Dzēst e-pastu(s)"
 
 #: inc/notimportedemail.class.php:154 inc/rulemailcollector.class.php:107
 msgid "From email header"
-msgstr ""
+msgstr "No e-pasta galvenes"
 
 #: inc/notimportedemail.class.php:160 inc/rulemailcollector.class.php:111
 msgid "To email header"
-msgstr ""
+msgstr "Uz e-pasta galveni"
 
 #: inc/notimportedemail.class.php:166 inc/rulemailcollector.class.php:98
 msgid "Subject email header"
-msgstr ""
+msgstr "E-pasta galvenes temats"
 
 #: inc/notimportedemail.class.php:172 inc/rulemailcollector.class.php:89
 #: inc/ruleticket.class.php:358
 msgid "Mails receiver"
-msgstr ""
+msgstr "E-pasta saņēmējs"
 
 #: inc/notimportedemail.class.php:177
 msgid "Message-ID email header"
-msgstr ""
+msgstr "E-pasta ID"
 
 #: inc/notimportedemail.class.php:189
 msgid "Reason of rejection"
@@ -11096,90 +11150,90 @@ msgstr "Wifi"
 msgid "Add an actor"
 msgstr "Pievienot dalībnieku"
 
-#: inc/problem.class.php:604
+#: inc/problem.class.php:603
 msgid "Task description"
 msgstr "Uzdevuma apraksts"
 
-#: inc/problem.class.php:613
+#: inc/problem.class.php:612
 msgctxt "quantity"
 msgid "Number of tasks"
 msgstr "Uzdevuma numurs"
 
-#: inc/problem.class.php:633 inc/ticket.class.php:2306
+#: inc/problem.class.php:632 inc/ticket.class.php:2306
 msgid "Private task"
 msgstr "Privāts uzdevums"
 
-#: inc/problem.class.php:729
+#: inc/problem.class.php:728
 msgctxt "problem"
 msgid "New"
 msgstr "Jauns"
 
-#: inc/problem.class.php:730
+#: inc/problem.class.php:729
 msgctxt "problem"
 msgid "Accepted"
 msgstr "Pieņemts"
 
-#: inc/problem.class.php:731
+#: inc/problem.class.php:730
 msgctxt "problem"
 msgid "Processing (assigned)"
 msgstr "Apstrādā (piesaistīts)"
 
-#: inc/problem.class.php:732
+#: inc/problem.class.php:731
 msgctxt "problem"
 msgid "Processing (planned)"
 msgstr "Apstrādā (plānots)"
 
-#: inc/problem.class.php:734
+#: inc/problem.class.php:733
 msgctxt "problem"
 msgid "Solved"
 msgstr "Atrisināts"
 
-#: inc/problem.class.php:735
+#: inc/problem.class.php:734
 msgid "Under observation"
 msgstr "Uzraudzībā"
 
-#: inc/problem.class.php:736
+#: inc/problem.class.php:735
 msgctxt "problem"
 msgid "Closed"
 msgstr "Aizvērts"
 
-#: inc/problem.class.php:739
+#: inc/problem.class.php:738
 msgctxt "problem"
 msgid "Not solved"
 msgstr "Nav atrisināts"
 
-#: inc/problem.class.php:740
+#: inc/problem.class.php:739
 msgctxt "problem"
 msgid "Not closed"
 msgstr "Nav aizvērts"
 
-#: inc/problem.class.php:742
+#: inc/problem.class.php:741
 msgctxt "problem"
 msgid "Solved + Closed"
 msgstr "Atrisināts + Slēgts"
 
-#: inc/problem.class.php:917 inc/problem.class.php:971
+#: inc/problem.class.php:916 inc/problem.class.php:970
 msgid "Problems on pending status"
 msgstr ""
 
-#: inc/problem.class.php:935 inc/problem.class.php:987
+#: inc/problem.class.php:934 inc/problem.class.php:986
 msgid "Problems to be processed"
 msgstr ""
 
-#: inc/problem.class.php:953 inc/problem.class.php:1003
+#: inc/problem.class.php:952 inc/problem.class.php:1002
 msgid "Your problems in progress"
 msgstr ""
 
-#: inc/problem.class.php:1106
+#: inc/problem.class.php:1105
 msgid "Problem followup"
 msgstr "Problēmu sekojums"
 
-#: inc/problem.class.php:1204 inc/problem.class.php:1782
+#: inc/problem.class.php:1203 inc/problem.class.php:1781
 msgid "No problem in progress."
 msgstr ""
 
 #. TRANS: %d is the document number
-#: inc/problem.class.php:1446 inc/ticket.class.php:4459
+#: inc/problem.class.php:1445 inc/ticket.class.php:4459
 #, php-format
 msgid "%d associated document"
 msgid_plural "%d associated documents"
@@ -11187,32 +11241,32 @@ msgstr[0] "%d piesaistīts dokuments"
 msgstr[1] "%d piesaistīti dokumenti"
 msgstr[2] "%d piesaistīti dokumenti"
 
-#: inc/problem.class.php:1569
+#: inc/problem.class.php:1568
 msgctxt "problem"
 msgid "Assigned"
 msgstr "Izpildītājs"
 
-#: inc/problem.class.php:1646 inc/ticket.class.php:5440
+#: inc/problem.class.php:1645 inc/ticket.class.php:5440
 #, php-format
 msgid "Closed on %s"
 msgstr "Slēgts %s"
 
-#: inc/problem.class.php:1650 inc/ticket.class.php:5444
+#: inc/problem.class.php:1649 inc/ticket.class.php:5444
 #, php-format
 msgid "Solved on %s"
 msgstr "Risina %s"
 
-#: inc/problem.class.php:1658 inc/ticket.class.php:5456
+#: inc/problem.class.php:1657 inc/ticket.class.php:5456
 #, php-format
 msgid "Opened on %s"
 msgstr "Atvērts %s"
 
-#: inc/problem.class.php:1841
+#: inc/problem.class.php:1840
 msgid "Last problems"
 msgstr "Pēdējā problēma"
 
 #. TRANS : %d is the number of problems
-#: inc/problem.class.php:1915
+#: inc/problem.class.php:1914
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
@@ -11220,11 +11274,11 @@ msgstr[0] "Pēdējā %d problēma"
 msgstr[1] "Pēdējās %d problēmas"
 msgstr[2] "Pēdējās %d problēmas"
 
-#: inc/problem.class.php:1922 inc/problem.class.php:1964
+#: inc/problem.class.php:1921 inc/problem.class.php:1963
 msgid "No problem found."
-msgstr "Problēmu nav."
+msgstr "Problēmu nav"
 
-#: inc/problem.class.php:1953
+#: inc/problem.class.php:1952
 msgid "Problems on linked items"
 msgstr "Saistīto vienību problēmas"
 
@@ -11282,7 +11336,7 @@ msgstr "Atjaunot paroli"
 
 #: inc/profile.class.php:529 inc/profile.class.php:1442
 msgid "Ticket creation form on login"
-msgstr ""
+msgstr "Pieteikumu izveides forma pēc ielogošanās"
 
 #: inc/profile.class.php:568 inc/profile.class.php:847
 #: inc/profile.class.php:1744
@@ -11292,17 +11346,17 @@ msgstr "Pievienot sekojumu pieteikumiem (pieprasītājs)."
 #: inc/profile.class.php:573 inc/profile.class.php:861
 #: inc/profile.class.php:1724
 msgid "Default ticket template"
-msgstr ""
+msgstr "Noklusētā pieteikuma veidne"
 
 #: inc/profile.class.php:583 inc/profile.class.php:855
 #: inc/profile.class.php:1861
 msgid "Add a followup to tickets of associated groups"
-msgstr ""
+msgstr "Pievienot sekojumu pieprasījumiem no saistītās grupas"
 
 #: inc/profile.class.php:591 inc/profile.class.php:993
 #: inc/profile.class.php:1789
 msgid "See public followups and tasks"
-msgstr ""
+msgstr "Skatīt publiskos sekojumus un uzdevumus"
 
 #: inc/profile.class.php:594 inc/profile.class.php:985
 #: inc/profile.class.php:1851
@@ -11316,7 +11370,7 @@ msgstr "Skatīt manas(-u) grupas(-u) iekārtas"
 #: inc/profile.class.php:602 inc/profile.class.php:906
 #: inc/profile.class.php:1814
 msgid "Update followups (author)"
-msgstr ""
+msgstr "Atjaunot sekojumus (autors)"
 
 #: inc/profile.class.php:607 inc/profile.class.php:966
 #: inc/profile.class.php:1839
@@ -11346,7 +11400,7 @@ msgstr "Apstiprināt pieprasījumu"
 #: inc/profile.class.php:629 inc/profile.class.php:942
 #: inc/profile.class.php:1886
 msgid "Validate an incident"
-msgstr ""
+msgstr "Apstiprināt incidentu"
 
 #: inc/profile.class.php:650 inc/profile.class.php:761
 #: inc/profile.class.php:1964 inc/reminder.class.php:1077
@@ -11386,7 +11440,7 @@ msgstr[2] "Publiskās grāmatzīmes"
 
 #: inc/profile.class.php:787
 msgid "Knowledge base administration"
-msgstr ""
+msgstr "Zināšanas bāzes administrators"
 
 #: inc/profile.class.php:790 inc/profile.class.php:1553
 msgid "Administration of reservations"
@@ -11411,9 +11465,9 @@ msgstr "Pievienot uzdevumu visiem pieteikumiem"
 #: inc/profile.class.php:876 inc/profile.class.php:1834
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pieteikuma izmaksas"
+msgstr[1] "Pieteikuma izmaksas"
+msgstr[2] "Pieteikuma izmaksas"
 
 #: inc/profile.class.php:891
 msgctxt "noun"
@@ -11434,7 +11488,7 @@ msgstr "Rediģēt visus uzdevumus"
 
 #: inc/profile.class.php:909 inc/profile.class.php:1794
 msgid "Update all followups"
-msgstr "Atjaunināt visus sekojumus"
+msgstr "Atjaunot visus sekojumus"
 
 #: inc/profile.class.php:914
 msgid "Deletion"
@@ -11474,7 +11528,7 @@ msgstr "Asociācija (Asociēšana)"
 
 #: inc/profile.class.php:963 inc/profile.class.php:1856
 msgid "See hardware of my groups"
-msgstr ""
+msgstr "Skatīt manas grupas iekārtas"
 
 #: inc/profile.class.php:978
 msgid "Visibility"
@@ -11490,11 +11544,11 @@ msgstr "Skatīt visus pieteikumus"
 
 #: inc/profile.class.php:996 inc/profile.class.php:1784
 msgid "See all followups and tasks (public and private)"
-msgstr ""
+msgstr "Skatīt visus sekojumus un uzdevumus (publiskos un personiskos)"
 
 #: inc/profile.class.php:1004 inc/profile.class.php:1799
 msgid "See personnal planning"
-msgstr ""
+msgstr "Skatīt personīgos plānojumus"
 
 #: inc/profile.class.php:1007 inc/profile.class.php:1804
 msgid "See schedule of people in my groups"
@@ -11502,19 +11556,19 @@ msgstr "Skatīt manu kolēģu plānojumu"
 
 #: inc/profile.class.php:1010 inc/profile.class.php:1809
 msgid "See all plannings"
-msgstr ""
+msgstr "Skatīt visus plānojumus"
 
 #: inc/profile.class.php:1018 inc/profile.class.php:1920
 msgid "See all problems"
-msgstr ""
+msgstr "Skatīt visas problēmas"
 
 #: inc/profile.class.php:1021 inc/profile.class.php:1915
 msgid "See problems (author)"
-msgstr ""
+msgstr "Skatīt problēmas (autors)"
 
 #: inc/profile.class.php:1024 inc/profile.class.php:1925
 msgid "Update all problems"
-msgstr ""
+msgstr "Atjaunot visas problēmas"
 
 #: inc/profile.class.php:1030 inc/profile.class.php:1930
 msgid "Delete all problems"
@@ -11549,11 +11603,11 @@ msgstr "Datora piesaistes nosacījumi nodaļām"
 #: inc/rulemailcollector.class.php:73
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr ""
+msgstr "Nosacījumi pieteikuma pievienošanai no epasta"
 
 #: inc/profile.class.php:1261 inc/profile.class.php:1643
 msgid "Rules for assigning a category to a software"
-msgstr ""
+msgstr "Nosacījumi kategorijas pievienošanai programmatūrai"
 
 #: inc/profile.class.php:1265 inc/profile.class.php:1622
 #: inc/ruleticket.class.php:46 inc/ruleticketcollection.class.php:69
@@ -11562,7 +11616,7 @@ msgstr "'Business rules' pieteikumiem"
 
 #: inc/profile.class.php:1269 inc/profile.class.php:1658
 msgid "Business rules for tickets (entity)"
-msgstr ""
+msgstr "'Business rules' pieteikumiem (nodaļa)"
 
 #: inc/profile.class.php:1275
 msgid "Dictionary"
@@ -11590,7 +11644,7 @@ msgstr "Noklusētais meklēšanas lauku saraksts"
 
 #: inc/profile.class.php:1344 inc/profile.class.php:1603
 msgid "Search result user display"
-msgstr ""
+msgstr "Lietotāja meklēšanas lauku saraksts"
 
 #: inc/profile.class.php:1358 inc/profile.class.php:1571
 msgid "Entity dropdowns"
@@ -11622,7 +11676,7 @@ msgstr "Visi ieraksti"
 
 #: inc/profile.class.php:2220
 msgid "My devices and all items"
-msgstr ""
+msgstr "Manas ierīces un visi ieraksti"
 
 #: inc/profile_user.class.php:130 inc/profile_user.class.php:280
 msgid "Add an authorization to a user"
@@ -11652,19 +11706,19 @@ msgstr[2] "Autorizācijas"
 
 #: inc/reminder.class.php:421
 msgid "Visibility start date"
-msgstr ""
+msgstr "Sākuma datums redzams"
 
 #: inc/reminder.class.php:426
 msgid "Visibility end date"
-msgstr ""
+msgstr "Beigu datums redzams"
 
 #: inc/reminder.class.php:437
 msgid "Planning start date"
-msgstr ""
+msgstr "Plānošanas sākuma datums"
 
 #: inc/reminder.class.php:442
 msgid "Planning end date"
-msgstr ""
+msgstr "Plānošanas beigu datums"
 
 #: inc/reminder.class.php:644 inc/rssfeed.class.php:585
 msgid "New note"
@@ -11737,7 +11791,7 @@ msgstr "Noklusētais priekš pieteikumiem"
 
 #: inc/requesttype.class.php:53 inc/requesttype.class.php:70
 msgid "Default for mail recipients"
-msgstr ""
+msgstr "Noklusētais epasta saņēmējiem"
 
 #: inc/requesttype.class.php:112 inc/requesttype.class.php:125
 msgid "Be careful: there is no default value"
@@ -11825,7 +11879,7 @@ msgstr "Katru mēnesi"
 
 #: inc/reservation.class.php:768
 msgid "Delete all rehearsals"
-msgstr ""
+msgstr "Dzēst visus mēģinājumus"
 
 #: inc/reservation.class.php:1005
 #, php-format
@@ -11856,9 +11910,9 @@ msgstr "Iepriekšējās rezervācijas"
 #: inc/reservationitem.class.php:49
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Rezervējama vienība"
+msgstr[1] "Rezervējamas vienības"
+msgstr[2] "Rezervējamas vienības"
 
 #: inc/reservationitem.class.php:247
 msgid "Make unavailable"
@@ -11884,8 +11938,8 @@ msgstr "Visas aktuālās rezervācijas tiks noņemtas."
 msgid "Authorize reservations"
 msgstr "Atļaut nomu"
 
-#: inc/reservationitem.class.php:298 inc/search.class.php:4361
-#: inc/search.class.php:4365
+#: inc/reservationitem.class.php:298 inc/search.class.php:4364
+#: inc/search.class.php:4368
 msgid "Modify the comment"
 msgstr "Labot dokumentu"
 
@@ -11947,15 +12001,15 @@ msgstr ""
 
 #: inc/ruleaction.class.php:339
 msgid "Assign: equipment by IP address"
-msgstr ""
+msgstr "Piesaistīt aprīkojumu pēc IP adreses"
 
 #: inc/ruleaction.class.php:340
 msgid "Assign: equipment by name + domain"
-msgstr ""
+msgstr "Piesaistīt iekārtas pēc vārda + domēna"
 
 #: inc/ruleaction.class.php:341
 msgid "Assign: equipment by MAC address"
-msgstr ""
+msgstr "Piesaistīt aprīkojumu pēc MAC adreses"
 
 #: inc/ruleaction.class.php:342
 msgid "Recalculate"
@@ -12009,16 +12063,16 @@ msgstr "pirms"
 msgid "Position"
 msgstr "Pozīcija"
 
-#: inc/rule.class.php:296 inc/rule.class.php:418 inc/rule.class.php:2174
-#: inc/ruleright.class.php:87 inc/slalevel.class.php:290
+#: inc/rule.class.php:296 inc/rule.class.php:418 inc/rule.class.php:2175
+#: inc/ruleright.class.php:87 inc/slalevel.class.php:297
 msgid "Logical operator"
 msgstr "Loģiskais operators"
 
-#: inc/rule.class.php:342 inc/rule.class.php:488 inc/rule.class.php:1920
+#: inc/rule.class.php:342 inc/rule.class.php:488 inc/rule.class.php:1921
 msgid "and"
 msgstr "un"
 
-#: inc/rule.class.php:345 inc/rule.class.php:492 inc/rule.class.php:1920
+#: inc/rule.class.php:345 inc/rule.class.php:492 inc/rule.class.php:1921
 msgid "or"
 msgstr "vai"
 
@@ -12026,7 +12080,7 @@ msgstr "vai"
 msgid ""
 "It is possible to affect the result of a regular expression using the string"
 " #0"
-msgstr ""
+msgstr "Regulārās izteiksmes rezultātu var ietekmēt izmantojot simbolu virkni #0"
 
 #: inc/rule.class.php:618
 msgid "Action type"
@@ -12063,9 +12117,9 @@ msgstr "Pareizas izteiksmes rezultāts"
 msgid "Key"
 msgstr "Atslēga"
 
-#: inc/rule.class.php:2366
+#: inc/rule.class.php:2367
 msgid "Rules using the object have been disabled."
-msgstr ""
+msgstr "Vienībai atbilstošie nosacījumi tika atspējoti."
 
 #: inc/rulecollection.class.php:302
 msgid "Rules list"
@@ -12081,11 +12135,11 @@ msgstr "Visi nosacījumi tiek izpildīti."
 
 #: inc/rulecollection.class.php:344
 msgid "The engine passes the result of a rule to the following one."
-msgstr ""
+msgstr "Nosacījumu izpildes rezutāts tiek nodots sekojošiem."
 
 #: inc/rulecollection.class.php:486 inc/software.class.php:320
 msgid "Replay the dictionary rules"
-msgstr ""
+msgstr "Parādīt vārdnīcas nosacījumus"
 
 #: inc/rulecollection.class.php:762
 msgid "No element to be tested"
@@ -12109,28 +12163,28 @@ msgstr "Lokālie noteikumi: %s"
 
 #: inc/rulecollection.class.php:1146
 msgid "Rules applicable in the sub-entities"
-msgstr ""
+msgstr "Nosacījumi, ko pielietot apakšnodaļās"
 
-#: inc/rulecriteria.class.php:469 inc/search.class.php:5365
-#: inc/search.class.php:5399 inc/search.class.php:5411
-#: inc/search.class.php:5417 inc/search.class.php:5422
-#: inc/search.class.php:5429 inc/search.class.php:5447
-#: inc/search.class.php:5454
+#: inc/rulecriteria.class.php:469 inc/search.class.php:5368
+#: inc/search.class.php:5402 inc/search.class.php:5414
+#: inc/search.class.php:5420 inc/search.class.php:5425
+#: inc/search.class.php:5432 inc/search.class.php:5450
+#: inc/search.class.php:5457
 msgid "is"
 msgstr "ir"
 
-#: inc/rulecriteria.class.php:470 inc/search.class.php:5369
-#: inc/search.class.php:5400 inc/search.class.php:5412
-#: inc/search.class.php:5418 inc/search.class.php:5423
-#: inc/search.class.php:5430 inc/search.class.php:5448
-#: inc/search.class.php:5455
+#: inc/rulecriteria.class.php:470 inc/search.class.php:5372
+#: inc/search.class.php:5403 inc/search.class.php:5415
+#: inc/search.class.php:5421 inc/search.class.php:5426
+#: inc/search.class.php:5433 inc/search.class.php:5451
+#: inc/search.class.php:5458
 msgid "is not"
 msgstr "nav"
 
-#: inc/rulecriteria.class.php:471 inc/search.class.php:5348
-#: inc/search.class.php:5373 inc/search.class.php:5398
-#: inc/search.class.php:5413 inc/search.class.php:5433
-#: inc/search.class.php:5453
+#: inc/rulecriteria.class.php:471 inc/search.class.php:5351
+#: inc/search.class.php:5376 inc/search.class.php:5401
+#: inc/search.class.php:5416 inc/search.class.php:5436
+#: inc/search.class.php:5456
 msgid "contains"
 msgstr "satur"
 
@@ -12148,11 +12202,11 @@ msgstr "pabeidza"
 
 #: inc/rulecriteria.class.php:475
 msgid "regular expression matches"
-msgstr ""
+msgstr "regulārā izteiksme atbilst"
 
 #: inc/rulecriteria.class.php:476
 msgid "regular expression does not match"
-msgstr ""
+msgstr "regulārā izteiksme neatbilst"
 
 #: inc/rulecriteria.class.php:477
 msgid "exists"
@@ -12163,16 +12217,16 @@ msgid "does not exist"
 msgstr "neeksistē"
 
 #: inc/rulecriteria.class.php:495 inc/search.class.php:1283
-#: inc/search.class.php:1360 inc/search.class.php:5377
-#: inc/search.class.php:5462
+#: inc/search.class.php:1360 inc/search.class.php:5380
+#: inc/search.class.php:5465
 msgid "under"
-msgstr ""
+msgstr "zem"
 
 #: inc/rulecriteria.class.php:496 inc/search.class.php:1290
-#: inc/search.class.php:1367 inc/search.class.php:5381
-#: inc/search.class.php:5463
+#: inc/search.class.php:1367 inc/search.class.php:5384
+#: inc/search.class.php:5466
 msgid "not under"
-msgstr ""
+msgstr "ne zemāk kā"
 
 #: inc/ruledictionnarycomputermodelcollection.class.php:60
 #: inc/ruledictionnarymonitormodelcollection.class.php:55
@@ -12223,7 +12277,7 @@ msgstr "Monitoru tipu vārdnīca"
 msgid "Dictionnary of networking equipment models"
 msgstr "Tīklošanas modeļu vārdnīca"
 
-#: inc/ruledictionnarynetworkequipmenttypecollection.class.php:51
+#: inc/ruledictionnarynetworkequipmenttypecollection.class.php:53
 msgid "Dictionnary of network equipment types"
 msgstr "Tīkla ierīču tipu vārdnīca"
 
@@ -12265,7 +12319,7 @@ msgstr "Printeru vārdnīca"
 #: inc/ruleimportcomputer.class.php:133 inc/ruleimportentity.class.php:169
 #: inc/ruleright.class.php:337
 msgid "To be unaware of import"
-msgstr ""
+msgstr "Nebūt informētam par importēšanu"
 
 #. TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
 #: inc/ruledictionnaryprintercollection.class.php:122
@@ -12292,18 +12346,18 @@ msgstr "Programmatūras vārdnīca"
 #: inc/ruledictionnarysoftware.class.php:141
 #: inc/ruledictionnarysoftware.class.php:170
 #: inc/rulesoftwarecategory.class.php:78 inc/software.class.php:210
-#: inc/software.class.php:461
+#: inc/software.class.php:460
 msgid "Publisher"
 msgstr "Ražotājs / Izdevējs"
 
 #: inc/ruledictionnarysoftware.class.php:174 inc/software.class.php:230
-#: inc/software.class.php:492
+#: inc/software.class.php:491
 msgid "Associable to a ticket"
 msgstr "Piesaistāms pieteikumam"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:99
 msgid "Warning before running rename based on the dictionary rules"
-msgstr ""
+msgstr "Brīdinājums pirms pārsaukšanas atbilstoši vārdnīcas nosacījumiem"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:103
 msgid ""
@@ -12317,7 +12371,7 @@ msgstr "Ražotāja izvēle"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:107
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr ""
+msgstr "Parādīt vārdnīcas nosacījumus ražotājiem ( ----- = Visu)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:296
 #: inc/ruledictionnarysoftwarecollection.class.php:398
@@ -12331,7 +12385,7 @@ msgstr "Nosacījumi datoru importēšanai un pievienošanai"
 
 #: inc/ruleimportcomputer.class.php:85
 msgid "Target entity for the computer"
-msgstr ""
+msgstr "Mērķa nodaļa datoram"
 
 #: inc/ruleimportcomputer.class.php:91
 msgid "Find computers in GLPI having the status"
@@ -12347,7 +12401,7 @@ msgstr "Savienot, ja iespējams"
 
 #: inc/ruleimportcomputer.class.php:145
 msgid "Link if possible, otherwise imports declined"
-msgstr ""
+msgstr "Ja iespējams, savienot, ja nē - atteikt importēšanu"
 
 #: inc/ruleimportcomputer.class.php:178
 msgid "Yes if equal"
@@ -12359,11 +12413,11 @@ msgstr "Jā ja tukšs"
 
 #: inc/ruleimportcomputer.class.php:192
 msgid "is already present in GLPI"
-msgstr ""
+msgstr "jau atrodas GLPI"
 
 #: inc/ruleimportcomputer.class.php:193
 msgid "is empty in GLPI"
-msgstr ""
+msgstr "GLPI ir tukšs"
 
 #: inc/ruleimportentity.class.php:46
 #: inc/ruleimportentitycollection.class.php:63
@@ -12372,7 +12426,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:103
 msgid "Email body"
-msgstr ""
+msgstr "E-pasta satura lauks"
 
 #: inc/rulemailcollector.class.php:115
 msgid "In-Reply-To email header"
@@ -12404,39 +12458,39 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:158
 msgid "User featuring the profile"
-msgstr ""
+msgstr "Lietotājs ar profilu"
 
 #: inc/rulemailcollector.class.php:167
 msgid "User featuring a single profile"
-msgstr ""
+msgstr "Lietotājam ar vienu profilu"
 
 #: inc/rulemailcollector.class.php:176
 msgid "User with a single profile"
-msgstr ""
+msgstr "Lietotājs ar vienu profilu"
 
 #: inc/rulemailcollector.class.php:198
 msgid "Entity from domain"
-msgstr ""
+msgstr "Nodaļas izvēle pēc domēna"
 
 #: inc/rulemailcollector.class.php:202 inc/ruleright.class.php:309
 msgid "Entity from TAG"
-msgstr ""
+msgstr "Nodaļas izvēle pēc TAG"
 
 #: inc/rulemailcollector.class.php:206
 msgid "Entity based on user's profile"
-msgstr ""
+msgstr "Nodaļas izvēle pēc lietotāja profila datiem"
 
 #: inc/rulemailcollector.class.php:210 inc/rulemailcollector.class.php:215
 msgid "Reject email"
-msgstr ""
+msgstr "Atteikt e-pastu"
 
 #: inc/rulemailcollector.class.php:211
 msgid "without email response"
-msgstr ""
+msgstr "bez e-pasta atbildes"
 
 #: inc/rulemailcollector.class.php:216
 msgid "with email response"
-msgstr ""
+msgstr "ar e-pasta atbildi"
 
 #: inc/ruleright.class.php:235
 msgid "Automatic user assignment"
@@ -12448,15 +12502,15 @@ msgstr "Globālais kritērijs"
 
 #: inc/ruleright.class.php:280
 msgid "Imported group from an LDAP directory"
-msgstr ""
+msgstr "No LDAP koka importēta grupa"
 
 #: inc/ruleright.class.php:304
 msgid "Entity based on LDAP information"
-msgstr ""
+msgstr "Nodaļas izvēle pēc LDAP"
 
 #: inc/ruleright.class.php:314
 msgid "Entity from mail domain"
-msgstr ""
+msgstr "Nodaļas izvēle pēc e-pasta adreses"
 
 #: inc/ruleright.class.php:320
 msgid "Entity from complete name"
@@ -12543,11 +12597,11 @@ msgstr "Rādīt izdzēstos objektus"
 msgid "Don't show deleted items"
 msgstr "Nerādīt dzēstās vienības"
 
-#: inc/search.class.php:5385 inc/search.class.php:5431
+#: inc/search.class.php:5388 inc/search.class.php:5434
 msgid "before"
 msgstr "pirms"
 
-#: inc/search.class.php:5389 inc/search.class.php:5432
+#: inc/search.class.php:5392 inc/search.class.php:5435
 msgid "after"
 msgstr "pēc"
 
@@ -12595,18 +12649,18 @@ msgstr[2] ""
 
 #: inc/slalevel.class.php:110
 msgid "Add an escalation level"
-msgstr ""
+msgstr "Pievienot ietekmes novērtējumu"
 
 #: inc/slalevel.class.php:117 inc/slalevel.class.php:156
-#: inc/slalevel.class.php:278
+#: inc/slalevel.class.php:285
 msgid "Execution"
 msgstr "Izpilde"
 
 #: inc/slalevel.class.php:213
 msgid "Automatic reminders of SLA"
-msgstr ""
+msgstr "Automātiski SLA atgādinājumi"
 
-#: inc/slalevel.class.php:331
+#: inc/slalevel.class.php:338
 #, php-format
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
@@ -12614,7 +12668,7 @@ msgstr[0] "+ %d minūte"
 msgstr[1] "+ %d minūte"
 msgstr[2] "+ %d minūtes"
 
-#: inc/slalevel.class.php:335
+#: inc/slalevel.class.php:342
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
@@ -12624,64 +12678,64 @@ msgstr[2] "- %d minūtes"
 
 #: inc/slalevel_ticket.class.php:82
 msgid "Automatic actions of SLA"
-msgstr ""
+msgstr "Automātiskās SLA darbības"
 
-#: inc/software.class.php:70 inc/software.class.php:934
+#: inc/software.class.php:70 inc/software.class.php:933
 msgid "Merging"
 msgstr "Apvienošana"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
-#: inc/software.class.php:285 install/install.php:134 install/update.php:847
+#: inc/software.class.php:285 install/install.php:134 install/update.php:850
 msgid "Upgrade"
 msgstr "Jaunināt"
 
 #: inc/software.class.php:315
 msgid "Recalculate the category"
-msgstr ""
+msgstr "Pārrēķināt kategoriju"
 
-#: inc/software.class.php:503
+#: inc/software.class.php:502
 msgid "Number of installations"
-msgstr ""
+msgstr "Instalācijas skaits"
 
-#: inc/software.class.php:530
+#: inc/software.class.php:529
 msgid "Version name"
 msgstr "Versijas vārds"
 
-#: inc/software.class.php:548
+#: inc/software.class.php:547
 msgid "Version comments"
 msgstr ""
 
-#: inc/software.class.php:577
+#: inc/software.class.php:576
 msgid "License name"
 msgstr "Licences vārds"
 
-#: inc/software.class.php:586
+#: inc/software.class.php:585
 msgid "License serial number"
 msgstr "Licences sērijas numurs"
 
-#: inc/software.class.php:594
+#: inc/software.class.php:593
 msgid "License inventory number"
 msgstr "Licences inventāra numurs"
 
-#: inc/software.class.php:601
+#: inc/software.class.php:600
 msgid "Number of licenses"
-msgstr ""
+msgstr "Licences skaits"
 
-#: inc/software.class.php:611
+#: inc/software.class.php:610
 msgid "License types"
 msgstr "Licences tips"
 
-#: inc/software.class.php:620
+#: inc/software.class.php:619
 msgid "License comments"
 msgstr "Licences komentārs"
 
-#: inc/software.class.php:887
+#: inc/software.class.php:886
 msgid "Merge"
 msgstr "Apvienot"
 
-#: inc/software.class.php:1004
+#: inc/software.class.php:1003
 msgid "Software deleted after merging"
-msgstr ""
+msgstr "Pēc apvienošanas dzēstā programmatūra"
 
 #: inc/softwarelicense.class.php:204 inc/softwarelicense.class.php:325
 #: inc/softwarelicense.class.php:652
@@ -12701,7 +12755,7 @@ msgstr "Sūtīt brīdinājumus par izbeigušamies licencēm"
 #: inc/softwarelicense.class.php:408
 #, php-format
 msgid "License %1$s expired on %2$s"
-msgstr ""
+msgstr "Licence %1$s beigsies %2$s"
 
 #: inc/softwarelicense.class.php:442
 msgid "Send licenses alert failed"
@@ -12723,31 +12777,31 @@ msgstr "Pieteikuma ilgums (reālais)"
 
 #: inc/stat.class.php:410
 msgid "Number of opened tickets"
-msgstr ""
+msgstr "Atvērto pieteikumu skaits"
 
 #: inc/stat.class.php:411
 msgid "Number of solved tickets"
-msgstr ""
+msgstr "Atrisināto pieteikumu skaits"
 
 #: inc/stat.class.php:412
 msgid "Number of late tickets"
-msgstr ""
+msgstr "Nokavēto pieteikumu skaits"
 
 #: inc/stat.class.php:413
 msgid "Number of closed tickets"
-msgstr ""
+msgstr "Aizvērto pieteikumu skaits"
 
 #: inc/stat.class.php:424
 msgid "Number of opened satisfaction survey"
-msgstr ""
+msgstr "Atvērto apmierinātības apsekojumu skaits"
 
 #: inc/stat.class.php:427
 msgid "Number of answered satisfaction survey"
-msgstr ""
+msgstr "Atbildēto apmierinātības apsekojumu skaits"
 
 #: inc/stat.class.php:429
 msgid "Average satisfaction"
-msgstr ""
+msgstr "Vidējā apmierinātība"
 
 #: inc/stat.class.php:435 inc/stat.class.php:463
 msgid "Average"
@@ -12829,9 +12883,9 @@ msgstr[2] "Piesaistītās kontaktpersonas"
 #: inc/supplier.class.php:347
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistītais līgums"
+msgstr[1] "Saistītie līgumi"
+msgstr[2] "Saistītie līgumi"
 
 #: inc/ticket.class.php:407 inc/ticket.class.php:424
 msgid "Created tickets"
@@ -12845,7 +12899,7 @@ msgstr "Nav ģenerēta apsekojuma"
 #: inc/ticket.class.php:741 inc/ticket.class.php:1068
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
-msgstr ""
+msgstr "Nav aizpildīti obligātie lauki, lūdzu aizpildiet: %s"
 
 #: inc/ticket.class.php:789 inc/ticket.class.php:1343
 msgid "Unknown ticket"
@@ -12854,7 +12908,7 @@ msgstr "Nezināms pieteikums"
 #: inc/ticket.class.php:833 inc/ticket.class.php:1438
 #, php-format
 msgid "%1$s updates the item %2$s"
-msgstr ""
+msgstr "%1$s atjaunoja vienību %2$s"
 
 #: inc/ticket.class.php:1708 inc/ticketfollowup.class.php:627
 msgid "Add a new followup"
@@ -12892,7 +12946,7 @@ msgstr "Privāts sekojums"
 
 #: inc/ticket.class.php:2206
 msgid "Take into account time"
-msgstr ""
+msgstr "Laiks līdz darbu sākšanai"
 
 #: inc/ticket.class.php:2220
 msgid "All linked tickets"
@@ -12900,7 +12954,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2236
 msgid "Duplicated tickets"
-msgstr ""
+msgstr "Dubultie pieprasījumi"
 
 #: inc/ticket.class.php:2256
 msgid "Number of all linked tickets"
@@ -12957,7 +13011,7 @@ msgstr "Pieteikums gaida apstiprinājumu"
 
 #: inc/ticket.class.php:3201
 msgid "This ticket concerns me"
-msgstr ""
+msgstr "Šis pieprasījums attiecas uz mani"
 
 #: inc/ticket.class.php:3222 inc/ticket.class.php:3252
 msgid "Check your personnal information"
@@ -12989,11 +13043,11 @@ msgstr "Nākošā eskalācija: %s"
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the due "
 "date."
-msgstr ""
+msgstr "Piesaistot SLA pieteikumam, izpildes termiņš tiek aprēķināts no jauna."
 
 #: inc/ticket.class.php:3924
 msgid "Escalations defined in the SLA will be triggered under this new date."
-msgstr ""
+msgstr "SLA definētais svarīguma līmenis iestāsies sākot ar izvēlēto datumu."
 
 #: inc/ticket.class.php:3926
 msgid "Assign a SLA"
@@ -13084,7 +13138,7 @@ msgstr "Neviens pieteikums nav apstrādē."
 
 #: inc/ticket.class.php:5761
 msgid "Assign equipment"
-msgstr ""
+msgstr "Piesaistīt iekārtu"
 
 #: inc/ticket.class.php:5787
 msgid "Automatic tickets closing"
@@ -13140,7 +13194,7 @@ msgstr "Sākotnējā izveide"
 #: inc/ticketrecurrent.class.php:289
 #, php-format
 msgid "Next creation on %s"
-msgstr ""
+msgstr "Nākošā izveide uz %s"
 
 #: inc/ticketrecurrent.class.php:328
 msgid "Invalid frequency. It must be greater than the preliminary creation."
@@ -13152,16 +13206,16 @@ msgstr ""
 msgid "Failed to create recurrent ticket %s"
 msgstr ""
 
-#: inc/ticketrecurrent.class.php:466
+#: inc/ticketrecurrent.class.php:467
 #, php-format
 msgid "Ticket %d successfully created"
 msgstr ""
 
-#: inc/ticketrecurrent.class.php:469
+#: inc/ticketrecurrent.class.php:470
 msgid "Ticket creation failed (check mandatory fields)"
 msgstr ""
 
-#: inc/ticketrecurrent.class.php:472
+#: inc/ticketrecurrent.class.php:473
 msgid "Ticket creation failed (no template)"
 msgstr ""
 
@@ -13217,7 +13271,7 @@ msgstr "Savienots ar"
 #: inc/ticketvalidation.class.php:263 inc/ticketvalidation.class.php:379
 #, php-format
 msgid "Approval request send to %s"
-msgstr ""
+msgstr "Sūtīt apstiprinājuma pieprasījumu %s"
 
 #: inc/ticketvalidation.class.php:266
 #, php-format
@@ -13228,24 +13282,24 @@ msgstr "Izvēlētajam lietotājam(%s) nav derīga e-pasta adrese. Pieprasījums 
 
 #: inc/ticketvalidation.class.php:285
 msgid "If approval is denied, specify a reason."
-msgstr ""
+msgstr "Atsakot apstiprinājumu, norādiet atteikuma iemeslu."
 
 #. TRANS: %s is the username
 #: inc/ticketvalidation.class.php:358
 #, php-format
 msgid "Approval granted by %s"
-msgstr ""
+msgstr "Apstiprinājums piešķirts %s"
 
 #. TRANS: %s is the username
 #: inc/ticketvalidation.class.php:361
 #, php-format
 msgid "Update the approval request to %s"
-msgstr ""
+msgstr "Atjaunot apstiprinājuma pieprasījumu uz %s"
 
 #: inc/ticketvalidation.class.php:382
 #, php-format
 msgid "Cancel the approval request to %s"
-msgstr ""
+msgstr "Atteikt apstiprinājuma pieprasījumu %s"
 
 #: inc/ticketvalidation.class.php:399
 msgid "Waiting for approval"
@@ -13281,7 +13335,7 @@ msgstr "Apstiprinājuma piezīmes"
 
 #: inc/ticketvalidation.class.php:823
 msgid "Request comments"
-msgstr ""
+msgstr "Iesniedzēja komentārs"
 
 #: inc/ticketvalidation.class.php:839
 msgid "Request date"
@@ -13330,7 +13384,7 @@ msgstr "Sesiju tests"
 
 #: inc/toolbox.class.php:833
 msgid "Your parser PHP is not installed with sessions support!"
-msgstr ""
+msgstr "Jūsu PHP parseris neatbalsta sesijas!"
 
 #: inc/toolbox.class.php:839 inc/toolbox.class.php:840
 msgid "Sessions support is available - Perfect!"
@@ -13814,7 +13868,7 @@ msgstr ""
 
 #: inc/user.class.php:3318
 msgid "Deleted user in LDAP directory"
-msgstr ""
+msgstr " Lietotājs dzēsts no LDAP direktorijas"
 
 #: inc/user.class.php:3381
 msgid "Please confirm your email address and enter your new password."
@@ -13917,7 +13971,7 @@ msgstr "Es izlasīju augstāk minēto licenci un nepiekrītu tai."
 
 #: install/install.php:113 install/install.php:157 install/install.php:168
 #: install/install.php:210 install/install.php:267 install/install.php:288
-#: install/install.php:328 install/install.php:486 install/update.php:865
+#: install/install.php:328 install/install.php:486 install/update.php:868
 msgid "Continue"
 msgstr "Turpināt"
 
@@ -13968,7 +14022,7 @@ msgstr "Servera atbilde: %s"
 msgid "The server or/and user field is empty"
 msgstr "Servera un/vai lietotāja lauks ir tukšs"
 
-#: install/install.php:241 install/update.php:873
+#: install/install.php:241 install/update.php:876
 msgid "Database connection successful"
 msgstr "Veiksmīga pieslēgšanās datubāzei"
 
@@ -14041,7 +14095,7 @@ msgid "You can delete or modify these accounts as well as the initial data."
 msgstr "Šos kontus Jūs varat dzēst vai mainīt tāpat kā sākotnējos datubāzes ierakstus."
 
 #: install/install.php:449 install/update_content.php:371
-#: install/update.php:922
+#: install/update.php:925
 msgid "Use GLPI"
 msgstr "Pieslēgties GLPI"
 
@@ -14097,7 +14151,7 @@ msgstr "Piedāvātais serviss"
 #: install/update_080_0801.php:47 install/update_0801_0803.php:47
 #: install/update_0803_083.php:46 install/update_083_0831.php:45
 #: install/update_0831_0833.php:45 install/update_0831_084.php:46
-#: install/update_084_0841.php:46
+#: install/update_084_0841.php:46 install/update_0841_0843.php:46
 #, php-format
 msgid "Update to %s"
 msgstr "Atjaunināt uz %s"
@@ -14123,7 +14177,7 @@ msgstr "Atjaunināt uz %s"
 #: install/update_0831_084.php:2053 install/update_0831_084.php:2110
 #: install/update_0831_084.php:2134 install/update_0831_084.php:2191
 #: install/update_0831_084.php:2200 install/update_0831_084.php:2411
-#: install/update_084_0841.php:113
+#: install/update_084_0841.php:113 install/update_0841_0843.php:149
 #, php-format
 msgid "Data migration - %s"
 msgstr "Datu migrācija - %s"
@@ -14194,26 +14248,26 @@ msgstr "Jauna hierarhija"
 msgid "This is the new hierarchy. If it's complete approve it."
 msgstr "Šī ir jaunā hierarhija. Ja piekrītat, varat apstiprināt."
 
-#: install/update.php:855
+#: install/update.php:858
 msgid "Impossible to accomplish an update by this way!"
 msgstr "Neiespējami pabeigt atjaunināšanu šādā veidā!!"
 
-#: install/update.php:857
+#: install/update.php:860
 msgid "Go back to GLPI"
 msgstr "Atgriezties GLPI"
 
-#: install/update.php:862
+#: install/update.php:865
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
-msgstr ""
+msgstr "Uzmanību! Tu atjaunināsi GLPI datubāzi: %s"
 
-#: install/update.php:900
+#: install/update.php:903
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
 msgstr "Tagad visi administrātori ir ar 'super-admin' tiesībām. Šis jaunais lietotāju tips arī tika pievienots."
 
-#: install/update.php:930
+#: install/update.php:933
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
