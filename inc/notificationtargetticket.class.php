@@ -268,13 +268,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas                               = parent::getDatasForObject($item, $options, $simple);
 
       // Specific datas
-      $costs = TicketCost::getCostsSummary($item->getField("id"));
-
-      $datas["##ticket.costfixed##"]         = $costs['costfixed'];
-      $datas["##ticket.costmaterial##"]      = $costs['costmaterial'];
-      $datas["##ticket.costtime##"]          = $costs['costtime'];
-      $datas["##ticket.totalcost##"]         = $costs['totalcost'];
-
       $datas['##ticket.urlvalidation##']
                         = $this->formatURL($options['additionnaloption']['usertype'],
                                            "ticket_".$item->getField("id")."_TicketValidation$1");
@@ -555,28 +548,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $datas['##satisfaction.description##']
                                              = $inquest->fields['comment'];
          }
-
-         //costs infos
-         $restrict = "`tickets_id`='".$item->getField('id')."'";
-
-         $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
-
-         $costs = getAllDatasFromTable('glpi_ticketcosts',$restrict);
-         $datas['costs'] = array();
-         foreach ($costs as $cost) {
-            $tmp = array();
-            $tmp['##cost.name##']         = $cost['name'];
-            $tmp['##cost.comment##']      = $cost['comment'];
-            $tmp['##cost.datebegin##']    = Html::convDate($cost['begin_date']);
-            $tmp['##cost.dateend##']      = Html::convDate($cost['end_date']);
-            $tmp['##cost.time##']         = $item->getActionTime($cost['actiontime']);
-            $tmp['##cost.costtime##']     = $cost['cost_time'];
-            $tmp['##cost.costfixed##']    = $cost['cost_fixed'];
-            $tmp['##cost.costmaterial##'] = $cost['cost_material'];
-            $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
-                                                                      $cost['budgets_id']);
-            $datas['costs'][]       = $tmp;
-         }
       }
 
       return $datas;
@@ -624,10 +595,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.contactnumber'    => __('Alternate username number'),
                     'ticket.item.user'             => __('User'),
                     'ticket.item.group'            => __('Group'),
-                    'ticket.costtime'              => __('Time cost'),
-                    'ticket.costfixed'             => __('Fixed cost'),
-                    'ticket.costmaterial'          => __('Material cost'),
-                    'ticket.totalcost'             => __('Total cost'),
                     'ticket.isdeleted'             => __('Deleted'),
                     'task.author'                  => __('Writer'),
                     'task.isprivate'               => __('Private'),
@@ -650,24 +617,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberofproblems'      => __('Number of problems'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.globalvalidation'      => __('Global approval status'),
-                    'cost.name'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Name')),
-                    'cost.comment'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Comments')),
-                    'cost.datebegin'               => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Begin date')),
-                    'cost.dateend'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('End date')),
-                    'cost.time'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Duration')),
-                    'cost.costtime'                => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Time cost')),
-                    'cost.costfixed'               => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Fixed cost')),
-                    'cost.costmaterial'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Material cost')),
-                    'cost.budget'                  => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Budget')),
                   );
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -747,7 +696,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
      //Foreach global tags
      $tags = array('followups'     => _n('Followup', 'Followups', 2),
                    'tasks'         => _n('Task', 'Tasks', 2),
-                   'costs'         => _n('Cost', 'Costs', 2),
                    'validations'   => _n('Validation','Validations',2),
                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', 2),
                    'problems'      => _n('Problem', 'Problems', 2));
