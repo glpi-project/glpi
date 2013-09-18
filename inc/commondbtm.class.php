@@ -3252,7 +3252,6 @@ class CommonDBTM extends CommonGLPI {
                      $this->input[$key] = 'NULL';
                      break;
                }
-
             } else if (isset($searchOption['datatype'])
                        && !is_null($value)
                        && ($value != '')

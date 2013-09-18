@@ -282,7 +282,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function canConnexity($method, $item_right, $itemtype, $items_id) {
 
       if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
-          &&(!preg_match('/^itemtype/', $itemtype))) {
+          && (!preg_match('/^itemtype/', $itemtype))) {
          if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
             $method = 'canView';
          }

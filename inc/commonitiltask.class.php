@@ -573,7 +573,99 @@ abstract class CommonITILTask  extends CommonDBTM {
       return $tab;
    }
 
+   static function getSearchOptionsToAdd() {
+      $tab = array();
 
+      $tab['task']               = _n('Task', 'Tasks', 2);
+
+      $tab[26]['table']          = static::getTable();
+      $tab[26]['field']          = 'content';
+      $tab[26]['name']           = __('Description');
+      $tab[26]['datatype']       = 'text';
+      $tab[26]['forcegroupby']   = true;
+      $tab[26]['splititems']     = true;
+      $tab[26]['massiveaction']  = false;
+      $tab[26]['joinparams']     = array('jointype' => 'child');
+
+      $tab[28]['table']          = static::getTable();
+      $tab[28]['field']          = 'count';
+      $tab[28]['name']           = __('Number of tasks');
+      $tab[28]['forcegroupby']   = true;
+      $tab[28]['usehaving']      = true;
+      $tab[28]['datatype']       = 'number';
+      $tab[28]['massiveaction']  = false;
+      $tab[28]['joinparams']     = array('jointype' => 'child');
+
+      $tab[20]['table']          = 'glpi_taskcategories';
+      $tab[20]['field']          = 'name';
+      $tab[20]['datatype']       = 'dropdown';
+      $tab[20]['name']           = __('Task category');
+      $tab[20]['forcegroupby']   = true;
+      $tab[20]['splititems']     = true;
+      $tab[20]['massiveaction']  = false;
+      $tab[20]['joinparams']     = array('beforejoin'
+                                          => array('table'      => static::getTable(),
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[92]['table']          = static::getTable();
+      $tab[92]['field']          = 'is_private';
+      $tab[92]['name']           = __('Private task');
+      $tab[92]['datatype']       = 'bool';
+      $tab[92]['forcegroupby']   = true;
+      $tab[92]['splititems']     = true;
+      $tab[92]['massiveaction']  = false;
+      $tab[92]['joinparams']     = array('jointype' => 'child');
+
+      $tab[94]['table']          = 'glpi_users';
+      $tab[94]['field']          = 'name';
+      $tab[94]['name']           = __('Writer');
+      $tab[94]['datatype']       = 'itemlink';
+      $tab[94]['right']          = 'all';
+      $tab[94]['forcegroupby']   = true;
+      $tab[94]['massiveaction']  = false;
+      $tab[94]['joinparams']     = array('beforejoin'
+                                          => array('table'      => static::getTable(),
+                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[95]['table']          = 'glpi_users';
+      $tab[95]['field']          = 'name';
+      $tab[95]['linkfield']      = 'users_id_tech';
+      $tab[95]['name']           = __('Technician');
+      $tab[95]['datatype']       = 'itemlink';
+      $tab[95]['right']          = 'own_ticket';
+      $tab[95]['forcegroupby']   = true;
+      $tab[95]['massiveaction']  = false;
+      $tab[95]['joinparams']     = array('beforejoin'
+                                          => array('table'      => static::getTable(),
+                                                   'joinparams' => array('jointype'  => 'child')));
+
+      $tab[96]['table']          = static::getTable();
+      $tab[96]['field']          = 'actiontime';
+      $tab[96]['name']           = __('Duration');
+      $tab[96]['datatype']       = 'timestamp';
+      $tab[96]['massiveaction']  = false;
+      $tab[96]['forcegroupby']   = true;
+      $tab[96]['joinparams']     = array('jointype' => 'child');
+
+      $tab[97]['table']          = static::getTable();
+      $tab[97]['field']          = 'date';
+      $tab[97]['name']           = __('Date');
+      $tab[97]['datatype']       = 'datetime';
+      $tab[97]['massiveaction']  = false;
+      $tab[97]['forcegroupby']   = true;
+      $tab[97]['joinparams']     = array('jointype' => 'child');
+
+      $tab[33]['table']          = static::getTable();
+      $tab[33]['field']          = 'state';
+      $tab[33]['name']           = __('Status');
+      $tab[33]['datatype']       = 'specific';
+      $tab[33]['searchtype']     = 'equals';
+      $tab[33]['searchequalsonfield'] = true;
+      $tab[33]['massiveaction']  = false;
+      $tab[33]['forcegroupby']   = true;
+      $tab[33]['joinparams']     = array('jointype' => 'child');
+
+      return $tab;
+   }
    /**
     * Current dates are valid ? begin before end
     *

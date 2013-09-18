@@ -60,7 +60,6 @@ class ChangeTask extends CommonITILTask {
       return Session::haveRight('change', UPDATE);
    }
 
-
    function canViewPrivates() {
       return true;
    }
@@ -68,7 +67,7 @@ class ChangeTask extends CommonITILTask {
 
    function canEditAll() {
       return Session::haveRightsOr('change', array(CREATE, UPDATE, DELETE, PURGE));
-         }
+   }
 
 
    /**

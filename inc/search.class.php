@@ -2149,11 +2149,15 @@ class Search {
 
       switch ($table.".".$field) {
          case "glpi_tickets.due_date" :
+         case "glpi_problems.due_date" :
+         case "glpi_changes.due_date" :
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
                      `$table$addtable`.`status` AS ".$NAME."_".$num."_2,
                       $ADDITONALFIELDS";
 
          case "glpi_tickets.is_late" :
+         case "glpi_problems.is_late" :
+         case "glpi_changes.is_late" :
             return " IF(`$table$addtable`.`due_date` IS NOT NULL
                         AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
                              OR (`$table$addtable`.`solvedate` IS NULL
@@ -2286,21 +2290,34 @@ class Search {
                      $ADDITONALFIELDS";
 
          case "glpi_ticketcosts.cost_time" :
+         case "glpi_problemcosts.cost_time" :
+         case "glpi_changecosts.cost_time" :
+            return " SUM(`$table$addtable`.`$field`*`$table$addtable`.`actiontime`/".HOUR_TIMESTAMP.")
+                     / COUNT(`$table$addtable`.`id`)
+                     * COUNT(DISTINCT `$table$addtable`.`id`)
+                     AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
          case "glpi_ticketcosts.cost_fixed" :
+         case "glpi_changecosts.cost_fixed" :
+         case "glpi_problemcosts.cost_fixed" :
          case "glpi_ticketcosts.cost_material" :
-            return " SUM(`glpi_ticketcosts$addtable`.`$field`)
-                     / COUNT(`glpi_ticketcosts$addtable`.`id`)
-                     * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
+         case "glpi_changecosts.cost_material" :
+         case "glpi_problemcosts.cost_material" :
+            return " SUM(`$table$addtable`.`$field`)
+                     / COUNT(`$table$addtable`.`id`)
+                     * COUNT(DISTINCT `$table$addtable`.`id`)
                      AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
          case "glpi_ticketcosts.totalcost" :
-            return " SUM(`glpi_ticketcosts$addtable`.`actiontime`
-                         * `glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
-                         + `glpi_ticketcosts$addtable`.`cost_fixed`
-                         + `glpi_ticketcosts$addtable`.`cost_material`)
-                     / COUNT(`glpi_ticketcosts$addtable`.`id`)
-                     * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
+         case "glpi_changecosts.totalcost" :
+         case "glpi_problemcosts.totalcost" :
+            return " SUM(`$table$addtable`.`actiontime`
+                         * `$table$addtable`.`cost_time`/".HOUR_TIMESTAMP."
+                         + `$table$addtable`.`cost_fixed`
+                         + `$table$addtable`.`cost_material`)
+                     / COUNT(`$table$addtable`.`id`)
+                     * COUNT(DISTINCT `$table$addtable`.`id`)
                      AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
@@ -3018,6 +3035,8 @@ class Search {
             return $link." `$table`.`$field` = '$val' ";
 
          case "glpi_tickets.is_late" :
+         case "glpi_problems.is_late" :
+         case "glpi_changes.is_late" :
             return " $link IF(`$table$addtable`.`due_date` IS NOT NULL
                               AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
                                    OR (`$table$addtable`.`solvedate` IS NULL
@@ -3787,6 +3806,8 @@ class Search {
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
 
          case "glpi_tickets.due_date" :
+         case "glpi_problems.due_date" :
+         case "glpi_changes.due_date" :
             if (($ID <> 151) && !empty($data[$NAME.$num])
                 && ($data[$NAME.$num.'_2'] != CommonITILObject::WAITING)
                 && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
@@ -4210,6 +4231,8 @@ class Search {
                return $out;
 
             case "glpi_tickets.due_date" :
+            case "glpi_problems.due_date" :
+            case "glpi_changes.due_date" :
                // Due date + progress
                if ($ID == 151) {
                   $out = Html::convDate($data[$NAME.$num]);
@@ -4225,33 +4248,34 @@ class Search {
                       || ($data[$NAME.$num.'_2'] == Ticket::CLOSED)) {
                      return $data[$NAME.$num];
                   }
-                  $ticket = new Ticket();
-                  $ticket->getFromDB($data['ITEM_0']);
+                  $itemtype = getItemTypeForTable($table);
+                  $item = new $itemtype();
+                  $item->getFromDB($data['id']);
                   $percentage = 0;
-                  if ($ticket->fields['slas_id'] != 0) { // Have SLA
+                  if ($item->isField('slas_id') && $item->fields['slas_id'] != 0) { // Have SLA
                      $sla = new SLA();
-                     $sla->getFromDB($ticket->fields['slas_id']);
-                     $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'],
+                     $sla->getFromDB($item->fields['slas_id']);
+                     $currenttime = $sla->getActiveTimeBetween($item->fields['date'],
                                                                date('Y-m-d H:i:s'));
-                     $totaltime   = $sla->getActiveTimeBetween($ticket->fields['date'],
+                     $totaltime   = $sla->getActiveTimeBetween($item->fields['date'],
                                                                $data[$NAME.$num]);
                      $percentage  = round((100 * $currenttime) / $totaltime);
                   } else {
                      $calendars_id = Entity::getUsedConfig('calendars_id',
-                                                           $ticket->fields['entities_id']);
+                                                           $item->fields['entities_id']);
                      if ($calendars_id != 0) { // Ticket entity have calendar
                         $calendar = new Calendar();
                         $calendar->getFromDB($calendars_id);
-                        $currenttime = $calendar->getActiveTimeBetween($ticket->fields['date'],
+                        $currenttime = $calendar->getActiveTimeBetween($item->fields['date'],
                                                                        date('Y-m-d H:i:s'));
-                        $totaltime   = $calendar->getActiveTimeBetween($ticket->fields['date'],
+                        $totaltime   = $calendar->getActiveTimeBetween($item->fields['date'],
                                                                        $data[$NAME.$num]);
                         $percentage  = round((100 * $currenttime) / $totaltime);
                      } else { // No calendar
                         $currenttime = strtotime(date('Y-m-d H:i:s'))
-                                                 - strtotime($ticket->fields['date']);
+                                                 - strtotime($item->fields['date']);
                         $totaltime   = strtotime($data[$NAME.$num])
-                                                 - strtotime($ticket->fields['date']);
+                                                 - strtotime($item->fields['date']);
                         $percentage  = round((100 * $currenttime) / $totaltime);
                      }
                   }
