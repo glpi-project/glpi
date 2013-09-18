@@ -268,9 +268,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas                               = parent::getDatasForObject($item, $options, $simple);
 
       // Specific datas
-      $datas["##ticket.costfixed"]         = $item->getField('cost_fixed');
-      $datas["##ticket.costmaterial"]      = $item->getField('cost_material');
-      $datas["##ticket.costtime"]          = $item->getField('cost_time');
+      $datas["##ticket.costfixed##"]         = $item->getField('cost_fixed');
+      $datas["##ticket.costmaterial##"]      = $item->getField('cost_material');
+      $datas["##ticket.costtime##"]          = $item->getField('cost_time');
 
 
       $datas['##ticket.urlvalidation##']

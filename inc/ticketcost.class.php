@@ -119,6 +119,73 @@ class TicketCost extends CommonDBChild {
       return true;
    }
 
+   function getSearchOptions() {
+
+      $tab                          = array();
+
+      $tab['common']                = __('Characteristics');
+
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               =  __('Title');
+      $tab[1]['searchtype']         = 'contains';
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false;
+
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'number';
+
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
+      
+      $tab[12]['table']             = $this->getTable();
+      $tab[12]['field']             = 'begin_date';
+      $tab[12]['name']              = __('Begin date');
+      $tab[12]['datatype']          = 'datetime';
+
+      $tab[10]['table']             = $this->getTable();
+      $tab[10]['field']             = 'end_date';
+      $tab[10]['name']              = __('End date');
+      $tab[10]['datatype']          = 'datetime';
+
+      $tab[11]['table']             = $this->getTable();
+      $tab[11]['field']             = 'actiontime';
+      $tab[11]['name']              = __('Duration');
+      $tab[11]['datatype']          = 'timestamp';
+
+      $tab[14]['table']              = $this->getTable();
+      $tab[14]['field']              = 'cost_time';
+      $tab[14]['name']               = __('Time cost');
+      $tab[14]['datatype']           = 'decimal';
+
+      $tab[15]['table']             = $this->getTable();
+      $tab[15]['field']             = 'cost_fixed';
+      $tab[15]['name']              = __('Fixed cost');
+      $tab[15]['datatype']          = 'decimal';
+
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'cost_material';
+      $tab[16]['name']              = __('Material cost');
+      $tab[16]['datatype']          = 'decimal';
+
+      $tab[18]['table']             = 'glpi_budgets';
+      $tab[18]['field']             = 'name';
+      $tab[18]['name']              = _n('Budget', 'Budgets', 1);
+      $tab[18]['datatype']          = 'dropdown';
+
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['massiveaction']     = false;
+      $tab[80]['datatype']          = 'dropdown';
+
+      return $tab;
+   }
 
    /**
     * Init cost for creation based on previous cost
@@ -366,6 +433,7 @@ class TicketCost extends CommonDBChild {
 
             $total          = 0;
             $total_time     = 0;
+            $total_costtime = 0;
             $total_fixed    = 0;
             $total_material = 0;
 
@@ -399,6 +467,7 @@ class TicketCost extends CommonDBChild {
                echo "<td>".CommonITILObject::getActionTime($data['actiontime'])."</td>";
                $total_time += $data['actiontime'];
                echo "<td class='numeric'>".Html::formatNumber($data['cost_time'])."</td>";
+               $total_costtime += ($data['actiontime']*$data['cost_time']/HOUR_TIMESTAMP);
                echo "<td class='numeric'>".Html::formatNumber($data['cost_fixed'])."</td>";
                $total_fixed += $data['cost_fixed'];
                echo "<td class='numeric'>".Html::formatNumber($data['cost_material'])."</td>";
@@ -412,7 +481,7 @@ class TicketCost extends CommonDBChild {
             }
             echo "<tr class='b'><td colspan='4' class='right'>".__('Total').'</td>';
             echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
-            echo "<td>&nbsp;</td>";
+            echo "<td class='numeric'>".Html::formatNumber($total_costtime)."</td>";
             echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total_material).'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
