@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
   @see ConsumableItem
   @author Julien Dombre
 **/
-class Consumable extends CommonDBTM {
+class Consumable extends CommonDBChild {
 
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
@@ -49,6 +49,9 @@ class Consumable extends CommonDBTM {
 
    static $rightname                   = 'consumable';
 
+   // From CommonDBChild
+   static public $itemtype             = 'ConsumableItem';
+   static public $items_id             = 'consumableitems_id';   
 
    /**
     * @since version 0.84
