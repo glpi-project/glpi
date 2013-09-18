@@ -617,7 +617,7 @@ class RuleAction extends CommonDBChild {
          $this->check($ID, READ);
       } else {
          // Create item
-         $options['rules_id'] = $rule->getField('id');
+         $options[static::$items_id] = $rule->getField('id');
          $this->check(-1, CREATE, $options);
       }
       $this->showFormHeader($options);
@@ -625,8 +625,8 @@ class RuleAction extends CommonDBChild {
       echo "<tr class='tab_bg_1 center'>";
       echo "<td>"._n('Action', 'Actions', 1) . "</td><td colspan='3'>";
       echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".
-             $this->fields["rules_id"]."'>";
-      $used = $this->getAlreadyUsedForRuleID($this->fields["rules_id"], $rule->getType());
+             $this->fields[static::$items_id]."'>";
+      $used = $this->getAlreadyUsedForRuleID($this->fields[static::$items_id], $rule->getType());
       // On edit : unset selected value
       if ($ID
           && isset($used[$this->fields['field']])) {
@@ -637,7 +637,7 @@ class RuleAction extends CommonDBChild {
       $params = array('field'                 => '__VALUE__',
                       'sub_type'              => $rule->getType(),
                       'ruleactions_id'        => $this->getID(),
-                      $rule->getRuleIdField() => $this->fields["rules_id"]);
+                      $rule->getRuleIdField() => $this->fields[static::$items_id]);
 
       Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
                                     $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);

@@ -940,10 +940,10 @@ class Rule extends CommonDBTM {
 
          echo "<script type='text/javascript' >\n";
          echo "function viewAddAction" . $rules_id . "$rand() {\n";
-         $params = array('type'       => 'RuleAction',
-                         'parenttype' => $this->getType(),
-                         'rules_id'   => $rules_id,
-                         'id'         => -1);
+         $params = array('type'                => $this->ruleactionclass,
+                         'parenttype'          => $this->getType(),
+                         $this->rules_id_field => $rules_id,
+                         'id'                  => -1);
          Ajax::updateItemJsCode("viewaction" . $rules_id . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -1030,10 +1030,10 @@ class Rule extends CommonDBTM {
 
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCriteria" . $rules_id . "$rand() {\n";
-         $params = array('type'       => 'RuleCriteria',
-                         'parenttype' => $this->getType(),
-                         'rules_id'   => $rules_id,
-                         'id'         => -1);
+         $params = array('type'                => $this->rulecriteriaclass,
+                         'parenttype'          => $this->getType(),
+                         $this->rules_id_field => $rules_id,
+                         'id'                  => -1);
          Ajax::updateItemJsCode("viewcriteria" . $rules_id . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -1728,19 +1728,19 @@ class Rule extends CommonDBTM {
       global $CFG_GLPI;
 
       $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
-                         $fields['rules_id'].$fields["id"]."$rand();\""
+                         $fields[$this->rules_id_field].$fields["id"]."$rand();\""
                         : '');
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
-         echo "function viewEditAction". $fields['rules_id'].$fields["id"]."$rand() {\n";
+         echo "function viewEditAction". $fields[$this->rules_id_field].$fields["id"]."$rand() {\n";
          $params = array('type'       => 'RuleAction',
                          'parenttype' => $this->getType(),
-                         'rules_id'   => $fields['rules_id'],
+                         $this->rules_id_field   => $fields[$this->rules_id_field],
                          'id'         => $fields["id"]);
-         Ajax::updateItemJsCode("viewaction" . $fields['rules_id'] . "$rand",
+         Ajax::updateItemJsCode("viewaction" . $fields[$this->rules_id_field] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
@@ -1852,19 +1852,19 @@ class Rule extends CommonDBTM {
       global $CFG_GLPI;
 
       $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
-                         $fields['rules_id'].$fields["id"]."$rand();\""
+                         $fields[$this->rules_id_field].$fields["id"]."$rand();\""
                         : '');
       echo "<tr class='tab_bg_1' >";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
-         echo "function viewEditCriteria". $fields['rules_id'].$fields["id"]."$rand() {\n";
+         echo "function viewEditCriteria". $fields[$this->rules_id_field].$fields["id"]."$rand() {\n";
          $params = array('type'      => 'RuleCriteria',
                         'parenttype' => $this->getType(),
-                        'rules_id'   => $fields['rules_id'],
+                        $this->rules_id_field   => $fields[$this->rules_id_field],
                         'id'         => $fields["id"]);
-         Ajax::updateItemJsCode("viewcriteria" . $fields['rules_id'] . "$rand",
+         Ajax::updateItemJsCode("viewcriteria" . $fields[$this->rules_id_field] . "$rand",
                               $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
@@ -2074,7 +2074,8 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_status" :
-               Ticket::dropdownStatus($name, $value);
+               Ticket::dropdownStatus(array('name'  => $name,
+                                            'value' => $value));
                $display = true;
                break;
 

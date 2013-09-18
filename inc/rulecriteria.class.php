@@ -565,7 +565,8 @@ class RuleCriteria extends CommonDBChild {
          $this->check($ID, READ);
       } else {
          // Create item
-         $options['rules_id'] = $rule->getField('id');
+         $options[static::$items_id] = $rule->getField('id');
+
          $this->check(-1, CREATE, $options);
       }
       $this->showFormHeader($options);
@@ -573,7 +574,7 @@ class RuleCriteria extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td colspan='3'>";
       echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".
-             $this->fields["rules_id"]."'>";
+             $this->fields[$rule->getRuleIdField()]."'>";
 
       $rand   = $rule->dropdownCriteria(array('value' => $this->fields['criteria']));
       $params = array('criteria' => '__VALUE__',
