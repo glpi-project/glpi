@@ -3971,7 +3971,7 @@ class Ticket extends CommonITILObject {
       if ($canstatus) {
          self::dropdownStatus(array('value'     => $this->fields["status"],
                                     'showtype'  => 'allowed'));
-         TicketValidation::alertValidation($this, 'ticket');
+         TicketValidation::alertValidation($this, 'status');
       } else {
          echo self::getStatus($this->fields["status"]);
       }

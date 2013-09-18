@@ -3500,7 +3500,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Alert if validation waiting
-      TicketValidation::alertValidation($this, 'solution');
+      $validationtype = $this->getType().'Validation';
+      $validationtype::alertValidation($this, 'solution');
 
       $this->showFormHeader($options);
 

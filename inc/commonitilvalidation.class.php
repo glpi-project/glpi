@@ -1266,30 +1266,34 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
    
    
-   static function alertValidation(Ticket $ticket, $type){
+   static function alertValidation(CommonITILObject $item, $type){
       global $CFG_GLPI;
-      
-      $status = Ticket::getClosedStatusArray();
-      $closed = $status[0];
-      $status = Ticket::getSolvedStatusArray();
-      $solved = $status[0];
-      
-      $message = __("This ticket is waiting for approval, do you really want to resolve or close it?");
 
+      $status = array_merge($item->getClosedStatusArray(), $item->getSolvedStatusArray());
+      
+      $message = __s("This item is waiting for approval, do you really want to resolve or close it?");
       switch($type){
-         case 'ticket':
+         case 'status':
             Html::scriptStart();
             echo "$('[name=\"status\"]').change(function() {
                      var status_ko = 0;
                      var input_status = $(this).val();
                      if(input_status != undefined){
-                        if ((input_status == ".$solved."
-                              || input_status == ".$closed.")
-                                 && input_status != ".$ticket->fields['status']."){
+                        if ((";
+            $first = true;
+            foreach ($status as $val) {
+               if (!$first) {
+                  echo "||";
+               }
+               echo "input_status == $val";
+               $first = false;
+            }
+            echo "           )
+                                 && input_status != ".$item->fields['status']."){
                            status_ko = 1;
                         }
                      }
-                     if (status_ko == 1 && '".$ticket->fields['global_validation']."' == 'waiting') {
+                     if (status_ko == 1 && '".$item->fields['global_validation']."' == 'waiting') {
                         alert('".$message."');
                      }
                   });";
@@ -1297,9 +1301,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
             break;
       
          case 'solution':
-            if($ticket->fields['status'] != $solved
-               && $ticket->fields['status'] != $closed 
-                  && $ticket->fields['global_validation'] == 'waiting') {
+            if(!in_array($item->fields['status'], $status)
+                  && $item->fields['global_validation'] == 'waiting') {
                Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             }
             break;

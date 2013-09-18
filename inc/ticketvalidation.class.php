@@ -101,46 +101,5 @@ class TicketValidation  extends CommonITILValidation {
       return $values;
    }
 
-   
-   static function alertValidation(Ticket $ticket, $type){
-      global $CFG_GLPI;
-      
-      $status = Ticket::getClosedStatusArray();
-      $closed = $status[0];
-      $status = Ticket::getSolvedStatusArray();
-      $solved = $status[0];
-      
-      $message = __("This ticket is waiting for approval, do you really want to resolve or close it?");
-
-      switch($type){
-         case 'ticket':
-            Html::scriptStart();
-            echo "$('[name=\"status\"]').change(function() {
-                     var status_ko = 0;
-                     var input_status = $(this).val();
-                     if(input_status != undefined){
-                        if ((input_status == ".$solved."
-                              || input_status == ".$closed.")
-                                 && input_status != ".$ticket->fields['status']."){
-                           status_ko = 1;
-                        }
-                     }
-                     if (status_ko == 1 && '".$ticket->fields['global_validation']."' == 'waiting') {
-                        alert('".$message."');
-                     }
-                  });";
-            echo Html::scriptEnd();
-            break;
-      
-         case 'solution':
-            if($ticket->fields['status'] != $solved
-               && $ticket->fields['status'] != $closed 
-                  && $ticket->fields['global_validation'] == 'waiting') {
-               Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
-            }
-            break;
-      }
-
-   }
 }
 ?>

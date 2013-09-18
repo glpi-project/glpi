@@ -700,6 +700,7 @@ class Change extends CommonITILObject {
       echo "<td width='$colsize2%'>";
       self::dropdownStatus(array('value'    => $this->fields["status"],
                                  'showtype' => 'allowed'));
+      ChangeValidation::alertValidation($this, 'status');
       echo "</td>";
       echo "<th width='$colsize1%'>".__('Urgency')."</th>";
       echo "<td width='$colsize2%'>";
