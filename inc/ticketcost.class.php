@@ -479,6 +479,9 @@ class TicketCost extends CommonDBChild {
          $tab['totalcost']    +=  self::computeTotalCost($data['actiontime'], $data['cost_time'],
                                                          $data['cost_fixed'], $data['cost_material']);
       }
+      foreach ($tab as $key => $val) {
+         $tab[$key] = Html::formatNumber($val);
+      }
       return $tab;
    }
    

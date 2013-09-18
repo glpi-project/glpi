@@ -546,9 +546,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##cost.datebegin##']    = Html::convDate($cost['begin_date']);
             $tmp['##cost.dateend##']      = Html::convDate($cost['end_date']);
             $tmp['##cost.time##']         = $item->getActionTime($cost['actiontime']);
-            $tmp['##cost.costtime##']     = $cost['cost_time'];
-            $tmp['##cost.costfixed##']    = $cost['cost_fixed'];
-            $tmp['##cost.costmaterial##'] = $cost['cost_material'];
+            $tmp['##cost.costtime##']     = Html::formatNumber($cost['cost_time']);
+            $tmp['##cost.costfixed##']    = Html::formatNumber($cost['cost_fixed']);
+            $tmp['##cost.costmaterial##'] = Html::formatNumber($cost['cost_material']);
+            $tmp['##cost.totalcost##']    = TicketCost::computeTotalCost($cost['actiontime'], $cost['cost_time'],
+                                                                         $cost['cost_fixed'], $cost['cost_material']);
+            
             $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
                                                                       $cost['budgets_id']);
             $datas['costs'][]       = $tmp;
@@ -642,6 +645,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                             __('Fixed cost')),
                     'cost.costmaterial'            => sprintf(__('%1$s: %2$s'), __('Cost'),
                                                             __('Material cost')),
+                    'cost.totalcost'            => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Total cost')),                                                            
                     'cost.budget'                  => sprintf(__('%1$s: %2$s'), __('Cost'),
                                                             __('Budget')),                    
                   );
