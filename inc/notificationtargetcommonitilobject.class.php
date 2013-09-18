@@ -848,11 +848,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["documents"] = array();
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $tmp                         = array();
-            $tmp['##document.id##']      = $data['id'];
-            $tmp['##document.name##']    = $data['name'];
-            $tmp['##document.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
+            $tmp                          = array();
+            $tmp['##document.id##']       = $data['id'];
+            $tmp['##document.name##']     = $data['name'];
+            $tmp['##document.weblink##']  = $data['link'];
+            
+            $tmp['##document.url##']      = $this->formatURL($options['additionnaloption']['usertype'],
                                                             "document_".$data['id']);
+            $tmp['##document.heading##']  = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                     $data['documentcategories_id']);
+                                                            
             $tmp['##document.filename##'] = $data['filename'];
             $datas['documents'][]         = $tmp;
          }
@@ -963,11 +968,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                             _x('name', 'Update')),
                     'document.url'               => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('ID')),
+                                                            __('URL')),
+                    'document.heading'           => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Heading')),                                                            
                     'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('ID')),
                     'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('File')),
+                    'document.weblink'           => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Web Link')),                                                            
                     'document.name'              => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Name')),
                      $objettype.'.urldocument'   => sprintf(__('%1$s: %2$s'),
