@@ -240,6 +240,7 @@ class Change extends CommonITILObject {
       // show related tickets and changes
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('ChangeValidation', $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
@@ -439,6 +440,8 @@ class Change extends CommonITILObject {
       $tab[90]['massiveaction'] = false;
       $tab[90]['datatype']      = 'text';
 
+      $tab += ChangeValidation::getSearchOptionsToAdd();
+      
       $tab += ChangeTask::getSearchOptionsToAdd();
       
       $tab += $this->getSearchOptionsSolution();

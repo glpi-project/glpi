@@ -168,8 +168,7 @@ class Ticket extends CommonITILObject {
       if (TicketTemplate::canView()) {
          $links['template'] = TicketTemplate::getSearchURL(false);
       }
-      if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
-                                                    TicketValidation::VALIDATEREQUEST))) {
+      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -231,8 +230,7 @@ class Ticket extends CommonITILObject {
       return (Session::haveRightsOr(self::$rightname,
                                     array(self::READALL, self::READMY, UPDATE, self::READASSIGN,
                                           self::READGROUP, self::OWN))
-              || Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
-                                                           TicketValidation::VALIDATEINCIDENT)));
+              || Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights()));
    }
 
 
@@ -261,8 +259,7 @@ class Ticket extends CommonITILObject {
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
                       || (Session::haveRight(self::$rightname, self::ASSIGN)
                           && ($this->fields["status"] == self::INCOMING))))
-              || (Session::haveRight('validation', array(TicketValidation::VALIDATEINCIDENT,
-                                                         TicketValidation::VALIDATEREQUEST))
+              || (Session::haveRight('ticketvalidation', TicketValidation::getValidateRights())
                   && TicketValidation::canValidate($this->fields["id"])));
    }
 
@@ -2106,89 +2103,7 @@ class Ticket extends CommonITILObject {
       $tab[32]['massiveaction']     = false;
       $tab[32]['datatype']          = 'dropdown';
 
-
-      $tab['validation']            = __('Approval');
-
-      $tab[51]['table']             = $this->getTable();
-      $tab[51]['field']             = 'validation_percent';
-      $tab[51]['name']              = __('Minimum validation required');
-      $tab[51]['datatype']          = 'number';
-      $tab[51]['unit']              = '%';
-      $tab[51]['min']               = 0;
-      $tab[51]['max']               = 100;
-      $tab[51]['step']               = 50;
-
-      $tab[52]['table']             = $this->getTable();
-      $tab[52]['field']             = 'global_validation';
-      $tab[52]['name']              = __('Approval');
-      $tab[52]['searchtype']        = 'equals';
-      $tab[52]['datatype']          = 'specific';
-
-      $tab[53]['table']             = 'glpi_ticketvalidations';
-      $tab[53]['field']             = 'comment_submission';
-      $tab[53]['name']              = sprintf(__('%1$s: %2$s'), __('Request'), __('Comments'));
-      $tab[53]['datatype']          = 'text';
-      $tab[53]['forcegroupby']      = true;
-      $tab[53]['massiveaction']     = false;
-      $tab[53]['joinparams']        = array('jointype' => 'child');
-
-      $tab[54]['table']             = 'glpi_ticketvalidations';
-      $tab[54]['field']             = 'comment_validation';
-      $tab[54]['name']              = sprintf(__('%1$s: %2$s'), __('Approval'), __('Comments'));
-      $tab[54]['datatype']          = 'text';
-      $tab[54]['forcegroupby']      = true;
-      $tab[54]['massiveaction']     = false;
-      $tab[54]['joinparams']        = array('jointype' => 'child');
-
-      $tab[55]['table']             = 'glpi_ticketvalidations';
-      $tab[55]['field']             = 'status';
-      $tab[55]['datatype']          = 'specific';
-      $tab[55]['name']              = sprintf(__('%1$s: %2$s'), __('Approval'), __('Status'));
-      $tab[55]['searchtype']        = 'equals';
-      $tab[55]['forcegroupby']      = true;
-      $tab[55]['massiveaction']     = false;
-      $tab[55]['joinparams']        = array('jointype' => 'child');
-
-      $tab[56]['table']             = 'glpi_ticketvalidations';
-      $tab[56]['field']             = 'submission_date';
-      $tab[56]['name']              = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
-      $tab[56]['datatype']          = 'datetime';
-      $tab[56]['forcegroupby']      = true;
-      $tab[56]['massiveaction']     = false;
-      $tab[56]['joinparams']        = array('jointype' => 'child');
-
-      $tab[57]['table']             = 'glpi_ticketvalidations';
-      $tab[57]['field']             = 'validation_date';
-      $tab[57]['name']              = sprintf(__('%1$s: %2$s'), __('Approval'), __('Date'));
-      $tab[57]['datatype']          = 'datetime';
-      $tab[57]['forcegroupby']      = true;
-      $tab[57]['massiveaction']     = false;
-      $tab[57]['joinparams']        = array('jointype' => 'child');
-
-      $tab[58]['table']             = 'glpi_users';
-      $tab[58]['field']             = 'name';
-      $tab[58]['name']              = __('Requester');
-      $tab[58]['datatype']          = 'itemlink';
-      $tab[58]['right']             = array('create_incident_validation',
-                                            'create_request_validation');
-      $tab[58]['forcegroupby']      = true;
-      $tab[58]['massiveaction']     = false;
-      $tab[58]['joinparams']        = array('beforejoin'
-                                             => array('table'      => 'glpi_ticketvalidations',
-                                                      'joinparams' => array('jointype' => 'child')));
-
-      $tab[59]['table']             = 'glpi_users';
-      $tab[59]['field']             = 'name';
-      $tab[59]['linkfield']         = 'users_id_validate';
-      $tab[59]['name']              = __('Approver');
-      $tab[59]['datatype']          = 'itemlink';
-      $tab[59]['right']             = array('validate_request', 'validate_incident');
-      $tab[59]['forcegroupby']      = true;
-      $tab[59]['massiveaction']     = false;
-      $tab[59]['joinparams']        = array('beforejoin'
-                                             => array('table'      => 'glpi_ticketvalidations',
-                                                      'joinparams' => array('jointype' => 'child')));
-
+      $tab += TicketValidation::getSearchOptionsToAdd();
 
       $tab['satisfaction']          = __('Satisfaction survey');
 
@@ -2389,10 +2304,8 @@ class Ticket extends CommonITILObject {
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
          $tokeep = array('common', 'requester');
-         if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
-                                                       TicketValidation::VALIDATEREQUEST,
-                                                       TicketValidation::CREATEREQUEST,
-                                                       TicketValidation::CREATEINCIDENT))) {
+         if (Session::haveRightsOr('ticketvalidation', array_merge(TicketValidation::getValidateRights(),
+                                                                   TicketValidation::getCreateRights()))) {
             $tokeep[] = 'validation';
          }
          $keep = false;
@@ -2433,9 +2346,6 @@ class Ticket extends CommonITILObject {
                $content = ' ';
             }
             return nl2br($content);
-
-         case 'global_validation' :
-            return TicketValidation::getStatus($values[$field]);
 
          case 'type':
             return self::getTicketTypeName($values[$field]);
@@ -2489,11 +2399,6 @@ class Ticket extends CommonITILObject {
          case 'type':
             $options['value'] = $values[$field];
             return self::dropdownType($name, $options);
-
-         case 'global_validation' :
-            $options['global'] = true;
-            $options['value']  = $values[$field];
-            return TicketValidation::dropdownStatus($name, $options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -3045,8 +2950,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (!$ticket_template
-          && Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
-                                                       TicketValidation::VALIDATEREQUEST))) {
+          && Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -3062,7 +2966,7 @@ class Ticket extends CommonITILObject {
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt,
                                                                                            '&amp;');
 
-         if (TicketValidation::getNumberTicketsToValidate(Session::getLoginUserID()) > 0) {
+         if (TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0) {
             echo "<a href='$url_validate' title=\"".__s('Ticket waiting for your approval')."\"
                    alt=\"".__s('Ticket waiting for your approval')."\">".
                    __('Tickets awaiting approval')."</a><br><br>";
@@ -4126,11 +4030,11 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('_add_validation');
          $validation_right = '';
          if (($values['type'] == self::INCIDENT_TYPE)
-             && Session::haveRight('validation', TicketValidation::CREATEINCIDENT)) {
+             && Session::haveRight('ticketvalidation', TicketValidation::CREATEINCIDENT)) {
             $validation_right = 'validate_incident';
          }
          if (($values['type'] == self::DEMAND_TYPE)
-             && Session::haveRight('validaton', TicketValidation::CREATEREQUEST)) {
+             && Session::haveRight('ticketvalidation', TicketValidation::CREATEREQUEST)) {
             $validation_right = 'validate_request';
          }
 
@@ -4566,8 +4470,7 @@ class Ticket extends CommonITILObject {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname, array(CREATE, self::READALL, self::READASSIGN))
-          && !Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
-                                                        TicketValidation::VALIDATEREQUEST))) {
+          && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          return false;
       }
 

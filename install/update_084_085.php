@@ -476,23 +476,6 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete own_ticket right");
 
 
-   // must be done after ticket right
-   // pour que la procédure soit ré-entrante
-   if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
-      ProfileRight::addProfileRights(array('change'));
-
-      ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
-                                                   "`name` = 'ticket'
-                                                     AND `rights` & ". Ticket::OWN);
-      ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
-                                                   "`name` = 'ticket'
-                                                     AND `rights` & ".Ticket::READALL);
-      ProfileRight::updateProfileRightAsOtherRight('change',
-                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
-                                                    "`name` = 'ticket' AND `rights` & ".UPDATE);
-   }
-
-
    // delete update_priority
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'update_priority' AND `rights` = '1'") as $profrights) {
@@ -697,18 +680,18 @@ function update084to085() {
 
 
    // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'validation'") == 0) {
+   if (countElementsInTable("glpi_profilerights", "`name` = 'ticketvalidation'") == 0) {
       // rename delete_validations
       $query  = "UPDATE `glpi_profilerights`
-                 SET `name` = 'validation'
+                 SET `name` = 'ticketvalidation'
                  WHERE `name` = 'delete_validations'";
-      $DB->queryOrDie($query, "0.85 rename delete_validations to validation");
+      $DB->queryOrDie($query, "0.85 rename delete_validations to ticketvalidation");
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = ". DELETE ."
-                 WHERE `name` = 'validation'
+                 WHERE `name` = 'ticketvalidation'
                        AND `rights` = '1'";
-      $DB->queryOrDie($query, "0.85 update validation with delete_validations right");
+      $DB->queryOrDie($query, "0.85 update ticketvalidation with delete_validations right");
    }
 
 
@@ -719,8 +702,8 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ." | ".PURGE."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validation'";
-      $DB->queryOrDie($query, "0.85 update validation with create_request_validation right");
+                       AND `name` = 'ticketvalidation'";
+      $DB->queryOrDie($query, "0.85 update ticketvalidation with create_request_validation right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
@@ -734,8 +717,8 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::CREATEINCIDENT ." | ".PURGE."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validation'";
-      $DB->queryOrDie($query, "0.85 update validation with create_incident_validation right");
+                       AND `name` = 'ticketvalidation'";
+      $DB->queryOrDie($query, "0.85 update ticketvalidation with create_incident_validation right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
@@ -749,8 +732,8 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::VALIDATEREQUEST ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validation'";
-      $DB->queryOrDie($query, "0.85 update validation with validate_request right");
+                       AND `name` = 'ticketvalidation'";
+      $DB->queryOrDie($query, "0.85 update ticketvalidation with validate_request right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
@@ -764,8 +747,8 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::VALIDATEINCIDENT ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validation'";
-      $DB->queryOrDie($query, "0.85 update validation with validate_incident right");
+                       AND `name` = 'ticketvalidation'";
+      $DB->queryOrDie($query, "0.85 update ticketvalidation with validate_incident right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
@@ -773,6 +756,40 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete validate_incident right");
 
 
+
+   // must be done after ticket right
+   // pour que la procédure soit ré-entrante
+   if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
+      ProfileRight::addProfileRights(array('change'));
+
+      ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
+                                                   "`name` = 'ticket'
+                                                     AND `rights` & ". Ticket::OWN);
+      ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
+                                                   "`name` = 'ticket'
+                                                     AND `rights` & ".Ticket::READALL);
+      ProfileRight::updateProfileRightAsOtherRight('change',
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
+                                                    "`name` = 'ticket' AND `rights` & ".UPDATE);
+   }
+
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'changevalidation'") == 0) {
+      ProfileRight::addProfileRights(array('changevalidation'));
+
+      ProfileRight::updateProfileRightAsOtherRight('changevalidation', CREATE,
+                                                   "`name` = 'ticketvalidation'
+                                                     AND `rights` & ". TicketValidation::CREATEINCIDENT."
+                                                     AND `rights` & ". TicketValidation::CREATEREQUEST);
+      ProfileRight::updateProfileRightAsOtherRight('changevalidation', ChangeValidation::VALIDATE,
+                                                   "`name` = 'ticketvalidation'
+                                                     AND `rights` & ". TicketValidation::VALIDATEINCIDENT."
+                                                     AND `rights` & ". TicketValidation::VALIDATEREQUEST);
+      ProfileRight::updateProfileRightAsOtherRight('changevalidation', PURGE,
+                                                   "`name` = 'ticketvalidation'
+                                                     AND `rights` & ". PURGE);
+   }
+   
    // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'planning'") == 0) {
       // rename show_planning
@@ -1118,9 +1135,15 @@ function update084to085() {
                   `rolloutplancontent` longtext DEFAULT NULL,
                   `backoutplancontent` longtext DEFAULT NULL,
                   `checklistcontent` longtext DEFAULT NULL,
+                  `global_validation` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'none',
+                  `validation_percent` int(11) NOT NULL DEFAULT '0',
                   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
                   `solution` text COLLATE utf8_unicode_ci,
                   `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `begin_waiting_date` datetime DEFAULT NULL,
+                  `waiting_duration` int(11) NOT NULL DEFAULT '0',
+                  `close_delay_stat` int(11) NOT NULL DEFAULT '0',
+                  `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
                   `notepad` LONGTEXT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -1139,6 +1162,7 @@ function update084to085() {
                   KEY `urgency` (`urgency`),
                   KEY `impact` (`impact`),
                   KEY `due_date` (`due_date`),
+                  KEY `global_validation` (`global_validation`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_changes");
@@ -1258,7 +1282,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
 
-   if (!TableExists('glpi_change costs')) {
+   if (!TableExists('glpi_changecosts')) {
       $query = "CREATE TABLE `glpi_changecosts` (
                `id` int(11) NOT NULL AUTO_INCREMENT,
                `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1272,17 +1296,45 @@ function update084to085() {
                `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
                `budgets_id` int(11) NOT NULL DEFAULT '0',
                `entities_id` int(11) NOT NULL DEFAULT '0',
+               `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                PRIMARY KEY (`id`),
                KEY `name` (`name`),
                KEY `changes_id` (`changes_id`),
                KEY `begin_date` (`begin_date`),
                KEY `end_date` (`end_date`),
                KEY `entities_id` (`entities_id`),
+               KEY `is_recursive` (`is_recursive`),
                KEY `budgets_id` (`budgets_id`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_changecosts");
    }
-   
+
+   if (!TableExists('glpi_changevalidations')) {
+      $query = "CREATE TABLE `glpi_changevalidations` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `entities_id` int(11) NOT NULL DEFAULT '0',
+            `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+            `users_id` int(11) NOT NULL DEFAULT '0',
+            `changes_id` int(11) NOT NULL DEFAULT '0',
+            `users_id_validate` int(11) NOT NULL DEFAULT '0',
+            `comment_submission` text COLLATE utf8_unicode_ci,
+            `comment_validation` text COLLATE utf8_unicode_ci,
+            `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'waiting',
+            `submission_date` datetime DEFAULT NULL,
+            `validation_date` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `entities_id` (`entities_id`),
+            KEY `is_recursive` (`is_recursive`),
+            KEY `users_id` (`users_id`),
+            KEY `users_id_validate` (`users_id_validate`),
+            KEY `changes_id` (`changes_id`),
+            KEY `submission_date` (`submission_date`),
+            KEY `validation_date` (`validation_date`),
+            KEY `status` (`status`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.85 add table glpi_changevalidations");
+   }
+
    /// TODO add display prefs
 
    $migration->addField('glpi_profiles', 'change_status', "text",

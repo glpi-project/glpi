@@ -2014,7 +2014,7 @@ class Html {
                  __s('Home')."\">".__('Home')."></a></li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-      if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
+      if (Session::haveRightsOr('ticketvalidation', array(TicketValidation::VALIDATEREQUEST,
                                                     TicketValidation::VALIDATEINCIDENT))) {
          $opt                  = array();
          $opt['reset']         = 'reset';

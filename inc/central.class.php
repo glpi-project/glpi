@@ -181,8 +181,7 @@ class Central extends CommonGLPI {
       }
       echo "<tr><td class='top'><table class='central'>";
       echo "<tr><td>";
-      if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
-                                                    TicketValidation::VALIDATEINCIDENT))) {
+      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          Ticket::showCentralList(0,"tovalidate",false);
       }
       Ticket::showCentralList(0, "toapprove", false);

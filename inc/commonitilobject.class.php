@@ -2101,6 +2101,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 'priority':
             return self::getPriorityName($values[$field]);
+
+         case 'global_validation' :
+            return CommonITILValidation::getStatus($values[$field]);
+            
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -2141,6 +2145,11 @@ abstract class CommonITILObject extends CommonDBTM {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownPriority($options);
+            
+         case 'global_validation' :
+            $options['global'] = true;
+            $options['value']  = $values[$field];
+            return CommonITILValidation::dropdownStatus($name, $options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -3822,13 +3831,13 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Due date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
-      if (($this->fields['status'] == self::SOLVED)
-          || ($this->fields['status'] == self::CLOSED)) {
+      if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
+                                                        $this->getClosedStatusArray()))) {
          echo "<tr class='tab_bg_2'><td>".__('Resolution date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['solvedate'])."</td></tr>";
       }
 
-      if ($this->fields['status']==self::CLOSED) {
+      if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
          echo "<tr class='tab_bg_2'><td>".__('Closing date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
@@ -3845,8 +3854,8 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      if (($this->fields['status'] == self::SOLVED)
-          || ($this->fields['status'] == self::CLOSED)) {
+      if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
+                                                        $this->getClosedStatusArray()))) {
          echo "<tr class='tab_bg_2'><td>".__('Resolution')."</td><td>";
 
          if ($this->fields['solve_delay_stat'] > 0) {
@@ -3857,7 +3866,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      if ($this->fields['status'] == self::CLOSED) {
+      if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
          echo "<tr class='tab_bg_2'><td>".__('Closure')."</td><td>";
          if ($this->fields['close_delay_stat'] > 0) {
             echo Html::timestampToString($this->fields['close_delay_stat']);
