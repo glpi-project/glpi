@@ -915,7 +915,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', 2),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
-                    $objettype.'.numberofdocuments' => __('Number of documents')
+                    $objettype.'.numberofdocuments'     => _x('quantity', 'Number of documents'),
                    );
 
       foreach ($tags as $tag => $label) {
