@@ -379,7 +379,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       }
 
-      // Get tasks, followups, log, validation, satisfaction, linked tickets
+      // Get followups, log, validation, satisfaction, linked tickets
       if (!$simple) {
          // Linked tickets
          $linked_tickets         = Ticket_Ticket::getLinkedTicketsTo($item->getField('id'));
@@ -426,42 +426,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          $datas['##ticket.numberofproblems##'] = count($datas['problems']);
-
-         $restrict = "`tickets_id`='".$item->getField('id')."'";
-         if (!isset($options['additionnaloption']['show_private'])
-             || !$options['additionnaloption']['show_private']) {
-            $restrict .= " AND `is_private` = '0'";
-         }
-         $restrict .= " ORDER BY `date` DESC, `id` ASC";
-
-         //Task infos
-         $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
-         $datas['tasks'] = array();
-         foreach ($tasks as $task) {
-            $tmp                          = array();
-            $tmp['##task.isprivate##']    = Dropdown::getYesNo($task['is_private']);
-            $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
-            $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
-                                                                      $task['taskcategories_id']);
-            $tmp['##task.date##']         = Html::convDateTime($task['date']);
-            $tmp['##task.description##']  = $task['content'];
-            $tmp['##task.time##']         = Ticket::getActionTime($task['actiontime']);
-            $tmp['##task.status##']       = Planning::getState($task['state']);
-
-
-            $tmp['##task.user##']         = "";
-            $tmp['##task.begin##']        = "";
-            $tmp['##task.end##']          = "";
-            if (!is_null($task['begin'])) {
-               $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
-               $tmp['##task.begin##']     = Html::convDateTime($task['begin']);
-               $tmp['##task.end##']       = Html::convDateTime($task['end']);
-            }
-
-            $datas['tasks'][] = $tmp;
-         }
-
-         $datas['##ticket.numberoftasks##'] = count($datas['tasks']);
 
          //Followup infos
          $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
@@ -596,23 +560,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.user'             => __('User'),
                     'ticket.item.group'            => __('Group'),
                     'ticket.isdeleted'             => __('Deleted'),
-                    'task.author'                  => __('Writer'),
-                    'task.isprivate'               => __('Private'),
-                    'task.date'                    => __('Opening date'),
-                    'task.description'             => __('Description'),
-                    'task.category'                => __('Category'),
-                    'task.time'                    => __('Total duration'),
-                    'task.user'                    => __('By'),
-                    'task.begin'                   => __('Start date'),
-                    'task.end'                     => __('End date'),
-                    'task.status'                  => __('Status'),
                     'followup.date'                => __('Opening date'),
                     'followup.isprivate'           => __('Private'),
                     'followup.author'              => __('Writer'),
                     'followup.description'         => __('Description'),
                     'followup.requesttype'         => __('Request source'),
                     'ticket.numberoffollowups'     => __('Number of followups'),
-                    'ticket.numberoftasks'         => __('Number of tasks'),
                     'ticket.numberoflinkedtickets' => __('Number of linked tickets'),
                     'ticket.numberofproblems'      => __('Number of problems'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
@@ -695,7 +648,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
      //Foreach global tags
      $tags = array('followups'     => _n('Followup', 'Followups', 2),
-                   'tasks'         => _n('Task', 'Tasks', 2),
                    'validations'   => _n('Validation','Validations',2),
                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', 2),
                    'problems'      => _n('Problem', 'Problems', 2));
