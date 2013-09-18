@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-$validation = new TicketValidation();
+$validation = new ChangeValidation();
 
 include (GLPI_ROOT . "/front/commonitilvalidation.form.php");
 ?>

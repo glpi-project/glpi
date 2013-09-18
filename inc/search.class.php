@@ -5038,7 +5038,7 @@ class Search {
             $todel      = array_merge($todel, array_keys($itemstodel));
          }
       }
-      if (!Session::haveRight('notes', $action)) {
+      if (!Session::haveRight(strtolower($itemtype), READNOTE)) {
          $todel[] = 90;
       }
 

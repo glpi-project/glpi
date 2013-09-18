@@ -49,7 +49,7 @@ class Profile extends CommonDBTM {
                                           'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'task', 'ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
-                                          'validation');
+                                          'ticketvalidation');
 
 
    /// Common fields used for all profiles type
@@ -384,8 +384,8 @@ class Profile extends CommonDBTM {
          && !Session::haveRight('followup', TicketTask::SEEPUBLIC)) {
          return false;
       }
-      if ((self::$helpdesk_rights == 'validation')
-            && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
+      if ((self::$helpdesk_rights == 'ticketvalidation')
+            && !Session::haveRightsOr('ticketvalidation', array(TicketValidation::CREATEREQUEST,
                                                           TicketValidation::CREATEINCIDENT,
                                                           TicketValidation::VALIDATEREQUEST,
                                                           TicketValidation::VALIDATEINCIDENT))) {
@@ -439,6 +439,7 @@ class Profile extends CommonDBTM {
    **/
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
+      /// TODO : MoYo : je ne comprend pas du tout ces controles... self::$helpdesk_rights est un tableau le == n'a pas de sens
       if ((self::$helpdesk_rights == 'reservation')
           & !ReservationItem::RESERVEANITEM) {
          return false;
@@ -988,7 +989,7 @@ class Profile extends CommonDBTM {
 
       $rights = array(array('itemtype'  => 'TicketValidation',
                             'label'     => _n('Validation', 'Validations', 2),
-                            'field'     => 'validation'));
+                            'field'     => 'ticketvalidation'));
       $matrix_options['title'] = _n('Validation', 'Validations', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -1049,7 +1050,10 @@ class Profile extends CommonDBTM {
 
       $rights = array(array('itemtype'   => 'Change',
                             'label'      => _n('Change', 'Changes', 2),
-                            'field'      => 'change'));
+                            'field'      => 'change'),
+                      array('itemtype'  => 'ChangeValidation',
+                            'label'     => _n('Validation', 'Validations', 2),
+                            'field'     => 'changevalidation'));
       $matrix_options['title'] = _n('Change', 'Changes', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
       

@@ -3990,7 +3990,7 @@ class CommonDBTM extends CommonGLPI {
          if (isset($searchoptions['unit'])) {
             $unit = $searchoptions['unit'];
          }
-
+         
          switch ($searchoptions['datatype']) {
             case "number" :
             case "integer" :
