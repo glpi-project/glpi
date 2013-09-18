@@ -877,6 +877,39 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
 
+      //costs infos
+      $costtype = $item->getType().'Cost';
+      $costs = $costtype::getCostsSummary($item->getField("id"));
+
+      $datas["##$objettype.costfixed##"]    = $costs['costfixed'];
+      $datas["##$objettype.costmaterial##"] = $costs['costmaterial'];
+      $datas["##$objettype.costtime##"]     = $costs['costtime'];
+      $datas["##$objettype.totalcost##"]    = $costs['totalcost'];
+      
+      $restrict = "`".$item->getForeignKeyField()."`='".$item->getField('id')."'";
+
+      $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
+
+      $costs = getAllDatasFromTable(getTableForItemType($costtype),$restrict);
+      $datas['costs'] = array();
+      foreach ($costs as $cost) {
+         $tmp = array();
+         $tmp['##cost.name##']         = $cost['name'];
+         $tmp['##cost.comment##']      = $cost['comment'];
+         $tmp['##cost.datebegin##']    = Html::convDate($cost['begin_date']);
+         $tmp['##cost.dateend##']      = Html::convDate($cost['end_date']);
+         $tmp['##cost.time##']         = $item->getActionTime($cost['actiontime']);
+         $tmp['##cost.costtime##']     = Html::formatNumber($cost['cost_time']);
+         $tmp['##cost.costfixed##']    = Html::formatNumber($cost['cost_fixed']);
+         $tmp['##cost.costmaterial##'] = Html::formatNumber($cost['cost_material']);
+         $tmp['##cost.totalcost##']    = CommonITILCost::computeTotalCost($cost['actiontime'], $cost['cost_time'],
+                                                               $cost['cost_fixed'], $cost['cost_material']);
+         $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
+                                                                     $cost['budgets_id']);
+         $datas['costs'][]       = $tmp;
+      }
+      $datas["##$objettype.numberofcosts##"] = count($datas['costs']);
+      
       return $datas;
    }
 
@@ -926,6 +959,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
                     $objettype.'.numberofdocuments'     => __('Number of documents'),
+                    $objettype.'.costtime'              => __('Time cost'),
+                    $objettype.'.costfixed'             => __('Fixed cost'),
+                    $objettype.'.costmaterial'          => __('Material cost'),
+                    $objettype.'.totalcost'             => __('Total cost'),
+                    $objettype.'.numberofcosts'         => __('Number of costs'),
+                    'cost.name'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Name')),
+                    'cost.comment'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Comments')),
+                    'cost.datebegin'               => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Begin date')),
+                    'cost.dateend'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('End date')),
+                    'cost.time'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Duration')),
+                    'cost.costtime'                => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Time cost')),
+                    'cost.costfixed'               => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Fixed cost')),
+                    'cost.costmaterial'            => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Material cost')),
+                    'cost.totalcost'            => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Total cost')),
+                    'cost.budget'                  => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                            __('Budget')),
                    );
 
       foreach ($tags as $tag => $label) {
@@ -937,6 +995,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Foreach global tags
       $tags = array('log'      => __('Historical'),
+                    'costs'    => _n('Cost', 'Costs', 2),
                     'authors'  => _n('Requester', 'Requesters', 2));
 
       foreach ($tags as $tag => $label) {
