@@ -74,7 +74,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       $datas["##problem.causes##"]   = $item->getField('causecontent');
       $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
 
-      // Complex mode : get tasks
+      // Complex mode 
       if (!$simple) {
          $restrict = "`problems_id`='".$item->getField('id')."'";
          $tickets  = getAllDatasFromTable('glpi_problems_tickets', $restrict);
@@ -98,37 +98,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          }
 
          $datas['##problem.numberoftickets##'] = count($datas['tickets']);
-
-         $restrict  = "`problems_id` = '".$item->getField('id')."'
-                       ORDER BY `date` DESC,
-                                `id` ASC";
-
-         //Task infos
-         $tasks = getAllDatasFromTable('glpi_problemtasks', $restrict);
-         $datas['tasks'] = array();
-         foreach ($tasks as $task) {
-            $tmp                          = array();
-            $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
-            $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
-                                                                      $task['taskcategories_id']);
-            $tmp['##task.date##']         = Html::convDateTime($task['date']);
-            $tmp['##task.description##']  = $task['content'];
-            $tmp['##task.time##']         = Problem::getActionTime($task['actiontime']);
-            $tmp['##task.status##']       = Planning::getState($task['state']);
-
-            $tmp['##task.user##']         = "";
-            $tmp['##task.begin##']        = "";
-            $tmp['##task.end##']          = "";
-            if (!is_null($task['begin'])) {
-               $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
-               $tmp['##task.begin##']     = Html::convDateTime($task['begin']);
-               $tmp['##task.end##']       = Html::convDateTime($task['end']);
-            }
-
-            $datas['tasks'][] = $tmp;
-         }
-
-         $datas['##problem.numberoftasks##'] = count($datas['tasks']);
 
          $restrict = "`problems_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_items_problems',$restrict);
@@ -197,18 +166,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('task.author'               => __('Writer'),
-                    'task.isprivate'            => __('Private'),
-                    'task.date'                 => __('Opening date'),
-                    'task.description'          => __('Description'),
-                    'task.category'             => __('Category'),
-                    'task.time'                 => __('Total duration'),
-                    'task.user'                 => __('By'),
-                    'task.begin'                => __('Start date'),
-                    'task.end'                  => __('End date'),
-                    'task.status'               => __('Status'),
-                    'problem.numberoftasks'     => __('Number of tasks'),
-                    'problem.numberoftickets'   => __('Number of tickets'),
+      $tags = array('problem.numberoftickets'   => __('Number of tickets'),
                     'problem.impacts'           => __('Impacts'),
                     'problem.causes'            => __('Causes'),
                     'problem.symptoms'          => __('Symptoms'),
@@ -230,8 +188,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       }
 
       //Foreach global tags
-      $tags = array('tasks'    => _n('Task', 'Tasks', 2),
-                    'tickets'  => _n('Ticket', 'Tickets', 2),
+      $tags = array('tickets'  => _n('Ticket', 'Tickets', 2),
                     'items'    => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
