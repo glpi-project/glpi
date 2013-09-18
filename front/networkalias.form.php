@@ -54,6 +54,19 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
+} else if (isset($_POST["purge"])) {
+   $alias->check($_POST['id'], PURGE);
+   $item = $alias->getItem();
+   $alias->delete($_POST, 1);
+   Event::log($_POST["id"], "networkname", 5, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+   if ($item) {
+      Html::redirect($item->getLinkURL());
+   } else {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
+   }
+
 } else if (isset($_POST["update"])) {
    $alias->check($_POST["id"], UPDATE);
    $alias->update($_POST);
