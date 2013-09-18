@@ -291,6 +291,8 @@ class Budget extends CommonDropdown{
       }
       $itemtypes[] = 'Contract';
       $itemtypes[] = 'Ticket';
+      $itemtypes[] = 'Problem';
+      $itemtypes[] = 'Change';
 
       foreach ($itemtypes as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -316,15 +318,18 @@ class Budget extends CommonDropdown{
                break;
 
                case 'Ticket' :
+               case 'Problem' :
+               case 'Change' :
+                  $costtable = getTableForItemType($item->getType().'Cost');
                   $query = "SELECT `".$item->getTable()."`.`id`,
                                    `".$item->getTable()."`.`entities_id`,
-                                    SUM(`glpi_ticketcosts`.`actiontime`*`glpi_ticketcosts`.`cost_time`/".HOUR_TIMESTAMP."
-                                          + `glpi_ticketcosts`.`cost_fixed`
-                                          + `glpi_ticketcosts`.`cost_material`) as value
-                            FROM `glpi_ticketcosts`
+                                    SUM(`$costtable`.`actiontime`*`$costtable`.`cost_time`/".HOUR_TIMESTAMP."
+                                          + `$costtable`.`cost_fixed`
+                                          + `$costtable`.`cost_material`) as value
+                            FROM `$costtable`
                             INNER JOIN `".$item->getTable()."`
-                                 ON (`".$item->getTable()."`.`id` = `glpi_ticketcosts`.`tickets_id`)
-                            WHERE `glpi_ticketcosts`.`budgets_id` = '$budgets_id' ".
+                                 ON (`".$item->getTable()."`.`id` = `$costtable`.`".$item->getForeignKeyField()."`)
+                            WHERE `$costtable`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
                             GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
                             ORDER BY `".$item->getTable()."`.`entities_id`,
@@ -480,6 +485,8 @@ class Budget extends CommonDropdown{
 
       $itemtypes[] = 'Contract';
       $itemtypes[] = 'Ticket';
+      $itemtypes[] = 'Problem';
+      $itemtypes[] = 'Change';
 
       foreach ($itemtypes as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -501,14 +508,17 @@ class Budget extends CommonDropdown{
                break;
 
             case 'Ticket' :
-               $query_infos = "SELECT SUM(`glpi_ticketcosts`.`actiontime`*`glpi_ticketcosts`.`cost_time`/".HOUR_TIMESTAMP."
-                                          + `glpi_ticketcosts`.`cost_fixed`
-                                          + `glpi_ticketcosts`.`cost_material`) AS `sumvalue`,
+            case 'Problem' :
+            case 'Change' :
+               $costtable = getTableForItemType($item->getType().'Cost');
+               $query_infos = "SELECT SUM(`$costtable`.`actiontime`*`$costtable`.`cost_time`/".HOUR_TIMESTAMP."
+                                          + `$costtable`.`cost_fixed`
+                                          + `$costtable`.`cost_material`) AS `sumvalue`,
                                        `$table`.`entities_id`
-                                FROM `glpi_ticketcosts`
+                                FROM `$costtable`
                                 INNER JOIN `$table`
-                                    ON (`glpi_ticketcosts`.`tickets_id` = `$table`.`id`)
-                                WHERE `glpi_ticketcosts`.`budgets_id` = '$budgets_id' ".
+                                    ON (`$costtable`.`".$item->getForeignKeyField()."` = `$table`.`id`)
+                                WHERE `$costtable`.`budgets_id` = '$budgets_id' ".
                                       getEntitiesRestrictRequest(" AND", $table, "entities_id")."
                                 GROUP BY `$table`.`entities_id`";
                break;
