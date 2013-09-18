@@ -1261,17 +1261,64 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
 
-   $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
-
-   /// TODO add changetasktypes table as dropdown
-   /// TODO review users linked to changetask
+   if (!TableExists('glpi_change costs')) {
+      $query = "CREATE TABLE `glpi_changecosts` (
+               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `changes_id` int(11) NOT NULL DEFAULT '0',
+               `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+               `comment` text COLLATE utf8_unicode_ci,
+               `begin_date` date DEFAULT NULL,
+               `end_date` date DEFAULT NULL,
+               `actiontime` int(11) NOT NULL DEFAULT '0',
+               `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `budgets_id` int(11) NOT NULL DEFAULT '0',
+               `entities_id` int(11) NOT NULL DEFAULT '0',
+               PRIMARY KEY (`id`),
+               KEY `name` (`name`),
+               KEY `changes_id` (`changes_id`),
+               KEY `begin_date` (`begin_date`),
+               KEY `end_date` (`end_date`),
+               KEY `entities_id` (`entities_id`),
+               KEY `budgets_id` (`budgets_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.85 add table glpi_changecosts");
+   }
+   
    /// TODO add display prefs
 
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
+   // Add problem costs
+   if (!TableExists('glpi_problemcosts')) {
+      $query = "CREATE TABLE `glpi_problemcosts` (
+               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `problems_id` int(11) NOT NULL DEFAULT '0',
+               `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+               `comment` text COLLATE utf8_unicode_ci,
+               `begin_date` date DEFAULT NULL,
+               `end_date` date DEFAULT NULL,
+               `actiontime` int(11) NOT NULL DEFAULT '0',
+               `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `budgets_id` int(11) NOT NULL DEFAULT '0',
+               `entities_id` int(11) NOT NULL DEFAULT '0',
+               PRIMARY KEY (`id`),
+               KEY `name` (`name`),
+               KEY `problems_id` (`problems_id`),
+               KEY `begin_date` (`begin_date`),
+               KEY `end_date` (`end_date`),
+               KEY `entities_id` (`entities_id`),
+               KEY `budgets_id` (`budgets_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.85 add table glpi_problemcosts");
+   }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'drop rules cache'));
+   
    $migration->dropTable('glpi_rulecachecomputermodels');
    $migration->dropTable('glpi_rulecachecomputertypes');
    $migration->dropTable('glpi_rulecachemanufacturers');
@@ -1448,6 +1495,10 @@ function update084to085() {
    $migration->addField('glpi_users', 'begin_date', 'datetime');
    $migration->addField('glpi_users', 'end_date', 'datetime');
 
+   // Add validation percent for tickets
+   $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
+   
+   
    // Create notification for reply to satisfaction survey based on satisfaction notif
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
