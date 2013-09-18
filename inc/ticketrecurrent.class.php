@@ -308,7 +308,7 @@ class TicketRecurrent extends CommonDropdown {
    **/
    function computeNextCreationDate($begin_date, $end_date, $periodicity, $create_before,
                                     $calendars_id) {
-      if (empty($begin_date)) {
+      if (empty($begin_date) || $begin_date = 'NULL') {
          return 'NULL';
       }
       if (!empty($end_date) && ($end_date <> 'NULL')) {
