@@ -241,6 +241,7 @@ class Change extends CommonITILObject {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
+      $this->addStandardTab('ChangeCost', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -395,109 +396,8 @@ class Change extends CommonITILObject {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common']            = __('Characteristics');
-
-      $tab[1]['table']          = $this->getTable();
-      $tab[1]['field']          = 'name';
-      $tab[1]['name']           = __('Title');
-      $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['searchtype']     = 'contains';
-      $tab[1]['massiveaction']  = false;
-
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'content';
-      $tab[21]['name']          = __('Description');
-      $tab[21]['massiveaction'] = false;
-      $tab[21]['datatype']      = 'text';
-
-      $tab[2]['table']          = $this->getTable();
-      $tab[2]['field']          = 'id';
-      $tab[2]['name']           = __('ID');
-      $tab[2]['massiveaction']  = false;
-      $tab[2]['datatype']       = 'number';
-
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'status';
-      $tab[12]['name']          = __('Status');
-      $tab[12]['searchtype']    = 'equals';
-      $tab[12]['datatype']      = 'specific';
-
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'urgency';
-      $tab[10]['name']          = __('Urgency');
-      $tab[10]['searchtype']    = 'equals';
-      $tab[10]['datatype']      = 'specific';
-
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'impact';
-      $tab[11]['name']          = __('Impact');
-      $tab[11]['searchtype']    = 'equals';
-      $tab[11]['datatype']      = 'specific';
-
-      $tab[3]['table']          = $this->getTable();
-      $tab[3]['field']          = 'priority';
-      $tab[3]['name']           = __('Priority');
-      $tab[3]['searchtype']     = 'equals';
-      $tab[3]['datatype']       = 'specific';
-
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'date';
-      $tab[15]['name']          = __('Opening date');
-      $tab[15]['datatype']      = 'datetime';
-      $tab[15]['massiveaction'] = false;
-
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'closedate';
-      $tab[16]['name']          = __('Closing date');
-      $tab[16]['datatype']      = 'datetime';
-      $tab[16]['massiveaction'] = false;
-
-      $tab[18]['table']         = $this->getTable();
-      $tab[18]['field']         = 'due_date';
-      $tab[18]['name']          = __('Due date');
-      $tab[18]['datatype']      = 'datetime';
-      $tab[18]['maybefuture']   = true;
-      $tab[18]['massiveaction'] = false;
-
-      $tab[17]['table']         = $this->getTable();
-      $tab[17]['field']         = 'solvedate';
-      $tab[17]['name']          = __('Resolution date');
-      $tab[17]['datatype']      = 'datetime';
-      $tab[17]['massiveaction'] = false;
-
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
-
-      $tab[7]['table']          = 'glpi_itilcategories';
-      $tab[7]['field']          = 'completename';
-      $tab[7]['name']           = __('Category');
-      $tab[7]['datatype']       = 'dropdown';
-
-
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
-      $tab[80]['datatype']      = 'dropdown';
-
-      $tab[45]['table']         = $this->getTable();
-      $tab[45]['field']         = 'actiontime';
-      $tab[45]['name']          = __('Total duration');
-      $tab[45]['datatype']      = 'timestamp';
-      $tab[45]['massiveaction'] = false;
-      $tab[45]['nosearch']      = true;
-
-      $tab[64]['table']         = 'glpi_users';
-      $tab[64]['field']         = 'name';
-      $tab[64]['linkfield']     = 'users_id_lastupdater';
-      $tab[64]['name']          = __('Last edit by');
-      $tab[64]['massiveaction'] = false;
-      $tab[64]['datatype']      = 'dropdown';
-      $tab[64]['right']         = 'all';
-
+      
+      $tab += $this->getSearchOptionsMain();
 
       $tab += $this->getSearchOptionsActors();
 
@@ -539,110 +439,12 @@ class Change extends CommonITILObject {
       $tab[90]['massiveaction'] = false;
       $tab[90]['datatype']      = 'text';
 
-
-
-      /// TODO define when task created
-//       $tab['task'] = _n('Task', 'Tasks', 2);
-//
-//       $tab[26]['table']         = 'glpi_changetasks';
-//       $tab[26]['field']         = 'content';
-//       $tab[26]['name']          = __('Task description');
-//       $tab[26]['forcegroupby']  = true;
-//       $tab[26]['splititems']    = true;
-//       $tab[26]['massiveaction'] = false;
-//       $tab[26]['joinparams']    = array('jointype' => 'child');
-//
-//       $tab[28]['table']         = 'glpi_changetasks';
-//       $tab[28]['field']         = 'count';
-//       $tab[28]['name']          = __('Number of tasks');
-//       $tab[28]['forcegroupby']  = true;
-//       $tab[28]['usehaving']     = true;
-//       $tab[28]['datatype']      = 'number';
-//       $tab[28]['massiveaction'] = false;
-//       $tab[28]['joinparams']    = array('jointype' => 'child');
-//
-//       $tab[20]['table']         = 'glpi_taskcategories';
-//       $tab[20]['field']         = 'name';
-//       $tab[20]['name']          = __('Task category');
-//       $tab[20]['forcegroupby']  = true;
-//       $tab[20]['splititems']    = true;
-//       $tab[20]['massiveaction'] = false;
-//       $tab[20]['joinparams']    = array('beforejoin'
-//                                           => array('table'      => 'glpi_changetasks',
-//                                                    'joinparams' => array('jointype' => 'child')));
-
-//       $tab[92]['table']          = 'glpi_changetasks';
-//       $tab[92]['field']          = 'is_private';
-//       $tab[92]['name']           = __('Private task');
-//       $tab[92]['datatype']       = 'bool';
-//       $tab[92]['forcegroupby']   = true;
-//       $tab[92]['splititems']     = true;
-//       $tab[92]['massiveaction']  = false;
-//       $tab[92]['joinparams']     = array('jointype' => 'child');
-// 
-//       $tab[94]['table']          = 'glpi_users';
-//       $tab[94]['field']          = 'name';
-//       $tab[94]['name']           = __('Writer');
-//       $tab[94]['datatype']       = 'itemlink';
-//       $tab[94]['right']          = 'all';
-//       $tab[94]['forcegroupby']   = true;
-//       $tab[94]['massiveaction']  = false;
-//       $tab[94]['joinparams']     = array('beforejoin'
-//                                           => array('table'      => 'glpi_changetasks',
-//                                                    'joinparams' => array('jointype' => 'child')));
-//       $tab[95]['table']          = 'glpi_users';
-//       $tab[95]['field']          = 'name';
-//       $tab[95]['linkfield']      = 'users_id_tech';
-//       $tab[95]['name']           = __('Technician');
-//       $tab[95]['datatype']       = 'itemlink';
-//       $tab[95]['right']          = 'own_ticket';
-//       $tab[95]['forcegroupby']   = true;
-//       $tab[95]['massiveaction']  = false;
-//       $tab[95]['joinparams']     = array('beforejoin'
-//                                           => array('table'      => 'glpi_changetasks',
-//                                                    'joinparams' => array('jointype'  => 'child')));
-// 
-//       $tab[96]['table']          = 'glpi_changetasks';
-//       $tab[96]['field']          = 'actiontime';
-//       $tab[96]['name']           = __('Duration');
-//       $tab[96]['datatype']       = 'timestamp';
-//       $tab[96]['massiveaction']  = false;
-//       $tab[96]['forcegroupby']   = true;
-//       $tab[96]['joinparams']     = array('jointype' => 'child');
-// 
-//       $tab[97]['table']          = 'glpi_changetasks';
-//       $tab[97]['field']          = 'date';
-//       $tab[97]['name']           = __('Date');
-//       $tab[97]['datatype']       = 'datetime';
-//       $tab[97]['massiveaction']  = false;
-//       $tab[97]['forcegroupby']   = true;
-//       $tab[97]['joinparams']     = array('jointype' => 'child');
-// 
-//       $tab[33]['table']          = 'glpi_changetasks';
-//       $tab[33]['field']          = 'state';
-//       $tab[33]['name']           = __('Status');
-//       $tab[33]['datatype']       = 'specific';
-//       $tab[33]['searchtype']     = 'equals';
-//       $tab[33]['searchequalsonfield'] = true;
-//       $tab[33]['massiveaction']  = false;
-//       $tab[33]['forcegroupby']   = true;
-//       $tab[33]['joinparams']     = array('jointype' => 'child');
+      $tab += ChangeTask::getSearchOptionsToAdd();
       
-      $tab['solution']          = _n('Solution', 'Solutions', 1);
+      $tab += $this->getSearchOptionsSolution();
 
-      $tab[23]['table']         = 'glpi_solutiontypes';
-      $tab[23]['field']         = 'name';
-      $tab[23]['name']          = __('Solution type');
-      $tab[23]['datatype']      = 'dropdown';
-
-
-      $tab[24]['table']         = $this->getTable();
-      $tab[24]['field']         = 'solution';
-      $tab[24]['name']          = _n('Solution', 'Solutions', 1);
-      $tab[24]['datatype']      = 'text';
-      $tab[24]['htmltext']      = true;
-      $tab[24]['massiveaction'] = false;
-
+      $tab += TicketCost::getSearchOptionsToAdd();
+      
       return $tab;
    }
 

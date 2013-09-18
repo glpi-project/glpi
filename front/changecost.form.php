@@ -31,22 +31,9 @@
 * @brief
 */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
+include ('../inc/includes.php');
 
-/**
- * TicketCost Class
- *
- * @since version 0.84
-**/
-class TicketCost extends CommonITILCost {
+$cost = new ChangeCost();
 
-   // From CommonDBChild
-   static public $itemtype  = 'Ticket';
-   static public $items_id  = 'tickets_id';
-
-   static $rightname        = 'ticketcost';
-
-}
+include (GLPI_ROOT . "/front/commonitilcost.form.php");
 ?>

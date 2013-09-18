@@ -36,17 +36,27 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * TicketCost Class
+ * ChangeCost Class
  *
- * @since version 0.84
+ * @since version 0.85
 **/
-class TicketCost extends CommonITILCost {
+class ChangeCost extends CommonITILCost {
 
    // From CommonDBChild
-   static public $itemtype  = 'Ticket';
-   static public $items_id  = 'tickets_id';
+   static public $itemtype  = 'Change';
+   static public $items_id  = 'changes_id';
 
-   static $rightname        = 'ticketcost';
+   static function canCreate() {
+      return Session::haveRight('change', UPDATE);
+   }
 
+
+   static function canView() {
+      return Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
+   }
+
+   static function canUpdate() {
+      return Session::haveRight('change', UPDATE);
+   }
 }
 ?>
