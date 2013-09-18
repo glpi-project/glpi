@@ -241,10 +241,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas                               = parent::getDatasForObject($item, $options, $simple);
 
       // Specific datas
-      $datas["##ticket.costfixed"]         = $item->getField('cost_fixed');
-      $datas["##ticket.costmaterial"]      = $item->getField('cost_material');
-      $datas["##ticket.costtime"]          = $item->getField('cost_time');
-
+      $costs = TicketCost::getCostsSummary($item->getField("id"));
+      
+      $datas["##ticket.costfixed##"]         = $costs['costfixed'];
+      $datas["##ticket.costmaterial##"]      = $costs['costmaterial'];
+      $datas["##ticket.costtime##"]          = $costs['costtime'];
+      $datas["##ticket.totalcost##"]         = $costs['totalcost'];
+      
 
       $datas['##ticket.urlvalidation##']
                         = $this->formatURL($options['additionnaloption']['usertype'],
@@ -579,6 +582,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.costtime'              => __('Time cost'),
                     'ticket.costfixed'             => __('Fixed cost'),
                     'ticket.costmaterial'          => __('Material cost'),
+                    'ticket.totalcost'             => __('Total cost'),
                     'ticket.isdeleted'             => __('Deleted'),
                     'task.author'                  => __('Writer'),
                     'task.isprivate'               => __('Private'),

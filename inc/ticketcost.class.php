@@ -390,6 +390,7 @@ class TicketCost extends CommonDBChild {
 
             $total          = 0;
             $total_time     = 0;
+            $total_costtime = 0;
             $total_fixed    = 0;
             $total_material = 0;
 
@@ -423,6 +424,7 @@ class TicketCost extends CommonDBChild {
                echo "<td>".CommonITILObject::getActionTime($data['actiontime'])."</td>";
                $total_time += $data['actiontime'];
                echo "<td class='numeric'>".Html::formatNumber($data['cost_time'])."</td>";
+               $total_costtime += ($data['actiontime']*$data['cost_time']/HOUR_TIMESTAMP);
                echo "<td class='numeric'>".Html::formatNumber($data['cost_fixed'])."</td>";
                $total_fixed += $data['cost_fixed'];
                echo "<td class='numeric'>".Html::formatNumber($data['cost_material'])."</td>";
@@ -436,7 +438,7 @@ class TicketCost extends CommonDBChild {
             }
             echo "<tr class='b'><td colspan='4' class='right'>".__('Total').'</td>';
             echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
-            echo "<td>&nbsp;</td>";
+            echo "<td class='numeric'>".Html::formatNumber($total_costtime)."</td>";
             echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total_material).'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
@@ -448,7 +450,38 @@ class TicketCost extends CommonDBChild {
       echo "</div><br>";
    }
 
+   /**
+    * Get costs summary values
+    *
+    * @param $ID      integer ID of the ticket
+    * @since version 0.84.3
+    * @return array of costs and actiontime
+   **/
+   static function getCostsSummary($ID) {
+      global $DB;
+      
+      $query = "SELECT *
+                FROM `glpi_ticketcosts`
+                WHERE `tickets_id` = '$ID'
+                ORDER BY `begin_date`";
+      $tab = array('totalcost'   => 0,
+                  'actiontime'   => 0,
+                  'costfixed'    => 0,
+                  'costtime'     => 0,
+                  'costmaterial' => 0
+             );
 
+      foreach ($DB->request($query) as $data) {
+         $tab['actiontime']   += $data['actiontime'];
+         $tab['costfixed']    += $data['cost_fixed'];
+         $tab['costmaterial'] += $data['cost_material'];
+         $tab['costtime']     += ($data['actiontime']*$data['cost_time']/HOUR_TIMESTAMP);
+         $tab['totalcost']    +=  self::computeTotalCost($data['actiontime'], $data['cost_time'],
+                                                         $data['cost_fixed'], $data['cost_material']);
+      }
+      return $tab;
+   }
+   
    /**
     * Computer total cost of a ticket
     *
