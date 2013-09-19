@@ -111,6 +111,59 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
+
+      switch ($ma->getAction()) {
+         case 'install':
+            $csl = new self();
+            $csv = new Computer_SoftwareVersion();
+            foreach ($ids as $id) {
+               if ($csl->getFromDB($id)) {
+                  $sl = new SoftwareLicense();
+
+                  if ($sl->getFromDB($csl->fields["softwarelicenses_id"])) {
+                     $version = 0;
+                     if ($sl->fields["softwareversions_id_use"]>0) {
+                        $version = $sl->fields["softwareversions_id_use"];
+                     } else {
+                        $version = $sl->fields["softwareversions_id_buy"];
+                     }
+
+                     if ($version > 0) {
+                        $params = array('computers_id'        => $csl->fields['computers_id'],
+                                        'softwareversions_id' => $version);
+                        //Get software name and manufacturer
+                        if ($csv->can(-1, CREATE, $params)) {
+                           //Process rules
+                           if ($csv->add($params)) {
+                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                           } else {
+                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                          }
+                        } else {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        }
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     }
+                  } else { 
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               }
+            }
+            return;
+      }
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+
+   /**
     * @since version 0.84
     *
     * @see CommonDBTM::doSpecificMassiveActions()
@@ -145,49 +198,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                }
             } else {
                $res['ko']++;
-            }
-            break;
-
-         case "install" :
-            $csl = new self();
-            $csv = new Computer_SoftwareVersion();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($csl->getFromDB($key)) {
-                     $sl = new SoftwareLicense();
-
-                     if ($sl->getFromDB($csl->fields["softwarelicenses_id"])) {
-                        $version = 0;
-                        if ($sl->fields["softwareversions_id_use"]>0) {
-                           $version = $sl->fields["softwareversions_id_use"];
-                        } else {
-                           $version = $sl->fields["softwareversions_id_buy"];
-                        }
-
-                        if ($version > 0) {
-                           $params = array('computers_id'        => $csl->fields['computers_id'],
-                                           'softwareversions_id' => $version);
-                           //Get software name and manufacturer
-                           if ($csv->can(-1, CREATE, $params)) {
-                              //Process rules
-                              if ($csv->add($params)) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['ko']++;
-                              }
-                           } else {
-                              $res['noright']++;
-                           }
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['ko']++;
-                     }
-                  } else {
-                     $res['ko']++;
-                  }
-               }
             }
             break;
 
