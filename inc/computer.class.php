@@ -634,7 +634,7 @@ class Computer extends CommonDBTM {
          $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
          // TODO : don't we need this action ?
          //$actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = _x('button', 'Disconnect');
-         $actions['install'] = _x('button', 'Install');
+         $actions['Computer_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
       }
 
       if ($isadmin) {
@@ -642,73 +642,6 @@ class Computer extends CommonDBTM {
       }
 
       return $actions;
-   }
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "install" :
-            Software::dropdownSoftwareToInstall("softwareversions_id",
-                                                $_SESSION["glpiactive_entity"]);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           __s('Install')."'>";
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-
-         case "install" :
-            if (isset($input['softwareversions_id']) && ($input['softwareversions_id'] > 0)) {
-               $inst = new Computer_SoftwareVersion();
-               foreach ($input['item'] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->getFromDB($key)) {
-                        $input2 = array('computers_id'        => $key,
-                                        'softwareversions_id' => $input['softwareversions_id']);
-                        if ($inst->can(-1, CREATE, $input2)) {
-                           if ($inst->add($input2)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                        }
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
-                     }
-                  }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
