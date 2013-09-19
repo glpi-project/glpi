@@ -108,84 +108,61 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                                 $_SESSION["glpiactive_entity"]);
             echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
             return true;
-      }
-      return false;
-   }
 
-
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "move_version" :
+         case 'move_version' :
+            $input = $ma->getInput();
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
                   $options = array('softwares_id' => $input['options']['move']['softwares_id']);
-                     if (isset($input['options']['move']['used'])) {
-                        $options['used'] = $input['options']['move']['used'];
-                     }
-                     SoftwareVersion::dropdown($options);
-                     echo "<br><br><input type='submit' name='massiveaction' value=\"".
-                                    _sx('button','Move')."\" class='submit'>&nbsp;";
+                  if (isset($input['options']['move']['used'])) {
+                     $options['used'] = $input['options']['move']['used'];
+                  }
+                  SoftwareVersion::dropdown($options);
+                  echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }
             }
             return false;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
       return false;
    }
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "move_version" :
+      switch ($ma->getAction()) {
+         case 'move_version' :
+            $input = $ma->getInput();
             if (isset($input['softwareversions_id'])) {
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     //Get software name and manufacturer
-                     if ($this->can($key, UPDATE)) {
-                        //Process rules
-                        if ($this->update(array('id' => $key,
-                                                'softwareversions_id'
-                                                     => $input['softwareversions_id']))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
+               foreach ($ids as $id) {
+                  if ($item->can($id, UPDATE)) {
+                     //Process rules
+                     if ($item->update(array('id' => $id,
+                                             'softwareversions_id'
+                                             => $input['softwareversions_id']))) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -456,7 +433,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
                                  'container'     => 'mass'.__CLASS__.$rand,
-                                 'specific_actions' => array('move_version'
+                                 'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                             'move_version'
                                                                      => _x('button', 'Move'),
                                                              'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                                              'purge' => _x('button',
