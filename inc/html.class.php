@@ -4299,11 +4299,11 @@ class Html {
          $width = $params["width"];
          unset($params["width"]);
       }
-      $js = "$(document).ready(function() { $('#$id').select2({
+      $js = "$('#$id').select2({
                   width: '$width',
                   closeOnSelect: false,
                   quietMillis: 100,
-                  minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count']."}); });";
+                  minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count']."});";
       return Html::scriptBlock($js);
    }
 
@@ -4680,7 +4680,7 @@ class Html {
    **/
    static function scriptBlock($script) {
 
-      $script = "\n" . '//<![CDATA[' . "\n" . $script . "\n" . '//]]>' . "\n";
+      $script = "\n" . '//<![CDATA[' . "\n$( document ).ready(function() {\n" . $script . "\n});\n" . '//]]>' . "\n";
 
       return sprintf('<script type="text/javascript">%s</script>', $script);
    }
@@ -4710,6 +4710,7 @@ class Html {
    static function scriptEnd() {
 
       $buffer = ob_get_clean();
+      $buffer = "$( document ).ready(function() {\n".$buffer."\n});";
       return Html::scriptBlock($buffer);
    }
 
