@@ -81,30 +81,26 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "move_license" :
+      $input = $ma->getInput();
+      switch ($ma->getAction()) {
+         case 'move_license':
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
                   SoftwareLicense::dropdown(array('condition'
                                                   => "`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                    => $input['options']['move']['used']));
-                     echo "<br><br><input type='submit' name='massiveaction' value=\"".
-                                    _sx('button','Move')."\" class='submit'>&nbsp;";
+                  echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
                   return true;
                }
             }
             return false;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
       return false;
    }
@@ -119,6 +115,30 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       global $DB;
 
       switch ($ma->getAction()) {
+         case 'move_license' :
+            $input = $ma->getInput();
+            if (isset($input['softwarelicenses_id'])) {
+               foreach ($ids as $id) {
+                  if ($item->can($id, UPDATE)) {
+                     //Process rules
+                     if ($item->update(array('id'  => $id,
+                                             'softwarelicenses_id'
+                                             => $input['softwarelicenses_id']))) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  }
+               }
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+            }
+            return;
+
          case 'install':
             $csl = new self();
             $csv = new Computer_SoftwareVersion();
@@ -160,51 +180,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
 
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
-
-
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "move_license" :
-            if (isset($input['softwarelicenses_id'])) {
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     //Get software name and manufacturer
-                     if ($this->can($key, UPDATE)) {
-                        //Process rules
-                        if ($this->update(array('id'  => $key,
-                                                'softwarelicenses_id'
-                                                      => $input['softwarelicenses_id']))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                     }
-                  }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
@@ -456,8 +431,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
                                  'container'        => 'mass'.__CLASS__.$rand,
-                                 'specific_actions' => array('move_license'
-                                                                      => _x('button', 'Move'),
+                                 'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                             'move_license' => _x('button', 'Move'),
                                                              'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                                              'delete' => _x('button',
                                                                            'Delete permanently')));
