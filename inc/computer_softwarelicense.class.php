@@ -96,7 +96,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                                   => "`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                    => $input['options']['move']['used']));
-                  echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
+                  echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }
             }
