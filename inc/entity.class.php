@@ -127,6 +127,17 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @Since version 0.84
+    */
+   static function canUpdate() {
+
+      return (Session::haveRight('entity', 'w')
+              || Session::haveRight('entity_helpdesk','w')
+              || Session::haveRight('notification','w'));
+   }
+
+
    static function canView() {
       return Session::haveRight('entity', 'r');
    }
