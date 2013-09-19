@@ -788,7 +788,7 @@ class CommonGLPI {
                                                       $this->fields["entities_id"]));
 
          }
-         echo "<td class='info b'>".$name."</td>";
+         echo "<td class='b big'>".$name."</td>";
 
          if ($current !== false) {
             echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
