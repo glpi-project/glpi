@@ -872,7 +872,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
             // TODO MassiveAction: specific_actions
-            $actions = array('install' => _x('button', 'Install'));
+            $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                             'install' => _x('button', 'Install'));
             if (SoftwareLicense::canUpdate()) {
                $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                         'purge'] = _x('button', 'Delete permanently');
