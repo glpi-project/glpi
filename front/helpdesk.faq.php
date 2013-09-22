@@ -50,8 +50,9 @@ if (Session::getLoginUserID()) {
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
-   Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
-                                       __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
+   Html::simpleHeader(__('FAQ'),
+                      array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
+                            __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
 }
 
 if (isset($_GET["id"])) {

@@ -217,11 +217,14 @@ function step3($host, $user, $password, $update) {
    echo "<h3>".__('Test of the connection at the database')."</h3>";
    $link = new mysqli($host, $user, $password);
 
-   if (($link->connect_error) || empty($host) || empty($user)) {
+   if ($link->connect_error
+       || empty($host)
+       || empty($user)) {
       echo "<p>".__("Can't connect to the database")."\n <br>".
            sprintf(__('The server answered: %s'), $link->connect_error)."</p>";
 
-      if (empty($host) || empty($user)) {
+      if (empty($host)
+          || empty($user)) {
          echo "<p>".__('The server or/and user field is empty')."</p>";
       }
 
@@ -255,11 +258,9 @@ function step3($host, $user, $password, $update) {
          echo "<p><input type='radio' name='databasename' value='0'>";
          _e('Create a new database or use an existing one:');
          echo "&nbsp;<input type='text' name='newdatabasename'></p>";
-         /*
-         echo "<input type='hidden' name='db_host' value='". $host ."'>";
-         echo "<input type='hidden' name='db_user' value='". $user ."'>";
-         echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
-         */
+//         echo "<input type='hidden' name='db_host' value='". $host ."'>";
+//         echo "<input type='hidden' name='db_user' value='". $user ."'>";
+//         echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                __('Continue')."'></p>";
@@ -276,11 +277,9 @@ function step3($host, $user, $password, $update) {
             echo $row['Database'].".</p>";
          }
 
-         /*
-         echo "<input type='hidden' name='db_host' value='". $host ."'>";
-         echo "<input type='hidden' name='db_user' value='". $user ."'>";
-         echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
-         */
+//         echo "<input type='hidden' name='db_host' value='". $host ."'>";
+//         echo "<input type='hidden' name='db_user' value='". $user ."'>";
+//         echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='update_1'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                 __('Continue')."'></p>";
@@ -351,7 +350,7 @@ function step4 ($databasename, $newdatabasename) {
 
    $databasename = $link->real_escape_string($databasename);
    $newdatabasename = $link->real_escape_string($newdatabasename);
-   
+
    if (!empty($databasename)) { // use db already created
       $DB_selected = $link->select_db($databasename);
 
@@ -435,7 +434,7 @@ function step7() {
    $query = "UPDATE `glpi_configs`
              SET `value`     = '".$DB->escape($url_base)."'
              WHERE `context` = 'core'
-               AND `name`    = 'url_base'";
+                   AND `name`    = 'url_base'";
    $DB->query($query);
 
    echo "<h2>".__('The installation is finished')."</h2>";

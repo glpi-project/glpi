@@ -193,7 +193,7 @@ class Consumable extends CommonDBChild {
                                                               => $input["entities_id"],
                                                            'itemtypes'
                                                               => $CFG_GLPI["consumables_types"]));
-               echo "<br><br>".Html::submit(_sx('button', 'Give'),
+               echo "<br><br>".Html::submit(_x('button', 'Give'),
                                             array('name' => 'massiveaction'));
                return true;
             }

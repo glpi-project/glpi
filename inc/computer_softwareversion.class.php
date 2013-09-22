@@ -107,7 +107,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          case 'add' :
             Software::dropdownSoftwareToInstall('peer_softwareversions_id',
                                                 $_SESSION["glpiactive_entity"]);
-            echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
             return true;
 
          case 'move_version' :
@@ -119,7 +119,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      $options['used'] = $input['options']['move']['used'];
                   }
                   SoftwareVersion::dropdown($options);
-                  echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
+                  echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }
             }

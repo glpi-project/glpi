@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Vlan
+/**
+ * Vlan Class
+**/
 class Vlan extends CommonDropdown {
 
    public $dohistory = true;

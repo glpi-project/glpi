@@ -142,10 +142,12 @@ if (isset($_POST["add"])) {
       } else {
          $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
          // Anonymous FAQ
-         Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
-                                             __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
+         Html::simpleHeader(__('FAQ'),
+                            array(__('Authentication')
+                                            => $CFG_GLPI['root_doc'].'/',
+                                  __('FAQ') => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
       }
-   
+
       $available_options = array('item_itemtype', 'item_items_id', 'id');
       $options           = array();
       foreach ($available_options as $key) {
@@ -154,7 +156,7 @@ if (isset($_POST["add"])) {
          }
       }
       $kb->display($options);
-      
+
       if (Session::getLoginUserID()) {
          if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
             Html::footer();

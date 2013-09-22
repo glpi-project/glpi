@@ -98,7 +98,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                                          = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                     => $input['options']['move']['used']));
-                  echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
+                  echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }
             }
