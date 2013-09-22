@@ -105,9 +105,9 @@ function update084to0841() {
    $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
 
-   // add delet_problem
+   // add delete_problem
    $migration->addField('glpi_profiles', 'delete_problem', 'char',
-                        array('after' => 'edit_all_problem',
+                        array('after'  => 'edit_all_problem',
                               'update' => 'edit_all_problem'));
 
    // ************ Keep it at the end **************

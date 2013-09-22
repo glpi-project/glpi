@@ -35,15 +35,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Reservation class
+/**
+ * Reservation Class
+**/
 class Reservation extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'ReservationItem';
-   static public $items_id = 'reservationitems_id';
+   static public $itemtype          = 'ReservationItem';
+   static public $items_id          = 'reservationitems_id';
 
    static $rightname                = 'reservation';
-   static public $checkParentRights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+   static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+
 
    /**
     * @param $nb  integer  for singular or plural
@@ -296,6 +299,7 @@ class Reservation extends CommonDBChild {
       return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
    }
 
+
    /**
     * @since version 0.84
    **/
@@ -303,13 +307,15 @@ class Reservation extends CommonDBChild {
       return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
    }
 
+
    /**
     * @since version 0.84
    **/
    static function canDelete() {
       return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
    }
-   
+
+
    /**
     * Overload canChildItem to make specific checks
     * @since version 0.84
@@ -320,7 +326,7 @@ class Reservation extends CommonDBChild {
       if ($this->fields['users_id'] === Session::getLoginUserID()) {
          return true;
       }
-      
+
       if (!parent::canChildItem($methodItem, $methodNotItem)) {
          return false;
       }

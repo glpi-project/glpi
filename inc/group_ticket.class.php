@@ -28,14 +28,20 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Group_Ticket
+/**
+ * Group_Ticket Class
+ *
+ * @since version 0.85
+ *
+ * Relation between Groups and Tickets
+**/
 class Group_Ticket extends CommonITILActor {
 
    // From CommonDBRelation

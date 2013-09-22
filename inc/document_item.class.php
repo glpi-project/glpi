@@ -675,7 +675,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-            (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+                    (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
       echo "<table class='tab_cadre_fixe'>";
 
@@ -683,14 +683,14 @@ class Document_Item extends CommonDBRelation{
       if ($canedit && $number && ($withtemplate < 2)) {
          echo "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      $columns = array('name' => __('Name'),
-                       'entity' => __('Entity'),
-                       'filename'   => __('File'),
-                       'link'=> __('Web link'),
-                       'headings'   => __('Heading'),
-                       'mime'   => __('MIME type'),
-                       'tag'    => __('Tag'),
-                       'assocdate'   => __('Date'));
+      $columns = array('name'      => __('Name'),
+                       'entity'    => __('Entity'),
+                       'filename'  => __('File'),
+                       'link'      => __('Web link'),
+                       'headings'  => __('Heading'),
+                       'mime'      => __('MIME type'),
+                       'tag'       => __('Tag'),
+                       'assocdate' => __('Date'));
 
       foreach ($columns as $key => $val) {
          echo "<th>".(($sort == "`$key`") ?$sort_img:"").

@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Change_Group Class
  *
+ * @since version 0.85
+ *
  *  Relation between Changes and Groups
 **/
 class Change_Group extends CommonITILActor {

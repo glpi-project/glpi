@@ -137,8 +137,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
    }
 
+
+
    /**
     * Add linked group without supervisor to the notified user list
+    *
+    * @since version 0.84.1
     *
     * @param $type type of linked groups
    **/
@@ -158,6 +162,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->getAddressesByGroup(2, $data['groups_id']);
       }
    }
+
 
    /**
     * Add linked group supervisor to the notified user list
@@ -406,7 +411,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                           __('Group in charge of the ticket without manager'));
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
          $this->addTarget(Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
-                 __('Requester group without manager'));
+                          __('Requester group without manager'));
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
                           __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
@@ -420,7 +425,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
          $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watcher group manager'));
          $this->addTarget(Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR,
-                           __('Watcher group without manager'));
+                          __('Watcher group without manager'));
       }
 
       if (($event == 'validation') || ($event == 'validation_answer')) {
@@ -807,7 +812,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.solution.description##"]
                      = Toolbox::unclean_cross_side_scripting_deep($item->getField('solution'));
 
-      // Complex mode 
+      // Complex mode
       if (!$simple) {
          $datas['log'] = array();
          // Use list_limit_max or load the full history ?
@@ -1049,7 +1054,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Foreach global tags
       $tags = array('log'      => __('Historical'),
-                    'tasks'         => _n('Task', 'Tasks', 2),     
+                    'tasks'         => _n('Task', 'Tasks', 2),
                     'costs'    => _n('Cost', 'Costs', 2),
                     'authors'  => _n('Requester', 'Requesters', 2));
 
@@ -1094,13 +1099,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'document.downloadurl'       => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Download URL')),
                     'document.heading'           => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Heading')),                                                            
+                                                            __('Heading')),
                     'document.id'                => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('ID')),
                     'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('File')),
                     'document.weblink'           => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Web Link')),                                                            
+                                                            __('Web Link')),
                     'document.name'              => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Name')),
                      $objettype.'.urldocument'   => sprintf(__('%1$s: %2$s'),

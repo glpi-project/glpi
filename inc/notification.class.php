@@ -35,23 +35,25 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class Notification
+/**
+ * Notification Class
+**/
 class Notification extends CommonDBTM {
 
 // MAILING TYPE
-//Notification to a user (sse mailing users type below)
+   //Notification to a user (sse mailing users type below)
    const USER_TYPE             = 1;
    //Notification to users of a profile
    const PROFILE_TYPE          = 2;
-   //Notification to a users of a group
+   //Notification to users of a group
    const GROUP_TYPE            = 3;
    //Notification to the people in charge of the database synchronisation
    const MAILING_TYPE          = 4;
    //Notification to the supervisor of a group
    const SUPERVISOR_GROUP_TYPE = 5;
-   //Notification to all user of a group except supervisor
+   //Notification to all users of a group except supervisor
    const GROUP_WITHOUT_SUPERVISOR_TYPE = 6;
-   
+
    // MAILING USERS TYPE
 
    //Notification to the GLPI global administrator
@@ -70,7 +72,7 @@ class Notification extends CommonDBTM {
    const RECIPIENT                  = 7;
    //Notificartion to the ticket's assigned supplier
    const SUPPLIER                   = 8;
-   //Notification to a group of people
+   //Notification to the ticket's assigned group
    const ASSIGN_GROUP               = 9;
    //Notification to the supervisor of the ticket's assigned group
    const SUPERVISOR_ASSIGN_GROUP    = 10;
@@ -80,11 +82,11 @@ class Notification extends CommonDBTM {
    const SUPERVISOR_REQUESTER_GROUP = 12;
    //Notification to the ticket's requester group
    const REQUESTER_GROUP            = 13;
-   //Notification to the ticket validation approver
+   //Notification to the ticket's validation approver
    const VALIDATION_APPROVER        = 14;
-   //Notification to the ticket validation requester
+   //Notification to the ticket's validation requester
    const VALIDATION_REQUESTER       = 15;
-   //Notification to the task assign user
+   //Notification to the task assigned user
    const TASK_ASSIGN_TECH           = 16;
    //Notification to the task author
    const TASK_AUTHOR                = 17;
@@ -98,9 +100,9 @@ class Notification extends CommonDBTM {
    const OBSERVER                   = 21;
    //Notification to the supervisor of the ticket's observer group
    const SUPERVISOR_OBSERVER_GROUP  = 22;
-   //Notification to the group of technician in charge of the item
+   //Notification to the group of technicians in charge of the item
    const ITEM_TECH_GROUP_IN_CHARGE  = 23;
-   // Notification to group of people without supervisor
+   // Notification to the ticket's assigned group without supervisor
    const ASSIGN_GROUP_WITHOUT_SUPERVISOR     = 24;
    //Notification to the ticket's requester group without supervisor
    const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;

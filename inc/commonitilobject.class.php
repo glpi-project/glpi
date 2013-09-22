@@ -2052,7 +2052,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $suppliericon = self::getActorIcon('supplier',$type);
       $supplier     = new Supplier();
-      $linkclass = new $this->supplierlinkclass();
+      $linkclass    = new $this->supplierlinkclass();
 
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
@@ -2104,7 +2104,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 'global_validation' :
             return CommonITILValidation::getStatus($values[$field]);
-            
+
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -2145,7 +2145,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownPriority($options);
-            
+
          case 'global_validation' :
             $options['global'] = true;
             $options['value']  = $values[$field];
@@ -2344,13 +2344,13 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[151]['name']             = __('Due date + Progress');
       $tab[151]['massiveaction']    = false;
       $tab[151]['nosearch']         = true;
-      
+
       $tab[82]['table']             = $this->getTable();
       $tab[82]['field']             = 'is_late';
       $tab[82]['name']              = __('Late');
       $tab[82]['datatype']          = 'bool';
       $tab[82]['massiveaction']     = false;
-      
+
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'solvedate';
       $tab[17]['name']          = __('Resolution date');
@@ -2372,7 +2372,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tab[7]['condition']       = "`is_helpdeskvisible`='1'";
       }
-      
+
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = __('Entity');
@@ -2393,7 +2393,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[64]['massiveaction'] = false;
       $tab[64]['datatype']      = 'dropdown';
       $tab[64]['right']         = 'all';
-      
+
       return $tab;
    }
    function getSearchOptionsSolution() {
@@ -2412,9 +2412,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[24]['htmltext']       = true;
       $tab[24]['massiveaction']  = false;
 
-      return $tab;      
+      return $tab;
    }
-   
+
    function getSearchOptionsStats() {
 
       $tab                       = array();
