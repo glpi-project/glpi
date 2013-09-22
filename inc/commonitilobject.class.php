@@ -2370,7 +2370,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         $tab[7]['condition']       = "`is_helpdeskvisible`='1'";
+         $tab[7]['condition']       = "`is_helpdeskvisible`";
       }
 
       $tab[80]['table']         = 'glpi_entities';
@@ -2492,7 +2492,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         $tab[71]['condition']       .= " AND `id` IN ('".implode("','",$_SESSION['glpigroups'])."')";
+         $tab[71]['condition']       .= " AND `id` IN (".implode(",",$_SESSION['glpigroups']).")";
       }
 
       $tab[22]['table']         = 'glpi_users';

@@ -134,7 +134,7 @@ class SoftwareVersion extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
       State::dropdown(array('value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwareversion`='1'"));
+                            'condition' => "`is_visible_softwareversion`"));
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
@@ -168,11 +168,11 @@ class SoftwareVersion extends CommonDBChild {
       $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
-      $tab[31]['table']    = 'glpi_states';
-      $tab[31]['field']    = 'completename';
-      $tab[31]['name']     = __('Status');
-      $tab[31]['datatype'] = 'dropdown';
-      $tab[31]['condition']      = "`is_visible_softwareversion`='1'";
+      $tab[31]['table']     = 'glpi_states';
+      $tab[31]['field']     = 'completename';
+      $tab[31]['name']      = __('Status');
+      $tab[31]['datatype']  = 'dropdown';
+      $tab[31]['condition'] = "`is_visible_softwareversion`";
 
       return $tab;
    }

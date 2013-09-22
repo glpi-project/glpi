@@ -194,7 +194,7 @@ class Monitor extends CommonDBTM {
       echo "<td>";
       State::dropdown(array('value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_monitor`='1'"));
+                            'condition' => "`is_visible_monitor`"));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -419,7 +419,7 @@ class Monitor extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']        = 'dropdown';
-      $tab[31]['condition']      = "`is_visible_monitor`='1'";
+      $tab[31]['condition']      = "`is_visible_monitor`";
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';

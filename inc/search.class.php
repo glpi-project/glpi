@@ -1651,8 +1651,6 @@ class Search {
          }
 
          $_POST['itemtype']   = $used_itemtype;
-
-         $_POST['itemtype']   = $itemtype;
          $_POST['num']        = $i;
          $_POST['field']      = $value;
          $_POST['searchtype'] = (is_array($p['searchtype'])

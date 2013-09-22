@@ -248,6 +248,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
       $last_level_displayed = array();
       $datastoadd           = array();
+      
       // Ignore first item for all pages except first page or one_item
       $firstitem = (($_GET['page'] > 1) && ($one_item < 0));
       if ($DB->numrows($result)) {
