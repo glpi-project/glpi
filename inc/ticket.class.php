@@ -1863,7 +1863,7 @@ class Ticket extends CommonITILObject {
 
       if (TicketFollowup::canCreate()
           && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-         $actions['add_followup'] = __('Add a new followup');
+         $actions['TicketFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup'] = __('Add a new followup');
       }
 
       if (TicketTask::canCreate()) {
@@ -1893,7 +1893,6 @@ class Ticket extends CommonITILObject {
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'link_ticket' :
@@ -1915,10 +1914,6 @@ class Ticket extends CommonITILObject {
    function showSpecificMassiveActionsParameters($input=array()) {
 
       switch ($input['action']) {
-         case "add_followup" :
-            TicketFollowup::showFormMassiveAction();
-            return true;
-
          case "submit_validation" :
             TicketValidation::showFormMassiveAction();
             return true;
@@ -1969,6 +1964,7 @@ class Ticket extends CommonITILObject {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
+
    /**
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
@@ -2000,35 +1996,6 @@ class Ticket extends CommonITILObject {
                         }
 
 
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
-                     }
-                  } else {
-                     $res['ko']++;
-                     $res['messages'][] = $ticket->getErrorMessage(ERROR_NOT_FOUND);
-                  }
-               }
-            }
-            break;
-
-         case "add_followup" :
-            $fup = new TicketFollowup();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  $ticket = new Ticket();
-                  if ($ticket->getFromDB($key)) {
-                     $input2 = array('tickets_id'      => $key,
-                                    'is_private'      => $input['is_private'],
-                                    'requesttypes_id' => $input['requesttypes_id'],
-                                    'content'         => $input['content']);
-                     if ($fup->can(-1, CREATE, $input2)) {
-                        if ($fup->add($input2)) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
-                        }
                      } else {
                         $res['noright']++;
                         $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
