@@ -2806,8 +2806,11 @@ class Html {
          }
       }
 
-      $output = "<input id='_showdate".$p['rand']."' type='text' size='10' name='_$name' value='".self::convDate($p['value'])."'>";
-      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand'], 'size' => 10));
+      $output = "<input id='_showdate".$p['rand']."' type='text' size='10' name='_$name' ".
+                  "value='".self::convDate($p['value'])."'>";
+      $output .= Html::hidden($name, array('value' => $p['value'],
+                                           'id'    => "showdate".$p['rand'],
+                                           'size'  => 10));
       if ($p['maybeempty']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
       }
@@ -2860,9 +2863,8 @@ class Html {
       if ($p['display']) {
          echo $output;
          return $p['rand'];
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
@@ -3016,7 +3018,8 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value'])."'>";
+      $output  = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".
+                   self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand']));
       if ($p['maybeempty']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
@@ -3134,32 +3137,32 @@ class Html {
          $specific_value = $value;
          $value          = 0;
       }
-      $output   .= "<table width='100%'><tr><td width='50%'>";
+      $output    .= "<table width='100%'><tr><td width='50%'>";
 
-      $dates            = Html::getGenericDateTimeSearchItems($p);
+      $dates      = Html::getGenericDateTimeSearchItems($p);
 
-      $output   .= Dropdown::showFromArray("_select_$element", $dates,
+      $output    .= Dropdown::showFromArray("_select_$element", $dates,
                                                   array('value'   => $value,
                                                         'display' => false,
                                                         'rand'    => $rand));
-      $field_id         = Html::cleanId("dropdown__select_$element$rand");
+      $field_id   = Html::cleanId("dropdown__select_$element$rand");
 
-      $output   .= "</td><td width='50%'>";
-      $contentid        = Html::cleanId("displaygenericdate$element$rand");
-      $output   .= "<span id='$contentid'></span>";
+      $output    .= "</td><td width='50%'>";
+      $contentid  = Html::cleanId("displaygenericdate$element$rand");
+      $output    .= "<span id='$contentid'></span>";
 
-      $params           = array('value'         => '__VALUE__',
-                                'name'          => $element,
-                                'withtime'      => $p['with_time'],
-                                'specificvalue' => $specific_value);
+      $params     = array('value'         => '__VALUE__',
+                          'name'          => $element,
+                          'withtime'      => $p['with_time'],
+                          'specificvalue' => $specific_value);
 
-      $output   .= Ajax::updateItemOnSelectEvent($field_id, $contentid,
-                                                        $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
-                                                        $params, false);
+      $output    .= Ajax::updateItemOnSelectEvent($field_id, $contentid,
+                                                  $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+                                                  $params, false);
       $params['value']  = $value;
-      $output   .= Ajax::updateItem($contentid, $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+      $output    .= Ajax::updateItem($contentid, $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
                                            $params, '', false);
-      $output   .= "</td></tr></table>";
+      $output    .= "</td></tr></table>";
 
       if ($p['display']) {
          echo $output;
@@ -3581,8 +3584,8 @@ class Html {
       if ($CFG_GLPI["use_ajax_autocompletion"]) {
          $rand    = mt_rand();
          $name    = "field_".$params['name'].$rand;
-         $output .=  "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
-                       "' value=\"".self::cleanInputText($params['value']).
+         $output .=  "<input ".$params['option']." id='text$name' type='text' name='".
+                       $params['name']."' value=\"".self::cleanInputText($params['value']).
                        "\" size='".$params['size']."'>\n";
 
          $parameters['itemtype'] = $item->getType();

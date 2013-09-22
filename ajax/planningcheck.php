@@ -50,8 +50,9 @@ if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
              class='calendrier'>";
       echo "</a>";
       Ajax::createIframeModalWindow('planningcheck',
-                                    $CFG_GLPI["root_doc"]."/front/planning.php?checkavailability=checkavailability".
+                                    $CFG_GLPI["root_doc"].
+                                          "/front/planning.php?checkavailability=checkavailability".
                                           "&users_id=".$_POST['users_id'],
-                                    array('title'         => __('Availability')));
+                                    array('title'  => __('Availability')));
 }
 ?>

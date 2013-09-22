@@ -1512,7 +1512,7 @@ class Ticket extends CommonITILObject {
 
          $validation          = new TicketValidation();
 
-         // Validation user added on ticket form 
+         // Validation user added on ticket form
          if(isset($this->input['users_id_validate'])){
             if (array_key_exists('groups_id', $this->input['users_id_validate'])) {
                foreach($this->input['users_id_validate'] as $key => $validation_to_add){
@@ -1528,7 +1528,7 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-         
+
          foreach ($validations_to_send as $validate_id) {
             $values = array();
             if (is_array($validate_id)) {
@@ -2028,7 +2028,7 @@ class Ticket extends CommonITILObject {
       $tab                          = array();
 
       $tab += $this->getSearchOptionsMain();
-      
+
       $tab[14]['table']             = $this->getTable();
       $tab[14]['field']             = 'type';
       $tab[14]['name']              = __('Type');
@@ -2281,7 +2281,7 @@ class Ticket extends CommonITILObject {
                                                            Ticket_Ticket::DUPLICATE_WITH);
 
          $tab += TicketTask::getSearchOptionsToAdd();
-                                                               
+
          $tab += $this->getSearchOptionsSolution();
 
          $tab += TicketCost::getSearchOptionsToAdd();
@@ -4656,7 +4656,7 @@ class Ticket extends CommonITILObject {
                          Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
                   break;
 
-               case "observed":
+               case "observed" :
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 65; // groups_id
                      $options['searchtype'][$num] = 'equals';
