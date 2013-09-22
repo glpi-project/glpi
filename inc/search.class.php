@@ -3211,9 +3211,9 @@ class Search {
       if (in_array($searchtype, array('equals', 'notequals','under', 'notunder'))) {
 
          if ((!isset($searchopt[$ID]['searchequalsonfield'])
-               || !$searchopt[$ID]['searchequalsonfield'])
-            && ($table != getTableForItemType($itemtype))
-               || ($itemtype == 'AllAssets')) {
+              || !$searchopt[$ID]['searchequalsonfield'])
+            && ($table != getTableForItemType($itemtype)
+                || ($itemtype == 'AllAssets'))) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
