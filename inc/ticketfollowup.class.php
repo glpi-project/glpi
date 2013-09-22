@@ -505,6 +505,62 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
+
+      switch ($ma->getAction()) {
+         case 'add_followup' :
+            TicketFollowup::showFormMassiveAction();
+            return true;
+      }
+      return false;
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'add_followup' :
+            $input = $ma->getInput();
+            $fup = new self();
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $input2 = array('tickets_id'      => $id,
+                                  'is_private'      => $input['is_private'],
+                                  'requesttypes_id' => $input['requesttypes_id'],
+                                  'content'         => $input['content']);
+                  if ($fup->can(-1, CREATE, $input2)) {
+                     if ($fup->add($input2)) { 
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+               }
+            }
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+
    /** form for Followup
     *
     *@param $ID      integer : Id of the followup

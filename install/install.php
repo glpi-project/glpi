@@ -258,9 +258,6 @@ function step3($host, $user, $password, $update) {
          echo "<p><input type='radio' name='databasename' value='0'>";
          _e('Create a new database or use an existing one:');
          echo "&nbsp;<input type='text' name='newdatabasename'></p>";
-//         echo "<input type='hidden' name='db_host' value='". $host ."'>";
-//         echo "<input type='hidden' name='db_user' value='". $user ."'>";
-//         echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                __('Continue')."'></p>";
@@ -277,9 +274,6 @@ function step3($host, $user, $password, $update) {
             echo $row['Database'].".</p>";
          }
 
-//         echo "<input type='hidden' name='db_host' value='". $host ."'>";
-//         echo "<input type='hidden' name='db_user' value='". $user ."'>";
-//         echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='update_1'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                 __('Continue')."'></p>";
