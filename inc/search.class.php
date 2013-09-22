@@ -4305,14 +4305,13 @@ class Search {
                   $percentage = 100;
                }
                $percentage_text = $percentage;
-
                if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                   $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
                   $less_warn       = (100 - $percentage);
-               } else if ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
+               } else if ($_SESSION['glpiduedatewarning_unit'] == 'hours') {
                   $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
                   $less_warn       = ($totaltime - $currenttime);
-               } else if ($_SESSION['glpiduedatewarning_unit'] == 'day') {
+               } else if ($_SESSION['glpiduedatewarning_unit'] == 'days') {
                   $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
                   $less_warn       = ($totaltime - $currenttime);
                }
@@ -4320,10 +4319,10 @@ class Search {
                if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                   $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
                   $less_crit       = (100 - $percentage);
-               } else if ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+               } else if ($_SESSION['glpiduedatecritical_unit'] == 'hours') {
                   $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
                   $less_crit       = ($totaltime - $currenttime);
-               } else if ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+               } else if ($_SESSION['glpiduedatecritical_unit'] == 'days') {
                   $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
                   $less_crit       = ($totaltime - $currenttime);
                }
