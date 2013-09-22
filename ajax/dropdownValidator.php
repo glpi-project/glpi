@@ -45,20 +45,18 @@ if (isset($_POST["validatortype"])) {
                                                                  :'users_id_validate[]',
                               'entity' => $_POST['entity'],
                               'right'  => $_POST['right']));
-
          break;
 
       case 'group' :
-
-         $name      = !empty($_POST['name']) ? $_POST['name'].'[groups_id]':'groups_id';
-         $rand      = Group::dropdown(array('name'      => $name,
+         $name = !empty($_POST['name']) ? $_POST['name'].'[groups_id]':'groups_id';
+         $rand = Group::dropdown(array('name'      => $name,
                                             'value'     => $_POST['groups_id'],
                                             'entity'    => $_POST["entity"]));
 
-         $param                        = array('validatortype'      => 'list_users');
-         $param['name']                = !empty($_POST['name']) ? $_POST['name']:'';
+         $param                        = array('validatortype' => 'list_users');
+         $param['name']                = !empty($_POST['name']) ? $_POST['name'] : '';
          $param['users_id_validate']   = isset($_POST['users_id_validate'])
-                                             ? $_POST['users_id_validate']:'';
+                                             ? $_POST['users_id_validate'] : '';
          $param['right']               = $_POST['right'];
          $param['entity']              = $_POST["entity"];
          $param['groups_id']           = '__VALUE__';
@@ -70,32 +68,28 @@ if (isset($_POST["validatortype"])) {
          break;
 
       case 'list_users' :
-         $opt = array('groups_id'   => $_POST["groups_id"],
-                        'right'     => $_POST['right'],
-                        'entity'    => $_POST["entity"]);
-
-         $data_users = TicketValidation::getGroupUserHaveRights($opt);
-
+         $opt             = array('groups_id' => $_POST["groups_id"],
+                                  'right'     => $_POST['right'],
+                                  'entity'    => $_POST["entity"]);
+         $data_users      = TicketValidation::getGroupUserHaveRights($opt);
          $users           = array();
          $param['values'] = array();
          foreach($data_users as $data){
             $users[$data['id']] = formatUserName($data['id'], $data['name'], $data['realname'],
                                                  $data['firstname']);
          }
-            
          // Display all users
          if (isset($_POST['all_users'])
              && $_POST['all_users']) {
             $param['values'] =  array_keys($users);
          }
-
          $param['multiple']= true;
          $param['display'] = true;
          $param['size']    = count($users);
 
          $users = Toolbox::stripslashes_deep($users);
          $rand  = Dropdown::showFromArray(!empty($_POST['name']) ? $_POST['name']:'users_id_validate',
-                                                     $users, $param);
+                                          $users, $param);
 
          // Display all/none buttons to select all or no users in group
          if (!empty($_POST['groups_id'])){
@@ -107,13 +101,16 @@ if (isset($_POST["validatortype"])) {
             $param_button['groups_id']          = $_POST['groups_id'];
             $param_button['entity']             = $_POST['entity'];
             $param_button['right']              = $_POST['right'];
-            Ajax::updateItemOnEvent('all_users', 'show_list_users', $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $param_button, array('click'));
+            Ajax::updateItemOnEvent('all_users', 'show_list_users',
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                    $param_button, array('click'));
 
             echo "&nbsp;<a id='no_users' class='vsubmit'>".__('None')."</a>";
             $param_button['all_users'] = 0;
-            Ajax::updateItemOnEvent('no_users', 'show_list_users', $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $param_button, array('click'));
+            Ajax::updateItemOnEvent('no_users', 'show_list_users',
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                    $param_button, array('click'));
          }
-
          break;
    }
 }

@@ -665,13 +665,15 @@ class Session {
     *
     * @see https://wiki.php.net/rfc/strict_sessions
    **/
-   static function checkValidSessionId(){
+   static function checkValidSessionId() {
+
       if (!isset($_SESSION['valid_id'])
-         || $_SESSION['valid_id'] !== session_id()) {
+          || ($_SESSION['valid_id'] !== session_id())) {
          die(__('Invalid use of session ID'));
       }
       return true;
    }
+
 
    /**
     * Check if I have access to the central interface
@@ -1165,6 +1167,7 @@ class Session {
       return false;
    }
 
+
    /**
     * Check CSRF data
     *
@@ -1175,7 +1178,9 @@ class Session {
     * @return nothing : display error if not permit
    **/
    static public function checkCSRF($data) {
-      if (GLPI_USE_CSRF_CHECK && (!Session::validateCSRF($data))) {
+
+      if (GLPI_USE_CSRF_CHECK
+          && (!Session::validateCSRF($data))) {
          Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
       }
    }

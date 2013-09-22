@@ -27,6 +27,12 @@
  --------------------------------------------------------------------------
  */
 
+/** @file
+ * @brief
+ * @since version 0.85
+ **/
+
+
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', dirname(__DIR__));
 }

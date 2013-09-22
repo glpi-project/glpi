@@ -2666,7 +2666,7 @@ class Search {
 
       $inittable = $table;
       $addtable  = '';
-      if ($table != 'asset_types'
+      if (($table != 'asset_types')
           && ($table != getTableForItemType($itemtype))
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
@@ -5151,15 +5151,15 @@ class Search {
                $search[$itemtype][70]['field']         = 'name';
                $search[$itemtype][70]['name']          = __('User');
 
-               $search[$itemtype][7]['table']         = 'asset_types';
-               $search[$itemtype][7]['field']         = 'contact';
-               $search[$itemtype][7]['name']          = __('Alternate username');
-               $search[$itemtype][7]['datatype']      = 'string';
+               $search[$itemtype][7]['table']          = 'asset_types';
+               $search[$itemtype][7]['field']          = 'contact';
+               $search[$itemtype][7]['name']           = __('Alternate username');
+               $search[$itemtype][7]['datatype']       = 'string';
 
-               $search[$itemtype][8]['table']         = 'asset_types';
-               $search[$itemtype][8]['field']         = 'contact_num';
-               $search[$itemtype][8]['name']          = __('Alternate username number');
-               $search[$itemtype][8]['datatype']      = 'string';
+               $search[$itemtype][8]['table']          = 'asset_types';
+               $search[$itemtype][8]['field']          = 'contact_num';
+               $search[$itemtype][8]['name']           = __('Alternate username number');
+               $search[$itemtype][8]['datatype']       = 'string';
 
                $search[$itemtype][71]['table']         = 'glpi_groups';
                $search[$itemtype][71]['field']         = 'completename';

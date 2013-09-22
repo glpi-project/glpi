@@ -340,9 +340,9 @@ function step4 ($databasename, $newdatabasename) {
    }
 
 
-   $link = new mysqli($host, $user, $password);
+   $link            = new mysqli($host, $user, $password);
 
-   $databasename = $link->real_escape_string($databasename);
+   $databasename    = $link->real_escape_string($databasename);
    $newdatabasename = $link->real_escape_string($newdatabasename);
 
    if (!empty($databasename)) { // use db already created
@@ -500,7 +500,11 @@ if (isset($_POST["language"])) {
 
 Session::loadLanguage();
 
+/**
+ * @since version 0.84.2
+**/
 function checkConfigFile() {
+
    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Html::redirect($CFG_GLPI['root_doc'] ."/index.php");
       die();

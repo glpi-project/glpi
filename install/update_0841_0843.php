@@ -96,11 +96,12 @@ function update0841to0843() {
             }
             if (isset($options['field'])) {
                // update ticket statuses
-               if (($data['itemtype'] = 'Ticket'
-                  || $data['itemtype'] = 'Problem')
-                     && $data['type'] == Bookmark::SEARCH) {
+               if ((($data['itemtype'] = 'Ticket')
+                    || ($data['itemtype'] = 'Problem'))
+                   &&( $data['type'] == Bookmark::SEARCH)) {
                   foreach ($options['field'] as $key => $val) {
-                     if ($val == 12 && isset($options['contains'][$key])) {
+                     if (($val == 12)
+                         && isset($options['contains'][$key])) {
                         if (isset($status[$options['contains'][$key]])) {
                            $options['contains'][$key] = $status[$options['contains'][$key]];
                         }
@@ -109,9 +110,9 @@ function update0841to0843() {
                }
 
                // Fix computer / allassets bookmarks : 17 -> 7 / 18 -> 8 / 7 -> 17
-               if (($data['itemtype'] = 'Computer'
-                  || $data['itemtype'] = 'AllAssets')
-                     && $data['type'] == Bookmark::SEARCH) {
+               if ((($data['itemtype'] = 'Computer')
+                    || ($data['itemtype'] = 'AllAssets'))
+                   && ($data['type'] == Bookmark::SEARCH)) {
                   foreach ($options['field'] as $key => $val) {
                      switch ($val) {
                         case 17 :
@@ -119,11 +120,13 @@ function update0841to0843() {
                               $options['field'][$key] = 7;
                            }
                            break;
+
                         case 18 :
                            if (isset($options['contains'][$key])) {
                               $options['field'][$key] = 8;
                            }
                            break;
+
                         case 7 :
                            if (isset($options['contains'][$key])) {
                               $options['field'][$key] = 17;
@@ -133,16 +136,16 @@ function update0841to0843() {
                   }
                }
             }
-            
+
             $query2 = "UPDATE `glpi_bookmarks`
-                        SET `query` = '".addslashes(Toolbox::append_params($options))."'
-                        WHERE `id` = '".$data['id']."'";
+                       SET `query` = '".addslashes(Toolbox::append_params($options))."'
+                       WHERE `id` = '".$data['id']."'";
 
             $DB->queryOrDie($query2, "0.84.3 update bookmarks");
          }
       }
    }
-   
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

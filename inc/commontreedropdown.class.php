@@ -78,8 +78,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (!$withtemplate) {
          if ($item->getType()==$this->getType()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable($this->getTable(), "`".$this->getForeignKeyField().
-                                                             "` = '".$item->getID()."'");
+               $nb = countElementsInTable($this->getTable(),
+                                          "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
                return self::createTabEntry($this->getTypeName(2), $nb);
            }
            return $this->getTypeName(2);
@@ -485,8 +485,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_under'] =
-                                                   _x('button', 'Move');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_under']
+                  = _x('button', 'Move');
       }
 
       return $actions;
@@ -494,6 +494,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
