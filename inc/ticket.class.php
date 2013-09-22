@@ -1871,7 +1871,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (TicketValidation::canCreate()) {
-         $actions['submit_validation'] = __('Approval request');
+         $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation'] = __('Approval request');
       }
 
       if (Session::haveRight(self::$rightname, UPDATE)) {
@@ -1901,27 +1901,11 @@ class Ticket extends CommonITILObject {
             printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
             echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
             echo "<br><br>";
-            echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
       }
-      return false;
-   }
 
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "submit_validation" :
-            TicketValidation::showFormMassiveAction();
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
@@ -1964,55 +1948,6 @@ class Ticket extends CommonITILObject {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "submit_validation" :
-            $valid = new TicketValidation();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  $ticket = new self();
-                  if ($ticket->getFromDB($key)) {
-                     $input2 = array('tickets_id'            => $key,
-                                     'comment_submission'    => $input['comment_submission']);
-                     if ($valid->can(-1, CREATE, $input2)) {
-                        $users = $input['users_id_validate'];
-                        foreach ($users as $user) {
-                           $input2["users_id_validate"] = $user;
-                           if ($valid->add($input2)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                                 $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        }
-
-
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
-                     }
-                  } else {
-                     $res['ko']++;
-                     $res['messages'][] = $ticket->getErrorMessage(ERROR_NOT_FOUND);
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
 
 
    function getSearchOptions() {
