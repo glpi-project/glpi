@@ -231,7 +231,8 @@ class Contact extends CommonDBTM{
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Add a supplier');
+         $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
+               = _x('button', 'Add a supplier');
       }
 
       if ($isadmin) {

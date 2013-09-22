@@ -3077,6 +3077,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * This may be overloaded in Class
     * Parameters must not be : itemtype, action, is_deleted, check_itemtype or check_items_id
+    *
     * @param $input array of input datas
     *
     * @return boolean if parameters displayed ?

@@ -208,11 +208,11 @@ class NetworkName extends FQDNLabel {
       $tab[126]['forcegroupby']  = true;
       $tab[126]['massiveaction'] = false;
       $tab[126]['joinparams']    = array('jointype'          => 'itemtype_item',
-                                        'condition'         => 'AND NOT NEWTABLE.`is_deleted`',
-                                        'specific_itemtype' => 'NetworkName',
-                                        'beforejoin'        => array('table' => 'glpi_networknames',
-                                                                     'joinparams'
-                                                                             => $joinparams));
+                                         'condition'         => 'AND NOT NEWTABLE.`is_deleted`',
+                                         'specific_itemtype' => 'NetworkName',
+                                         'beforejoin'        => array('table' => 'glpi_networknames',
+                                                                      'joinparams'
+                                                                              => $joinparams));
 
       $tab[127]['table']         = 'glpi_networknames';
       $tab[127]['field']         = 'name';
@@ -227,8 +227,8 @@ class NetworkName extends FQDNLabel {
       $tab[128]['forcegroupby']  = true;
       $tab[128]['massiveaction'] = false;
       $tab[128]['joinparams']    = array('jointype'   => 'child',
-                                        'beforejoin' => array('table'      => 'glpi_networknames',
-                                                              'joinparams' => $joinparams));
+                                         'beforejoin' => array('table'      => 'glpi_networknames',
+                                                               'joinparams' => $joinparams));
    }
 
 

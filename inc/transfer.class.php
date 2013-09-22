@@ -2252,9 +2252,9 @@ class Transfer extends CommonDBTM {
                   if ($supplier->getFromDB($data['suppliers_id'])) {
                      $newID = -1;
                      $query = "SELECT *
-                                 FROM `glpi_suppliers`
-                                 WHERE `entities_id` = '".$this->to."'
-                                       AND `name` = '".addslashes($supplier->fields['name'])."'";
+                               FROM `glpi_suppliers`
+                               WHERE `entities_id` = '".$this->to."'
+                                     AND `name` = '".addslashes($supplier->fields['name'])."'";
 
                      if ($result_search = $DB->query($query)) {
                         if ($DB->numrows($result_search) > 0) {
@@ -2264,11 +2264,11 @@ class Transfer extends CommonDBTM {
                      if ($newID < 0) {
                         // 1 - create new item
                         unset($supplier->fields['id']);
-                        $input    = $supplier->fields;
+                        $input                 = $supplier->fields;
                         $input['entities_id']  = $this->to;
                         // Not set new entity Do by transferItem
                         unset($supplier->fields);
-                        $newID = $supplier->add(toolbox::addslashes_deep($input));
+                        $newID                 = $supplier->add(toolbox::addslashes_deep($input));
                      }
 
                      $input2['id']           = $data['id'];

@@ -912,7 +912,7 @@ class NetworkPort extends CommonDBChild {
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $vlan_prefix = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $vlan_prefix                    = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$vlan_prefix.'add']    = __('Associate a VLAN');
          $actions[$vlan_prefix.'remove'] = __('Dissociate a VLAN');
      }

@@ -1078,7 +1078,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since version 0.85
     *
-    * @return array of the specificities :
+    * @return array of the specificities:
     *        'select_items_options_1' Base options for item_1 select
     *        'select_items_options_2' Base options for item_2 select
     *        'can_remove_all_at_once' Is it possible to remove all links at once ?
@@ -1128,6 +1128,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * get the type of the item with the name of the action or the types of the input
     *
+    * @since version 0.85
+    *
     * @param $ma current massive action
     *
     * @return number of the peer
@@ -1161,7 +1163,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm(MassiveAction $ma) {//$action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
       $specificities = static::getRelationMassiveActionsSpecificities();
@@ -1283,7 +1285,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $link     = new static();
 
       // Get the default 'input' entries from the relation
-      $input2   = static::getRelationInputForProcessingOfMassiveActions($action, $item, $ids, $input);
+      $input2   = static::getRelationInputForProcessingOfMassiveActions($action, $item, $ids,
+                                                                        $input);
 
       // complete input2 with the right fields from input and define the peer with this information
       foreach (array(static::$itemtype_1, static::$items_id_1) as $field) {

@@ -2529,10 +2529,14 @@ class Rule extends CommonDBTM {
       } else {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
-            $paramsma = array('num_displayed'    => $nb,
-                              'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update' => _x('button', 'Update'),
-                                                          'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'  => _x('button',
-                                                                                                                               'Delete permanently')));
+            $paramsma
+               = array('num_displayed'
+                           => $nb,
+                       'specific_actions'
+                           => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update'
+                                       => _x('button', 'Update'),
+                                    'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                       => _x('button', 'Delete permanently')));
             Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";

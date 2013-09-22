@@ -314,9 +314,12 @@ class Profile_User extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                       'purge' => _x('button', 'Delete permanently')));
+         $paramsma
+            = array('container'
+                        => 'mass'.__CLASS__.$rand,
+                    'specific_actions'
+                        => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                    => _x('button', 'Delete permanently')));
          Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";

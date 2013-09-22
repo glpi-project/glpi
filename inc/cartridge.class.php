@@ -199,7 +199,6 @@ class Cartridge extends CommonDBChild {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
             return;
-
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
