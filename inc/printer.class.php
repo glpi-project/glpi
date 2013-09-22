@@ -290,7 +290,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       State::dropdown(array('value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_printer`='1'"));
+                            'condition' => "`is_visible_printer`"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -548,7 +548,7 @@ class Printer  extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
-      $tab[31]['condition']      = "`is_visible_printer`='1'";
+      $tab[31]['condition']      = "`is_visible_printer`";
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
