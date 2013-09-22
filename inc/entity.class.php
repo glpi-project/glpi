@@ -134,6 +134,16 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+  /**
+   * @Since version 0.84
+   **/
+   static function canUpdate() {
+
+      return (Session::haveRightsOr(self::$rightname, array(UPDATE, self::UPDATEHELPDESK))
+              || Session::haveRight('notification', UPDATE));
+   }
+
+
    function canUpdateItem() {
       // Check the current entity
       return Session::haveAccessToEntity($this->getField('id'));
