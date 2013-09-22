@@ -172,6 +172,7 @@ class Consumable extends CommonDBChild {
       return false;
    }
 
+
    /**
     * @since version 0.85
     *
@@ -463,13 +464,14 @@ class Consumable extends CommonDBChild {
 
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                          'delete'   => _x('button', 'Delete permanently'),
-                          'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                          'activate' => __('Enable the financial and administrative information'));
+         $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete'
+                              => _x('button', 'Delete permanently'),
+                          'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
+                              => __('Enable the financial and administrative information'));
          if ($show_old) {
             // TODO : is restore the right action ?
-            $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore'] = __('Back to stock');
+            $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore']
+                     = __('Back to stock');
          } else {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'give'] = _x('button', 'Give');
          }

@@ -4559,8 +4559,8 @@ class Search {
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
                   $separate = self::LBHR;
                }
-               $split = explode("$$$$", $data[$NAME.$num]);
-               $out = '';
+               $split         = explode("$$$$", $data[$NAME.$num]);
+               $out           = '';
                $count_display = 0;
                foreach ($split as $val) {
                   if (strlen(trim($val)) > 0) {

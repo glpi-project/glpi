@@ -700,8 +700,8 @@ class Bookmark extends CommonDBTM {
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       echo "<div class='center' id='tabsbody' >";
-      $maactions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                         'purge' => _x('button', 'Delete permanently'));
+      $maactions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                           => _x('button', 'Delete permanently'));
       if ($is_private) {
          // TODO MassiveAction: specific_actions
          $maactions['move_bookmark'] = __('Move');

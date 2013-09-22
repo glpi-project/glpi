@@ -1032,9 +1032,8 @@ class MassiveAction {
                               }
                               $id = $ic->fields["id"];
                               unset($ic->fields);
-                              if ($ic->update(array('id'   => $id,
-                                                    $input["field"]
-                                                           => $input[$input["field"]]))) {
+                              if ($ic->update(array('id'            => $id,
+                                                    $input["field"] => $input[$input["field"]]))) {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                               } else {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
@@ -1085,9 +1084,8 @@ class MassiveAction {
                                                     $input[$input["field"]])) {
                         if ((count($link_entity_type) == 0)
                             || in_array($item->fields["entities_id"], $link_entity_type)) {
-                           if ($item->update(array('id'   => $key,
-                                                   $input["field"]
-                                                          => $input[$input["field"]]))) {
+                           if ($item->update(array('id'            => $key,
+                                                   $input["field"] => $input[$input["field"]]))) {
                               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                            } else {
                               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);

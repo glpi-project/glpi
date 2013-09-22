@@ -316,7 +316,7 @@ class Group extends CommonTreeDropdown {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $prefix = 'Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $prefix                            = 'Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$prefix.'add']            = _x('button', 'Add a user');
          $actions[$prefix.'add_supervisor'] = _x('button', 'Add a supervisor');
          $actions[$prefix.'add_delegatee']  = _x('button', 'Add a delegatee');

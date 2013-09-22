@@ -413,10 +413,14 @@ class Computer_Item extends CommonDBRelation{
          echo "<div class='spaced'>";
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed'    => $number,
-                                         'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                                     'purge' => _x('button', 'Disconnect')),
-                                         'container'        => 'mass'.__CLASS__.$rand);
+            $massiveactionparams
+               = array('num_displayed'
+                           => $number,
+                       'specific_actions'
+                           => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                      => _x('button', 'Disconnect')),
+                       'container'
+                           => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
@@ -548,10 +552,14 @@ class Computer_Item extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'    => $number,
-                                      'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                                  'purge' => _x('button', 'Disconnect')),
-                                      'container'        => 'mass'.__CLASS__.$rand);
+         $massiveactionparams
+            = array('num_displayed'
+                        => $number,
+                    'specific_actions'
+                        => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                    => _x('button', 'Disconnect')),
+                    'container'
+                        => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";

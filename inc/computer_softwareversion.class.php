@@ -433,14 +433,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                // TODO MassiveAction: specific_actions
-               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
-                                 'container'     => 'mass'.__CLASS__.$rand,
-                                 'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                             'move_version'
-                                                                     => _x('button', 'Move'),
-                                                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                             'purge' => _x('button',
-                                                                           'Delete permanently')));
+               $paramsma
+                  = array('num_displayed'
+                           => $_SESSION['glpilist_limit'],
+                          'container'
+                           => 'mass'.__CLASS__.$rand,
+                          'specific_actions'
+                           => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_version'
+                                          => _x('button', 'Move'),
+                                    'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                          => _x('button', 'Delete permanently')));
                // Options to update version
                $paramsma['extraparams']['options']['move']['softwares_id'] = $softwares_id;
                if ($crit=='softwares_id') {
@@ -736,11 +738,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed'    => $number,
-                              'container'        => 'mass'.__CLASS__.$rand,
-                              'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                          'purge' => _x('button',
-                                                                        'Delete permanently')));
+            $paramsma
+               = array('num_displayed'
+                         => $number,
+                       'container'
+                         => 'mass'.__CLASS__.$rand,
+                       'specific_actions'
+                         => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                     => _x('button', 'Delete permanently')));
 
             Html::showMassiveActions($paramsma);
          }
@@ -853,10 +858,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
             // TODO MassiveAction: specific_actions
             $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                             'install' => _x('button', 'Install'));
+                                'install' => _x('button', 'Install'));
             if (SoftwareLicense::canUpdate()) {
-               $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                        'purge'] = _x('button', 'Delete permanently');
+               $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge']
+                     = _x('button', 'Delete permanently');
             }
 
             $paramsma = array('num_displayed'    => $number,

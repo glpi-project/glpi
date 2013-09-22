@@ -487,7 +487,7 @@ class Contract extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $prefix = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $prefix                    = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$prefix.'add']    = _x('button', 'Add an item');
          $actions[$prefix.'remove'] = _x('button', 'Remove an item');
       }

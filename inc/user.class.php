@@ -2357,14 +2357,18 @@ class User extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = __('Associate to a group');
-         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = __('Dissociate from a group');
-         $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = __('Associate to a profile');
-         $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = __('Dissociate from a profile');
+         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
+                                                         = __('Associate to a group');
+         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
+                                                         = __('Dissociate from a group');
+         $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
+                                                         = __('Associate to a profile');
+         $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
+                                                         = __('Dissociate from a profile');
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-         $prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $prefix                                    = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$prefix.'change_authtype']        = _x('button', 'Change the authentication method');
          $actions[$prefix.'force_user_ldap_update'] = __('Force synchronization');
       }

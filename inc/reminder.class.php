@@ -1163,10 +1163,14 @@ class Reminder extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed'    => $nb,
-                           'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                       'delete' => _x('button', 'Delete permanently')) );
+         $paramsma
+            = array('num_displayed'
+                        => $nb,
+                    'container'
+                        => 'mass'.__CLASS__.$rand,
+                    'specific_actions'
+                        => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete'
+                                    => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm']

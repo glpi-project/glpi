@@ -133,16 +133,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @see CommonDBConnexity::getItemFromArray()
     *
-    * @param $itemtype              the name of the field of the type of the item to get
-    * @param $items_id              the name of the field of the id of the item to get
-    * @param $getFromDB   boolean   do we have to load the item from the DB ? (true by default)
-    * @param $getEmpty    boolean   else : do we have to load an empty item ? (true by default)
-    * @param $getFromDBOrEmpty boolean get from DB if possible, else, getEmpty
+    * @param $itemtype                    the name of the field of the type of the item to get
+    * @param $items_id                    the name of the field of the id of the item to get
+    * @param $getFromDB         boolean   do we have to load the item from the DB ? (true by default)
+    * @param $getEmpty          boolean   else : do we have to load an empty item ? (true by default)
+    * @param $getFromDBOrEmpty  boolean   get from DB if possible, else, getEmpty (false by default)
     *
     * @return the item or false if we cannot load the item
    **/
-   function getConnexityItem($itemtype, $items_id, $getFromDB=true,
-                             $getEmpty=true, $getFromDBOrEmpty = false) {
+   function getConnexityItem($itemtype, $items_id, $getFromDB=true, $getEmpty=true,
+                             $getFromDBOrEmpty=false) {
+
       return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB,
                                       $getEmpty, $getFromDBOrEmpty);
    }
@@ -151,17 +152,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /**
     * get associated item (defined by $itemtype and $items_id)
     *
-    * @param $itemtype           the name of the field of the type of the item to get
-    * @param $items_id           the name of the field of the id of the item to get
-    * @param $array      array   the array in we have to search ($input, $this->fields ...)
-    * @param $getFromDB  boolean do we have to load the item from the DB ? (true by default)
-    * @param $getEmpty   boolean else : do we have to load an empty item ? (true by default)
-    * @param $getFromDBOrEmpty boolean get from DB if possible, else, getEmpty
+    * @param $itemtype                 the name of the field of the type of the item to get
+    * @param $items_id                 the name of the field of the id of the item to get
+    * @param $array            array   the array in we have to search ($input, $this->fields ...)
+    * @param $getFromDB        boolean do we have to load the item from the DB ? (true by default)
+    * @param $getEmpty         boolean else : do we have to load an empty item ? (true by default)
+    * @param $getFromDBOrEmpty boolean get from DB if possible, else, getEmpty (false by default)
     *
     * @return the item or false if we cannot load the item
    **/
    static function getItemFromArray($itemtype, $items_id, array $array, $getFromDB=true,
-                                    $getEmpty=true, $getFromDBOrEmpty = false) {
+                                    $getEmpty=true, $getFromDBOrEmpty=false) {
 
       if (preg_match('/^itemtype/', $itemtype)) {
          if (isset($array[$itemtype])) {
@@ -174,9 +175,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
       }
       $item = getItemForItemtype($type);
       if ($item !== false) {
-         if (($getFromDB) || ($getFromDBOrEmpty)) {
-            if ((isset($array[$items_id]))
-                && ($item->getFromDB($array[$items_id]))) {
+         if ($getFromDB
+             || $getFromDBOrEmpty) {
+            if (isset($array[$items_id])
+                && $item->getFromDB($array[$items_id])) {
                return $item;
             }
             if ($getFromDBOrEmpty) {
@@ -396,7 +398,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @return array of the specificities :
+    * @return array of the specificities:
     *        'reaffect'   is it possible to reaffect the connexity (1 or 2 for CommonDBRelation)
     *        'itemtypes'  the types of the item in cas of reaffectation
     *        'normalized' array('affect', 'unaffect') of arrays containing each action

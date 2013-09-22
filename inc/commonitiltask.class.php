@@ -119,6 +119,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    }
 
+
    /**
     * @since version 0.84
     *
@@ -138,6 +139,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
+
 
    /**
     * @since version 0.84
@@ -162,7 +164,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (($item->getType() == $this->getItilObjectItemType())
@@ -569,7 +572,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[7]['field']         = 'state';
       $tab[7]['name']          = __('Status');
       $tab[7]['datatype']      = 'specific';
-      
+
       return $tab;
    }
 
