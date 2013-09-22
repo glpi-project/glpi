@@ -646,7 +646,7 @@ class MassiveAction {
                exit();
             }
             if (!$item->showSpecificMassiveActionsParameters($input)) {
-               self::showDefaultSubForm($input['action'], $input);
+               self::showDefaultSubForm();
             }
          }
       }
