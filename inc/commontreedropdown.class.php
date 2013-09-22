@@ -515,7 +515,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -560,7 +561,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             }
             return;
       }
-
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 

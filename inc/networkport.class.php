@@ -919,6 +919,7 @@ class NetworkPort extends CommonDBChild {
       return $actions;
    }
 
+
    /**
     * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
@@ -1161,15 +1162,16 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
    **/
    static function getConnexityMassiveActionsSpecificities() {
 
-      $specificities = parent::getConnexityMassiveActionsSpecificities();
+      $specificities                           = parent::getConnexityMassiveActionsSpecificities();
 
-      $specificities['reaffect']  = true;
-      $specificities['itemtypes'] = array('Computer', 'NetworkEquipment');
+      $specificities['reaffect']               = true;
+      $specificities['itemtypes']              = array('Computer', 'NetworkEquipment');
 
       $specificities['normalized']['unaffect'] = array();
       $specificities['action_name']['affect']  = _x('button', 'Move');

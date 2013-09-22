@@ -66,7 +66,8 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -153,7 +154,8 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,

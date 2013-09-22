@@ -130,7 +130,7 @@ class Problem_Ticket extends CommonDBRelation{
             if (isset($input['problems_id']) && $problem->getFromDB($input['problems_id'])) {
                Ticket::showMassiveSolutionForm($problem->getEntityID());
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                             _sx('button', 'Post')."'>";
+                               _sx('button', 'Post')."'>";
                return true;
             }
             return false;

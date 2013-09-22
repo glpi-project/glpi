@@ -73,7 +73,8 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -104,8 +105,6 @@ class DisplayPreference extends CommonDBTM {
             }
             return;
       }
-
-
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
@@ -595,7 +594,7 @@ class DisplayPreference extends CommonDBTM {
                            'extraparams'      => array('massive_action_fields' => array('users_id')));
 
          Html::showMassiveActions($paramsma);
-         
+
          echo Html::hidden('users_id', array('value'                 => $users_id,
                                              'data-glpicore-ma-tags' => 'common'));
          echo "<table class='tab_cadre_fixe'>";

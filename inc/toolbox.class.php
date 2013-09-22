@@ -451,7 +451,7 @@ class Toolbox {
     * @param $hide   String    call to hide (but display script/line) (default '')
     * @param $skip   Array     of call to not display at all
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @return string if $log is false
    **/
@@ -2387,7 +2387,7 @@ class Toolbox {
          Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."), true);
       }
    }
-   
+
    /**
     * Check if the given object is of the type $class_name. Can be identical or a subclass.
     * This method emulates PHP 5.3.9: is_a with allow_string == true
@@ -2412,7 +2412,7 @@ class Toolbox {
       }
       return false;
    }
-   
+
 
 }
 ?>

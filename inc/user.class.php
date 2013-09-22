@@ -2373,17 +2373,17 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
       switch ($ma->getAction()) {
-         case 'change_authtype':
+         case 'change_authtype' :
             $rand             = Auth::dropdown(array('name' => 'authtype'));
             $paramsmassaction = array('authtype' => '__VALUE__');
-
             Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"].
                                              "/ajax/dropdownMassiveActionAuthMethods.php",
@@ -2397,7 +2397,8 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -2405,13 +2406,15 @@ class User extends CommonDBTM {
       global $DB;
 
       switch ($ma->getAction()) {
-         case 'force_user_ldap_update':
-            foreach ($ids as $id) { 
+         case 'force_user_ldap_update' :
+            foreach ($ids as $id) {
                if ($item->can($id, UPDATE)) {
                   if (($item->fields["authtype"] == Auth::LDAP)
                       || ($item->fields["authtype"] == Auth::EXTERNAL)) {
-                     if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                  'value'  => $item->fields["name"]),
+                     if (AuthLdap::ldapImportUserByServerId(array('method'
+                                                                   => AuthLDAP::IDENTIFIER_LOGIN,
+                                                                  'value'
+                                                                   => $item->fields["name"]),
                                                             1, $item->fields["auths_id"])) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
@@ -2449,7 +2452,6 @@ class User extends CommonDBTM {
             }
             return;
       }
-
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 

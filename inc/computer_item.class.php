@@ -264,44 +264,44 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+                                                CommonDBTM $checkitem=NULL) {
 
       $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-
       $specificities = self::getRelationMassiveActionsSpecificities();
 
       if (in_array($itemtype, $specificities['itemtypes'])) {
          $actions[$action_prefix.'add']    = _x('button', 'Connect');
          $actions[$action_prefix.'remove'] = _x('button', 'Disconnect');
       }
-
       parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
    }
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 
-      $specificities = parent::getRelationMassiveActionsSpecificities();
+      $specificities              = parent::getRelationMassiveActionsSpecificities();
 
       $specificities['itemtypes'] = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
       $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
       $specificities['select_items_options_2']['onlyglobal']      = true;
 
-      $specificities['only_remove_all_at_once'] = true;
+      $specificities['only_remove_all_at_once']                   = true;
 
       // Set the labels for add_item and remove_item
-      $specificities['button_labels']['add']    = __s('Connect');
-      $specificities['button_labels']['remove'] = __s('Disconnect');
+      $specificities['button_labels']['add']                      = __s('Connect');
+      $specificities['button_labels']['remove']                   = __s('Disconnect');
 
       return $specificities;
    }

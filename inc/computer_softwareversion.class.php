@@ -96,14 +96,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
       switch ($ma->getAction()) {
-         case 'add':
+         case 'add' :
             Software::dropdownSoftwareToInstall('peer_softwareversions_id',
                                                 $_SESSION["glpiactive_entity"]);
             echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
@@ -129,7 +130,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,

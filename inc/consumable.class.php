@@ -51,7 +51,7 @@ class Consumable extends CommonDBChild {
 
    // From CommonDBChild
    static public $itemtype             = 'ConsumableItem';
-   static public $items_id             = 'consumableitems_id';   
+   static public $items_id             = 'consumableitems_id';
 
    /**
     * @since version 0.84
@@ -173,7 +173,8 @@ class Consumable extends CommonDBChild {
    }
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -183,10 +184,14 @@ class Consumable extends CommonDBChild {
       switch ($ma->getAction()) {
          case 'give' :
             if (isset($input["entities_id"])) {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'give_itemtype',
-                                                           'items_id_name'   => 'give_items_id',
-                                                           'entity_restrict' => $input["entities_id"],
-                                                           'itemtypes'       => $CFG_GLPI["consumables_types"]));
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
+                                                              => 'give_itemtype',
+                                                           'items_id_name'
+                                                              => 'give_items_id',
+                                                           'entity_restrict'
+                                                              => $input["entities_id"],
+                                                           'itemtypes'
+                                                              => $CFG_GLPI["consumables_types"]));
                echo "<br><br>".Html::submit(_sx('button', 'Give'),
                                             array('name' => 'massiveaction'));
                return true;
@@ -197,7 +202,8 @@ class Consumable extends CommonDBChild {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,

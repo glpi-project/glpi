@@ -672,7 +672,7 @@ class Session {
       }
       return true;
    }
-   
+
    /**
     * Check if I have access to the central interface
     *
@@ -775,7 +775,7 @@ class Session {
       global $CFG_GLPI;
 
       self::checkValidSessionId();
-      
+
       $valid = false;
       if (count($modules)) {
          foreach ($modules as $mod => $right) {
@@ -1179,12 +1179,13 @@ class Session {
          Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
       }
    }
-   
+
+
    /**
     * Is field having translations ?
     *
+    * @since version 0.85
     *
-    * @since 0.85
     * @param $itemtype   itemtype
     * @param $field      field
     *

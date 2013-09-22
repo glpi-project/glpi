@@ -67,7 +67,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * Is translation enabled for this itemtype
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @return true if translation is available, false otherwise
    **/
@@ -696,7 +696,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -713,7 +714,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -734,7 +736,6 @@ abstract class CommonDropdown extends CommonDBTM {
                      }
                   } else {
                      $input2 = $item->fields;
-
                      // Remove keys (and name, tree dropdown will use completename)
                      if ($item instanceof CommonTreeDropdown) {
                         unset($input2['id'], $input2['name'], $input2[$fk]);
@@ -747,11 +748,10 @@ abstract class CommonDropdown extends CommonDBTM {
                      $input2 = Toolbox::addslashes_deep($input2);
                      // Import new
                      if ($newid = $item->import($input2)) {
-
                         // Delete old
                         if ($newid > 0) {
                            // delete with purge for dropdown with dustbin (Budget)
-                           $item->delete(array('id'        => $key,
+                           $item->delete(array('id'          => $key,
                                                '_replace_by' => $newid), 1);
                         }
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
@@ -769,5 +769,6 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
+
 }
 ?>

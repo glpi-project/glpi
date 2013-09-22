@@ -769,16 +769,19 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
    **/
    static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma) {
+
       switch ($ma->getAction()) {
-         case 'add':
-         case 'remove':
+         case 'add' :
+         case 'remove' :
             return 1;
-         case 'add_item':
-         case 'remove_item':
+
+         case 'add_item' :
+         case 'remove_item' :
             return 2;
       }
       return 0;
@@ -786,19 +789,19 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 
-      $specificities = parent::getRelationMassiveActionsSpecificities();
-
+      $specificities              = parent::getRelationMassiveActionsSpecificities();
       $specificities['itemtypes'] = $CFG_GLPI['document_types'];
 
       // Define normalized action for add_item and remove_item
-      $specificities['normalized']['add'][]    = 'add_item';
-      $specificities['normalized']['remove'][] = 'remove_item';
+      $specificities['normalized']['add'][]          = 'add_item';
+      $specificities['normalized']['remove'][]       = 'remove_item';
 
       // Set the labels for add_item and remove_item
       $specificities['button_labels']['add_item']    = $specificities['button_labels']['add'];
@@ -806,5 +809,6 @@ class Document_Item extends CommonDBRelation{
 
       return $specificities;
    }
+
 }
 ?>

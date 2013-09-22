@@ -528,20 +528,21 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 
-      $specificities = parent::getRelationMassiveActionsSpecificities();
+      $specificities                           = parent::getRelationMassiveActionsSpecificities();
 
       $specificities['select_items_options_1'] = array('right'     => 'all');
       $specificities['select_items_options_2'] = array('condition' => '`is_usergroup`');
 
       // Define normalized action for add_item and remove_item
-      $specificities['normalized']['add'][] = 'add_supervisor';
-      $specificities['normalized']['add'][] = 'add_delegatee';
+      $specificities['normalized']['add'][]    = 'add_supervisor';
+      $specificities['normalized']['add'][]    = 'add_delegatee';
 
       $specificities['button_labels']['add_supervisor'] = $specificities['button_labels']['add'];
       $specificities['button_labels']['add_delegatee']  = $specificities['button_labels']['add'];
@@ -553,15 +554,17 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
    **/
-   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
-                                                                 array $input) {
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item,
+                                                                 array $ids, array $input) {
       switch ($action) {
-         case 'add_supervisor':
+         case 'add_supervisor' :
             return array('is_manager' => 1);
-         case 'add_delegatee':
+
+         case 'add_delegatee' :
             return array('is_userdelegate' => 1);
       }
 

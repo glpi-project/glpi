@@ -223,6 +223,8 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -232,10 +234,10 @@ class AuthLDAP extends CommonDBTM {
       $input = $ma->getInput();
 
       switch ($ma->getAction()) {
-         case 'import_group':
+         case 'import_group' :
             $group = new Group;
-            if (!Session::haveRight("user", User::UPDATEAUTHENT) ||
-               !$group->canGlobal(UPDATE)) {
+            if (!Session::haveRight("user", User::UPDATEAUTHENT)
+                || !$group->canGlobal(UPDATE)) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                return;
@@ -243,21 +245,18 @@ class AuthLDAP extends CommonDBTM {
             foreach ($ids as $id) {
                if (isset($input["dn"][$id])) {
                   $group_dn = $input["dn"][$id];
-
                   if (isset($input["ldap_import_entities"][$id])) {
                      $entity = $input["ldap_import_entities"][$id];
                   } else {
                      $entity = $_SESSION["glpiactive_entity"];
                   }
-
                   // Is recursive is in the main form and thus, don't pass through
                   // zero_on_empty mechanism inside massive action form ...
                   $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
-
-                  $options = array('authldaps_id' => $_SESSION['ldap_server'],
-                                   'entities_id'  => $entity,
-                                   'is_recursive' => $is_recursive,
-                                   'type'         => $input['ldap_import_type'][$id]);
+                  $options      = array('authldaps_id' => $_SESSION['ldap_server'],
+                                        'entities_id'  => $entity,
+                                        'is_recursive' => $is_recursive,
+                                        'type'         => $input['ldap_import_type'][$id]);
                   if (AuthLdap::ldapImportGroup($group_dn, $options)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   }  else {
@@ -281,7 +280,8 @@ class AuthLDAP extends CommonDBTM {
                if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                             'value'  => $id),
                                                       $_SESSION['ldap_import']['mode'],
-                                                      $_SESSION['ldap_import']['authldaps_id'], true)) {
+                                                      $_SESSION['ldap_import']['authldaps_id'],
+                                                      true)) {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                }  else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

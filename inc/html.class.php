@@ -789,10 +789,10 @@ class Html {
    /**
     * Manage progresse bars
     *
-    * @since 0.85
+    * @since version 0.85
     *
-    * @param $id HTML ID of the progress bar
-    * @param $options progress status
+    * @param $id                 HTML ID of the progress bar
+    * @param $options    array   progress status
     *                    - create    do we have to create it ?
     *                    - message   add or change the message
     *                    - percent   current level
@@ -800,9 +800,9 @@ class Html {
     *
     * @return nothing (display)
     **/
-   static function progressBar($id, array $options = array()) {
+   static function progressBar($id, array $options=array()) {
 
-      $params = array();
+      $params            = array();
       $params['create']  = false;
       $params['message'] = NULL;
       $params['percent'] = -1;
@@ -4325,7 +4325,7 @@ class Html {
    **/
    static function jsAjaxDropdown($name, $field_id, $url, $params=array()) {
       global $CFG_GLPI;
-      
+
       if (!isset($params['value'])) {
          $value = 0;
       } else {
@@ -4438,7 +4438,7 @@ class Html {
          $js .= " $('#$field_id').on('change', function(e) {".
                   stripslashes($on_change)."});";
       }
-      
+
       $output .= Html::scriptBlock($js);
       return $output;
    }
@@ -4783,7 +4783,7 @@ class Html {
          $addshowfilecontainer = true;
          $p['showfilecontainer'] = "filedata$randupload";
       }
-      
+
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       $out = "<div class='fileupload' id='dropdoc$randupload'>";
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
@@ -4818,7 +4818,7 @@ class Html {
       if ($p['multiple']) {
          $script.= "fileindex$randupload = fileindex$randupload+1;\n";
       }
-      
+
       $script.="        $('#progress$randupload .uploadbar').text('".__('Upload successful')."');\n
                         $('#progress$randupload .uploadbar').css('width', '100%');\n
                      } else {\n

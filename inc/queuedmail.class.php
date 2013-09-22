@@ -86,7 +86,8 @@ class QueuedMail extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -104,10 +105,8 @@ class QueuedMail extends CommonDBTM {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                }
             }
-         
             return;
       }
-
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
@@ -143,7 +142,7 @@ class QueuedMail extends CommonDBTM {
       } else {
         $input['documents'] = '';
       }
-      
+
       // Force items_id to integer
       if (!isset($input['items_id']) || empty($input['items_id'])) {
          $input['items_id'] = 0;

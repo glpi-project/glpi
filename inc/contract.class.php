@@ -1378,20 +1378,22 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+                                                CommonDBTM $checkitem=NULL) {
       global $CFG_GLPI;
 
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
          if (self::canUpdate()) {
-            $action_prefix = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
+            $action_prefix                    = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$action_prefix.'add']    = _x('button', 'Add a contract');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a contract');
          }
       }
    }
+
 }
 ?>

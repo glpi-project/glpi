@@ -452,13 +452,14 @@ class Lock {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
-      $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock';
+                                                CommonDBTM $checkitem=NULL) {
 
+      $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock';
 
       if (Session::haveRight('computer', UPDATE)
           && ($itemtype == 'Computer')) {
@@ -467,14 +468,16 @@ class Lock {
       }
    }
 
+
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
-         case 'unlock':
+         case 'unlock' :
             $types = array('Monitor'                => _n('Monitor', 'Monitors', 2),
                            'Peripheral'             => _n('Device', 'Devices', 2),
                            'Printer'                => _n('Printer', 'Printers', 2),
@@ -487,7 +490,6 @@ class Lock {
                            'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', 2));
 
             _e('Select the type of the item that must be unlock');
-
             echo "<br><br>\n";
 
             Dropdown::showFromArray('attached_item', $types,
@@ -496,14 +498,15 @@ class Lock {
                                           'values'   => array_keys($types)));
 
             echo "<br><br>".Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
-
             return true;
       }
       return false;
    }
 
+
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $baseitem,
@@ -511,7 +514,7 @@ class Lock {
       global $DB;
 
       switch ($ma->getAction()) {
-         case 'unlock':
+         case 'unlock' :
             $input = $ma->getInput();
             if (isset($input['attached_item'])) {
                $attached_items = $input['attached_item'];
@@ -546,9 +549,8 @@ class Lock {
             }
             return;
       }
-
-
       parent::processMassiveActionsForOneItemtype($ma, $baseitem, $ids);
    }
+
 }
 ?>
