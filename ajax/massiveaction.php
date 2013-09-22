@@ -44,7 +44,7 @@ try {
 } catch (Exception $e) {
 
    echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-      __s('Warning')."'><br><br>";
+                              __s('Warning')."'><br><br>";
    echo "<span class='b'>".$e->getMessage()."</span><br>";
    echo "</div>";
    exit();
@@ -53,8 +53,8 @@ try {
 
 echo "<div width='90%' class='center'><br>";
 Html::openMassiveActionsForm();
-$params = array('action'           => '__VALUE__');
-$input = $ma->getInput();
+$params = array('action' => '__VALUE__');
+$input  = $ma->getInput();
 foreach ($input as $key => $val) {
    $params[$key] = $val;
 }
@@ -86,5 +86,4 @@ if (count($actions)) {
 $CFG_GLPI['checkbox-zero-on-empty'] = true;
 Html::closeForm();
 echo "</div>";
-
 ?>

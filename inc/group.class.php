@@ -332,7 +332,8 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -363,14 +364,15 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
       switch ($ma->getAction()) {
-         case 'changegroup':
+         case 'changegroup' :
             $input = $ma->getInput();
             if (isset($input["field"])
                 && isset($input['groups_id'])) {

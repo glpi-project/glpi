@@ -61,6 +61,9 @@ class Item_Devices extends CommonDBRelation {
    static $rightname = 'device';
 
 
+   /**
+    * @since version 0.85
+   **/
    static function getTypeName($nb=0) {
 
       $device_type = static::getDeviceType();
@@ -77,7 +80,7 @@ class Item_Devices extends CommonDBRelation {
    **/
    function getForbiddenStandardMassiveAction() {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden = parent::getForbiddenStandardMassiveAction();
 
       if (count(static::getSpecificities()) == 0) {
          $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
@@ -468,8 +471,8 @@ class Item_Devices extends CommonDBRelation {
 
       if ($options['canedit']) {
          $group_checkbox_tag =  (empty($peer_type) ? '__' : $peer_type);
-         $content = Html::getCheckbox(array('criterion'
-                                               => array('tag_for_massive' => $group_checkbox_tag)));
+         $content     = Html::getCheckbox(array('criterion' => array('tag_for_massive'
+                                                                      => $group_checkbox_tag)));
          $delete_one  = $table_group->addHeader('one', $content, $delete_column, $previous_column);
       }
 

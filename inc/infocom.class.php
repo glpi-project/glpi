@@ -1624,7 +1624,8 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
@@ -1641,7 +1642,8 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -1674,10 +1676,9 @@ class Infocom extends CommonDBChild {
                }
             }
             return;
-
       }
-
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
+
 }
 ?>

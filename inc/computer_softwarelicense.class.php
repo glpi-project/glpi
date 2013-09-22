@@ -81,7 +81,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -89,13 +90,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $input = $ma->getInput();
       switch ($ma->getAction()) {
-         case 'move_license':
+         case 'move_license' :
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
                   SoftwareLicense::dropdown(array('condition'
-                                                  => "`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'",
+                                                    => "`glpi_softwarelicenses`.`softwares_id`
+                                                         = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
-                                                   => $input['options']['move']['used']));
+                                                    => $input['options']['move']['used']));
                   echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }
@@ -107,7 +109,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -139,7 +142,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             }
             return;
 
-         case 'install':
+         case 'install' :
             $csl = new self();
             $csv = new Computer_SoftwareVersion();
             foreach ($ids as $id) {
@@ -153,7 +156,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                      } else {
                         $version = $sl->fields["softwareversions_id_buy"];
                      }
-
                      if ($version > 0) {
                         $params = array('computers_id'        => $csl->fields['computers_id'],
                                         'softwareversions_id' => $version);
@@ -171,14 +173,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      }
-                  } else { 
+                  } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   }
                }
             }
             return;
       }
-
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 

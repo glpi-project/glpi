@@ -55,10 +55,10 @@ try {
 }
 Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 
-$results = $ma->process();
+$results   = $ma->process();
 
-$nbok = $results['ok'];
-$nbko = $results['ko'];
+$nbok      = $results['ok'];
+$nbko      = $results['ko'];
 $nbnoright = $results['noright'];
 
 if ($nbok == 0) {
@@ -74,9 +74,7 @@ if ($nbnoright || $nbko) {
                               $nbnoright, $nbko);
 }
 Session::addMessageAfterRedirect($message);
-if (isset($results['messages'])
-    && is_array($results['messages'])
-    && count($results['messages'])) {
+if (isset($results['messages']) && is_array($results['messages']) && count($results['messages'])) {
    foreach ($results['messages'] as $message) {
       Session::addMessageAfterRedirect($message, false, ERROR);
    }

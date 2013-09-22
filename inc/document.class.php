@@ -315,7 +315,7 @@ class Document extends CommonDBTM {
          echo "<td colspan=2>&nbsp;</td>";
       }
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Web Link')."</td>";
       echo "<td>";
@@ -331,7 +331,7 @@ class Document extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "mime");
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Blacklisted for import')."</td>";
       echo "<td>";
@@ -343,7 +343,7 @@ class Document extends CommonDBTM {
       echo "<td>";
       $this->showUploadedFilesDropdown("upload_file");
       echo "</td>";
-      
+
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
       echo "<td>";
       echo Html::file();
@@ -1255,11 +1255,12 @@ class Document extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+                                                CommonDBTM $checkitem=NULL) {
       global $CFG_GLPI;
 
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
@@ -1276,5 +1277,6 @@ class Document extends CommonDBTM {
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
    }
+
 }
 ?>

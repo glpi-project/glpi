@@ -1059,7 +1059,7 @@ class Profile extends CommonDBTM {
                             'field'     => 'changevalidation'));
       $matrix_options['title'] = _n('Change', 'Changes', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
-      
+
 
       if ($canedit
           && $closeform) {
@@ -1076,7 +1076,7 @@ class Profile extends CommonDBTM {
    /**
     * Display the matrix of the elements lifecycle of the elements
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @param $title          the kind of lifecycle
     * @param $html_field     field that is sent to _POST
@@ -2219,7 +2219,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
    **/
    static function getHelpdeskItemtypes() {
       global $CFG_GLPI;

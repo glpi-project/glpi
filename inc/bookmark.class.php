@@ -88,8 +88,8 @@ class Bookmark extends CommonDBTM {
 
       switch ($input['action']) {
          case "move_bookmark" :
-            $values = array('after'  => __('After'),
-                            'before' => __('Before'));
+            $values             = array('after'  => __('After'),
+                                        'before' => __('Before'));
             Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
 
             $param              = array('name'  => "bookmarks_id_ref",

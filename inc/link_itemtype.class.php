@@ -175,7 +175,7 @@ class Link_Itemtype extends CommonDBChild {
     *
     * Remove all associations for an itemtype
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @param $itemtype itemtype for which all link associations must be removed
     */
@@ -187,5 +187,6 @@ class Link_Itemtype extends CommonDBChild {
                 WHERE `itemtype` LIKE '%Plugin$itemtype%'";
       $DB->query($query);
    }
+
 }
 ?>

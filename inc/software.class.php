@@ -330,6 +330,8 @@ class Software extends CommonDBTM {
 
 
    /**
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -339,12 +341,10 @@ class Software extends CommonDBTM {
          case 'merge':
             $input = $ma->getInput();
             if (isset($input['item_items_id'])) {
-
                $items = array();
                foreach ($ids as $id) {
                   $items[$id] = 1;
                }
-
                if ($item->can($input['item_items_id'], UPDATE)) {
                   if ($item->merge($items)) {
                      $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
@@ -438,9 +438,9 @@ class Software extends CommonDBTM {
 
       // Only use for History (not by search Engine)
       $tab                       = array();
-      
+
       $tab['common']             = __('Characteristics');
-      
+
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
