@@ -84,6 +84,66 @@ class TicketValidation  extends CommonITILValidation {
    /**
     * @since version 0.85
     *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'submit_validation' :
+            //TODO: this method has been updated by Moyo (r21827)
+            static::showFormMassiveAction();
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'submit_validation' :
+            $input = $ma->getInput();
+            $valid = new self();
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $input2 = array('tickets_id'            => $id,
+                                  'comment_submission'    => $input['comment_submission']);
+                  if ($valid->can(-1, CREATE, $input2)) {
+                     $users = $input['users_id_validate'];
+                     foreach ($users as $user) {
+                        $input2["users_id_validate"] = $user;
+                        if ($valid->add($input2)) {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
     * @see commonDBTM::getRights()
     **/
    function getRights($interface='central') {

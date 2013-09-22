@@ -515,10 +515,11 @@ class TicketFollowup  extends CommonDBTM {
 
       switch ($ma->getAction()) {
          case 'add_followup' :
-            TicketFollowup::showFormMassiveAction();
+            static::showFormMassiveAction();
             return true;
       }
-      return false;
+
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
