@@ -750,8 +750,8 @@ abstract class CommonITILObject extends CommonDBTM {
                $this->fields['status'] = self::SOLVED;
                $this->input['status']  = self::SOLVED;
             }
-         } else {
 
+         } else {
             $this->fields['status'] = self::SOLVED;
             $this->input['status']  = self::SOLVED;
          }

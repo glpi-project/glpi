@@ -168,8 +168,6 @@ class Event extends CommonDBTM {
                                                 "?id=".$items_id,
                                              array('height' => 600));
 
-               break;
-
             case "devices" :
                echo $items_id;
                break;

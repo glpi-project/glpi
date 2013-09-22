@@ -4758,15 +4758,16 @@ class Html {
     * @since version 0.85
     *
     * @param $options       array of options
-    *    - name       : string  : field name (default filename)
-    *    - multiple   : boolean : allow multiple file upload (default false)
-    *    - onlyimages : boolean :  restrict to image files (default false)
-    *    - showfilecontainer : string :  DOM ID of the container showing file uploaded : use selector to display
-    *    - showfilesize : boolean :  show file size with file name
+    *    - name                string   field name (default filename)
+    *    - multiple            boolean  allow multiple file upload (default false)
+    *    - onlyimages          boolean  restrict to image files (default false)
+    *    - showfilecontainer   string   DOM ID of the container showing file uploaded:
+    *                                   use selector to display
+    *    - showfilesize        boolean  show file size with file name
     *
     * @return string input file field
    **/
-   static function file($options = array()) {
+   static function file($options=array()) {
       global $CFG_GLPI;
 
       $p['name']              = 'filename';
@@ -4780,18 +4781,19 @@ class Html {
             $p[$key] = $val;
          }
       }
-      $randupload = mt_rand();
+      $randupload           = mt_rand();
       $addshowfilecontainer = false;
       if (empty($p['showfilecontainer'])) {
-         $addshowfilecontainer = true;
+         $addshowfilecontainer   = true;
          $p['showfilecontainer'] = "filedata$randupload";
       }
 
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
-      $out = "<div class='fileupload' id='dropdoc$randupload'>";
+      $out  = "<div class='fileupload' id='dropdoc$randupload'>";
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       $out .= "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
-               $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name']."&showfilesize=".$p['showfilesize']."'>";
+                $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name'].
+                "&showfilesize=".$p['showfilesize']."'>";
 
       $script = "var fileindex$randupload = 0;
          $('#fileupload$randupload').fileupload({

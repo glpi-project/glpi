@@ -1513,16 +1513,16 @@ class Ticket extends CommonITILObject {
          $validation          = new TicketValidation();
 
          // Validation user added on ticket form
-         if(isset($this->input['users_id_validate'])){
+         if (isset($this->input['users_id_validate'])){
             if (array_key_exists('groups_id', $this->input['users_id_validate'])) {
-               foreach($this->input['users_id_validate'] as $key => $validation_to_add){
-                  if(is_numeric($key)){
+               foreach ($this->input['users_id_validate'] as $key => $validation_to_add){
+                  if (is_numeric($key)){
                      $validations_to_send['validation_users']['user'][] = $validation_to_add;
                   }
                }
             } else {
-               foreach($this->input['users_id_validate'] as $key => $validation_to_add){
-                  if(is_numeric($key)){
+               foreach ($this->input['users_id_validate'] as $key => $validation_to_add){
+                  if (is_numeric($key)){
                      $validations_to_send['validation_users']['user'][] = $validation_to_add;
                   }
                }
@@ -1537,12 +1537,10 @@ class Ticket extends CommonITILObject {
                   switch ($type) {
                      case 'group' :
                         foreach ($array_id as $groups_id) {
-
                            $validation_right = 'validate_incident';
                            if ($this->input['type'] == Ticket::DEMAND_TYPE) {
                               $validation_right = 'validate_request';
                            }
-
                            $opt = array('groups_id'   => $groups_id,
                                           'right'     => $validation_right,
                                           'entity'    => $this->input['entities_id']);
@@ -1930,7 +1928,7 @@ class Ticket extends CommonITILObject {
                      $input2['_link']['link']         = $input['link'];
                      $input2['_link']['tickets_id_2'] = $id;
                      if ($item->can($input['tickets_id_1'], UPDATE)) {
-                        if ($item->update($input2)) { 
+                        if ($item->update($input2)) {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -2231,8 +2229,9 @@ class Ticket extends CommonITILObject {
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
          $tokeep = array('common', 'requester');
-         if (Session::haveRightsOr('ticketvalidation', array_merge(TicketValidation::getValidateRights(),
-                                                                   TicketValidation::getCreateRights()))) {
+         if (Session::haveRightsOr('ticketvalidation',
+                                    array_merge(TicketValidation::getValidateRights(),
+                                                TicketValidation::getCreateRights()))) {
             $tokeep[] = 'validation';
          }
          $keep = false;

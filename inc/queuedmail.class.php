@@ -371,16 +371,16 @@ class QueuedMail extends CommonDBTM {
                   // Add embeded image if tag present
                   if (!empty($doc->fields['tag'])) {
                      $mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                             $doc->fields['tag'],
-                                             $doc->fields['filename'],
-                                             'base64',
-                                             $doc->fields['mime']);
+                                              $doc->fields['tag'],
+                                              $doc->fields['filename'],
+                                              'base64',
+                                              $doc->fields['mime']);
                   // Else Add attached document
                   } else {
                      $mmail->AddAttachment(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                          $doc->fields['filename'],
-                                          'base64',
-                                          $doc->fields['mime']);
+                                           $doc->fields['filename'],
+                                           'base64',
+                                           $doc->fields['mime']);
                   }
                }
             }

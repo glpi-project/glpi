@@ -98,8 +98,7 @@ if (isset($_GET['used'])) {
    $used = $_GET['used'];
 
    if (count($used)) {
-      $where .=" AND `$table`.`id` NOT IN ('";
-      $where .= implode("','",$used)."' ) ";
+      $where .=" AND `$table`.`id` NOT IN ('".implode("','",$used)."' ) ";
    }
 }
 
@@ -248,7 +247,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
       $last_level_displayed = array();
       $datastoadd           = array();
-      
+
       // Ignore first item for all pages except first page or one_item
       $firstitem = (($_GET['page'] > 1) && ($one_item < 0));
       if ($DB->numrows($result)) {
@@ -399,7 +398,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
    }
 
-   
+
 } else { // Not a dropdowntree
    $multi = false;
    // No multi if get one item
@@ -598,7 +597,7 @@ if ($item instanceof CommonTreeDropdown) {
                $datas = array_merge($datas, $datastoadd);
             }
          }
-      }      
+      }
    }
 }
 

@@ -153,7 +153,7 @@ function update084to085() {
             $new_right = 0;
 
             if (($profile[$right] == 'r')
-                  || ($profile[$right] == '1')) {
+                || ($profile[$right] == '1')) {
                $new_right = READ;
             } else if ($profile[$right] == 'w') {
                $new_right = ALLSTANDARDRIGHT;
@@ -789,7 +789,7 @@ function update084to085() {
                                                    "`name` = 'ticketvalidation'
                                                      AND `rights` & ". PURGE);
    }
-   
+
    // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'planning'") == 0) {
       // rename show_planning
@@ -1367,7 +1367,7 @@ function update084to085() {
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'drop rules cache'));
-   
+
    $migration->dropTable('glpi_rulecachecomputermodels');
    $migration->dropTable('glpi_rulecachecomputertypes');
    $migration->dropTable('glpi_rulecachemanufacturers');
@@ -1546,8 +1546,8 @@ function update084to085() {
 
    // Add validation percent for tickets
    $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
-   
-   
+
+
    // Create notification for reply to satisfaction survey based on satisfaction notif
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',

@@ -1244,17 +1244,17 @@ class Dropdown {
     *
     * @param $myname          select name
     * @param $options   array of additionnal options :
-    *     - value           default value (defaul 0)
-    *     - rand            random value
-    *     - min             min value (default 0)
-    *     - max             max value (default 100)
-    *     - step            step used (default 1)
-    *     - toadd     array of values to add at the beginning
-    *     - unit : string unit to used
-    *     - display : boolean if false get string
-    *     - width   : specific width needed (default 80%)
-    *     - on_change    : string / value to transmit to "onChange"
-    *     - used         : array / Already used items ID: not to display in dropdown (default empty)
+    *     - value              default value (defaul 0)
+    *     - rand               random value
+    *     - min                min value (default 0)
+    *     - max                max value (default 100)
+    *     - step               step used (default 1)
+    *     - toadd     array    of values to add at the beginning
+    *     - unit      string   unit to used
+    *     - display   boolean  if false get string
+    *     - width              specific width needed (default 80%)
+    *     - on_change string / value to transmit to "onChange"
+    *     - used      array / Already used items ID: not to display in dropdown (default empty)
    **/
    static function showNumber($myname, $options=array()) {
       global $CFG_GLPI;
@@ -1286,20 +1286,20 @@ class Dropdown {
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
-      $param    = array('value'               => $p['value'],
-                        'valuename'           => $valuename,
-                        'width'               => $p['width'],
-                        'on_change'           => $p['on_change'],
-                        'used'                => $p['used'],
-                        'unit'                => $p['unit'],
-                        'min'                 => $p['min'],
-                        'max'                 => $p['max'],
-                        'step'                => $p['step'],
-                        'toadd'               => $p['toadd']);
+      $param = array('value'               => $p['value'],
+                     'valuename'           => $valuename,
+                     'width'               => $p['width'],
+                     'on_change'           => $p['on_change'],
+                     'used'                => $p['used'],
+                     'unit'                => $p['unit'],
+                     'min'                 => $p['min'],
+                     'max'                 => $p['max'],
+                     'step'                => $p['step'],
+                     'toadd'               => $p['toadd']);
 
       $out   = Html::jsAjaxDropdown($myname, $field_id,
-                                       $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
-                                       $param);
+                                    $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
+                                    $param);
 
       if ($p['display']) {
          echo $out;

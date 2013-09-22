@@ -106,7 +106,6 @@ class GLPIPDF extends TCPDF {
             }
          }
       }
-  //    toolbox::logdebug($list);
       return $list;
    }
 
