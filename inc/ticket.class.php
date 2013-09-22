@@ -1876,7 +1876,7 @@ class Ticket extends CommonITILObject {
 
       if (Session::haveRight(self::$rightname, UPDATE)) {
          $actions['add_actor']   = __('Add an actor');
-         $actions['link_ticket'] = _x('button', 'Link tickets');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'link_ticket'] = _x('button', 'Link tickets');
       }
 
       if (Session::haveRight(self::$rightname, UPDATE)) {
@@ -1888,6 +1888,28 @@ class Ticket extends CommonITILObject {
 
 
    /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
+
+      switch ($ma->getAction()) {
+         case 'link_ticket' :
+            // TODO: move to Ticket_Ticket ?
+            $rand = Ticket_Ticket::dropdownLinks('link');
+            printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
+            echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
+            echo "<br><br>";
+            echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
+            return true;
+      }
+      return false;
+   }
+
+
+   /**
     * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
    function showSpecificMassiveActionsParameters($input=array()) {
@@ -1895,14 +1917,6 @@ class Ticket extends CommonITILObject {
       switch ($input['action']) {
          case "add_followup" :
             TicketFollowup::showFormMassiveAction();
-            return true;
-
-         case "link_ticket" :
-            $rand = Ticket_Ticket::dropdownLinks('link');
-            printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
-            echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button','Post')."'>";
             return true;
 
          case "submit_validation" :
@@ -1917,6 +1931,45 @@ class Ticket extends CommonITILObject {
 
 
    /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'link_ticket' :
+            $input = $ma->getInput();
+            if (isset($input['link'])
+                && isset($input['tickets_id_1'])) {
+               if ($item->getFromDB($input['tickets_id_1'])) {
+                  foreach ($ids as $id) {
+                     $input2                          = array();
+                     $input2['id']                    = $input['tickets_id_1'];
+                     $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
+                     $input2['_link']['link']         = $input['link'];
+                     $input2['_link']['tickets_id_2'] = $id;
+                     if ($item->can($input['tickets_id_1'], UPDATE)) {
+                        if ($item->update($input2)) { 
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                     }
+                  }
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+   /**
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -1926,34 +1979,6 @@ class Ticket extends CommonITILObject {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "link_ticket" :
-            if (isset($input['link'])
-                && isset($input['tickets_id_1'])) {
-               if ($this->getFromDB($input['tickets_id_1'])) {
-                  foreach ($input["item"] as $key => $val) {
-                     if ($val == 1) {
-                        $input2                          = array();
-                        $input2['id']                    = $input['tickets_id_1'];
-                        $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
-                        $input2['_link']['link']         = $input['link'];
-                        $input2['_link']['tickets_id_2'] = $key;
-                        if ($this->can($input['tickets_id_1'], UPDATE)) {
-                           if ($this->update($input2)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                        }
-                     }
-                  }
-               }
-            }
-            break;
-
          case "submit_validation" :
             $valid = new TicketValidation();
             foreach ($input["item"] as $key => $val) {
