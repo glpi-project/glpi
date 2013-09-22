@@ -628,7 +628,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Clean translations associated to a dropdown
     *
-    * @since 0.85
+    * @since version 0.85
    **/
    function cleanTranslations() {
 
@@ -1990,10 +1990,10 @@ class CommonDBTM extends CommonGLPI {
          echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
          if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo Html::submit(_x('button','Add'), array('name' => 'add'));
+            echo Html::submit(_sx('button','Add'), array('name' => 'add'));
          } else {
             //TRANS : means update / actualize
-            echo Html::submit(_x('button','Save'), array('name' => 'update'));
+            echo Html::submit(_sx('button','Save'), array('name' => 'update'));
          }
 
       } else {
@@ -2007,13 +2007,13 @@ class CommonDBTM extends CommonGLPI {
             if ($params['canedit']
                 && $this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_x('button','Save'), array('name' => 'update'));
+               echo Html::submit(_sx('button','Save'), array('name' => 'update'));
                echo "</td></tr><tr class='tab_bg_2'>\n";
             }
             if ($this->isDeleted()
                 && $this->can($ID, PURGE)) {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-               echo Html::submit(_x('button','Restore'), array('name' => 'restore'));
+               echo Html::submit(_sx('button','Restore'), array('name' => 'restore'));
 
                echo "<span class='very_small_space'>";
                if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
@@ -2025,7 +2025,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                   echo ">&nbsp;";
                }
-               echo Html::submit(_x('button','Delete permanently'), array('name' => 'purge'));
+               echo Html::submit(_sx('button','Delete permanently'), array('name' => 'purge'));
                echo "</span>";
 
             } else {
@@ -2034,20 +2034,20 @@ class CommonDBTM extends CommonGLPI {
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
                   if ($this->can($ID, PURGE)) {
-                     echo Html::submit(_x('button','Delete permanently'),
+                     echo Html::submit(_sx('button','Delete permanently'),
                                        array('name'    => 'purge',
                                              'confirm' => __('Confirm the final deletion?')));
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                  echo Html::submit(_x('button','Put in dustbin'), array('name' => 'delete'));
+                  echo Html::submit(_sx('button','Put in dustbin'), array('name' => 'delete'));
                }
             }
 
          } else {
             if ($this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_x('button','Save'), array('name' => 'update'));
+               echo Html::submit(_sx('button','Save'), array('name' => 'update'));
             }
          }
          if ($this->isField('date_mod')) {
@@ -3028,22 +3028,22 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since version 0.85
     *
-    * @param $actions array of the actions to update
-    * @param $itemtype the type of the item for which we want the actions
-    * @param $is_deleted
-    * @param $checkitem
+    * @param $actions    array   of the actions to update
+    * @param $itemtype           the type of the item for which we want the actions
+    * @param $is_deleted         (default 0)
+    * @param $checkitem          (default NULL)
     *
     * @return nothing (update is set inside $actions)
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+                                                CommonDBTM $checkitem=NULL) {
    }
 
 
    /**
     * Class-specific method used to show the fields to specify the massive action
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @param $ma the current massive action object
     *
@@ -3057,7 +3057,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Class specific execution of the massive action (new system) by itemtypes
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @param $ma the current massive action object
     * @param $item the item on which apply the massive action
@@ -3990,7 +3990,7 @@ class CommonDBTM extends CommonGLPI {
          if (isset($searchoptions['unit'])) {
             $unit = $searchoptions['unit'];
          }
-         
+
          switch ($searchoptions['datatype']) {
             case "number" :
             case "integer" :

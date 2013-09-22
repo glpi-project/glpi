@@ -394,7 +394,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /**
     * Get all specificities of the current itemtype concerning the massive actions
     *
-    * @since 0.85
+    * @since version 0.85
     *
     * @return array of the specificities :
     *        'reaffect'   is it possible to reaffect the connexity (1 or 2 for CommonDBRelation)
@@ -409,18 +409,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
                    'normalized'    => array('affect'   => array('affect'),
                                             'unaffect' => array('unaffect')),
                    'action_name'   => array('affect'   => __('Associate'),
-                                            'unaffect' => __('Dissociate')),
-                   );
-
+                                            'unaffect' => __('Dissociate')));
    }
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+                                                CommonDBTM $checkitem=NULL) {
 
       $unaffect = false;
       $affect   = false;
@@ -459,7 +458,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -495,7 +495,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       }
 
       switch ($normalized_action) {
-         case 'unaffect':
+         case 'unaffect' :
             foreach ($itemtypes as $itemtype => $specificities) {
                if (Toolbox::is_a($itemtype, 'CommonDBRelation')) {
                   $peer_field = "peer[$itemtype]";
@@ -507,14 +507,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
                         $values[0] = __('First Item');
                      } else {
                         $itemtype_1 = $itemtype::$itemtype_1;
-                        $values[0] = $itemtype_1::getTypeName(2);
+                        $values[0]  = $itemtype_1::getTypeName(2);
                      }
                      if ((empty($itemtype::$itemtype_2))
                          || (preg_match('/^itemtype/', $itemtype::$itemtype_2))) {
                         $values[1] = __('Second Item');
                      } else {
                         $itemtype_2 = $itemtype::$itemtype_2;
-                        $values[1] = $itemtype_2::getTypeName(2);
+                        $values[1]  = $itemtype_2::getTypeName(2);
                      }
                      echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
                      Dropdown::showFromArray($peer_field, $values);
@@ -526,10 +526,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   }
                }
             }
-            echo "<br><br>".Html::submit(__('Dissociate'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_s('Dissociate'), array('name' => 'massiveaction'));
             return true;
 
-         case 'affect':
+         case 'affect' :
             $peertypes = array();
             foreach ($itemtypes as $itemtype => $specificities) {
                if (!$specificities['reaffect']) {
@@ -558,13 +558,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
             $options = array();
             if (count($peertypes) == 1) {
                $options['name']   = 'peers_id';
-
                $type_for_dropdown = $peertypes[0];
-
                if (preg_match('/^itemtype/', $peertype)) {
                   echo Html::hidden('peertype', array('value' => $type_for_dropdown));
                }
-
                $type_for_dropdown::dropdown($options);
             } else {
                $options['itemtype_name'] = 'peertype';
@@ -572,7 +569,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                $options['itemtypes']     = $peertypes;
                Dropdown::showSelectItemFromItemtypes($options);
             }
-            echo "<br><br>".Html::submit(__('Associate'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_s('Associate'), array('name' => 'massiveaction'));
             return true;
       }
 
@@ -581,14 +578,15 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * Set based array for static::add or static::update in case of massive actions are doing
     * something.
     *
-    * @param $action the name of the action
-    * @param $item the item on which apply the massive action
-    * @param $ids an array of the ids of the item on which apply the action
-    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
+    * @param $action          the name of the action
+    * @param $item            the item on which apply the massive action
+    * @param $ids      array  of the ids of the item on which apply the action
+    * @param $input    array  of the input provided by the form ($_POST, $_GET ...)
     *
     * @return array containing the elements
    **/
@@ -599,7 +597,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
@@ -613,8 +612,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
       $itemtype      = $item->getType();
       $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
 
-      $action = $ma->getAction();
-      $input  = $ma->getInput();
+      $action        = $ma->getAction();
+      $input         = $ma->getInput();
 
       // First, get normalized action : affect or unaffect
       if (in_array($action, $specificities['normalized']['affect'])) {
@@ -658,14 +657,12 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             return;
 
-         case 'affect':
-
+         case 'affect' :
             if (!$specificities['reaffect']) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                return;
             }
-
             if (is_a($item, 'CommonDBRelation')) {
                if ($specificities['reaffect'] == 1) {
                   $peertype = $itemtype::$itemtype_1;
@@ -678,11 +675,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
                $peertype = $itemtype::$itemtype;
                $peers_id = $itemtype::$items_id;
             }
-
             $input2 = $itemtype::getConnexityInputForProcessingOfMassiveActions($action, $item,
                                                                                 $ids, $input);
             $input2[$peers_id] = $input['peers_id'];
-
             if (preg_match('/^itemtype/', $peertype)) {
                if (!in_array($input['peertype'], $specificities['itemtypes'])) {
                   $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
@@ -697,15 +692,12 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   return;
                }
             }
-
             foreach ($ids as $key) {
-
                if (!$item->getFromDB($key)) {
                   $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   continue;
                }
-
                if (preg_match('/^itemtype/', $peertype)) {
                   if (($input2[$peertype] == $item->fields[$peertype])
                       && ($input2[$peers_id] == $item->fields[$peers_id])) {
@@ -720,7 +712,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
                      continue;
                   }
                }
-
                $input2[$item->getIndexName()] = $item->getID();
                if ($item->can($item->getID(), UPDATE, $input2)) {
                   if ($item->update($input2)) {
@@ -739,5 +730,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
+
 }
 ?>

@@ -936,41 +936,46 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
    static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 
-      $specificities = parent::getRelationMassiveActionsSpecificities();
+      $specificities                            = parent::getRelationMassiveActionsSpecificities();
 
-      $specificities['dropdown_method_2'] = 'dropdownUnder';
-      $specificities['can_remove_all_at_once'] = false;
+      $specificities['dropdown_method_2']       = 'dropdownUnder';
+      $specificities['can_remove_all_at_once']  = false;
 
       return $specificities;
    }
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::showRelationMassiveActionsSubForm()
    **/
    static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
-      if (($ma->getAction() == 'add') && ($peer_number == 2)) {
-         echo "<br><br>"._n('Entity', 'Entities', 1).':&nbsp;';
+
+      if (($ma->getAction() == 'add')
+          && ($peer_number == 2)) {
+         echo "<br><br>".sprintf(__('%1$s: %2$s'), _n('Entity', 'Entities', 1), '');
          Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
-         echo "<br><br>".__('Recursive').":&nbsp;";
+         echo "<br><br>".sprintf(__('%1$s: %2$s'), __('Recursive'), '');
          Html::showCheckbox(array('name' => 'is_recursive'));
       }
    }
 
 
    /**
-    * @since 0.85
+    * @since version 0.85
+    *
     * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
    **/
-   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
-                                                                 array $input) {
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item,
+                                                                 array $ids, array $input) {
       $result = array();
       if (isset($input['entities_id'])) {
          $result['entities_id'] = $input['entities_id'];
@@ -981,5 +986,6 @@ class Profile_User extends CommonDBRelation {
 
       return $result;
    }
+
 }
 ?>
