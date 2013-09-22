@@ -263,11 +263,6 @@ class MassiveAction {
             Toolbox::logDebug('Implementation error !');
             throw new Exception(__('Implementation error !'));
          }
-         // TODO already done in previous if
-//         if (!isset($_SESSION['current_massive_action'][$GET['identifier']])) {
-//            Toolbox::logDebug('Implementation error !');
-//            throw new Exception(__('Implementation error !'));
-//         }
          $identifier = $GET['identifier'];
          foreach ($_SESSION['current_massive_action'][$identifier] as $attribute => $value) {
             $this->$attribute = $value;
@@ -746,41 +741,6 @@ class MassiveAction {
 
 
    /**
-    * Merge the results of different massive actions.
-    *
-    * @param $result
-    *
-    * @return nothing
-    *
-    * // TODO function never used
-   **/
-   function mergeProcessResult($result) {
-
-      if (is_array($result)) {
-         foreach (array('ok', 'ko', 'noright') as $element) {
-            if (isset($result[$element])) {
-               $this->results[$element] += $result[$element];
-            }
-         }
-
-         if (isset($result['messages'])) {
-            foreach ($result['messages'] as $message) {
-               $this->addMessage($message);
-            }
-         }
-
-         if (isset($result['REDIRECT'])) {
-           $this->setRedirect($result['REDIRECT']);
-         }
-
-         foreach ($ids as $id => $value) {
-            $this->itemDone($itemtype, $id, self::NO_ACTION);
-         }
-      }
-   }
-
-
-   /**
     * Update the progress bar
     *
     * Display and update the progress bar. If the delay is more than 1 second, then activate it
@@ -844,19 +804,19 @@ class MassiveAction {
             }
 
             $processor = $this->processor;
-            // TODO function processMassiveActionsForSeveralItemtype deleted r21497
             if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
                $processor::processMassiveActionsForSeveralItemtype($this);
             }
-            $this->processForSeveralItemtype();
+            $this->processForSeveralItemtypes();
 
          } else {
             $input             = $this->POST;
-            $input['itemtype'] = $this->getItemType(false);
+            $itemtype          = $this->getItemType(false);
+            $input['itemtype'] = $itemtype;
             $input['action']   = $this->action;
-            $input['item']     = array_fill_keys(array_keys($this->items[$input['itemtype']]), 1);
+            $input['item']     = array_fill_keys(array_keys($this->items[$itemtype]), 1);
 
-            if ($item = getItemForItemtype($input['itemtype'])) {
+            if ($item = getItemForItemtype($itemtype)) {
                $split = explode('_', $input["action"]);
                if (($split[0] == 'plugin')
                    && isset($split[1])) {
@@ -889,11 +849,11 @@ class MassiveAction {
                      $this->setRedirect($res['REDIRECT']);
                   }
 
-                  $this->itemDone($input['itemtype'], $input['item'], self::NO_ACTION);
+                  $this->itemDone($itemtype, $input['item'], self::NO_ACTION);
                }
 
             } else {
-               $ma->itemDone($item->getType(), $input['item'], MassiveAction::ACTION_KO);
+               $ma->itemDone($itemtype, $input['item'], MassiveAction::ACTION_KO);
             }
          }
       }
@@ -911,7 +871,7 @@ class MassiveAction {
     * Process the specific massive actions for severl itemtypes
     * @return array of the results for the actions
    **/
-   function processForSeveralItemtype() {
+   function processForSeveralItemtypes() {
 
       $processor = $this->processor;
       foreach ($this->remainings as $itemtype => $ids) {
