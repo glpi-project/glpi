@@ -1990,10 +1990,10 @@ class CommonDBTM extends CommonGLPI {
          echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
          if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo Html::submit(_sx('button','Add'), array('name' => 'add'));
+            echo Html::submit(_x('button','Add'), array('name' => 'add'));
          } else {
             //TRANS : means update / actualize
-            echo Html::submit(_sx('button','Save'), array('name' => 'update'));
+            echo Html::submit(_x('button','Save'), array('name' => 'update'));
          }
 
       } else {
@@ -2007,13 +2007,13 @@ class CommonDBTM extends CommonGLPI {
             if ($params['canedit']
                 && $this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_sx('button','Save'), array('name' => 'update'));
+               echo Html::submit(_x('button','Save'), array('name' => 'update'));
                echo "</td></tr><tr class='tab_bg_2'>\n";
             }
             if ($this->isDeleted()
                 && $this->can($ID, PURGE)) {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-               echo Html::submit(_sx('button','Restore'), array('name' => 'restore'));
+               echo Html::submit(_x('button','Restore'), array('name' => 'restore'));
 
                echo "<span class='very_small_space'>";
                if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
@@ -2025,7 +2025,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                   echo ">&nbsp;";
                }
-               echo Html::submit(_sx('button','Delete permanently'), array('name' => 'purge'));
+               echo Html::submit(_x('button','Delete permanently'), array('name' => 'purge'));
                echo "</span>";
 
             } else {
@@ -2034,20 +2034,20 @@ class CommonDBTM extends CommonGLPI {
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
                   if ($this->can($ID, PURGE)) {
-                     echo Html::submit(_sx('button','Delete permanently'),
+                     echo Html::submit(_x('button','Delete permanently'),
                                        array('name'    => 'purge',
                                              'confirm' => __('Confirm the final deletion?')));
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                  echo Html::submit(_sx('button','Put in dustbin'), array('name' => 'delete'));
+                  echo Html::submit(_x('button','Put in dustbin'), array('name' => 'delete'));
                }
             }
 
          } else {
             if ($this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_sx('button','Save'), array('name' => 'update'));
+               echo Html::submit(_x('button','Save'), array('name' => 'update'));
             }
          }
          if ($this->isField('date_mod')) {
@@ -2437,12 +2437,13 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Check if have right on this entity
     *
-    * @param $recursive boolean set true to accpet recursive items of ancestors of active entities (View case for example)
+    * @param $recursive   boolean    set true to accept recursive items of ancestors
+    *                                of active entities (View case for example) (default false)
     * @since version 0.85
     *
     * @return booleen
    **/
-   function checkEntity($recursive = false) {
+   function checkEntity($recursive=false) {
 
       // Is an item assign to an entity
       if ($this->isEntityAssign()) {

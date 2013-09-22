@@ -1620,15 +1620,18 @@ class AuthLDAP extends CommonDBTM {
             echo "<div class='center'>";
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             // TODO MassiveAction: specific_actions
-            $paramsma = array('num_displayed'    => min($_SESSION['glpilist_limit'],
-                                                        count($ldap_groups)),
-                              'container'        => 'mass'.__CLASS__.$rand,
-                              'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'import_group' => _sx('button','Import')),
-                              'extraparams'
-                                   => array('massive_action_fields'
-                                                => array('dn', 'ldap_import_type',
-                                                         'ldap_import_entities',
-                                                         'ldap_import_recursive')));
+            $paramsma
+               = array('num_displayed'
+                           => min($_SESSION['glpilist_limit'], count($ldap_groups)),
+                       'container'
+                           => 'mass'.__CLASS__.$rand,
+                       'specific_actions'
+                           => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'import_group'
+                                       => _sx('button','Import')),
+                       'extraparams'
+                           => array('massive_action_fields' => array('dn', 'ldap_import_type',
+                                                                     'ldap_import_entities',
+                                                                     'ldap_import_recursive')));
             Html::showMassiveActions($paramsma);
 
             echo "<table class='tab_cadre_fixe'>";

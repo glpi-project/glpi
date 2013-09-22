@@ -79,7 +79,7 @@ class Cartridge extends CommonDBChild {
                $input['maxpages'] = '';
             }
             echo "<input type='text' name='pages' value=\"".$input['maxpages']."\" size='6'>";
-            echo "<br><br>".Html::submit(_sx('button', 'Update'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_x('button', 'Update'), array('name' => 'massiveaction'));
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);

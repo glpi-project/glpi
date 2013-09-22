@@ -51,14 +51,17 @@ class TicketValidation  extends CommonITILValidation {
    const VALIDATEREQUEST             = 4096;
    const VALIDATEINCIDENT            = 8192;
 
+
    static function getCreateRights() {
       return array(static::CREATEREQUEST, static::CREATEINCIDENT);
    }
 
+
    static function getValidateRights() {
       return array(static::VALIDATEREQUEST, static::VALIDATEINCIDENT);
    }
-   
+
+
    /**
     * @since version 0.85
    **/
@@ -77,6 +80,7 @@ class TicketValidation  extends CommonITILValidation {
       }
    }
 
+
    /**
     * @since version 0.85
     *
@@ -87,12 +91,16 @@ class TicketValidation  extends CommonITILValidation {
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      $values[self::CREATEREQUEST]    = array('short' => __('Create for request'),
-                                              'long'  => __('Create a validation request for a request'));
-      $values[self::CREATEINCIDENT]   = array('short' => __('Create for incident'),
-                                              'long'  => __('Create a validation request for an incident'));
-      $values[self::VALIDATEREQUEST]  = __('Validate a request');
-      $values[self::VALIDATEINCIDENT] = __('Validate an incident');
+      $values[self::CREATEREQUEST]
+                              = array('short' => __('Create for request'),
+                                      'long'  => __('Create a validation request for a request'));
+      $values[self::CREATEINCIDENT]
+                              = array('short' => __('Create for incident'),
+                                      'long'  => __('Create a validation request for an incident'));
+      $values[self::VALIDATEREQUEST]
+                              = __('Validate a request');
+      $values[self::VALIDATEINCIDENT]
+                              = __('Validate an incident');
 
       if ($interface == 'helpdesk') {
          unset($values[PURGE]);

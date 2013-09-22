@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * @since version 0.85
+ * @since version 0.85 (before migration_cleaner)
 **/
 class MigrationCleaner extends CommonGLPI {
 

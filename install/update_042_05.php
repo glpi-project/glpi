@@ -577,12 +577,12 @@ function update042to05() {
                    VALUES (1, 'Maintenance', '', '0', 5, '2005-01-01', 120, 0, 0, 0, 0, '', '', 'N',
                            '00:00:00', '00:00:00', '00:00:00', '00:00:00', 'N', '00:00:00',
                            '00:00:00', 'N')";
-         $result = $DB->queryOrDie($query, "0.5 insert_init for update maintenace");
+         $result = $DB->queryOrDie($query, "0.5 insert_init for update maintenance");
 
          if ($result) {
             $query = "SELECT `ID`
                       FROM `glpi_contracts`";
-            $result = $DB->queryOrDie($query, "0.5 select_init for update maintenace");
+            $result = $DB->queryOrDie($query, "0.5 select_init for update maintenance");
 
             if ($result) {
                $data       = $DB->fetch_array($result);

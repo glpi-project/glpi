@@ -621,7 +621,8 @@ class Reservation extends CommonDBChild {
          $resa->getEmpty();
          $resa->fields["begin"] = $options['begin'];
          if (!isset($options['end'])) {
-            $resa->fields["end"]   = date("Y-m-d H:00:00", strtotime($resa->fields["begin"])+HOUR_TIMESTAMP);
+            $resa->fields["end"] = date("Y-m-d H:00:00",
+                                        strtotime($resa->fields["begin"])+HOUR_TIMESTAMP);
          } else {
             $resa->fields["end"] = $options['end'];
          }

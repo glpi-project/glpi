@@ -1336,7 +1336,7 @@ class Html {
       if ($CFG_GLPI['allow_search_global']) {
          echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
          echo "<div id='boutonRecherche'>";
-         echo Html::submit(_sx('button','Post'),
+         echo Html::submit(_x('button','Post'),
                            array('image' => $CFG_GLPI["root_doc"]."/pics/search.png"));
          echo "</div>";
          echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch'

@@ -2393,7 +2393,7 @@ class User extends CommonDBTM {
                                              "/ajax/dropdownMassiveActionAuthMethods.php",
                                           $paramsmassaction);
             echo "<span id='show_massiveaction_field'><br><br>";
-            echo Html::submit(_sx('button','Post'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
             return true;
       }
       return false;

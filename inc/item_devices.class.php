@@ -398,18 +398,17 @@ class Item_Devices extends CommonDBRelation {
     * @param $item
     * @param $table
     * @param $options            array
-    * @param $delete_all_column
+    * @param $delete_all_column          (default NULL)
     * @param $common_column
     * @param $specific_column
-    * @param $delete_column
+    * @param $delete_column               (default NULL)
     * @param $dynamic_column
    **/
    static function getTableGroup(CommonDBTM $item, HTMLTableMain $table, array $options,
-                                 HTMLTableSuperHeader $delete_all_column = NULL,
+                                 HTMLTableSuperHeader $delete_all_column=NULL,
                                  HTMLTableSuperHeader $common_column,
                                  HTMLTableSuperHeader $specific_column,
-                                 HTMLTableSuperHeader $delete_column = NULL,
-                                 $dynamic_column) {
+                                 HTMLTableSuperHeader $delete_column=NULL, $dynamic_column) {
       global $DB;
 
       $is_device = ($item instanceof CommonDevice);
