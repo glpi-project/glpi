@@ -79,7 +79,7 @@ function update084to0841() {
          $text = addslashes($text);
          $text = Toolbox::clean_cross_side_scripting_deep($text);
          $query = "UPDATE `$table` SET `$field` = '$text' WHERE `id` = '".$data['id']."';";
-         $DB->queryOrDie($query, "0.85 fix encoding of html field : $table.$field");
+         $DB->queryOrDie($query, "0.84.1 fix encoding of html field : $table.$field");
       }
    }
 
