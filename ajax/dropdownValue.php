@@ -546,7 +546,10 @@ if ($item instanceof CommonTreeDropdown) {
 if (isset($_POST["comment"]) && $_POST["comment"]) {
    $paramscomment = array('value' => '__VALUE__',
                           'table' => $table);
-
+   if (isset($_POST['update_link'])) {
+      $paramscomment['withlink'] = "comment_link_".$_POST["myname"].$_POST["rand"];
+   }
+   
    Ajax::updateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
                                  "comment_".$_POST["myname"].$_POST["rand"],
                                  $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);

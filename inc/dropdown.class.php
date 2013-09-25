@@ -195,7 +195,10 @@ class Dropdown {
                       'displaywith'         => $params['displaywith'],
                       'display'             => false,
                       'permit_select_parent' => $params['permit_select_parent']);
-
+      if ($item->canView()) {
+         $param['update_link'] = 1;
+      }
+      
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";
@@ -205,6 +208,7 @@ class Dropdown {
       // Display comment
       if ($params['comments']) {
          $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand'],
+                                  
                                   'display'   => false);
 
          if ($item->canView()
@@ -212,9 +216,10 @@ class Dropdown {
              && $item->canViewItem()) {
 
             $options_tooltip['link']       = $item->getLinkURL();
+            $options_tooltip['linkid']     = "comment_link_".$params['name'].$params['rand'];
             $options_tooltip['linktarget'] = '_blank';
          }
-
+         
          $output .= Html::showToolTip($comment,$options_tooltip);
 
          if (($item instanceof CommonDropdown)
