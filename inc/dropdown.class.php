@@ -183,13 +183,16 @@ class Dropdown {
                  'permit_select_parent' => $params['permit_select_parent'],
                  'specific_tags'        => $params['specific_tags'],
                 );
+
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
                                      $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
                                      $p);
       // Display comment
       if ($params['comments']) {
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
+         $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $options_tooltip = array('contentid' => $comment_id,
+                                  'linkid'    => $link_id,
                                   'display'   => false);
 
          if ($item->canView()
@@ -230,7 +233,10 @@ class Dropdown {
          }
          $paramscomment = array('value' => '__VALUE__',
                                 'table' => $table);
-
+         if ($item->canView()) {
+            $paramscomment['withlink'] = $link_id;
+         }
+         
          $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);

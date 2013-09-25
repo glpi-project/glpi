@@ -3118,6 +3118,7 @@ class User extends CommonDBTM {
       // Display comment
       if ($p['comments']) {
          $comment_id = Html::cleanId("comment_".$p['name'].$p['rand']);
+         $link_id = Html::cleanId("comment_link_".$p["name"].$p['rand']);
          if (!$view_users) {
             $user["link"] = '';
          } else if (empty($user["link"])) {
@@ -3127,13 +3128,13 @@ class User extends CommonDBTM {
                                       array('contentid' => $comment_id,
                                             'display'   => false,
                                             'link'      => $user["link"],
-                                            'linkid'    => "comment_link_".$p["name"].$p['rand']));
+                                            'linkid'    => $link_id));
 
          $paramscomment = array('value' => '__VALUE__',
                                 'table' => "glpi_users");
 
-         if (isset($p['update_link'])) {
-            $paramscomment['withlink'] = $comment_id;
+         if ($view_users) {
+            $paramscomment['withlink'] = $link_id;
          }
          $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
