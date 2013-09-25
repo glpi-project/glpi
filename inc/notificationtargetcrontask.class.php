@@ -51,7 +51,6 @@ class NotificationTargetCrontask extends NotificationTarget {
     * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
 
       $events                             = $this->getAllEvents();
       $this->datas['##crontask.action##'] = $events[$event];
@@ -67,8 +66,8 @@ class NotificationTargetCrontask extends NotificationTarget {
 
          $tmp['##crontask.name##']       .= $crontask['name'];
          $tmp['##crontask.description##'] = $cron->getDescription($id);
-         $tmp['##crontask.url##']         = urldecode($CFG_GLPI["url_base"].
-                                                      "/index.php?redirect=Crontask_".$id);
+         $tmp['##crontask.url##']         = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      "Crontask_".$id);
          $this->datas['crontasks'][] = $tmp;
       }
 

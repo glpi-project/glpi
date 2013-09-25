@@ -68,8 +68,6 @@ class NotificationTargetReservation extends NotificationTarget {
     * @see NotificationTarget::getDatasForTemplate()
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
-
       //----------- Reservation infos -------------- //
       $events                                = $this->getAllEvents();
 
@@ -102,7 +100,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                                           $item->getField('users_id_tech'));
             }
             $this->datas['##reservation.url##']
-                        = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=".
+                        = $this->formatURL($options['additionnaloption']['usertype'],
                                     $itemtype."_".$reservationitem->getField('id'));
          }
 
@@ -116,9 +114,8 @@ class NotificationTargetReservation extends NotificationTarget {
                $tmp['##reservation.itemtype##']       = $obj->getTypeName(1);
                $tmp['##reservation.item##']           = $item['item_name'];
                $tmp['##reservation.expirationdate##'] = Html::convDateTime($item['end']);
-               $tmp['##reservation.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                                  "/index.php?redirect=Reservation_".
-                                                                  $id);
+               $tmp['##reservation.url##']            = $this->formatURL($options['additionnaloption']['usertype'],
+                                                                  "Reservation_".$id);
             }
             $this->datas['reservations'][] = $tmp;
          }

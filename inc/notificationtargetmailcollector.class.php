@@ -55,7 +55,6 @@ class NotificationTargetMailCollector extends NotificationTarget {
     * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
 
       $events                                  = $this->getEvents();
       $this->datas['##mailcollector.action##'] = $events[$event];
@@ -65,8 +64,8 @@ class NotificationTargetMailCollector extends NotificationTarget {
          $tmp                             = array();
          $tmp['##mailcollector.name##']   = $mailcollector['name'];
          $tmp['##mailcollector.errors##'] = $mailcollector['errors'];
-         $tmp['##mailcollector.url##']    = urldecode($CFG_GLPI["url_base"].
-                                                      "/index.php?redirect=MailCollector_".$id);
+         $tmp['##mailcollector.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      "MailCollector_".$id);
          $this->datas['mailcollectors'][] = $tmp;
       }
 
