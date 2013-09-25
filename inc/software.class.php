@@ -916,14 +916,14 @@ class Software extends CommonDBTM {
          $link = Toolbox::getItemTypeFormURL('Software');
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          // TODO MassiveAction: specific_actions
-         $paramsma
+         $massiveactionparams
             = array('num_displayed' => $nb,
                     'container'     => 'mass'.__CLASS__.$rand,
                     'specific_actions'
                                     => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'
                                                 => __('Merge')),
                     'item'          => $this);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
 
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th width='10'>";
@@ -943,8 +943,8 @@ class Software extends CommonDBTM {
             echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
          }
          echo "</table>\n";
-         $paramsma['ontop'] =false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] =false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
 
       } else {

@@ -688,7 +688,7 @@ class Group extends CommonTreeDropdown {
                                           'data-glpicore-ma-tags' => 'common'));
 
          // TODO MassiveAction: specific_actions
-         $paramsma = array('num_displayed'    => $nb,
+         $massiveactionparams = array('num_displayed'    => $nb,
                            'check_itemtype'   => 'Group',
                            'check_items_id'   => $ID,
                            'container'        => 'mass'.__CLASS__.$rand,
@@ -697,7 +697,7 @@ class Group extends CommonTreeDropdown {
                            'specific_actions' => array(__CLASS__.
                                                        MassiveAction::CLASS_ACTION_SEPARATOR.
                                                        'changegroup' => __('Move')) );
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
@@ -743,8 +743,8 @@ class Group extends CommonTreeDropdown {
       }
 
       if ($nb) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
       }
       Html::closeForm();
 

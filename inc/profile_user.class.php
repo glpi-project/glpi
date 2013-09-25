@@ -172,9 +172,9 @@ class Profile_User extends CommonDBRelation {
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       if ($canedit && $num) {
-         $paramsma = array('num_displayed' => $num,
+         $massiveactionparams = array('num_displayed' => $num,
                            'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       if ($num > 0) {
@@ -246,8 +246,8 @@ class Profile_User extends CommonDBRelation {
       }
 
       if ($canedit && $num) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
       }
       Html::closeForm();
       echo "</div>";
@@ -314,13 +314,13 @@ class Profile_User extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma
+         $massiveactionparams
             = array('container'
                         => 'mass'.__CLASS__.$rand,
                     'specific_actions'
                         => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                     => _x('button', 'Delete permanently')));
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -420,8 +420,8 @@ class Profile_User extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $nb) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -467,9 +467,9 @@ class Profile_User extends CommonDBRelation {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $nb,
+         $massiveactionparams = array('num_displayed' => $nb,
                            'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'><tr>";
       echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
@@ -583,8 +583,8 @@ class Profile_User extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $nb) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>\n";

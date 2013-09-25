@@ -958,11 +958,11 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
-         $paramsma = array('num_displayed'  => $nb,
+         $massiveactionparams = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
                            'check_items_id' => $rules_id,
                            'container'      => 'mass'.$this->ruleactionclass.$rand);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       echo "<table $style>";
@@ -986,8 +986,8 @@ class Rule extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -1049,11 +1049,11 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
-         $paramsma = array('num_displayed'  => $nb,
+         $massiveactionparams = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
                            'check_items_id' => $rules_id,
                            'container'      => 'mass'.$this->rulecriteriaclass.$rand);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       echo "<table $style>";
@@ -1076,8 +1076,8 @@ class Rule extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
 
@@ -2529,7 +2529,7 @@ class Rule extends CommonDBTM {
       } else {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
-            $paramsma
+            $massiveactionparams
                = array('num_displayed'
                            => $nb,
                        'specific_actions'
@@ -2537,7 +2537,7 @@ class Rule extends CommonDBTM {
                                        => _x('button', 'Update'),
                                     'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                        => _x('button', 'Delete permanently')));
-            Html::showMassiveActions($paramsma);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
 
@@ -2579,8 +2579,8 @@ class Rule extends CommonDBTM {
          echo "</table>\n";
 
          if ($canedit) {
-            $paramsma['ontop'] = false;
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
       }

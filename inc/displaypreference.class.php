@@ -586,14 +586,14 @@ class DisplayPreference extends CommonDBTM {
          echo "<div class='spaced'>";
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          // TODO MassiveAction: specific_actions
-         $paramsma = array('width'            => 400,
+         $massiveactionparams = array('width'            => 400,
                            'height'           => 200,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'delete_for_user'
                                                        => _x('button', 'Delete permanently')),
                            'extraparams'      => array('massive_action_fields' => array('users_id')));
 
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
 
          echo Html::hidden('users_id', array('value'                 => $users_id,
                                              'data-glpicore-ma-tags' => 'common'));
@@ -616,8 +616,8 @@ class DisplayPreference extends CommonDBTM {
             echo "</tr>";
          }
          echo "</table>";
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
          echo "</div>";
 
