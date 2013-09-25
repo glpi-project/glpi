@@ -680,7 +680,32 @@ class Transfer extends CommonDBTM {
                }
             }
          }
+         // Problem Supplier
+         $query = "SELECT DISTINCT `glpi_problems_suppliers`.`suppliers_id`,
+                                   `glpi_suppliers`.`is_recursive`,
+                                   `glpi_suppliers`.`entities_id`
+                   FROM `glpi_problems`
+                   LEFT JOIN `glpi_problems_suppliers`
+                         ON (`glpi_problems_suppliers`.`problems_id` = `glpi_problems`.`id`)
+                   LEFT JOIN `glpi_suppliers`
+                         ON (`glpi_suppliers`.`id` = `glpi_problems_suppliers`.`suppliers_id`)
+                   WHERE `glpi_suppliers_tickets`.`suppliers_id` > '0'
+                         AND `glpi_problems`.`id` IN ".$this->item_search['Problem'];
 
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) > 0) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  if ($data['is_recursive']
+                      && in_array($data['entities_id'], $to_entity_ancestors)) {
+                     $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
+                  } else {
+                     $this->addToBeTransfer('Supplier', $data['suppliers_id']);
+                  }
+
+               }
+            }
+         }
+         
          // Supplier infocoms
          if ($this->options['keep_infocom']) {
             foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
