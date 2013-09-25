@@ -2713,14 +2713,17 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
-                     'user'  => __('User'),
-                     'group' => __('Group'));
+                     'user'  => __('User'));
+
+      if ($withgroup) {
+         $types['group'] = __('Group');
+      }
 
       if ($withsupplier
           && ($type == CommonITILActor::ASSIGN)) {
          $types['supplier'] = __('Supplier');
       }
-
+   
       switch ($type) {
          case CommonITILActor::REQUESTER :
             $typename = 'requester';
@@ -2967,7 +2970,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $can_admin      = $this->canAdminActors();
       $can_assign     = $this->canAssign();
       $can_assigntome = $this->canAssignToMe();
-      if (isset($options['canupdate']) && !$options['canupdate']) {
+      
+      if (isset($options['_noupdate']) && $options['_noupdate']) {
          $can_admin       = false;
          $can_assign      = false;
          $can_assigntome  = false;
@@ -3197,7 +3201,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign >= 0) {
          $this->showActorAddForm(CommonITILActor::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                 $is_hidden, $this->canAssign(), $this->canAssign());
+                                 $is_hidden, $can_assign, $can_assign);
       }
 
       // Assign User
