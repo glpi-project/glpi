@@ -381,7 +381,8 @@ class Problem extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
+         if (isset($this->fields["status"])
+            && in_array($this->input["status"], $this->getSolvedStatusArray())) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
