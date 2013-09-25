@@ -627,14 +627,6 @@ class Problem extends CommonITILObject {
                                           => array('table'      => 'glpi_problemtasks',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab[92]['table']          = 'glpi_problemtasks';
-      $tab[92]['field']          = 'is_private';
-      $tab[92]['name']           = __('Private task');
-      $tab[92]['datatype']       = 'bool';
-      $tab[92]['forcegroupby']   = true;
-      $tab[92]['splititems']     = true;
-      $tab[92]['massiveaction']  = false;
-      $tab[92]['joinparams']     = array('jointype' => 'child');
 
       $tab[94]['table']          = 'glpi_users';
       $tab[94]['field']          = 'name';
