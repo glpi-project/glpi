@@ -60,7 +60,16 @@ class RuleCriteria extends CommonDBChild {
       static::$itemtype = $rule_type;
    }
 
-
+   function post_getFromDB() {
+      // Get correct itemtype if defult one is used
+      if (static::$itemtype == 'Rule') {
+         $rule = new Rule();
+         if ($rule->getFromDB($this->fields['rules_id'])) {
+            static::$itemtype = $rule->fields['sub_type'];
+         }
+      }
+   }
+   
    /**
     * Get title used in rule
     *
