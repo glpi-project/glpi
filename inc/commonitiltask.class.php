@@ -577,6 +577,9 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
    static function getSearchOptionsToAdd() {
+
+      $task = new static();
+      
       $tab = array();
 
       $tab['task']               = _n('Task', 'Tasks', 2);
@@ -610,15 +613,17 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           => array('table'      => static::getTable(),
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab[92]['table']          = static::getTable();
-      $tab[92]['field']          = 'is_private';
-      $tab[92]['name']           = __('Private task');
-      $tab[92]['datatype']       = 'bool';
-      $tab[92]['forcegroupby']   = true;
-      $tab[92]['splititems']     = true;
-      $tab[92]['massiveaction']  = false;
-      $tab[92]['joinparams']     = array('jointype' => 'child');
-
+      if ($task->maybePrivate()) {
+         $tab[92]['table']          = static::getTable();
+         $tab[92]['field']          = 'is_private';
+         $tab[92]['name']           = __('Private task');
+         $tab[92]['datatype']       = 'bool';
+         $tab[92]['forcegroupby']   = true;
+         $tab[92]['splititems']     = true;
+         $tab[92]['massiveaction']  = false;
+         $tab[92]['joinparams']     = array('jointype' => 'child');
+      }
+      
       $tab[94]['table']          = 'glpi_users';
       $tab[94]['field']          = 'name';
       $tab[94]['name']           = __('Writer');
