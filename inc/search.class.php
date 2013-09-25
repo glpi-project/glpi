@@ -257,7 +257,7 @@ class Search {
          foreach ($searchopt[$itemtype] as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
-               if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
+               if (!in_array($searchopt[$itemtype][$key]["table"], $blacklist_tables)) {
                   $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                              $searchopt[$itemtype][$key]["table"],
                                              $searchopt[$itemtype][$key]["linkfield"], 0, 0,
