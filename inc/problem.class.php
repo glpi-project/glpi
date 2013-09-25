@@ -476,7 +476,7 @@ class Problem extends CommonITILObject {
 
       $tab += $this->getSearchOptionsStats();
 
-      $tab += TicketCost::getSearchOptionsToAdd();
+      $tab += ProblemCost::getSearchOptionsToAdd();
       
       $tab['ticket']             = Ticket::getTypeName(2);
 

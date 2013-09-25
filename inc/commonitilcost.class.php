@@ -516,7 +516,7 @@ abstract class CommonITILCost extends CommonDBChild {
       global $DB;
 
       $query = "SELECT *
-                FROM `glpi_ticketcosts`
+                FROM `".getTableForItemtype(static::$itemtype)."`
                 WHERE `".static::$items_id."` = '$ID'
                 ORDER BY `begin_date`";
       $tab = array('totalcost'   => 0,
