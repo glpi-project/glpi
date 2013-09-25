@@ -1268,7 +1268,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
     */
    static function alertValidation(CommonITILObject $item, $type){
       global $CFG_GLPI;
-
+      // No alert for new item
+      if ($item->isNewID($item->getID())) {
+         return;
+      }
       $status  = array_merge($item->getClosedStatusArray(), $item->getSolvedStatusArray());
 
       $message = __s("This item is waiting for approval, do you really want to resolve or close it?");
