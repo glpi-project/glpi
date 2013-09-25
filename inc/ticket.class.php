@@ -3562,6 +3562,8 @@ class Ticket extends CommonITILObject {
 
       if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
          $canupdate = false;
+         // No update for actors
+         $values['_noupdate'] = true;
       }
 
       $showuserlink              = 0;
@@ -3699,10 +3701,13 @@ class Ticket extends CommonITILObject {
          } else {
             echo "<table width='100%'><tr><td class='nopadding'>";
             echo $tt->getBeginHiddenFieldValue('due_date');
-            Html::showDateTimeField("due_date", array('value'      => $this->fields["due_date"],
-                                                      'timestep'   => 1,
-                                                      'maybeempty' => true,
-                                                      'canedit'    => $canupdate));
+            if ($canupdate) {
+               Html::showDateTimeField("due_date", array('value'      => $this->fields["due_date"],
+                                                         'timestep'   => 1,
+                                                         'maybeempty' => true));
+            } else {
+               echo Html::convDateTime($this->fields["due_date"]);
+            }
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
             if ($canupdate) {
@@ -3884,7 +3889,7 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          echo "</table>";
-         $this->showActorsPartForm($ID,$values);
+         $this->showActorsPartForm($ID, $values);
          echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       }
 
@@ -4152,7 +4157,6 @@ class Ticket extends CommonITILObject {
 
       echo "</table>";
       if ($ID) {
-         $values['canupdate'] = $canupdate;
          $this->showActorsPartForm($ID, $values);
       }
 
