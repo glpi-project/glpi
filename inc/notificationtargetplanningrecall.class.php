@@ -56,7 +56,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     * @see NotificationTarget::getDatasForTemplate()
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
 
       $events                             = $this->getAllEvents();
 
@@ -67,13 +66,11 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       if (($this->target_object instanceof CommonDBChild)
           || ($this->target_object instanceof CommonITILTask)) {
          $item2                              = $this->target_object->getItem();
-         $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                         "?redirect=".$item2->getType().
-                                                         "_".$item2->getID());
+         $this->datas['##recall.item.url##'] = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         $item2->getType()."_".$item2->getID());
 
       } else {
-         $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                         "?redirect=".
+         $this->datas['##recall.item.url##'] = $this->formatURL($options['additionnaloption']['usertype'],
                                                          $this->target_object->getType().
                                                          "_".$this->target_object->getID());
       }

@@ -51,7 +51,6 @@ class NotificationTargetInfocom extends NotificationTarget {
     * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
 
       $events                                 = $this->getAllEvents();
 
@@ -65,8 +64,7 @@ class NotificationTargetInfocom extends NotificationTarget {
             $tmp['##infocom.itemtype##']       = $obj->getTypeName(1);
             $tmp['##infocom.item##']           = $item['item_name'];
             $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
-            $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                           "/index.php?redirect=".
+            $tmp['##infocom.url##']            = $this->formatURL($options['additionnaloption']['usertype'],
                                                            $item['itemtype']."_".
                                                            $item['items_id']."_Infocom");
          }

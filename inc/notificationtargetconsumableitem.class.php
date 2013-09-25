@@ -51,7 +51,6 @@ class NotificationTargetConsumableItem extends NotificationTarget {
     * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
 
       $events                                    = $this->getAllEvents();
 
@@ -65,8 +64,8 @@ class NotificationTargetConsumableItem extends NotificationTarget {
          $tmp['##consumable.item##']      = $consumable['name'];
          $tmp['##consumable.reference##'] = $consumable['ref'];
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
-         $tmp['##consumable.url##']       = urldecode($CFG_GLPI["url_base"].
-                                                      "/index.php?redirect=ConsumableItem_".$id);
+         $tmp['##consumable.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      "ConsumableItem_".$id);
          $this->datas['consumables'][] = $tmp;
       }
 

@@ -51,7 +51,6 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
     * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
-     global $CFG_GLPI;
 
       $events                            = $this->getAllEvents();
 
@@ -66,8 +65,8 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
          $tmp['##license.name##']           = $license['name'];
          $tmp['##license.serial##']         = $license['serial'];
          $tmp['##license.expirationdate##'] = Html::convDate($license["expire"]);
-         $tmp['##license.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                        "/index.php?redirect=SoftwareLicense_".$id);
+         $tmp['##license.url##']            = $this->formatURL($options['additionnaloption']['usertype'],
+                                                        "SoftwareLicense_".$id);
          $this->datas['licenses'][] = $tmp;
       }
 

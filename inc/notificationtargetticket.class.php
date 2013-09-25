@@ -427,6 +427,28 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberofproblems##'] = count($datas['problems']);
 
+         $restrict = "`tickets_id`='".$item->getField('id')."'";
+         $changes = getAllDatasFromTable('glpi_changes_tickets',$restrict);
+         $datas['changes'] = array();
+         if (count($changes)) {
+            $change = new Change();
+            foreach ($changes as $data) {
+               if ($change->getFromDB($data['changes_id'])) {
+                  $tmp                       = array();
+                  $tmp['##change.id##']     = $data['changes_id'];
+                  $tmp['##change.date##']   = $change->getField('date');
+                  $tmp['##change.title##']  = $change->getField('name');
+                  $tmp['##change.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                                "change_".$data['changes_id']);
+                  $tmp['##change.content##'] = $change->getField('content');
+
+                  $datas['changes'][] = $tmp;
+               }
+            }
+         }
+
+         $datas['##ticket.numberofchanges##'] = count($datas['changes']);
+         
          //Followup infos
          $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
          $datas['followups'] = array();
@@ -568,6 +590,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberoffollowups'     => __('Number of followups'),
                     'ticket.numberoflinkedtickets' => __('Number of linked tickets'),
                     'ticket.numberofproblems'      => __('Number of problems'),
+                    'ticket.numberofchanges'       => __('Number of changes'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.globalvalidation'      => __('Global approval status'),
                   );
@@ -650,7 +673,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
      $tags = array('followups'     => _n('Followup', 'Followups', 2),
                    'validations'   => _n('Validation','Validations',2),
                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', 2),
-                   'problems'      => _n('Problem', 'Problems', 2));
+                   'problems'      => _n('Problem', 'Problems', 2),
+                   'changes'       => _n('Change', 'Changes', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -663,6 +687,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Tags with just lang
       $tags = array('ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', 2),
                     'ticket.problems'         => _n('Problem', 'Problems', 2),
+                    'ticket.changes'          => _n('Change', 'Changes', 2),
                     'ticket.autoclosewarning'
                      => sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
                                    'Without a reply, the ticket will be automatically closed after %s days',
@@ -710,6 +735,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'problem.title'           => sprintf(__('%1$s: %2$s'), __('Problem'),
                                                          __('Title')),
                     'problem.content'         => sprintf(__('%1$s: %2$s'), __('Problem'),
+                                                         __('Description')),
+                    'change.id'              => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
+                    'change.date'            => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
+                    'change.url'             => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
+                    'change.title'           => sprintf(__('%1$s: %2$s'), __('Change'),
+                                                         __('Title')),
+                    'change.content'         => sprintf(__('%1$s: %2$s'), __('Change'),
                                                          __('Description'))
                    );
 

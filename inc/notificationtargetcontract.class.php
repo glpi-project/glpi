@@ -55,8 +55,6 @@ class NotificationTargetContract extends NotificationTarget {
     * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI;
-
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events                             = $this->getEvents();
@@ -97,8 +95,8 @@ class NotificationTargetContract extends NotificationTarget {
                break;
          }
 
-         $tmp['##contract.url##']          = urldecode($CFG_GLPI["url_base"].
-                                                          "/index.php?redirect=Contract_".$id);
+         $tmp['##contract.url##']          = $this->formatURL($options['additionnaloption']['usertype'],
+                                                          "Contract_".$id);
          $tmp['##contract.items.number##'] = 0;
          $tmp['##contract.items##']        = '';
          if (isset($contract['items']) && count($contract['items'])) {
