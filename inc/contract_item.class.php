@@ -469,8 +469,8 @@ class Contract_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number && ($withtemplate != 2)) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
