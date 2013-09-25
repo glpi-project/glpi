@@ -4250,6 +4250,8 @@ class Search {
                   $item = new $itemtype();
                   $item->getFromDB($data['id']);
                   $percentage = 0;
+                  $totaltime = 0;
+                  $currenttime = 0;
                   if ($item->isField('slas_id') && $item->fields['slas_id'] != 0) { // Have SLA
                      $sla = new SLA();
                      $sla->getFromDB($item->fields['slas_id']);
@@ -4257,7 +4259,6 @@ class Search {
                                                                date('Y-m-d H:i:s'));
                      $totaltime   = $sla->getActiveTimeBetween($item->fields['date'],
                                                                $data[$NAME.$num]);
-                     $percentage  = round((100 * $currenttime) / $totaltime);
                   } else {
                      $calendars_id = Entity::getUsedConfig('calendars_id',
                                                            $item->fields['entities_id']);
@@ -4268,14 +4269,18 @@ class Search {
                                                                        date('Y-m-d H:i:s'));
                         $totaltime   = $calendar->getActiveTimeBetween($item->fields['date'],
                                                                        $data[$NAME.$num]);
-                        $percentage  = round((100 * $currenttime) / $totaltime);
                      } else { // No calendar
                         $currenttime = strtotime(date('Y-m-d H:i:s'))
                                                  - strtotime($item->fields['date']);
                         $totaltime   = strtotime($data[$NAME.$num])
                                                  - strtotime($item->fields['date']);
-                        $percentage  = round((100 * $currenttime) / $totaltime);
                      }
+                  }
+                  if ($totaltime != 0)  {
+                     $percentage  = round((100 * $currenttime) / $totaltime);
+                  } else {
+                     // Total time is null : no active time
+                     $percentage = 100;
                   }
                   if ($percentage > 100) {
                      $percentage = 100;
