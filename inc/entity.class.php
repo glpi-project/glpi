@@ -830,18 +830,29 @@ class Entity extends CommonTreeDropdown {
              __s('Show all')."\">".str_replace(" ","&nbsp;",__('Show all'))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
+      echo Html::input('entsearchtext', array('id' => 'entsearchtext'));
+      echo Html::submit(__('Search'), array('id' => 'entsearch'));
 
       echo "<script type='text/javascript'>";
       echo Html::jsGetElementbyID("tree_projectcategory$rand")."
               // call `.jstree` with the options object
               .jstree({
                   // the `plugins` array allows you to configure the active plugins on this instance
-                  'plugins' : ['themes','json_data'],
+                  'plugins' : ['themes','json_data', 'search'],
                   'core' : {'load_open': true,
-                            'html_titles': true},
+                            'html_titles': true,
+                            'animation' : 0},
                   'themes' : {
                      'theme' : 'classic',
                   },
+                  'search' : {
+                     'case_insensitive' : true,
+                     'show_only_matches' : true,
+                     'ajax' : {
+                        'type': 'POST',
+                       'url' : '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
+                     }
+                   },
                   'json_data' : {
                 'ajax' : {
                 'type': 'POST',
@@ -872,7 +883,13 @@ class Entity extends CommonTreeDropdown {
         'select_node.jstree',
         function (e, data) {
             document.location.href = data.rslt.obj.children('a').attr('href');
-        });";
+        });
+         $('#entsearch').click(function () {
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+         });
+
+        ";
 
 
       echo "</script>";

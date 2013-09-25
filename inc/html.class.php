@@ -4285,7 +4285,20 @@ class Html {
       return self::jsGetElementbyID($id).".val('$value').trigger('change');";
    }
 
+   /**
+    * Get item value
+    *
+    * @param $id      string   id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return string
+   **/
+   static function jsGetDropdownValue($id) {
+      return self::jsGetElementbyID($id).".val()";
+   }
 
+   
    /**
     * Adapt dropdown to clean JS
     *
@@ -4546,7 +4559,22 @@ class Html {
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
 
+   /**
+    * Creates a text input field.
+    *
+    * @since version 0.85
+    *
+    * @param $fieldName          Name of a field
+    * @param $options    Array   of HTML attributes.
+    *
+    * @return string A generated hidden input
+   **/
+   static function input($fieldName, $options=array()) {
 
+      return sprintf('<input type="text" name="%1$s" %2$s>',
+                     Html::cleanInputText($fieldName), Html::parseAttributes($options));
+   }
+   
    /**
     * Recursively creates a hidden input field. If the value is an array, then recursively parse it
     * to generate as many hidden input as necessary

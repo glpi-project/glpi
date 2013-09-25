@@ -63,7 +63,7 @@ if (isset($_GET['node'])) {
          $is_recursive                 = $entity['is_recursive'];
 
          $path['data']['title']        = Dropdown::getDropdownName("glpi_entities", $ID);
-         $path['attr']['id']           = $ID;
+         $path['attr']['id']           = 'ent'.$ID;
          $path['data']['attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$ID;
 
          if ($is_recursive) {
@@ -87,9 +87,10 @@ if (isset($_GET['node'])) {
          $nodes[] = $path;
       }
    } else { // standard node
+      $node_id = str_replace('ent','', $_GET['node']);
       $query = "SELECT *
                 FROM `glpi_entities`
-                WHERE `entities_id` = '".$_GET['node']."'
+                WHERE `entities_id` = '$node_id'
                 ORDER BY `name`";
 
       if ($result = $DB->query($query)) {
@@ -97,7 +98,7 @@ if (isset($_GET['node'])) {
             while ($row = $DB->fetch_assoc($result)) {
                $path = array();
                $path['data']['title']        = $row['name'];
-               $path['attr']['id']           = $row['id'];
+               $path['attr']['id']           = 'ent'.$row['id'];
                $path['data']['attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".
                                                 $row['id'];
 
@@ -125,5 +126,6 @@ if (isset($_GET['node'])) {
 
    }
    echo json_encode($nodes);
+   Toolbox::logDebug($_GET['node']);
 }
 ?>
