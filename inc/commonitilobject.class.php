@@ -2099,6 +2099,9 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "$suppliericon&nbsp;";
             if ($supplier->getFromDB($k)) {
                echo $supplier->getLink(array('comments' => $showsupplierlink));
+               echo "&nbsp;";
+               $tmpname = Dropdown::getDropdownName($supplier->getTable(), $k, 1);
+               Html::showToolTip($tmpname['comment']);
             }
             if ($canedit) {
                echo "&nbsp;";
