@@ -4274,6 +4274,8 @@ class Search {
                $ticket = new Ticket();
                $ticket->getFromDB($data['ITEM_0']);
                $percentage = 0;
+               $totaltime = 0;
+               $currenttime = 0;
                if ($ticket->fields['slas_id'] != 0) { // Have SLA
                   $sla = new SLA();
                   $sla->getFromDB($ticket->fields['slas_id']);
@@ -4281,7 +4283,6 @@ class Search {
                                                             date('Y-m-d H:i:s'));
                   $totaltime   = $sla->getActiveTimeBetween($ticket->fields['date'],
                                                             $data[$NAME.$num]);
-                  $percentage  = round((100 * $currenttime) / $totaltime);
                } else {
                   $calendars_id = Entity::getUsedConfig('calendars_id',
                                                         $ticket->fields['entities_id']);
@@ -4292,15 +4293,20 @@ class Search {
                                                                     date('Y-m-d H:i:s'));
                      $totaltime   = $calendar->getActiveTimeBetween($ticket->fields['date'],
                                                                     $data[$NAME.$num]);
-                     $percentage  = round((100 * $currenttime) / $totaltime);
                   } else { // No calendar
                      $currenttime = strtotime(date('Y-m-d H:i:s'))
                                                 - strtotime($ticket->fields['date']);
                      $totaltime   = strtotime($data[$NAME.$num])
                                                 - strtotime($ticket->fields['date']);
-                     $percentage  = round((100 * $currenttime) / $totaltime);
                   }
                }
+               if ($totaltime != 0)  {
+                  $percentage  = round((100 * $currenttime) / $totaltime);
+               } else {
+                  // Total time is null : no active time
+                  $percentage = 100;
+               }
+
                if ($percentage > 100) {
                   $percentage = 100;
                }
