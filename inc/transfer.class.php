@@ -689,7 +689,7 @@ class Transfer extends CommonDBTM {
                          ON (`glpi_problems_suppliers`.`problems_id` = `glpi_problems`.`id`)
                    LEFT JOIN `glpi_suppliers`
                          ON (`glpi_suppliers`.`id` = `glpi_problems_suppliers`.`suppliers_id`)
-                   WHERE `glpi_suppliers_tickets`.`suppliers_id` > '0'
+                   WHERE `glpi_problems_suppliers`.`suppliers_id` > '0'
                          AND `glpi_problems`.`id` IN ".$this->item_search['Problem'];
 
          if ($result = $DB->query($query)) {
