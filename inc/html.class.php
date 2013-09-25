@@ -997,7 +997,6 @@ class Html {
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
       // AJAX library
-
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.js");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.js");
@@ -1007,13 +1006,14 @@ class Html {
       }
 
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/themes/classic/style.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.css");
+
+      echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
 
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
 
@@ -1030,17 +1030,16 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/plugins/imagepaste/jquery.image_paste.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.js");
 
-
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
          $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
-                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
          $filename = "/lib/jqueryplugins/select2/select2_locale_".
-                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
          }

@@ -844,6 +844,7 @@ class Entity extends CommonTreeDropdown {
                             'animation' : 0},
                   'themes' : {
                      'theme' : 'classic',
+                     'url'   : '".$CFG_GLPI["root_doc"]."/css/jstree/style.css'
                   },
                   'search' : {
                      'case_insensitive' : true,

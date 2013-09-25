@@ -43,7 +43,7 @@
 #vakata-dragged.jstree-classic .jstree-invalid { background:url("d.png") -18px -53px no-repeat !important; }
 #jstree-marker.jstree-classic { background:url("d.png") -41px -57px no-repeat !important; text-indent:-100px; }
 
-.jstree-classic a.jstree-search { color:aqua; }
+.jstree-classic a.jstree-search { color:#ffb94b; }
 .jstree-classic .jstree-locked a { color:silver; cursor:default; }
 
 #vakata-contextmenu.jstree-classic-context, 
