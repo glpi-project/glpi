@@ -216,7 +216,7 @@ class HTMLTableGroup extends HTMLTableBase {
             }
             if ($p['display_header_for_each_group']) {
                echo "\t\t";
-               $header->displayTableHeader($with_content);
+               $header->displayTableHeader($with_content, false);
                echo "\n";
             }
          }
