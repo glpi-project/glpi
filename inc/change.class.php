@@ -302,14 +302,14 @@ class Change extends CommonITILObject {
 
          if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
-             && ($this->input["status"] == self::SOLVED)) {
+             && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
             $mailtype = "solved";
          }
 
          if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
-             && ($this->input["status"] == self::CLOSED)) {
+             && in_array($this->input["status"], $this->getClosedStatusArray())) {
 
             $mailtype = "closed";
          }
@@ -370,7 +370,8 @@ class Change extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
+         if (isset($this->fields["status"])
+            && in_array($this->input["status"], $this->getSolvedStatusArray())) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);

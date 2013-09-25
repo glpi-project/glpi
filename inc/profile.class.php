@@ -429,7 +429,6 @@ class Profile extends CommonDBTM {
             }
          }
       }
-      Toolbox::logDebug($this->fields);
    }
 
 
