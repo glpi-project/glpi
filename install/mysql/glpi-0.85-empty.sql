@@ -1,4 +1,4 @@
-#GLPI Dump database on 2013-09-18 16:43
+#GLPI Dump database on 2013-09-25 14:00
 
 ### Dump table glpi_alerts
 
@@ -807,7 +807,7 @@ INSERT INTO `glpi_configs` VALUES ('12','core','admin_reply_name','');
 INSERT INTO `glpi_configs` VALUES ('13','core','mailing_signature','SIGNATURE');
 INSERT INTO `glpi_configs` VALUES ('14','core','use_anonymous_helpdesk','0');
 INSERT INTO `glpi_configs` VALUES ('15','core','use_anonymous_followups','0');
-INSERT INTO `glpi_configs` VALUES ('16','core','language','en_GB');
+INSERT INTO `glpi_configs` VALUES ('16','core','language','fr_FR');
 INSERT INTO `glpi_configs` VALUES ('17','core','priority_1','#fff2f2');
 INSERT INTO `glpi_configs` VALUES ('18','core','priority_2','#ffe0e0');
 INSERT INTO `glpi_configs` VALUES ('19','core','priority_3','#ffcece');
@@ -1189,8 +1189,8 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','17','0','2013-09-18 16:42:50','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','17','1','2013-09-18 16:42:50','2','0.00195003','0','Action terminée, rien à faire');
+INSERT INTO `glpi_crontasklogs` VALUES ('1','17','0','2013-09-25 14:00:49','0','0','0','Mode d\'exécution : GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('2','17','1','2013-09-25 14:00:49','2','0.00204706','0','Action terminée, rien à faire');
 
 ### Dump table glpi_crontasks
 
@@ -1230,7 +1230,7 @@ INSERT INTO `glpi_crontasks` VALUES ('13','CronTask','graph','3600',NULL,'1','1'
 INSERT INTO `glpi_crontasks` VALUES ('14','ReservationItem','reservation','3600',NULL,'1','1','3','0','24','30','2012-04-05 20:31:57',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30','2013-05-28 09:51:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30','2013-09-03 09:47:00',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30','2013-09-18 16:42:00',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30','2013-09-25 14:00:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('19','Crontask','watcher','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('20','TicketRecurrent','ticketrecurrent','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -2006,8 +2006,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2013-09-18 16:42:52','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('2','2','users','2013-09-18 16:43:15','setup','5','glpi met à jour un élément');
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2013-09-25 14:00:51','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
 
 ### Dump table glpi_fieldblacklists
 
@@ -3351,8 +3350,16 @@ INSERT INTO `glpi_notifications` VALUES ('38','Contract End Periodicity','0','Co
 INSERT INTO `glpi_notifications` VALUES ('39','Contract Notice Periodicity','0','Contract','periodicitynotice','mail','12','','1','1','2013-05-28 09:50:42');
 INSERT INTO `glpi_notifications` VALUES ('40','Planning recall','0','PlanningRecall','planningrecall','mail','18','','1','1','2013-05-28 09:50:43');
 INSERT INTO `glpi_notifications` VALUES ('41','Delete Ticket','0','Ticket','delete','mail','4','','1','1','2013-05-28 09:50:44');
-INSERT INTO `glpi_notifications` VALUES ('42','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2013-09-18 16:42:47');
-INSERT INTO `glpi_notifications` VALUES ('43','Receiver errors','0','MailCollector','error','mail','19','','1','1','2013-09-18 16:42:47');
+INSERT INTO `glpi_notifications` VALUES ('42','New Change','0','Change','new','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('43','Update Change','0','Change','update','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('44','Resolve Change','0','Change','solved','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('45','Add Task','0','Change','add_task','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('46','Update Task','0','Change','update_task','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('47','Delete Task','0','Change','delete_task','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('48','Close Change','0','Change','closed','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('49','Delete Change','0','Change','delete','mail','19','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('50','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2013-09-25 14:00:44');
+INSERT INTO `glpi_notifications` VALUES ('51','Receiver errors','0','MailCollector','error','mail','20','','1','1','2013-09-25 14:00:44');
 
 ### Dump table glpi_notificationtargets
 
@@ -3441,8 +3448,34 @@ INSERT INTO `glpi_notificationtargets` VALUES ('72','21','1','36');
 INSERT INTO `glpi_notificationtargets` VALUES ('73','14','1','37');
 INSERT INTO `glpi_notificationtargets` VALUES ('74','3','1','40');
 INSERT INTO `glpi_notificationtargets` VALUES ('76','3','1','42');
-INSERT INTO `glpi_notificationtargets` VALUES ('77','2','1','42');
-INSERT INTO `glpi_notificationtargets` VALUES ('78','1','1','43');
+INSERT INTO `glpi_notificationtargets` VALUES ('77','1','1','42');
+INSERT INTO `glpi_notificationtargets` VALUES ('78','21','1','42');
+INSERT INTO `glpi_notificationtargets` VALUES ('79','2','1','43');
+INSERT INTO `glpi_notificationtargets` VALUES ('80','4','1','43');
+INSERT INTO `glpi_notificationtargets` VALUES ('81','3','1','43');
+INSERT INTO `glpi_notificationtargets` VALUES ('82','1','1','43');
+INSERT INTO `glpi_notificationtargets` VALUES ('83','21','1','43');
+INSERT INTO `glpi_notificationtargets` VALUES ('84','3','1','44');
+INSERT INTO `glpi_notificationtargets` VALUES ('85','1','1','44');
+INSERT INTO `glpi_notificationtargets` VALUES ('86','21','1','44');
+INSERT INTO `glpi_notificationtargets` VALUES ('87','3','1','45');
+INSERT INTO `glpi_notificationtargets` VALUES ('88','1','1','45');
+INSERT INTO `glpi_notificationtargets` VALUES ('89','21','1','45');
+INSERT INTO `glpi_notificationtargets` VALUES ('90','3','1','46');
+INSERT INTO `glpi_notificationtargets` VALUES ('91','1','1','46');
+INSERT INTO `glpi_notificationtargets` VALUES ('92','21','1','46');
+INSERT INTO `glpi_notificationtargets` VALUES ('93','3','1','47');
+INSERT INTO `glpi_notificationtargets` VALUES ('94','1','1','47');
+INSERT INTO `glpi_notificationtargets` VALUES ('95','21','1','47');
+INSERT INTO `glpi_notificationtargets` VALUES ('96','3','1','48');
+INSERT INTO `glpi_notificationtargets` VALUES ('97','1','1','48');
+INSERT INTO `glpi_notificationtargets` VALUES ('98','21','1','48');
+INSERT INTO `glpi_notificationtargets` VALUES ('99','3','1','49');
+INSERT INTO `glpi_notificationtargets` VALUES ('100','1','1','49');
+INSERT INTO `glpi_notificationtargets` VALUES ('101','21','1','49');
+INSERT INTO `glpi_notificationtargets` VALUES ('102','3','1','50');
+INSERT INTO `glpi_notificationtargets` VALUES ('103','2','1','50');
+INSERT INTO `glpi_notificationtargets` VALUES ('104','1','1','51');
 
 ### Dump table glpi_notificationtemplates
 
@@ -3478,7 +3511,8 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('15','Item not unique','FieldUn
 INSERT INTO `glpi_notificationtemplates` VALUES ('16','Crontask','Crontask','2011-03-04 11:35:16',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('17','Problems','Problem','2011-12-06 09:48:33',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('18','Planning recall','PlanningRecall','2013-05-28 09:50:43',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('19','Receiver errors','MailCollector','2013-09-18 16:42:47',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('19','Changes','Change','2013-09-25 14:00:44',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('20','Receiver errors','MailCollector','2013-09-25 14:00:44',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -3902,7 +3936,66 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('18','18','','##reca
 &lt;p&gt;##recall.item.content##&lt;/p&gt;
 &lt;p&gt;##lang.recall.planning.begin##: ##recall.planning.begin##&lt;br /&gt;##lang.recall.planning.end##: ##recall.planning.end##&lt;br /&gt;##lang.recall.planning.state##: ##recall.planning.state##&lt;br /&gt;##lang.recall.item.private##: ##recall.item.private##&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('19','19','','##mailcollector.action##','##FOREACHmailcollectors##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('19','19','','##change.action## ##change.title##','##IFchange.storestatus=5##
+ ##lang.change.url## : ##change.urlapprove##
+ ##lang.change.solvedate## : ##change.solvedate##
+ ##lang.change.solution.type## : ##change.solution.type##
+ ##lang.change.solution.description## : ##change.solution.description## ##ENDIFchange.storestatus##
+ ##ELSEchange.storestatus## ##lang.change.url## : ##change.url## ##ENDELSEchange.storestatus##
+
+ ##lang.change.description##
+
+ ##lang.change.title##  :##change.title##
+ ##lang.change.authors##  :##IFchange.authors## ##change.authors## ##ENDIFchange.authors## ##ELSEchange.authors##--##ENDELSEchange.authors##
+ ##lang.change.creationdate##  :##change.creationdate##
+ ##IFchange.assigntousers## ##lang.change.assigntousers##  : ##change.assigntousers## ##ENDIFchange.assigntousers##
+ ##lang.change.status##  : ##change.status##
+ ##IFchange.assigntogroups## ##lang.change.assigntogroups##  : ##change.assigntogroups## ##ENDIFchange.assigntogroups##
+ ##lang.change.urgency##  : ##change.urgency##
+ ##lang.change.impact##  : ##change.impact##
+ ##lang.change.priority## : ##change.priority##
+##IFchange.category## ##lang.change.category##  :##change.category## ##ENDIFchange.category## ##ELSEchange.category## ##lang.change.nocategoryassigned## ##ENDELSEchange.category##
+ ##lang.change.content##  : ##change.content##
+
+##IFchange.storestatus=6##
+ ##lang.change.solvedate## : ##change.solvedate##
+ ##lang.change.solution.type## : ##change.solution.type##
+ ##lang.change.solution.description## : ##change.solution.description##
+##ENDIFchange.storestatus##
+ ##lang.change.numberofproblems## : ##change.numberofproblems##
+
+##FOREACHproblems##
+ [##problem.date##] ##lang.change.title## : ##problem.title##
+ ##lang.change.content## ##problem.content##
+
+##ENDFOREACHproblems##
+ ##lang.change.numberoftasks## : ##change.numberoftasks##
+
+##FOREACHtasks##
+ [##task.date##]
+ ##lang.task.author## ##task.author##
+ ##lang.task.description## ##task.description##
+ ##lang.task.time## ##task.time##
+ ##lang.task.category## ##task.category##
+
+##ENDFOREACHtasks##
+','&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
+&lt;div&gt;##lang.change.url## : &lt;a href=\"##change.urlapprove##\"&gt;##change.urlapprove##&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.type##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description## ##ENDIFchange.storestatus##&lt;/div&gt;
+&lt;div&gt;##ELSEchange.storestatus## ##lang.change.url## : &lt;a href=\"##change.url##\"&gt;##change.url##&lt;/a&gt; ##ENDELSEchange.storestatus##&lt;/div&gt;
+&lt;p class=\"description b\"&gt;&lt;strong&gt;##lang.change.description##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.title##&lt;/span&gt;&#160;:##change.title## &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.authors##&lt;/span&gt;&#160;:##IFchange.authors## ##change.authors## ##ENDIFchange.authors##    ##ELSEchange.authors##--##ENDELSEchange.authors## &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.creationdate##&lt;/span&gt;&#160;:##change.creationdate## &lt;br /&gt; ##IFchange.assigntousers## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.assigntousers##&lt;/span&gt;&#160;: ##change.assigntousers## ##ENDIFchange.assigntousers##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.change.status## &lt;/span&gt;&#160;: ##change.status##&lt;br /&gt; ##IFchange.assigntogroups## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.assigntogroups##&lt;/span&gt;&#160;: ##change.assigntogroups## ##ENDIFchange.assigntogroups##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.urgency##&lt;/span&gt;&#160;: ##change.urgency##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.impact##&lt;/span&gt;&#160;: ##change.impact##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.priority##&lt;/span&gt; : ##change.priority## &lt;br /&gt;##IFchange.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.change.category## &lt;/span&gt;&#160;:##change.category##  ##ENDIFchange.category## ##ELSEchange.category##  ##lang.change.nocategoryassigned## ##ENDELSEchange.category##    &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.content##&lt;/span&gt;&#160;: ##change.content##&lt;/p&gt;
+&lt;p&gt;##IFchange.storestatus=6##&lt;br /&gt;&lt;span style=\"text-decoration: underline;\"&gt;&lt;strong&gt;&lt;span style=\"color: #888888;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solution.type##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description##&lt;br /&gt;##ENDIFchange.storestatus##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;##lang.change.numberofproblems##&#160;: ##change.numberofproblems##&lt;/div&gt;
+&lt;p&gt;##FOREACHproblems##&lt;/p&gt;
+&lt;div&gt;&lt;strong&gt; [##problem.date##] &lt;em&gt;##lang.change.title## : &lt;a href=\"##problem.url##\"&gt;##problem.title## &lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; &lt;/span&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.change.content## &lt;/span&gt; ##problem.content##
+&lt;p&gt;##ENDFOREACHproblems##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;##lang.change.numberoftasks##&#160;: ##change.numberoftasks##&lt;/div&gt;
+&lt;p&gt;##FOREACHtasks##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;&lt;strong&gt;[##task.date##] &lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;
+&lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
+&lt;/div&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('20','20','','##mailcollector.action##','##FOREACHmailcollectors##
 ##lang.mailcollector.name## : ##mailcollector.name##
 ##lang.mailcollector.errors## : ##mailcollector.errors##
 ##mailcollector.url##
@@ -5258,12 +5351,12 @@ CREATE TABLE `glpi_rules` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','03d1f8b0-2bd6e957-5239bbe7b389b5.82286719');
-INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','03d1f8b0-2bd6e957-5239bbe7b39119.93293963');
-INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1','03d1f8b0-2bd6e957-5239bbe7b395f1.94589616');
-INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1','03d1f8b0-2bd6e957-5239bbe7b39ab0.50631632');
-INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','03d1f8b0-2bd6e957-5239bbe7b39f65.99465451');
-INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','03d1f8b0-2bd6e957-5239bbe7b3a590.03269032');
+INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','fd4d6596-2bd6e957-5242d06ca41242.43229180');
+INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','fd4d6596-2bd6e957-5242d06ca41aa5.80355050');
+INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1','fd4d6596-2bd6e957-5242d06ca42149.18360546');
+INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1','fd4d6596-2bd6e957-5242d06ca427b2.72088041');
+INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','fd4d6596-2bd6e957-5242d06ca42de8.15219727');
+INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','fd4d6596-2bd6e957-5242d06ca43451.34565884');
 
 ### Dump table glpi_slalevelactions
 
@@ -6092,7 +6185,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_deleted_ldap` (`is_deleted_ldap`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$CKoE03ZWPWFu48/CFUXsdeQIxZIoRxVVqINzpKVM0RHi1.KNYyqZK','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2013-09-18 16:42:52','2013-09-18 16:42:52',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$r8J5aIwAtCIgoZL6DE84ce/nhzNEeKS5asoL.W2I0R5bDYYzgBf8.','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2013-09-25 14:00:51','2013-09-25 14:00:51',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
