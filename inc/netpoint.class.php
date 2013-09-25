@@ -318,7 +318,7 @@ class Netpoint extends CommonDropdown {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma
+            $massiveactionparams
                = array('num_displayed'
                            => $_SESSION['glpilist_limit'],
                        'container'
@@ -326,7 +326,7 @@ class Netpoint extends CommonDropdown {
                        'specific_actions'
                            => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                        => _x('button', 'Delete permanently')));
-            Html::showMassiveActions($paramsma);
+            Html::showMassiveActions($massiveactionparams);
          }
 
          echo "<table class='tab_cadre_fixe'><tr>";
@@ -368,8 +368,8 @@ class Netpoint extends CommonDropdown {
          echo "</table>\n";
 
          if ($canedit) {
-            $paramsma['ontop'] = false;
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
          Html::printAjaxPager(sprintf(__('Network outlets for %s'), $item->getTreeLink()),

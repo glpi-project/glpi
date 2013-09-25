@@ -131,8 +131,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
       if (count($found) > 0) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('container' => 'mass'.__CLASS__.$rand);
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixehov'><tr class='tab_bg_2'>";
@@ -178,8 +178,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
          }
          echo "</table>";
          if ($canedit) {
-            $paramsma['ontop'] = false;
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
       } else {

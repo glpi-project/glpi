@@ -479,11 +479,11 @@ class Consumable extends CommonDBChild {
          if ($consitem->isRecursive()) {
             $entparam = array('entities_id' => getSonsOf('glpi_entities', $consitem->getEntityID()));
          }
-         $paramsma = array('num_displayed'    => $number,
+         $massiveactionparams = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'extraparams'      => $entparam);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
       }
 
@@ -549,8 +549,8 @@ class Consumable extends CommonDBChild {
       }
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

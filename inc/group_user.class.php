@@ -188,9 +188,9 @@ class Group_User extends CommonDBRelation{
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
-         $paramsma = array('num_displayed' => count($used),
+         $massiveactionparams = array('num_displayed' => count($used),
                            'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'><tr>";
       if ($canedit && count($used)) {
@@ -257,8 +257,8 @@ class Group_User extends CommonDBRelation{
       echo "</table>";
 
       if ($canedit && count($used)) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -457,9 +457,9 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
+            $massiveactionparams = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
                               'container'     => 'mass'.__CLASS__.$rand);
-            Html::showMassiveActions($paramsma);
+            Html::showMassiveActions($massiveactionparams);
          }
 
          echo "<table class='tab_cadre_fixehov'><tr>";
@@ -512,8 +512,8 @@ class Group_User extends CommonDBRelation{
          }
          echo "</table>";
          if ($canedit) {
-            $paramsma['ontop'] = false;
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),

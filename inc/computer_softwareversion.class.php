@@ -433,7 +433,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                // TODO MassiveAction: specific_actions
-               $paramsma
+               $massiveactionparams
                   = array('num_displayed'
                            => $_SESSION['glpilist_limit'],
                           'container'
@@ -444,14 +444,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                     'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                           => _x('button', 'Delete permanently')));
                // Options to update version
-               $paramsma['extraparams']['options']['move']['softwares_id'] = $softwares_id;
+               $massiveactionparams['extraparams']['options']['move']['softwares_id'] = $softwares_id;
                if ($crit=='softwares_id') {
-                  $paramsma['extraparams']['options']['move']['used'] = array();
+                  $massiveactionparams['extraparams']['options']['move']['used'] = array();
                } else {
-                  $paramsma['extraparams']['options']['move']['used'] = array($searchID);
+                  $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
                }
 
-               Html::showMassiveActions($paramsma);
+               Html::showMassiveActions($massiveactionparams);
             }
 
             echo "<table class='tab_cadre_fixehov'><tr>";
@@ -562,8 +562,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             echo "</table>\n";
             if ($canedit) {
-               $paramsma['ontop'] =false;
-               Html::showMassiveActions($paramsma);
+               $massiveactionparams['ontop'] =false;
+               Html::showMassiveActions($massiveactionparams);
                Html::closeForm();
             }
 
@@ -738,7 +738,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma
+            $massiveactionparams
                = array('num_displayed'
                          => $number,
                        'container'
@@ -747,7 +747,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                          => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                      => _x('button', 'Delete permanently')));
 
-            Html::showMassiveActions($paramsma);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
@@ -797,8 +797,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 */
          echo "</table>";
          if ($canedit) {
-            $paramsma['ontop'] =false;
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams['ontop'] =false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
       } else {
@@ -864,11 +864,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      = _x('button', 'Delete permanently');
             }
 
-            $paramsma = array('num_displayed'    => $number,
+            $massiveactionparams = array('num_displayed'    => $number,
                               'container'        => 'massSoftwareLicense'.$rand,
                               'specific_actions' => $actions);
 
-            Html::showMassiveActions($paramsma);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
@@ -897,8 +897,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</tr>\n";
          echo "</table>";
          if ($canedit) {
-            $paramsma['ontop'] = false;
-            Html::showMassiveActions($paramsma);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
       }

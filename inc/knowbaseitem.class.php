@@ -1470,7 +1470,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma
+         $massiveactionparams
             = array('num_displayed'
                         => $nb,
                     'container'
@@ -1480,10 +1480,10 @@ class KnowbaseItem extends CommonDBTM {
                                      => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $paramsma['confirm']
+            $massiveactionparams['confirm']
                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -1603,8 +1603,8 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "</table>";
       if ($canedit && $nb) {
-         $paramsma['ontop'] =false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] =false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
 

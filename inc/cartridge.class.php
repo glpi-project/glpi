@@ -530,11 +530,11 @@ class Cartridge extends CommonDBChild {
                                        => __('Enable the financial and administrative information'),
                              'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore'
                                        => __('Back to stock'));
-            $paramsma = array('num_displayed'    => $number,
+            $massiveactionparams = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
                               'container'        => 'mass'.__CLASS__.$rand,
                               'rand'             => $rand);
-            Html::showMassiveActions($paramsma);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          if (!$show_old) {
@@ -656,8 +656,8 @@ class Cartridge extends CommonDBChild {
       }
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>\n\n";
@@ -785,13 +785,13 @@ class Cartridge extends CommonDBChild {
                              'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                       => _x('button', 'Delete permanently'));
          }
-         $paramsma = array('num_displayed'    => $number,
+         $massiveactionparams = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'rand'             => $rand,
                            'extraparams'      => array('maxpages'
                                                        => $printer->fields['last_pages_counter']));
-         Html::showMassiveActions($paramsma);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       if ($old == 0) {
@@ -904,8 +904,8 @@ class Cartridge extends CommonDBChild {
       }
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>\n\n";

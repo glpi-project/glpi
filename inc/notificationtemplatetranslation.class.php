@@ -192,8 +192,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($canedit) {
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('container' => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -233,8 +233,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</table>";
 
       if ($canedit) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions($paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
