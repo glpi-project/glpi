@@ -287,7 +287,7 @@ class Change extends CommonITILObject {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      $donotif = false;
+      $donotif =  count($this->updates);
 
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
@@ -296,10 +296,9 @@ class Change extends CommonITILObject {
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
       }
-
+      
       if ($donotif && $CFG_GLPI["use_mailing"]) {
          $mailtype = "update";
-
          if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
              && in_array($this->input["status"], $this->getSolvedStatusArray())) {
