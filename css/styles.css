@@ -687,6 +687,11 @@ td.nopadding {
 }
 
 
+td.subheader {
+   background-color: #ddd;
+   text-align: center;
+   font-weight: bold;
+}
 
 td.rotate {
   -moz-transform: rotate(-70.0deg);  /* FF3.5+ */

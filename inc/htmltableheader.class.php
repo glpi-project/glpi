@@ -145,17 +145,27 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $with_content
+    * @param $with_content do we displaye the content ?
+    * @param $main_header  main header (from table) or secondary (from group) ?
    **/
-   function displayTableHeader($with_content) {
+   function displayTableHeader($with_content, $main_header = true) {
 
-      echo "<th colspan='".$this->colSpan."'>";
+      if ($main_header) {
+         echo "<th";
+      } else {
+         echo "<td class='subheader'";
+      }
+      echo " colspan='".$this->colSpan."'>";
       if ($with_content) {
          $this->displayContent();
       } else {
          echo "&nbsp;";
       }
-      echo "</th>";
+      if ($main_header) {
+         echo "</th>";
+      } else {
+         echo "</td>";
+      }
    }
 
 
