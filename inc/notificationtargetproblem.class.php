@@ -134,7 +134,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $items    = getAllDatasFromTable('glpi_items_problems',$restrict);
 
          $datas['items'] = array();
-         if (count($tickets)) {
+         if (count($items)) {
             foreach ($items as $data) {
                if ($item2 = getItemForItemtype($data['itemtype'])) {
                   if ($item2->getFromDB($data['items_id'])) {
