@@ -1335,6 +1335,132 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changevalidations");
    }
 
+
+ // Change notifications
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `name` = 'Changes'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Changes', 'Change', NOW())";
+         $DB->queryOrDie($query, "0.85 add change notification");
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`,
+                           `content_html`)
+                   VALUES ($notid, '', '##change.action## ##change.title##',
+                          '##IFchange.storestatus=5##
+ ##lang.change.url## : ##change.urlapprove##
+ ##lang.change.solvedate## : ##change.solvedate##
+ ##lang.change.solution.type## : ##change.solution.type##
+ ##lang.change.solution.description## : ##change.solution.description## ##ENDIFchange.storestatus##
+ ##ELSEchange.storestatus## ##lang.change.url## : ##change.url## ##ENDELSEchange.storestatus##
+
+ ##lang.change.description##
+
+ ##lang.change.title##  :##change.title##
+ ##lang.change.authors##  :##IFchange.authors## ##change.authors## ##ENDIFchange.authors## ##ELSEchange.authors##--##ENDELSEchange.authors##
+ ##lang.change.creationdate##  :##change.creationdate##
+ ##IFchange.assigntousers## ##lang.change.assigntousers##  : ##change.assigntousers## ##ENDIFchange.assigntousers##
+ ##lang.change.status##  : ##change.status##
+ ##IFchange.assigntogroups## ##lang.change.assigntogroups##  : ##change.assigntogroups## ##ENDIFchange.assigntogroups##
+ ##lang.change.urgency##  : ##change.urgency##
+ ##lang.change.impact##  : ##change.impact##
+ ##lang.change.priority## : ##change.priority##
+##IFchange.category## ##lang.change.category##  :##change.category## ##ENDIFchange.category## ##ELSEchange.category## ##lang.change.nocategoryassigned## ##ENDELSEchange.category##
+ ##lang.change.content##  : ##change.content##
+
+##IFchange.storestatus=6##
+ ##lang.change.solvedate## : ##change.solvedate##
+ ##lang.change.solution.type## : ##change.solution.type##
+ ##lang.change.solution.description## : ##change.solution.description##
+##ENDIFchange.storestatus##
+ ##lang.change.numberofproblems## : ##change.numberofproblems##
+
+##FOREACHproblems##
+ [##problem.date##] ##lang.change.title## : ##problem.title##
+ ##lang.change.content## ##problem.content##
+
+##ENDFOREACHproblems##
+ ##lang.change.numberoftasks## : ##change.numberoftasks##
+
+##FOREACHtasks##
+ [##task.date##]
+ ##lang.task.author## ##task.author##
+ ##lang.task.description## ##task.description##
+ ##lang.task.time## ##task.time##
+ ##lang.task.category## ##task.category##
+
+##ENDFOREACHtasks##
+',
+                          '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
+&lt;div&gt;##lang.change.url## : &lt;a href=\"##change.urlapprove##\"&gt;##change.urlapprove##&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.type##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description## ##ENDIFchange.storestatus##&lt;/div&gt;
+&lt;div&gt;##ELSEchange.storestatus## ##lang.change.url## : &lt;a href=\"##change.url##\"&gt;##change.url##&lt;/a&gt; ##ENDELSEchange.storestatus##&lt;/div&gt;
+&lt;p class=\"description b\"&gt;&lt;strong&gt;##lang.change.description##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.title##&lt;/span&gt;&#160;:##change.title## &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.authors##&lt;/span&gt;&#160;:##IFchange.authors## ##change.authors## ##ENDIFchange.authors##    ##ELSEchange.authors##--##ENDELSEchange.authors## &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.creationdate##&lt;/span&gt;&#160;:##change.creationdate## &lt;br /&gt; ##IFchange.assigntousers## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.assigntousers##&lt;/span&gt;&#160;: ##change.assigntousers## ##ENDIFchange.assigntousers##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.change.status## &lt;/span&gt;&#160;: ##change.status##&lt;br /&gt; ##IFchange.assigntogroups## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.assigntogroups##&lt;/span&gt;&#160;: ##change.assigntogroups## ##ENDIFchange.assigntogroups##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.urgency##&lt;/span&gt;&#160;: ##change.urgency##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.impact##&lt;/span&gt;&#160;: ##change.impact##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.priority##&lt;/span&gt; : ##change.priority## &lt;br /&gt;##IFchange.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.change.category## &lt;/span&gt;&#160;:##change.category##  ##ENDIFchange.category## ##ELSEchange.category##  ##lang.change.nocategoryassigned## ##ENDELSEchange.category##    &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.change.content##&lt;/span&gt;&#160;: ##change.content##&lt;/p&gt;
+&lt;p&gt;##IFchange.storestatus=6##&lt;br /&gt;&lt;span style=\"text-decoration: underline;\"&gt;&lt;strong&gt;&lt;span style=\"color: #888888;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solution.type##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description##&lt;br /&gt;##ENDIFchange.storestatus##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;##lang.change.numberofproblems##&#160;: ##change.numberofproblems##&lt;/div&gt;
+&lt;p&gt;##FOREACHproblems##&lt;/p&gt;
+&lt;div&gt;&lt;strong&gt; [##problem.date##] &lt;em&gt;##lang.change.title## : &lt;a href=\"##problem.url##\"&gt;##problem.title## &lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; &lt;/span&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.change.content## &lt;/span&gt; ##problem.content##
+&lt;p&gt;##ENDFOREACHproblems##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;##lang.change.numberoftasks##&#160;: ##change.numberoftasks##&lt;/div&gt;
+&lt;p&gt;##FOREACHtasks##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;&lt;strong&gt;[##task.date##] &lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;
+&lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
+&lt;/div&gt;')";
+         $DB->queryOrDie($query, "0.85 add change notification translation");
+         }
+         $notifications = array('new'         => array(),
+                                'update'      => array(Notification::ASSIGN_TECH,
+                                                       Notification::OLD_TECH_IN_CHARGE),
+                                'solved'      => array(),
+                                'add_task'    => array(),
+                                'update_task' => array(),
+                                'delete_task' => array(),
+                                'closed'      => array(),
+                                'delete'      => array());
+
+         $notif_names   = array('new'         => 'New Change',
+                                'update'      => 'Update Change',
+                                'solved'      => 'Resolve Change',
+                                'add_task'    => 'Add Task',
+                                'update_task' => 'Update Task',
+                                'delete_task' => 'Delete Task',
+                                'closed'      => 'Close Change',
+                                'delete'      => 'Delete Change');
+
+         foreach ($notifications as $key => $val) {
+            $notifications[$key][] = Notification::AUTHOR;
+            $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
+            $notifications[$key][] = Notification::OBSERVER;
+         }
+
+         foreach ($notifications as $type => $targets) {
+            $query = "INSERT INTO `glpi_notifications`
+                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                              `date_mod`)
+                      VALUES ('".$notif_names[$type]."', 0, 'Change', '$type', 'mail',
+                              $notid, '', 1, 1, NOW())";
+            $DB->queryOrDie($query, "0.85 add change $type notification");
+            $notifid = $DB->insert_id();
+
+            foreach ($targets as $target) {
+               $query = "INSERT INTO `glpi_notificationtargets`
+                                (`id`, `notifications_id`, `type`, `items_id`)
+                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
+               $DB->queryOrDie($query, "0.85 add change $type notification target");
+            }
+         }
+         
+      }
+
    /// TODO add display prefs
 
    $migration->addField('glpi_profiles', 'change_status', "text",
