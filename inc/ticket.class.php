@@ -4074,8 +4074,12 @@ class Ticket extends CommonITILObject {
          if ($ID
              && $this->fields['itemtype']
              && ($item = getItemForItemtype($this->fields['itemtype']))) {
-            $item->getFromDB($this->fields['items_id']);
-            printf(__('%1$s - %2$s'), $item->getTypeName(), $item->getNameID());
+            if ($item->can($this->fields["items_id"], READ)) {
+               printf(__('%1$s - %2$s'), $item->getTypeName(),
+                        $item->getLink(array('comments' => true)));
+            } else {
+               printf(__('%1$s - %2$s'),  $item->getTypeName(), $item->getNameID());
+            }
          } else {
             _e('General');
          }
