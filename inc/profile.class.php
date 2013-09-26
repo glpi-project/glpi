@@ -584,8 +584,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("group_add_followups", $this->fields["group_add_followups"]);
       echo "</td>";
 
-      echo "<td colspan='2'>&nbsp;";
-      echo "</td></tr>\n";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";
@@ -1029,6 +1028,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Delete all problems')."</td><td>";
       Dropdown::showYesNo("delete_problem", $this->fields["delete_problem"]);
+      echo "</td>";
+      echo "<td colspan='4'>";
       echo "</td>";
       echo "</tr>\n";
 
