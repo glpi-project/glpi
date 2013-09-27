@@ -4923,7 +4923,7 @@ class Html {
          echo "\t</tr>\n";
       }
 
-      echo "\t<tr>\n";
+      echo "\t<tr class='tab_bg_1'>\n";
       echo "\t\t<td>".$param['first_cell']."</td>\n";
       foreach ($columns as $col_name => $column) {
          $nb_cb_per_col[$col_name] = array('total'   => 0,
@@ -4963,7 +4963,7 @@ class Html {
             continue;
          }
 
-         echo "\t<tr>\n";
+         echo "\t<tr class='tab_bg_1'>\n";
 
          if (is_string($row)) {
             echo "\t\t<th colspan='$number_columns'>$row</th>\n";
@@ -5051,12 +5051,14 @@ class Html {
             $cb_options['checked']      = ($nb_cb_per_row['checked']
                                              > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
+         } else {
+            echo "\t\t<td class='center'>&nbsp;</td>\n";
          }
          echo "\t</tr>\n";
       }
 
       if ($param['col_check_all']) {
-         echo "\t<tr>\n";
+         echo "\t<tr class='tab_bg_1'>\n";
          echo "\t\t<td>".__('Select/unselect all')."</td>\n";
          foreach ($columns as $col_name => $column) {
             echo "\t\t<td class='center'>";
