@@ -206,7 +206,7 @@ class HTMLTableGroup extends HTMLTableBase {
             echo "\t</tbody>\n";
          }
 
-         echo "\t<tbody><tr>\n";
+         echo "\t<tbody><tr class='tab_bg_1'>\n";
          foreach ($this->ordered_headers as $header) {
             if ($header instanceof HTMLTableSubHeader) {
                $header->updateColSpan($header->numberOfSubHeaders);
