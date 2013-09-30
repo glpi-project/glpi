@@ -662,7 +662,7 @@ class RSSFeed extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Refresh rate')."</td>";
       echo "<td>";
-      Dropdown::showTimeStamp("resfresh_rate",
+      Dropdown::showTimeStamp("refresh_rate",
                               array('value'                => $this->fields["refresh_rate"],
                                     'min'                  => HOUR_TIMESTAMP,
                                     'max'                  => HOUR_TIMESTAMP,
