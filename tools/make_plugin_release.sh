@@ -45,16 +45,14 @@ echo "Getting $plg version $2 sources from SVN tag $tag"
 if svn export -q https://forge.indepnet.net/svn/$plg/tags/$tag $tmpdir/$plg
 then
 	rm -rf $tmpdir/$plg/tools
+	tar --create \
+		--gzip \
+		--file $arc \
+		--directory $tmpdir \
+		$plg && echo "Archive $arc created"
 else
 	echo "Aborting"
 fi
-
-tar --create \
-    --gzip \
-    --file $arc \
-    --directory $tmpdir \
-    $plg && echo "Archive $arc created"
-
 
 rm -rf $tmpdir && echo "Tmp cleaned"
 
