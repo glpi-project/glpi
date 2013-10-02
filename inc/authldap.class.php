@@ -1477,7 +1477,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $glpi_users = array();
-      $sql        = "SELECT `id`, `name`, `date_sync`, `user_dn`
+      $sql        = "SELECT *
                      FROM `glpi_users`";
 
       if ($values['mode'] != self::ACTION_IMPORT) {
