@@ -49,9 +49,11 @@ function update084to085() {
 
    $backup_tables = false;
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
-                          'glpi_changes_problems', 'glpi_changes_suppliers',
+                          'glpi_changes_problems', 'glpi_changes_projects',
+                          'glpi_changes_suppliers',
                           'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks'
+                          'glpi_changetasks', 'glpi_projects', 'glpi_projectstates',
+                          'glpi_projecttypes', 'glpi_projects_items'
                           // Only do profilerights once : so not delete it
                           /*, 'glpi_profilerights'*/);
 
@@ -2020,7 +2022,44 @@ function update084to085() {
    $migration->addField("glpi_groups", 'is_manager', "bool", array('update' => "'is_assign'",
                                                                    'value'  => 1));
    $migration->addKey('glpi_groups', 'is_manager');
-   
+
+   if (!TableExists('glpi_projects_items')) {
+      $query = "CREATE TABLE `glpi_projects_items` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(100) default NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
+                  KEY `item` (`itemtype`,`items_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_projects_items");
+   }
+
+   if (!TableExists('glpi_changes_projects')) {
+      $query = "CREATE TABLE `glpi_changes_projects` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `changes_id` int(11) NOT NULL DEFAULT '0',
+                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`changes_id`,`projects_id`),
+                  KEY `projects_id` (`projects_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_changes_projects");
+   }
+
+   if (!TableExists('glpi_projecteams')) {
+      $query = "CREATE TABLE `glpi_projecteams` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(100) default NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
+                  KEY `item` (`itemtype`,`items_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_projecteams");
+   }   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
