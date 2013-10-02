@@ -748,30 +748,8 @@ class Change extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
-      $rand = mt_rand();
-      echo "<script type='text/javascript' >\n";
-      echo "function showName$rand() {\n";
-      echo Html::jsHide("name$rand");
-      $params = array('maxlength' => 250,
-                      'size'      => 110,
-                      'name'      => 'name',
-                      'data'      => rawurlencode($this->fields["name"]));
-      Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
-      echo "}";
-      echo "</script>\n";
-      echo "<div id='name$rand' class='tracking left' onClick='showName$rand()'>\n";
-      if (empty($this->fields["name"])) {
-         _e('Without title');
-      } else {
-         echo $this->fields["name"];
-      }
-      echo "</div>\n";
-      echo "<div id='viewname$rand'></div>\n";
-      if (!$ID) {
-         echo "<script type='text/javascript' >\n
-         showName$rand();
-         </script>";
-      }
+      echo "<input type='text' size='90' maxlength=250 name='name' ".
+                " value=\"".Html::cleanInputText($this->fields["name"])."\">";
       echo "</td>";
       echo "</tr>";
 
@@ -779,29 +757,8 @@ class Change extends CommonITILObject {
       echo "<th>".__('Description')."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
-      echo "<script type='text/javascript' >\n";
-      echo "function showDesc$rand() {\n";
-      echo Html::jsHide("desc$rand");
-      $params = array('rows'  => 6,
-                      'cols'  => 110,
-                      'name'  => 'content',
-                      'data'  => rawurlencode($this->fields["content"]));
-      Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
-      echo "}";
-      echo "</script>\n";
-      echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";
-      if (!empty($this->fields["content"])) {
-         echo nl2br($this->fields["content"]);
-      } else {
-         _e('Empty description');
-      }
-      echo "</div>\n";
-      echo "<div id='viewdesc$rand'></div>\n";
-      if (!$ID) {
-         echo "<script type='text/javascript' >\n
-         showDesc$rand();
-         </script>";
-      }
+      echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
+               $this->fields["content"]."</textarea>";
       echo "</td>";
       echo "</tr>";
       $options['colspan'] = 3;

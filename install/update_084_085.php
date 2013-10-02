@@ -1934,8 +1934,6 @@ function update084to085() {
                   `plan_end_date` datetime DEFAULT NULL,
                   `real_start_date` datetime DEFAULT NULL,
                   `real_end_date` datetime DEFAULT NULL,
-                  `estimated_duration` int(11) NOT NULL DEFAULT '0',
-                  `effective_duration` int(11) NOT NULL DEFAULT '0',
                   `percent_done` int(11) NOT NULL DEFAULT '0',
                   `show_on_global_gantt` tinyint(1) NOT NULL DEFAULT '0',
                   `content` longtext DEFAULT NULL,
@@ -1957,8 +1955,6 @@ function update084to085() {
                   KEY `plan_end_date` (`plan_end_date`),
                   KEY `real_start_date` (`real_start_date`),
                   KEY `real_end_date` (`real_end_date`),
-                  KEY `estimated_duration` (`estimated_duration`),
-                  KEY `effective_duration` (`effective_duration`),
                   KEY `percent_done` (`percent_done`),
                   KEY `show_on_global_gantt` (`show_on_global_gantt`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
