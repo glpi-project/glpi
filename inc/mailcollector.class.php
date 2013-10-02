@@ -1004,9 +1004,11 @@ class MailCollector  extends CommonDBTM {
                   $this->charset = $mimeStr->charset;
                }
 
-               $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
-                                                  (in_array($mimeStr->charset, $encodings)
-                                                      ? $mimeStr->charset : $fallbackCharset));
+//                $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
+//                                                   (in_array($mimeStr->charset, $encodings)
+//                                                       ? $mimeStr->charset : $fallbackCharset));
+               // Try not to use fallback charset in order to manage encodings not listed by mbstring
+               $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset);
             }
          }
          return $decodedStr;
