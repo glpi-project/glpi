@@ -369,8 +369,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_ADD_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add the component'),
@@ -399,8 +399,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_DELETE_DEVICE :
                   $tmp['field']=NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete the component'),
@@ -409,8 +409,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_LOCK_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock the component'),
@@ -419,8 +419,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_UNLOCK_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock the component'),
@@ -443,8 +443,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_DISCONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Disconnect the item'),
@@ -453,8 +453,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_CONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'),
@@ -468,8 +468,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_ADD_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
                                            $data["new_value"]);
@@ -477,8 +477,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_DEL_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete a link with an item'),
                                            $data["old_value"]);
@@ -486,8 +486,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_LOCK_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock a link with an item'),
                                            $data["old_value"]);
@@ -495,8 +495,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_UNLOCK_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock a link with an item'),
                                            $data["new_value"]);
@@ -504,8 +504,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_ADD_SUBITEM :
                   $tmp['field'] = '';
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
@@ -515,8 +515,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_UPDATE_SUBITEM :
                   $tmp['field'] = '';
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
@@ -525,8 +525,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_DELETE_SUBITEM :
                   $tmp['field'] = '';
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
@@ -535,8 +535,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_LOCK_SUBITEM :
                   $tmp['field'] = '';
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
@@ -545,8 +545,8 @@ class Log extends CommonDBTM {
 
                case self::HISTORY_UNLOCK_SUBITEM :
                   $tmp['field'] = '';
-                  if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName(1);
+                  if ($item2 = getItemForItemtype($data["itemtype_link"])) {
+                     $tmp['field'] = $item2->getTypeName(1);
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
