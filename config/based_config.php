@@ -149,13 +149,11 @@ if (!defined("GLPI_EZC_BASE")) {
    # define("GLPI_EZC_BASE", "ezc/Base/base.php");
 }
 
-// Default Zend_Loader path
 if (!defined("GLPI_ZEND_PATH")) {
-   define("GLPI_ZEND_PATH", GLPI_ROOT."/lib");
+   define("GLPI_ZEND_PATH", GLPI_ROOT."/lib/Zend");
 
-   # if Zend installed, use (in config_path.php)
-   # define("GLPI_ZEND_PATH", "/usr/share/php/");  // if not in standard include_path
-   # define("GLPI_ZEND_PATH", "");                 // if already in include_path
+   # if Zend Framework 2 available in system, use (in config_path.php)
+   # define('GLPI_ZEND_PATH', '/usr/share/php/Zend');
 }
 
 // Default SimplePie path
