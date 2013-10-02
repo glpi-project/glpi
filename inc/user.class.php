@@ -2912,6 +2912,12 @@ class User extends CommonDBTM {
                                                       getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                             $entity_restrict, 1).") ";
                      break;
+                  case 'see_project' :
+                     $where[]= " (`glpi_profilerights`.`name` = 'project'
+                                 AND (`glpi_profilerights`.`rights` & ".Project::READMY.") ".
+                                                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                            $entity_restrict, 1).") ";
+                     break;                     
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'

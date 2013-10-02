@@ -2020,6 +2020,10 @@ function update084to085() {
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttypes");
    }
+   $migration->addField("glpi_groups", 'is_manager', "bool", array('update' => "'is_assign'",
+                                                                   'value'  => 1));
+   $migration->addKey('glpi_groups', 'is_manager');
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

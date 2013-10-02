@@ -290,7 +290,24 @@ class Project extends CommonDBTM {
       Dropdown::showYesNo("show_on_global_gantt", $this->fields["show_on_global_gantt"]);
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr><td colspan='4' class='subheader'>".__('Manager')."</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('User')."</td>";
+      echo "<td>";
+      User::dropdown(array('name'   => 'users_id',
+                           'value'  => $this->fields["users_id"],
+                           'right'  => 'see_project',
+                           'entity' => $this->fields["entities_id"]));
+      echo "</td>";
+      echo "<td>".__('Group')."</td>";
+      echo "<td>";
+      Group::dropdown(array('name'      => 'groups_id',
+                            'value'     => $this->fields['groups_id'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_manager`'));
       
+      echo "</td></tr>\n";      
       $this->showFormButtons($options);
 
       return true;

@@ -212,12 +212,11 @@ class Group extends CommonTreeDropdown {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $options['colspan'] = 4;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>".__('Name')."</td>";
-      echo "<td colspan='2'>";
+      echo "<td>".__('Name')."</td>";
+      echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='8' class='middle'>".__('Comments')."</td>";
@@ -226,7 +225,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>".__('As child of')."</td><td colspan='2'>";
+      echo "<td>".__('As child of')."</td><td>";
       self::dropdown(array('value'  => $this->fields['groups_id'],
                            'name'   => 'groups_id',
                            'entity' => $this->fields['entities_id'],
@@ -234,39 +233,45 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' colspan='4'>".__('Visible in a ticket')."</td>";
+      echo "<td class='subheader' colspan='2'>".__('Visible in a ticket')."</td>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Requester')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
       echo "</td>";
-      echo "<td>".__('Assigned to')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      echo "</tr><tr>";
+      echo "<td>".__('Assigned to')."</td><td>";
       Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='b'>".__('Can be notified')."</td>";
+      echo "<td class='subheader'>".__('Can be notified')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_notify', $this->fields['is_notify']);
-      echo "</td><td></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' colspan='4'>".__('Can contain')."</td>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='subheader'>".__('Can be manager')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_manager', $this->fields['is_manager']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='subheader' colspan='2'>".__('Can contain')."</td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Item', 'Items', 2)."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
-      echo "</td>";
-      echo "<td>"._n('User', 'Users', 2)."&nbsp;&nbsp;&nbsp;";
-      Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td></tr>";
+      echo "<tr><td>"._n('User', 'Users', 2)."</td><td>";
+      Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
+      echo "</td>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4' class='center'>";
+      echo "<td colspan='2' class='center'>";
 
       if (!$ID) {
          //TRANS: %s is the datetime of insertion
@@ -430,6 +435,11 @@ class Group extends CommonTreeDropdown {
       $tab[12]['field']         = 'is_assign';
       $tab[12]['name']          = __('Assigned to');
       $tab[12]['datatype']      = 'bool';
+
+      $tab[18]['table']         = $this->getTable();
+      $tab[18]['field']         = 'is_manager';
+      $tab[18]['name']          = __('Can be manager');
+      $tab[18]['datatype']      = 'bool';
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'is_notify';
