@@ -91,6 +91,8 @@ class Project extends CommonDBTM {
    function defineTabs($options=array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

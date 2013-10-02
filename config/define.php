@@ -162,14 +162,14 @@ $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Ch
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Problem', 'Reminder', 'Software',
+                                                  'Printer', 'Problem', 'Project', 'Reminder', 'Software',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User');
 
 $CFG_GLPI["consumables_types"]            = array('Group', 'User');
 
 $CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense');
+                                                  'Peripheral', 'Phone', 'Printer', 'Project',
+                                                  'Software', 'SoftwareLicense');
 
 $CFG_GLPI["directconnect_types"]          = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
