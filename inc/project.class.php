@@ -173,10 +173,40 @@ class Project extends CommonDBTM {
       $tab[6]['field']         = 'show_on_global_gantt';
       $tab[6]['name']          = __('Show on global GANTT');
       $tab[6]['datatype']      = 'bool';
+
+      $tab[24]['table']          = 'glpi_users';
+      $tab[24]['field']          = 'name';
+      $tab[24]['linkfield']      = 'users_id';
+      $tab[24]['name']           = __('Manager');
+      $tab[24]['datatype']       = 'dropdown';
+      $tab[24]['right']          = 'see_project';
+
+      $tab[49]['table']          = 'glpi_groups';
+      $tab[49]['field']          = 'completename';
+      $tab[49]['linkfield']      = 'groups_id';
+      $tab[49]['name']           = __('Manager group');
+      $tab[49]['condition']      = '`is_manager`';
+      $tab[49]['datatype']       = 'dropdown';
       
-      // % done
-      // show gantt
-      // Date 
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'plan_start_date';
+      $tab[7]['name']          = __('Planned begin date');
+      $tab[7]['datatype']      = 'datetime';
+
+      $tab[8]['table']         = $this->getTable();
+      $tab[8]['field']         = 'plan_end_date';
+      $tab[8]['name']          = __('Planned end date');
+      $tab[8]['datatype']      = 'datetime';
+
+      $tab[9]['table']         = $this->getTable();
+      $tab[9]['field']         = 'real_start_date';
+      $tab[9]['name']          = __('Real begin date');
+      $tab[9]['datatype']      = 'datetime';
+
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'real_end_date';
+      $tab[10]['name']          = __('Real end date');
+      $tab[10]['datatype']      = 'datetime';
       
       $tab[16]['table']             = $this->getTable();
       $tab[16]['field']             = 'comment';
@@ -201,7 +231,27 @@ class Project extends CommonDBTM {
 
       return $tab;
    }
-   
+
+   function prepareInputForUpdate($input) {
+
+      if (isset($input['plan_start_date']) && isset($input['plan_end_date'])
+         && !empty($input['plan_end_date'])
+         && ($input['plan_end_date'] < $input['plan_start_date']
+               || empty($input['plan_start_date']))) {
+         Session::addMessageAfterRedirect(__('Invalid planned dates. Dates not updated.'), false, ERROR);
+         unset($input['plan_start_date']);
+         unset($input['plan_end_date']);
+      }
+      if (isset($input['real_start_date']) && isset($input['real_end_date'])
+         && !empty($input['real_end_date'])
+         && ($input['real_end_date'] < $input['real_start_date']
+               || empty($input['real_start_date']))) {
+         Session::addMessageAfterRedirect(__('Invalid real dates. Dates not updated.'), false, ERROR);
+         unset($input['real_start_date']);
+         unset($input['real_end_date']);
+      }      
+      return $input;
+   }
    /**
     * Print the computer form
     *
@@ -260,6 +310,7 @@ class Project extends CommonDBTM {
       echo "<td>";
       $this->dropdown(array('comments' => 0,
                             'entity'   => $this->fields['entities_id'],
+                            'value'    => $this->fields['projects_id'],
                             'used'     => array($this->fields['id'])));
       echo "</td>";
       echo "</tr>";
@@ -292,6 +343,7 @@ class Project extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr><td colspan='4' class='subheader'>".__('Manager')."</td></tr>";
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('User')."</td>";
       echo "<td>";
@@ -308,6 +360,29 @@ class Project extends CommonDBTM {
                             'condition' => '`is_manager`'));
       
       echo "</td></tr>\n";      
+      echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Planned start date')."</td>";
+      echo "<td>";
+      Html::showDateTimeField("plan_start_date", array('value' => $this->fields['plan_start_date']));
+      echo "</td>";
+      echo "<td>".__('Real start date')."</td>";
+      echo "<td>";
+      Html::showDateTimeField("real_start_date", array('value' => $this->fields['real_start_date']));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Planned end date')."</td>";
+      echo "<td>";
+      Html::showDateTimeField("plan_end_date", array('value' => $this->fields['plan_end_date']));
+      echo "</td>";
+      echo "<td>".__('Real end date')."</td>";
+      echo "<td>";
+      Html::showDateTimeField("real_end_date", array('value' => $this->fields['real_end_date']));
+      echo "</td></tr>\n";
+
+
       $this->showFormButtons($options);
 
       return true;
