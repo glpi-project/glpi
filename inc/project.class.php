@@ -53,7 +53,7 @@ class Project extends CommonDBTM {
     * @param $nb : number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
-      return _n('Project','Project',$nb);
+      return _n('Project','Projects',$nb);
    }
 
    static function canView() {
@@ -382,7 +382,32 @@ class Project extends CommonDBTM {
       Html::showDateTimeField("real_end_date", array('value' => $this->fields['real_end_date']));
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Planned duration')."</td>";
+      echo "<td>";
+      echo " sum of task duration TODO";
+      echo "</td>";
+      echo "<td>".__('Effective duration')."</td>";
+      echo "<td>";
+      echo " sum of effective task duration (durations of tickets associated to the task + manual declared task duration) TODO";
+      echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Description')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea id='content' name='content' cols='90' rows='6'>".
+               $this->fields["content"]."</textarea>";      
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Comments')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea id='comment' name='comment' cols='90' rows='6'>".
+               $this->fields["comment"]."</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
+      
       $this->showFormButtons($options);
 
       return true;
