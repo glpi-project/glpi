@@ -142,7 +142,6 @@ class Document extends CommonDBTM {
 
       // Create a doc only selecting a file from a item form
       $create_from_item = false;
-
       if (isset($input["items_id"])
           && isset($input["itemtype"])
           && ($item = getItemForItemtype($input["itemtype"]))
@@ -162,11 +161,17 @@ class Document extends CommonDBTM {
          $create_from_item = true;
       }
 
+      $upload_ok = false;
       if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
-         $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+         $upload_ok = $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
-         $this->moveUploadedDocument($input, $input["upload_file"]);
+         $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
+      }
+
+      // Upload failed : do not create document
+      if ($create_from_item && !$upload_ok) {
+         return false;
       }
 
       // Default document name

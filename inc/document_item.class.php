@@ -84,7 +84,6 @@ class Document_Item extends CommonDBRelation{
       if (countElementsInTable($this->getTable(),$restrict) > 0) {
          return false;
       }
-
       return parent::prepareInputForAdd($input);
    }
 
