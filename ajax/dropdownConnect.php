@@ -106,12 +106,12 @@ if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
    }
 }
 
-$NBMAX = $CFG_GLPI["dropdown_max"];
-$LIMIT = "LIMIT 0,$NBMAX";
-
-if (isset($_POST['searchText']) && ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"])) {
-   $LIMIT = "";
-}
+// $NBMAX = $CFG_GLPI["dropdown_max"];
+// $LIMIT = "LIMIT 0,$NBMAX";
+// 
+// if (isset($_POST['searchText']) && ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"])) {
+//    $LIMIT = "";
+// }
 
 $where_used = '';
 if (!empty($used)) {
@@ -151,8 +151,7 @@ $query = "SELECT DISTINCT `$table`.`id`,
           $CONNECT_SEARCH
                 $where
           ORDER BY entities_id,
-                   name ASC
-          $LIMIT";
+                   name ASC";
 
 $result = $DB->query($query);
 
