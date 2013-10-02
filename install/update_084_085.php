@@ -1021,7 +1021,7 @@ function update084to085() {
                                           97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123);
 
 
-   $migration->displayTitle('Update for mailqueue');
+   $migration->displayMessage('Update for mailqueue');
 
    if (!TableExists('glpi_queuedmails')) {
       $query = "CREATE TABLE `glpi_queuedmails` (
@@ -1415,7 +1415,7 @@ function update084to085() {
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;')";
          $DB->queryOrDie($query, "0.85 add change notification translation");
-         }
+         
          $notifications = array('new'         => array(),
                                 'update'      => array(Notification::ASSIGN_TECH,
                                                        Notification::OLD_TECH_IN_CHARGE),
@@ -1458,10 +1458,10 @@ function update084to085() {
                $DB->queryOrDie($query, "0.85 add change $type notification target");
             }
          }
-         
       }
+   }
 
-   /// TODO add display prefs
+   $ADDTODISPLAYPREF['Change'] = array(12,19,15,7,18);
 
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
@@ -1520,6 +1520,7 @@ function update084to085() {
 
    // Dropdown translations
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_knowbaseitemtranslations'));
+   
    Config::setConfigurationValues('core', array('translate_kb' => 0));
    if (!TableExists("glpi_knowbaseitemtranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_knowbaseitemtranslations` (
@@ -1537,6 +1538,7 @@ function update084to085() {
 
    // kb translations
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_dropdowntranslations'));
+   
    Config::setConfigurationValues('core', array('translate_dropdowns' => 0));
    if (!TableExists("glpi_dropdowntranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
@@ -1646,6 +1648,7 @@ function update084to085() {
    $migration->addField('glpi_links', 'open_window', 'bool', array('value' => 1));
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_states'));
+   
    foreach (array('is_visible_computer', 'is_visible_monitor', 'is_visible_networkequipment',
                   'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',
                   'is_visible_softwareversion') as $field)  {
@@ -1716,6 +1719,8 @@ function update084to085() {
       }
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_slas'));
+   
    // * Convert SLA resolution time to new system (ticket #4346)
    if (!FieldExists("glpi_slas", "definition_time")) {
       $migration->addField("glpi_slas", 'definition_time', "string");
@@ -1841,6 +1846,8 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for circularlogs");
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_documents'));
+   
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
 
    if (!TableExists("glpi_blacklistedmailcontents")) {
@@ -1863,6 +1870,8 @@ function update084to085() {
    // increase password length
    $migration->changeField('glpi_users', 'password', 'password', 'string');
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_softwarecategories'));
+   
    // Hierarchical software category
    $migration->addField('glpi_softwarecategories', 'softwarecategories_id', 'integer');
    $migration->addField("glpi_softwarecategories", 'completename', "text");
@@ -1873,6 +1882,8 @@ function update084to085() {
    $migration->addKey('glpi_softwarecategories', 'softwarecategories_id');
    regenerateTreeCompleteName("glpi_softwarecategories");
 
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various'));
+   
    // glpi_cartridgeitems  glpi_consumableitems by entity
    $migration->addField('glpi_consumableitems', 'is_recursive', 'bool',
                          array('update' => '1',
@@ -1890,8 +1901,7 @@ function update084to085() {
              SET `type` = 'cartridgeitems'
              WHERE `type` = 'cartridges';";
    $DB->queryOrDie($query, "0.85 fix events for cartridges");
-
-
+   
    // Bookmark order :
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
@@ -1903,7 +1913,9 @@ function update084to085() {
       $DB->queryOrDie($query, "update glpi_configs with backcreated");
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_projects'));
 
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
