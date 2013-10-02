@@ -4197,6 +4197,10 @@ class CommonDBTM extends CommonGLPI {
                   if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
                      return $searchoptions['toadd'][$value];
                   }
+
+                  if (!is_numeric($value)) {
+                     return $value;
+                  }
                   if (($value == 0)
                       && isset($searchoptions['emptylabel'])) {
                      return $searchoptions['emptylabel'];
