@@ -1966,31 +1966,38 @@ function update084to085() {
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `type` int(11) NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
+                  `color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `is_finished` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `type` (`type`),
                   KEY `name` (`name`),
                   KEY `is_finished` (`is_finished`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projectstates");
 
-      /// TODO : add color / finished to displaypref
       $ADDTODISPLAYPREF['ProjectState'] = array(12,11);
+      $states = array('new' => array('name' => _x('ticket', 'New'),
+                                     'color' => '#06ff00',
+                                     'is_finished' => 0),
+                      'do' => array('name' => __('Processing'),
+                                     'color' => '#ffb800',
+                                     'is_finished' => 0),
+                      'end' => array('name' => __('Closed'),
+                                     'color' => '#ff0000',
+                                     'is_finished' => 1));
+      foreach ($states as $key => $val) {
+         $query = "INSERT INTO `glpi_projectstates` (`name`,`color`,`is_finished`)
+                     VALUES ('".addslashes($val['name'])."','".addslashes($val['color'])."','".addslashes($val['is_finished'])."')";
+         $DB->queryOrDie($query, "0.85 insert default project state $key");
+      }
    }
    if (!TableExists('glpi_projecttypes')) {
       $query = "CREATE TABLE `glpi_projecttypes` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `type` int(11) NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
-                  KEY `type` (`type`),
                   KEY `name` (`name`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttypes");

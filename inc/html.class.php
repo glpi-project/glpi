@@ -2885,7 +2885,6 @@ class Html {
       $p['value']      = '';
       $p['rand']       = mt_rand();
       $p['display']    = true;
-
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
             $p[$key] = $val;
@@ -2895,7 +2894,6 @@ class Html {
       $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
       $js       = "$('#$field_id').spectrum();";
       $output  .= Html::scriptBlock($js);
-
 
       if ($p['display']) {
          echo $output;

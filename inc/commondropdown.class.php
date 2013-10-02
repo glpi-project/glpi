@@ -340,6 +340,10 @@ abstract class CommonDropdown extends CommonDBTM {
                Dropdown::showYesNo($field['name'], $this->fields[$field['name']]);
                break;
 
+            case 'color' :
+               Html::showColorField($field['name'], array('value' => $this->fields[$field['name']]));
+               break;
+
             case 'date' :
                Html::showDateField($field['name'], array('value' => $this->fields[$field['name']]));
                break;

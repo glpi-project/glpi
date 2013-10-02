@@ -4024,6 +4024,9 @@ class CommonDBTM extends CommonGLPI {
             case "bool" :
                return Dropdown::showYesNo($name, $value, -1, $options);
 
+            case "color" :
+               return Html::showColorField($name, $options);
+               
             case "date" :
             case "date_delay" :
                if (isset($options['relative_dates']) && $options['relative_dates']) {
