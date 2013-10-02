@@ -731,7 +731,8 @@ class Dropdown {
                                  'RequestType'      => _n('Request source', 'Request sources', 2),
                                  'SolutionTemplate' => _n('Solution template',
                                                           'Solution templates', 2),
-                                 'ProjectState'     => _n('Project state', 'Project states', 2)
+                                 'ProjectState'     => _n('Project state', 'Project states', 2),
+                                 'ProjectType'     => _n('Project type', 'Project types', 2)
                                 ),
 
                     _n('Type', 'Types', 2)

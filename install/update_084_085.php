@@ -2001,8 +2001,6 @@ function update084to085() {
                   KEY `name` (`name`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttypes");
-
-      $ADDTODISPLAYPREF['ProjectType'] = array(12,11);
    }
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
