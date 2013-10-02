@@ -1938,6 +1938,7 @@ function update084to085() {
                   `show_on_global_gantt` tinyint(1) NOT NULL DEFAULT '0',
                   `content` longtext DEFAULT NULL,
                   `comment` longtext DEFAULT NULL,
+                  `notepad` longtext DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `code` (`code`),

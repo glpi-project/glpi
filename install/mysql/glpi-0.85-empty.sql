@@ -5119,6 +5119,7 @@ CREATE TABLE `glpi_projects` (
   `show_on_global_gantt` tinyint(1) NOT NULL DEFAULT '0',
   `content` longtext COLLATE utf8_unicode_ci,
   `comment` longtext COLLATE utf8_unicode_ci,
+  `notepad` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `code` (`code`),
