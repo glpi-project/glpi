@@ -3042,6 +3042,9 @@ class Search {
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
          case "glpi_tickets.urgency" :
+         case "glpi_projects.priority" :
+         case "glpi_projects.impact" :
+         case "glpi_projects.urgency" :
             if (is_numeric($val)) {
                if ($val > 0) {
                   return $link." `$table`.`$field` = '$val'";
