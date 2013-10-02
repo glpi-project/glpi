@@ -147,7 +147,7 @@ class IPAddress extends CommonDBChild {
          // If previous value differs from current one, then check it !
          $this->setAddressFromString($input['name']);
          if (!$this->is_valid()) {
-            if (isset($input['is_dynamic'])) {
+            if (isset($input['is_dynamic']) && $input['is_dynamic']) {
                // We allow invalid IPs that are dynamics !
                $input['version']  = 0;
                $input['binary_0'] = 0;
