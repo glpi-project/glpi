@@ -1059,6 +1059,12 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = _n('Change', 'Changes', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
+      $rights = array(array('itemtype'   => 'Project',
+                            'label'      => _n('Project', 'Projects', 2),
+                            'field'      => 'project'));
+      $matrix_options['title'] = _n('Project', 'Projects', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+      
 
       if ($canedit
           && $closeform) {
