@@ -1963,6 +1963,21 @@ function update084to085() {
 
       $DB->queryOrDie($query, "0.85 add table glpi_dropdowntranslations");
    }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'project'") == 0) {
+      ProfileRight::addProfileRights(array('project'));
+
+      ProfileRight::updateProfileRightAsOtherRight('project', Project::READMY,
+                                                   "`name` = 'change'
+                                                     AND `rights` & ". Change::READMY);
+      ProfileRight::updateProfileRightAsOtherRight('project', Project::READALL,
+                                                   "`name` = 'change'
+                                                     AND `rights` & ".Change::READALL);
+      ProfileRight::updateProfileRightAsOtherRight('project',
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
+                                                    "`name` = 'change' AND `rights` & (".CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE.')');
+   }
+   
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
