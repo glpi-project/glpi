@@ -289,16 +289,6 @@ function glpi_autoload($classname) {
          ezcBase::autoload($classname);
          return true;
       }
-      // Is Zend class ?
-//       if (preg_match('/^Zend/',$classname,$matches)) {
-//          if (GLPI_ZEND_PATH) {
-//             set_include_path(GLPI_ZEND_PATH . PATH_SEPARATOR . get_include_path());
-//          }
-//          require_once("Zend/Loader.php");
-//
-//          Zend_Loader::loadClass($classname);
-//          return true;
-//       }
 
       // Do not try to load phpcas using GLPI autoload
       if (preg_match('/^CAS_.*/', $classname)) {
@@ -323,11 +313,9 @@ function glpi_autoload($classname) {
    }
 }
 
-require_once (GLPI_ROOT . '/lib/Zend/Loader/ClassMapAutoloader.php');
-$loader = new Zend\Loader\ClassMapAutoloader();
-// Register the class map:
-$loader->registerAutoloadMap(GLPI_ROOT . '/lib/Zend/autoload_classmap.php');
-// Register with spl_autoload:
+require_once (GLPI_ZEND_PATH . '/Loader/StandardAutoloader.php');
+$option = array(Zend\Loader\StandardAutoloader::LOAD_NS => array('Zend' => GLPI_ZEND_PATH));
+$loader = new Zend\Loader\StandardAutoloader($option);
 $loader->register();
 
 // SimplePie autoloader
