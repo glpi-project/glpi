@@ -2123,6 +2123,7 @@ CREATE TABLE `glpi_groups` (
   `is_notify` tinyint(1) NOT NULL DEFAULT '1',
   `is_itemgroup` tinyint(1) NOT NULL DEFAULT '1',
   `is_usergroup` tinyint(1) NOT NULL DEFAULT '1',
+  `is_manager` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),
