@@ -96,9 +96,7 @@ class Calendar extends CommonDropdown {
 
       switch ($input['action']) {
          case "duplicate" :
-            if ($item->isEntityAssign()) {
-               Entity::dropdown();
-            }
+            Entity::dropdown();
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Duplicate')."'>";
             return true;
