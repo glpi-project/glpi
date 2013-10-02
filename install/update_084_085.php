@@ -1920,11 +1920,12 @@ function update084to085() {
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `priority` int(11) NOT NULL DEFAULT '0',
+                  `priority` int(11) NOT NULL DEFAULT '1',
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `projects_id` int(11) NOT NULL DEFAULT '0',
                   `projectstates_id` int(11) NOT NULL DEFAULT '0',
+                  `projecttypes_id` int(11) NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `users_id` int(11) NOT NULL DEFAULT '0',
@@ -1946,6 +1947,7 @@ function update084to085() {
                   KEY `is_recursive` (`is_recursive`),
                   KEY `projects_id` (`projects_id`),
                   KEY `projectstates_id` (`projectstates_id`),
+                  KEY `projecttypes_id` (`projecttypes_id`),
                   KEY `priority` (`priority`),
                   KEY `date` (`date`),
                   KEY `date_mod` (`date_mod`),
@@ -1962,6 +1964,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.85 add table glpi_dropdowntranslations");
+      $ADDTODISPLAYPREF['Project'] = array(3,4,12,5,15,21);
    }
 
    if (countElementsInTable("glpi_profilerights", "`name` = 'project'") == 0) {

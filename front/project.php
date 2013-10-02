@@ -31,14 +31,13 @@
 * @brief
 */
 
-
 include ('../inc/includes.php');
 
-Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
+Session::haveRightsOr('project', array(Project::READALL, Project::READMY));
 
-Html::header(Change::getTypeName(2), '', "helpdesk", "change");
+Html::header(Project::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "project");
 
-Search::show('Change');
+Search::show('Project');
 
 Html::footer();
 ?>

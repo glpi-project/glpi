@@ -604,6 +604,7 @@ class CommonGLPI {
             $ID = 0;
          }
       }
+
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
       $extraparam     = "";

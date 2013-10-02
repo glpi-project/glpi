@@ -1132,8 +1132,8 @@ class Html {
                                                 'CartridgeItem', 'ConsumableItem', 'Phone' );
 
          $menu['helpdesk']['title']     = __('Assistance');
-         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change', 'Planning', 'Stat',
-                                                'TicketRecurrent');
+         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change', 'Project',
+                                                'Planning', 'Stat', 'TicketRecurrent');
 
          $menu['management']['title']   = __('Management');
          $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',

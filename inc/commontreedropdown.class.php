@@ -594,6 +594,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $tab[14]['name']              = __('Name');
       $tab[14]['datatype']          = 'itemlink';
 
+      $tab[13]['table']             = $this->getTable();
+      $tab[13]['field']             = 'completename';
+      $tab[13]['name']              = __('Father');
+      $tab[13]['datatype']          = 'dropdown';
+      $tab[13]['massiveaction']     = false;
+      // Add virtual condition to relink table
+      $tab[13]['joinparams']        = array('condition' => "AND 1=1");
+      
       $tab[16]['table']             = $this->getTable();
       $tab[16]['field']             = 'comment';
       $tab[16]['name']              = __('Comments');

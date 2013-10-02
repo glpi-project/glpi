@@ -2998,6 +2998,13 @@ class Search {
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
          case "glpi_tickets.urgency" :
+         case "glpi_problems.priority" :
+         case "glpi_problems.impact" :
+         case "glpi_problems.urgency" :
+         case "glpi_changes.priority" :
+         case "glpi_changes.impact" :
+         case "glpi_changes.urgency" :
+         case "glpi_projects.priority" :
             if (is_numeric($val)) {
                if ($val > 0) {
                   return $link." `$table`.`$field` = '$val'";
