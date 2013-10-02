@@ -211,11 +211,14 @@ class Dropdown {
                                   
                                   'display'   => false);
 
-         if ($item->canView()
-             && $params['value'] && $item->getFromDB($params['value'])
-             && $item->canViewItem()) {
-
-            $options_tooltip['link']       = $item->getLinkURL();
+         if ($item->canView()) {
+         
+             if($params['value'] && $item->getFromDB($params['value'])
+               && $item->canViewItem()) {
+               $options_tooltip['link']       = $item->getLinkURL();
+            } else {
+               $options_tooltip['link']       = $item->getSearchURL();
+            }
             $options_tooltip['linkid']     = "comment_link_".$params['name'].$params['rand'];
             $options_tooltip['linktarget'] = '_blank';
          }
