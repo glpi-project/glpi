@@ -999,6 +999,7 @@ class IPAddress extends CommonDBChild {
          $base->addHeader('Item'       , _n('Item', 'Items', 1)     , $super, $father);
          $base->addHeader('NetworkPort', NetworkPort::getTypeName(0), $super, $father);
          $base->addHeader('NetworkName', NetworkName::getTypeName(1), $super, $father);
+         $base->addHeader('Entity', Entity::getTypeName(1), $super, $father);
 
       } else {
 
@@ -1047,6 +1048,7 @@ class IPAddress extends CommonDBChild {
                                   ADDR.`id`       AS id,
                                   ADDR.`itemtype` AS addr_item_type,
                                   ADDR.`items_id` AS addr_item_id,
+                                  `glpi_entities`.`completename` AS entity,
                                   NAME.`id`       AS name_id,
                                   PORT.`id`       AS port_id,
                                   ITEM.`id`       AS item_id,
@@ -1055,6 +1057,7 @@ class IPAddress extends CommonDBChild {
                            JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                                AND ADDR.`itemtype` = 'NetworkName'
                                                                AND ADDR.`is_deleted` = '0')
+                           LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                            JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                                 AND NAME.`itemtype` = 'NetworkPort')
                            JOIN `glpi_networkports` AS PORT ON (NAME.`items_id` = PORT.`id`
@@ -1071,6 +1074,7 @@ class IPAddress extends CommonDBChild {
                                ADDR.`id`       AS id,
                                ADDR.`itemtype` AS addr_item_type,
                                ADDR.`items_id` AS addr_item_id,
+                               `glpi_entities`.`completename` AS entity,
                                NAME.`id`       AS name_id,
                                PORT.`id`       AS port_id,
                                NULL            AS item_id,
@@ -1079,6 +1083,7 @@ class IPAddress extends CommonDBChild {
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                             AND ADDR.`itemtype` = 'NetworkName'
                                                             AND ADDR.`is_deleted` = '0')
+                        LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                         JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                              AND NAME.`itemtype` = 'NetworkPort')
                         JOIN `glpi_networkports` AS PORT
@@ -1095,6 +1100,7 @@ class IPAddress extends CommonDBChild {
                                ADDR.`id`       AS id,
                                ADDR.`itemtype` AS addr_item_type,
                                ADDR.`items_id` AS addr_item_id,
+                               `glpi_entities`.`completename` AS entity,
                                NAME.`id`       AS name_id,
                                NULL            AS port_id,
                                NULL            AS item_id,
@@ -1103,6 +1109,7 @@ class IPAddress extends CommonDBChild {
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                             AND ADDR.`itemtype` = 'NetworkName'
                                                             AND ADDR.`is_deleted` = '0')
+                        LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                         JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                              AND NAME.`itemtype` != 'NetworkPort')
                         WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
@@ -1115,6 +1122,7 @@ class IPAddress extends CommonDBChild {
                                ADDR.`id`       AS id,
                                ADDR.`itemtype` AS addr_item_type,
                                ADDR.`items_id` AS addr_item_id,
+                               `glpi_entities`.`completename` AS entity,
                                NULL            AS name_id,
                                NULL            AS port_id,
                                NULL            AS item_id,
@@ -1123,6 +1131,7 @@ class IPAddress extends CommonDBChild {
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                             AND ADDR.`itemtype` != 'NetworkName'
                                                             AND ADDR.`is_deleted` = '0')
+                        LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                         WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
 
          $query = implode('UNION ', $queries);
@@ -1143,7 +1152,7 @@ class IPAddress extends CommonDBChild {
          $ipaddress   = new self();
          $networkname = new NetworkName();
          $networkport = new NetworkPort();
-
+         
          $item = NULL;
          foreach ($DB->request($query) as $line) {
 
@@ -1162,7 +1171,9 @@ class IPAddress extends CommonDBChild {
             $item_header= $row->getGroup()->getHeaderByName('Item', 'Item');
             $port_header= $row->getGroup()->getHeaderByName('Item', 'NetworkPort');
             $name_header= $row->getGroup()->getHeaderByName('Item', 'NetworkName');
+            $entity_header= $row->getGroup()->getHeaderByName('Item', 'Entity');
 
+            
             $row->addCell($ip_header, $line['ip'], $father);
 
             if (!empty($line['name_id'])) {
@@ -1180,6 +1191,8 @@ class IPAddress extends CommonDBChild {
                      $row->addCell($item_header, $item->getLink(), $father);
                   }
                }
+               $row->addCell($entity_header, $line['entity'], $father);
+               
             } else if ((!empty($line['addr_item_id'])) && (!empty($line['addr_item_type']))) {
                $itemtype = $line['addr_item_type'];
                $item     = new $itemtype();
@@ -1194,6 +1207,7 @@ class IPAddress extends CommonDBChild {
                } else {
                   $row->addCell($item_header, $item->getLink(), $father);
                }
+               $row->addCell($entity_header, $line['entity'], $father);
             }
          }
 
