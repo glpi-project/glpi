@@ -170,7 +170,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Event::getCountLogin();
       echo "</div>";
    }
-
    echo "<div id='footer-login'>";
    echo "<a href='http://glpi-project.org/' title='Powered By Indepnet'>";
    echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").
