@@ -98,8 +98,8 @@ if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {
 }
 
 /// TODO manage it
-$NBMAX = $CFG_GLPI["dropdown_max"];
-$LIMIT = "LIMIT 0,$NBMAX";
+// $NBMAX = $CFG_GLPI["dropdown_max"];
+// $LIMIT = "LIMIT 0,$NBMAX";
 
 $where_used = '';
 if (!empty($used)) {
@@ -139,8 +139,7 @@ $query = "SELECT DISTINCT `$table`.`id`,
           $CONNECT_SEARCH
                 $where
           ORDER BY entities_id,
-                   name ASC
-          $LIMIT";
+                   name ASC";
 
 $result = $DB->query($query);
 
