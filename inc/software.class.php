@@ -561,16 +561,21 @@ class Software extends CommonDBTM {
 
       $tab['license']            = _n('License', 'Licenses', 2);
 
-      $licjoin                   = array('jointype'  => 'child',
-                                         'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
-                                                                                   '', '', true));
+      $licjoin       = array();
+      $licjoinexpire = array();
 
-      $licjoinexpire             = array('jointype'  => 'child',
-                                         'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
-                                                                                   '', '', true).
-                                                         " AND (NEWTABLE.`expire` IS NULL
-                                                              OR NEWTABLE.`expire` > NOW())");
-                                                                                   
+      if (!Session::isCron()) { // no filter for cron
+         $licjoin       = array('jointype'  => 'child',
+                                'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
+                                                                          '', '', true));
+
+         $licjoinexpire = array('jointype'  => 'child',
+                                'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
+                                                                          '', '', true).
+                                                " AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())");
+      }
+      
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';
       $tab[160]['name']          = __('License name');
