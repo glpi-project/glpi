@@ -3812,6 +3812,9 @@ class Search {
                return " style=\"background-color: #cf9b9b\" ";
             }
 
+         case "glpi_projectstates.color" :
+            return " style=\"background-color:".$data[$NAME.$num].";\" ";
+            
          default :
             return "";
       }
