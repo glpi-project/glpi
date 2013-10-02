@@ -704,7 +704,8 @@ class TicketFollowup  extends CommonDBTM {
       $input = array('tickets_id' => $ticket->getField('id'));
 
       if (($ticket->fields["status"] == CommonITILObject::SOLVED)
-          && $ticket->canApprove()) {
+          && $ticket->canApprove()
+          && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::CLOSED)) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";
