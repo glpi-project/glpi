@@ -1915,7 +1915,88 @@ function update084to085() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_projects'));
 
-   
+   if (!TableExists("glpi_projects")) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_projects` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `priority` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `projectstates_id` int(11) NOT NULL DEFAULT '0',
+                  `date` datetime DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `groups_id` int(11) NOT NULL DEFAULT '0',
+                  `plan_start_date` datetime DEFAULT NULL,
+                  `plan_end_date` datetime DEFAULT NULL,
+                  `real_start_date` datetime DEFAULT NULL,
+                  `real_end_date` datetime DEFAULT NULL,
+                  `estimated_duration` int(11) NOT NULL DEFAULT '0',
+                  `effective_duration` int(11) NOT NULL DEFAULT '0',
+                  `percent_done` int(11) NOT NULL DEFAULT '0',
+                  `show_on_global_gantt` tinyint(1) NOT NULL DEFAULT '0',
+                  `content` longtext DEFAULT NULL,
+                  `comment` longtext DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `code` (`code`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `projects_id` (`projects_id`),
+                  KEY `projectstates_id` (`projectstates_id`),
+                  KEY `priority` (`priority`),
+                  KEY `date` (`date`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `users_id` (`users_id`),
+                  KEY `groups_id` (`groups_id`),
+                  KEY `plan_start_date` (`plan_start_date`),
+                  KEY `plan_end_date` (`plan_end_date`),
+                  KEY `real_start_date` (`real_start_date`),
+                  KEY `real_end_date` (`real_end_date`),
+                  KEY `estimated_duration` (`estimated_duration`),
+                  KEY `effective_duration` (`effective_duration`),
+                  KEY `percent_done` (`percent_done`),
+                  KEY `show_on_global_gantt` (`show_on_global_gantt`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+      $DB->queryOrDie($query, "0.85 add table glpi_dropdowntranslations");
+   }
+   if (!TableExists('glpi_projectstates')) {
+      $query = "CREATE TABLE `glpi_projectstates` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `type` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `is_finished` tinyint(1) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `type` (`type`),
+                  KEY `name` (`name`),
+                  KEY `is_finished` (`is_finished`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 create glpi_projectstates");
+
+      /// TODO : add color / finished to displaypref
+      $ADDTODISPLAYPREF['ProjectState'] = array(12,11);
+   }
+   if (!TableExists('glpi_projecttypes')) {
+      $query = "CREATE TABLE `glpi_projecttypes` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `type` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `type` (`type`),
+                  KEY `name` (`name`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 create glpi_projecttypes");
+
+      $ADDTODISPLAYPREF['ProjectType'] = array(12,11);
+   }
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
