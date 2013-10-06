@@ -2053,7 +2053,12 @@ class Toolbox {
 
 
    /**
-    * @param $value
+    * Display a mail server configuration form
+    *
+    * @param $value String host connect string ex
+    *                      {localhost:993/imap/ssl}INBOX
+    *
+    * @return String type of the server (imap/pop)
    **/
    static function showMailServerConfig($value) {
 
@@ -2172,6 +2177,8 @@ class Toolbox {
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Connection string') . "</td>";
       echo "<td class='b'>$value</td></tr>\n";
+
+      return $tab['type'];
    }
 
 
