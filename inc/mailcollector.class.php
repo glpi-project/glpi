@@ -232,7 +232,7 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
 
-      Toolbox::showMailServerConfig($this->fields["host"]);
+      $type = Toolbox::showMailServerConfig($this->fields["host"]);
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
       Html::autocompletionTextField($this, "login");
@@ -253,15 +253,15 @@ class MailCollector  extends CommonDBTM {
       }
 
 
+      if ($type != "pop") {
+         echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
+         echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
+         echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
-      echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
-      echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
-      echo "</td></tr>\n";
-
+         echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
+         echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
+         echo "</td></tr>\n";
+      }
 
 
       echo "<tr class='tab_bg_1'>";

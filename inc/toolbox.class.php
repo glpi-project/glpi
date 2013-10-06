@@ -1920,7 +1920,12 @@ class Toolbox {
 
 
    /**
-    * @param $value
+    * Display a mail server configuration form
+    *
+    * @param $value String host connect string ex
+    *                      {localhost:993/imap/ssl}INBOX
+    *
+    * @return String type of the server (imap/pop)
    **/
    static function showMailServerConfig($value) {
 
@@ -2009,6 +2014,8 @@ class Toolbox {
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Connection string') . "</td>";
       echo "<td class='b'>$value</td></tr>\n";
+
+      return $tab['type'];
    }
 
 
@@ -2167,7 +2174,7 @@ class Toolbox {
       }
       return false;
    }
-   
+
    /**
     * Prepare array passed on an input form
     *
@@ -2204,7 +2211,7 @@ class Toolbox {
    **/
    static function checkValidReferer() {
       global $CFG_GLPI;
-      
+
       if (!isset($_SERVER['HTTP_REFERER'])
          || !is_array($url = parse_url($_SERVER['HTTP_REFERER']))
          || !isset($url['host'])
