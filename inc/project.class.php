@@ -101,6 +101,7 @@ class Project extends CommonDBTM {
    
    function post_getEmpty() {
       $this->fields['priority'] = 3;
+      $this->fields['percent_done'] = 0;
    }
    
 
