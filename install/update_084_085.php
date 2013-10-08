@@ -2019,7 +2019,7 @@ function update084to085() {
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttypes");
    }
-   $migration->addField("glpi_groups", 'is_manager', "bool", array('update' => "'is_assign'",
+   $migration->addField("glpi_groups", 'is_manager', "bool", array('update' => "`is_assign`",
                                                                    'value'  => 1));
    $migration->addKey('glpi_groups', 'is_manager');
 
