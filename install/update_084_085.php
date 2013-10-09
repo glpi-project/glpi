@@ -1962,7 +1962,7 @@ function update084to085() {
                   KEY `show_on_global_gantt` (`show_on_global_gantt`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
-      $DB->queryOrDie($query, "0.85 add table glpi_dropdowntranslations");
+      $DB->queryOrDie($query, "0.85 add table glpi_projects");
       $ADDTODISPLAYPREF['Project'] = array(3,4,12,5,15,21);
    }
 
@@ -2023,19 +2023,6 @@ function update084to085() {
                                                                    'value'  => 1));
    $migration->addKey('glpi_groups', 'is_manager');
 
-   if (!TableExists('glpi_projects_items')) {
-      $query = "CREATE TABLE `glpi_projects_items` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
-                  `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
-                  PRIMARY KEY (`id`),
-                  UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
-                  KEY `item` (`itemtype`,`items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.85 add table glpi_projects_items");
-   }
-
    if (!TableExists('glpi_changes_projects')) {
       $query = "CREATE TABLE `glpi_changes_projects` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2073,7 +2060,71 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_items_projects");
    }
-   
+
+   if (!TableExists("glpi_projecttasks")) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_projecttasks` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `content` longtext DEFAULT NULL,
+                  `comment` longtext DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                  `date` datetime DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `plan_start_date` datetime DEFAULT NULL,
+                  `plan_end_date` datetime DEFAULT NULL,
+                  `real_start_date` datetime DEFAULT NULL,
+                  `real_end_date` datetime DEFAULT NULL,
+                  `duration` int(11) NOT NULL DEFAULT '0',
+                  `projectstates_id` int(11) NOT NULL DEFAULT '0',
+                  `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `percent_done` int(11) NOT NULL DEFAULT '0',
+                  `notepad` longtext DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `projects_id` (`projects_id`),
+                  KEY `projecttasks_id` (`projecttasks_id`),
+                  KEY `date` (`date`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `users_id` (`users_id`),
+                  KEY `plan_start_date` (`plan_start_date`),
+                  KEY `plan_end_date` (`plan_end_date`),
+                  KEY `real_start_date` (`real_start_date`),
+                  KEY `real_end_date` (`real_end_date`),
+                  KEY `percent_done` (`percent_done`),
+                  KEY `projectstates_id` (`projectstates_id`),
+                  KEY `projecttasktypes_id` (`projecttasktypes_id`)    
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+      $DB->queryOrDie($query, "0.85 add table glpi_projecttasks");
+   }
+   if (!TableExists('glpi_projecttasktypes')) {
+      $query = "CREATE TABLE `glpi_projecttasktypes` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 create glpi_projecttasktypes");
+   }
+   if (!TableExists('glpi_projecttaskteams')) {
+      $query = "CREATE TABLE `glpi_projecttaskteams` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(100) default NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`projecttasks_id`,`itemtype`,`items_id`),
+                  KEY `item` (`itemtype`,`items_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_projecttaskteams");
+   }   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
