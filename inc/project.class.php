@@ -41,12 +41,14 @@ if (!defined('GLPI_ROOT')) {
 class Project extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory          = true;
-   static $rightname          = 'project';
+   public $dohistory = true;
+   static $rightname = 'project';
    
-   const READMY               = 1;
-   const READALL              = 1024;
+   const READMY      = 1;
+   const READALL     = 1024;
 
+   protected $team   = array();
+   
    /**
     * Name of the type
     *
@@ -91,6 +93,7 @@ class Project extends CommonDBTM {
    function defineTabs($options=array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('ProjectTeam', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);      
@@ -104,7 +107,22 @@ class Project extends CommonDBTM {
       $this->fields['percent_done'] = 0;
    }
    
+   function post_getFromDB() {
+      // Team
+      $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
+   }
 
+   /// Get team member count
+   function getTeamCount() {
+      $nb = 0;
+      if (is_array($this->team) && count($this->team)) {
+         foreach ($this->team as $val) {
+            $nb +=  count($val);
+         }
+      }
+      return $nb;
+   }
+   
    function getSearchOptions() {
 
       $tab = array();
@@ -457,6 +475,109 @@ class Project extends CommonDBTM {
             return CommonITILObject::dropdownPriority($options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }   
+   }
+
+   /**
+    * Show team for a project
+   **/
+   function showTeam(Project $project) {
+      global $DB, $CFG_GLPI;
+
+      $ID      = $project->fields['id'];
+      $canedit = $project->canEdit($ID);
+
+      echo "<div class='center'>";
+
+      $rand = mt_rand();
+      $nb = 0;
+
+      $nb = $project->getTeamCount();
+
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='projectteam_form$rand' id='projectteam_form$rand' ";
+         echo " method='post' action='".Toolbox::getItemTypeFormURL('ProjectTeam')."'>";
+         echo "<input type='hidden' name='projects_id' value='$ID'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a team member')."</tr>";
+         echo "<tr class='tab_bg_2'><td>";
+
+         $params = array('itemtypes' => ProjectTeam::$available_types,
+                         'entity_restrict' => ($project->fields['is_recursive']
+                                               ?-1 :$project->fields['entities_id']),
+                         );
+         $addrand = Dropdown::showSelectItemFromItemtypes($params);
+
+         echo "</td>";
+         echo "<td width='20%'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\"
+               class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+      echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams
+            = array('num_displayed'
+                        => $nb,
+                    'container'
+                        => 'mass'.__CLASS__.$rand);
+//                     'specific_actions'
+//                         => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete'
+//                                     => _x('button', 'Delete permanently')) );
+// 
+//          if ($this->fields['users_id'] != Session::getLoginUserID()) {
+//             $massiveactionparams['confirm']
+//                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+//          }
+         Html::showMassiveActions($massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit && $nb) {
+         echo "<th width='10'>";
+         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".__('Type')."</th>";
+      echo "<th>"._n('Member', 'Members', 2)."</th>";
+      echo "</tr>";
+
+      foreach (ProjectTeam::$available_types as $type) {
+         if (isset($project->team[$type]) && count($project->team[$type])) {
+            if ($item = getItemForItemtype($type)) {
+               foreach ($project->team[$type] as $data) {
+                  $item->getFromDB($data['items_id']);
+                  echo "<tr class='tab_bg_2'>";
+                  if ($canedit) {
+                     echo "<td>";
+                     Html::showMassiveActionCheckBox('ProjectTeam',$data["id"]);
+                     echo "</td>";
+                  }
+                  echo "<td>".$item->getTypeName(1)."</td>";
+                  echo "<td>".$item->getLink()."</td>";
+                  echo "</tr>";
+               }
+            }
+         }
+      }
+
+      echo "</table>";
+      if ($canedit && $nb) {
+         $massiveactionparams['ontop'] =false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
+      }
+
+      echo "</div>";
+      // Add items
+
+      return true;
+   }
+   
 }
 ?>

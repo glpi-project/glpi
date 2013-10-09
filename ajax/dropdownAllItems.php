@@ -43,10 +43,10 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    $table = getTableForItemType($_POST["idtable"]);
 
    // Link to user for search only > normal users
-   $link = "dropdownValue.php";
+   $link = "getDropdownValue.php";
 
    if ($_POST["idtable"] == 'User') {
-      $link = "dropdownUsers.php";
+      $link = "getDropdownUsers.php";
    }
 
    $rand     = mt_rand();
@@ -68,7 +68,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $p['condition'] = $_POST['condition'];
    }
    echo  Html::jsAjaxDropdown($_POST["name"], $field_id,
-                              $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
+                              $CFG_GLPI['root_doc']."/ajax/".$link,
                               $p);
 
    if (!empty($_POST['showItemSpecificity'])) {
