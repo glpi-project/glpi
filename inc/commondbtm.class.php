@@ -2645,8 +2645,9 @@ class CommonDBTM extends CommonGLPI {
 
       if (count($toadd)) {
          foreach ($toadd as $data) {
+            // Do not use SPAN here
             $comment .= sprintf(__('%1$s: %2$s')."<br>",
-                                "<span class='b'>".$data['name'], "</span>".$data['value']);
+                                "<strong>".$data['name'], "</strong>".$data['value']);
          }
       }
 
