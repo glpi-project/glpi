@@ -167,20 +167,6 @@ class Problem extends CommonITILObject {
       if (static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
-            case 'Change' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_changes_problems',
-                                             "`changes_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(self::getTypeName(2), $nb);
-
-            case 'Ticket' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_problems_tickets',
-                                             "`tickets_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(self::getTypeName(2), $nb);
-
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),
                             2 => _n('Solution', 'Solutions', 1));
@@ -206,14 +192,6 @@ class Problem extends CommonITILObject {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case 'Change' :
-            Change_Problem::showForChange($item);
-            break;
-
-         case 'Ticket' :
-            Problem_Ticket::showForTicket($item);
-            break;
-
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
@@ -241,8 +219,8 @@ class Problem extends CommonITILObject {
       // show related tickets and changes
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Change', $ong, $options);
+      $this->addStandardTab('Problem_Ticket', $ong, $options);
+      $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('ProblemCost', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);

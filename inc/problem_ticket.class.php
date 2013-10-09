@@ -60,7 +60,43 @@ class Problem_Ticket extends CommonDBRelation{
       return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);
    }
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+      if (static::canView()) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'Ticket' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_problems_tickets',
+                                             "`tickets_id` = '".$item->getID()."'");
+               }
+               return self::createTabEntry(Problem::getTypeName(2), $nb);
+
+            case 'Problem' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_problems_tickets',
+                                             "`problems_id` = '".$item->getID()."'");
+               }
+               return self::createTabEntry(Ticket::getTypeName(2), $nb);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Ticket' :
+            self::showForTicket($item);
+            break;
+         case 'Problem' :
+            self::showForProblem($item);
+            break;
+      }
+      return true;
+   }
+   
    /**
     * Get search function for the class
     *
@@ -402,33 +438,6 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</div>";
    }
 
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
-      if (Session::haveRight("problem", Problem::READALL)) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case 'Ticket' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_problems_tickets',
-                                             "`tickets_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(self::getTypeName(2), $nb);
-         }
-      }
-      return '';
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      switch ($item->getType()) {
-         case 'Ticket' :
-            self::showForTicket($item);
-            break;
-      }
-      return true;
-   }
 
 }
 ?>

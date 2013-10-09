@@ -94,6 +94,7 @@ class Project extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('ProjectTeam', $ong, $options);
+      $this->addStandardTab('Change_Project', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);      
@@ -111,7 +112,7 @@ class Project extends CommonDBTM {
       // Team
       $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
    }
-
+   
    /// Get team member count
    function getTeamCount() {
       $nb = 0;
@@ -259,6 +260,194 @@ class Project extends CommonDBTM {
 
       return $tab;
    }
+
+
+   /**
+    * @param $output_type     (default 'Search::HTML_OUTPUT')
+    * @param $mass_id         id of the form to check all (default '')
+    */
+   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
+
+      // New Line for Header Items Line
+      echo Search::showNewLine($output_type);
+      // $show_sort if
+      $header_num                      = 1;
+
+      $items                           = array();
+      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
+      $items[__('Status')]             = "glpi_projectstates.name";
+      $items[__('Date')]               = "date";
+      $items[__('Last update')]        = "date_mod";
+
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
+      }
+
+      $items[__('Priority')]         = "priority";
+      $items[__('Manager')]          = "users_id";
+      $items[__('Manager group')]    = "groups_id";
+      $items[__('Title')]              = "name";
+
+      foreach ($items as $key => $val) {
+         $issort = 0;
+         $link   = "";
+         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
+      }
+
+      // End Line for column headers
+      echo Search::showEndLine($output_type);
+   }
+
+   /**
+    * Display a line for an object
+    *
+    * @since version 0.85 (befor in each object with differents parameters)
+    *
+    * @param $id                 Integer  ID of the object
+    * @param $options            array of options
+    *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
+    *      row_num                : row num used for display
+    *      type_for_massiveaction : itemtype for massive action
+    *      id_for_massaction      : default 0 means no massive action
+    *      followups              : only for Tickets : show followup columns
+    */
+   static function showShort($id, $options=array()) {
+      global $CFG_GLPI, $DB;
+
+
+      $p['output_type']            = Search::HTML_OUTPUT;
+      $p['row_num']                = 0;
+      $p['type_for_massiveaction'] = 0;
+      $p['id_for_massiveaction']   = 0;
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $rand = mt_rand();
+
+      /// TODO to be cleaned. Get datas and clean display links
+
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $item         = new static();
+
+      $candelete   = static::canDelete();
+      $canupdate   = Session::haveRight(static::$rightname, UPDATE);
+      $align       = "class='center";
+      $align_desc  = "class='left";
+
+
+      $align      .= "'";
+      $align_desc .= "'";
+
+      if ($item->getFromDB($id)) {
+         $item_num = 1;
+         $bgcolor  = $_SESSION["glpipriority_".$item->fields["priority"]];
+
+         echo Search::showNewLine($p['output_type'],$p['row_num']%2);
+
+         $check_col = '';
+         if (($candelete || $canupdate)
+             && ($p['output_type'] == Search::HTML_OUTPUT)
+             && $p['id_for_massiveaction']) {
+
+            $check_col = Html::getMassiveActionCheckBox($p['type_for_massiveaction'], $p['id_for_massiveaction']);
+         }
+         echo Search::showItem($p['output_type'], $check_col, $item_num, $p['row_num'], $align);
+
+         // First column
+         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
+
+         if ($item->fields["projectstates_id"]) {
+            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
+                                 Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]));
+         }
+         echo Search::showItem($p['output_type'], $first_col, $item_num, $p['row_num'], $align);
+
+         // Second column
+         $second_col = sprintf(__('Opened on %s'),
+                                 ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
+                                 Html::convDateTime($item->fields['date']));
+
+         echo Search::showItem($p['output_type'], $second_col, $item_num, $p['row_num'], $align." width=130");
+
+         // Second BIS column
+         $second_col = Html::convDateTime($item->fields["date_mod"]);
+         echo Search::showItem($p['output_type'], $second_col, $item_num, $p['row_num'], $align." width=90");
+
+         // Second TER column
+         if (count($_SESSION["glpiactiveentities"]) > 1) {
+            $second_col = Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']);
+            echo Search::showItem($p['output_type'], $second_col, $item_num, $p['row_num'],
+                                  $align." width=100");
+         }
+
+         // Third Column
+         echo Search::showItem($p['output_type'],
+                               "<span class='b'>".CommonITILObject::getPriorityName($item->fields["priority"]).
+                                 "</span>",
+                               $item_num, $p['row_num'], "$align bgcolor='$bgcolor'");
+
+         // Fourth Column
+         $fourth_col = "";
+
+         if ($item->fields["users_id"]) {
+            $userdata    = getUserName($item->fields["users_id"], 2);
+            $fourth_col .= sprintf(__('%1$s %2$s'),
+                                    "<span class='b'>".$userdata['name']."</span>",
+                                    Html::showToolTip($userdata["comment"],
+                                                      array('link'    => $userdata["link"],
+                                                            'display' => false)));
+         }
+
+         echo Search::showItem($p['output_type'], $fourth_col, $item_num, $p['row_num'], $align);
+
+         // Fifth column
+         $fifth_col = "";
+
+         if ($item->fields["groups_id"]) {
+            $fifth_col .= Dropdown::getDropdownName("glpi_groups", $item->fields["groups_id"]);
+            $fifth_col .= "<br>";
+         }
+
+         echo Search::showItem($p['output_type'], $fifth_col, $item_num, $p['row_num'], $align);
+
+
+         // Eigth column
+         $eigth_column = "<span class='b'>".$item->fields["name"]."</span>&nbsp;";
+
+         // Add link
+         if ($item->canViewItem()) {
+            $eigth_column = "<a id='".$item->getType().$item->fields["id"]."$rand' href=\"".$item->getLinkURL()
+                              ."\">$eigth_column</a>";
+         }
+
+         if ($p['output_type'] == Search::HTML_OUTPUT) {
+            $eigth_column = sprintf(__('%1$s %2$s'), $eigth_column,
+                                    Html::showToolTip($item->fields['content'],
+                                                      array('display' => false,
+                                                            'applyto' => $item->getType().$item->fields["id"].
+                                                                           $rand)));
+         }
+
+         echo Search::showItem($p['output_type'], $eigth_column, $item_num, $p['row_num'],
+                               $align_desc."width='200'");
+
+
+
+         // Finish Line
+         echo Search::showEndLine($p['output_type']);
+      } else {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No item in progress.')."</i></td></tr>";
+      }
+   }
+
 
    function prepareInputForUpdate($input) {
 
