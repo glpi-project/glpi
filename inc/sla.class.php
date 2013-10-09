@@ -173,7 +173,7 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
       Dropdown::showNumber("resolution_time", array('value' => $this->fields["resolution_time"],
-                                                    'min'   => 1));
+                                                    'min'   => 0));
       $possible_values = array('minute'   => _n('Minute', 'Minutes', 2),
                                'hour'     => _n('Hour', 'Hours', 2),
                                'day'      => _n('Day', 'Days', 2));
@@ -227,6 +227,20 @@ class SLA extends CommonDBTM {
       $tab[4]['name']            = __('Calendar');
       $tab[4]['datatype']        = 'dropdown';
 
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'resolution_time';
+      $tab[5]['name']            = __('Resolution time');
+      $tab[5]['datatype']        = 'specific';
+      $tab[5]['massiveaction']   = false;
+      $tab[5]['nosearch']        = true;
+      $tab[5]['additionalfields'] = array('definition_time');
+      
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'end_of_working_day';
+      $tab[6]['name']            = __('End of working day');
+      $tab[6]['datatype']        = 'bool';
+      $tab[6]['massiveaction']  = false;
+
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
@@ -245,8 +259,34 @@ class SLA extends CommonDBTM {
 
       return $tab;
    }
+   
+   /**
+    * @since version 0.85
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
-
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'resolution_time' :
+            switch ($values['definition_time']) {
+               case 'minute' :
+                  return sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]);
+               case 'hour' :
+                  return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+               case 'day' :
+                  return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+            }
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+   
    /**
     * Get due date based on a sla
     *
@@ -257,10 +297,9 @@ class SLA extends CommonDBTM {
     * @return due date time (NULL if sla not exists)
    **/
    function computeDueDate($start_date, $additional_delay=0) {
-
+      
       if (isset($this->fields['id'])) {
          $delay = $this->getResolutionTime();
-
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
@@ -274,7 +313,7 @@ class SLA extends CommonDBTM {
          }
 
          // No calendar defined or invalid calendar
-         if ($this->fields['resolution_time'] > 0) {
+         if ($this->fields['resolution_time'] >= 0) {
             $starttime = strtotime($start_date);
             $endtime   = $starttime+$delay+$additional_delay;
             return date('Y-m-d H:i:s',$endtime);
