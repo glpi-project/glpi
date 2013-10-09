@@ -45,6 +45,7 @@ class ProjectTask extends CommonDBChild {
    static public $itemtype  = 'Project';
    static public $items_id  = 'projects_id';
 
+   protected $team   = array();
 
    static function getTypeName($nb=0) {
       return _n('Task', 'Tasks', $nb);
@@ -55,12 +56,29 @@ class ProjectTask extends CommonDBChild {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('ProjectTaskTeam',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 
       return $ong;
    }
 
+   function post_getFromDB() {
+      // Team
+      $this->team    = ProjectTaskTeam::getTeamFor($this->fields['id']);
+   }
+
+   /// Get team member count
+   function getTeamCount() {
+      $nb = 0;
+      if (is_array($this->team) && count($this->team)) {
+         foreach ($this->team as $val) {
+            $nb +=  count($val);
+         }
+      }
+      return $nb;
+   }
+   
    function prepareInputForUpdate($input) {
 
       return Project::checkPlanAndRealDates($input);
@@ -453,5 +471,111 @@ class ProjectTask extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Show team for a project task
+   **/
+   function showTeam(ProjectTask $task) {
+      global $DB, $CFG_GLPI;
+
+
+      /// TODO : permit to simple add member of project team ?
+      
+      $ID      = $task->fields['id'];
+      $canedit = $task->canEdit($ID);
+
+      echo "<div class='center'>";
+
+      $rand = mt_rand();
+      $nb = 0;
+
+      $nb = $task->getTeamCount();
+
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='projecttaskteam_form$rand' id='projecttaskteam_form$rand' ";
+         echo " method='post' action='".Toolbox::getItemTypeFormURL('ProjectTaskTeam')."'>";
+         echo "<input type='hidden' name='projecttasks_id' value='$ID'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a team member')."</tr>";
+         echo "<tr class='tab_bg_2'><td>";
+
+         $params = array('itemtypes' => ProjectTeam::$available_types,
+                         'entity_restrict' => ($task->fields['is_recursive']
+                                               ? getSonsOf('glpi_entities', $task->fields['entities_id'])
+                                               : $task->fields['entities_id']),
+                         );
+         $addrand = Dropdown::showSelectItemFromItemtypes($params);
+
+         echo "</td>";
+         echo "<td width='20%'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\"
+               class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+      echo "<div class='spaced'>";
+      if ($canedit && $nb) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams
+            = array('num_displayed'
+                        => $nb,
+                    'container'
+                        => 'mass'.__CLASS__.$rand);
+//                     'specific_actions'
+//                         => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete'
+//                                     => _x('button', 'Delete permanently')) );
+//
+//          if ($this->fields['users_id'] != Session::getLoginUserID()) {
+//             $massiveactionparams['confirm']
+//                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
+//          }
+         Html::showMassiveActions($massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      if ($canedit && $nb) {
+         echo "<th width='10'>";
+         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo "</th>";
+      }
+      echo "<th>".__('Type')."</th>";
+      echo "<th>"._n('Member', 'Members', 2)."</th>";
+      echo "</tr>";
+
+      foreach (ProjectTaskTeam::$available_types as $type) {
+         if (isset($task->team[$type]) && count($task->team[$type])) {
+            if ($item = getItemForItemtype($type)) {
+               foreach ($task->team[$type] as $data) {
+                  $item->getFromDB($data['items_id']);
+                  echo "<tr class='tab_bg_2'>";
+                  if ($canedit) {
+                     echo "<td>";
+                     Html::showMassiveActionCheckBox('ProjectTaskTeam',$data["id"]);
+                     echo "</td>";
+                  }
+                  echo "<td>".$item->getTypeName(1)."</td>";
+                  echo "<td>".$item->getLink()."</td>";
+                  echo "</tr>";
+               }
+            }
+         }
+      }
+
+      echo "</table>";
+      if ($canedit && $nb) {
+         $massiveactionparams['ontop'] =false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
+      }
+
+      echo "</div>";
+      // Add items
+
+      return true;
+   }
+   
 }
 ?>
