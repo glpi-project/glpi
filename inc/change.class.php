@@ -758,6 +758,9 @@ class Change extends CommonITILObject {
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
+      if (isset($options['problems_id'])) {
+         echo "<input type='hidden' name='_problems_id' value='".$options['problems_id']."'>";
+      }
 
       echo "<table>";
       echo "<tr>";
