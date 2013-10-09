@@ -1452,6 +1452,17 @@ class Ticket extends CommonITILObject {
          SlaLevel_Ticket::replayForTicket($this->getID());
       }
 
+      // Add project task link if needed
+      if (isset($this->input['_projecttasks_id'])) {
+         $projecttask = new ProjectTask();
+         if ($projecttask->getFromDB($this->input['_projecttasks_id'])) {
+            $pt = new ProjectTask_Ticket();
+            $pt->add(array('projecttasks_id' => $this->input['_projecttasks_id'],
+                           'tickets_id'      => $this->fields['id'],
+                           /*'_no_notif'   => true*/));
+         }
+      }
+      
       parent::post_addItem();
       //Action for send_validation rule
       if (isset($this->input["_add_validation"])) {
@@ -3448,6 +3459,17 @@ class Ticket extends CommonITILObject {
 
          $values['content'] = str_replace($order,$replace,$values['content']);
       }
+      if (!$ID) {
+         // Override defaut values from projecttask if needed
+         if (isset($options['projecttasks_id'])) {
+            $pt = new ProjectTask();
+            if ($pt->getFromDB($options['projecttasks_id'])) {
+               $values['name'] = $pt->getField('name');
+               $values['content'] = $pt->getField('name');
+            }
+         }
+      }
+      
       // Default check
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -3553,7 +3575,7 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-
+     
       if ($options['template_preview']) {
          // Add all values to fields of tickets for template preview
          foreach ($values as $key => $val) {
@@ -3562,7 +3584,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      
       // In percent
       $colsize1 = '13';
       $colsize2 = '29';
@@ -3578,6 +3600,9 @@ class Ticket extends CommonITILObject {
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
                 $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
+         if (isset($options['projecttasks_id'])) {
+            echo "<input type='hidden' name='_projecttasks_id' value='".$options['projecttasks_id']."'>";
+         }
       }
       echo "<div class='spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe' id='mainformtable'>";
