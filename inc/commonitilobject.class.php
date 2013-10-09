@@ -4756,7 +4756,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo Search::showEndLine($p['output_type']);
       } else {
          echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
+         echo "<td colspan='6' ><i>".__('No item in progress.')."</i></td></tr>";
       }
    }
 

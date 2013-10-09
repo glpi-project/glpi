@@ -475,16 +475,6 @@ class Ticket extends CommonITILObject {
          $title = self::getTypeName(2);
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
-               case 'Change' :
-                  $nb = countElementsInTable('glpi_changes_tickets',
-                                             "`changes_id` = '".$item->getID()."'");
-                  break;
-
-               case 'Problem' :
-                  $nb = countElementsInTable('glpi_problems_tickets',
-                                             "`problems_id` = '".$item->getID()."'");
-                  break;
-
                case 'User' :
                   $nb = countElementsInTable('glpi_tickets_users',
                                              "`users_id` = '".$item->getID()."'
@@ -558,14 +548,6 @@ class Ticket extends CommonITILObject {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case 'Change' :
-            Change_Ticket::showForChange($item);
-            break;
-
-         case 'Problem' :
-            Problem_Ticket::showForProblem($item);
-            break;
-
          case __CLASS__ :
             switch ($tabnum) {
 
@@ -615,8 +597,8 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Problem', $ong, $options);
-      $this->addStandardTab('Change', $ong, $options);
+      $this->addStandardTab('Problem_Ticket', $ong, $options);
+      $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

@@ -170,20 +170,6 @@ class Change extends CommonITILObject {
       if (static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
-            case 'Problem' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_changes_problems',
-                                             "`problems_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(self::getTypeName(2), $nb);
-
-            case 'Ticket' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_changes_tickets',
-                                             "`tickets_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(self::getTypeName(2), $nb);
-
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),
                             2 => __('Plans'),
@@ -201,14 +187,6 @@ class Change extends CommonITILObject {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case 'Problem' :
-            Change_Problem::showForProblem($item);
-            break;
-
-         case 'Ticket' :
-            Change_Ticket::showForTicket($item);
-            break;
-
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
@@ -243,8 +221,9 @@ class Change extends CommonITILObject {
       $this->addStandardTab('ChangeValidation', $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
-      $this->addStandardTab('Problem', $ong, $options);
-      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Change_Project', $ong, $options);
+      $this->addStandardTab('Change_Problem', $ong, $options);
+      $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
       /// TODO add stats
@@ -634,7 +613,9 @@ class Change extends CommonITILObject {
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
-
+      if (isset($options['problems_id'])) {
+         echo "<input type='hidden' name='_problems_id' value='".$options['problems_id']."'>";
+      }
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
