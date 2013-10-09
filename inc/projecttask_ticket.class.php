@@ -91,15 +91,27 @@ class ProjectTask_Ticket extends CommonDBRelation{
       return true;
    }
    
+ 
    /**
-    * Get search function for the class
+    * Get total duration of tickets linked to a project task
     *
-    * @return array of search option
+    * @param  integer $projecttasks_id ID of the project task
+    * @return integer total actiontime
    **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
+   static function getTicketsTotalActionTime($projecttasks_id) {
+      global $DB;
 
+      $query = "SELECT SUM(`glpi_tickets`.`actiontime`)
+                  FROM `glpi_projecttasks_tickets`
+                  INNER JOIN `glpi_tickets` ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
+                  WHERE `glpi_projecttasks_tickets`.`projecttasks_id` = '$projecttasks_id';";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            return $DB->result($result, 0, 0);
+         }
+      }
+      return 0;
+   }
 
    /**
     * Show tickets for a projecttask
@@ -183,7 +195,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
-                                         sprintf(__('%1$s = %2$s'), Problem::getTypeName(1),
+                                         sprintf(__('%1$s = %2$s'), ProjectTask::getTypeName(1),
                                                  $projecttask->fields["name"]));
 
          $i = 0;
