@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class SoftwareLicense extends CommonDBTM {
 
+   /// TODO move to CommonDBChild ?
    // From CommonDBTM
    public $dohistory                   = true;
 

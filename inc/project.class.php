@@ -94,6 +94,7 @@ class Project extends CommonDBTM {
    function defineTabs($options=array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('ProjectTask', $ong, $options);
       $this->addStandardTab('ProjectTeam', $ong, $options);
       $this->addStandardTab('Change_Project', $ong, $options);
       $this->addStandardTab('Item_Project', $ong, $options);
@@ -288,7 +289,7 @@ class Project extends CommonDBTM {
       $items[__('Priority')]         = "priority";
       $items[__('Manager')]          = "users_id";
       $items[__('Manager group')]    = "groups_id";
-      $items[__('Title')]              = "name";
+      $items[__('Name')]              = "name";
 
       foreach ($items as $key => $val) {
          $issort = 0;
@@ -453,6 +454,12 @@ class Project extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
+      return self::checkPlanAndRealDates($input);
+   }
+
+
+   static function checkPlanAndRealDates($input) {
+
       if (isset($input['plan_start_date']) && isset($input['plan_end_date'])
          && !empty($input['plan_end_date'])
          && ($input['plan_end_date'] < $input['plan_start_date']
@@ -468,7 +475,7 @@ class Project extends CommonDBTM {
          Session::addMessageAfterRedirect(__('Invalid real dates. Dates not updated.'), false, ERROR);
          unset($input['real_start_date']);
          unset($input['real_end_date']);
-      }      
+      }
       return $input;
    }
    /**
@@ -493,7 +500,7 @@ class Project extends CommonDBTM {
 
       $date = $this->fields["date"];
       if (!$ID) {
-         $date = date("Y-m-d H:i:s");
+         $date = $_SESSION['glpi_currenttime'];
       }
       Html::showDateTimeField("date", array('value'      => $date,
                                             'timestep'   => 1,
