@@ -182,7 +182,7 @@ class Change_Ticket extends CommonDBRelation{
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
-                                         sprintf(__('%1$s = %2$s'), Problem::getTypeName(1),
+                                         sprintf(__('%1$s = %2$s'), Change::getTypeName(1),
                                                  $change->fields["name"]));
 
          $i = 0;
@@ -240,7 +240,7 @@ class Change_Ticket extends CommonDBRelation{
       }
       if ($canedit) {
          echo "<div class='firstbloc'>";
-         echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+         echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";

@@ -214,14 +214,20 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('Effective duration')."</td>";
       echo "<td>";
-      echo 'TODO : Display ticket duration<br>+';
       Dropdown::showTimeStamp("effective_duration", array('min'     => 0,
                                                   'max'             => 8*HOUR_TIMESTAMP,
                                                   'value'           => $this->fields["effective_duration"],
                                                   'addfirstminutes' => true,
                                                   'inhours'         => true,
                                                   'toadd'           => $toadd));
-      echo "<br>TODO : Total = XXX";
+      if ($ID) {
+         $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->fields['id']);
+         echo "<br>";
+         printf(__('Ticket duration: %s'), Html::timestampToString($ticket_duration, false));
+         echo '<br>';
+         printf(__('Total duration: %s'), Html::timestampToString($ticket_duration+$this->fields["effective_duration"], false));
+      }
+
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -245,7 +251,72 @@ class ProjectTask extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Get total effective duration of a project task (sum of effective duration + sum of action time of tickets)
+    *
+    * @param  integer $projecttasks_id ID of the project task
+    * @return integer total effective duration
+   **/
+   static function getTotalEffectiveDuration($projecttasks_id) {
+      global $DB;
 
+      $item = new static();
+      $time = 0;
+      
+      if ($item->getFromDB($projecttasks_id)) {
+         $time += $item->fields['effective_duration'];
+      }
+      $query = "SELECT SUM(`glpi_tickets`.`actiontime`)
+                  FROM `glpi_projecttasks`
+                  LEFT JOIN `glpi_projecttasks_tickets` ON (`glpi_projecttasks`.`id` = `glpi_projecttasks_tickets`.`projecttasks_id`)
+                  LEFT JOIN `glpi_tickets` ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
+                  WHERE `glpi_projecttasks`.`id` = '$projecttasks_id';";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            $time += $DB->result($result, 0, 0);
+         }
+      }
+      return $time;
+   }
+
+   /**
+    * Get total effective duration of a project (sum of effective duration + sum of action time of tickets)
+    *
+    * @param  integer $project_id ID of the project
+    * @return integer total effective duration
+   **/
+   static function getTotalEffectiveDurationForProject($projects_id) {
+      global $DB;
+
+      $query = "SELECT `id`
+                  FROM `glpi_projecttasks`
+                  WHERE `glpi_projecttasks`.`projects_id` = '$projects_id';";
+      $time = 0;
+      foreach ($DB->request($query) as $data) {
+         $time += static::getTotalEffectiveDuration($data['id']);
+      }
+      return $time;
+   }
+
+   /**
+    * Get total planned duration of a project
+    *
+    * @param  integer $project_id ID of the project
+    * @return integer total effective duration
+   **/
+   static function getTotalPlannedDurationForProject($projects_id) {
+      global $DB;
+
+      $query = "SELECT SUM(`planned_duration`) as SUM
+                  FROM `glpi_projecttasks`
+                  WHERE `glpi_projecttasks`.`projects_id` = '$projects_id';";
+      foreach ($DB->request($query) as $data) {
+         return $data['SUM'];
+      }
+      return 0;
+   }
+      
    function getSearchOptions() {
 
       $tab                 = array();
@@ -417,7 +488,7 @@ class ProjectTask extends CommonDBChild {
                echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
                echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
                echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
-               echo "<td>".Html::timestampToString($data['effective_duration'], false)." + add ticket duration</td>";
+               echo "<td>".Html::timestampToString(self::getTotalEffectiveDuration($data['id']), false)."</td>";
                echo "<td>".Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id'])."</td>";
             }
 

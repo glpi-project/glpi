@@ -611,11 +611,11 @@ class Project extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Planned duration')."</td>";
       echo "<td>";
-      echo " sum of task duration TODO";
+      echo Html::timestampToString(ProjectTask::getTotalPlannedDurationForProject($this->fields['id']), false);
       echo "</td>";
       echo "<td>".__('Effective duration')."</td>";
       echo "<td>";
-      echo " sum of effective task duration (durations of tickets associated to the task + manual declared task duration) TODO";
+      echo Html::timestampToString(ProjectTask::getTotalEffectiveDurationForProject($this->fields['id']), false);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
