@@ -305,7 +305,8 @@ class Document_Item extends CommonDBRelation{
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'  => $CFG_GLPI["document_types"],
                                                      'entity_restrict'
                                                                   => ($doc->fields['is_recursive']
-                                                                      ?-1:$doc->fields['entities_id']),
+                                                                      ?getSonsOf('glpi_entities', $doc->fields['entities_id'])
+                                                                      :$doc->fields['entities_id']),
                                                      'checkright' => true));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";

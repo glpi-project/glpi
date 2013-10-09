@@ -135,7 +135,8 @@ class Change_Item extends CommonDBRelation{
          Dropdown::showSelectItemFromItemtypes(array('itemtypes' => $types,
                                                      'entity_restrict'
                                                                  => ($change->fields['is_recursive']
-                                                                     ?-1:$change->fields['entities_id'])));
+                                                                     ?getSonsOf('glpi_entities', $change->fields['entities_id'])
+                                                                     :$change->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";

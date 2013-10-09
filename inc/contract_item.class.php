@@ -578,7 +578,8 @@ class Contract_Item extends CommonDBRelation{
                                                          => $CFG_GLPI["contract_types"],
                                                      'entity_restrict'
                                                          => ($contract->fields['is_recursive']
-                                                             ?-1 :$contract->fields['entities_id']),
+                                                             ?getSonsOf('glpi_entities', $contract->fields['entities_id'])
+                                                             :$contract->fields['entities_id']),
                                                      'checkright'
                                                          => true));
          echo "</td><td class='center'>";
