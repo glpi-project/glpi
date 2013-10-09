@@ -702,7 +702,8 @@ class Project extends CommonDBTM {
 
          $params = array('itemtypes' => ProjectTeam::$available_types,
                          'entity_restrict' => ($project->fields['is_recursive']
-                                               ? getSonsOf('glpi_entities', $project->fields['entities_id']) :$project->fields['entities_id']),
+                                               ? getSonsOf('glpi_entities', $project->fields['entities_id'])
+                                               : $project->fields['entities_id']),
                          );
          $addrand = Dropdown::showSelectItemFromItemtypes($params);
 
