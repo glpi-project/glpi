@@ -68,7 +68,12 @@ class ProjectTask extends CommonDBChild {
       // Team
       $this->team    = ProjectTaskTeam::getTeamFor($this->fields['id']);
    }
+   
+   function post_getEmpty() {
+      $this->fields['percent_done'] = 0;
+   }
 
+   
    /// Get team member count
    function getTeamCount() {
       $nb = 0;
@@ -175,6 +180,19 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Percent done')."</td>";
+      echo "<td>";
+      Dropdown::showNumber("percent_done", array('value' => $this->fields['percent_done'],
+                                                   'min'   => 0,
+                                                   'max'   => 100,
+                                                   'step'  => 5,
+                                                   'unit'  => '%'));
+
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "</tr>";
+      
       echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -464,6 +482,7 @@ class ProjectTask extends CommonDBChild {
             echo "<th>".self::getTypeName(2)."</th>";
             echo "<th>".__('Type')."</th>";
             echo "<th>".__('Status')."</th>";
+            echo "<th>".__('Percent done')."</th>";
             echo "<th>".__('Planned start date')."</th>";
             echo "<th>".__('Planned end date')."</th>";
             echo "<th>".__('Planned duration')."</th>";
@@ -485,6 +504,9 @@ class ProjectTask extends CommonDBChild {
                echo "</td>";
                echo "<td>".$data['tname']."</td>";
                echo "<td>".$data['sname']."</td>";
+               echo "<td>";
+               echo Dropdown::getValueWithUnit($data["percent_done"],"%");
+               echo "</td>";
                echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
                echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
                echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
