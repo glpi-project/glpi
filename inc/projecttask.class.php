@@ -352,7 +352,7 @@ class ProjectTask extends CommonDBChild {
       $canedit = $project->canEdit($ID);
 
       echo "<div class='spaced'>";
-
+      
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname
@@ -360,7 +360,7 @@ class ProjectTask extends CommonDBChild {
                 LEFT JOIN `glpi_projecttasktypes` ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
                 LEFT JOIN `glpi_projectstates` ON (`glpi_projectstates`.`id` = `glpi_projecttasks`.`projectstates_id`)
                 WHERE `projects_id` = '$ID'
-                ORDER BY `name`";
+                ORDER BY `plan_start_date`, `real_start_date`, `name`";
 
       Session::initNavigateListItems('ProjectTask',
             //TRANS : %1$s is the itemtype name,
@@ -374,16 +374,32 @@ class ProjectTask extends CommonDBChild {
             echo "<th>".self::getTypeName(2)."</th>";
             echo "<th>".__('Type')."</th>";
             echo "<th>".__('Status')."</th>";
+            echo "<th>".__('Planned start date')."</th>";
+            echo "<th>".__('Planned end date')."</th>";
+            echo "<th>".__('Planned duration')."</th>";
+            echo "<th>".__('Effective duration')."</th>";
+            echo "<th>".__('Father')."</th>";
             echo "</tr>\n";
-
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
                Session::addToNavigateListItems('ProjectTask',$data['id']);
-
+               $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
-               echo "<td><a href='projecttask.form.php?id=".$data['id']."'>";
-               echo $data['name'].(empty($data['name'])?"(".$data['id'].")":"")."</a></td>";
+               echo "<td>";
+               $link=  "<a id='ProjectTask".$data["id"].$rand."' href='projecttask.form.php?id=".$data['id']."'>".
+                        $data['name'].(empty($data['name'])?"(".$data['id'].")":"")."</a>";
+               echo sprintf(__('%1$s %2$s'), $link,
+                                    Html::showToolTip($data['content'],
+                                                      array('display' => false,
+                                                            'applyto' => "ProjectTask".$data["id"].$rand)));
+               
+               echo "</td>";
                echo "<td>".$data['tname']."</td>";
                echo "<td>".$data['sname']."</td>";
+               echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
+               echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
+               echo "<td>".Html::timestampToString($data['planned_duration'], false)."</td>";
+               echo "<td>".Html::timestampToString($data['effective_duration'], false)." + add ticket duration</td>";
+               echo "<td>".Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id'])."</td>";
             }
 
             echo "<tr class='tab_bg_1'><td class='right b' colspan='1'>".__('Total')."</td>";
