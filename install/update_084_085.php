@@ -2048,8 +2048,8 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_projects");
    }
 
-   if (!TableExists('glpi_projecteams')) {
-      $query = "CREATE TABLE `glpi_projecteams` (
+   if (!TableExists('glpi_projectteams')) {
+      $query = "CREATE TABLE `glpi_projectteams` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `projects_id` int(11) NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) default NULL,
@@ -2058,7 +2058,7 @@ function update084to085() {
                   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.85 add table glpi_projecteams");
+      $DB->queryOrDie($query, "0.85 add table glpi_projectteams");
    }   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

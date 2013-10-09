@@ -5114,10 +5114,10 @@ INSERT INTO `glpi_profiles_users` VALUES ('3','3','1','0','1','0');
 INSERT INTO `glpi_profiles_users` VALUES ('4','4','6','0','1','0');
 INSERT INTO `glpi_profiles_users` VALUES ('5','5','2','0','1','0');
 
-### Dump table glpi_projecteams
+### Dump table glpi_projectteams
 
-DROP TABLE IF EXISTS `glpi_projecteams`;
-CREATE TABLE `glpi_projecteams` (
+DROP TABLE IF EXISTS `glpi_projectteams`;
+CREATE TABLE `glpi_projectteams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `projects_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
