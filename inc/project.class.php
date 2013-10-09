@@ -95,6 +95,7 @@ class Project extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('ProjectTeam', $ong, $options);
       $this->addStandardTab('Change_Project', $ong, $options);
+      $this->addStandardTab('Item_Project', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);      

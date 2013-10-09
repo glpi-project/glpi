@@ -36,16 +36,16 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Item_Problem Class
+ * Item_Project Class
  *
- *  Relation between Problems and Items
+ *  Relation between Projects and Items
 **/
-class Item_Problem extends CommonDBRelation{
+class Item_Project extends CommonDBRelation{
 
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'Problem';
-   static public $items_id_1          = 'problems_id';
+   static public $itemtype_1          = 'Project';
+   static public $items_id_1          = 'projects_id';
 
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
@@ -70,7 +70,7 @@ class Item_Problem extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
-      $restrict = " `problems_id` = '".$input['problems_id']."'
+      $restrict = " `projects_id` = '".$input['projects_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
                    AND `items_id` = '".$input['items_id']."'";
       if (countElementsInTable($this->getTable(),$restrict)>0) {
@@ -85,38 +85,38 @@ class Item_Problem extends CommonDBRelation{
    **/
    static function countForItem(CommonDBTM $item) {
 
-      $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`
-                   AND `glpi_items_problems`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_items_problems`.`itemtype` = '".$item->getType()."'".
-                   getEntitiesRestrictRequest(" AND ", "glpi_problems", '', '', true);
+      $restrict = "`glpi_items_projects`.`projects_id` = `glpi_projects`.`id`
+                   AND `glpi_items_projects`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_items_projects`.`itemtype` = '".$item->getType()."'".
+                   getEntitiesRestrictRequest(" AND ", "glpi_projects", '', '', true);
 
-      $nb = countElementsInTable(array('glpi_items_problems', 'glpi_problems'), $restrict);
+      $nb = countElementsInTable(array('glpi_items_projects', 'glpi_projects'), $restrict);
 
       return $nb ;
    }
 
 
    /**
-    * Print the HTML array for Items linked to a problem
+    * Print the HTML array for Items linked to a project
     *
-    * @param $problem Problem object
+    * @param $project Project object
     *
     * @return Nothing (display)
    **/
-   static function showForProblem(Problem $problem) {
+   static function showForProject(Project $project) {
       global $DB, $CFG_GLPI;
 
-      $instID = $problem->fields['id'];
+      $instID = $project->fields['id'];
 
-      if (!$problem->can($instID, READ)) {
+      if (!$project->can($instID, READ)) {
          return false;
       }
-      $canedit = $problem->canEdit($instID);
+      $canedit = $project->canEdit($instID);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_items_problems`
-                WHERE `glpi_items_problems`.`problems_id` = '$instID'
+                FROM `glpi_items_projects`
+                WHERE `glpi_items_projects`.`projects_id` = '$instID'
                 ORDER BY `itemtype`";
 
       $result = $DB->query($query);
@@ -125,26 +125,23 @@ class Item_Problem extends CommonDBRelation{
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
-         echo "<form name='problemitem_form$rand' id='problemitem_form$rand' method='post'
+         echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td class='right'>";
-         $types = array();
-         foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
-            $types[] = $key;
-         }
+
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
-                                                         => $types,
+                                                         => $CFG_GLPI["asset_types"],
                                                      'entity_restrict'
-                                                         => ($problem->fields['is_recursive']
-                                                             ?getSonsOf('glpi_entities', $problem->fields['entities_id'])
-                                                             :$problem->fields['entities_id'])));
+                                                         => ($project->fields['is_recursive']
+                                                             ?getSonsOf('glpi_entities', $project->fields['entities_id'])
+                                                             :$project->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "<input type='hidden' name='problems_id' value='$instID'>";
+         echo "<input type='hidden' name='projects_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -178,9 +175,9 @@ class Item_Problem extends CommonDBRelation{
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
             $query = "SELECT `$itemtable`.*,
-                             `glpi_items_problems`.`id` AS IDD,
+                             `glpi_items_projects`.`id` AS IDD,
                              `glpi_entities`.`id` AS entity
-                      FROM `glpi_items_problems`,
+                      FROM `glpi_items_projects`,
                            `$itemtable`";
 
             if ($itemtype != 'Entity') {
@@ -188,9 +185,9 @@ class Item_Problem extends CommonDBRelation{
                                  ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
             }
 
-            $query .= " WHERE `$itemtable`.`id` = `glpi_items_problems`.`items_id`
-                              AND `glpi_items_problems`.`itemtype` = '$itemtype'
-                              AND `glpi_items_problems`.`problems_id` = '$instID'";
+            $query .= " WHERE `$itemtable`.`id` = `glpi_items_projects`.`items_id`
+                              AND `glpi_items_projects`.`itemtype` = '$itemtype'
+                              AND `glpi_items_projects`.`projects_id` = '$instID'";
 
             if ($item->maybeTemplate()) {
                $query .= " AND `$itemtable`.`is_template` = '0'";
@@ -257,24 +254,24 @@ class Item_Problem extends CommonDBRelation{
 
       if (!$withtemplate) {
          switch ($item->getType()) {
-            case 'Problem' :
+            case 'Project' :
                return _n('Item', 'Items', 2);
 
             default :
-               if (Session::haveRight("problem", Problem::READALL)) {
+               if (Session::haveRight("project", Project::READALL)) {
                   $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
-                     $nb = countElementsInTable('glpi_items_problems',
+                     $nb = countElementsInTable('glpi_items_projects',
                                                 " `itemtype` = '".$item->getType()."'
                                                    AND `items_id` = '".$item->getID()."'");
                      // Linked items
                      if ($subquery = $item->getSelectLinkedItem()) {
-                        $nb += countElementsInTable('glpi_items_problems',
+                        $nb += countElementsInTable('glpi_items_projects',
                                                     " (`itemtype`,`items_id`) IN (" . $subquery . ")");
                      }
                   }
-                  return self::createTabEntry(Problem::getTypeName(2), $nb);
+                  return self::createTabEntry(Project::getTypeName(2), $nb);
                }
          }
       }
@@ -285,12 +282,12 @@ class Item_Problem extends CommonDBRelation{
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case 'Problem' :
-            self::showForProblem($item);
+         case 'Project' :
+            self::showForProject($item);
             break;
 
          default :
-            Problem::showListForItem($item);
+            Project::showListForItem($item);
       }
       return true;
    }
