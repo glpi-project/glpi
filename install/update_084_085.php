@@ -2125,7 +2125,20 @@ function update084to085() {
                   KEY `item` (`itemtype`,`items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projecttaskteams");
-   }   
+   }
+
+   if (!TableExists('glpi_projecttasks_ticket')) {
+      $query = "CREATE TABLE `glpi_projecttasks_ticket` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
+                  KEY `projects_id` (`projecttasks_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_ticket");
+   }
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
