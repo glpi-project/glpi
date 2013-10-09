@@ -57,6 +57,7 @@ class ProjectTask extends CommonDBChild {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('ProjectTaskTeam',$ong, $options);
+      $this->addStandardTab('ProjectTask_Ticket',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 

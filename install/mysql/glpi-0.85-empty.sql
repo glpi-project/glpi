@@ -5238,9 +5238,9 @@ CREATE TABLE `glpi_projecttasks` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_projecttasks_ticket
+### Dump table glpi_projecttasks_tickets
 
-DROP TABLE IF EXISTS `glpi_projecttasks_ticket`;
+DROP TABLE IF EXISTS `glpi_projecttasks_tickets`;
 CREATE TABLE `glpi_projecttasks_ticket` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tickets_id` int(11) NOT NULL DEFAULT '0',

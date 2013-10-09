@@ -2127,8 +2127,8 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projecttaskteams");
    }
 
-   if (!TableExists('glpi_projecttasks_ticket')) {
-      $query = "CREATE TABLE `glpi_projecttasks_ticket` (
+   if (!TableExists('glpi_projecttasks_tickets')) {
+      $query = "CREATE TABLE `glpi_projecttasks_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
                   `projecttasks_id` int(11) NOT NULL DEFAULT '0',
@@ -2136,7 +2136,7 @@ function update084to085() {
                   UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
                   KEY `projects_id` (`projecttasks_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_ticket");
+      $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
    }
    
    // ************ Keep it at the end **************
