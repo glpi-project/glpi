@@ -82,8 +82,8 @@ class Item_Problem extends CommonDBRelation{
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`
-                   AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'".
+                   AND `glpi_items_problems`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_items_problems`.`itemtype` = '".$item->getType()."'".
                    getEntitiesRestrictRequest(" AND ", "glpi_problems", '', '', true);
 
       $nb = countElementsInTable(array('glpi_items_problems', 'glpi_problems'), $restrict);
