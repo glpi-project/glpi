@@ -140,7 +140,8 @@ class Item_Problem extends CommonDBRelation{
                                                          => $types,
                                                      'entity_restrict'
                                                          => ($problem->fields['is_recursive']
-                                                             ?-1 :$problem->fields['entities_id'])));
+                                                             ?getSonsOf('glpi_entities', $problem->fields['entities_id'])
+                                                             :$problem->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";
