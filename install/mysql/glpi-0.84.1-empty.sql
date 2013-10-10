@@ -656,7 +656,7 @@ CREATE TABLE `glpi_configs` (
   `password_need_caps` tinyint(1) NOT NULL DEFAULT '1',
   `password_need_symbol` tinyint(1) NOT NULL DEFAULT '1',
   `use_check_pref` tinyint(1) NOT NULL DEFAULT '0',
-  `notification_to_myself` tinyint(1) NOT NULL DEFAULT '0',
+  `notification_to_myself` tinyint(1) NOT NULL DEFAULT '1',
   `duedateok_color` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '#06ff00',
   `duedatewarning_color` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '#ffb800',
   `duedatecritical_color` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '#ff0000',
@@ -683,7 +683,7 @@ CREATE TABLE `glpi_configs` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50','30',' 0.84.3','5','0','admsys@localhost',NULL,NULL,NULL,'SIGNATURE','0','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','#ff5555','2005-12-31','','443','',NULL,'0','08:00:00','20:00:00','1','0','http://localhost/glpi/','0','','','100','*','0','0','0','50','1','1','0','0',';','0','50','0',NULL,'25',NULL,NULL,'8080',NULL,'1','0','5','2',NULL,NULL,'0','2','2','2','2','1','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','1',NULL,NULL,NULL,NULL,'2097152','0','0','1','0','svg','1','1','1','{\"1\":{\"1\":1,\"2\":1,\"3\":2,\"4\":2,\"5\":2},\"2\":{\"1\":1,\"2\":2,\"3\":2,\"4\":3,\"5\":3},\"3\":{\"1\":2,\"2\":2,\"3\":3,\"4\":4,\"5\":4},\"4\":{\"1\":2,\"2\":3,\"3\":4,\"4\":4,\"5\":5},\"5\":{\"1\":2,\"2\":3,\"3\":4,\"4\":5,\"5\":5}}','62','62','0','0','0',NULL,NULL,'0','1','0','1','2','1','1','5','0','8','1','1','1','1','0','0','#06ff00','#ffb800','#ff0000','20','5','%','%',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0');
+INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50','30',' 0.84.3','5','0','admsys@localhost',NULL,NULL,NULL,'SIGNATURE','0','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','#ff5555','2005-12-31','','443','',NULL,'0','08:00:00','20:00:00','1','0','http://localhost/glpi/','0','','','100','*','0','0','0','50','1','1','0','0',';','0','50','0',NULL,'25',NULL,NULL,'8080',NULL,'1','0','5','2',NULL,NULL,'0','2','2','2','2','1','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','1',NULL,NULL,NULL,NULL,'2097152','0','0','1','0','svg','1','1','1','{\"1\":{\"1\":1,\"2\":1,\"3\":2,\"4\":2,\"5\":2},\"2\":{\"1\":1,\"2\":2,\"3\":2,\"4\":3,\"5\":3},\"3\":{\"1\":2,\"2\":2,\"3\":3,\"4\":4,\"5\":4},\"4\":{\"1\":2,\"2\":3,\"3\":4,\"4\":4,\"5\":5},\"5\":{\"1\":2,\"2\":3,\"3\":4,\"4\":5,\"5\":5}}','62','62','0','0','0',NULL,NULL,'0','1','0','1','2','1','1','5','0','8','1','1','1','1','0','1','#06ff00','#ffb800','#ff0000','20','5','%','%',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0');
 
 ### Dump table glpi_consumableitems
 

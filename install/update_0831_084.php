@@ -811,7 +811,7 @@ function update0831to084() {
                               'update'    => '0', // No delay for root entity
                               'condition' => 'WHERE `id`=0'));
 
-   $migration->addField("glpi_configs", "notification_to_myself", "bool");
+   $migration->addField("glpi_configs", "notification_to_myself", "bool", array('value' => 1));
    $migration->addField("glpi_configs", 'duedateok_color', "string", array('value' => '#06ff00'));
    $migration->addField("glpi_configs", 'duedatewarning_color', "string",
                         array('value' => '#ffb800'));
