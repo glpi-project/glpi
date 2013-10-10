@@ -925,7 +925,7 @@ INSERT INTO `glpi_configs` VALUES ('117','core','password_need_letter','1');
 INSERT INTO `glpi_configs` VALUES ('118','core','password_need_caps','1');
 INSERT INTO `glpi_configs` VALUES ('119','core','password_need_symbol','1');
 INSERT INTO `glpi_configs` VALUES ('120','core','use_check_pref','0');
-INSERT INTO `glpi_configs` VALUES ('121','core','notification_to_myself','0');
+INSERT INTO `glpi_configs` VALUES ('121','core','notification_to_myself','1');
 INSERT INTO `glpi_configs` VALUES ('122','core','duedateok_color','#06ff00');
 INSERT INTO `glpi_configs` VALUES ('123','core','duedatewarning_color','#ffb800');
 INSERT INTO `glpi_configs` VALUES ('124','core','duedatecritical_color','#ff0000');
