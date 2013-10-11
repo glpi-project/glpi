@@ -3903,7 +3903,6 @@ class Search {
       $linkfield = $searchopt[$ID]["linkfield"];
 
       /// TODO try to clean all specific cases using SpecificToDisplay
-
       switch ($table.'.'.$field) {
          case "glpi_users.name" :
             // USER search case
@@ -3920,13 +3919,17 @@ class Search {
                         $out .= "<br>";
                      }
                      $count_display++;
+
                      if ($itemtype == 'Ticket') {
                         $userdata = getUserName($split[$k],2);
+                        $tooltip = "";
+                        if (Session::haveRight('user','r')) {
+                           $tooltip = Html::showToolTip($userdata["comment"],
+                                                        array('link'    => $userdata["link"],
+                                                              'display' => false));
+                        }
                         $out     .= sprintf(__('%1$s %2$s'), $userdata['name'],
-                                            Html::showToolTip($userdata["comment"],
-                                                              array('link'    => $userdata["link"],
-                                                                    'display' => false)));
-
+                                            $tooltip);
                      } else {
                         $out .= getUserName($split[$k], 1);
                      }
