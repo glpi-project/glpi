@@ -1417,7 +1417,7 @@ function update084to085() {
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;')";
          $DB->queryOrDie($query, "0.85 add change notification translation");
-         
+
          $notifications = array('new'         => array(),
                                 'update'      => array(Notification::ASSIGN_TECH,
                                                        Notification::OLD_TECH_IN_CHARGE),
@@ -1522,7 +1522,7 @@ function update084to085() {
 
    // Dropdown translations
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_knowbaseitemtranslations'));
-   
+
    Config::setConfigurationValues('core', array('translate_kb' => 0));
    if (!TableExists("glpi_knowbaseitemtranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_knowbaseitemtranslations` (
@@ -1540,7 +1540,7 @@ function update084to085() {
 
    // kb translations
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_dropdowntranslations'));
-   
+
    Config::setConfigurationValues('core', array('translate_dropdowns' => 0));
    if (!TableExists("glpi_dropdowntranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
@@ -1650,7 +1650,7 @@ function update084to085() {
    $migration->addField('glpi_links', 'open_window', 'bool', array('value' => 1));
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_states'));
-   
+
    foreach (array('is_visible_computer', 'is_visible_monitor', 'is_visible_networkequipment',
                   'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',
                   'is_visible_softwareversion') as $field)  {
@@ -1722,7 +1722,7 @@ function update084to085() {
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_slas'));
-   
+
    // * Convert SLA resolution time to new system (ticket #4346)
    if (!FieldExists("glpi_slas", "definition_time")) {
       $migration->addField("glpi_slas", 'definition_time', "string");
@@ -1849,7 +1849,7 @@ function update084to085() {
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_documents'));
-   
+
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
 
    if (!TableExists("glpi_blacklistedmailcontents")) {
@@ -1873,7 +1873,7 @@ function update084to085() {
    $migration->changeField('glpi_users', 'password', 'password', 'string');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_softwarecategories'));
-   
+
    // Hierarchical software category
    $migration->addField('glpi_softwarecategories', 'softwarecategories_id', 'integer');
    $migration->addField("glpi_softwarecategories", 'completename', "text");
@@ -1885,7 +1885,7 @@ function update084to085() {
    regenerateTreeCompleteName("glpi_softwarecategories");
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various'));
-   
+
    // glpi_cartridgeitems  glpi_consumableitems by entity
    $migration->addField('glpi_consumableitems', 'is_recursive', 'bool',
                          array('update' => '1',
@@ -1903,7 +1903,7 @@ function update084to085() {
              SET `type` = 'cartridgeitems'
              WHERE `type` = 'cartridges';";
    $DB->queryOrDie($query, "0.85 fix events for cartridges");
-   
+
    // Bookmark order :
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
@@ -1979,7 +1979,7 @@ function update084to085() {
                                                     CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
                                                     "`name` = 'change' AND `rights` & (".CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE.')');
    }
-   
+
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2047,7 +2047,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projectteams");
    }
-   
+
    if (!TableExists('glpi_items_projects')) {
       $query = "CREATE TABLE `glpi_items_projects` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2099,7 +2099,7 @@ function update084to085() {
                   KEY `real_end_date` (`real_end_date`),
                   KEY `percent_done` (`percent_done`),
                   KEY `projectstates_id` (`projectstates_id`),
-                  KEY `projecttasktypes_id` (`projecttasktypes_id`)    
+                  KEY `projecttasktypes_id` (`projecttasktypes_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks");
@@ -2138,7 +2138,29 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
    }
-   
+
+/*
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'ticketvalidations status'));
+
+   $status  = array('none'     => CommonITILValidation::NONE,
+                    'waiting'  => CommonITILValidation::WAITING,
+                    'accepted' => CommonITILValidation::ACCEPTED,
+                    'refused'  => CommonITILValidation::REFUSED,
+                    'can'      => CommonITILValidation::CAN,
+                    'all'      => CommonITILValidation::ALL);
+   foreach ('glpi_ticketvalidations' as $table) {
+      // Migrate datas
+      foreach ($status as $old => $new) {
+         $query = "UPDATE `$table`
+                   SET `status` = '$new'
+                   WHERE `status` = '$old'";
+         $DB->queryOrDie($query, "0.84 status in $table $old to $new");
+      }
+      $migration->changeField($table, 'status', 'status', 'integer',
+                              array('value' => CommonITILValidation::NONE));
+   }
+*/
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

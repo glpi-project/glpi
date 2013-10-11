@@ -52,6 +52,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
    const VALIDATE               = 1024;
 
 
+   // STATUS
+   const NONE      = 1; // none
+   const WAITING   = 2; // waiting
+   const ACCEPTED  = 3; // accepted
+   const REFUSED   = 4; // refused
+   const CAN       = 5; // none + accepted
+   const ALL       = 6; // none + waiting + accepted + waiting
+
+
+
    function getItilObjectItemType() {
       return str_replace('Validation','',$this->getType());
    }
