@@ -3821,7 +3821,7 @@ class Search {
 
          case "glpi_projectstates.color" :
             return " style=\"background-color:".$data[$NAME.$num].";\" ";
-            
+
          default :
             return "";
       }
@@ -3900,11 +3900,13 @@ class Search {
                         $count_display++;
                         if ($itemtype == 'Ticket') {
                            $userdata = getUserName($split[$k],2);
-                           $out     .= sprintf(__('%1$s %2$s'), $userdata['name'],
-                                               Html::showToolTip($userdata["comment"],
-                                                                 array('link'    => $userdata["link"],
-                                                                       'display' => false)));
-
+                           $tooltip = "";
+                           if (Session::haveRight('user','r')) {
+                              $tooltip = Html::showToolTip($userdata["comment"],
+                                                           array('link'    => $userdata["link"],
+                                                                 'display' => false));
+                           }
+                           $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
                         } else {
                            $out .= getUserName($split[$k], 1);
                         }
