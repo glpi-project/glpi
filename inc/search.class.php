@@ -3746,11 +3746,12 @@ class Search {
                      $count_display++;
                      if ($itemtype=='Ticket') {
                         $userdata = getUserName($split[$k],2);
-                        $out .= $userdata['name']."&nbsp;".
-                                Html::showToolTip($userdata["comment"],
-                                                  array('link'    => $userdata["link"],
-                                                        'display' => false));
-
+                        $out .= $userdata['name'];
+                        if (Session::haveRight('user','r')) {
+                           $out .= "&nbsp;". Html::showToolTip($userdata["comment"],
+                                                               array('link'    => $userdata["link"],
+                                                                     'display' => false));
+                        }
                      } else {
                         $out .= getUserName($split[$k],1);
                      }
