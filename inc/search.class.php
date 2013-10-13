@@ -3023,17 +3023,15 @@ class Search {
                return "";
             }
             $tocheck = array();
-            if ($item = getItemForItemtype($itemtype)) {
-               switch ($val) {
-                  case 'can' :
-                     $tocheck = $item->getCanValidationStatusArray();
-                     break;
+            switch ($val) {
+               case 'can' :
+                  $tocheck = CommonITILValidation::getCanValidationStatusArray();
+                  break;
 
-                  case 'all' :
-                     $tocheck = $item->getAllValidationStatusArray();
-                     break;
+               case 'all' :
+                  $tocheck = CommonITILValidation::getAllValidationStatusArray();
+                  break;
                }
-            }
             if (count($tocheck) == 0) {
                $tocheck = array($val);
             }
