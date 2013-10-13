@@ -859,41 +859,47 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          }
          if ($result = $DB->query($query)) {
             while ($data = $DB->fetch_assoc($result)) {
-               $tmp                          = array();
-               $tmp['##document.id##']       = $data['id'];
-               $tmp['##document.name##']     = $data['name'];
-               $tmp['##document.weblink##']  = $data['link'];
+               $tmp                      = array();
+               $tmp['##document.id##']   = $data['id'];
+               $tmp['##document.name##'] = $data['name'];
+               $tmp['##document.weblink##']
+                                         = $data['link'];
 
-               $tmp['##document.url##']      = $this->formatURL($options['additionnaloption']['usertype'],
-                                                               "document_".$data['id']);
-               $downloadurl = "/front/document.send.php?docid=".$data['id'];
+               $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                            "document_".$data['id']);
+               $downloadurl              = "/front/document.send.php?docid=".$data['id'];
 
-               $tmp['##document.downloadurl##'] = $this->formatURL($options['additionnaloption']['usertype'],
-                                                                     $downloadurl.$addtodownloadurl);
-               $tmp['##document.heading##']  = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                        $data['documentcategories_id']);
+               $tmp['##document.downloadurl##']
+                                         = $this->formatURL($options['additionnaloption']['usertype'],
+                                                            $downloadurl.$addtodownloadurl);
+               $tmp['##document.heading##']
+                                         = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                     $data['documentcategories_id']);
 
-               $tmp['##document.filename##'] = $data['filename'];
+               $tmp['##document.filename##']
+                                         = $data['filename'];
+
                $datas['documents'][]         = $tmp;
             }
          }
 
          $datas["##$objettype.urldocument##"]
-            = $this->formatURL($options['additionnaloption']['usertype'],
-         $objettype."_".$item->getField("id").'_Document_Item$1');
+                        = $this->formatURL($options['additionnaloption']['usertype'],
+                                           $objettype."_".$item->getField("id").'_Document_Item$1');
 
-         $datas["##$objettype.numberofdocuments##"] = count($datas['documents']);
+         $datas["##$objettype.numberofdocuments##"]
+                        = count($datas['documents']);
 
          //costs infos
          $costtype = $item->getType().'Cost';
-         $costs = $costtype::getCostsSummary($item->getField("id"));
+         $costs    = $costtype::getCostsSummary($item->getField("id"));
 
          $datas["##$objettype.costfixed##"]    = $costs['costfixed'];
          $datas["##$objettype.costmaterial##"] = $costs['costmaterial'];
          $datas["##$objettype.costtime##"]     = $costs['costtime'];
          $datas["##$objettype.totalcost##"]    = $costs['totalcost'];
 
-         $restrict = "`".$item->getForeignKeyField()."`='".$item->getField('id')."'";
+         $restrict  = "`".$item->getForeignKeyField()."`='".$item->getField('id')."'";
 
          $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
 

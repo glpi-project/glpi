@@ -1736,10 +1736,10 @@ class Rule extends CommonDBTM {
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditAction". $fields[$this->rules_id_field].$fields["id"]."$rand() {\n";
-         $params = array('type'       => 'RuleAction',
-                         'parenttype' => $this->getType(),
-                         $this->rules_id_field   => $fields[$this->rules_id_field],
-                         'id'         => $fields["id"]);
+         $params = array('type'                => 'RuleAction',
+                         'parenttype'          => $this->getType(),
+                         $this->rules_id_field => $fields[$this->rules_id_field],
+                         'id'                  => $fields["id"]);
          Ajax::updateItemJsCode("viewaction" . $fields[$this->rules_id_field] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -1860,10 +1860,10 @@ class Rule extends CommonDBTM {
          Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditCriteria". $fields[$this->rules_id_field].$fields["id"]."$rand() {\n";
-         $params = array('type'      => 'RuleCriteria',
-                        'parenttype' => $this->getType(),
-                        $this->rules_id_field   => $fields[$this->rules_id_field],
-                        'id'         => $fields["id"]);
+         $params = array('type'               => 'RuleCriteria',
+                        'parenttype'          => $this->getType(),
+                        $this->rules_id_field => $fields[$this->rules_id_field],
+                        'id'                  => $fields["id"]);
          Ajax::updateItemJsCode("viewcriteria" . $fields[$this->rules_id_field] . "$rand",
                               $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";

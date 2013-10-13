@@ -113,6 +113,12 @@ class ContractCost extends CommonDBChild {
       return true;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getSearchOptions()
+   **/
    function getSearchOptions() {
 
       $tab                          = array();
@@ -132,10 +138,10 @@ class ContractCost extends CommonDBChild {
       $tab[2]['massiveaction']      = false;
       $tab[2]['datatype']           = 'number';
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
 
       $tab[12]['table']             = $this->getTable();
       $tab[12]['field']             = 'begin_date';
@@ -165,6 +171,7 @@ class ContractCost extends CommonDBChild {
 
       return $tab;
    }
+
 
    /**
     * Duplicate all costs from a contract template to its clone

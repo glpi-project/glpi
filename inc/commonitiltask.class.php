@@ -576,11 +576,15 @@ abstract class CommonITILTask  extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function getSearchOptionsToAdd() {
 
-      $task = new static();
-      
-      $tab = array();
+      $task                      = new static();
+
+      $tab                       = array();
 
       $tab['task']               = _n('Task', 'Tasks', 2);
 
@@ -623,7 +627,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $tab[92]['massiveaction']  = false;
          $tab[92]['joinparams']     = array('jointype' => 'child');
       }
-      
+
       $tab[94]['table']          = 'glpi_users';
       $tab[94]['field']          = 'name';
       $tab[94]['name']           = __('Writer');
@@ -674,6 +678,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       return $tab;
    }
+
+
    /**
     * Current dates are valid ? begin before end
     *

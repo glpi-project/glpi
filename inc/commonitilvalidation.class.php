@@ -241,7 +241,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
-      $item      = new static::$itemtype();
+      $item     = new static::$itemtype();
       $mailsend = false;
       if ($item->getFromDB($this->fields[static::$items_id])) {
 
@@ -291,7 +291,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $forbid_fields = array();
       if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
-         if (($input["status"] == "rejected")
+         if (($input["status"] == self::REFUSED)
              && (!isset($input["comment_validation"])
                  || ($input["comment_validation"] == ''))) {
             Session::addMessageAfterRedirect(__('If approval is denied, specify a reason.'),
@@ -558,7 +558,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * Get the number of validations attached to an item having a specified status
     *
     * @param $items_id   integer  item ID
-    * @param $status                status
+    * @param $status              status
    **/
    static function getTicketStatusNumber($items_id, $status) {
       global $DB;
@@ -1030,7 +1030,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                                       'joinparams' => array('jointype' => 'child')));
 
       return $tab;
-
    }
 
 
@@ -1101,7 +1100,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *  - applyto
     *
     * @return nothing (display)
-    * */
+   **/
    static function dropdownValidator(array $options=array()) {
       global $CFG_GLPI;
 
@@ -1196,19 +1195,19 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function computeValidationStatus(CommonITILObject $item) {
 
-      $validation_status = self::WAITING;
+      $validation_status  = self::WAITING;
 
-      $accepted          = 0;
-      $rejected          = 0;
+      $accepted           = 0;
+      $rejected           = 0;
 
       // Percent of validation
       $validation_percent = $item->fields['validation_percent'];
 
-      $statuses    = array(self::ACCEPTED => 0,
-                           self::WAITING  => 0,
-                           self::REFUSED  => 0);
-      $restrict    = "`".static::$items_id."` = '".$item->getID()."'";
-      $validations = getAllDatasFromTable(static::getTable(), $restrict);
+      $statuses           = array(self::ACCEPTED => 0,
+                                  self::WAITING  => 0,
+                                  self::REFUSED  => 0);
+      $restrict           = "`".static::$items_id."` = '".$item->getID()."'";
+      $validations        = getAllDatasFromTable(static::getTable(), $restrict);
 
       if ($total = count($validations)) {
          foreach ($validations as $validation) {
@@ -1237,7 +1236,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the validation statistics
     *
-    * @param $IDt tickets id
+    * @param $tID tickets id
     *
     * @return statistics array
    **/
@@ -1249,7 +1248,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $stats = array();
       foreach ($tab as $status => $name) {
-         $restrict    = "`".static::$items_id."` = '".$tID."' AND `status` = '".$status."'";
+         $restrict    = "`".static::$items_id."` = '".$tID."'
+                        AND `status` IN ('".implode("','",$status)."')";
          $validations = countElementsInTable(static::getTable(),$restrict);
          if ($validations > 0) {
             if (!isset($stats[$status])) {
@@ -1262,8 +1262,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $list = "";
       foreach ($stats as $stat => $val) {
          $list .= $tab[$stat];
-         $list .= sprintf(__('%1$s (%2$d%%) '), " " ,
-                                     HTml::formatNumber($val*100/$nb));
+         $list .= sprintf(__('%1$s (%2$d%%) '), " " , HTml::formatNumber($val*100/$nb));
       }
 
       return $list;
@@ -1276,6 +1275,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     */
    static function alertValidation(CommonITILObject $item, $type){
       global $CFG_GLPI;
+
       // No alert for new item
       if ($item->isNewID($item->getID())) {
          return;

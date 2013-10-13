@@ -264,6 +264,7 @@ class SlaLevel extends RuleTicket {
     * @return nothing
    **/
    function showForm($ID, $options=array()) {
+
       $canedit = $this->can('sla',UPDATE);
 
       $this->initForm($ID, $options);
@@ -289,7 +290,7 @@ class SlaLevel extends RuleTicket {
       echo "<td>";
 
       $resolution_time = $sla->getResolutionTime();
-      
+
       self::dropdownExecutionTime('execution_time',
                                   array('max_time'
                                              => $resolution_time,
@@ -348,7 +349,7 @@ class SlaLevel extends RuleTicket {
             }
          }
       }
-      
+
       for ($i=1 ; $i<24 ; $i++) {
          if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
             $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour','+ %d hours',$i), $i);
@@ -375,7 +376,7 @@ class SlaLevel extends RuleTicket {
          $possible_values[0] = __('Due date');
       }
       ksort($possible_values);
-      
+
       Dropdown::showFromArray($name, $possible_values, array('value' => $p['value']));
    }
 

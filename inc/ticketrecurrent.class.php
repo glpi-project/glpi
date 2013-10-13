@@ -306,7 +306,7 @@ class TicketRecurrent extends CommonDropdown {
    function computeNextCreationDate($begin_date, $end_date, $periodicity, $create_before,
                                     $calendars_id) {
 
-      if (empty($begin_date) || $begin_date == 'NULL') {
+      if (empty($begin_date) || ($begin_date == 'NULL')) {
          return 'NULL';
       }
       if (!empty($end_date) && ($end_date <> 'NULL')) {
@@ -352,7 +352,7 @@ class TicketRecurrent extends CommonDropdown {
                return 'NULL';
             }
          }
-         
+
          $calendar = new Calendar();
          if ($calendars_id
              && $calendar->getFromDB($calendars_id)) {
@@ -458,7 +458,7 @@ class TicketRecurrent extends CommonDropdown {
          // Set entity
          $input['entities_id'] = $data['entities_id'];
          $input['_auto_import'] = true;
-         
+
          $ticket = new Ticket();
          $input  = Toolbox::addslashes_deep($input);
          if ($tid = $ticket->add($input)) {
