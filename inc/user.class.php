@@ -2876,54 +2876,54 @@ class User extends CommonDBTM {
                switch ($r) {
                   case  'own_ticket' :
                      $where[]= " (`glpi_profilerights`.`name` = 'ticket'
-                                 AND (`glpi_profilerights`.`rights` & ".Ticket::OWN.") ".
-                                 getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                            $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".Ticket::OWN.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
                      break;
                   case 'create_ticket_validate' :
                      $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
-                                    AND (`glpi_profilerights`.`rights` & ".TicketValidation::CREATEREQUEST."
-                                          OR `glpi_profilerights`.`rights` & ".TicketValidation::CREATEDEMAND.") ".
-                                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                         $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".TicketValidation::CREATEREQUEST."
+                                       OR `glpi_profilerights`.`rights` & ".TicketValidation::CREATEDEMAND.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
                      break;
                   case 'validate_request' :
                      $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
-                                    AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEREQUEST.") ".
-                                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                         $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEREQUEST.") ".
+                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                              $entity_restrict, 1).") ";
                      break;
                   case 'validate_incident' :
                      $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
-                                 AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEINCIDENT.") ".
-                                                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                            $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEINCIDENT.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
                      break;
                   case 'validate' :
                      $where[]= " (`glpi_profilerights`.`name` = 'changevalidation'
-                                 AND (`glpi_profilerights`.`rights` & ".ChangeValidation::VALIDATE.") ".
-                                                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                            $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".ChangeValidation::VALIDATE.") ".
+                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                              $entity_restrict, 1).") ";
                      break;
                   case 'create_validate' :
                      $where[]= " (`glpi_profilerights`.`name` = 'changevalidation'
-                                 AND (`glpi_profilerights`.`rights` & ".ChangeValidation::CREATE.") ".
-                                                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                            $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".ChangeValidation::CREATE.") ".
+                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                              $entity_restrict, 1).") ";
                      break;
                   case 'see_project' :
                      $where[]= " (`glpi_profilerights`.`name` = 'project'
-                                 AND (`glpi_profilerights`.`rights` & ".Project::READMY.") ".
-                                                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                            $entity_restrict, 1).") ";
+                                  AND (`glpi_profilerights`.`rights` & ".Project::READMY.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
                      break;
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
-                                 AND `glpi_profilerights`.`rights` & ".
+                                  AND `glpi_profilerights`.`rights` & ".
                                        (READ | CREATE | UPDATE | DELETE | PURGE) ." ".
-                                 getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                            $entity_restrict, 1).") ";
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
                }
                if (in_array($r, Profile::$helpdesk_rights)) {
                   $forcecentral = false;
