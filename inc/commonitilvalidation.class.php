@@ -409,7 +409,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                    self::REFUSED  => __('Refused'),
                    self::ACCEPTED => __('Granted'));
       if ($global) {
-         $tab['none'] = __('Not subject to approval');
+         $tab[self::NONE] = __('Not subject to approval');
 
          if ($withmetaforsearch) {
             $tab['can'] = __('Granted + Not subject to approval');
