@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 // autoload include in objecttask.form (ticketvalidation, changevalidation,...)
@@ -50,9 +51,9 @@ $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
    $validation->check(-1, CREATE, $_POST);
-   if (isset($_POST['users_id_validate']) 
-      && count($_POST['users_id_validate']) > 0) {
-      
+   if (isset($_POST['users_id_validate'])
+       && (count($_POST['users_id_validate']) > 0)) {
+
       $users = $_POST['users_id_validate'];
       foreach ($users as $user) {
          $_POST['users_id_validate'] = $user;
@@ -65,7 +66,6 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   
    $validation->check($_POST['id'], UPDATE);
    $validation->update($_POST);
    Event::log($validation->getField($fk), strtolower($itemtype), 4, "tracking",
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s purges an approval'), $_SESSION["glpiname"]));
    Html::back();
-   
+
 }
 Html::displayErrorAndDie('Lost');
 ?>

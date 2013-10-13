@@ -44,14 +44,17 @@ abstract class CommonITILCost extends CommonDBChild {
 
    public $dohistory        = true;
 
+
    static function getTypeName($nb=0) {
       return _n('Cost', 'Costs', $nb);
    }
 
+
    function getItilObjectItemType() {
       return str_replace('Cost','',$this->getType());
    }
-   
+
+
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
@@ -64,7 +67,8 @@ abstract class CommonITILCost extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
-                                                             "`".$item->getForeignKeyField()."` = '".$item->getID()."'"));
+                                                             "`".$item->getForeignKeyField()."`
+                                                                = '".$item->getID()."'"));
          }
          return self::getTypeName(2);
       }
@@ -82,6 +86,7 @@ abstract class CommonITILCost extends CommonDBChild {
       self::showForObject($item, $withtemplate);
       return true;
    }
+
 
    function getSearchOptions() {
 
@@ -102,11 +107,11 @@ abstract class CommonITILCost extends CommonDBChild {
       $tab[2]['massiveaction']      = false;
       $tab[2]['datatype']           = 'number';
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
-      
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
+
       $tab[12]['table']             = $this->getTable();
       $tab[12]['field']             = 'begin_date';
       $tab[12]['name']              = __('Begin date');
@@ -151,8 +156,10 @@ abstract class CommonITILCost extends CommonDBChild {
       return $tab;
    }
 
+
    static function getSearchOptionsToAdd() {
-      $tab = array();
+
+      $tab                       = array();
       $tab['cost']               = __('Cost');
 
       $tab[48]['table']          = static::getTable();
@@ -198,22 +205,25 @@ abstract class CommonITILCost extends CommonDBChild {
 
       return $tab;
    }
-         
+
+
    /**
     * Init cost for creation based on previous cost
    **/
    function initBasedOnPrevious() {
 
       $item = new static::$itemtype();
-      if (!isset($this->fields[static::$items_id]) || !$item->getFromDB($this->fields[static::$items_id])) {
+      if (!isset($this->fields[static::$items_id])
+          || !$item->getFromDB($this->fields[static::$items_id])) {
          return false;
       }
 
       // Set actiontime to
       $this->fields['actiontime']
-                 = max(0, $item->fields['actiontime']
-                           - $this->getTotalActionTimeForItem($this->fields[static::$items_id]));
-      $lastdata  = $this->getLastCostForItem($this->fields[static::$items_id]);
+                    = max(0,
+                          $item->fields['actiontime']
+                              - $this->getTotalActionTimeForItem($this->fields[static::$items_id]));
+      $lastdata     = $this->getLastCostForItem($this->fields[static::$items_id]);
 
       if (isset($lastdata['end_date'])) {
          $this->fields['begin_date'] = $lastdata['end_date'];
@@ -380,6 +390,7 @@ abstract class CommonITILCost extends CommonDBChild {
    **/
    static function showForObject(CommonITILObject $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
+
       $ID = $item->fields['id'];
 
       if (!$item->getFromDB($ID)
@@ -403,10 +414,10 @@ abstract class CommonITILCost extends CommonDBChild {
          echo "<div id='viewcost".$ID."_$rand'></div>\n";
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";
-         $params = array('type'         => static::getType(),
-                         'parenttype'   => static::$itemtype,
-                         static::$items_id   => $ID,
-                         'id'           => -1);
+         $params = array('type'             => static::getType(),
+                         'parenttype'       => static::$itemtype,
+                         static::$items_id  => $ID,
+                         'id'               => -1);
          Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -463,10 +474,10 @@ abstract class CommonITILCost extends CommonDBChild {
                if ($canedit) {
                   echo "\n<script type='text/javascript' >\n";
                   echo "function viewEditCost" .$data[static::$items_id]."_". $data["id"]. "_$rand() {\n";
-                  $params = array('type'      => static::getType(),
-                                 'parenttype' => static::$itemtype,
-                                 static::$items_id => $data[static::$items_id],
-                                 'id'         => $data["id"]);
+                  $params = array('type'            => static::getType(),
+                                 'parenttype'       => static::$itemtype,
+                                 static::$items_id  => $data[static::$items_id],
+                                 'id'               => $data["id"]);
                   Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                          $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                   echo "};";
@@ -505,11 +516,12 @@ abstract class CommonITILCost extends CommonDBChild {
       echo "</div><br>";
    }
 
+
    /**
     * Get costs summary values
     *
     * @param $ID      integer ID of the ticket
-    * @since version 0.84.3
+    *
     * @return array of costs and actiontime
    **/
    static function getCostsSummary($ID) {
@@ -519,6 +531,7 @@ abstract class CommonITILCost extends CommonDBChild {
                 FROM `".getTableForItemtype(static::$itemtype)."`
                 WHERE `".static::$items_id."` = '$ID'
                 ORDER BY `begin_date`";
+
       $tab = array('totalcost'   => 0,
                   'actiontime'   => 0,
                   'costfixed'    => 0,
@@ -538,7 +551,8 @@ abstract class CommonITILCost extends CommonDBChild {
          $tab[$key] = Html::formatNumber($val);
       }
       return $tab;
-   }   
+   }
+
 
    /**
     * Computer total cost of a item
