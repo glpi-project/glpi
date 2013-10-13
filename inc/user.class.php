@@ -2843,29 +2843,28 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
-            /// TODO : Cette condition n'a pas de sens : Profile::$helpdesk_rights est un tableau
             /// TODO : il me semble qu'il faut revoir avec la nouvelle gestion du controle des droits.
             ///  TODO : par exemple en en appasant array(droit_a_verifier => valeur attendue) et un controle pour avoir au moins ce droit.
-            if ((Profile::$helpdesk_rights == 'reservation')
+            if (in_array('reservation', Profile::$helpdesk_rights)
                 & !ReservationItem::RESERVEANITEM) {
                return false;
             }
 
-            if ((Profile::$helpdesk_rights == 'ticket')
+            if (in_array('ticket', Profile::$helpdesk_rights)
                 & !Ticket::canCreate()) {
                return false;
             }
-            if ((Profile::$helpdesk_rights == 'followup')
+            if (in_array('followup', Profile::$helpdesk_rights)
                 & !Session::haveRightsOr('followup', array(TicketFollowup::ADDMYTICKET,
                                                            TicketFollowup::UPDATEMY,
                                                            TicketFollowup::SEEPUBLIC))) {
                return false;
             }
-            if ((Profile::$helpdesk_rights == 'task')
+            if (in_array('task', Profile::$helpdesk_rights)
                 & !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
                return false;
             }
-            if ((Profile::$helpdesk_rights == 'ticketvalidation')
+            if (in_array('ticketvalidation', Profile::$helpdesk_rights)
                 && !Session::haveRightsOr('ticketvalidation', array(TicketValidation::CREATEREQUEST,
                                                               TicketValidation::CREATEINCIDENT,
                                                               TicketValidation::VALIDATEREQUEST,
@@ -2917,7 +2916,7 @@ class User extends CommonDBTM {
                                  AND (`glpi_profilerights`.`rights` & ".Project::READMY.") ".
                                                       getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                             $entity_restrict, 1).") ";
-                     break;                     
+                     break;
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
