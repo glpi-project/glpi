@@ -366,35 +366,6 @@ class Profile extends CommonDBTM {
    **/
    function cleanProfile() {
 
-   /// TODO MoYo : do not understand why this (commented lines)?
-   /// self::$helpdesk_rights is an array so == is not appropriate
-//       if ((self::$helpdesk_rights == 'reservation')
-//           && !ReservationItem::RESERVEANITEM) {
-//          return false;
-//       }
-//       if ((self::$helpdesk_rights == 'ticket')
-//           && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
-//          return false;
-//       }
-//       if ((self::$helpdesk_rights == 'followup')
-//           && !Session::haveRightsOr('followup',
-//                                     array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
-//                                           TicketFollowup::SEEPUBLIC, TicketFollowup::ADDGROUPTICKET))) {
-//          return false;
-//       }
-//       if ((self::$helpdesk_rights == 'task')
-//          && !Session::haveRight('followup', TicketTask::SEEPUBLIC)) {
-//          return false;
-//       }
-//       if ((self::$helpdesk_rights == 'ticketvalidation')
-//             && !Session::haveRightsOr('ticketvalidation', array(TicketValidation::CREATEREQUEST,
-//                                                           TicketValidation::CREATEINCIDENT,
-//                                                           TicketValidation::VALIDATEREQUEST,
-//                                                           TicketValidation::VALIDATEINCIDENT))) {
-//          return false;
-//       }
-
-
       if ($this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
             if (!in_array($key,self::$common_fields)
@@ -441,30 +412,30 @@ class Profile extends CommonDBTM {
    **/
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
-      /// TODO : MoYo : je ne comprend pas du tout ces controles... self::$helpdesk_rights est un tableau le == n'a pas de sens
-      if ((self::$helpdesk_rights == 'reservation')
+      if (in_array('reservation', self::$helpdesk_rights)
           & !ReservationItem::RESERVEANITEM) {
          return false;
       }
-      if ((self::$helpdesk_rights == 'ticket')
+      if (in_array('ticket', self::$helpdesk_rights)
           & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
          return false;
       }
-      if ((self::$helpdesk_rights == 'followup')
+      if (in_array('followup', self::$helpdesk_rights)
           && !Session::haveRightsOr('followup',
                                     array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
                                           TicketFollowup::SEEPUBLIC))) {
          return false;
       }
-      if ((self::$helpdesk_rights == 'task')
+      if (in_array('task', self::$helpdesk_rights)
          && !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
          return false;
       }
-      if ((self::$helpdesk_rights == 'validation')
-            && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
-                                                          TicketValidation::CREATEINCIDENT,
-                                                          TicketValidation::VALIDATEREQUEST,
-                                                          TicketValidation::VALIDATEINCIDENT))) {
+      if (in_array('ticketvalidation', self::$helpdesk_rights)
+            && !Session::haveRightsOr('ticketvalidation',
+                                      array(TicketValidation::CREATEREQUEST,
+                                            TicketValidation::CREATEINCIDENT,
+                                            TicketValidation::VALIDATEREQUEST,
+                                            TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
 
@@ -1064,7 +1035,7 @@ class Profile extends CommonDBTM {
                             'field'      => 'project'));
       $matrix_options['title'] = _n('Project', 'Projects', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
-      
+
 
       if ($canedit
           && $closeform) {
