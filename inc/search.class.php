@@ -3019,20 +3019,29 @@ class Search {
 
          case "glpi_tickets.global_validation" :
          case "glpi_ticketvalidations.status" :
-            $tocheck = array('none'     => array('none'),
-                             'waiting'  => array('waiting'),
-                             'rejected' => array('rejected'),
-                             'accepted' => array('accepted'),
-                             'can'      => array('none', 'accepted'),
-                             'all'      => array('none', 'waiting', 'rejected', 'accepted'));
-            if (isset($tocheck[$val])) {
-               foreach ($tocheck[$val] as $key => $nval) {
-                  $tocheck[$val][$key] = " `$table`.`$field` = '$nval' ";
-               }
-               return $link.'('.implode(' OR ', $tocheck[$val]).')';
-            }
             if ($val == 'all') {
                return "";
+            }
+            $tocheck = array();
+            if ($item = getItemForItemtype($itemtype)) {
+               switch ($val) {
+                  case 'can' :
+                     $tocheck = $item->getCanValidationStatusArray();
+                     break;
+
+                  case 'all' :
+                     $tocheck = $item->getAllValidationStatusArray();
+                     break;
+               }
+            }
+            if (count($tocheck) == 0) {
+               $tocheck = array($val);
+            }
+            if (count($tocheck)) {
+               if ($nott) {
+                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck)."')";
+               }
+               return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
             }
             break;
 

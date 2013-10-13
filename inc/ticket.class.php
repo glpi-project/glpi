@@ -1462,7 +1462,7 @@ class Ticket extends CommonITILObject {
                            /*'_no_notif'   => true*/));
          }
       }
-      
+
       parent::post_addItem();
       //Action for send_validation rule
       if (isset($this->input["_add_validation"])) {
@@ -3469,7 +3469,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       // Default check
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -3575,7 +3575,7 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-     
+
       if ($options['template_preview']) {
          // Add all values to fields of tickets for template preview
          foreach ($values as $key => $val) {
@@ -3584,7 +3584,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       // In percent
       $colsize1 = '13';
       $colsize2 = '29';
@@ -4491,7 +4491,7 @@ class Ticket extends CommonITILObject {
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
                              AND `status` <> '".self::CLOSED."'
-                             AND `global_validation` = 'rejected' ".
+                             AND `global_validation` = '".CommonITILValidation::REFUSED."' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
@@ -4694,7 +4694,7 @@ class Ticket extends CommonITILObject {
                case "rejected" :
                   $options['field'][0]      = 52; // validation status
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'rejected';
+                  $options['contains'][0]   = CommonITILValidation::REFUSED;
                   $options['link'][0]        = 'AND';
 
                   $options['field'][1]      = 5; // assign user
