@@ -2139,8 +2139,9 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
    }
 
-/*
-   $migration->displayMessage(sprintf(__('Data migration - %s'), 'ticketvalidations status'));
+
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'ticketvalidations status an tickets global_validation'));
 
    $status  = array('none'     => CommonITILValidation::NONE,
                     'waiting'  => CommonITILValidation::WAITING,
@@ -2154,12 +2155,25 @@ function update084to085() {
          $query = "UPDATE `$table`
                    SET `status` = '$new'
                    WHERE `status` = '$old'";
-         $DB->queryOrDie($query, "0.84 status in $table $old to $new");
+         $DB->queryOrDie($query, "0.85 status in $table $old to $new");
       }
       $migration->changeField($table, 'status', 'status', 'integer',
+                              array('value' => CommonITILValidation::WAITING));
+   }
+
+   foreach ('glpi_tickets' as $table) {
+      // Migrate datas
+      foreach ($status as $old => $new) {
+         $query = "UPDATE `$table`
+                   SET `global_validation` = '$new'
+                   WHERE `global_validation` = '$old'";
+         $DB->queryOrDie($query, "0.85 global_validation in $table $old to $new");
+      }
+      $migration->changeField($table, 'global_validation', 'global_validation', 'integer',
                               array('value' => CommonITILValidation::NONE));
    }
-*/
+
+
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

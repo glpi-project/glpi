@@ -52,6 +52,7 @@ class TicketValidation  extends CommonITILValidation {
    const VALIDATEINCIDENT            = 8192;
 
 
+
    static function getCreateRights() {
       return array(static::CREATEREQUEST, static::CREATEINCIDENT);
    }

@@ -56,9 +56,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    const NONE      = 1; // none
    const WAITING   = 2; // waiting
    const ACCEPTED  = 3; // accepted
-   const REFUSED   = 4; // refused
-   const CAN       = 5; // none + accepted
-   const ALL       = 6; // none + waiting + accepted + waiting
+   const REFUSED   = 4; // rejected
 
 
 
@@ -216,7 +214,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function post_getEmpty() {
 
       $this->fields["users_id"] = Session::getLoginUserID();
-      $this->fields["status"]   = 'waiting';
+      $this->fields["status"]   = self::WAITING;
    }
 
 
@@ -231,7 +229,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       $input["submission_date"] = $_SESSION["glpi_currenttime"];
-      $input["status"]          = 'waiting';
+      $input["status"]          = self::WAITING;
 
       if (!isset($input["users_id_validate"]) || ($input["users_id_validate"] <= 0)) {
          return false;
@@ -248,10 +246,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($item->getFromDB($this->fields[static::$items_id])) {
 
          // Set global validation to waiting
-         if (($item->fields['global_validation'] == 'accepted')
-             || ($item->fields['global_validation'] == 'none')) {
+         if (($item->fields['global_validation'] == self::ACCEPTED)
+             || ($item->fields['global_validation'] == self::NONE)) {
             $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = 'waiting';
+            $input['global_validation'] = self::WAITING;
 
             // to fix lastupdater
             if (isset($this->input['_auto_update'])) {
@@ -300,7 +298,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                              false, ERROR);
             return false;
          }
-         if ($input["status"] == "waiting") {
+         if ($input["status"] == self::WAITING) {
 //             $input["comment_validation"] = '';
             $input["validation_date"] = 'NULL';
          } else {
@@ -344,7 +342,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          }
 
           //Set global validation to accepted to define one
-         if (($item->fields['global_validation'] == 'waiting')
+         if (($item->fields['global_validation'] == self::WAITING)
              && in_array("status", $this->updates)) {
 
             $input['id']                = $this->fields[static::$items_id];
@@ -365,7 +363,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $username = getUserName($this->fields["users_id_validate"]);
 
          $result   = array('0', '', '');
-         if ($this->fields["status"] == 'accepted') {
+         if ($this->fields["status"] == self::ACCEPTED) {
             //TRANS: %s is the username
             $result[2] = sprintf(__('Approval granted by %s'), $username);
          } else {
@@ -407,9 +405,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function getAllStatusArray($withmetaforsearch=false, $global=false) {
 
-      $tab = array('waiting'  => __('Waiting for approval'),
-                   'rejected' => __('Refused'),
-                   'accepted' => __('Granted'));
+      $tab = array(self::WAITING  => __('Waiting for approval'),
+                   self::REFUSED  => __('Refused'),
+                   self::ACCEPTED => __('Granted'));
       if ($global) {
          $tab['none'] = __('Not subject to approval');
 
@@ -430,7 +428,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $name          select name
     * @param $options array of possible options:
-    *      - value : default value (default waiting)
+    *      - value   : default value (default waiting)
     *      - all     : boolean display all (default false)
     *      - global  : for global validation (default false)
     *      - display : boolean display or get string ? (default true)
@@ -439,7 +437,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function dropdownStatus($name, $options=array()) {
 
-      $p['value']   = 'waiting';
+      $p['value']   = self::WAITING;
       $p['global']  = false;
       $p['all']     = false;
       $p['display'] = true;
@@ -479,15 +477,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getStatusColor($value) {
 
       switch ($value) {
-         case "waiting" :
+         case self::WAITING :
             $style = "#FFC65D";
             break;
 
-         case "rejected" :
+         case self::REFUSED :
             $style = "#cf9b9b";
             break;
 
-         case "accepted" :
+         case self::ACCEPTED :
             $style = "#9BA563";
             break;
 
@@ -545,7 +543,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $query = "SELECT COUNT(`id`) AS 'total'
                 FROM `".static::getTable()."`
-                WHERE `status` = 'waiting'
+                WHERE `status` = '".self::WAITING."'
                       AND `users_id_validate` = '$users_id'";
 
       $result = $DB->query($query);
@@ -790,7 +788,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       // No update validation is answer set
       $validation_admin   = (($this->fields["users_id"] == Session::getLoginUserID())
                              && static::canCreate()
-                             && ($this->fields['status'] == 'waiting'));
+                             && ($this->fields['status'] == self::WAITING));
 
       $validator          = ($this->fields["users_id_validate"] == Session::getLoginUserID());
 
@@ -1198,7 +1196,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function computeValidationStatus(CommonITILObject $item) {
 
-      $validation_status = 'waiting';
+      $validation_status = self::WAITING;
 
       $accepted          = 0;
       $rejected          = 0;
@@ -1206,9 +1204,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
       // Percent of validation
       $validation_percent = $item->fields['validation_percent'];
 
-      $statuses    = array('accepted' => 0,
-                           'waiting'  => 0,
-                           'rejected' => 0);
+      $statuses    = array(self::ACCEPTED => 0,
+                           self::WAITING  => 0,
+                           self::REFUSED  => 0);
       $restrict    = "`".static::$items_id."` = '".$item->getID()."'";
       $validations = getAllDatasFromTable(static::getTable(), $restrict);
 
@@ -1219,16 +1217,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       if ($validation_percent > 0) {
-         if (($statuses['accepted']*100/$total) >= $validation_percent) {
-            $validation_status = 'accepted';
-         } else if (($statuses['rejected']*100/$total) >= $validation_percent) {
-            $validation_status = 'rejected';
+         if (($statuses[self::ACCEPTED]*100/$total) >= $validation_percent) {
+            $validation_status = self::ACCEPTED;
+         } else if (($statuses[self::REFUSED]*100/$total) >= $validation_percent) {
+            $validation_status = self::REFUSED;
          }
       } else {
-         if ($statuses['accepted']) {
-            $validation_status = 'accepted';
-         } else if ($statuses['rejected']) {
-            $validation_status = 'rejected';
+         if ($statuses[self::ACCEPTED]) {
+            $validation_status = self::ACCEPTED;
+         } else if ($statuses[self::REFUSED]) {
+            $validation_status = self::REFUSED;
          }
       }
 
@@ -1307,7 +1305,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
                            status_ko = 1;
                         }
                      }
-                     if (status_ko == 1 && '".$item->fields['global_validation']."' == 'waiting') {
+                     if ((status_ko == 1)
+                         && ('".$item->fields['global_validation']."' == '".self::WAITING."')) {
                         alert('".$message."');
                      }
                   });";
@@ -1316,11 +1315,35 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
          case 'solution' :
             if (!in_array($item->fields['status'], $status)
-                && $item->fields['global_validation'] == 'waiting') {
+                && $item->fields['global_validation'] == self::WAITING) {
                Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             }
             break;
       }
+   }
+
+
+   /**
+    * Get the ITIL object can validation status list
+    *
+    * @since version 0.85
+    *
+    * @return an array
+    **/
+   static function getCanValidationStatusArray() {
+      return array(self::NONE, self::ACCEPTED);
+   }
+
+
+   /**
+    * Get the ITIL object all validation status list
+    *
+    * @since version 0.85
+    *
+    * @return an array
+    **/
+   static function getAllValidationStatusArray() {
+      return array(self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED);
    }
 
 }
