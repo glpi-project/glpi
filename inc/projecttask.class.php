@@ -101,11 +101,29 @@ class ProjectTask extends CommonDBChild {
       
       return Project::checkPlanAndRealDates($input);
    }
-   
-   /**
-    * Print the Software / version form
+
+
+    /**
+    * Get all tasks for a project
     *
-    * @param $ID        integer  Id of the version or the template to print
+    * @param $ID        integer  Id of the project
+    * @return array of tasks ordered by dates
+    *
+   **/
+   static function getAllForProject($ID) {
+      global $DB;
+
+      $tasks = array();
+      foreach ($DB->request('glpi_projecttasks', array("projects_id"=>$ID,
+                                                       'ORDER' => array('plan_start_date', 'real_start_date'))) as $data) {
+         $tasks[] = $data;
+      }
+      return $tasks;
+   }
+   /**
+    * Print the Project task form
+    *
+    * @param $ID        integer  Id of the project task
     * @param $options   array    of possible options:
     *     - target form target
     *     - projects_id ID of the software for add process
@@ -669,6 +687,12 @@ class ProjectTask extends CommonDBChild {
       // Add items
 
       return true;
+   }
+   /** Get data to display on GANTT for a project
+   * @param $ID ID of the project
+   */
+   static function getDataToDisplayOnGantt($ID) {
+      global $DB;
    }
    
 }
