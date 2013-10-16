@@ -313,12 +313,14 @@ class Software extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin
           && (countElementsInTable("glpi_rules", "sub_type='RuleSoftwareCategory'") > 0)) {
-         $actions['compute_software_category'] = __('Recalculate the category');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'compute_software_category'] =
+                                                                     __('Recalculate the category');
       }
 
       if (Session::haveRightsOr("rule_dictionnary_software", array(CREATE, UPDATE))
            && (countElementsInTable("glpi_rules", "sub_type='RuleDictionnarySoftware'") > 0)) {
-         $actions['replay_dictionnary'] = __('Replay the dictionary rules');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'replay_dictionnary'] =
+                                                                  __('Replay the dictionary rules');
       }
 
       if ($isadmin) {
@@ -360,77 +362,55 @@ class Software extends CommonDBTM {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
             return;
+
+         case 'compute_software_category':
+            $softcatrule = new RuleSoftwareCategoryCollection();
+            foreach ($ids as $id) {
+               $params = array();
+               //Get software name and manufacturer
+               if ($item->can($id, UPDATE)) {
+                  $params["name"]             = $item->fields["name"];
+                  $params["manufacturers_id"] = $item->fields["manufacturers_id"];
+                  $params["comment"]          = $item->fields["comment"];
+                  $output = array();
+                  $output = $softcatrule->processAllRules(null, $output, $params);
+                  //Process rules
+                  if (isset($output['softwarecategories_id'])
+                      && $item->update(array('id'       => $id,
+                                             'softwarecategories_id'
+                                             => $output['softwarecategories_id']))) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+
+         case 'replay_dictionnary' :
+            $softdictionnayrule = new RuleDictionnarySoftwareCollection();
+            $allowed_ids        = array();
+            foreach ($ids as $id) {
+               if ($item->can($id, UPDATE)) {
+                  $allowed_ids[] = $id;
+               } else {
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $allowed_ids)>0) {
+               $ma->itemDone($item->getType(), $allowed_ids, MassiveAction::ACTION_OK);
+            } else {
+               $ma->itemDone($item->getType(), $allowed_ids, MassiveAction::ACTION_KO);
+            }
+
+            return;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-
-         case "compute_software_category" :
-            $softcatrule = new RuleSoftwareCategoryCollection();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  $params = array();
-                  //Get software name and manufacturer
-                  if ($this->can($key, UPDATE)) {
-                     $params["name"]             = $this->fields["name"];
-                     $params["manufacturers_id"] = $this->fields["manufacturers_id"];
-                     $params["comment"]          = $this->fields["comment"];
-                     $output = array();
-                     $output = $softcatrule->processAllRules(null, $output, $params);
-                     //Process rules
-                     if (isset($output['softwarecategories_id'])
-                         && $this->update(array('id'       => $key,
-                                                'softwarecategories_id'
-                                                           => $output['softwarecategories_id']))) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            break;
-
-         case "replay_dictionnary" :
-            $softdictionnayrule = new RuleDictionnarySoftwareCollection();
-            $ids                = array();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->can($key, UPDATE)) {
-                     $ids[] = $key;
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0) {
-               $res['ok'] += count($ids);
-            } else {
-               $res['ko'] += count($ids);
-            }
-
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
