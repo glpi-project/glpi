@@ -582,7 +582,7 @@ class Software extends CommonDBTM {
       $tab[160]['datatype']      = 'dropdown';
       $tab[160]['forcegroupby']  = true;
       $tab[160]['massiveaction'] = false;
-      $tab[160]['joinparams']    = $licjoin;
+      $tab[160]['joinparams']    = $licjoinexpire;
 
       $tab[161]['table']         = 'glpi_softwarelicenses';
       $tab[161]['field']         = 'serial';
@@ -590,7 +590,7 @@ class Software extends CommonDBTM {
       $tab[161]['name']          = __('License serial number');
       $tab[161]['forcegroupby']  = true;
       $tab[161]['massiveaction'] = false;
-      $tab[161]['joinparams']    = $licjoin;
+      $tab[161]['joinparams']    = $licjoinexpire;
 
       $tab[162]['table']         = 'glpi_softwarelicenses';
       $tab[162]['field']         = 'otherserial';
@@ -598,7 +598,7 @@ class Software extends CommonDBTM {
       $tab[162]['name']          = __('License inventory number');
       $tab[162]['forcegroupby']  = true;
       $tab[162]['massiveaction'] = false;
-      $tab[162]['joinparams']    = $licjoin;
+      $tab[162]['joinparams']    = $licjoinexpire;
 
       $tab[163]['table']         = 'glpi_softwarelicenses';
       $tab[163]['field']         = 'number';
@@ -617,7 +617,7 @@ class Software extends CommonDBTM {
       $tab[164]['massiveaction'] = false;
       $tab[164]['joinparams']    = array('beforejoin'
                                            => array('table'      => 'glpi_softwarelicenses',
-                                                    'joinparams' => $licjoin));
+                                                    'joinparams' => $licjoinexpire));
 
       $tab[165]['table']         = 'glpi_softwarelicenses';
       $tab[165]['field']         = 'comment';
@@ -625,7 +625,7 @@ class Software extends CommonDBTM {
       $tab[165]['forcegroupby']  = true;
       $tab[165]['datatype']      = 'text';
       $tab[165]['massiveaction'] = false;
-      $tab[165]['joinparams']    = $licjoin;
+      $tab[165]['joinparams']    = $licjoinexpire;
 
       $tab[166]['table']         = 'glpi_softwarelicenses';
       $tab[166]['field']         =  'expire';
@@ -633,7 +633,7 @@ class Software extends CommonDBTM {
       $tab[166]['forcegroupby']  = true;
       $tab[166]['datatype']      = 'date';
       $tab[166]['massiveaction'] = false;
-      $tab[166]['joinparams']    = $licjoin;
+      $tab[166]['joinparams']    = $licjoinexpire;
 
       return $tab;
    }
