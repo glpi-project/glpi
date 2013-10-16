@@ -79,5 +79,4 @@ if (isset($_POST['execute'])) {
    $crontask->showForm($_GET["id"]);
    Html::footer();
 }
-Html::displayErrorAndDie('Lost');
 ?>
