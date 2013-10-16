@@ -322,13 +322,7 @@ class Ajax {
 
          echo "</div>";
 
-         echo "<script type='text/javascript'>";
-//          echo "$.ajaxSetup({
-//                   cache:false,
-//
-//                   success: function() {}
-//                });  ";
-         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST',
+         $js = "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST',
           // Show loading indicator
                   beforeSend: function() {
                      $('#loadingindicator$rand').show()
@@ -343,19 +337,19 @@ class Ajax {
             { itemtype: '$type', id: '$ID', tab: newIndex });
             }});";
          if ($orientation=='vertical') {
-            echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
+            $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
          }
-         echo "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
+         $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
 
          /// TODO : add new parameters to default URL !!
-         echo "// force reload
+         $js .=  "// force reload
             function reloadTab(add) {
                var current_index = $('#tabs$rand').tabs('option','selected');
                $('#tabs$rand').tabs('option', 'ajaxOptions', { data: add });
                $('#tabs$rand').tabs( 'load' , current_index);
                $('#tabs$rand').tabs('option', 'ajaxOptions', { data: {} });
             }";
-         echo "</script>";
+         echo Html::scriptBlock($js);
       }
    }
 
