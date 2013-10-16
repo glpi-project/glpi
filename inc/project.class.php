@@ -879,25 +879,26 @@ class Project extends CommonDBTM {
          }
          
          // Add current project
-         if (!is_null($real_begin) && !is_null($real_end)) {
-            $todisplay[$real_begin.'#'.$real_end.'#'.$project->getID()]
-                         = array('name'   => $project->fields['name'],
-                                 'desc'   => '',
-                                 'type'   => 'project',
-                                 'from'   => $real_begin,
-                                 'to'     => $real_end);
-         }  else {
-            echo sprintf(__('Unable to determine begin or start date of project %s'), $project->fields['name']);
-            echo "<br>";
-            return $todisplay;
-         }
+         $todisplay[$real_begin.'#'.$real_end.'#project'.$project->getID()]
+                        = array('name'   => $project->fields['name'],
+                              'desc'   => $project->fields['content'],
+                              'type'   => 'project',
+                              'from'   => $real_begin,
+                              'to'     => $real_end);
 
          // Add current tasks
-//          static::getDataToDisplayOnGantt($data['id']);
-         foreach($tasks as $task) {
-            // Foreach task determine begin and end based on sub tasks
-            /// TODO
-         }
+         $taskdata = ProjectTask::getDataToDisplayOnGanttForProject($ID);
+         print_r($taskdata);
+//          foreach($tasks as $task) {
+// //             print_r($task);
+//             // Foreach task determine begin and end based on sub tasks
+//             $todisplay[$task['plan_start_date'].'#'.$task['plan_end_date'].'#task'.$task['id']]
+//                          = array('name'   => $task['name'],
+//                                  'desc'   => $task['content'],
+//                                  'type'   => 'task',
+//                                  'from'   => $task['plan_start_date'],
+//                                  'to'     => $task['plan_end_date']);
+//          }
 
          // Add ordered subprojects
          foreach($projects as $key => $val) {
@@ -944,23 +945,31 @@ class Project extends CommonDBTM {
                case 'project':
                   $temp = array('name' => $val['name'],
                                 'desc' => '',
-                                'values' =>array(array('from'        => "/Date(".strtotime($val['from'])."000)/",
+                                'values' =>array(array('from'   => "/Date(".strtotime($val['from'])."000)/",
                                                   'to'          => "/Date(".strtotime($val['to'])."000)/",
-                                                  'desc'        => '',
+                                                  'desc'        => $val['desc'],
                                                   'label'       => $val['name'],
                                                   'customClass' => 'ganttRed'))
                                );
                   break;
                case 'task':
+                  $temp = array('name' => ' ',
+                                'desc' => $val['name'],
+                                'values' =>array(array('from'   => "/Date(".strtotime($val['from'])."000)/",
+                                                  'to'          => "/Date(".strtotime($val['to'])."000)/",
+                                                  'desc'        => $val['desc'],
+                                                  'label'       => $val['name'],
+                                                  'customClass' => 'ganttRed'))
+                               );               
                   break;
                   
 
             }
             $data[] = $temp;
          }
-//       Html::printCleanArray($data);
+      Html::printCleanArray($data);
             
-//       exit();
+      exit();
          echo "<div class='gantt'></div>";
          $js = "
                            $('.gantt').gantt({
@@ -1007,7 +1016,7 @@ class Project extends CommonDBTM {
 //                                           desc: 'Development',
 //                                           values: [{
 //                                                    from: '/Date(1326785200000)/',
-//                                                    to: '/Date(1325785200000)/',
+//                                                    nameto: '/Date(1325785200000)/',
 //                                                    label: 'Development',
 //                                                    customClass: 'ganttGreen'
 //                                           }]

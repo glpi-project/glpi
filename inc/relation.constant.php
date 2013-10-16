@@ -71,6 +71,7 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_changes_groups'    => 'changes_id',
                                  'glpi_changes_items'     => 'changes_id',
                                  'glpi_changes_problems'  => 'changes_id',
+                                 'glpi_changes_projects'  => 'changes_id',
                                  'glpi_changes_suppliers' => 'changes_id',
                                  'glpi_changes_tickets'   => 'changes_id',
                                  'glpi_changes_users'     => 'changes_id',
@@ -213,6 +214,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_phones'                          => 'entities_id',
                                  'glpi_printers'                        => 'entities_id',
                                  'glpi_problems'                        => 'entities_id',
+                                 'glpi_projects'                        => 'entities_id',
+                                 '_glpi_projecttasks'                   => 'entities_id',
                                  'glpi_profiles_reminders'              => 'entities_id',
                                  'glpi_profiles_users'                  => 'entities_id',
                                  '_glpi_reservationitems'               => 'entities_id',
@@ -256,6 +259,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_peripherals'          => array('groups_id_tech', 'groups_id'),
                                  'glpi_phones'               => array('groups_id_tech', 'groups_id'),
                                  'glpi_printers'             => array('groups_id_tech', 'groups_id'),
+                                 'glpi_projects'             => 'groups_id',
                                  'glpi_softwares'            => array('groups_id_tech', 'groups_id')),
 
                   "glpi_holidays"
@@ -401,7 +405,34 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_printertypes"
                         => array('glpi_printers' => 'printertypes_id'),
-
+                        
+                  "glpi_projects"
+                        => array(
+                                 'glpi_projects'         => 'projects_id',
+                                 'glpi_projecttasks'     => 'projects_id',
+                                 'glpi_projectteams'     => 'projects_id',
+                                 'glpi_changes_projects' => 'projects_id',
+                                 'glpi_items_projects'   => 'projects_id',),
+                                 
+                  "glpi_projectstates"
+                        => array(
+                                 'glpi_projects'        => 'projectstates_id',
+                                 'glpi_projecttasks'    => 'projectstates_id',),
+                                 
+                  "glpi_projecttasks"
+                        => array(
+                                 'glpi_projecttasks'         => 'projecttasks_id',
+                                 'glpi_projecttasks_tickets' => 'projecttasks_id',
+                                 'glpi_projecttaskteams'     => 'projecttasks_id',),
+                                 
+                  "glpi_projecttasktypes"
+                        => array(
+                                 'glpi_projecttasks'        => 'projecttasktypes_id'),
+                                 
+                  "glpi_projecttypes"
+                        => array(
+                                 'glpi_projects'        => 'projecttypes_id'),
+                                 
                   "glpi_problems"
                         => array(
                                  'glpi_changes_problems'   => 'problems_id',
@@ -528,6 +559,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_changes_tickets'     => 'tickets_id',
                                  'glpi_groups_tickets'      => 'tickets_id',
                                  'glpi_problems_tickets'    => 'tickets_id',
+                                 'glpi_projecttasks_tickets'=> 'tickets_id',
                                  'glpi_slalevels_tickets'   => 'tickets_id',
                                  'glpi_suppliers_tickets'   => 'tickets_id',
                                  'glpi_ticketfollowups'     => 'tickets_id',
@@ -581,6 +613,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_problems_users'            => 'users_id',
                                  'glpi_problemtasks'              => array('users_id', 'users_id_tech'),
                                  'glpi_profiles_users'            => 'users_id',
+                                 'glpi_projects'                  => 'users_id',
+                                 'glpi_projecttasks'              => 'users_id',
                                  'glpi_reminders'                 => 'users_id',
                                  'glpi_reminders_users'           => 'users_id',
                                  'glpi_reservations'              => 'users_id',
