@@ -199,6 +199,7 @@ class Document_Item extends CommonDBRelation{
             // Can exist for template
             if (Document::canView()
                 || ($item->getType() == 'Ticket')
+                || ($item->getType() == 'Reminder')
                 || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -475,6 +476,7 @@ class Document_Item extends CommonDBRelation{
       }
       if (($item->getType() != 'Ticket')
           && ($item->getType() != 'KnowbaseItem')
+          && ($item->getType() != 'Reminder')
           && !Document::canView()) {
          return false;
       }
