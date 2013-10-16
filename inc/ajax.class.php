@@ -318,18 +318,21 @@ class Ajax {
             $current ++;
          }
          echo "</ul>";
-         echo "<div class='loadingindicator' id='loadingindicator$rand'>".__('Loading...')."</div>";
+         /// TODO loading indicator not working
+//          echo "<div class='loadingindicator' id='loadingindicator$rand'>".__('Loading...')."</div>";
 
          echo "</div>";
 
-         $js = "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST',
+         $js = "$('#tabs$rand').tabs({ active: $selected_tab,
+         ajaxOptions: {type: 'POST',
           // Show loading indicator
-                  beforeSend: function() {
-                     $('#loadingindicator$rand').show()
-                  },
-                  complete: function() {
-                     $('#loadingindicator$rand').hide()
-                  }},
+//                   beforeSend: function() {
+//                      $('#loadingindicator$rand').show()
+//                   },
+//                   complete: function() {
+//                      $('#loadingindicator$rand').hide()
+//                   }
+            },
          activate : function( event, ui ){
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
