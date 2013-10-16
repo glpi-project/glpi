@@ -1382,18 +1382,18 @@ div#tabcontent {
 }
 
 
-.row {
+.loginrow {
    clear: both;
    padding-top: 5px;
 }
 
-.label {
+.loginlabel {
    float: left;
    margin-left:10px;
    text-align: left;
 }
 
-.formw {
+.loginformw {
    float: right;
    margin-right:10px;
    text-align: right;
