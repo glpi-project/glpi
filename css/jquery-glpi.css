@@ -206,3 +206,10 @@ input.submit {
    font-weight:bold;
    background-image: url('../pics/jquery/pbar-ani.gif');
 }
+
+/* GANTT diagram */
+
+.fn-gantt {
+   text-align: left;
+   font-size: 11px;
+}

@@ -106,12 +106,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    echo "<fieldset>";
    echo '<legend>'.__('Authentication').'</legend>';
-   echo '<div class="row"><span class="label"><label>'.__('Login').'</label></span>';
-   echo '<span class="formw"><input type="text" name="login_name" id="login_name" required="required">';
+   echo '<div class="loginrow"><span class="loginlabel"><label>'.__('Login').'</label></span>';
+   echo '<span class="loginformw"><input type="text" name="login_name" id="login_name" required="required">';
    echo '</span></div>';
 
-   echo '<div class="row"><span class="label"><label>'.__('Password').'</label></span>';
-   echo '<span class="formw">';
+   echo '<div class="loginrow"><span class="loginlabel"><label>'.__('Password').'</label></span>';
+   echo '<span class="loginformw">';
    echo '<input type="password" name="login_password" id="login_password" required="required"></span>'.
         '</div>';
 
