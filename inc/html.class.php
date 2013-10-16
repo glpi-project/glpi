@@ -998,14 +998,14 @@ class Html {
 
       // AJAX library
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.3.custom.js");
       } else {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.min.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.min.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.3.custom.min.js");
       }
 
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.3.custom.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css");
