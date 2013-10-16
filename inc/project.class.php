@@ -883,6 +883,7 @@ class Project extends CommonDBTM {
          $todisplay[$real_begin.'#'.$real_end.'#project'.$project->getID()]
                         = array('name'   => $project->fields['name'],
                               'desc'   => $project->fields['content'],
+                              'percent' => $project->fields['percent_done'],
                               'type'   => 'project',
                               'from'   => $real_begin,
                               'to'     => $real_end);
@@ -931,6 +932,13 @@ class Project extends CommonDBTM {
          $data = array();
          foreach ($todisplay as $key => $val) {
             $temp = array();
+            $color = 'ganttRed';
+            if ($val['percent']>50) {
+               $color = 'ganttOrange';
+            }
+            if ($val['percent']==100) {
+               $color = 'ganttGreen';
+            }
             switch ($val['type']) {
                case 'project':
                   $temp = array('name' => $val['name'],
@@ -939,7 +947,7 @@ class Project extends CommonDBTM {
                                                   'to'          => "/Date(".strtotime($val['to'])."000)/",
                                                   'desc'        => $val['desc'],
                                                   'label'       => $val['name'],
-                                                  'customClass' => 'ganttRed'))
+                                                  'customClass' => $color))
                                );
                   break;
                case 'task':
@@ -949,7 +957,7 @@ class Project extends CommonDBTM {
                                                   'to'          => "/Date(".strtotime($val['to'])."000)/",
                                                   'desc'        => $val['desc'],
                                                   'label'       => $val['name'],
-                                                  'customClass' => 'ganttGreen'))
+                                                  'customClass' => $color))
                                );               
                   break;
                   
@@ -960,6 +968,19 @@ class Project extends CommonDBTM {
 //       Html::printCleanArray($data);
             
 //       exit();
+         $months = array(__('January'), __('February'), __('March'),
+                        __('April'), __('May'), __('June'),
+                        __('July'), __('August'), __('September'),
+                        __('October'), __('November'), __('December'));
+         $dow = array(substr(__('Sunday'),0,1),
+                     substr(__('Monday'),0,1),
+                     substr(__('Tuesday'),0,1),
+                     substr(__('Wednesday'),0,1),
+                     substr(__('Thursday'),0,1),
+                     substr(__('Friday'),0,1),
+                     substr(__('Saturday'),0,1),
+                     );
+
          echo "<div class='gantt'></div>";
          $js = "
                            $('.gantt').gantt({
@@ -967,6 +988,8 @@ class Project extends CommonDBTM {
                                  navigate: 'scroll',
                                  maxScale: 'hours',
                                  itemsPerPage: 20,
+                                 months: ".json_encode($months).",
+                                 dow: ".json_encode($dow).",
                                  onItemClick: function(data) {
    //                                         alert('Item clicked - show some details');
                                  },
