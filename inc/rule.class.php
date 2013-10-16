@@ -494,24 +494,44 @@ class Rule extends CommonDBTM {
       if ($collection = getItemForItemtype($collectiontype)) {
          if ($isadmin
              && ($collection->orderby == "ranking")) {
-            $actions['move_rule'] = __('Move');
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_rule'] = __('Move');
          }
       }
 
-      $actions['duplicate'] = __('Duplicate');
-      $actions['export']    = __('Export');
+      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate'] = __('Duplicate');
+      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'export']    = __('Export');
 
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($input['action']) {
-         case "move_rule" :
+      switch ($ma->getAction()) {
+         case 'duplicate' :
+            $entity_assign = False;
+            foreach ($ma->getitems() as $itemtype => $ids) {
+               if ($item = getItemForItemtype($itemtype)) {
+                  if ($item->isEntityAssign()) {
+                     $entity_assign = true;
+                     break;
+                  }
+               }
+            }
+            if ($entity_assign) {
+               Entity::dropdown();
+            }
+            echo "<br><br>".Html::submit(_sx('button', 'Duplicate'),
+                                         array('name' => 'massiveaction'));
+            return true;
+
+         case 'move_rule' :
+            $input = $ma->getInput();
             $values = array('after'  => __('After'),
                             'before' => __('Before'));
             Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
@@ -522,99 +542,81 @@ class Rule extends CommonDBTM {
                $condition = "";
             }
 
-            Rule::dropdown(array('sub_type'        => $input['itemtype'],
+            echo Html::hidden('rule_class_name', array('value' => $input['rule_class_name']));
+
+            Rule::dropdown(array('sub_type'        => $input['rule_class_name'],
                                  'name'            => "ranking",
                                  'entity'          => $condition,
                                  'width'           => '50%'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
-
-         case "duplicate" :
-            if ($this->isEntityAssign()) {
-               Entity::dropdown();
-            }
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Duplicate')."'>";
-            return true;
-
-         case "export" :
-            echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                         __s('Export')."'>";
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
       return false;
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "move_rule" :
-            $collectionname = $input['itemtype'].'Collection';
-            $rulecollection = new $collectionname();
-            if ($rulecollection->canUpdate()) {
-               foreach ($input["item"] as $key => $val) {
-                  if ($this->getFromDB($key)) {
-                     if ($rulecollection->moveRule($key, $input['ranking'], $input['move_type'])) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  } else {
-                     $res['ko']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
-                  }
-               }
-            } else {
-               $res['noright']++;
-               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-            }
-            break;
-
+      switch ($ma->getAction()) {
          case 'duplicate':
             $rulecollection = new RuleCollection();
-            if (isset($input["item"]) && count($input["item"])) {
-               foreach ($input["item"] as $key => $val) {
-                  if ($this->getFromDB($key)) {
-                     if ($rulecollection->duplicateRule($key)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                     }
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  if ($rulecollection->duplicateRule($id)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                }
             }
             break;
 
          case 'export':
-            if (isset($input["item"]) && count($input["item"])) {
-               $_SESSION['exportitems'] = $input["item"];
-               $res['ok']       = -1; //processed after redirection
-               $res['REDIRECT'] = 'rule.backup.php?action=download&itemtype='.$this->getType();
+            if (count($ids)) {
+               $_SESSION['exportitems'] = $ids;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+               $ma->setRedirect('rule.backup.php?action=download&itemtype='.$item->getType());
             }
          break;
 
-         default :
-            return parent::doSpecificMassiveActions($input);
+
+         case 'move_rule' :
+            $input = $ma->getInput();
+            $collectionname = $input['rule_class_name'].'Collection';
+            $rulecollection = new $collectionname();
+            if ($rulecollection->canUpdate()) {
+               foreach ($ids as $id) {
+                  if ($item->getFromDB($id)) {
+                     if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                  }
+               }
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+            }
+            break;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -959,9 +961,11 @@ class Rule extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
          $massiveactionparams = array('num_displayed'  => $nb,
-                           'check_itemtype' => get_class($this),
-                           'check_items_id' => $rules_id,
-                           'container'      => 'mass'.$this->ruleactionclass.$rand);
+                                      'check_itemtype' => get_class($this),
+                                      'check_items_id' => $rules_id,
+                                      'container'      => 'mass'.$this->ruleactionclass.$rand,
+                                      'extraparams'   => array('rule_class_name' =>
+                                                                        $this->getRuleClassName()));
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -1050,9 +1054,11 @@ class Rule extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
          $massiveactionparams = array('num_displayed'  => $nb,
-                           'check_itemtype' => get_class($this),
-                           'check_items_id' => $rules_id,
-                           'container'      => 'mass'.$this->rulecriteriaclass.$rand);
+                                      'check_itemtype' => get_class($this),
+                                      'check_items_id' => $rules_id,
+                                      'container'      => 'mass'.$this->rulecriteriaclass.$rand,
+                                      'extraparams'   => array('rule_class_name' =>
+                                                                        $this->getRuleClassName()));
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -2536,7 +2542,9 @@ class Rule extends CommonDBTM {
                            => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update'
                                        => _x('button', 'Update'),
                                     'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                       => _x('button', 'Delete permanently')));
+                                       => _x('button', 'Delete permanently')),
+                       'extraparams'
+                           => array('rule_class_name' => $this->getRuleClassName()));
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
