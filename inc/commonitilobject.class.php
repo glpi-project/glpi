@@ -1057,16 +1057,16 @@ abstract class CommonITILObject extends CommonDBTM {
       $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
-         $clean_content = Toolbox::stripslashes_deep($input['content']);
-         $input["name"] = preg_replace('/\r\n/',' ',$clean_content);
-         $input["name"] = preg_replace('/\n/',' ',$input['name']);
+         $input["name"] = preg_replace('/\\r\\n/',' ',$input['content']);
+         $input["name"] = preg_replace('/\\n/',' ',$input['name']);
          // For mailcollector
          $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
          $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
+         $input["name"] = Toolbox::stripslashes_deep($input["name"]);
          $input["name"] = Toolbox::substr($input['name'],0,70);
+         
          $input['name'] = Toolbox::addslashes_deep($input['name']);
       }
-
 
       // Set default dropdown
       $dropdown_fields = array('entities_id', 'itilcategories_id');
