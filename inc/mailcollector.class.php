@@ -755,7 +755,7 @@ class MailCollector  extends CommonDBTM {
                                                            $this->files, $this->tags);
       }
 
-      $tkt['content'] = nl2br($this->cleanMailContent($tkt['content']));
+      $tkt['content'] = $this->cleanMailContent($tkt['content']);
 
       $tkt['_supplier_email'] = false;
       // Found ticket link
@@ -918,7 +918,7 @@ class MailCollector  extends CommonDBTM {
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep(Html::clean($string));
-
+      
       $rand   = mt_rand();
       // Move line breaks to special CHARS
       $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
@@ -935,7 +935,7 @@ class MailCollector  extends CommonDBTM {
       if (count($itemstoclean)) {
          $string = str_replace($itemstoclean, '', $string);
       }
-      $string = str_replace("==$rand==", "\r\n", $string);
+      $string = str_replace("==$rand==", "\n", $string);
       return $string;
    }
 
