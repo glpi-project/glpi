@@ -91,11 +91,42 @@ class Project extends CommonDBTM {
 
       return $values;
    }
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (static::canView()) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               $ong    = array();
+               $ong[2] = __('GANTT');
+               return $ong;
+         }
+      } 
+
+      return '';
+   }
+   
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case __CLASS__ :
+            switch ($tabnum) {
+
+               case 2 :
+                     $item->showGantt();
+                  break;
+            }
+            break;
+      }
+      return true;
+   }
+
    function defineTabs($options=array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('ProjectTask', $ong, $options);
       $this->addStandardTab('ProjectTeam', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Change_Project', $ong, $options);
       $this->addStandardTab('Item_Project', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -778,5 +809,13 @@ class Project extends CommonDBTM {
       return true;
    }
    
+   /// show GANTT diagram for current project
+   function showGantt() {
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+
+      echo "ii";
+   }
 }
 ?>
