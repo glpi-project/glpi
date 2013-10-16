@@ -821,7 +821,7 @@ class Project extends CommonDBTM {
       if ($project->getFromDB($ID)) {
          $projects = array();
          foreach ($DB->request('glpi_projects', array('projects_id' => $ID)) as $data) {
-               $projects = static::getDataToDisplayOnGantt($data['id']);
+               $projects += static::getDataToDisplayOnGantt($data['id']);
          }
          ksort($projects);
          // Get all tasks
@@ -877,7 +877,8 @@ class Project extends CommonDBTM {
          if (is_null($real_end) && !is_null($project->fields['real_end_date'])) {
             $real_end = $project->fields['real_end_date'];
          }
-         
+
+         /// TODO : manage null real_begin / real_end. Do not add and add warning
          // Add current project
          $todisplay[$real_begin.'#'.$real_end.'#project'.$project->getID()]
                         = array('name'   => $project->fields['name'],
@@ -887,18 +888,7 @@ class Project extends CommonDBTM {
                               'to'     => $real_end);
 
          // Add current tasks
-         $taskdata = ProjectTask::getDataToDisplayOnGanttForProject($ID);
-         print_r($taskdata);
-//          foreach($tasks as $task) {
-// //             print_r($task);
-//             // Foreach task determine begin and end based on sub tasks
-//             $todisplay[$task['plan_start_date'].'#'.$task['plan_end_date'].'#task'.$task['id']]
-//                          = array('name'   => $task['name'],
-//                                  'desc'   => $task['content'],
-//                                  'type'   => 'task',
-//                                  'from'   => $task['plan_start_date'],
-//                                  'to'     => $task['plan_end_date']);
-//          }
+         $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
 
          // Add ordered subprojects
          foreach($projects as $key => $val) {
@@ -959,7 +949,7 @@ class Project extends CommonDBTM {
                                                   'to'          => "/Date(".strtotime($val['to'])."000)/",
                                                   'desc'        => $val['desc'],
                                                   'label'       => $val['name'],
-                                                  'customClass' => 'ganttRed'))
+                                                  'customClass' => 'ganttGreen'))
                                );               
                   break;
                   
@@ -967,96 +957,13 @@ class Project extends CommonDBTM {
             }
             $data[] = $temp;
          }
-      Html::printCleanArray($data);
+//       Html::printCleanArray($data);
             
-      exit();
+//       exit();
          echo "<div class='gantt'></div>";
          $js = "
                            $('.gantt').gantt({
-                                     source: ".json_encode($data).",
-//                                  source: [{
-//                                           name: 'Sprint \'0',
-//                                           desc: 'Analysis',
-//                                           values: [{
-//                                                    from: '/Date(1320192000000)/',
-//                                                    to: '/Date(1322401600000)/',
-//                                                    desc: 'desc',
-//                                                    label: 'Requirement Gathering',
-//                                                    customClass: 'ganttRed'
-//                                           }]
-//                                  },{
-//                                           name: '',
-//                                           desc: 'Scoping',
-//                                           values: [{
-//                                                    from: '/Date(1322611200000)/',
-//                                                    to: '/Date(1323302400000)/',
-//                                                    label: 'Scoping',
-//                                                    customClass: 'ganttRed'
-//                                           }]
-//                                  },{
-//                                           name: 'Sprint 1',
-//                                           desc: 'Development',
-//                                           values: [{
-//                                                    from: '/Date(1323802400000)/',
-//                                                    to: '/Date(1325685200000)/',
-//                                                    label: 'Development',
-//                                                    customClass: 'ganttGreen'
-//                                           }]
-//                                  },{
-//                                           name: '',
-//                                           desc: 'Showcasing',
-//                                           values: [{
-//                                                    from: '/Date(1325685200000)/',
-//                                                    to: '/Date(1325695200000)/',
-//                                                    label: 'Showcasing',
-//                                                    customClass: 'ganttBlue'
-//                                           }]
-//                                  },{
-//                                           name: 'Sprint 2',
-//                                           desc: 'Development',
-//                                           values: [{
-//                                                    from: '/Date(1326785200000)/',
-//                                                    nameto: '/Date(1325785200000)/',
-//                                                    label: 'Development',
-//                                                    customClass: 'ganttGreen'
-//                                           }]
-//                                  },{
-//                                           name: 'Sprint 2',
-//                                           desc: 'Showcasing',
-//                                           values: [{
-//                                                    from: '/Date(1328785200000)/',
-//                                                    to: '/Date(1328905200000)/',
-//                                                    label: 'Showcasing',
-//                                                    customClass: 'ganttBlue'
-//                                           }]
-//                                  },{
-//                                           name: 'Release Stage',
-//                                           desc: 'Training',
-//                                           values: [{
-//                                                    from: '/Date(1330011200000)/',
-//                                                    to: '/Date(1336611200000)/',
-//                                                    label: 'Training',
-//                                                    customClass: 'ganttOrange'
-//                                           }]
-//                                  },{
-//                                           name: ' ',
-//                                           desc: 'Deployment',
-//                                           values: [{
-//                                                    from: '/Date(1336611200000)/',
-//                                                    to: '/Date(1338711200000)/',
-//                                                    label: 'Deployment',
-//                                                    customClass: 'ganttOrange'
-//                                           }]
-//                                  },{
-//                                           name: ' ',
-//                                           desc: 'Warranty Period',
-//                                           values: [{
-//                                                    from: '/Date(1336611200000)/',
-//                                                    to: '/Date(1349711200000)/',
-//                                                    label: 'Warranty Period',
-//                                                    customClass: 'ganttOrange'
-//                                           }]
-//                                  }],
+                                 source: ".json_encode($data).",
                                  navigate: 'scroll',
                                  maxScale: 'hours',
                                  itemsPerPage: 20,

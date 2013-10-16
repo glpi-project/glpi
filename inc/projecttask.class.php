@@ -689,6 +689,74 @@ class ProjectTask extends CommonDBChild {
 
       return true;
    }
+
+
+   /** Get data to display on GANTT for a project task
+   * @param $ID ID of the project task
+   */
+   static function getDataToDisplayOnGantt($ID) {
+      global $DB;
+      $todisplay = array();
+
+      $task = new ProjectTask();
+//       echo $ID.'<br>';
+      if ($task->getFromDB($ID)) {
+         $subtasks = array();
+         foreach ($DB->request('glpi_projecttasks', array('projecttasks_id' => $ID,
+                                                         'ORDER' => array('plan_start_date', 'real_start_date'))) as $data) {
+            $subtasks += static::getDataToDisplayOnGantt($data['id']);
+         }
+         $real_begin = NULL;
+         $real_end = NULL;
+         // Determine begin / end date of current task if not set (min/max sub projects / tasks)
+         if (!is_null($task->fields['plan_start_date'])) {
+            $real_begin = $task->fields['plan_start_date'];
+         } else {
+            foreach($subtasks as $subtask) {
+               if (is_null($real_begin)
+                     || (!is_null($subtask['from'])
+                           && $real_begin > $subtask['from'])) {
+                  $real_begin = $subtask['from'];
+               }
+            }
+         }
+         // Use real if not found
+         if (is_null($real_begin) && !is_null($task->fields['real_start_date'])) {
+            $real_begin = $task->fields['real_start_date'];
+         }
+
+         if (!is_null($task->fields['plan_end_date'])) {
+            $real_end = $task->fields['plan_end_date'];
+         } else {
+            foreach($subtasks as $subtask) {
+               if (is_null($real_end)
+                     || (!is_null($subtask['to'])
+                           && $real_end < $subtask['to'])) {
+                  $real_end = $subtask['to'];
+               }
+            }
+         }
+         // Use real if not found
+         if (is_null($real_end) && !is_null($task->fields['real_end_date'])) {
+            $real_end = $task->fields['real_end_date'];
+         }
+         /// TODO : manage null real_begin / real_end. Do not add and add warning
+         // Add current task
+         $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
+                        = array('name'   => $task->fields['name'],
+                              'desc'   => $task->fields['content'],
+                              'type'   => 'task',
+                              'from'   => $real_begin,
+                              'to'     => $real_end);
+
+         // Add ordered subtasks
+         foreach($subtasks as $key => $val) {
+            $todisplay[$key] = $val;
+         }
+      }
+      return $todisplay;
+   }
+   
    /** Get data to display on GANTT for a project
    * @param $ID ID of the project
    */
@@ -696,11 +764,17 @@ class ProjectTask extends CommonDBChild {
       global $DB;
       $todisplay = array();
 
+      $task = new ProjectTask();
       // Get all tasks without father
-//       foreach ($DB->request('glpi_projecttasks', array('projects_id' => $ID,
-//                                                        'projecttasks_id' => NULL)))
-      // Get datas
-      print_r($todisplay);
+      foreach ($DB->request('glpi_projecttasks', array('projects_id'     => $ID,
+                                                       'projecttasks_id' => 0,
+                                                       'ORDER' => array('plan_start_date', 'real_start_date'))) as $data) {
+         if ($task->getFromDB($data['id'])) {
+            $todisplay += static::getDataToDisplayOnGantt($data['id']);
+         }
+      }
+
+      return $todisplay;
    }
    
 }
