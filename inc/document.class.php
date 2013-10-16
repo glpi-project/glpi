@@ -52,7 +52,6 @@ class Document extends CommonDBTM {
 
 
    static function canCreate() {
-
       // Have right to add document OR ticket followup
       return Session::haveRight('document', 'w') || Session::haveRight('add_followups', '1');
    }
@@ -64,7 +63,14 @@ class Document extends CommonDBTM {
 
 
    function canCreateItem() {
-
+      if (isset($this->input['itemtype']) && isset($this->input['items_id'])) {
+         if ($item = getItemForItemtype($this->input['itemtype'])) {
+            if ($item->canAddItem('Document')) {
+               return true;
+            }
+         }
+      }
+      
       // From Ticket Document Tab => check right to add followup.
       if (isset($this->fields['tickets_id'])
           && ($this->fields['tickets_id'] > 0)) {
