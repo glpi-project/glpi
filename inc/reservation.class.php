@@ -793,16 +793,16 @@ class Reservation extends CommonDBChild {
       if (isset($options['type']) && isset($options['end'])) {
          $begin_time = strtotime($begin);
          $end_time   = strtotime($end);
-         $repeat_end = strtotime($options['end'].' 00:00:00');
+         $repeat_end = strtotime($options['end'].' 23:59:59');
 
          switch ($options['type']) {
             case 'day' :
-               $begin_time += DAY_TIMESTAMP;
-               $end_time   += DAY_TIMESTAMP;
+               $begin_time = strtotime("+1 day",$begin_time);
+               $end_time = strtotime("+1 day",$end_time);
                while ($begin_time < $repeat_end) {
                   $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                  $begin_time += DAY_TIMESTAMP;
-                  $end_time   += DAY_TIMESTAMP;
+                  $begin_time = strtotime("+1 day",$begin_time);
+                  $end_time = strtotime("+1 day",$end_time);
                }
                break;
 
@@ -811,8 +811,8 @@ class Reservation extends CommonDBChild {
 
                // No days set add 1 week
                if (!isset($options['days'])) {
-                  $dates = array(array('begin' => $begin_time+WEEK_TIMESTAMP,
-                                       'end'   => $end_time+WEEK_TIMESTAMP));
+                  $dates = array(array('begin' => strtotime('+1 week',$begin_time),
+                                       'end'   => strtotime('+1 week',$end_time)));
                } else {
                   if (is_array($options['days'])) {
                      $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
@@ -830,8 +830,8 @@ class Reservation extends CommonDBChild {
 
                   while ($begin_time < $repeat_end) {
                      $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                     $begin_time += WEEK_TIMESTAMP;
-                     $end_time   += WEEK_TIMESTAMP;
+                     $begin_time = strtotime('+1 week',$begin_time);
+                     $end_time   = strtotime('+1 week',$end_time);
                   }
                }
                break;
