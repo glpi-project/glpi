@@ -157,6 +157,7 @@ class ProjectTask extends CommonDBChild {
       $this->dropdown(array('comments' => 0,
                             'entity'   => $this->fields['entities_id'],
                             'value'    => $this->fields['projecttasks_id'],
+                            'condition' => "`glpi_projecttasks`.`projects_id`='".$this->fields['projects_id']."'",
                             'used'     => array($this->fields['id'])));
       echo "</td>";
       echo "</tr>";
@@ -691,8 +692,15 @@ class ProjectTask extends CommonDBChild {
    /** Get data to display on GANTT for a project
    * @param $ID ID of the project
    */
-   static function getDataToDisplayOnGantt($ID) {
+   static function getDataToDisplayOnGanttForProject($ID) {
       global $DB;
+      $todisplay = array();
+
+      // Get all tasks without father
+//       foreach ($DB->request('glpi_projecttasks', array('projects_id' => $ID,
+//                                                        'projecttasks_id' => NULL)))
+      // Get datas
+      print_r($todisplay);
    }
    
 }
