@@ -882,11 +882,12 @@ class Project extends CommonDBTM {
          // Add current project
          $todisplay[$real_begin.'#'.$real_end.'#project'.$project->getID()]
                         = array('name'   => $project->fields['name'],
-                              'desc'   => $project->fields['content'],
-                              'percent' => $project->fields['percent_done'],
-                              'type'   => 'project',
-                              'from'   => $real_begin,
-                              'to'     => $real_end);
+                              'link'     => $project->getLink(),
+                              'desc'     => $project->fields['content'],
+                              'percent'  => $project->fields['percent_done'],
+                              'type'     => 'project',
+                              'from'     => $real_begin,
+                              'to'       => $real_end);
 
          // Add current tasks
          $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
@@ -941,22 +942,22 @@ class Project extends CommonDBTM {
             }
             switch ($val['type']) {
                case 'project':
-                  $temp = array('name' => $val['name'],
+                  $temp = array('name' => $val['link'],
                                 'desc' => '',
                                 'values' =>array(array('from'   => "/Date(".strtotime($val['from'])."000)/",
                                                   'to'          => "/Date(".strtotime($val['to'])."000)/",
                                                   'desc'        => $val['desc'],
-                                                  'label'       => $val['name'],
+                                                  'label'       => $val['link'],
                                                   'customClass' => $color))
                                );
                   break;
                case 'task':
                   $temp = array('name' => ' ',
-                                'desc' => $val['name'],
+                                'desc' => $val['link'],
                                 'values' =>array(array('from'   => "/Date(".strtotime($val['from'])."000)/",
                                                   'to'          => "/Date(".strtotime($val['to'])."000)/",
                                                   'desc'        => $val['desc'],
-                                                  'label'       => $val['name'],
+                                                  'label'       => $val['link'],
                                                   'customClass' => $color))
                                );               
                   break;
