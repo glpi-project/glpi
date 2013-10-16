@@ -113,7 +113,7 @@ class Project extends CommonDBTM {
             switch ($tabnum) {
 
                case 2 :
-                     $item->showGantt();
+                     $item->showGantt($item->getID());
                   break;
             }
             break;
@@ -683,7 +683,7 @@ class Project extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
    /**
-    * @since version 0.84
+    * @since version 0.85
     *
     * @param $field
     * @param $name            (default '')
@@ -774,7 +774,7 @@ class Project extends CommonDBTM {
          echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>"._n('Member', 'Members', 2)."</th>";
+      echo "<th>"._n('Member', 'Members', 2)."</th>showGantt";
       echo "</tr>";
 
       foreach (ProjectTeam::$available_types as $type) {
@@ -808,113 +808,265 @@ class Project extends CommonDBTM {
 
       return true;
    }
-   
-   /// show GANTT diagram for current project
-   function showGantt() {
-      if (!isset($this->fields['id'])) {
-         return false;
+
+
+   /** Get data to display on GANTT
+   * @param $ID ID of the project
+   */
+   static function getDataToDisplayOnGantt($ID) {
+      global $DB;
+
+      $todisplay = array();
+      $project = new Project();
+      if ($project->getFromDB($ID)) {
+         $projects = array();
+         foreach ($DB->request('glpi_projects', array('projects_id' => $ID)) as $data) {
+               $projects = static::getDataToDisplayOnGantt($data['id']);
+         }
+         ksort($projects);
+         // Get all tasks
+         $tasks = ProjectTask::getAllForProject($ID);
+         
+         $real_begin = NULL;
+         $real_end = NULL;
+         // Determine begin / end date of current project if not set (min/max sub projects / tasks)
+         if (!is_null($project->fields['plan_start_date'])) {
+            $real_begin = $project->fields['plan_start_date'];
+         } else {
+            foreach($tasks as $task) {
+               if (is_null($real_begin) 
+                     || (!is_null($task['plan_start_date'])
+                           && $real_begin > $task['plan_start_date'])) {
+                  $real_begin = $task['plan_start_date'];
+               }
+            }
+            foreach($projects as $p) {
+               if (is_null($real_begin)
+                     || ($p['type']=='project'
+                           &&!is_null($p['from'])
+                           && $real_begin > $p['from'])) {
+                  $real_begin = $p['from'];
+               }
+            }
+         }
+         // Use real if not found
+         if (is_null($real_begin) && !is_null($project->fields['real_start_date'])) {
+            $real_begin = $project->fields['real_start_date'];
+         }
+
+         if (!is_null($project->fields['plan_end_date'])) {
+            $real_end = $project->fields['plan_end_date'];
+         } else {
+            foreach($tasks as $task) {
+               if (is_null($real_end)
+                     || (!is_null($task['plan_end_date'])
+                           && $real_end < $task['plan_end_date'])) {
+                  $real_end = $task['plan_end_date'];
+               }
+            }
+            foreach($projects as $p) {
+               if (is_null($real_end)
+                     || ($p['type']=='project'
+                           && !is_null($p['to'])
+                           && $real_end < $p['to'])) {
+                  $real_end = $p['to'];
+               }
+            }
+         }
+         // Use real if not found
+         if (is_null($real_end) && !is_null($project->fields['real_end_date'])) {
+            $real_end = $project->fields['real_end_date'];
+         }
+         
+         // Add current project
+         if (!is_null($real_begin) && !is_null($real_end)) {
+            $todisplay[$real_begin.'#'.$real_end.'#'.$project->getID()]
+                         = array('name'   => $project->fields['name'],
+                                 'desc'   => '',
+                                 'type'   => 'project',
+                                 'from'   => $real_begin,
+                                 'to'     => $real_end);
+         }  else {
+            echo sprintf(__('Unable to determine begin or start date of project %s'), $project->fields['name']);
+            echo "<br>";
+            return $todisplay;
+         }
+
+         // Add current tasks
+//          static::getDataToDisplayOnGantt($data['id']);
+         foreach($tasks as $task) {
+            // Foreach task determine begin and end based on sub tasks
+            /// TODO
+         }
+
+         // Add ordered subprojects
+         foreach($projects as $key => $val) {
+            $todisplay[$key] = $val;
+         }
       }
-      echo "<div class='gantt'></div>";
-      $js = "
-                        $('.gantt').gantt({
-                                source: [{
-                                        name: 'Sprint 0',
-                                        desc: 'Analysis',
-                                        values: [{
-                                                from: '/Date(1320192000000)/',
-                                                to: '/Date(1322401600000)/',
-                                                label: 'Requirement Gathering',
-                                                customClass: 'ganttRed'
-                                        }]
-                                },{
-                                        name: ' ',
-                                        desc: 'Scoping',
-                                        values: [{
-                                                from: '/Date(1322611200000)/',
-                                                to: '/Date(1323302400000)/',
-                                                label: 'Scoping',
-                                                customClass: 'ganttRed'
-                                        }]
-                                },{
-                                        name: 'Sprint 1',
-                                        desc: 'Development',
-                                        values: [{
-                                                from: '/Date(1323802400000)/',
-                                                to: '/Date(1325685200000)/',
-                                                label: 'Development',
-                                                customClass: 'ganttGreen'
-                                        }]
-                                },{
-                                        name: ' ',
-                                        desc: 'Showcasing',
-                                        values: [{
-                                                from: '/Date(1325685200000)/',
-                                                to: '/Date(1325695200000)/',
-                                                label: 'Showcasing',
-                                                customClass: 'ganttBlue'
-                                        }]
-                                },{
-                                        name: 'Sprint 2',
-                                        desc: 'Development',
-                                        values: [{
-                                                from: '/Date(1326785200000)/',
-                                                to: '/Date(1325785200000)/',
-                                                label: 'Development',
-                                                customClass: 'ganttGreen'
-                                        }]
-                                },{
-                                        name: ' ',
-                                        desc: 'Showcasing',
-                                        values: [{
-                                                from: '/Date(1328785200000)/',
-                                                to: '/Date(1328905200000)/',
-                                                label: 'Showcasing',
-                                                customClass: 'ganttBlue'
-                                        }]
-                                },{
-                                        name: 'Release Stage',
-                                        desc: 'Training',
-                                        values: [{
-                                                from: '/Date(1330011200000)/',
-                                                to: '/Date(1336611200000)/',
-                                                label: 'Training',
-                                                customClass: 'ganttOrange'
-                                        }]
-                                },{
-                                        name: ' ',
-                                        desc: 'Deployment',
-                                        values: [{
-                                                from: '/Date(1336611200000)/',
-                                                to: '/Date(1338711200000)/',
-                                                label: 'Deployment',
-                                                customClass: 'ganttOrange'
-                                        }]
-                                },{
-                                        name: ' ',
-                                        desc: 'Warranty Period',
-                                        values: [{
-                                                from: '/Date(1336611200000)/',
-                                                to: '/Date(1349711200000)/',
-                                                label: 'Warranty Period',
-                                                customClass: 'ganttOrange'
-                                        }]
-                                }],
-                                navigate: 'scroll',
-                                maxScale: 'hours',
-                                itemsPerPage: 20,
-                                onItemClick: function(data) {
-//                                         alert('Item clicked - show some details');
-                                },
-                                onAddClick: function(dt, rowId) {
-//                                         alert('Empty space clicked - add an item!');
-                                },
-                                onRender: function() {
-//                                         if (window.console && typeof console.log === 'function') {
-//                                                 console.log('chart rendered');
-//                                         }
-                                }
-                        });";
-      echo Html::scriptBlock($js);
+
+      return $todisplay;
+   }
+   
+   /** show GANTT diagram for a project or for all
+   * @param $ID ID of the project or -1 for all projects
+   */
+   static function showGantt($ID) {
+      global $DB;
+      
+      if ($ID>0) {
+         $project = new Project();
+         if ($project->getFromDB($ID) && $project->canView()) {
+            $todisplay = static::getDataToDisplayOnGantt($ID);
+//             echo json_encode($todisplay);
+//             // Get all sub projects
+//             
+//             $projects = getSonsOf('glpi_projects', $ID);
+//             foreach ($projects as $pID) {
+//                $temp = array();
+//                // Get all tasks
+//                $tasks = array();
+//                $tasks[$pID] = ProjectTask::getAllForProject($pID);
+//             }
+         } else {
+            return false;
+         }
+
+      }
+
+      if (count($todisplay)) {
+         
+         // Prepare for display
+         $data = array();
+         foreach ($todisplay as $key => $val) {
+            $temp = array();
+            switch ($val['type']) {
+               case 'project':
+                  $temp = array('name' => $val['name'],
+                                'desc' => '',
+                                'values' =>array(array('from'        => "/Date(".strtotime($val['from'])."000)/",
+                                                  'to'          => "/Date(".strtotime($val['to'])."000)/",
+                                                  'desc'        => '',
+                                                  'label'       => $val['name'],
+                                                  'customClass' => 'ganttRed'))
+                               );
+                  break;
+               case 'task':
+                  break;
+                  
+
+            }
+            $data[] = $temp;
+         }
+//       Html::printCleanArray($data);
+            
+//       exit();
+         echo "<div class='gantt'></div>";
+         $js = "
+                           $('.gantt').gantt({
+                                     source: ".json_encode($data).",
+//                                  source: [{
+//                                           name: 'Sprint \'0',
+//                                           desc: 'Analysis',
+//                                           values: [{
+//                                                    from: '/Date(1320192000000)/',
+//                                                    to: '/Date(1322401600000)/',
+//                                                    desc: 'desc',
+//                                                    label: 'Requirement Gathering',
+//                                                    customClass: 'ganttRed'
+//                                           }]
+//                                  },{
+//                                           name: '',
+//                                           desc: 'Scoping',
+//                                           values: [{
+//                                                    from: '/Date(1322611200000)/',
+//                                                    to: '/Date(1323302400000)/',
+//                                                    label: 'Scoping',
+//                                                    customClass: 'ganttRed'
+//                                           }]
+//                                  },{
+//                                           name: 'Sprint 1',
+//                                           desc: 'Development',
+//                                           values: [{
+//                                                    from: '/Date(1323802400000)/',
+//                                                    to: '/Date(1325685200000)/',
+//                                                    label: 'Development',
+//                                                    customClass: 'ganttGreen'
+//                                           }]
+//                                  },{
+//                                           name: '',
+//                                           desc: 'Showcasing',
+//                                           values: [{
+//                                                    from: '/Date(1325685200000)/',
+//                                                    to: '/Date(1325695200000)/',
+//                                                    label: 'Showcasing',
+//                                                    customClass: 'ganttBlue'
+//                                           }]
+//                                  },{
+//                                           name: 'Sprint 2',
+//                                           desc: 'Development',
+//                                           values: [{
+//                                                    from: '/Date(1326785200000)/',
+//                                                    to: '/Date(1325785200000)/',
+//                                                    label: 'Development',
+//                                                    customClass: 'ganttGreen'
+//                                           }]
+//                                  },{
+//                                           name: 'Sprint 2',
+//                                           desc: 'Showcasing',
+//                                           values: [{
+//                                                    from: '/Date(1328785200000)/',
+//                                                    to: '/Date(1328905200000)/',
+//                                                    label: 'Showcasing',
+//                                                    customClass: 'ganttBlue'
+//                                           }]
+//                                  },{
+//                                           name: 'Release Stage',
+//                                           desc: 'Training',
+//                                           values: [{
+//                                                    from: '/Date(1330011200000)/',
+//                                                    to: '/Date(1336611200000)/',
+//                                                    label: 'Training',
+//                                                    customClass: 'ganttOrange'
+//                                           }]
+//                                  },{
+//                                           name: ' ',
+//                                           desc: 'Deployment',
+//                                           values: [{
+//                                                    from: '/Date(1336611200000)/',
+//                                                    to: '/Date(1338711200000)/',
+//                                                    label: 'Deployment',
+//                                                    customClass: 'ganttOrange'
+//                                           }]
+//                                  },{
+//                                           name: ' ',
+//                                           desc: 'Warranty Period',
+//                                           values: [{
+//                                                    from: '/Date(1336611200000)/',
+//                                                    to: '/Date(1349711200000)/',
+//                                                    label: 'Warranty Period',
+//                                                    customClass: 'ganttOrange'
+//                                           }]
+//                                  }],
+                                 navigate: 'scroll',
+                                 maxScale: 'hours',
+                                 itemsPerPage: 20,
+                                 onItemClick: function(data) {
+   //                                         alert('Item clicked - show some details');
+                                 },
+                                 onAddClick: function(dt, rowId) {
+   //                                         alert('Empty space clicked - add an item!');
+                                 },
+                                 onRender: function() {
+   //                                         if (window.console && typeof console.log === 'function') {
+   //                                                 console.log('chart rendered');
+   //                                         }
+                                 }
+                           });";
+         echo Html::scriptBlock($js);
+      } else {
+         _e('Nothing to display');
+      }
    }
 }
 ?>
