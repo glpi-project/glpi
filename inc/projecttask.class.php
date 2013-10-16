@@ -743,9 +743,10 @@ class ProjectTask extends CommonDBChild {
          /// TODO : manage null real_begin / real_end. Do not add and add warning
          // Add current task
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
-                        = array('name'   => $task->fields['name'],
+                        = array('name' => $task->fields['name'],
                               'desc'   => $task->fields['content'],
                               'type'   => 'task',
+                              'percent'=> $task->fields['percent_done'],
                               'from'   => $real_begin,
                               'to'     => $real_end);
 
