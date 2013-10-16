@@ -965,7 +965,7 @@ class Rule extends CommonDBTM {
                                       'check_items_id' => $rules_id,
                                       'container'      => 'mass'.$this->ruleactionclass.$rand,
                                       'extraparams'   => array('rule_class_name' =>
-                                                                        $this->getRuleClassName()));
+                                                                        $this->getType()));
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -1058,7 +1058,7 @@ class Rule extends CommonDBTM {
                                       'check_items_id' => $rules_id,
                                       'container'      => 'mass'.$this->rulecriteriaclass.$rand,
                                       'extraparams'   => array('rule_class_name' =>
-                                                                        $this->getRuleClassName()));
+                                                                        $this->getType()));
          Html::showMassiveActions($massiveactionparams);
       }
 
