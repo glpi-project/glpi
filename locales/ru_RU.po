@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2013-09-25 15:09+0200\n"
-"PO-Revision-Date: 2013-10-16 04:56+0000\n"
+"PO-Revision-Date: 2013-10-16 04:59+0000\n"
 "Last-Translator: Глеб Мехренин <mehrenin@gmail.com>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/GLPI/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
@@ -5533,7 +5533,7 @@ msgstr "Не найдено задач."
 #: inc/group.class.php:211 inc/itilcategory.class.php:58
 #: inc/location.class.php:58
 msgid "As child of"
-msgstr "Подчиненный"
+msgstr "Подчиняется"
 
 #: inc/commontreedropdown.class.php:384
 msgid "New child heading"
