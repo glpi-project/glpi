@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 $AJAX_INCLUDE = 1;
@@ -43,10 +44,10 @@ $res = array();
 
 if (isset($_POST['search_string'])) {
    $query = "SELECT *
-               FROM `glpi_entities`
-               WHERE `name` LIKE '%".$_POST['search_string']."%'
-               ORDER BY `completename`";
-               Toolbox::logDebug($query);
+             FROM `glpi_entities`
+             WHERE `name` LIKE '%".$_POST['search_string']."%'
+             ORDER BY `completename`";
+
    foreach($DB->request($query) as $data) {
       $ancestors = getAncestorsOf('glpi_entities', $data['id']);
       foreach ($ancestors as $val) {

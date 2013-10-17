@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -146,9 +146,9 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
    /**
     * @param $with_content do we displaye the content ?
-    * @param $main_header  main header (from table) or secondary (from group) ?
+    * @param $main_header  main header (from table) or secondary (from group) ? (true by default)
    **/
-   function displayTableHeader($with_content, $main_header = true) {
+   function displayTableHeader($with_content, $main_header=true) {
 
       if ($main_header) {
          echo "<th";

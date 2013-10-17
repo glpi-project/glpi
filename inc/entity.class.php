@@ -874,7 +874,8 @@ class Entity extends CommonTreeDropdown {
                 },
                 'success': function (new_data) {
                     //where new_data = node children
-                    //e.g.: [{'data':'Hardware','attr':{'id':'child2'}}, {'data':'Software','attr':{'id':'child3'}}]
+                    //e.g.: [{'data':'Hardware','attr':{'id':'child2'}},
+                             {'data':'Software','attr':{'id':'child3'}}]
                     return new_data;
                 },
                 'progressive_render' : true
@@ -887,7 +888,8 @@ class Entity extends CommonTreeDropdown {
         });
          $('#entsearch').click(function () {
             ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
-            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").
+            ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
          });
 
         ";
