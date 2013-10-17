@@ -74,7 +74,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 //       $datas["##problem.causes##"]   = $item->getField('causecontent');
 //       $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
 
-      // Complex mode 
+      // Complex mode
       if (!$simple) {
          $restrict = "`changes_id`='".$item->getField('id')."'";
          $tickets  = getAllDatasFromTable('glpi_changes_tickets', $restrict);
@@ -121,7 +121,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          }
 
          $datas['##change.numberofproblems##'] = count($datas['problems']);
-         
+
          $restrict = "`changes_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_changes_items',$restrict);
 
@@ -189,8 +189,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('change.numberoftickets'   => __('Number of tickets'),
-                    'change.numberofproblems'  => __('Number of problems'),
+      $tags = array('change.numberoftickets'   => _x('quantity', 'Number of tickets'),
+                    'change.numberofproblems'  => _x('quantity', 'Number of problems'),
 //                     'problem.impacts'           => __('Impacts'),
 //                     'problem.causes'            => __('Causes'),
 //                     'problem.symptoms'          => __('Symptoms'),

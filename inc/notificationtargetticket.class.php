@@ -111,6 +111,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       return parent::getSubjectPrefix();
    }
 
+
    /**
    * Get header to add to content
    **/
@@ -118,12 +119,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       return self::HEADERTAG.' '.__('To answer by email, write above this line').' '.self::HEADERTAG;
    }
 
+
    /**
    * Get footer to add to content
    **/
    function getContentFooter() {
       return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.self::FOOTERTAG;
    }
+
 
    /**
     * @since version 0.84
@@ -448,7 +451,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          $datas['##ticket.numberofchanges##'] = count($datas['changes']);
-         
+
          //Followup infos
          $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
          $datas['followups'] = array();
@@ -587,10 +590,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'followup.author'              => __('Writer'),
                     'followup.description'         => __('Description'),
                     'followup.requesttype'         => __('Request source'),
-                    'ticket.numberoffollowups'     => __('Number of followups'),
-                    'ticket.numberoflinkedtickets' => __('Number of linked tickets'),
-                    'ticket.numberofproblems'      => __('Number of problems'),
-                    'ticket.numberofchanges'       => __('Number of changes'),
+                    'ticket.numberoffollowups'     => _x('quantity', 'Number of followups'),
+                    'ticket.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
+                    'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
+                    'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.globalvalidation'      => __('Global approval status'),
                   );

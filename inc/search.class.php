@@ -5225,7 +5225,7 @@ class Search {
             $search[$itemtype][60]['table']         = 'glpi_tickets';
             $search[$itemtype][60]['linkfield']     = 'items_id';
             $search[$itemtype][60]['field']         = 'count';
-            $search[$itemtype][60]['name']          = __('Number of tickets');
+            $search[$itemtype][60]['name']          = _x('quantity', 'Number of tickets');
             $search[$itemtype][60]['forcegroupby']  = true;
             $search[$itemtype][60]['usehaving']     = true;
             $search[$itemtype][60]['datatype']      = 'number';
@@ -5237,7 +5237,7 @@ class Search {
                                                                                            'NEWTABLE'));
             $search[$itemtype][140]['table']         = 'glpi_problems';
             $search[$itemtype][140]['field']         = 'count';
-            $search[$itemtype][140]['name']          = __('Number of problems');
+            $search[$itemtype][140]['name']          = _x('quantity', 'Number of problems');
             $search[$itemtype][140]['forcegroupby']  = true;
             $search[$itemtype][140]['usehaving']     = true;
             $search[$itemtype][140]['datatype']      = 'number';

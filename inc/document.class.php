@@ -79,7 +79,7 @@ class Document extends CommonDBTM {
             }
          }
       }
-      
+
       // From Ticket Document Tab => check right to add followup.
       if (isset($this->fields['tickets_id'])
           && ($this->fields['tickets_id'] > 0)) {
@@ -752,7 +752,7 @@ class Document extends CommonDBTM {
 
       $tab[72]['table']          = 'glpi_documents_items';
       $tab[72]['field']          = 'count';
-      $tab[72]['name']           = __('Number of associated items');
+      $tab[72]['name']           = _x('quantity', 'Number of associated items');
       $tab[72]['forcegroupby']   = true;
       $tab[72]['usehaving']      = true;
       $tab[72]['datatype']       = 'number';

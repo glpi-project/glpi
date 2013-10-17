@@ -829,31 +829,29 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
          // Get unresolved items
          $restrict = "`".$item->getTable()."`.`status`
-                        NOT IN ('".implode("', '",
-                                          array_merge($item->getSolvedStatusArray(),
-                                                      $item->getClosedStatusArray())
+                        NOT IN ('".implode("', '", array_merge($item->getSolvedStatusArray(),
+                                                               $item->getClosedStatusArray())
                                           )."'
-                              )";
+                               )";
 
          if ($item->maybeDeleted()) {
             $restrict .= " AND `".$item->getTable()."`.`is_deleted` = '0' ";
          }
 
-         $datas["##$objettype.numberofunresolved##"] = countElementsInTableForEntity($item->getTable(),
-                                                                                    $this->getEntity(),
-                                                                                    $restrict);
+         $datas["##$objettype.numberofunresolved##"]
+               = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $restrict);
 
          // Document
          $query = "SELECT `glpi_documents`.*
-                  FROM `glpi_documents`
-                  LEFT JOIN `glpi_documents_items`
+                   FROM `glpi_documents`
+                   LEFT JOIN `glpi_documents_items`
                      ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                  WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
-                        AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+                   WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
+                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
 
          $datas["documents"] = array();
-         $addtodownloadurl = '';
+         $addtodownloadurl   = '';
          if ($item->getType() == 'Ticket') {
             $addtodownloadurl = "&amp;tickets_id=".$item->fields['id'];
          }
@@ -879,7 +877,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $tmp['##document.filename##']
                                          = $data['filename'];
 
-               $datas['documents'][]         = $tmp;
+               $datas['documents'][]     = $tmp;
             }
          }
 
@@ -903,7 +901,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
          $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
 
-         $costs = getAllDatasFromTable(getTableForItemType($costtype),$restrict);
+         $costs          = getAllDatasFromTable(getTableForItemType($costtype),$restrict);
          $datas['costs'] = array();
          foreach ($costs as $cost) {
             $tmp = array();
@@ -915,32 +913,34 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##cost.costtime##']     = Html::formatNumber($cost['cost_time']);
             $tmp['##cost.costfixed##']    = Html::formatNumber($cost['cost_fixed']);
             $tmp['##cost.costmaterial##'] = Html::formatNumber($cost['cost_material']);
-            $tmp['##cost.totalcost##']    = CommonITILCost::computeTotalCost($cost['actiontime'], $cost['cost_time'],
-                                                                  $cost['cost_fixed'], $cost['cost_material']);
+            $tmp['##cost.totalcost##']    = CommonITILCost::computeTotalCost($cost['actiontime'],
+                                                                             $cost['cost_time'],
+                                                                             $cost['cost_fixed'],
+                                                                             $cost['cost_material']);
             $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
-                                                                        $cost['budgets_id']);
-            $datas['costs'][]       = $tmp;
+                                                                      $cost['budgets_id']);
+            $datas['costs'][]             = $tmp;
          }
          $datas["##$objettype.numberofcosts##"] = count($datas['costs']);
 
 
          //Task infos
          $tasktype = $item->getType().'Task';
-         $taskobj = new $tasktype();
+         $taskobj  = new $tasktype();
          $restrict = "`".$item->getForeignKeyField()."`='".$item->getField('id')."'";
          if ($taskobj->maybePrivate()
-            && (!isset($options['additionnaloption']['show_private'])
-                || !$options['additionnaloption']['show_private'])) {
+             && (!isset($options['additionnaloption']['show_private'])
+                 || !$options['additionnaloption']['show_private'])) {
             $restrict .= " AND `is_private` = '0'";
          }
          $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
-         $tasks = getAllDatasFromTable($taskobj->getTable(),$restrict);
+         $tasks          = getAllDatasFromTable($taskobj->getTable(),$restrict);
          $datas['tasks'] = array();
          foreach ($tasks as $task) {
             $tmp                          = array();
             if ($taskobj->maybePrivate()) {
-               $tmp['##task.isprivate##']    = Dropdown::getYesNo($task['is_private']);
+               $tmp['##task.isprivate##'] = Dropdown::getYesNo($task['is_private']);
             }
             $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
             $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
@@ -950,7 +950,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##task.time##']         = Ticket::getActionTime($task['actiontime']);
             $tmp['##task.status##']       = Planning::getState($task['state']);
 
-            $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
+            $tmp['##task.user##']         = Html::clean(getUserName($task['users_id_tech']));
 
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
@@ -959,7 +959,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $tmp['##task.end##']       = Html::convDateTime($task['end']);
             }
 
-            $datas['tasks'][] = $tmp;
+            $datas['tasks'][]             = $tmp;
          }
 
          $datas["##$objettype.numberoftasks##"] = count($datas['tasks']);
@@ -1018,37 +1018,37 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.costmaterial'          => __('Material cost'),
                     $objettype.'.totalcost'             => __('Total cost'),
                     $objettype.'.numberofcosts'         => __('Number of costs'),
-                    'cost.name'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Name')),
-                    'cost.comment'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Comments')),
-                    'cost.datebegin'               => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Begin date')),
-                    'cost.dateend'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('End date')),
-                    'cost.time'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Duration')),
-                    'cost.costtime'                => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Time cost')),
-                    'cost.costfixed'               => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Fixed cost')),
-                    'cost.costmaterial'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Material cost')),
-                    'cost.totalcost'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Total cost')),
-                    'cost.budget'                  => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                            __('Budget')),
-                    'task.author'               => __('Writer'),
-                    'task.isprivate'            => __('Private'),
-                    'task.date'                 => __('Opening date'),
-                    'task.description'          => __('Description'),
-                    'task.category'             => __('Category'),
-                    'task.time'                 => __('Total duration'),
-                    'task.user'                 => __('By'),
-                    'task.begin'                => __('Start date'),
-                    'task.end'                  => __('End date'),
-                    'task.status'               => __('Status'),
-                    $objettype.'.numberoftasks'     => __('Number of tasks'),
+                    'cost.name'                         => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Name')),
+                    'cost.comment'                      => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Comments')),
+                    'cost.datebegin'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Begin date')),
+                    'cost.dateend'                      => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('End date')),
+                    'cost.time'                         => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Duration')),
+                    'cost.costtime'                     => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Time cost')),
+                    'cost.costfixed'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Fixed cost')),
+                    'cost.costmaterial'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Material cost')),
+                    'cost.totalcost'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Total cost')),
+                    'cost.budget'                       => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                   __('Budget')),
+                    'task.author'                       => __('Writer'),
+                    'task.isprivate'                    => __('Private'),
+                    'task.date'                         => __('Opening date'),
+                    'task.description'                  => __('Description'),
+                    'task.category'                     => __('Category'),
+                    'task.time'                         => __('Total duration'),
+                    'task.user'                         => __('By'),
+                    'task.begin'                        => __('Start date'),
+                    'task.end'                          => __('End date'),
+                    'task.status'                       => __('Status'),
+                    $objettype.'.numberoftasks'         => _x('quantity', 'Number of tasks'),
                    );
 
       foreach ($tags as $tag => $label) {
@@ -1060,7 +1060,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Foreach global tags
       $tags = array('log'      => __('Historical'),
-                    'tasks'         => _n('Task', 'Tasks', 2),
+                    'tasks'    => _n('Task', 'Tasks', 2),
                     'costs'    => _n('Cost', 'Costs', 2),
                     'authors'  => _n('Requester', 'Requesters', 2));
 
@@ -1091,7 +1091,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.shortentity'    => sprintf(__('%1$s (%2$s)'),
                                                             __('Entity'), __('Name')),
                     $objettype.'.numberoflogs'   => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                             __('Number of items')),
+                                                            _x('quantity', 'Number of items')),
                     $objettype.'.log.date'       => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                             __('Date')),
                     $objettype.'.log.user'       => sprintf(__('%1$s: %2$s'), __('Historical'),
