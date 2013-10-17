@@ -915,75 +915,8 @@ class NetworkPort extends CommonDBChild {
          $vlan_prefix                    = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$vlan_prefix.'add']    = __('Associate a VLAN');
          $actions[$vlan_prefix.'remove'] = __('Dissociate a VLAN');
-     }
+      }
       return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "move_port" :
-            Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
-            echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-      switch ($input['action']) {
-
-         // Interest of this massive action ? Replace switch by another : don't re-create manually all ports
-         case "move_port" :
-            if (isset($input["items_id"]) && !empty($input["items_id"])) {
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->getFromDB($key)) {
-                        $input2             = array();
-                        $input2['id']       = $key;
-                        $input2['items_id'] = $input["items_id"];
-                        $input2['itemtype'] = 'NetworkEquipment';
-                        if ($this->can($input2['id'], UPDATE)) {
-                           if ($this->update($input2)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $this->getErrorMessage(ERROR_RIGHT);
-                        }
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
-                     }
-                  }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
