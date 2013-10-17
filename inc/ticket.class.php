@@ -1921,9 +1921,7 @@ class Ticket extends CommonITILObject {
                      $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
                      $input2['_link']['link']         = $input['link'];
                      $input2['_link']['tickets_id_2'] = $id;
-                     //TODO error with this line (syntax error, unexpected 'function', expecting '::')
                      if ($item->can($input['tickets_id_1'], UPDATE)) {
-
                         if ($this->update($input2)) {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
@@ -1936,7 +1934,8 @@ class Ticket extends CommonITILObject {
                      }
                   }
                }
-               return;
+            }
+            return;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
 
