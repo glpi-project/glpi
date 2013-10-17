@@ -528,7 +528,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   }
                }
             }
-            echo "<br><br>".Html::submit(_s('Dissociate'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(__('Dissociate'), array('name' => 'massiveaction'));
             return true;
 
          case 'affect' :
@@ -571,7 +571,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
                $options['itemtypes']     = $peertypes;
                Dropdown::showSelectItemFromItemtypes($options);
             }
+<<<<<<< .mine
+            echo "<br><br>".Html::submit(__('Associate'), array('name' => 'massiveaction'));
+=======
             echo "<br><br>".Html::submit(__s('Associate'), array('name' => 'massiveaction'));
+>>>>>>> .r22023
             return true;
       }
 

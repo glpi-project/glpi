@@ -1014,7 +1014,7 @@ class Software extends CommonDBTM {
       // Move software license
       $sql = "UPDATE `glpi_softwarelicenses`
               SET `softwares_id` = '$ID'
-              WHERE `softwares_id` IN ('".implode("','",$item)."')";
+              WHERE `softwares_id` IN (".implode(",",$item).")";
 
       if ($DB->query($sql)) {
          $i++;

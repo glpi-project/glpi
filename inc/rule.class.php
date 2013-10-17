@@ -526,7 +526,7 @@ class Rule extends CommonDBTM {
             if ($entity_assign) {
                Entity::dropdown();
             }
-            echo "<br><br>".Html::submit(_sx('button', 'Duplicate'),
+            echo "<br><br>".Html::submit(_x('button', 'Duplicate'),
                                          array('name' => 'massiveaction'));
             return true;
 

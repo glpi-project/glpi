@@ -59,7 +59,14 @@ class RuleAction extends CommonDBChild {
       static::$itemtype = $rule_type;
    }
 
+
+   /**
+    * @since version 0.84.3
+    *
+    * @see inc/CommonDBTM::post_getFromDB()
+    */
    function post_getFromDB() {
+
       // Get correct itemtype if defult one is used
       if (static::$itemtype == 'Rule') {
          $rule = new Rule();
@@ -68,7 +75,8 @@ class RuleAction extends CommonDBChild {
          }
       }
    }
-   
+
+
    /**
     * Get title used in rule
     *
@@ -461,7 +469,7 @@ class RuleAction extends CommonDBChild {
       if (isset($options['value'])) {
          $param['value'] = $options['value'];
       }
-      
+
       switch ($options["action_type"]) {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :

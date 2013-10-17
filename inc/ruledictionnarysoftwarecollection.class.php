@@ -359,7 +359,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       global $DB;
 
       if (count($soft_ids) > 0) {
-         $ids = implode("','", $soft_ids);
 
          //Try to delete all the software that are not used anymore
          // (which means that don't have version associated anymore)
@@ -369,7 +368,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                           FROM `glpi_softwares`
                           LEFT JOIN `glpi_softwareversions`
                               ON `glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`
-                          WHERE `glpi_softwares`.`id` IN ('$ids')
+                          WHERE `glpi_softwares`.`id` IN (".implode(",", $soft_ids).")
                                 AND `is_deleted` = '0'
                           GROUP BY `glpi_softwares`.`id`
                           HAVING `cpt` = '0'

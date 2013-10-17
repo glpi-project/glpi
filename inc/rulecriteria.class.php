@@ -62,7 +62,14 @@ class RuleCriteria extends CommonDBChild {
       static::$itemtype = $rule_type;
    }
 
+
+   /**
+    * @since version 0.84.3
+    *
+    * @see inc/CommonDBTM::post_getFromDB()
+    */
    function post_getFromDB() {
+
       // Get correct itemtype if defult one is used
       if (static::$itemtype == 'Rule') {
          $rule = new Rule();
@@ -71,7 +78,8 @@ class RuleCriteria extends CommonDBChild {
          }
       }
    }
-   
+
+
    /**
     * Get title used in rule
     *

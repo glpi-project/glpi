@@ -206,7 +206,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $where = '';
       if (count($p['used'])) {
-         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$p['used'])."')";
+         $where = " AND `glpi_softwareversions`.`id` NOT IN (".implode(",",$p['used']).")";
       }
       // Make a select box
       $query = "SELECT DISTINCT `glpi_softwareversions`.*,

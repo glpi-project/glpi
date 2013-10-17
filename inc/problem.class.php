@@ -816,8 +816,8 @@ class Problem extends CommonITILObject {
 
          if (isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
-            $groups = implode("','",$_SESSION['glpigroups']);
-            $query .= " OR `glpi_groups_problems`.`groups_id` IN ('$groups') ";
+            $groups = implode(",",$_SESSION['glpigroups']);
+            $query .= " OR `glpi_groups_problems`.`groups_id` IN (".$groups.") ";
          }
          $query.= ")";
       }
