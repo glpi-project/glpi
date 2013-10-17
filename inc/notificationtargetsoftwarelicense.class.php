@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetSoftwareLicense Class
+**/
 class NotificationTargetSoftwareLicense extends NotificationTarget {
 
 
@@ -60,13 +63,14 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                                                                      $options['entities_id']);
 
       foreach ($options['licenses'] as $id => $license) {
-         $tmp                               = array();
-         $tmp['##license.item##']           = $license['softname'];
-         $tmp['##license.name##']           = $license['name'];
-         $tmp['##license.serial##']         = $license['serial'];
-         $tmp['##license.expirationdate##'] = Html::convDate($license["expire"]);
-         $tmp['##license.url##']            = $this->formatURL($options['additionnaloption']['usertype'],
-                                                        "SoftwareLicense_".$id);
+         $tmp                       = array();
+         $tmp['##license.item##']   = $license['softname'];
+         $tmp['##license.name##']   = $license['name'];
+         $tmp['##license.serial##'] = $license['serial'];
+         $tmp['##license.expirationdate##']
+                                    = Html::convDate($license["expire"]);
+         $tmp['##license.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                       "SoftwareLicense_".$id);
          $this->datas['licenses'][] = $tmp;
       }
 

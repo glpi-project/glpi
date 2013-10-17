@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetCrontask Class
+**/
 class NotificationTargetCrontask extends NotificationTarget {
 
 
@@ -67,7 +70,7 @@ class NotificationTargetCrontask extends NotificationTarget {
          $tmp['##crontask.name##']       .= $crontask['name'];
          $tmp['##crontask.description##'] = $cron->getDescription($id);
          $tmp['##crontask.url##']         = $this->formatURL($options['additionnaloption']['usertype'],
-                                                      "Crontask_".$id);
+                                                             "Crontask_".$id);
          $this->datas['crontasks'][] = $tmp;
       }
 

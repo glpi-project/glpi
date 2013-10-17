@@ -88,10 +88,10 @@ if (isset($_GET['node'])) {
       }
    } else { // standard node
       $node_id = str_replace('ent','', $_GET['node']);
-      $query = "SELECT *
-                FROM `glpi_entities`
-                WHERE `entities_id` = '$node_id'
-                ORDER BY `name`";
+      $query   = "SELECT *
+                  FROM `glpi_entities`
+                  WHERE `entities_id` = '$node_id'
+                  ORDER BY `name`";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -126,6 +126,5 @@ if (isset($_GET['node'])) {
 
    }
    echo json_encode($nodes);
-   Toolbox::logDebug($_GET['node']);
 }
 ?>

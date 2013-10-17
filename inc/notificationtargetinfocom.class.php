@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetInfocom Class
+**/
 class NotificationTargetInfocom extends NotificationTarget {
 
 
@@ -59,14 +62,17 @@ class NotificationTargetInfocom extends NotificationTarget {
       $this->datas['##infocom.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $item) {
-         $tmp                                = array();
+         $tmp = array();
+
          if ($obj = getItemForItemtype($item['itemtype'])) {
-            $tmp['##infocom.itemtype##']       = $obj->getTypeName(1);
-            $tmp['##infocom.item##']           = $item['item_name'];
-            $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
-            $tmp['##infocom.url##']            = $this->formatURL($options['additionnaloption']['usertype'],
-                                                           $item['itemtype']."_".
-                                                           $item['items_id']."_Infocom");
+            $tmp['##infocom.itemtype##']
+                                     = $obj->getTypeName(1);
+            $tmp['##infocom.item##'] = $item['item_name'];
+            $tmp['##infocom.expirationdate##']
+                                     = $item['warrantyexpiration'];
+            $tmp['##infocom.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                        $item['itemtype']."_".
+                                                          $item['items_id']."_Infocom");
          }
          $this->datas['infocoms'][] = $tmp;
       }

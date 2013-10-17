@@ -70,9 +70,11 @@ if (isset($_POST["table"])
             echo $tmpname["comment"];
             if (isset($_POST['withlink'])) {
                echo "<script type='text/javascript' >\n";
-               echo Html::jsGetElementbyID($_POST['withlink']).".attr('href', '".Toolbox::getItemTypeFormURL(getItemTypeForTable($_POST["table"]))."?id=".$_POST["value"]."');";
+               echo Html::jsGetElementbyID($_POST['withlink']).".
+                    attr('href', '".Toolbox::getItemTypeFormURL(getItemTypeForTable($_POST["table"])).
+                    "?id=".$_POST["value"]."');";
                echo "</script>\n";
-            }            
+            }
          }
    }
 }

@@ -35,7 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTargetPlanningRecall
+
+/**
+ * NotificationTargetPlanningRecall Class
+ *
+ * @since version 0.84
+**/
 class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
@@ -65,14 +70,17 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       // For task show parent link
       if (($this->target_object instanceof CommonDBChild)
           || ($this->target_object instanceof CommonITILTask)) {
-         $item2                              = $this->target_object->getItem();
-         $this->datas['##recall.item.url##'] = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         $item2->getType()."_".$item2->getID());
+
+         $item2   = $this->target_object->getItem();
+         $this->datas['##recall.item.url##']
+                  = $this->formatURL($options['additionnaloption']['usertype'],
+                                     $item2->getType()."_".$item2->getID());
 
       } else {
-         $this->datas['##recall.item.url##'] = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         $this->target_object->getType().
-                                                         "_".$this->target_object->getID());
+         $this->datas['##recall.item.url##']
+                  = $this->formatURL($options['additionnaloption']['usertype'],
+                                     $this->target_object->getType().
+                                          "_".$this->target_object->getID());
       }
       $this->datas['##recall.item.name##'] = '';
 
