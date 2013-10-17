@@ -1190,7 +1190,7 @@ class Document extends CommonDBTM {
                        getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
 
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN ('0','".implode("','",$p['used'])."')";
+         $where .= " AND `id` NOT IN (0, ".implode(",",$p['used']).")";
       }
 
       $query = "SELECT *

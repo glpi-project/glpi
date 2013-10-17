@@ -1193,7 +1193,7 @@ class Contract extends CommonDBTM {
                                                $p['entity'], true);
       }
       if (count($p['used'])) {
-         $idrest = " AND `glpi_contracts`.`id` NOT IN('".implode("','",$p['used'])."') ";
+         $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",",$p['used']).") ";
       }
       $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`

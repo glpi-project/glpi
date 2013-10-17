@@ -147,7 +147,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      //Process rules
                      if ($item->update(array('id' => $id,
                                              'softwareversions_id'
-                                             => $input['softwareversions_id']))) {
+                                                  => $input['softwareversions_id']))) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

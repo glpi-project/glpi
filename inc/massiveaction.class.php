@@ -804,6 +804,7 @@ class MassiveAction {
             }
 
             $processor = $this->processor;
+            // TODO function processMassiveActionsForSeveralItemtype deleted r21497
             if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
                $processor::processMassiveActionsForSeveralItemtype($this);
             }

@@ -511,7 +511,6 @@ class TicketFollowup  extends CommonDBTM {
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'add_followup' :
@@ -534,7 +533,7 @@ class TicketFollowup  extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'add_followup' :
             $input = $ma->getInput();
-            $fup = new self();
+            $fup   = new self();
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
                   $input2 = array('tickets_id'      => $id,
@@ -542,7 +541,7 @@ class TicketFollowup  extends CommonDBTM {
                                   'requesttypes_id' => $input['requesttypes_id'],
                                   'content'         => $input['content']);
                   if ($fup->can(-1, CREATE, $input2)) {
-                     if ($fup->add($input2)) { 
+                     if ($fup->add($input2)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

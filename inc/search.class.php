@@ -2598,9 +2598,9 @@ class Search {
                if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $requestergroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
+                                             IN (".implode(",",$_SESSION['glpigroups']).")";
                      $condition .= " OR $observergroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
+                                             IN (".implode(",",$_SESSION['glpigroups']).")";
                   }
                }
 
@@ -2613,7 +2613,7 @@ class Search {
                   $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $assigngroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
+                                             IN (".implode(",",$_SESSION['glpigroups']).")";
                   }
                   if (Session::haveRight('ticket', Ticket::ASSIGN)) {
                      $condition .= " OR `glpi_tickets`.`status`='".CommonITILObject::INCOMING."'";
@@ -4270,8 +4270,8 @@ class Search {
                   $itemtype = getItemTypeForTable($table);
                   $item = new $itemtype();
                   $item->getFromDB($data['id']);
-                  $percentage = 0;
-                  $totaltime = 0;
+                  $percentage  = 0;
+                  $totaltime   = 0;
                   $currenttime = 0;
                   if ($item->isField('slas_id') && $item->fields['slas_id'] != 0) { // Have SLA
                      $sla = new SLA();
