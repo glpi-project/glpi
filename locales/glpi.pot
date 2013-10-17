@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 07:40+0200\n"
+"POT-Creation-Date: 2013-10-17 13:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6389,7 +6389,7 @@ msgid "Default chart format"
 msgstr ""
 
 #: inc/config.class.php:301
-msgid "Dropdown translation"
+msgid "Translation of dropdowns"
 msgstr ""
 
 #: inc/config.class.php:304
@@ -13403,7 +13403,7 @@ msgstr ""
 #: inc/softwarelicense.class.php:236
 msgid ""
 "On search engine, use \"Expiration contains NULL\" to search licenses with "
-"no expiratoin date"
+"no expiration date"
 msgstr ""
 
 #: inc/softwarelicense.class.php:356

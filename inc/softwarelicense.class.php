@@ -233,7 +233,7 @@ class SoftwareLicense extends CommonDBTM {
       if ($ID
           && is_null($this->fields["expire"])) {
          echo "<br>".__('Never expire')."&nbsp;";
-         Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiratoin date'));
+         Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiration date'));
       }
       Alert::displayLastAlert('SoftwareLicense', $ID);
       echo "</td></tr>\n";
