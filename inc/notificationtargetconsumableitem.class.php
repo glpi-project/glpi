@@ -35,7 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetConsumableItem Class
+ *
+ * @since version 0.84
+**/
 class NotificationTargetConsumableItem extends NotificationTarget {
 
 
@@ -65,7 +70,7 @@ class NotificationTargetConsumableItem extends NotificationTarget {
          $tmp['##consumable.reference##'] = $consumable['ref'];
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
          $tmp['##consumable.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
-                                                      "ConsumableItem_".$id);
+                                                             "ConsumableItem_".$id);
          $this->datas['consumables'][] = $tmp;
       }
 

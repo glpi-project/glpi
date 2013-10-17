@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * NotificationTarget Class
+ * NotificationTargetMailCollector Class
  *
  * @since version 0.85
 **/
@@ -65,7 +65,7 @@ class NotificationTargetMailCollector extends NotificationTarget {
          $tmp['##mailcollector.name##']   = $mailcollector['name'];
          $tmp['##mailcollector.errors##'] = $mailcollector['errors'];
          $tmp['##mailcollector.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                      "MailCollector_".$id);
+                                                             "MailCollector_".$id);
          $this->datas['mailcollectors'][] = $tmp;
       }
 

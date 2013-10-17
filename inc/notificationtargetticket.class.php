@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * NotificationTarget Class
+ * NotificationTargetTicket Class
 **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
@@ -268,7 +268,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       global $CFG_GLPI;
 
       // Common ITIL datas
-      $datas                               = parent::getDatasForObject($item, $options, $simple);
+      $datas            = parent::getDatasForObject($item, $options, $simple);
 
       // Specific datas
       $datas['##ticket.urlvalidation##']
@@ -299,8 +299,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $datas['##ticket.sla##'] = '';
       if ($item->getField('slas_id')) {
-         $datas['##ticket.sla##']
-                     = Dropdown::getDropdownName('glpi_slas', $item->getField('slas_id'));
+         $datas['##ticket.sla##'] = Dropdown::getDropdownName('glpi_slas',
+                                                              $item->getField('slas_id'));
       }
 
       // is ticket deleted
@@ -341,14 +341,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          //Object contact num
          if ($hardware->isField('contact_num')) {
-            $datas['##ticket.item.contactnumber##']
-                        = $hardware->getField('contact_num');
+            $datas['##ticket.item.contactnumber##'] = $hardware->getField('contact_num');
          }
 
          //Object otherserial
          if ($hardware->isField('otherserial')) {
-            $datas['##ticket.item.otherserial##']
-                        = $hardware->getField('otherserial');
+            $datas['##ticket.item.otherserial##'] = $hardware->getField('otherserial');
          }
 
          //Object location
@@ -391,15 +389,20 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $linkedticket = new Ticket();
             foreach ($linked_tickets as $data) {
                if ($linkedticket->getFromDB($data['tickets_id'])) {
-                  $tmp                          = array();
-                  $tmp['##linkedticket.id##']   = $data['tickets_id'];
-                  $tmp['##linkedticket.link##'] = Ticket_Ticket::getLinkName($data['link']);
-                  $tmp['##linkedticket.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                                   "ticket_".$data['tickets_id']);
+                  $tmp = array();
 
+                  $tmp['##linkedticket.id##']
+                                    = $data['tickets_id'];
+                  $tmp['##linkedticket.link##']
+                                    = Ticket_Ticket::getLinkName($data['link']);
+                  $tmp['##linkedticket.url##']
+                                    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                       "ticket_".$data['tickets_id']);
 
-                  $tmp['##linkedticket.title##']   = $linkedticket->getField('name');
-                  $tmp['##linkedticket.content##'] = $linkedticket->getField('content');
+                  $tmp['##linkedticket.title##']
+                                    = $linkedticket->getField('name');
+                  $tmp['##linkedticket.content##']
+                                    = $linkedticket->getField('content');
 
                   $datas['linkedtickets'][] = $tmp;
                }
@@ -408,20 +411,26 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberoflinkedtickets##'] = count($datas['linkedtickets']);
 
-         $restrict = "`tickets_id`='".$item->getField('id')."'";
-         $problems = getAllDatasFromTable('glpi_problems_tickets',$restrict);
+         $restrict          = "`tickets_id`='".$item->getField('id')."'";
+         $problems          = getAllDatasFromTable('glpi_problems_tickets',$restrict);
          $datas['problems'] = array();
          if (count($problems)) {
             $problem = new Problem();
             foreach ($problems as $data) {
                if ($problem->getFromDB($data['problems_id'])) {
-                  $tmp                       = array();
-                  $tmp['##problem.id##']     = $data['problems_id'];
-                  $tmp['##problem.date##']   = $problem->getField('date');
-                  $tmp['##problem.title##']  = $problem->getField('name');
-                  $tmp['##problem.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                                "problem_".$data['problems_id']);
-                  $tmp['##problem.content##'] = $problem->getField('content');
+                  $tmp = array();
+
+                  $tmp['##problem.id##']
+                                 = $data['problems_id'];
+                  $tmp['##problem.date##']
+                                 = $problem->getField('date');
+                  $tmp['##problem.title##']
+                                 = $problem->getField('name');
+                  $tmp['##problem.url##']
+                                 = $this->formatURL($options['additionnaloption']['usertype'],
+                                                    "problem_".$data['problems_id']);
+                  $tmp['##problem.content##']
+                                 = $problem->getField('content');
 
                   $datas['problems'][] = $tmp;
                }
@@ -430,20 +439,26 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberofproblems##'] = count($datas['problems']);
 
-         $restrict = "`tickets_id`='".$item->getField('id')."'";
-         $changes = getAllDatasFromTable('glpi_changes_tickets',$restrict);
+         $restrict         = "`tickets_id`='".$item->getField('id')."'";
+         $changes          = getAllDatasFromTable('glpi_changes_tickets',$restrict);
          $datas['changes'] = array();
          if (count($changes)) {
             $change = new Change();
             foreach ($changes as $data) {
                if ($change->getFromDB($data['changes_id'])) {
-                  $tmp                       = array();
-                  $tmp['##change.id##']     = $data['changes_id'];
-                  $tmp['##change.date##']   = $change->getField('date');
-                  $tmp['##change.title##']  = $change->getField('name');
-                  $tmp['##change.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                                "change_".$data['changes_id']);
-                  $tmp['##change.content##'] = $change->getField('content');
+                  $tmp = array();
+
+                  $tmp['##change.id##']
+                                 = $data['changes_id'];
+                  $tmp['##change.date##']
+                                 = $change->getField('date');
+                  $tmp['##change.title##']
+                                 = $change->getField('name');
+                  $tmp['##change.url##']
+                                 = $this->formatURL($options['additionnaloption']['usertype'],
+                                                    "change_".$data['changes_id']);
+                  $tmp['##change.content##']
+                                 = $change->getField('content');
 
                   $datas['changes'][] = $tmp;
                }
@@ -453,7 +468,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.numberofchanges##'] = count($datas['changes']);
 
          //Followup infos
-         $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
+         $followups          = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
          $datas['followups'] = array();
          foreach ($followups as $followup) {
             $tmp                             = array();
@@ -463,7 +478,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                                          $followup['requesttypes_id']);
             $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
             $tmp['##followup.description##'] = $followup['content'];
-            $datas['followups'][]            = $tmp;
+
+            $datas['followups'][] = $tmp;
          }
 
          $datas['##ticket.numberoffollowups##'] = count($datas['followups']);
@@ -482,30 +498,33 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
-                  //TRANS: %s is the user name
-                  = sprintf(__('An approval request has been submitted by %s'),
-                            Html::clean(getUserName($validation['users_id'])));
+                              //TRANS: %s is the user name
+                              = sprintf(__('An approval request has been submitted by %s'),
+                                        Html::clean(getUserName($validation['users_id'])));
             $tmp['##validation.answer.title##']
-                  //TRANS: %s is the user name
-                  = sprintf(__('An answer to an an approval request was produced by %s'),
-                            Html::clean(getUserName($validation['users_id_validate'])));
+                              //TRANS: %s is the user name
+                              = sprintf(__('An answer to an an approval request was produced by %s'),
+                                        Html::clean(getUserName($validation['users_id_validate'])));
 
-            $tmp['##validation.author##'] = Html::clean(getUserName($validation['users_id']));
+            $tmp['##validation.author##']
+                              = Html::clean(getUserName($validation['users_id']));
 
-            $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
+            $tmp['##validation.status##']
+                              = TicketValidation::getStatus($validation['status']);
             $tmp['##validation.storestatus##']
-                                          = $validation['status'];
+                              = $validation['status'];
             $tmp['##validation.submissiondate##']
-                                          = Html::convDateTime($validation['submission_date']);
+                              = Html::convDateTime($validation['submission_date']);
             $tmp['##validation.commentsubmission##']
-                                          = $validation['comment_submission'];
+                              = $validation['comment_submission'];
             $tmp['##validation.validationdate##']
-                                          = Html::convDateTime($validation['validation_date']);
+                              = Html::convDateTime($validation['validation_date']);
             $tmp['##validation.validator##']
-                                          =  Html::clean(getUserName($validation['users_id_validate']));
+                              =  Html::clean(getUserName($validation['users_id_validate']));
             $tmp['##validation.commentvalidation##']
-                                          = $validation['comment_validation'];
-            $datas['validations'][]       = $tmp;
+                              = $validation['comment_validation'];
+
+            $datas['validations'][] = $tmp;
          }
 
          // Ticket Satisfaction
@@ -527,15 +546,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
             }
 
-            $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
+            $datas['##satisfaction.type##']
+                                       = $inquest->getTypeInquestName($inquest->getfield('type'));
             $datas['##satisfaction.datebegin##']
-                                            = Html::convDateTime($inquest->fields['date_begin']);
+                                       = Html::convDateTime($inquest->fields['date_begin']);
             $datas['##satisfaction.dateanswered##']
-                                            = Html::convDateTime($inquest->fields['date_answered']);
+                                       = Html::convDateTime($inquest->fields['date_answered']);
             $datas['##satisfaction.satisfaction##']
-                                             = $inquest->fields['satisfaction'];
+                                       = $inquest->fields['satisfaction'];
             $datas['##satisfaction.description##']
-                                             = $inquest->fields['comment'];
+                                       = $inquest->fields['comment'];
          }
       }
 
@@ -625,8 +645,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('validation', 'validation_answer')));
       }
       //Tags without lang for validation
-      $tags = array('validation.submission.title' => __('A validation request has been submitted'),
-                    'validation.answer.title'     => __('An answer to a validation request was produced')
+      $tags = array('validation.submission.title'
+                                          => __('A validation request has been submitted'),
+                    'validation.answer.title'
+                                          => __('An answer to a validation request was produced')
                     );
 
       foreach ($tags as $tag => $label) {
@@ -640,10 +662,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
       // Events for ticket satisfaction
-      $tags = array('satisfaction.datebegin'           => __('Creation date of the satisfaction survey'),
-                    'satisfaction.dateanswered'        => __('Response date to the satisfaction survey'),
-                    'satisfaction.satisfaction'        => __('Satisfaction'),
-                    'satisfaction.description'         => __('Comments to the satisfaction survey'));
+      $tags = array('satisfaction.datebegin'    => __('Creation date of the satisfaction survey'),
+                    'satisfaction.dateanswered' => __('Response date to the satisfaction survey'),
+                    'satisfaction.satisfaction' => __('Satisfaction'),
+                    'satisfaction.description'  => __('Comments to the satisfaction survey'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -739,12 +761,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                          __('Title')),
                     'problem.content'         => sprintf(__('%1$s: %2$s'), __('Problem'),
                                                          __('Description')),
-                    'change.id'              => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
-                    'change.date'            => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
-                    'change.url'             => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
-                    'change.title'           => sprintf(__('%1$s: %2$s'), __('Change'),
+                    'change.id'               => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
+                    'change.date'             => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
+                    'change.url'              => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
+                    'change.title'            => sprintf(__('%1$s: %2$s'), __('Change'),
                                                          __('Title')),
-                    'change.content'         => sprintf(__('%1$s: %2$s'), __('Change'),
+                    'change.content'          => sprintf(__('%1$s: %2$s'), __('Change'),
                                                          __('Description'))
                    );
 

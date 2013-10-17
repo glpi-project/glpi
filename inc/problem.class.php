@@ -360,7 +360,7 @@ class Problem extends CommonITILObject {
 
          $type = "new";
          if (isset($this->fields["status"])
-            && in_array($this->input["status"], $this->getSolvedStatusArray())) {
+             && in_array($this->input["status"], $this->getSolvedStatusArray())) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
