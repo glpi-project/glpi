@@ -2146,9 +2146,7 @@ function update084to085() {
    $status  = array('none'     => CommonITILValidation::NONE,
                     'waiting'  => CommonITILValidation::WAITING,
                     'accepted' => CommonITILValidation::ACCEPTED,
-                    'refused'  => CommonITILValidation::REFUSED,
-                    'can'      => CommonITILValidation::CAN,
-                    'all'      => CommonITILValidation::ALL);
+                    'refused'  => CommonITILValidation::REFUSED);
    foreach ('glpi_ticketvalidations' as $table) {
       // Migrate datas
       foreach ($status as $old => $new) {
