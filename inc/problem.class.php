@@ -170,7 +170,7 @@ class Problem extends CommonITILObject {
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),
                             2 => _n('Solution', 'Solutions', 1));
-                            
+
                if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
                }
@@ -411,7 +411,7 @@ class Problem extends CommonITILObject {
       $tab                      = array();
 
       $tab += $this->getSearchOptionsMain();
-      
+
       $tab[65]['table']         = 'glpi_items_problems';
       $tab[65]['field']         = 'count';
       $tab[65]['name']          = _x('quantity','Number of items');
@@ -450,18 +450,18 @@ class Problem extends CommonITILObject {
       $tab[90]['datatype']      = 'text';
 
       $tab += ProblemTask::getSearchOptionsToAdd();
-      
+
       $tab += $this->getSearchOptionsSolution();
 
       $tab += $this->getSearchOptionsStats();
 
       $tab += ProblemCost::getSearchOptionsToAdd();
-      
+
       $tab['ticket']             = Ticket::getTypeName(2);
 
       $tab[141]['table']         = 'glpi_problems_tickets';
       $tab[141]['field']         = 'count';
-      $tab[141]['name']          = __('Number of tickets');
+      $tab[141]['name']          = _x('quantity', 'Number of tickets');
       $tab[141]['forcegroupby']  = true;
       $tab[141]['usehaving']     = true;
       $tab[141]['datatype']      = 'number';

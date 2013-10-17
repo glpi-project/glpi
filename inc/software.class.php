@@ -501,7 +501,7 @@ class Software extends CommonDBTM {
 
       $tab[72]['table']          = 'glpi_computers_softwareversions';
       $tab[72]['field']          = 'count';
-      $tab[72]['name']           = __('Number of installations');
+      $tab[72]['name']           = _x('quantity', 'Number of installations');
       $tab[72]['forcegroupby']   = true;
       $tab[72]['usehaving']      = true;
       $tab[72]['datatype']       = 'number';
@@ -566,7 +566,7 @@ class Software extends CommonDBTM {
       $licjoin       = array();
       $licjoinexpire = array();
 
-      if (!Session::isCron()) { // no filter for cron      
+      if (!Session::isCron()) { // no filter for cron
          $licjoin       = array('jointype'  => 'child',
                                 'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                            '', '', true));
@@ -577,7 +577,7 @@ class Software extends CommonDBTM {
                                                 " AND (NEWTABLE.`expire` IS NULL
                                                       OR NEWTABLE.`expire` > NOW())");
       }
-      
+
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';
       $tab[160]['name']          = __('License name');
@@ -604,7 +604,7 @@ class Software extends CommonDBTM {
 
       $tab[163]['table']         = 'glpi_softwarelicenses';
       $tab[163]['field']         = 'number';
-      $tab[163]['name']          = __('Number of licenses');
+      $tab[163]['name']          = _x('phone', 'Number of licenses');
       $tab[163]['forcegroupby']  = true;
       $tab[163]['usehaving']     = true;
       $tab[163]['datatype']      = 'number';

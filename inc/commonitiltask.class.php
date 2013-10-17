@@ -599,7 +599,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[28]['table']          = static::getTable();
       $tab[28]['field']          = 'count';
-      $tab[28]['name']           = __('Number of tasks');
+      $tab[28]['name']           = _x('quantity', 'Number of tasks');
       $tab[28]['forcegroupby']   = true;
       $tab[28]['usehaving']      = true;
       $tab[28]['datatype']       = 'number';
