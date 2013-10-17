@@ -35,7 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetCartridgeItem Class
+ *
+ * @since version 0.84
+**/
 class NotificationTargetCartridgeItem extends NotificationTarget {
 
 
@@ -63,7 +68,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
          $tmp['##cartridge.reference##'] = $cartridge['ref'];
          $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);
          $tmp['##cartridge.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
-                                                     "CartridgeItem_".$id);
+                                                            "CartridgeItem_".$id);
          $this->datas['cartridges'][] = $tmp;
       }
 

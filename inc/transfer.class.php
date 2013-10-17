@@ -735,7 +735,7 @@ class Transfer extends CommonDBTM {
 
                }
             }
-         }         
+         }
          // Supplier infocoms
          if ($this->options['keep_infocom']) {
             foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
@@ -2277,12 +2277,12 @@ class Transfer extends CommonDBTM {
             $field = 'problems_id';
             $link  = new Problem_Supplier();
             break;
-            
+
          case 'Change' :
             $table = 'glpi_changes_suppliers';
             $field = 'changes_id';
             $link  = new Change_Supplier();
-            break;            
+            break;
       }
 
       $query = "SELECT *
@@ -2358,12 +2358,12 @@ class Transfer extends CommonDBTM {
             $field = 'problems_id';
             $task  = new ProblemTask();
             break;
-            
+
          case 'Change' :
             $table = 'glpi_changetasks';
             $field = 'changes_id';
             $task  = new ProblemTask();
-            break;            
+            break;
       }
 
       $query = "SELECT *
@@ -2404,6 +2404,8 @@ class Transfer extends CommonDBTM {
     * Transfer ticket/problem infos
     *
     * @param $data ticket data fields
+    *
+    * @since version 0.85 (before transferTicketAdditionalInformations)
    **/
    function transferHelpdeskAdditionalInformations($data) {
 

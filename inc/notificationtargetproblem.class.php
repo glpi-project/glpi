@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetProblem Class
+**/
 class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
    var $private_profiles = array();
@@ -85,12 +88,18 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             foreach ($tickets as $data) {
                if ($ticket->getFromDB($data['tickets_id'])) {
                   $tmp = array();
-                  $tmp['##ticket.id##']      = $data['tickets_id'];
-                  $tmp['##ticket.date##']    = $ticket->getField('date');
-                  $tmp['##ticket.title##']   = $ticket->getField('name');
-                  $tmp['##ticket.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "Ticket_".$data['tickets_id']);
-                  $tmp['##ticket.content##'] = $ticket->getField('content');
+
+                  $tmp['##ticket.id##']
+                                    = $data['tickets_id'];
+                  $tmp['##ticket.date##']
+                                    = $ticket->getField('date');
+                  $tmp['##ticket.title##']
+                                    = $ticket->getField('name');
+                  $tmp['##ticket.url##']
+                                    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                       "Ticket_".$data['tickets_id']);
+                  $tmp['##ticket.content##']
+                                    = $ticket->getField('content');
 
                   $datas['tickets'][] = $tmp;
                }
@@ -109,12 +118,17 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             foreach ($changes as $data) {
                if ($change->getFromDB($data['changes_id'])) {
                   $tmp = array();
-                  $tmp['##change.id##']      = $data['changes_id'];
-                  $tmp['##change.date##']    = $change->getField('date');
-                  $tmp['##change.title##']   = $change->getField('name');
-                  $tmp['##change.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "Change_".$data['changes_id']);
-                  $tmp['##change.content##'] = $change->getField('content');
+                  $tmp['##change.id##']
+                                    = $data['changes_id'];
+                  $tmp['##change.date##']
+                                    = $change->getField('date');
+                  $tmp['##change.title##']
+                                    = $change->getField('name');
+                  $tmp['##change.url##']
+                                    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                       "Change_".$data['changes_id']);
+                  $tmp['##change.content##']
+                                    = $change->getField('content');
 
                   $datas['changes'][] = $tmp;
                }
@@ -225,8 +239,8 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       }
 
       //Tags with just lang
-      $tags = array('problem.tickets'   => _n('Ticket', 'Tickets', 2),
-                    'problem.changes'   => _n('Ticket', 'Tickets', 2),
+      $tags = array('problem.tickets'  => _n('Ticket', 'Tickets', 2),
+                    'problem.changes'  => _n('Ticket', 'Tickets', 2),
                     'items'            => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {

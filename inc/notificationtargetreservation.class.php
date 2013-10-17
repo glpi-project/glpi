@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetReservation Class
+**/
 class NotificationTargetReservation extends NotificationTarget {
 
 
@@ -69,13 +72,13 @@ class NotificationTargetReservation extends NotificationTarget {
    **/
    function getDatasForTemplate($event, $options=array()) {
       //----------- Reservation infos -------------- //
-      $events                                = $this->getAllEvents();
+      $events                                  = $this->getAllEvents();
 
-      $this->datas['##reservation.action##'] = $events[$event];
+      $this->datas['##reservation.action##']   = $events[$event];
 
       if ($event != 'alert') {
-         $this->datas['##reservation.user##'] = "";
-         $user_tmp                            = new User();
+         $this->datas['##reservation.user##']   = "";
+         $user_tmp                              = new User();
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
             $this->datas['##reservation.user##'] = $user_tmp->getName();
          }
@@ -89,19 +92,22 @@ class NotificationTargetReservation extends NotificationTarget {
 
          if ($item = getItemForItemtype($itemtype)) {
             $item->getFromDB($reservationitem->getField('items_id'));
-            $this->datas['##reservation.itemtype##']    = $item->getTypeName(1);
-            $this->datas['##reservation.item.name##']   = $item->getField('name');
+            $this->datas['##reservation.itemtype##']
+                                 = $item->getTypeName(1);
+            $this->datas['##reservation.item.name##']
+                                 = $item->getField('name');
             $this->datas['##reservation.item.entity##']
-                        = Dropdown::getDropdownName('glpi_entities', $item->getField('entities_id'));
+                                 = Dropdown::getDropdownName('glpi_entities',
+                                                             $item->getField('entities_id'));
 
             if ($item->isField('users_id_tech')) {
                 $this->datas['##reservation.item.tech##']
-                              = Dropdown::getDropdownName('glpi_users',
-                                                          $item->getField('users_id_tech'));
+                                 = Dropdown::getDropdownName('glpi_users',
+                                                             $item->getField('users_id_tech'));
             }
             $this->datas['##reservation.url##']
-                        = $this->formatURL($options['additionnaloption']['usertype'],
-                                    $itemtype."_".$reservationitem->getField('id'));
+                                 = $this->formatURL($options['additionnaloption']['usertype'],
+                                                    $itemtype."_".$reservationitem->getField('id'));
          }
 
       } else {
@@ -111,11 +117,15 @@ class NotificationTargetReservation extends NotificationTarget {
          foreach ($options['items'] as $id => $item) {
             $tmp = array();
             if ($obj = getItemForItemtype($item['itemtype'])) {
-               $tmp['##reservation.itemtype##']       = $obj->getTypeName(1);
-               $tmp['##reservation.item##']           = $item['item_name'];
-               $tmp['##reservation.expirationdate##'] = Html::convDateTime($item['end']);
-               $tmp['##reservation.url##']            = $this->formatURL($options['additionnaloption']['usertype'],
-                                                                  "Reservation_".$id);
+               $tmp['##reservation.itemtype##']
+                                    = $obj->getTypeName(1);
+               $tmp['##reservation.item##']
+                                    = $item['item_name'];
+               $tmp['##reservation.expirationdate##']
+                                    = Html::convDateTime($item['end']);
+               $tmp['##reservation.url##']
+                                    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                       "Reservation_".$id);
             }
             $this->datas['reservations'][] = $tmp;
          }

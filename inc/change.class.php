@@ -205,7 +205,7 @@ class Change extends CommonITILObject {
                   break;
                case 4 :
                   $item->showStats();
-                  break;                  
+                  break;
             }
             break;
       }
@@ -275,7 +275,7 @@ class Change extends CommonITILObject {
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
       }
-      
+
       if ($donotif && $CFG_GLPI["use_mailing"]) {
          $mailtype = "update";
          if (isset($this->input["status"]) && $this->input["status"]
@@ -349,7 +349,7 @@ class Change extends CommonITILObject {
 
          $type = "new";
          if (isset($this->fields["status"])
-            && in_array($this->input["status"], $this->getSolvedStatusArray())) {
+             && in_array($this->input["status"], $this->getSolvedStatusArray())) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
@@ -376,7 +376,7 @@ class Change extends CommonITILObject {
    function getSearchOptions() {
 
       $tab = array();
-      
+
       $tab += $this->getSearchOptionsMain();
 
       $tab += $this->getSearchOptionsActors();
@@ -420,13 +420,13 @@ class Change extends CommonITILObject {
       $tab[90]['datatype']      = 'text';
 
       $tab += ChangeValidation::getSearchOptionsToAdd();
-      
+
       $tab += ChangeTask::getSearchOptionsToAdd();
-      
+
       $tab += $this->getSearchOptionsSolution();
 
       $tab += TicketCost::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
@@ -634,7 +634,7 @@ class Change extends CommonITILObject {
                                                 'timestep' => 1));
 
       echo "</td></tr>";
-      
+
       if ($ID) {
          echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
@@ -674,7 +674,7 @@ class Change extends CommonITILObject {
          echo "</tr>";
       }
       echo "</table>";
-      
+
       echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
       echo "<tr>";
       echo "<th width='$colsize1%'>".__('Status')."</th>";
@@ -873,6 +873,6 @@ class Change extends CommonITILObject {
       $result = $DB->query($query);
 
       return $DB->result($result, 0, 0);
-   }   
+   }
 }
 ?>

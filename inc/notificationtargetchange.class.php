@@ -35,7 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetChange Class
+ *
+ * @since version 0.85
+**/
 class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
    var $private_profiles = array();
@@ -89,7 +94,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                   $tmp['##ticket.date##']    = $ticket->getField('date');
                   $tmp['##ticket.title##']   = $ticket->getField('name');
                   $tmp['##ticket.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "Ticket_".$data['tickets_id']);
+                                                                "Ticket_".$data['tickets_id']);
                   $tmp['##ticket.content##'] = $ticket->getField('content');
 
                   $datas['tickets'][] = $tmp;
@@ -100,7 +105,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          $datas['##change.numberoftickets##'] = count($datas['tickets']);
 
          $restrict = "`changes_id`='".$item->getField('id')."'";
-         $problems  = getAllDatasFromTable('glpi_changes_problems', $restrict);
+         $problems = getAllDatasFromTable('glpi_changes_problems', $restrict);
 
          $datas['problems'] = array();
          if (count($problems)) {
@@ -108,12 +113,17 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
             foreach ($problems as $data) {
                if ($problem->getFromDB($data['problems_id'])) {
                   $tmp = array();
-                  $tmp['##problem.id##']      = $data['problems_id'];
-                  $tmp['##problem.date##']    = $problem->getField('date');
-                  $tmp['##problem.title##']   = $problem->getField('name');
-                  $tmp['##problem.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "Problem_".$data['problems_id']);
-                  $tmp['##problem.content##'] = $problem->getField('content');
+                  $tmp['##problem.id##']
+                                       = $data['problems_id'];
+                  $tmp['##problem.date##']
+                                       = $problem->getField('date');
+                  $tmp['##problem.title##']
+                                       = $problem->getField('name');
+                  $tmp['##problem.url##']
+                                       = $this->formatURL($options['additionnaloption']['usertype'],
+                                                          "Problem_".$data['problems_id']);
+                  $tmp['##problem.content##']
+                                       = $problem->getField('content');
 
                   $datas['problems'][] = $tmp;
                }
@@ -145,8 +155,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                      //Object location
                      if ($item2->getField('locations_id') != NOT_AVAILABLE) {
                         $tmp['##item.location##']
-                                       = Dropdown::getDropdownName('glpi_locations',
-                                                                   $item2->getField('locations_id'));
+                               = Dropdown::getDropdownName('glpi_locations',
+                                                           $item2->getField('locations_id'));
                      }
 
                      //Object user
@@ -236,16 +246,16 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       }
 
       //Tags without lang
-      $tags = array('ticket.id'        => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
-                    'ticket.date'      => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
-                    'ticket.url'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('URL')),
-                    'ticket.title'     => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
-                    'ticket.content'   => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Description')),
-                    'problem.id'        => sprintf(__('%1$s: %2$s'), __('Problem'), __('ID')),
-                    'problem.date'      => sprintf(__('%1$s: %2$s'), __('Problem'), __('Date')),
-                    'problem.url'       => sprintf(__('%1$s: %2$s'), __('Problem'), __('URL')),
-                    'problem.title'     => sprintf(__('%1$s: %2$s'), __('Problem'), __('Title')),
-                    'problem.content'   => sprintf(__('%1$s: %2$s'), __('Problem'), __('Description')),
+      $tags = array('ticket.id'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
+                    'ticket.date'     => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
+                    'ticket.url'      => sprintf(__('%1$s: %2$s'), __('Ticket'), __('URL')),
+                    'ticket.title'    => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
+                    'ticket.content'  => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Description')),
+                    'problem.id'      => sprintf(__('%1$s: %2$s'), __('Problem'), __('ID')),
+                    'problem.date'    => sprintf(__('%1$s: %2$s'), __('Problem'), __('Date')),
+                    'problem.url'     => sprintf(__('%1$s: %2$s'), __('Problem'), __('URL')),
+                    'problem.title'   => sprintf(__('%1$s: %2$s'), __('Problem'), __('Title')),
+                    'problem.content' => sprintf(__('%1$s: %2$s'), __('Problem'), __('Description')),
                     );
 
       foreach ($tags as $tag => $label) {

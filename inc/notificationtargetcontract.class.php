@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+
+/**
+ * NotificationTargetContract Class
+**/
 class NotificationTargetContract extends NotificationTarget {
 
 
@@ -96,7 +99,7 @@ class NotificationTargetContract extends NotificationTarget {
          }
 
          $tmp['##contract.url##']          = $this->formatURL($options['additionnaloption']['usertype'],
-                                                          "Contract_".$id);
+                                                              "Contract_".$id);
          $tmp['##contract.items.number##'] = 0;
          $tmp['##contract.items##']        = '';
          if (isset($contract['items']) && count($contract['items'])) {
