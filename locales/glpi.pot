@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-16 18:18+0200\n"
+"POT-Creation-Date: 2013-10-17 07:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -7720,7 +7720,7 @@ msgid "Monitoring of automatic actions"
 msgstr ""
 
 #: inc/crontask.class.php:1593
-msgid "Archives log files and deletes agging ones"
+msgid "Archives log files and deletes aging ones"
 msgstr ""
 
 #: inc/crontask.class.php:1594
@@ -10237,7 +10237,7 @@ msgid "No selected items"
 msgstr ""
 
 #: inc/massiveaction.class.php:271
-msgid "Invalid processus"
+msgid "Invalid process"
 msgstr ""
 
 #: inc/massiveaction.class.php:452

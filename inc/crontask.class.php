@@ -1363,7 +1363,7 @@ class CronTask extends CommonDBTM{
       $findfiles = glob( $dir ) ;
       foreach ($findfiles as $file) {
          $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
-         // now depending on the format of the name we delete the file (for agging archives) or rename it (will add Ymd.log to the end of the file)
+         // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
          if ( preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0 ) {
             if ( $match[1] < $firstdate ) {
@@ -1590,7 +1590,7 @@ class CronTask extends CommonDBTM{
             return array('description' => __('Monitoring of automatic actions'));
 
          case 'circularlogs' :
-            return array('description' => __("Archives log files and deletes agging ones"),
+            return array('description' => __("Archives log files and deletes aging ones"),
                          'parameter'   => __("Number of days to keep archived logs"));
       }
    }
