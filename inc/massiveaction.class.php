@@ -268,7 +268,7 @@ class MassiveAction {
             $this->$attribute = $value;
          }
          if ($this->identifier != $identifier) {
-            $this->error = __('Invalid processus');
+            $this->error = __('Invalid process');
             return;
          }
          unset($_SESSION['current_massive_action'][$identifier]);
