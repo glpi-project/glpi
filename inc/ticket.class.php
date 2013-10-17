@@ -169,7 +169,6 @@ class Ticket extends CommonITILObject {
          $links['template'] = TicketTemplate::getSearchURL(false);
       }
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-
          $opt = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -211,8 +210,6 @@ class Ticket extends CommonITILObject {
               || (Session::haveRight(self::$rightname, self::OWN)
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
    }
-
-
 
 
    static function canUpdate() {
@@ -261,7 +258,6 @@ class Ticket extends CommonITILObject {
                       || (Session::haveRight(self::$rightname, self::ASSIGN)
                           && ($this->fields["status"] == self::INCOMING))))
               || (Session::haveRight('ticketvalidation', TicketValidation::getValidateRights())
-
                   && TicketValidation::canValidate($this->fields["id"])));
    }
 
@@ -1134,9 +1130,9 @@ class Ticket extends CommonITILObject {
                         }
                      }
                      // For due_date : check also slas_id
-                     if ($key == 'due_date'
-                           && isset($input['slas_id']) && ($input['slas_id'] > 0)
-                           && isset($mandatory_missing['due_date'])) {
+                     if (($key == 'due_date')
+                         && isset($input['slas_id']) && ($input['slas_id'] > 0)
+                         && isset($mandatory_missing['due_date'])) {
                         unset($mandatory_missing['due_date']);
                      }
                   }
@@ -1532,15 +1528,13 @@ class Ticket extends CommonITILObject {
                   switch ($type) {
                      case 'group' :
                         foreach ($array_id as $groups_id) {
-
                            $validation_right = 'validate_incident';
                            if ($this->input['type'] == Ticket::DEMAND_TYPE) {
                               $validation_right = 'validate_request';
                            }
-
-                           $opt = array('groups_id'   => $groups_id,
-                                          'right'     => $validation_right,
-                                          'entity'    => $this->input['entities_id']);
+                           $opt = array('groups_id' => $groups_id,
+                                        'right'     => $validation_right,
+                                        'entity'    => $this->input['entities_id']);
 
                            $data_users = TicketValidation::getGroupUserHaveRights($opt);
 
@@ -1888,8 +1882,7 @@ class Ticket extends CommonITILObject {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -1920,7 +1913,7 @@ class Ticket extends CommonITILObject {
          case 'link_ticket' :
             $input = $ma->getInput();
             if (isset($input['link'])
-               && isset($input['tickets_id_1'])) {
+                && isset($input['tickets_id_1'])) {
                if ($item->getFromDB($input['tickets_id_1'])) {
                   foreach ($ids as $id) {
                      $input2                          = array();
@@ -1928,7 +1921,9 @@ class Ticket extends CommonITILObject {
                      $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
                      $input2['_link']['link']         = $input['link'];
                      $input2['_link']['tickets_id_2'] = $id;
+                     //TODO error with this line (syntax error, unexpected 'function', expecting '::')
                      if ($item->can($input['tickets_id_1'], UPDATE)) {
+
                         if ($this->update($input2)) {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
@@ -1949,6 +1944,8 @@ class Ticket extends CommonITILObject {
 
 
    function getSearchOptions() {
+
+      $tab                          = array();
 
       $tab += $this->getSearchOptionsMain();
 
@@ -1992,7 +1989,6 @@ class Ticket extends CommonITILObject {
       $tab[80]['massiveaction']     = false;
       $tab[80]['datatype']          = 'dropdown';
 
-
       // For ticket template
       $tab[142]['table']         = 'glpi_documents';
       $tab[142]['field']         = 'name';
@@ -2027,9 +2023,7 @@ class Ticket extends CommonITILObject {
       $tab[32]['massiveaction']     = false;
       $tab[32]['datatype']          = 'dropdown';
 
-
       $tab += TicketValidation::getSearchOptionsToAdd();
-
 
       $tab['satisfaction']          = __('Satisfaction survey');
 
@@ -2068,7 +2062,6 @@ class Ticket extends CommonITILObject {
       $tab[63]['datatype']          = 'text';
       $tab[63]['massiveaction']     = false;
       $tab[63]['joinparams']        = array('jointype' => 'child');
-
 
       $tab['followup']              = _n('Followup', 'Followups', 2);
 
@@ -2206,13 +2199,11 @@ class Ticket extends CommonITILObject {
                                            'condition' => "AND NEWTABLE.`link` = ".
                                                            Ticket_Ticket::DUPLICATE_WITH);
 
-
          $tab += TicketTask::getSearchOptionsToAdd();
 
          $tab += $this->getSearchOptionsSolution();
 
          $tab += TicketCost::getSearchOptionsToAdd();
-
 
          $tab['problem']            = Problem::getTypeName(2);
 
@@ -2328,7 +2319,6 @@ class Ticket extends CommonITILObject {
          case 'type':
             $options['value'] = $values[$field];
             return self::dropdownType($name, $options);
-
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
