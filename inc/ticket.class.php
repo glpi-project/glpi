@@ -2283,7 +2283,7 @@ class Ticket extends CommonITILObject {
 
          $tab[28]['table']          = 'glpi_tickettasks';
          $tab[28]['field']          = 'count';
-         $tab[28]['name']           = __('Number of tasks');
+         $tab[28]['name']           = _x('quantity', 'Number of tasks');
          $tab[28]['forcegroupby']   = true;
          $tab[28]['usehaving']      = true;
          $tab[28]['datatype']       = 'number';
@@ -2357,7 +2357,7 @@ class Ticket extends CommonITILObject {
          $tab[33]['massiveaction']  = false;
          $tab[33]['forcegroupby']   = true;
          $tab[33]['joinparams']     = array('jointype' => 'child');
-         
+
          $tab['solution']           = _n('Solution', 'Solutions', 1);
 
          $tab[23]['table']          = 'glpi_solutiontypes';
@@ -3777,7 +3777,7 @@ class Ticket extends CommonITILObject {
          $canupdate = false;
          // No update for actors
          $values['_noupdate'] = true;
-         
+
       }
 
       $showuserlink              = 0;
@@ -3920,7 +3920,7 @@ class Ticket extends CommonITILObject {
             } else {
                echo Html::convDateTime($this->fields["due_date"]);
             }
-            
+
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
             if ($canupdate) {
@@ -4698,7 +4698,7 @@ class Ticket extends CommonITILObject {
                              AND NOT ( $search_users_id ) ".
                              getEntitiesRestrictRequest("AND","glpi_tickets");
             break;
-                             
+
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
                // à quelqu'un d'autre (exclut les self-tickets)
 
@@ -4806,7 +4806,7 @@ class Ticket extends CommonITILObject {
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
                   break;
-                  
+
                case "requestbyself" :
                default :
                   foreach ($_SESSION['glpigroups'] as $gID) {
@@ -4927,7 +4927,7 @@ class Ticket extends CommonITILObject {
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
                   break;
-                  
+
                case "observed" :
                   $options['field'][0]      = 66; // users_id
                   $options['searchtype'][0] = 'equals';
@@ -4943,7 +4943,7 @@ class Ticket extends CommonITILObject {
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
                   break;
-                        
+
                case "requestbyself" :
                default :
                   $options['field'][0]      = 4; // users_id

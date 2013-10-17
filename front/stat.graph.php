@@ -348,7 +348,7 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint, array('title'     => __('Number of tickets'),
+Stat::showGraph($toprint, array('title'     => _x('quantity', 'Number of tickets'),
                                 'showtotal' => 1,
                                 'unit'      => __('Tickets')));
 

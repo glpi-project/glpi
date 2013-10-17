@@ -159,7 +159,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[77]['table']         = 'glpi_tickets';
       $tab[77]['field']         = 'count';
-      $tab[77]['name']          = __('Number of tickets');
+      $tab[77]['name']          = _x('quantity', 'Number of tickets');
       $tab[77]['datatype']      = 'integer';
       $tab[77]['forcegroupby']  = true;
       $tab[77]['massiveaction'] = false;

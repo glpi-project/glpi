@@ -696,7 +696,7 @@ class Problem extends CommonITILObject {
 
       $tab[141]['table']         = 'glpi_problems_tickets';
       $tab[141]['field']         = 'count';
-      $tab[141]['name']          = __('Number of tickets');
+      $tab[141]['name']          = _x('quantity', 'Number of tickets');
       $tab[141]['forcegroupby']  = true;
       $tab[141]['usehaving']     = true;
       $tab[141]['datatype']      = 'number';
