@@ -1243,7 +1243,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getValidationStats($tID) {
 
       $tab = self::getAllStatusArray();
-toolbox::logdebug($tab);
+
       $nb  = countElementsInTable(static::getTable(),"`".static::$items_id."` = ".$tID);
 
       $stats = array();
