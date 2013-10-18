@@ -576,9 +576,14 @@ class KnowbaseItem extends CommonDBTM {
       Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
       echo "</td>";
       echo "<td>";
+      $showuserlink = 0;
+      if (Session::haveRight('user', READ)) {
+         $showuserlink = 1;
+      }
       if ($this->fields["users_id"]) {
          //TRANS: %s is the writer name
-         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
+         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
+                                                            $showuserlink));
       }
       echo "</td><td>";
       //TRANS: %d is the number of view
@@ -1208,14 +1213,13 @@ class KnowbaseItem extends CommonDBTM {
                                 $item_num, $row_num);
                }
 
+               $showuserlink = 0;
+               if (Session::haveRight('user', READ)) {
+                  $showuserlink = 1;
+               }
                if ($showwriter) {
-                  if (Session::haveRight('user', READ)) {
-                     echo Search::showItem($output_type, getUserName($data["users_id"], 1),
+                  echo Search::showItem($output_type, getUserName($data["users_id"], $showuserlink),
                                            $item_num, $row_num);
-                  } else {
-                     echo Search::showItem($output_type, getUserName($data["users_id"], 0),
-                                           $item_num, $row_num);
-                  }
                }
 
                $categ = $data["category"];

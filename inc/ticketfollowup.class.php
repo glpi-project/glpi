@@ -402,6 +402,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     *@return string of the users_id name
    **/
+   //TODO function never used
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"], $link);
    }
@@ -744,10 +745,14 @@ class TicketFollowup  extends CommonDBTM {
                   <tr><th>".__('Date')."</th><th>".__('Requester')."</th>
                   <th>".__('Description')."</th></tr>\n";
 
+         $showuserlink = 0;
+         if (Session::haveRight('user', READ)) {
+            $showuserlink = 1;
+         }
          while ($data = $DB->fetch_assoc($result)) {
             $out .= "<tr class='tab_bg_3'>
                      <td class='center'>".Html::convDateTime($data["date"])."</td>
-                     <td class='center'>".getUserName($data["users_id"],1)."</td>
+                     <td class='center'>".getUserName($data["users_id"], $showuserlink)."</td>
                      <td width='70%' class='b'>".Html::resume_text($data["content"],
                                                                    $CFG_GLPI["cut"])."
                      </td></tr>";

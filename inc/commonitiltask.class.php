@@ -484,6 +484,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     *@return string of the users_id name
    **/
+   //TODO function never used
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"], $link);
    }
