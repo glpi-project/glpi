@@ -2017,7 +2017,7 @@ class CommonDBTM extends CommonGLPI {
 
                echo "<span class='very_small_space'>";
                if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
-                  Html::showToolTip(__('Notch to keep the devices while deleting this item'));
+                  Html::showToolTip(__('Check to keep the devices while deleting this item'));
                   echo "&nbsp;";
                   echo "<input type='checkbox' name='keep_devices' value='1'";
                   if (!empty($_SESSION['glpikeep_devices_when_purging_item'])) {
