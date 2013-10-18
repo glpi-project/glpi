@@ -1209,7 +1209,13 @@ class KnowbaseItem extends CommonDBTM {
                }
 
                if ($showwriter) {
-                  echo Search::showItem($output_type, getUserName($data["users_id"], 1), $item_num, $row_num);
+                  if (Session::haveRight('user', READ)) {
+                     echo Search::showItem($output_type, getUserName($data["users_id"], 1),
+                                           $item_num, $row_num);
+                  } else {
+                     echo Search::showItem($output_type, getUserName($data["users_id"], 0),
+                                           $item_num, $row_num);
+                  }
                }
 
                $categ = $data["category"];
