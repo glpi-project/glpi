@@ -661,9 +661,9 @@ class TicketFollowup  extends CommonDBTM {
       // Print Followups for a job
       $showprivate = Session::haveRight("show_full_ticket", "1");
 
-      $showlink    = 0;
+      $showuserlink    = 0;
       if (Session::haveRight('user','r')) {
-         $showlink = 1;
+         $showuserlink = 1;
       }
 
       $RESTRICT = "";
@@ -689,7 +689,7 @@ class TicketFollowup  extends CommonDBTM {
          while ($data = $DB->fetch_assoc($result)) {
             $out .= "<tr class='tab_bg_3'>
                      <td class='center'>".Html::convDateTime($data["date"])."</td>
-                     <td class='center'>".getUserName($data["users_id"], $showlink)."</td>
+                     <td class='center'>".getUserName($data["users_id"], $showuserlink)."</td>
                      <td width='70%' class='b'>".Html::resume_text($data["content"],
                                                                    $CFG_GLPI["cut"])."
                      </td></tr>";

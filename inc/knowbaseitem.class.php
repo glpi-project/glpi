@@ -590,9 +590,9 @@ class KnowbaseItem extends CommonDBTM {
          echo "<textarea cols='80' rows='30' id='answer' name='answer'>".$this->fields["answer"];
          echo "</textarea></div></fieldset>";
 
-         $showlink = 0;
+         $showuserlink = 0;
          if (Session::haveRight('user','r')) {
-            $showlink = 1;
+            $showuserlink = 1;
          }
 
          if (!empty($ID)) {
@@ -602,7 +602,7 @@ class KnowbaseItem extends CommonDBTM {
             if ($this->fields["users_id"]) {
                //TRANS: %s is the writer name
                printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
-                                                                  $showlink));
+                                                                  $showuserlink));
             }
 
             echo "<span class='baskb_right'>";
@@ -1290,13 +1290,13 @@ class KnowbaseItem extends CommonDBTM {
                                 $item_num, $row_num);
                }
 
-               $showlink = 0;
+               $showuserlink = 0;
                if (Session::haveRight('user','r')) {
-                  $showlink = 1;
+                  $showuserlink = 1;
                }
 
                if ($showwriter) {
-                  echo Search::showItem($output_type, getUserName($data["users_id"], $showlink),
+                  echo Search::showItem($output_type, getUserName($data["users_id"], $showuserlink),
                                         $item_num, $row_num);
                }
 

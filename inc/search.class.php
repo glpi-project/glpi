@@ -3867,9 +3867,9 @@ class Search {
                             array $addobjectparams=array()) {
       global $CFG_GLPI;
 
-      $showlink = 0;
+      $showuserlink = 0;
       if (Session::haveRight('user','r')) {
-         $showlink = 1;
+         $showuserlink = 1;
       }
 
       $searchopt = &self::getOptions($itemtype);
@@ -3936,7 +3936,7 @@ class Search {
                         $out     .= sprintf(__('%1$s %2$s'), $userdata['name'],
                                             $tooltip);
                      } else {
-                        $out .= getUserName($split[$k], $showlink);
+                        $out .= getUserName($split[$k], $showuserlink);
                      }
                   }
                }
