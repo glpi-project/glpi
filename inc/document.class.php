@@ -282,10 +282,14 @@ class Document extends CommonDBTM {
 //       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
+      $showuserlink = 0;
+      if (Session::haveRight('user', READ)) {
+         $showuserlink = 1;
+      }
       if ($ID > 0) {
          echo "<tr><th colspan='2'>";
          if ($this->fields["users_id"]>0) {
-            printf(__('Added by %s'), getUserName($this->fields["users_id"], 1));
+            printf(__('Added by %s'), getUserName($this->fields["users_id"], $showuserlink));
          } else {
             echo "&nbsp;";
          }

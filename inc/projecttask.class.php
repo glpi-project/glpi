@@ -68,12 +68,12 @@ class ProjectTask extends CommonDBChild {
       // Team
       $this->team    = ProjectTaskTeam::getTeamFor($this->fields['id']);
    }
-   
+
    function post_getEmpty() {
       $this->fields['percent_done'] = 0;
    }
 
-   
+
    /// Get team member count
    function getTeamCount() {
       $nb = 0;
@@ -84,7 +84,7 @@ class ProjectTask extends CommonDBChild {
       }
       return $nb;
    }
-   
+
    function prepareInputForUpdate($input) {
 
       return Project::checkPlanAndRealDates($input);
@@ -98,7 +98,7 @@ class ProjectTask extends CommonDBChild {
       if (!isset($input['date'])) {
          $input['date'] = $_SESSION['glpi_currenttime'];
       }
-      
+
       return Project::checkPlanAndRealDates($input);
    }
 
@@ -162,13 +162,18 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
 
+      $showuserlink = 0;
+      if (Session::haveRight('user', READ)) {
+         $showuserlink = 1;
+      }
+
       if ($ID) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Creation date')."</td>";
          echo "<td>";
          echo Html::convDateTime($this->fields["date"]);
          echo sprintf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date"]),
-                                       getUserName($this->fields["users_id"], 1));
+                                       getUserName($this->fields["users_id"], $showuserlink));
          echo "</td>";
          echo "<td>".__('Last update')."</td>";
          echo "<td>";
@@ -187,7 +192,7 @@ class ProjectTask extends CommonDBChild {
       echo "<td colspan='3'>";
       Html::autocompletionTextField($this,"name", array('size' => 80));
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('State')."</td>";
       echo "<td>";
@@ -211,7 +216,7 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
-      
+
       echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -282,7 +287,7 @@ class ProjectTask extends CommonDBChild {
                $this->fields["comment"]."</textarea>";
       echo "</td>";
       echo "</tr>\n";
-      
+
       $this->showFormButtons($options);
 
       return true;
@@ -299,7 +304,7 @@ class ProjectTask extends CommonDBChild {
 
       $item = new static();
       $time = 0;
-      
+
       if ($item->getFromDB($projecttasks_id)) {
          $time += $item->fields['effective_duration'];
       }
@@ -353,7 +358,7 @@ class ProjectTask extends CommonDBChild {
       }
       return 0;
    }
-      
+
    function getSearchOptions() {
 
       $tab                 = array();
@@ -399,7 +404,7 @@ class ProjectTask extends CommonDBChild {
       $tab[19]['name']           = __('Last update');
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
-      
+
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'percent_done';
       $tab[5]['name']          = __('Percent done');
@@ -435,7 +440,7 @@ class ProjectTask extends CommonDBChild {
       $tab[10]['field']         = 'real_end_date';
       $tab[10]['name']          = __('Real end date');
       $tab[10]['datatype']      = 'datetime';
-      
+
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
       $tab[16]['name']     = __('Comments');
@@ -456,7 +461,7 @@ class ProjectTask extends CommonDBChild {
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
-      
+
       return $tab;
    }
 
@@ -479,7 +484,7 @@ class ProjectTask extends CommonDBChild {
       $canedit = $project->canEdit($ID);
 
       echo "<div class='spaced'>";
-      
+
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname
@@ -519,7 +524,7 @@ class ProjectTask extends CommonDBChild {
                                     Html::showToolTip($data['content'],
                                                       array('display' => false,
                                                             'applyto' => "ProjectTask".$data["id"].$rand)));
-               
+
                echo "</td>";
                echo "<td>".$data['tname']."</td>";
                echo "<td>".$data['sname']."</td>";
@@ -592,7 +597,7 @@ class ProjectTask extends CommonDBChild {
 
 
       /// TODO : permit to simple add member of project team ?
-      
+
       $ID      = $task->fields['id'];
       $canedit = $task->canEdit($ID);
 
@@ -758,7 +763,7 @@ class ProjectTask extends CommonDBChild {
       }
       return $todisplay;
    }
-   
+
    /** Get data to display on GANTT for a project
    * @param $ID ID of the project
    */
@@ -778,6 +783,6 @@ class ProjectTask extends CommonDBChild {
 
       return $todisplay;
    }
-   
+
 }
 ?>

@@ -3901,6 +3901,12 @@ class Search {
                   $split         = explode("$$$$",$data[$NAME.$num]);
                   $count_display = 0;
                   $added         = array();
+
+                  $showuserlink = 0;
+                  if (Session::haveRight('user', READ)) {
+                     $showuserlink = 1;
+                  }
+
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if ($split[$k] > 0) {
                         if ($count_display) {
@@ -3917,7 +3923,7 @@ class Search {
                            }
                            $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
                         } else {
-                           $out .= getUserName($split[$k], 1);
+                           $out .= getUserName($split[$k], $showuserlink);
                         }
                      }
                   }
