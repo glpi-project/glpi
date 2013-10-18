@@ -1994,18 +1994,20 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 create glpi_projectstates");
 
       $ADDTODISPLAYPREF['ProjectState'] = array(12,11);
-      $states = array('new' => array('name' => _x('ticket', 'New'),
-                                     'color' => '#06ff00',
+      $states = array('new' => array('name'        => _x('ticket', 'New'),
+                                     'color'       => '#06ff00',
                                      'is_finished' => 0),
-                      'do' => array('name' => __('Processing'),
-                                     'color' => '#ffb800',
+                      'do'  => array('name'        => __('Processing'),
+                                     'color'       => '#ffb800',
                                      'is_finished' => 0),
-                      'end' => array('name' => __('Closed'),
-                                     'color' => '#ff0000',
+                      'end' => array('name'        => __('Closed'),
+                                     'color'       => '#ff0000',
                                      'is_finished' => 1));
       foreach ($states as $key => $val) {
-         $query = "INSERT INTO `glpi_projectstates` (`name`,`color`,`is_finished`)
-                     VALUES ('".addslashes($val['name'])."','".addslashes($val['color'])."','".addslashes($val['is_finished'])."')";
+         $query = "INSERT INTO `glpi_projectstates`
+                          (`name`,`color`,`is_finished`)
+                   VALUES ('".addslashes($val['name'])."','".addslashes($val['color'])."',
+                           '".addslashes($val['is_finished'])."')";
          $DB->queryOrDie($query, "0.85 insert default project state $key");
       }
    }
@@ -2140,8 +2142,7 @@ function update084to085() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s'),
-                                      'ticketvalidations status an tickets global_validation'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'ticketvalidations status'));
 
    $status  = array('none'     => CommonITILValidation::NONE,
                     'waiting'  => CommonITILValidation::WAITING,
@@ -2158,19 +2159,6 @@ function update084to085() {
       $migration->changeField($table, 'status', 'status', 'integer',
                               array('value' => CommonITILValidation::WAITING));
    }
-
-   foreach ('glpi_tickets' as $table) {
-      // Migrate datas
-      foreach ($status as $old => $new) {
-         $query = "UPDATE `$table`
-                   SET `global_validation` = '$new'
-                   WHERE `global_validation` = '$old'";
-         $DB->queryOrDie($query, "0.85 global_validation in $table $old to $new");
-      }
-      $migration->changeField($table, 'global_validation', 'global_validation', 'integer',
-                              array('value' => CommonITILValidation::NONE));
-   }
-
 
 
    // ************ Keep it at the end **************

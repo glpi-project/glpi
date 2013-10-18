@@ -196,8 +196,9 @@ class Dropdown {
                                   'display'   => false);
 
          if ($item->canView()) {
-             if ($params['value'] && $item->getFromDB($params['value'])
-               && $item->canViewItem()) {
+             if ($params['value']
+                 && $item->getFromDB($params['value'])
+                 && $item->canViewItem()) {
                $options_tooltip['link']       = $item->getLinkURL();
             } else {
                $options_tooltip['link']       = $item->getSearchURL();
@@ -238,7 +239,7 @@ class Dropdown {
          if ($item->canView()) {
             $paramscomment['withlink'] = $link_id;
          }
-         
+
          $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
@@ -716,10 +717,11 @@ class Dropdown {
       if (is_null($optgroup)) {
          $optgroup
             = array(__('Common')
-                        => array('Location'        => _n('Location', 'Locations', 2),
-                                 'State'           => _n('Status of items', 'Statuses of items', 2),
-                                 'Manufacturer'    => _n('Manufacturer', 'Manufacturers', 2),
-                                 'Blacklist'       => _n('Blacklist','Blacklists',2),
+                        => array('Location'               => _n('Location', 'Locations', 2),
+                                 'State'                  => _n('Status of items',
+                                                                'Statuses of items', 2),
+                                 'Manufacturer'           => _n('Manufacturer', 'Manufacturers', 2),
+                                 'Blacklist'              => _n('Blacklist','Blacklists',2),
                                  'BlacklistedMailContent' => __('Blacklisted mail content')
                                 ),
 
@@ -733,7 +735,8 @@ class Dropdown {
                                                           'Solution templates', 2),
                                  'ProjectState'     => _n('Project state', 'Project states', 2),
                                  'ProjectType'      => _n('Project type', 'Project types', 2),
-                                 'ProjectTaskType'  => _n('Project tasks type', 'Project tasks types', 2),
+                                 'ProjectTaskType'  => _n('Project tasks type',
+                                                          'Project tasks types', 2),
                                 ),
 
                     _n('Type', 'Types', 2)
@@ -745,7 +748,8 @@ class Dropdown {
                                  'PeripheralType'       => _n('Devices type', 'Devices types', 2),
                                  'PhoneType'            => _n('Phone type', 'Phones types', 2),
                                  'SoftwareLicenseType'  => _n('License type', 'License types', 2),
-                                 'CartridgeItemType'    => _n('Cartridge type', 'Cartridge types', 2),
+                                 'CartridgeItemType'    => _n('Cartridge type',
+                                                              'Cartridge types', 2),
                                  'ConsumableItemType'   => _n('Consumable type',
                                                               'Consumable types', 2),
                                  'ContractType'         => _n('Contract type', 'Contract types', 2),
@@ -783,7 +787,8 @@ class Dropdown {
                                 ),
 
                     __('Management')
-                        => array('DocumentCategory' => _n('Document heading', 'Document headings', 2),
+                        => array('DocumentCategory' => _n('Document heading',
+                                                          'Document headings', 2),
                                  'DocumentType'     => _n('Document type', 'Document types', 2)
                                 ),
 
