@@ -37,17 +37,22 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * ProjectState Class
+ *
+ * @since version 0.85
 **/
 class ProjectState extends CommonDropdown {
+
 
    static function getTypeName($nb=0) {
       return _n('Project state', 'Project states', $nb);
    }
 
+
    function post_getEmpty() {
       $this->fields['color'] = '#dddddd';
    }
-   
+
+
    function getAdditionalFields() {
 
       return array(array('name'     => 'color',
@@ -59,6 +64,7 @@ class ProjectState extends CommonDropdown {
                          'type'     => 'bool',
                          'list'     => true),);
    }
+
 
    /**
     * Get search function for the class
@@ -78,7 +84,7 @@ class ProjectState extends CommonDropdown {
       $tab[12]['field']    = 'is_finished';
       $tab[12]['name']     = __('Finished state');
       $tab[12]['datatype'] = 'bool';
-      
+
       return $tab;
    }
 
