@@ -3910,7 +3910,7 @@ class Search {
                         if ($itemtype == 'Ticket') {
                            $userdata = getUserName($split[$k],2);
                            $tooltip = "";
-                           if (Session::haveRight('user','r')) {
+                           if (Session::haveRight('user', READ)) {
                               $tooltip = Html::showToolTip($userdata["comment"],
                                                            array('link'    => $userdata["link"],
                                                                  'display' => false));
