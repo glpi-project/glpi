@@ -395,6 +395,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     *@return string of the users_id name
    **/
+   //TODO function never used
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"], $link);
    }
@@ -660,6 +661,11 @@ class TicketFollowup  extends CommonDBTM {
       // Print Followups for a job
       $showprivate = Session::haveRight("show_full_ticket", "1");
 
+      $showlink    = 0;
+      if (Session::haveRight('user','r')) {
+         $showlink = 1;
+      }
+
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
@@ -683,7 +689,7 @@ class TicketFollowup  extends CommonDBTM {
          while ($data = $DB->fetch_assoc($result)) {
             $out .= "<tr class='tab_bg_3'>
                      <td class='center'>".Html::convDateTime($data["date"])."</td>
-                     <td class='center'>".getUserName($data["users_id"],1)."</td>
+                     <td class='center'>".getUserName($data["users_id"], $showlink)."</td>
                      <td width='70%' class='b'>".Html::resume_text($data["content"],
                                                                    $CFG_GLPI["cut"])."
                      </td></tr>";

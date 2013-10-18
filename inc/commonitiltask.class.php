@@ -119,7 +119,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             return Planning::getState($values[$field]);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
-   }   
+   }
 
    /**
     * @since version 0.84
@@ -144,7 +144,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (($item->getType() == $this->getItilObjectItemType())
@@ -425,6 +425,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     *@return string of the users_id name
    **/
+   //TODO function never used
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"], $link);
    }
@@ -513,7 +514,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[7]['field']         = 'state';
       $tab[7]['name']          = __('Status');
       $tab[7]['datatype']      = 'specific';
-      
+
       return $tab;
    }
 

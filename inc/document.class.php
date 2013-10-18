@@ -70,7 +70,7 @@ class Document extends CommonDBTM {
             }
          }
       }
-      
+
       // From Ticket Document Tab => check right to add followup.
       if (isset($this->fields['tickets_id'])
           && ($this->fields['tickets_id'] > 0)) {
@@ -291,10 +291,15 @@ class Document extends CommonDBTM {
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
+      $showlink = 0;
+      if (Session::haveRight('user','r')) {
+         $showlink = 1;
+      }
+
       if ($ID > 0) {
          echo "<tr><th colspan='2'>";
-         if ($this->fields["users_id"]>0) {
-            printf(__('Added by %s'), getUserName($this->fields["users_id"], 1));
+         if ($this->fields["users_id"] > 0) {
+             printf(__('Added by %s'), getUserName($this->fields["users_id"], $showlink));
          } else {
             echo "&nbsp;";
          }

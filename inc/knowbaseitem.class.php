@@ -590,6 +590,10 @@ class KnowbaseItem extends CommonDBTM {
          echo "<textarea cols='80' rows='30' id='answer' name='answer'>".$this->fields["answer"];
          echo "</textarea></div></fieldset>";
 
+         $showlink = 0;
+         if (Session::haveRight('user','r')) {
+            $showlink = 1;
+         }
 
          if (!empty($ID)) {
             echo "<fieldset>";
@@ -597,7 +601,8 @@ class KnowbaseItem extends CommonDBTM {
             echo "<div class='baskb'>";
             if ($this->fields["users_id"]) {
                //TRANS: %s is the writer name
-               printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
+               printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
+                                                                  $showlink));
             }
 
             echo "<span class='baskb_right'>";
@@ -1285,14 +1290,14 @@ class KnowbaseItem extends CommonDBTM {
                                 $item_num, $row_num);
                }
 
+               $showlink = 0;
+               if (Session::haveRight('user','r')) {
+                  $showlink = 1;
+               }
+
                if ($showwriter) {
-                  if (Session::haveRight('user','r')) {
-                     echo Search::showItem($output_type, getUserName($data["users_id"], 1),
-                                           $item_num, $row_num);
-                  } else {
-                     echo Search::showItem($output_type, getUserName($data["users_id"], 0),
-                           $item_num, $row_num);
-                  }
+                  echo Search::showItem($output_type, getUserName($data["users_id"], $showlink),
+                                        $item_num, $row_num);
                }
 
                $categ = $data["category"];

@@ -3867,6 +3867,11 @@ class Search {
                             array $addobjectparams=array()) {
       global $CFG_GLPI;
 
+      $showlink = 0;
+      if (Session::haveRight('user','r')) {
+         $showlink = 1;
+      }
+
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
@@ -3931,7 +3936,7 @@ class Search {
                         $out     .= sprintf(__('%1$s %2$s'), $userdata['name'],
                                             $tooltip);
                      } else {
-                        $out .= getUserName($split[$k], 1);
+                        $out .= getUserName($split[$k], $showlink);
                      }
                   }
                }
@@ -3963,8 +3968,15 @@ class Search {
                                                 array('link'    => $userdata["link"],
                                                       'display' => false));
                }
-               $usernameformat = formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
-                                                $data[$NAME.$num."_2"], $data[$NAME.$num."_4"], 1);
+               if (Session::haveRight('user','r')) {
+                  $usernameformat = formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
+                                                   $data[$NAME.$num."_2"], $data[$NAME.$num."_4"],
+                                                   1);
+               } else {
+                  $usernameformat = formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
+                                                   $data[$NAME.$num."_2"], $data[$NAME.$num."_4"],
+                                                   0);
+               }
                return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
             }
             break;

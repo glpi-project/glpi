@@ -3780,7 +3780,7 @@ class Ticket extends CommonITILObject {
 
       }
 
-      $showuserlink              = 0;
+      $showuserlink    = 0;
       if (Session::haveRight('user','r')) {
          $showuserlink = 1;
       }

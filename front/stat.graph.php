@@ -69,13 +69,18 @@ $title   = "";
 $cond    = '';
 $parent  = 0;
 
+$showlink = 0;
+if (Session::haveRight('user','r')) {
+   $showlink = 1;
+}
+
 switch($_GET["type"]) {
    case "technicien" :
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
-                         $item->getAssignName($_GET["id"], 'User', 1));
+                         $item->getAssignName($_GET["id"], 'User', $showlink));
       break;
 
    case "technicien_followup" :
@@ -83,7 +88,7 @@ switch($_GET["type"]) {
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
-                         $item->getAssignName($_GET["id"], 'User', 1));
+                         $item->getAssignName($_GET["id"], 'User', $showlink));
       break;
 
    case "suppliers_id_assign" :
@@ -91,21 +96,29 @@ switch($_GET["type"]) {
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
       $title   = sprintf(__('%1$s: %2$s'), __('Supplier'),
-                         $item->getAssignName($_GET["id"], 'Supplier', 1));
+                         $item->getAssignName($_GET["id"], 'Supplier', $showlink));
       break;
 
    case "user" :
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
+      if (Session::haveRight('user','r')) {
+         $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], 1));
+      } else {
+         $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], 0));
+      }
       break;
 
    case "users_id_recipient" :
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
+      if (Session::haveRight('user','r')) {
+         $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], 1));
+      } else {
+         $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], 0));
+      }
       break;
 
    case "itilcategories_tree" :
