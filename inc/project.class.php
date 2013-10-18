@@ -37,6 +37,8 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Project Class
+ *
+ * @since version 0.85
 **/
 class Project extends CommonDBTM {
 
