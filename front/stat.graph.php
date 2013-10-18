@@ -103,14 +103,14 @@ switch($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showlink));
+      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showuserlink));
       break;
 
    case "users_id_recipient" :
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showlink));
+      $title   = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"], $showuserlink));
       break;
 
    case "itilcategories_tree" :
