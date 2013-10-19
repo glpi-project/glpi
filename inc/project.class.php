@@ -266,7 +266,7 @@ class Project extends CommonDBTM {
 
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'plan_start_date';
-      $tab[7]['name']            = __('Planned begin date');
+      $tab[7]['name']            = __('Planned start date');
       $tab[7]['datatype']        = 'datetime';
 
       $tab[8]['table']           = $this->getTable();
@@ -276,7 +276,7 @@ class Project extends CommonDBTM {
 
       $tab[9]['table']           = $this->getTable();
       $tab[9]['field']           = 'real_start_date';
-      $tab[9]['name']            = __('Real begin date');
+      $tab[9]['name']            = __('Real start date');
       $tab[9]['datatype']        = 'datetime';
 
       $tab[10]['table']          = $this->getTable();

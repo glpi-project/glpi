@@ -267,7 +267,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (($calendars_id > 0)
              && $calendar->getFromDB($calendars_id)) {
             if (!$calendar->isAWorkingHour(strtotime($input["begin"]))) {
-               Session::addMessageAfterRedirect(__('Begin of the selected timeframe is not a working hour.'),
+               Session::addMessageAfterRedirect(__('Start of the selected timeframe is not a working hour.'),
                                                 false, ERROR);
             }
             if (!$calendar->isAWorkingHour(strtotime($input["end"]))) {
@@ -405,7 +405,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (($calendars_id > 0)
              && $calendar->getFromDB($calendars_id)) {
             if (!$calendar->isAWorkingHour(strtotime($this->fields["begin"]))) {
-               Session::addMessageAfterRedirect(__('Begin of the selected timeframe is not a working hour.'),
+               Session::addMessageAfterRedirect(__('Start of the selected timeframe is not a working hour.'),
                                                 false, ERROR);
             }
             if (!$calendar->isAWorkingHour(strtotime($this->fields["end"]))) {
