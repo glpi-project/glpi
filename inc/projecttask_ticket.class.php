@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
  * ProjectTask_Ticket Class
  *
  * Relation between ProjectTasks and Tickets
+ *
+ * @since version 0.85
 **/
 class ProjectTask_Ticket extends CommonDBRelation{
 
@@ -62,6 +64,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
    static function getTypeName($nb=0) {
       return _n('Link Ticket/Project task','Links Ticket/Project task',$nb);
    }
+
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -90,21 +93,23 @@ class ProjectTask_Ticket extends CommonDBRelation{
       }
       return true;
    }
-   
- 
+
+
    /**
     * Get total duration of tickets linked to a project task
     *
-    * @param  integer $projecttasks_id ID of the project task
+    * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
+    *
     * @return integer total actiontime
    **/
    static function getTicketsTotalActionTime($projecttasks_id) {
       global $DB;
 
       $query = "SELECT SUM(`glpi_tickets`.`actiontime`)
-                  FROM `glpi_projecttasks_tickets`
-                  INNER JOIN `glpi_tickets` ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                  WHERE `glpi_projecttasks_tickets`.`projecttasks_id` = '$projecttasks_id';";
+                FROM `glpi_projecttasks_tickets`
+                INNER JOIN `glpi_tickets`
+                   ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
+                WHERE `glpi_projecttasks_tickets`.`projecttasks_id` = '$projecttasks_id';";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return $DB->result($result, 0, 0);
@@ -112,6 +117,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       }
       return 0;
    }
+
 
    /**
     * Show tickets for a projecttask
@@ -149,23 +155,24 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
-         echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand' method='post'
-                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
+                method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a ticket')."</th></tr>";
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='projecttasks_id' value='$ID'>";
-         $condition = "`glpi_tickets`.`status` NOT IN ('".implode("', '",
-                                                                  array_merge(Ticket::getSolvedStatusArray(),
-                                                                              Ticket::getClosedStatusArray()))."')";
+         $condition = "`glpi_tickets`.`status`
+                        NOT IN ('".implode("', '",
+                                           array_merge(Ticket::getSolvedStatusArray(),
+                                                       Ticket::getClosedStatusArray()))."')";
          Ticket::dropdown(array('used'        => $used,
                                 'entity'      => $projecttask->getEntityID(),
                                 'entity_sons' => $projecttask->isRecursive(),
                                 'condition'   => $condition,
                                 'displaywith' => array('id')));
-                                
+
          echo "</td><td width='20%'>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?projecttasks_id=$ID'>";
          _e('Create a ticket from this task');
