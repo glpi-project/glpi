@@ -78,8 +78,8 @@ class Change_Item extends CommonDBRelation{
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_changes_items`.`changes_id` = `glpi_changes`.`id`
-                   AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'".
+                   AND `glpi_changes_items`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_changes_items`.`itemtype` = '".$item->getType()."'".
                    getEntitiesRestrictRequest(" AND ", "glpi_changes", '', '', true);
 
       $nb = countElementsInTable(array('glpi_changes_items', 'glpi_changes'), $restrict);
