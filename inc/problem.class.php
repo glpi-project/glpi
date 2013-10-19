@@ -1146,7 +1146,7 @@ class Problem extends CommonITILObject {
       echo "<th width='$colsize1%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
       echo "<input type='text' size='90' maxlength=250 name='name' ".
-                " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+             " value=\"".Html::cleanInputText($this->fields["name"])."\">";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1154,7 +1154,7 @@ class Problem extends CommonITILObject {
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
-               $this->fields["content"]."</textarea>";
+             $this->fields["content"]."</textarea>";
       echo "</td></tr>";
 
       if ($ID) {
