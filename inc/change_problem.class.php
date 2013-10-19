@@ -65,6 +65,10 @@ class Change_Problem extends CommonDBRelation{
       return _n('Link Problem/Change','Links Problem/Change',$nb);
    }
 
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
@@ -95,13 +99,15 @@ class Change_Problem extends CommonDBRelation{
          case 'Change' :
             self::showForChange($item);
             break;
+
          case 'Problem' :
             self::showForProblem($item);
             break;
       }
       return true;
    }
-   
+
+
    /**
     * Get search function for the class
     *

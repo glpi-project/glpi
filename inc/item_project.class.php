@@ -35,10 +35,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
 /**
  * Item_Project Class
  *
  *  Relation between Projects and Items
+ *
+ *  @since version 0.85
 **/
 class Item_Project extends CommonDBRelation{
 
@@ -53,9 +56,6 @@ class Item_Project extends CommonDBRelation{
 
 
 
-   /**
-    * @since version 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -73,7 +73,7 @@ class Item_Project extends CommonDBRelation{
       $restrict = " `projects_id` = '".$input['projects_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
                    AND `items_id` = '".$input['items_id']."'";
-      if (countElementsInTable($this->getTable(),$restrict)>0) {
+      if (countElementsInTable($this->getTable(), $restrict) > 0) {
          return false;
       }
       return parent::prepareInputForAdd($input);
@@ -132,13 +132,13 @@ class Item_Project extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td class='right'>";
-
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
-                                                         => $CFG_GLPI["asset_types"],
+                                                      => $CFG_GLPI["asset_types"],
                                                      'entity_restrict'
-                                                         => ($project->fields['is_recursive']
-                                                             ?getSonsOf('glpi_entities', $project->fields['entities_id'])
-                                                             :$project->fields['entities_id'])));
+                                                      => ($project->fields['is_recursive']
+                                                          ?getSonsOf('glpi_entities',
+                                                                     $project->fields['entities_id'])
+                                                          :$project->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='projects_id' value='$instID'>";
@@ -174,15 +174,15 @@ class Item_Project extends CommonDBRelation{
 
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
-            $query = "SELECT `$itemtable`.*,
-                             `glpi_items_projects`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_items_projects`,
-                           `$itemtable`";
+            $query     = "SELECT `$itemtable`.*,
+                                 `glpi_items_projects`.`id` AS IDD,
+                                 `glpi_entities`.`id` AS entity
+                          FROM `glpi_items_projects`,
+                               `$itemtable`";
 
             if ($itemtype != 'Entity') {
                $query .= " LEFT JOIN `glpi_entities`
-                                 ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
+                                 ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`) ";
             }
 
             $query .= " WHERE `$itemtable`.`id` = `glpi_items_projects`.`items_id`

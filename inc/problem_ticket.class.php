@@ -60,6 +60,10 @@ class Problem_Ticket extends CommonDBRelation{
       return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);
    }
 
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
@@ -90,13 +94,15 @@ class Problem_Ticket extends CommonDBRelation{
          case 'Ticket' :
             self::showForTicket($item);
             break;
+
          case 'Problem' :
             self::showForProblem($item);
             break;
       }
       return true;
    }
-   
+
+
    /**
     * Get search function for the class
     *

@@ -575,13 +575,14 @@ class Contract_Item extends CommonDBRelation{
 
          echo "<tr class='tab_bg_1'><td class='right'>";
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
-                                                         => $CFG_GLPI["contract_types"],
+                                                       => $CFG_GLPI["contract_types"],
                                                      'entity_restrict'
-                                                         => ($contract->fields['is_recursive']
-                                                             ?getSonsOf('glpi_entities', $contract->fields['entities_id'])
-                                                             :$contract->fields['entities_id']),
+                                                       => ($contract->fields['is_recursive']
+                                                           ?getSonsOf('glpi_entities',
+                                                                      $contract->fields['entities_id'])
+                                                           :$contract->fields['entities_id']),
                                                      'checkright'
-                                                         => true));
+                                                       => true));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";

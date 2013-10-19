@@ -63,6 +63,12 @@ class Change_Ticket extends CommonDBRelation{
       return _n('Link Ticket/Change','Links Ticket/Change',$nb);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
@@ -87,19 +93,24 @@ class Change_Ticket extends CommonDBRelation{
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
          case 'Change' :
             self::showForChange($item);
             break;
+
          case 'Ticket' :
             self::showForTicket($item);
             break;
       }
       return true;
    }
-   
+
+
    /**
     * Get search function for the class
     *

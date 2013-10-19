@@ -137,11 +137,12 @@ class Item_Problem extends CommonDBRelation{
             $types[] = $key;
          }
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
-                                                         => $types,
+                                                      => $types,
                                                      'entity_restrict'
-                                                         => ($problem->fields['is_recursive']
-                                                             ?getSonsOf('glpi_entities', $problem->fields['entities_id'])
-                                                             :$problem->fields['entities_id'])));
+                                                      => ($problem->fields['is_recursive']
+                                                          ?getSonsOf('glpi_entities',
+                                                                     $problem->fields['entities_id'])
+                                                          :$problem->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";
