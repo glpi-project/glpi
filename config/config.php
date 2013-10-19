@@ -175,7 +175,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
          Session::loadLanguage();
          if (isCommandLine()) {
-            _e('Service is down for maintenance. It will be back up shortly.');
+            _e('Service is down for maintenance. It will be back shortly.');
             echo "\n";
 
          } else {
@@ -183,7 +183,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             echo "<div class='center'>";
 
             echo "<p class='red'>";
-            _e('Service is down for maintenance. It will be back up shortly.');
+            _e('Service is down for maintenance. It will be back shortly.');
             echo "</p>";
             if (isset($CFG_GLPI["maintenance_text"]) && !empty($CFG_GLPI["maintenance_text"])) {
                echo "<p>".$CFG_GLPI["maintenance_text"]."</p>";
@@ -227,7 +227,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
             } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
                echo "<p class='red'>".
-                     __('You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.')."</p>";
+                     __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.')."</p>";
             }
 
          }
