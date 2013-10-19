@@ -138,7 +138,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "<div class='error'>";
    echo "<noscript><p>";
-   _e('You must activate the JavaScript function of your navigator');
+   _e('You must activate the JavaScript function of your browser');
    echo "</p></noscript>";
 
    if (isset($_GET['error'])) {
