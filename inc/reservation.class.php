@@ -788,11 +788,11 @@ class Reservation extends CommonDBChild {
          switch ($options['type']) {
             case 'day' :
                $begin_time = strtotime("+1 day",$begin_time);
-               $end_time = strtotime("+1 day",$end_time);
+               $end_time   = strtotime("+1 day",$end_time);
                while ($begin_time < $repeat_end) {
                   $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
                   $begin_time = strtotime("+1 day",$begin_time);
-                  $end_time = strtotime("+1 day",$end_time);
+                  $end_time   = strtotime("+1 day",$end_time);
                }
                break;
 

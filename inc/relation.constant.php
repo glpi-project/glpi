@@ -405,37 +405,31 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_printertypes"
                         => array('glpi_printers' => 'printertypes_id'),
-                        
+
                   "glpi_projects"
-                        => array(
-                                 'glpi_projects'         => 'projects_id',
+                        => array('glpi_projects'         => 'projects_id',
                                  'glpi_projecttasks'     => 'projects_id',
                                  'glpi_projectteams'     => 'projects_id',
                                  'glpi_changes_projects' => 'projects_id',
-                                 'glpi_items_projects'   => 'projects_id',),
-                                 
+                                 'glpi_items_projects'   => 'projects_id'),
+
                   "glpi_projectstates"
-                        => array(
-                                 'glpi_projects'        => 'projectstates_id',
-                                 'glpi_projecttasks'    => 'projectstates_id',),
-                                 
+                        => array('glpi_projects'        => 'projectstates_id',
+                                 'glpi_projecttasks'    => 'projectstates_id'),
+
                   "glpi_projecttasks"
-                        => array(
-                                 'glpi_projecttasks'         => 'projecttasks_id',
+                        => array('glpi_projecttasks'         => 'projecttasks_id',
                                  'glpi_projecttasks_tickets' => 'projecttasks_id',
-                                 'glpi_projecttaskteams'     => 'projecttasks_id',),
-                                 
+                                 'glpi_projecttaskteams'     => 'projecttasks_id'),
+
                   "glpi_projecttasktypes"
-                        => array(
-                                 'glpi_projecttasks'        => 'projecttasktypes_id'),
-                                 
+                        => array('glpi_projecttasks'   => 'projecttasktypes_id'),
+
                   "glpi_projecttypes"
-                        => array(
-                                 'glpi_projects'        => 'projecttypes_id'),
-                                 
+                        => array('glpi_projects'   => 'projecttypes_id'),
+
                   "glpi_problems"
-                        => array(
-                                 'glpi_changes_problems'   => 'problems_id',
+                        => array('glpi_changes_problems'   => 'problems_id',
                                  'glpi_groups_problems'    => 'problems_id',
                                  'glpi_items_problems'     => 'problems_id',
                                  'glpi_problems_suppliers' => 'problems_id',

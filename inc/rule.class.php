@@ -593,7 +593,7 @@ class Rule extends CommonDBTM {
 
 
          case 'move_rule' :
-            $input = $ma->getInput();
+            $input          = $ma->getInput();
             $collectionname = $input['rule_class_name'].'Collection';
             $rulecollection = new $collectionname();
             if ($rulecollection->canUpdate()) {
@@ -964,8 +964,8 @@ class Rule extends CommonDBTM {
                                       'check_itemtype' => get_class($this),
                                       'check_items_id' => $rules_id,
                                       'container'      => 'mass'.$this->ruleactionclass.$rand,
-                                      'extraparams'   => array('rule_class_name' =>
-                                                                        $this->getType()));
+                                      'extraparams'    => array('rule_class_name'
+                                                                    => $this->getType()));
          Html::showMassiveActions($massiveactionparams);
       }
 
