@@ -1381,9 +1381,9 @@ class Problem extends CommonITILObject {
                                                 $item->getName()));
 
          if (count($_SESSION["glpiactiveentities"]) > 1) {
-            echo "<tr><th colspan='9'>";
+            echo "<tr><th colspan='11'>";
          } else {
-            echo "<tr><th colspan='8'>";
+            echo "<tr><th colspan='10'>";
          }
 
          //TRANS : %d is the number of problems
