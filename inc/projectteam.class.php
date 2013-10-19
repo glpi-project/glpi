@@ -53,11 +53,10 @@ class ProjectTeam extends CommonDBChild {
    static public $itemtype             = 'Project';
    static public $items_id             = 'projects_id';
 
-   static public $available_types = array('User', 'Group', 'Supplier', 'Contact');
-   
+   static public $available_types      = array('User', 'Group', 'Supplier', 'Contact');
+
+
    /**
-    * @since version 0.84
-    *
     * @see CommonDBTM::getNameField()
    **/
    static function getNameField() {
@@ -69,28 +68,39 @@ class ProjectTeam extends CommonDBChild {
       return _n('Project team', 'Project teams', $nb);
    }
 
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
-   
+
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && self::canView())
+          && self::canView()) {
          switch ($item->getType()) {
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(self::getTypeName(1), $item->getTeamCount());
                }
                return self::getTypeName(1);
+         }
       }
       return '';
    }
 
 
+   /**
+    * @param $item
+    *
+    * @return number
+   **/
    static function countForProject(Project $item) {
 
       $restrict = "`glpi_projectteams`.`projects_id` = '".$item->getField('id') ."'";
@@ -108,8 +118,11 @@ class ProjectTeam extends CommonDBChild {
       }
    }
 
+
    /**
     * Get team for a project
+    *
+    * @param u$projects_id
    **/
    static function getTeamFor($projects_id) {
       global $DB;
@@ -132,9 +145,9 @@ class ProjectTeam extends CommonDBChild {
             $team[$type] = array();
          }
       }
-      
+
       return $team;
    }
-   
+
 }
 ?>

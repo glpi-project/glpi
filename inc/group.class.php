@@ -240,8 +240,9 @@ class Group extends CommonTreeDropdown {
       echo "<td>".__('Requester')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
-      echo "</td>";
-      echo "</tr><tr>";
+      echo "</td></tr>";
+
+      echo "<tr  class='tab_bg_1'>";
       echo "<td>".__('Assigned to')."</td><td>";
       Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
@@ -267,12 +268,12 @@ class Group extends CommonTreeDropdown {
       echo "<td>";
       Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td></tr>";
-      echo "<tr><td>"._n('User', 'Users', 2)."</td><td>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._n('User', 'Users', 2)."</td><td>";
       Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td>";
-
       echo "<td colspan='2' class='center'>";
-
       if (!$ID) {
          //TRANS: %s is the datetime of insertion
          printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));

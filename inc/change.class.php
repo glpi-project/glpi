@@ -731,7 +731,7 @@ class Change extends CommonITILObject {
       echo "<th width='$colsize1%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
       echo "<input type='text' size='90' maxlength=250 name='name' ".
-                " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+             " value=\"".Html::cleanInputText($this->fields["name"])."\">";
       echo "</td>";
       echo "</tr>";
 
@@ -740,7 +740,7 @@ class Change extends CommonITILObject {
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
-               $this->fields["content"]."</textarea>";
+             $this->fields["content"]."</textarea>";
       echo "</td>";
       echo "</tr>";
       $options['colspan'] = 3;
