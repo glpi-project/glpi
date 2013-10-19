@@ -2842,8 +2842,9 @@ class CommonDBTM extends CommonGLPI {
 
       if (count($toadd)) {
          foreach ($toadd as $data) {
+            // Do not use SPAN here
             $comment .= sprintf(__('%1$s: %2$s')."<br>",
-                                "<span class='b'>".$data['name'], "</span>".$data['value']);
+                                "<strong>".$data['name'], "</strong>".$data['value']);
          }
       }
 
@@ -3861,7 +3862,7 @@ class CommonDBTM extends CommonGLPI {
                   if (!is_numeric($value)) {
                      return $value;
                   }
-                  
+
                   if (($value == 0)
                       && isset($searchoptions['emptylabel'])) {
                      return $searchoptions['emptylabel'];
@@ -4026,7 +4027,7 @@ class CommonDBTM extends CommonGLPI {
 
             case "color" :
                return Html::showColorField($name, $options);
-               
+
             case "date" :
             case "date_delay" :
                if (isset($options['relative_dates']) && $options['relative_dates']) {
