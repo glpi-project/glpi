@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Ticket_User
+
+/**
+ * CommonITILActor Class
+**/
 abstract class CommonITILActor extends CommonDBRelation {
 
    // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
