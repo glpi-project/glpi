@@ -313,14 +313,14 @@ class Software extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin
           && (countElementsInTable("glpi_rules", "sub_type='RuleSoftwareCategory'") > 0)) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'compute_software_category'] =
-                                                                     __('Recalculate the category');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'compute_software_category']
+            = __('Recalculate the category');
       }
 
       if (Session::haveRightsOr("rule_dictionnary_software", array(CREATE, UPDATE))
            && (countElementsInTable("glpi_rules", "sub_type='RuleDictionnarySoftware'") > 0)) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'replay_dictionnary'] =
-                                                                  __('Replay the dictionary rules');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'replay_dictionnary']
+            = __('Replay the dictionary rules');
       }
 
       if ($isadmin) {
@@ -340,7 +340,7 @@ class Software extends CommonDBTM {
                                                        array $ids) {
 
       switch ($ma->getAction()) {
-         case 'merge':
+         case 'merge' :
             $input = $ma->getInput();
             if (isset($input['item_items_id'])) {
                $items = array();
@@ -363,7 +363,7 @@ class Software extends CommonDBTM {
             }
             return;
 
-         case 'compute_software_category':
+         case 'compute_software_category' :
             $softcatrule = new RuleSoftwareCategoryCollection();
             foreach ($ids as $id) {
                $params = array();
@@ -376,9 +376,9 @@ class Software extends CommonDBTM {
                   $output = $softcatrule->processAllRules(null, $output, $params);
                   //Process rules
                   if (isset($output['softwarecategories_id'])
-                      && $item->update(array('id'       => $id,
+                      && $item->update(array('id' => $id,
                                              'softwarecategories_id'
-                                             => $output['softwarecategories_id']))) {
+                                                  => $output['softwarecategories_id']))) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
