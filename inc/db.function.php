@@ -1296,8 +1296,9 @@ function getUserName($ID, $link=0) {
             if (count($comments)) {
                $user['comment'] = $user['comment'];
                foreach ($comments as $datas) {
+                  // Do not use SPAN here
                   $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                              "<span class='b'>".$datas['name']."</span>",
+                                              "<strong'>".$datas['name']."</strong>",
                                               $datas['value']);
                }
             }
