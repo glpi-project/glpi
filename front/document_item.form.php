@@ -39,7 +39,7 @@ Session::checkCentralAccess();
 $document_item   = new Document_Item();
 
 if (isset($_POST["add"])) {
-   $document_item->check(-1, UPDATE, $_POST);
+   $document_item->check(-1, CREATE, $_POST);
    if ($document_item->add($_POST)) {
       Event::log($_POST["documents_id"], "documents", 4, "document",
                  //TRANS: %s is the user login

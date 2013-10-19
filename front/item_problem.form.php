@@ -38,7 +38,7 @@ Session ::checkLoginUser();
 $item = new Item_Problem();
 
 if (isset($_POST["add"])) {
-   $item->check(-1, UPDATE, $_POST);
+   $item->check(-1, CREATE, $_POST);
 
    if ($item->add($_POST)) {
       Event::log($_POST["problems_id"], "problem", 4, "tracking",
