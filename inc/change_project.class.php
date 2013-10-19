@@ -75,6 +75,10 @@ class Change_Project extends CommonDBRelation{
       return parent::getSearchOptions();
    }
 
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
@@ -105,13 +109,15 @@ class Change_Project extends CommonDBRelation{
          case 'Change' :
             self::showForChange($item);
             break;
+
          case 'Project' :
             self::showForProject($item);
             break;
       }
       return true;
    }
-   
+
+
    /**
     * Show tickets for a project
     *
@@ -176,10 +182,9 @@ class Change_Project extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Change::getTypeName($numrows)."</th>";
-      echo "</tr>";
+      echo "<tr><th colspan='12'>".Change::getTypeName($numrows)."</th></tr>";
       if ($numrows) {
-         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Change',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -271,10 +276,9 @@ class Change_Project extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Project::getTypeName($numrows)."</th>";
-      echo "</tr>";
+      echo "<tr><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
       if ($numrows) {
-         Project::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Project::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Project',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
