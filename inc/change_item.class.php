@@ -82,8 +82,8 @@ class Change_Item extends CommonDBRelation{
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_changes_items`.`changes_id` = `glpi_changes`.`id`
-                   AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'".
+                   AND `glpi_changes_items`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_changes_items`.`itemtype` = '".$item->getType()."'".
                    getEntitiesRestrictRequest(" AND ", "glpi_changes", '', '', true);
 
       $nb = countElementsInTable(array('glpi_changes_items', 'glpi_changes'), $restrict);
@@ -132,11 +132,13 @@ class Change_Item extends CommonDBRelation{
          foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showSelectItemFromItemtypes(array('itemtypes' => $types,
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+                                                      => $types,
                                                      'entity_restrict'
-                                                                 => ($change->fields['is_recursive']
-                                                                     ?getSonsOf('glpi_entities', $change->fields['entities_id'])
-                                                                     :$change->fields['entities_id'])));
+                                                      => ($change->fields['is_recursive']
+                                                          ?getSonsOf('glpi_entities',
+                                                                     $change->fields['entities_id'])
+                                                          :$change->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
