@@ -5985,7 +5985,7 @@ class Ticket extends CommonITILObject {
       foreach ($maxentity as $parent => $maxdate) {
          $conf->getFromDB($parent);
          $conf->update(array('id'            => $conf->fields['id'],
-                             'entities_id'   => $parent,
+                   //          'entities_id'   => $parent,
                              'max_closedate' => $maxdate));
       }
 
