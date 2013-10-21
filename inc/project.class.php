@@ -232,7 +232,7 @@ class Project extends CommonDBTM {
 
       $tab[15]['table']          = $this->getTable();
       $tab[15]['field']          = 'date';
-      $tab[15]['name']           = __('Opening date');
+      $tab[15]['name']           = __('Creation date');
       $tab[15]['datatype']       = 'datetime';
       $tab[15]['massiveaction']  = false;
 
@@ -553,7 +553,7 @@ class Project extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Opening date')."</td>";
+      echo "<td>".__('Creation date')."</td>";
       echo "<td>";
 
       $date = $this->fields["date"];
@@ -800,7 +800,7 @@ class Project extends CommonDBTM {
          echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>"._n('Member', 'Members', 2)."</th>showGantt";
+      echo "<th>"._n('Member', 'Members', 2)."</th>";
       echo "</tr>";
 
       foreach (ProjectTeam::$available_types as $type) {
