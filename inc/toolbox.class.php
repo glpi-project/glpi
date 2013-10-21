@@ -1056,7 +1056,7 @@ class Toolbox {
                  "<span class='b'>".sprintf(__('%1$s: %2$s'), __('Allocated memory'),
                                             sprintf(__('%1$s %2$s'), $showmem, __('Mio'))).
                  "</span>".
-                 "<br>".__('A minimum of 64MB is commonly required for GLPI.').
+                 "<br>".__('A minimum of 64Mio is commonly required for GLPI.').
                  "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
                  "</td>";
             $error = 2;
