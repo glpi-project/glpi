@@ -456,7 +456,6 @@ class DisplayPreference extends CommonDBTM {
          $group  = '';
          $values = array();
          $searchopt   = Search::getCleanedOptions($itemtype);
-
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
                $group = $val;

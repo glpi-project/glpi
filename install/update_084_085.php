@@ -2114,6 +2114,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks");
+      $ADDTODISPLAYPREF['ProjectTask'] = array(2,12,14,5,7,8, 13);
    }
    if (!TableExists('glpi_projecttasktypes')) {
       $query = "CREATE TABLE `glpi_projecttasktypes` (

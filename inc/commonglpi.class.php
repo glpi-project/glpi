@@ -289,7 +289,10 @@ class CommonGLPI {
       }
       if ($data = static::getAdditionalMenuContent()) {
          $newmenu[strtolower($type)]  = $menu;
-         $newmenu                    += $data;
+         // Force overwrite existing menu
+         foreach ($data as $key => $val) {
+            $newmenu[$key] = $val;
+         }
          $newmenu['is_multi_entries'] = true;
          $menu = $newmenu;
       }

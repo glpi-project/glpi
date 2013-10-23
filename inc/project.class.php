@@ -174,6 +174,47 @@ class Project extends CommonDBTM {
       return $ong;
    }
 
+   static function getAdditionalMenuContent() {
+      // No view to project by right on tasks add it
+      if (!static::canView() && Session::haveRight('projecttask', ProjectTask::READMY)) {
+         $menu['project']['title']           = Project::getTypeName(2);
+         $menu['project']['page']            = ProjectTask::getSearchURL(false);
+         $links = static::getAdditionalMenuLinks();
+         if (count($links)) {
+            $menu['project']['links'] = $links;
+         }
+         $menu['project']['options']['task']['title'] = ProjectTask::getTypeName(2);
+         $menu['project']['options']['task']['page']  = ProjectTask::getSearchURL(false);
+         return $menu;
+      }   
+      return false;
+   }
+   static function getAdditionalMenuOptions() {
+      return array('task' => array('title' => ProjectTask::getTypeName(2),
+                                   'page'  => ProjectTask::getSearchURL(false)));
+   }
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since version 0.85
+   **/
+   static function getAdditionalMenuLinks() {
+      global $CFG_GLPI;
+
+      $links = array();
+      if (static::canView() || Session::haveRight('projecttask', ProjectTask::READMY)) {
+         $pic_validate = "<img title=\"".__s('Task','Tasks',2)."\" alt=\"".
+                           __s('Task','Tasks',2)."\" src='".
+                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+
+         $links[$pic_validate] = '/front/projecttask.php';
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
 
    function post_getEmpty() {
 
