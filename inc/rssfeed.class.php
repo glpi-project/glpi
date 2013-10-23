@@ -457,8 +457,12 @@ class RSSFeed extends CommonDBTM {
       $tab[5]['name']                = __('Refresh rate');
       $tab[5]['datatype']            = 'timestamp';
       $tab[5]['min']                 = HOUR_TIMESTAMP;
-      $tab[5]['max']                 = HOUR_TIMESTAMP;
-      $tab[5]['toadd']               = array(DAY_TIMESTAMP);
+      $tab[5]['max']                 = DAY_TIMESTAMP;
+      $tab[5]['step']                = HOUR_TIMESTAMP;
+      $tab[5]['toadd']               = array(5*MINUTE_TIMESTAMP,
+                                             15*MINUTE_TIMESTAMP,
+                                             30*MINUTE_TIMESTAMP,
+                                             45*MINUTE_TIMESTAMP);
       $tab[5]['display_emptychoice'] = false;
       $tab[5]['massiveaction']       = true;
       $tab[5]['searchtype']          = 'equals';
@@ -665,8 +669,12 @@ class RSSFeed extends CommonDBTM {
       Dropdown::showTimeStamp("refresh_rate",
                               array('value'                => $this->fields["refresh_rate"],
                                     'min'                  => HOUR_TIMESTAMP,
-                                    'max'                  => HOUR_TIMESTAMP,
-                                    'toadd'                => array(DAY_TIMESTAMP),
+                                    'max'                  => DAY_TIMESTAMP,
+                                    'step'                 => HOUR_TIMESTAMP,
+                                    'toadd'                => array(5*MINUTE_TIMESTAMP,
+                                                                    15*MINUTE_TIMESTAMP,
+                                                                    30*MINUTE_TIMESTAMP,
+                                                                    45*MINUTE_TIMESTAMP),
                                     'display_emptychoice'  => false));
       echo "</td></tr>\n";
 
