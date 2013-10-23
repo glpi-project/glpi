@@ -56,7 +56,22 @@ class Notepad extends CommonDBChild {
       return array($this->fields['itemtype'], $this->fields['items_id']);
    }
 
+   function canCreateItem() {
+      if (isset($this->fields['itemtype'])
+         && $item = getItemForItemtype($this->fields['itemtype'])) {
+         return Session::haveRight($item::$rightname, UPDATENOTE);
+      }
+      return false;
+   }
 
+   function canUpdateItem() {
+      if (isset($this->fields['itemtype'])
+         && $item = getItemForItemtype($this->fields['itemtype'])) {
+         return Session::haveRight($item::$rightname, UPDATENOTE);
+      }
+      return false;
+   }
+   
    function prepareInputForAdd($input) {
       $input['users_id'] = Session::getLoginUserID();
       $input['users_id_lastupdater'] = Session::getLoginUserID();
@@ -159,8 +174,13 @@ class Notepad extends CommonDBChild {
                   echo "</div>";
                   echo "<div class='boxnotecontent pointer'>";
                      echo "<div class='boxnotetext'>";
-                     echo "<a href='#$id' onclick=\"".Html::jsHide("view$id")." ".Html::jsShow("edit$id")."\">";
-                     echo nl2br($note['content']).'</a></div>';
+                     $content = nl2br($note['content']);
+                     if ($canedit) {
+                        $content ="<a href='#$id' onclick=\"".Html::jsHide("view$id")." ".
+                                    Html::jsShow("edit$id")."\">".$content.'</a>';
+                     }
+                     echo $content.'</div>';
+                     
                      echo "<div class='floatright'>";
                      $username = NOT_AVAILABLE;
                      if ($note['users_id_lastupdater']) {
@@ -176,20 +196,22 @@ class Notepad extends CommonDBChild {
                      echo "</div>";
                   echo "</div>";
                echo "</div>";
-               echo "<div class='boxnote starthidden' id='edit$id'>";
-                  echo "<div class='boxnoteleft'></div>";
-                  echo "<div class='boxnotecontent'>";
-                  echo "<form name='update_form$id$rand' id='update_form$id$rand' ";
-                  echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
-                  echo Html::hidden('id', array('value' => $note['id']));
-                  echo "<textarea name='content' rows=5 cols=100>".$note['content']."</textarea>";
-                  echo "<div class='boxnoteright'>";
-                  echo Html::submit(_x('button','Update'), array('name' => 'update'));
+               if ($canedit) {
+                  echo "<div class='boxnote starthidden' id='edit$id'>";
+                     echo "<div class='boxnoteleft'></div>";
+                     echo "<div class='boxnotecontent'>";
+                     echo "<form name='update_form$id$rand' id='update_form$id$rand' ";
+                     echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
+                     echo Html::hidden('id', array('value' => $note['id']));
+                     echo "<textarea name='content' rows=5 cols=100>".$note['content']."</textarea>";
+                     echo "<div class='boxnoteright'>";
+                     echo Html::submit(_x('button','Update'), array('name' => 'update'));
+                     echo "</div>";
+                     Html::closeForm();
+                     echo "</div>";
+                     echo "</div>";
                   echo "</div>";
-                  Html::closeForm();
-                  echo "</div>";
-                  echo "</div>";
-               echo "</div>";
+               }
             echo "</div>";
          }
 //          echo "</div>";

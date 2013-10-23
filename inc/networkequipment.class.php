@@ -46,7 +46,7 @@ class NetworkEquipment extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
    static $rightname                   = 'networking';
-
+   protected $usenotepadrights = true;
 
    /**
     * Name of the type

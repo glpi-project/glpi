@@ -46,6 +46,7 @@ class Software extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
    static $rightname                   = 'software';
+   protected $usenotepadrights = true;
 
    static function getTypeName($nb=0) {
       return _n('Software', 'Software', $nb);

@@ -46,6 +46,7 @@ class Document extends CommonDBTM {
    static protected $forward_entity_to = array('Document_Item');
 
    static $rightname                   = 'document';
+   protected $usenotepadrights = true;
 
 
    static function getTypeName($nb=0) {

@@ -49,6 +49,7 @@ class Problem extends CommonITILObject {
    public $supplierlinkclass = 'Problem_Supplier';
 
    static $rightname         = 'problem';
+   protected $usenotepadrights = true;
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';

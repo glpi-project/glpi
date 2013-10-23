@@ -47,6 +47,7 @@ class Phone extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
    static $rightname                   = 'phone';
+   protected $usenotepadrights = true;
 
 
 

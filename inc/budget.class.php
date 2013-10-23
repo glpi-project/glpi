@@ -44,7 +44,7 @@ class Budget extends CommonDropdown{
    public $dohistory = true;
 
    static $rightname = 'budget';
-
+   protected $usenotepadrights = true;
 
    static function getTypeName($nb=0) {
       return _n('Budget', 'Budgets', $nb);

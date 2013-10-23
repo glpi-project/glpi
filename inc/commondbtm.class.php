@@ -78,6 +78,9 @@ class CommonDBTM extends CommonGLPI {
    /// Profile name
    static $rightname = '';
 
+   /// Is this item use notepad ?
+   protected $usenotepadrights = false;
+   
    /// FLush mail queue for
    public $mailqueueonaction = false;
 
@@ -2338,6 +2341,8 @@ class CommonDBTM extends CommonGLPI {
              && ($this->fields['users_id'] === Session::getLoginUserID())) {
             return true;
          }
+         if (!static::canCreate()) echo 'ii';
+         if (!$this->canCreateItem()) echo 'jj';
          return (static::canCreate() && $this->canCreateItem());
 
       }
@@ -4284,7 +4289,7 @@ class CommonDBTM extends CommonGLPI {
          $values[DELETE] = array('short' => __('Delete'),
                                  'long'  => _x('button', 'Put in dustbin'));
       }
-      if ($this->isField("notepad")) {
+      if ($this->usenotepadrights) {
          $values[READNOTE] = array('short' => __('Read note'),
                                    'long' => __("Read the item's note"));
          $values[UPDATENOTE] = array('short' => __('Update note'),

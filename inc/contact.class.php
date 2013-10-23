@@ -44,6 +44,7 @@ class Contact extends CommonDBTM{
    public $dohistory = true;
 
    static $rightname = 'contact_enterprise';
+   protected $usenotepadrights = true;
 
 
 

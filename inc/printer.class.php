@@ -47,6 +47,7 @@ class Printer  extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
    static $rightname                   = 'printer';
+   protected $usenotepadrights = true;
 
 
 
