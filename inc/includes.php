@@ -99,9 +99,10 @@ if (isset($_REQUEST)) {
 }
 
 if (isset($_FILES)) {
-   if (Toolbox::get_magic_quotes_gpc()) {
-      $_FILES = array_map(array('Toolbox', 'stripslashes_deep'), $_FILES);
-   }
+   // GPC do not filter $_FILES
+//    if (Toolbox::get_magic_quotes_gpc()) {
+//       $_FILES = array_map(array('Toolbox', 'stripslashes_deep'), $_FILES);
+//    }
    $_FILES = array_map(array('Toolbox','addslashes_deep'), $_FILES);
    $_FILES = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_FILES);
 }
