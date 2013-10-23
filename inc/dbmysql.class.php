@@ -735,9 +735,37 @@ class DBmysqlIterator  implements Iterator {
 
          // ORDER BY
          if (is_array($orderby)) {
-            $this->sql .= " ORDER BY `".implode("`, `",$orderby)."`";
+            $cleanorderby = array();
+            foreach ($orderby as $o) {
+               $new = '';
+               $tmp = explode(' ',$o);
+               // Already strip
+               if ($tmp[0][0] == '`') {
+                  $new .= $tmp[0];
+               } else {
+                  $new .= '`'.$tmp[0].'`';
+               }
+               // ASC OR DESC added
+               if (isset($tmp[1]) && in_array($tmp[1],array('ASC', 'DESC'))) {
+                  $new .= ' '.$tmp[1];
+               }
+               $cleanorderby[] = $new;
+            }
+            
+            $this->sql .= " ORDER BY ".implode(", ",$cleanorderby);
          } else if (!empty($orderby)) {
-            $this->sql .= " ORDER BY `$orderby`";
+            $this->sql .= " ORDER BY ";
+            $tmp = explode(' ',$orderby);
+            // Already strip
+            if ($tmp[0][0] == '`') {
+               $this->sql .= $tmp[0];
+            } else {
+               $this->sql .= '`'.$tmp[0].'`';
+            }
+            // ASC OR DESC added
+            if (isset($tmp[1]) && in_array($tmp[1],array('ASC', 'DESC'))) {
+               $this->sql .= ' '.$tmp[1];
+            }
          }
 
          if (is_numeric($limit) && ($limit > 0)) {

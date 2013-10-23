@@ -84,7 +84,7 @@ class Printer  extends CommonDBTM {
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
-      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 

@@ -117,7 +117,7 @@ class ConsumableItem extends CommonDBTM {
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Document_Item',$ong, $options);
       $this->addStandardTab('Link', $ong, $options);
-      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
 
       return $ong;
    }

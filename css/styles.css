@@ -54,6 +54,9 @@ span.invisible {
    visibility: hidden;
 }
 
+.starthidden {
+   display: none;
+}
 
 /* separateur pour rétablir les comportements de block */
 div.sep {
@@ -1180,8 +1183,46 @@ div#tabcontent {
    margin: 0 auto;
 }
 
+/* ################--------------- Notepad  ---------------#################### */
 
+.boxnote {
+   margin: auto;
+   width: 80%;
+   text-align: left;
+   border-radius:10px;
+   -moz-border-radius:10px;
+   -webkit-border-radius:10px;
+   background: #e7e7e2;
+   margin-bottom: 5px;
+   position:relative;
+   overflow: auto;
+}
 
+.boxnoteleft {
+   float: left;
+   width: 100px;
+   min-height: 60px;
+   height: 100%;
+   padding: 4px;
+}
+.boxnotecontent {
+   float: left;
+   padding: 4px;
+/*   top:  -60px;
+   left: 110px;*/
+/*    width: 300px; */
+}
+.boxnoteright {
+   float: right;
+/*   top:  0px;
+   left: 0px;*/
+   width: 100px;
+   min-height: 60px;
+   padding: 4px;
+}
+.boxnotetext {
+   padding: 10px;
+}
 /* ################--------------- box (redirect and other)  ---------------#################### */
 
 .box {
@@ -1190,6 +1231,9 @@ div#tabcontent {
    text-align:center;
 
 }
+
+
+
 .box-tleft {
    background:transparent url(../pics/corners.gif) no-repeat 0 0;
    zoom:1;
