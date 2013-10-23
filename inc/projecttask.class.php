@@ -81,7 +81,42 @@ class ProjectTask extends CommonDBChild {
       $this->fields['percent_done'] = 0;
    }
 
+   /// Is the current user in the team ?
+   function isInTheTeam() {
+      if (isset($this->team['User']) && count($this->team['User'])) {
+         foreach ($this->team['User'] as $data) {
+            if ($data['items_id'] == Session::getLoginUserID()) {
+               return true;
+            }
+         }
+      }
 
+      if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
+         && isset($this->team['Group']) && count($this->team['Group'])) {
+         foreach ($_SESSION['glpigroups'] as $groups_id) {
+            foreach ($this->team['Group'] as $data) {
+               if ($data['items_id'] == $groups_id) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+   /// Is the current user in manager group ?
+   function isInTheManagerGroup() {
+      if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
+         && $this->fields['groups_id']) {
+         foreach ($_SESSION['glpigroups'] as $groups_id) {
+            if ($this->fields['groups_id'] == $groups_id) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+   
    /**
     * Get team member count
     *
