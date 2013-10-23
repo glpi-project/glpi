@@ -67,7 +67,26 @@ class Project extends CommonDBTM {
       return Session::haveRightsOr(self::$rightname, array(self::READALL, self::READMY));
    }
 
+   /**
+    * Is the current user have right to show the current project ?
+    *
+    * @return boolean
+   **/
+   function canViewItem() {
 
+      if (!Session::haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      print_r($this);
+      return (Session::haveRight(self::$rightname, self::READALL)
+               || (Session::haveRight(self::$rightname, self::READMY) &&
+                  (($this->fields["users_id"] === Session::getLoginUserID())
+                     || $this->isInTheManagerGroup()
+                     || $this->isInTheTeam()
+                  ))
+             );
+   }
+   
    /**
     * Is the current user have right to create the current change ?
     *
@@ -169,6 +188,41 @@ class Project extends CommonDBTM {
       $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
    }
 
+   /// Is the current user in the team ?
+   function isInTheTeam() {
+      if (isset($this->team['User']) && count($this->team['User'])) {
+         foreach ($this->team['User'] as $data) {
+            if ($data['items_id'] == Session::getLoginUserID()) {
+               return true;
+            }
+         }
+      }
+   
+      if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
+         && isset($this->team['Group']) && count($this->team['Group'])) {
+         foreach ($_SESSION['glpigroups'] as $groups_id) {
+            foreach ($this->team['Group'] as $data) {
+               if ($data['items_id'] == $groups_id) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+   /// Is the current user in manager group ?
+   function isInTheManagerGroup() {
+      if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
+         && $this->fields['groups_id']) {
+         foreach ($_SESSION['glpigroups'] as $groups_id) {
+            if ($this->fields['groups_id'] == $groups_id) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
 
    /**
     * Get team member count
