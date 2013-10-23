@@ -563,19 +563,11 @@ class SoftwareLicense extends CommonDBTM {
                                      sprintf(__('%1$s = %2$s'), Software::getTypeName(1),
                                              $software->getName()));
 
-      if ($number < 1) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('No item found')."</th></tr>\n";
-
-         if ($canedit) {
-            echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                   _sx('button', 'Add a license')."</a>";
-            echo "</td></tr>\n";
-         }
-
-         echo "</table></div>\n";
-         return;
+      if ($canedit) {
+         echo "<div class='center firstbloc'>";
+         echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
+                  _sx('button', 'Add a license')."</a>";
+         echo "</div>";
       }
 
       // Display the pager
@@ -705,14 +697,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "<td class='numeric'>".(($tot > 0)?$tot."":__('Unlimited')).
                  "</td>";
             echo "<td class='numeric'>".$tot_assoc."</td>";
-            echo "<td colspan='4' class='center'>";
-
-            if ($canedit) {
-               echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                      _sx('button', 'Add a license')."</a>";
-            }
-
-            echo "</td></tr>";
+            echo "</tr>";
             echo "</table>\n";
 
             if ($showmassiveactions) {

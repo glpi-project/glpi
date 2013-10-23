@@ -520,6 +520,14 @@ class ProjectTask extends CommonDBChild {
 
       echo "<div class='spaced'>";
 
+
+      if ($canedit) {
+         echo "<div class='center firstbloc'>";
+         echo "<a class='vsubmit' href='projecttask.form.php?projects_id=$ID'>".
+                  _x('button', 'Add a task')."</a>";
+         echo "</div>";
+      }
+            
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname,
@@ -597,12 +605,7 @@ class ProjectTask extends CommonDBChild {
             }
 
             echo "<tr class='tab_bg_1'><td class='right b' colspan='1'>".__('Total')."</td>";
-            echo "<td class='numeric b'>$tot</td><td>";
-            if ($canedit) {
-               echo "<a class='vsubmit' href='projecttask.form.php?projects_id=$ID'>".
-                      _x('button', 'Add a task')."</a>";
-            }
-            echo "</td></tr>";
+            echo "<td class='numeric b'>$tot</td></tr>";
             echo "</table>\n";
 
          } else {
