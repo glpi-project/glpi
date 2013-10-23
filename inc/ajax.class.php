@@ -290,7 +290,7 @@ class Ajax {
 
       $rand = mt_rand();
       if (count($tabs) > 0) {
-
+         
          echo "<div id='tabs$rand' class='center'>";
          echo "<ul>";
          $current = 0;
@@ -344,14 +344,18 @@ class Ajax {
          }
          $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
 
-         /// TODO : add new parameters to default URL !!
          $js .=  "// force reload
             function reloadTab(add) {
-               var current_index = $('#tabs$rand').tabs('option','selected');
-               $('#tabs$rand').tabs('option', 'ajaxOptions', { data: add });
-               $('#tabs$rand').tabs( 'load' , current_index);
-               $('#tabs$rand').tabs('option', 'ajaxOptions', { data: {} });
-            }";
+               var current_index = $('#tabs$rand').tabs('option','active');
+               if(current_index != 0){
+                  // Save tab
+                  currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
+                  $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
+                  $('#tabs$rand').tabs( 'load' , current_index);
+                  // Restore tab
+                  $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
+               }
+            };";
          echo Html::scriptBlock($js);
       }
    }

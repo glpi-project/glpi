@@ -4712,7 +4712,7 @@ class Html {
    **/
    static function scriptBlock($script) {
 
-      $script = "\n" . '//<![CDATA[' . "\n$( document ).ready(function() {\n" . $script . "\n});\n" . '//]]>' . "\n";
+      $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";
 
       return sprintf('<script type="text/javascript">%s</script>', $script);
    }
