@@ -76,7 +76,31 @@ class RuleTicket extends Rule {
       return count($this->getActions());
    }
 
+   /**
+    * display title for action form
+   **/
+   function getTitleAction() {
 
+      parent::getTitleAction();
+      $showwarning = false;
+      if (isset($this->actions)) {
+         foreach ($this->actions as $key => $val) {
+            if (isset($val->fields['field'])) {
+               if (in_array($val->fields['field'], array('impact', 'urgency'))) {
+                  $showwarning = true;
+               }
+            }
+         }
+      }
+      if ($showwarning) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><td>".
+               __('Urgency or impact used in actions, think to add Prioriy: recompute action if needed.').
+               "</td></tr>\n";
+         echo "</table><br>";
+      }
+   }
+   
    /**
     * @param $params
    **/
