@@ -77,7 +77,6 @@ class Project extends CommonDBTM {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      print_r($this);
       return (Session::haveRight(self::$rightname, self::READALL)
                || (Session::haveRight(self::$rightname, self::READMY) &&
                   (($this->fields["users_id"] === Session::getLoginUserID())
