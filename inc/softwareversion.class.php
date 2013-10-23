@@ -258,6 +258,13 @@ class SoftwareVersion extends CommonDBChild {
 
       echo "<div class='spaced'>";
 
+            if ($canedit) {
+               echo "<div class='center firstbloc'>";
+               echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
+                      _x('button', 'Add a version')."</a>";
+               echo "</div>";
+            }
+            
       $query = "SELECT `glpi_softwareversions`.*,
                        `glpi_states`.`name` AS sname
                 FROM `glpi_softwareversions`
@@ -297,12 +304,7 @@ class SoftwareVersion extends CommonDBChild {
             }
 
             echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".__('Total')."</td>";
-            echo "<td class='numeric b'>$tot</td><td>";
-            if ($canedit) {
-               echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
-                      _x('button', 'Add a version')."</a>";
-            }
-            echo "</td></tr>";
+            echo "<td class='numeric b'>$tot</td></tr>";
             echo "</table>\n";
 
          } else {
