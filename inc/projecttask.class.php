@@ -51,7 +51,8 @@ class ProjectTask extends CommonDBChild {
    static public $items_id  = 'projects_id';
 
    protected $team          = array();
-
+   static $rightname                   = 'project';
+   
    const READMY      = 1;
    const UPDATEMY    = 1024;
    
@@ -306,27 +307,24 @@ class ProjectTask extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Planned duration')."</td>";
       echo "<td>";
-      $toadd = array();
-      for ($i=9 ; $i<=100 ; $i++) {
-         $toadd[] = $i*HOUR_TIMESTAMP;
-      }
+
       Dropdown::showTimeStamp("planned_duration",
                               array('min'             => 0,
-                                    'max'             => 8*HOUR_TIMESTAMP,
+                                    'max'             => 100*HOUR_TIMESTAMP,
+                                    'step'            => HOUR_TIMESTAMP,
                                     'value'           => $this->fields["planned_duration"],
                                     'addfirstminutes' => true,
-                                    'inhours'         => true,
-                                    'toadd'           => $toadd));
+                                    'inhours'         => true));
       echo "</td>";
       echo "<td>".__('Effective duration')."</td>";
       echo "<td>";
       Dropdown::showTimeStamp("effective_duration",
                               array('min'             => 0,
-                                    'max'             => 8*HOUR_TIMESTAMP,
+                                    'max'             => 100*HOUR_TIMESTAMP,
+                                    'step'            => HOUR_TIMESTAMP,
                                     'value'           => $this->fields["effective_duration"],
                                     'addfirstminutes' => true,
-                                    'inhours'         => true,
-                                    'toadd'           => $toadd));
+                                    'inhours'         => true));
       if ($ID) {
          $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->fields['id']);
          echo "<br>";
@@ -437,11 +435,24 @@ class ProjectTask extends CommonDBChild {
       $tab                          = array();
       $tab['common']                = __('Characteristics');
 
-      $tab[2]['table']              = $this->getTable();
-      $tab[2]['field']              = 'name';
-      $tab[2]['name']               = __('Name');
-      $tab[2]['datatype']           = 'string';
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['massiveaction']   = false; // implicit key==1
 
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false; // implicit field is id
+      $tab[2]['datatype']        = 'number';
+
+      $tab[2]['table']           = 'glpi_projects';
+      $tab[2]['field']           = 'name';
+      $tab[2]['name']            = __('Project');
+      $tab[2]['massiveaction']   = false; 
+      $tab[2]['datatype']        = 'dropdown';
+      
       $tab[13]['table']             = $this->getTable();
       $tab[13]['field']             = 'name';
       $tab[13]['name']              = __('Father');
@@ -514,6 +525,27 @@ class ProjectTask extends CommonDBChild {
       $tab[10]['name']              = __('Real end date');
       $tab[10]['datatype']          = 'datetime';
 
+                                    
+      $tab[11]['table']             = $this->getTable();
+      $tab[11]['field']             = 'planned_duration';
+      $tab[11]['name']              = __('Planned duration');
+      $tab[11]['datatype']          = 'timestamp';
+      $tab[11]['min']               = 0;
+      $tab[11]['max']               = 100*HOUR_TIMESTAMP;
+      $tab[11]['step']              = HOUR_TIMESTAMP;
+      $tab[11]['addfirstminutes']   = true;
+      $tab[11]['inhours']           = true;
+      
+      $tab[17]['table']             = $this->getTable();
+      $tab[17]['field']             = 'effective_duration';
+      $tab[17]['name']              = __('Effective duration');
+      $tab[17]['datatype']          = 'timestamp';
+      $tab[17]['min']               = 0;
+      $tab[17]['max']               = 100*HOUR_TIMESTAMP;
+      $tab[17]['step']              = HOUR_TIMESTAMP;
+      $tab[17]['addfirstminutes']   = true;
+      $tab[17]['inhours']           = true;
+      
       $tab[16]['table']             = $this->getTable();
       $tab[16]['field']             = 'comment';
       $tab[16]['name']              = __('Comments');
