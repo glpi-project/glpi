@@ -60,6 +60,22 @@ class ProjectTask extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = array();
+
+      $values[self::READMY]   = __('See (actor)');
+      $values[self::UPDATEMY] = __('Update (actor)');
+
+      return $values;
+   }
+
+   
    function defineTabs($options=array()) {
 
       $ong = array();

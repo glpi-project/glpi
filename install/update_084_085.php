@@ -1987,7 +1987,7 @@ function update084to085() {
                                                      AND `rights` & ". Change::READMY);
       ProfileRight::updateProfileRightAsOtherRight('projecttask', ProjectTask::UPDATEMY,
                                                    "`name` = 'change'
-                                                     AND `rights` & ".Change::UPDATEMY);
+                                                     AND `rights` & ".Change::READMY);
    }
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
