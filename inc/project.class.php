@@ -183,14 +183,14 @@ class Project extends CommonDBTM {
          if (count($links)) {
             $menu['project']['links'] = $links;
          }
-         $menu['project']['options']['task']['title'] = ProjectTask::getTypeName(2);
+         $menu['project']['options']['task']['title'] = __('My tasks');
          $menu['project']['options']['task']['page']  = ProjectTask::getSearchURL(false);
          return $menu;
       }   
       return false;
    }
    static function getAdditionalMenuOptions() {
-      return array('task' => array('title' => ProjectTask::getTypeName(2),
+      return array('task' => array('title' => __('My tasks'),
                                    'page'  => ProjectTask::getSearchURL(false)));
    }
 
