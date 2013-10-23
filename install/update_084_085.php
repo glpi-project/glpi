@@ -1976,10 +1976,19 @@ function update084to085() {
                                                    "`name` = 'change'
                                                      AND `rights` & ".Change::READALL);
       ProfileRight::updateProfileRightAsOtherRight('project',
-                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ." | ".READNOTE ." | ".UPDATENOTE,
                                                     "`name` = 'change' AND `rights` & (".CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE.')');
    }
+   if (countElementsInTable("glpi_profilerights", "`name` = 'projecttask'") == 0) {
+      ProfileRight::addProfileRights(array('projecttask'));
 
+      ProfileRight::updateProfileRightAsOtherRight('projecttask', ProjectTask::READMY,
+                                                   "`name` = 'change'
+                                                     AND `rights` & ". Change::READMY);
+      ProfileRight::updateProfileRightAsOtherRight('projecttask', ProjectTask::UPDATEMY,
+                                                   "`name` = 'change'
+                                                     AND `rights` & ".Change::UPDATEMY);
+   }
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2148,17 +2157,19 @@ function update084to085() {
                     'waiting'  => CommonITILValidation::WAITING,
                     'accepted' => CommonITILValidation::ACCEPTED,
                     'refused'  => CommonITILValidation::REFUSED);
-   foreach ('glpi_ticketvalidations' as $table) {
-      // Migrate datas
-      foreach ($status as $old => $new) {
-         $query = "UPDATE `$table`
-                   SET `status` = '$new'
-                   WHERE `status` = '$old'";
-         $DB->queryOrDie($query, "0.85 status in $table $old to $new");
-      }
-      $migration->changeField($table, 'status', 'status', 'integer',
-                              array('value' => CommonITILValidation::WAITING));
+   /// TODO : migrate glpi_tickets.global_validation
+   /// TODO : Migrate bookmarks / see predefined request
+   
+   // Migrate datas
+   foreach ($status as $old => $new) {
+      $query = "UPDATE `glpi_ticketvalidations`
+                  SET `status` = '$new'
+                  WHERE `status` = '$old'";
+      $DB->queryOrDie($query, "0.85 status in $table $old to $new");
+      
    }
+   $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
+                           array('value' => CommonITILValidation::WAITING));
 
 
    // ************ Keep it at the end **************
