@@ -619,45 +619,39 @@ class SoftwareLicense extends CommonDBTM {
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
+
+            $columns = array('name'    => __('Name'),
+                           'entity'    => __('Entity'),
+                           'serial'    => __('Serial number'),
+                           'number'    => _x('quantity', 'Number'),
+                           '_affected' => __('Affected computers'),
+                           'typename'  => __('Type'),
+                           'buyname'   => __('Purchase version'),
+                           'usename'   => __('Version in use'),
+                           'expire'    => __('Expiration'));
+            if ($software->isRecursive()) {
+               unset($columns['entity']);
+            }
+            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
+                              (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+
             echo "<table class='tab_cadre_fixehov'><tr>";
+            
             echo "<th>";
             Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
-            echo "<th>".(($sort == "`name`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=name&amp;order=".
-                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
 
-            if ($software->isRecursive()) {
-               // Ereg to search entity in string for match default order
-               echo "<th>".(strstr($sort,"entity")?$sort_img:"").
-                    "<a href='javascript:reloadTab(\"sort=entity&amp;order=".
-                      (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Entity')."</a></th>";
+            foreach ($columns as $key => $val) {
+               // Non order column
+               if ($key[0] == '_') {
+                  echo "<th>$val</th>";
+               } else {
+                  echo "<th>".(($sort == "`$key`") ?$sort_img:"").
+                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+               }
             }
 
-            echo "<th>".(( $sort== "`serial`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                   (($order == "ASC")?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number').
-                 "</a></th>";
-            echo "<th>".(($sort == "`number`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=number&amp;order=".
-                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>"._x('quantity', 'Number').
-                 "</a></th>";
-            echo "<th>".__('Affected computers')."</th>";
-            echo "<th>".(($sort == "`typename`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
-                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Type')."</a></th>";
-            echo "<th>".(($sort == "`buyname`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
-                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Purchase version').
-                 "</a></th>";
-            echo "<th>".(($sort == "`usename`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=usename&amp;order=".
-                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Version in use').
-                 "</a></th>";
-            echo "<th>".(($sort == "`expire`") ?$sort_img:"").
-                 "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
-                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Expiration').
-                 "</a></th>";
             echo "</tr>\n";
 
             $tot_assoc = 0;

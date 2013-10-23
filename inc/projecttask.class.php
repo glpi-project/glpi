@@ -501,20 +501,39 @@ class ProjectTask extends CommonDBChild {
          return false;
       }
 
+      if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
+         $order = "DESC";
+      } else {
+         $order = "ASC";
+      }
+
+      if (!isset($_GET["sort"]) || empty($_GET["sort"])) {
+         $_GET["sort"] = "plan_start_date";
+      }
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
+         $sort = "`".$_GET["sort"]."`";
+      } else {
+         $sort = "`plan_start_date` $order, `name`";
+      }
+      
       $canedit = $project->canEdit($ID);
 
       echo "<div class='spaced'>";
 
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
-                       `glpi_projectstates`.`name` AS sname
+                       `glpi_projectstates`.`name` AS sname,
+                       `father`.`name` AS fname,
+                       `father`.`id` AS fID
                 FROM `glpi_projecttasks`
                 LEFT JOIN `glpi_projecttasktypes`
                    ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
                 LEFT JOIN `glpi_projectstates`
                    ON (`glpi_projectstates`.`id` = `glpi_projecttasks`.`projectstates_id`)
-                WHERE `projects_id` = '$ID'
-                ORDER BY `plan_start_date`, `real_start_date`, `name`";
+                LEFT JOIN `glpi_projecttasks` as father
+                   ON (`father`.`id` = `glpi_projecttasks`.`projecttasks_id`)
+                WHERE `glpi_projecttasks`.`projects_id` = '$ID'
+                ORDER BY $sort $order";
 
       Session::initNavigateListItems('ProjectTask',
             //TRANS : %1$s is the itemtype name,
@@ -525,15 +544,30 @@ class ProjectTask extends CommonDBChild {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre_fixe'><tr>";
-            echo "<th>".self::getTypeName(2)."</th>";
-            echo "<th>".__('Type')."</th>";
-            echo "<th>".__('Status')."</th>";
-            echo "<th>".__('Percent done')."</th>";
-            echo "<th>".__('Planned start date')."</th>";
-            echo "<th>".__('Planned end date')."</th>";
-            echo "<th>".__('Planned duration')."</th>";
-            echo "<th>".__('Effective duration')."</th>";
-            echo "<th>".__('Father')."</th>";
+
+            $columns = array('name'           => self::getTypeName(2),
+                           'tname'            => __('Type'),
+                           'sname'            => __('Status'),
+                           'percent_done'     => __('Percent done'),
+                           'plan_start_date'  => __('Planned start date'),
+                           'plan_end_date'    => __('Planned end date'),
+                           'planned_duration' => __('Planned duration'),
+                           '_effect_duration'  => __('Effective duration'),
+                           'fname'            => __('Father'),);
+            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
+                              (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+
+            foreach ($columns as $key => $val) {
+               // Non order column
+               if ($key[0] == '_') {
+                  echo "<th>$val</th>";
+               } else {
+                  echo "<th>".(($sort == "`$key`") ?$sort_img:"").
+                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+               }
+            }
+            
             echo "</tr>\n";
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
                Session::addToNavigateListItems('ProjectTask',$data['id']);
