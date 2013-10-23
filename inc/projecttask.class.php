@@ -62,6 +62,7 @@ class ProjectTask extends CommonDBChild {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__,$ong, $options);
       $this->addStandardTab('ProjectTaskTeam',$ong, $options);
       $this->addStandardTab('ProjectTask_Ticket',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
@@ -488,16 +489,16 @@ class ProjectTask extends CommonDBChild {
    /**
     * Show tasks of a project
     *
-    * @param $project Project object
+    * @param $item Project or ProjectTask object
     *
     * @return nothing
    **/
-   static function showForProject(Project $project) {
+   static function showFor($item) {
       global $DB, $CFG_GLPI;
 
-      $ID = $project->getField('id');
+      $ID = $item->getField('id');
 
-      if (!$project->canViewItem()) {
+      if (!$item->canViewItem()) {
          return false;
       }
 
@@ -515,8 +516,23 @@ class ProjectTask extends CommonDBChild {
       } else {
          $sort = "`plan_start_date` $order, `name`";
       }
-      
-      $canedit = $project->canEdit($ID);
+
+      $canedit = false;
+      if ($item->getType() =='Project') {
+         $canedit = $item->canEdit($ID);
+      }
+
+      switch ($item->getType()) {
+         case 'Project' :
+            $where = "WHERE `glpi_projecttasks`.`projects_id` = '$ID'";
+            break;
+         case 'ProjectTask' :
+            $where = "WHERE `glpi_projecttasks`.`projecttasks_id` = '$ID'";
+            break;
+         default : // Not available type
+            return;
+            break;
+      }
 
       echo "<div class='spaced'>";
 
@@ -527,7 +543,7 @@ class ProjectTask extends CommonDBChild {
                   _x('button', 'Add a task')."</a>";
          echo "</div>";
       }
-            
+
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname,
@@ -540,14 +556,14 @@ class ProjectTask extends CommonDBChild {
                    ON (`glpi_projectstates`.`id` = `glpi_projecttasks`.`projectstates_id`)
                 LEFT JOIN `glpi_projecttasks` as father
                    ON (`father`.`id` = `glpi_projecttasks`.`projecttasks_id`)
-                WHERE `glpi_projecttasks`.`projects_id` = '$ID'
+                $where
                 ORDER BY $sort $order";
 
       Session::initNavigateListItems('ProjectTask',
             //TRANS : %1$s is the itemtype name,
             //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'), Project::getTypeName(1),
-                                             $project->getName()));
+                                     sprintf(__('%1$s = %2$s'), $item::getTypeName(1),
+                                             $item->getName()));
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -636,6 +652,14 @@ class ProjectTask extends CommonDBChild {
                                                                         = '".$item->getID()."'"));
                }
                return self::getTypeName(2);
+            case __CLASS__ :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              countElementsInTable($this->getTable(),
+                                                                   "projecttasks_id
+                                                                        = '".$item->getID()."'"));
+               }
+               return self::getTypeName(2);
          }
       }
       return '';
@@ -643,9 +667,13 @@ class ProjectTask extends CommonDBChild {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      if ($item->getType() == 'Project') {
-         self::showForProject($item);
+      switch ($item->getType()) {
+         case 'Project' :
+            self::showFor($item);
+            break;
+         case __CLASS__ :
+            self::showFor($item);
+            break;
       }
       return true;
    }
