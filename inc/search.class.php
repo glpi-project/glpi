@@ -4190,8 +4190,9 @@ class Search {
                for ($k=0 ; $k<count($split) ; $k++) {
                   $linkid = ($split[$k] == $data['id']) ? $split2[$k] : $split[$k];
                   if (($linkid > 0) && !isset($displayed[$linkid])) {
-                     $text = sprintf(__('%1$s - %2$s'), $linkid,
-                                     Dropdown::getDropdownName('glpi_tickets', $linkid));
+                     $text  = "<a ";
+                     $text .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$linkid\">";
+                     $text .= Dropdown::getDropdownName('glpi_tickets', $linkid)."</a>";
                      if (count($displayed)) {
                         $out .= "<br>";
                      }

@@ -2215,41 +2215,22 @@ class Ticket extends CommonITILObject {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
-         $tab[40]['table']          = 'glpi_tickets';
-         $tab[40]['field']          = 'name';
-         $tab[40]['name']           = __('All linked tickets');
-         $tab[40]['massiveaction']  = false;
-         $tab[40]['joinparams']     = array('jointype'
-                                              => 'item_item_revert',
-                                            'condition'
-                                              => "AND NEWTABLE.`id` <> `glpi_tickets`.`id`",
-                                            'beforejoin'
-                                              => array('table'
-                                                        => 'glpi_tickets_tickets',
-                                                       'joinparams'
-                                                        => array('jointype' => 'item_item')));
-         $tab[40]['datatype']       = 'dropdown';
-         $tab[40]['forcegroupby']   = true;
 
-         $tab[47]['table']          = 'glpi_tickets';
-         $tab[47]['field']          = 'name';
-         $tab[47]['name']           = __('Duplicated tickets');
-         $tab[47]['massiveaction']  = false;
-         $tab[47]['joinparams']     = array('jointype'
-                                             => 'item_item_revert',
-                                            'condition'
-                                             => "AND NEWTABLE.`id` <> `glpi_tickets`.`id`",
-                                            'beforejoin'
-                                             => array('table'
-                                                       => 'glpi_tickets_tickets',
-                                                      'joinparams'
-                                                       => array('jointype'
-                                                                 => 'item_item',
-                                                                'condition'
-                                                                 => "AND NEWTABLE.`link` = ".
-                                                                     Ticket_Ticket::DUPLICATE_WITH)));
-         $tab[47]['datatype']       = 'dropdown';
-         $tab[47]['forcegroupby']   = true;
+         $tab[40]['table']         = 'glpi_tickets_tickets';
+         $tab[40]['field']         = 'tickets_id_1';
+         $tab[40]['name']          = __('All linked tickets');
+         $tab[40]['massiveaction'] = false;
+         $tab[40]['searchtype']    = 'equals';
+         $tab[40]['joinparams']    = array('jointype' => 'item_item');
+
+         $tab[47]['table']         = 'glpi_tickets_tickets';
+         $tab[47]['field']         = 'tickets_id_1';
+         $tab[47]['name']          = __('Duplicated tickets');
+         $tab[47]['massiveaction'] = false;
+         $tab[47]['searchtype']    = 'equals';
+         $tab[47]['joinparams']    = array('jointype'  => 'item_item',
+                                           'condition' => "AND NEWTABLE.`link` = ".
+                                                          Ticket_Ticket::DUPLICATE_WITH);
 
          $tab[41]['table']          = 'glpi_tickets_tickets';
          $tab[41]['field']          = 'count';
