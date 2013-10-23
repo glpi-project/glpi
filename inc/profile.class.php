@@ -102,9 +102,10 @@ class Profile extends CommonDBTM {
                } else {
                   /// TODO split it in 2 or 3 tabs
                   $ong[2] = __('Assets');
-                  $ong[3] =  sprintf(__('%1$s/%2$s'), __('Management'), __('Tools'));
                   $ong[4] = __('Assistance');
                   $ong[5] = __('Life cycles');
+                  $ong[3] = __('Management');
+                  $ong[8] = __('Tools');
                   $ong[6] = __('Administration');
                   $ong[7] = __('Setup');
                }
@@ -129,7 +130,7 @@ class Profile extends CommonDBTM {
                break;
 
             case 3 :
-               $item->showFormInventory();
+               $item->showFormManagement();
                break;
 
             case 4 :
@@ -143,8 +144,13 @@ class Profile extends CommonDBTM {
             case 6 :
                $item->showFormAdmin();
                break;
+               
             case 7 :
                $item->showFormSetup();
+               break;
+               
+            case 8 :
+               $item->showFormTools();
                break;
 
          }
@@ -812,14 +818,13 @@ class Profile extends CommonDBTM {
       echo "</div>";
    }
 
-
    /**
-    * Print the Management/Tools rights form for the current profile
+    * Print the Management rights form for the current profile
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
    **/
-   function showFormInventory($openform=true, $closeform=true) {
+   function showFormManagement($openform=true, $closeform=true) {
 
       if (!self::canView()) {
          return false;
@@ -856,6 +861,42 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
+
+      if ($canedit
+          && $closeform) {
+         echo "<div class='center'>";
+         echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "</div>\n";
+         Html::closeForm();
+      }
+      echo "</div>";
+   }
+   
+   /**
+    * Print the Tools rights form for the current profile
+    *
+    * @param $openform  boolean open the form (true by default)
+    * @param $closeform boolean close the form (true by default)
+   **/
+   function showFormTools($openform=true, $closeform=true) {
+
+      if (!self::canView()) {
+         return false;
+      }
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
+
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
+          && $openform) {
+         echo "<form method='post' action='".$this->getFormURL()."'>";
+      }
+
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_2');
+
+
       $rights = array(array('itemtype'  => 'Reminder',
                             'label'     => _n('Public reminder', 'Public reminders', 2),
                             'field'     => 'reminder_public'),
@@ -877,6 +918,13 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = __('Tools');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
+
+      $rights = array(array('itemtype'   => 'Project',
+                            'label'      => _n('Project', 'Projects', 2),
+                            'field'      => 'project'));
+      $matrix_options['title'] = _n('Project', 'Projects', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+      
       if ($canedit
           && $closeform) {
          echo "<div class='center'>";
@@ -1029,13 +1077,6 @@ class Profile extends CommonDBTM {
                             'field'     => 'changevalidation'));
       $matrix_options['title'] = _n('Change', 'Changes', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
-
-      $rights = array(array('itemtype'   => 'Project',
-                            'label'      => _n('Project', 'Projects', 2),
-                            'field'      => 'project'));
-      $matrix_options['title'] = _n('Project', 'Projects', 2);
-      $this->displayRightsChoiceMatrix($rights, $matrix_options);
-
 
       if ($canedit
           && $closeform) {

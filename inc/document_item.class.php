@@ -497,7 +497,6 @@ class Document_Item extends CommonDBRelation{
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-
       if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
          $order = "ASC";
       } else {

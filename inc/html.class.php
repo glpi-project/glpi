@@ -1134,7 +1134,7 @@ class Html {
                                                 'CartridgeItem', 'ConsumableItem', 'Phone' );
 
          $menu['helpdesk']['title']     = __('Assistance');
-         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change', 'Project',
+         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change',
                                                 'Planning', 'Stat', 'TicketRecurrent');
 
          $menu['management']['title']   = __('Management');
@@ -1142,7 +1142,7 @@ class Html {
                                                 'Document');
 
          $menu['tools']['title']        = __('Tools');
-         $menu['tools']['types']        = array('Reminder', 'RSSFeed', 'KnowbaseItem',
+         $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                                 'ReservationItem', 'Report', 'MigrationCleaner');
 
          $menu['plugins']['title']      = __('Plugins');
