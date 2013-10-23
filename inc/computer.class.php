@@ -51,7 +51,8 @@ class Computer extends CommonDBTM {
    var $devices                        = array();
 
    static $rightname                   = 'computer';
-
+   protected $usenotepadrights = true;
+   
    /**
     * Name of the type
     *

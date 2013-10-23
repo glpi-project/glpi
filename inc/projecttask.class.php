@@ -52,6 +52,7 @@ class ProjectTask extends CommonDBChild {
 
    protected $team          = array();
    static $rightname                   = 'project';
+   protected $usenotepadrights = true;
    
    const READMY      = 1;
    const UPDATEMY    = 1024;

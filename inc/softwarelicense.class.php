@@ -47,6 +47,7 @@ class SoftwareLicense extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom');
 
    static $rightname                   = 'software';
+   protected $usenotepadrights = true;
 
 
 

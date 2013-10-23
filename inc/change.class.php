@@ -50,6 +50,7 @@ class Change extends CommonITILObject {
    public $supplierlinkclass  = 'Change_Supplier';
 
    static $rightname          = 'change';
+   protected $usenotepadrights = true;
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
