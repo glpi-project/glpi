@@ -243,10 +243,12 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      return (Session::haveRightsOr(self::$rightname, array(self::READMY, self::READALL))
-              || ($this->fields["users_id_recipient"] === Session::getLoginUserID())
-              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+      return (Session::haveRights(self::$rightname, self::READALL)
+               || (Session::haveRights(self::$rightname, self::READMY) &&
+                  (($this->fields["users_id_recipient"] === Session::getLoginUserID())
+                  || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                  || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+                  ))
               || (Session::haveRight(self::$rightname, self::READGROUP)
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
