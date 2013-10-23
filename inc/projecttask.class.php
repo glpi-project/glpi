@@ -774,38 +774,44 @@ class ProjectTask extends CommonDBChild {
          }
          $real_begin = NULL;
          $real_end   = NULL;
-         // Determine begin / end date of current task if not set (min/max sub projects / tasks)
-         if (!is_null($task->fields['plan_start_date'])) {
-            $real_begin = $task->fields['plan_start_date'];
-         } else {
-            foreach($subtasks as $subtask) {
-               if (is_null($real_begin)
-                   || (!is_null($subtask['from'])
-                       && ($real_begin > $subtask['from']))) {
-                  $real_begin = $subtask['from'];
-               }
-            }
-         }
-         // Use real if not found
-         if (is_null($real_begin) && !is_null($task->fields['real_start_date'])) {
+         // Use real if set
+         if (!is_null($task->fields['real_start_date'])) {
             $real_begin = $task->fields['real_start_date'];
          }
-
-         if (!is_null($task->fields['plan_end_date'])) {
-            $real_end = $task->fields['plan_end_date'];
-         } else {
-            foreach($subtasks as $subtask) {
-               if (is_null($real_end)
-                   || (!is_null($subtask['to'])
-                       && ($real_end < $subtask['to']))) {
-                  $real_end = $subtask['to'];
+         
+         // Determine begin / end date of current task if not set (min/max sub projects / tasks)
+         if (is_null($real_begin)) {
+            if (!is_null($task->fields['plan_start_date'])) {
+               $real_begin = $task->fields['plan_start_date'];
+            } else {
+               foreach($subtasks as $subtask) {
+                  if (is_null($real_begin)
+                     || (!is_null($subtask['from'])
+                        && ($real_begin > $subtask['from']))) {
+                     $real_begin = $subtask['from'];
+                  }
                }
             }
          }
-         // Use real if not found
-         if (is_null($real_end) && !is_null($task->fields['real_end_date'])) {
+
+         // Use real if set
+         if (!is_null($task->fields['real_end_date'])) {
             $real_end = $task->fields['real_end_date'];
          }
+         if (is_null($real_end)) {
+            if (!is_null($task->fields['plan_end_date'])) {
+               $real_end = $task->fields['plan_end_date'];
+            } else {
+               foreach($subtasks as $subtask) {
+                  if (is_null($real_end)
+                     || (!is_null($subtask['to'])
+                        && ($real_end < $subtask['to']))) {
+                     $real_end = $subtask['to'];
+                  }
+               }
+            }
+         }
+
          /// TODO : manage null real_begin / real_end. Do not add and add warning
          // Add current task
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
