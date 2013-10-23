@@ -127,7 +127,7 @@ class Document extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

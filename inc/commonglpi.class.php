@@ -195,12 +195,6 @@ class CommonGLPI {
       }
 
       switch ($itemtype) {
-         case 'Note' :
-            if (READNOTE) {
-               $ong['Note'] = __('Notes');
-            }
-            break;
-
          default :
             if (!is_integer($itemtype)
                 && ($obj = getItemForItemtype($itemtype))) {

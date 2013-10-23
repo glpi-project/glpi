@@ -228,7 +228,7 @@ class Change extends CommonITILObject {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
       /// TODO add stats
-      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

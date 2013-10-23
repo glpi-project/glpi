@@ -2199,8 +2199,8 @@ function update084to085() {
                      WHERE notepad IS NOT NULL
                         AND notepad <>'';";
             foreach ($DB->request($query) as $data) {
-               $iq = "INSERT INTO `glpi_notepads` (`itemtype`, `items_id`, `content`, `date`)
-                  VALUES ('".getItemTypeForTable($t)."', '".$data['id']."', '".addslashes($data['notepad'])."', NOW())";
+               $iq = "INSERT INTO `glpi_notepads` (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
+                  VALUES ('".getItemTypeForTable($t)."', '".$data['id']."', '".addslashes($data['notepad'])."', NOW(), NOW())";
                $DB->queryOrDie($iq, "0.85 migrate notepad data");
             }
             $migration->dropField($t, 'notepad');
