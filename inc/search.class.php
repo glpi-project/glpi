@@ -2560,6 +2560,24 @@ class Search {
             }
             return getEntitiesRestrictRequest("","glpi_profiles_users");
 
+         case 'Project' :
+            $condition = '';
+            if (!Session::haveRight("project", Ticket::READALL)) {
+               $teamtable = 'glpi_projectteams';
+               $condition .= "(`glpi_projects`.users_id = '".Session::getLoginUserID()."'
+                              OR (`$teamtable`.`itemtype` = 'User'
+                                    AND `$teamtable`.`items_id` = '".Session::getLoginUserID()."')";
+               if (count($_SESSION['glpigroups'])) {
+                  $condition .= " OR (`glpi_projects`.`groups_id`
+                                          IN (".implode(",",$_SESSION['glpigroups'])."))";
+                  $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
+                                       AND `$teamtable`.`items_id`
+                                          IN (".implode(",",$_SESSION['glpigroups'])."))";
+               }
+               $condition .= ") ";
+            }
+
+            return $condition;
          case 'Ticket' :
             // Same structure in addDefaultJoin
             $condition = '';
@@ -3288,6 +3306,16 @@ class Search {
                                        array('jointype' => 'child'));
             return $out;
             */
+         case 'Project' :
+            // Same structure in addDefaultWhere
+            $out = '';
+            if (!Session::haveRight("project", Ticket::READALL)) {
+               $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                          "glpi_projectteams", "projectteams_id", 0, 0,
+                                          array('jointype' => 'child'));
+            }
+            return $out;
+            break;
          case 'Ticket' :
             // Same structure in addDefaultWhere
             $out = '';
