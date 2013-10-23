@@ -855,55 +855,58 @@ class Project extends CommonDBTM {
 
          $real_begin = NULL;
          $real_end   = NULL;
-         // Determine begin / end date of current project if not set (min/max sub projects / tasks)
-         if (!is_null($project->fields['plan_start_date'])) {
-            $real_begin = $project->fields['plan_start_date'];
-         } else {
-            foreach ($tasks as $task) {
-               if (is_null($real_begin)
-                   || (!is_null($task['plan_start_date'])
-                       && ($real_begin > $task['plan_start_date']))) {
-                  $real_begin = $task['plan_start_date'];
-               }
-            }
-            foreach ($projects as $p) {
-               if (is_null($real_begin)
-                   || (($p['type'] == 'project')
-                       && !is_null($p['from'])
-                       && ($real_begin > $p['from']))) {
-                  $real_begin = $p['from'];
-               }
-            }
-         }
-         // Use real if not found
-         if (is_null($real_begin)
-             && !is_null($project->fields['real_start_date'])) {
+         // Use real if set
+         if (is_null($project->fields['real_start_date'])) {
             $real_begin = $project->fields['real_start_date'];
          }
-
-         if (!is_null($project->fields['plan_end_date'])) {
-            $real_end = $project->fields['plan_end_date'];
-         } else {
-            foreach ($tasks as $task) {
-               if (is_null($real_end)
-                   || (!is_null($task['plan_end_date'])
-                       && ($real_end < $task['plan_end_date']))) {
-                  $real_end = $task['plan_end_date'];
+         
+         // Determine begin / end date of current project if not set (min/max sub projects / tasks)
+         if (is_null($real_begin)) {
+            if (!is_null($project->fields['plan_start_date'])) {
+               $real_begin = $project->fields['plan_start_date'];
+            } else {
+               foreach ($tasks as $task) {
+                  if (is_null($real_begin)
+                     || (!is_null($task['plan_start_date'])
+                        && ($real_begin > $task['plan_start_date']))) {
+                     $real_begin = $task['plan_start_date'];
+                  }
                }
-            }
-            foreach ($projects as $p) {
-               if (is_null($real_end)
-                   || (($p['type'] == 'project')
-                       && !is_null($p['to'])
-                       && ($real_end < $p['to']))) {
-                  $real_end = $p['to'];
+               foreach ($projects as $p) {
+                  if (is_null($real_begin)
+                     || (($p['type'] == 'project')
+                        && !is_null($p['from'])
+                        && ($real_begin > $p['from']))) {
+                     $real_begin = $p['from'];
+                  }
                }
             }
          }
-         // Use real if not found
-         if (is_null($real_end)
-             && !is_null($project->fields['real_end_date'])) {
+
+         // Use real if set
+         if (!is_null($project->fields['real_end_date'])) {
             $real_end = $project->fields['real_end_date'];
+         }
+         if (is_null($real_end)) {
+            if (!is_null($project->fields['plan_end_date'])) {
+               $real_end = $project->fields['plan_end_date'];
+            } else {
+               foreach ($tasks as $task) {
+                  if (is_null($real_end)
+                     || (!is_null($task['plan_end_date'])
+                        && ($real_end < $task['plan_end_date']))) {
+                     $real_end = $task['plan_end_date'];
+                  }
+               }
+               foreach ($projects as $p) {
+                  if (is_null($real_end)
+                     || (($p['type'] == 'project')
+                        && !is_null($p['to'])
+                        && ($real_end < $p['to']))) {
+                     $real_end = $p['to'];
+                  }
+               }
+            }
          }
 
          /// TODO : manage null real_begin / real_end. Do not add and add warning
