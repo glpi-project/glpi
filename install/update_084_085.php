@@ -48,12 +48,24 @@ function update084to085() {
    $migration->setVersion('0.85');
 
    $backup_tables = false;
-   $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
+   $newtables     = array('glpi_blacklistedmailcontents',
+                           'glpi_changes', 'glpi_changecosts', 'glpi_changes_groups',
+                          'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_projects',
                           'glpi_changes_suppliers',
                           'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_projects', 'glpi_projectstates',
-                          'glpi_projecttypes', 'glpi_projects_items'
+                          'glpi_changetasks', 'glpi_changevalidations',
+                          'glpi_dropdowntranslations',
+                          'glpi_knowbaseitemtranslations',
+                          'glpi_notepads',
+                          'glpi_problemcosts',
+                          'glpi_projects', 'glpi_projects_changes',
+                          'glpi_projectstates', 'glpi_projectteams',
+                          'glpi_projecttypes', 'glpi_projects_items',
+                          'glpi_projecttasks', 'glpi_projecttasks_tickets',
+                          'glpi_projecttaskteams',
+                          'glpi_projecttasktypes',
+                          'glpi_queuedmails'
                           // Only do profilerights once : so not delete it
                           /*, 'glpi_profilerights'*/);
 
@@ -2151,6 +2163,50 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'notepad'));
+   // Create new notepad table
+   if (!TableExists('glpi_notepads')) {
+      $query = "CREATE TABLE `glpi_notepads` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `itemtype` varchar(100) default NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `date` datetime DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
+                  `content` LONGTEXT DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `item` (`itemtype`,`items_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date` (`date`),
+                  KEY `users_id_lastupdater` (`users_id_lastupdater`),
+                  KEY `users_id` (`users_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_notepads");
+
+      $notepad_tables = array('glpi_budgets', 'glpi_cartridgeitems', 'glpi_changes',
+                              'glpi_computers', 'glpi_consumableitems', 'glpi_contacts',
+                              'glpi_contracts', 'glpi_documents', 'glpi_entities',
+                              'glpi_monitors', 'glpi_networkequipments', 'glpi_peripherals',
+                              'glpi_phones', 'glpi_printers', 'glpi_problems', 'glpi_projects',
+                              'glpi_projecttasks', 'glpi_softwares', 'glpi_suppliers');
+
+      foreach ($notepad_tables as $t) {
+         // Migrate data
+         if (FieldExists($t, 'notepad')) {
+            $query = "SELECT id, notepad
+                     FROM `$t`
+                     WHERE notepad IS NOT NULL
+                        AND notepad <>'';";
+            foreach ($DB->request($query) as $data) {
+               $iq = "INSERT INTO `glpi_notepads` (`itemtype`, `items_id`, `content`, `date`)
+                  VALUES ('".getItemTypeForTable($t)."', '".$data['id']."', '".addslashes($data['notepad'])."', NOW())";
+               $DB->queryOrDie($iq, "0.85 migrate notepad data");
+            }
+            $migration->dropField($t, 'notepad');
+         }
+      }
+   }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'ticketvalidations status'));
 
@@ -2166,7 +2222,7 @@ function update084to085() {
       $query = "UPDATE `glpi_ticketvalidations`
                   SET `status` = '$new'
                   WHERE `status` = '$old'";
-      $DB->queryOrDie($query, "0.85 status in $table $old to $new");
+      $DB->queryOrDie($query, "0.85 status in glpi_ticketvalidations $old to $new");
       
    }
    $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
