@@ -60,7 +60,65 @@ class ProjectTask extends CommonDBChild {
       return _n('Task', 'Tasks', $nb);
    }
 
+   static function canView() {
+      return (Session::haveRightsOr(self::$rightname, array(Project::READALL, Project::READMY))
+               || Session::haveRight('projecttask', ProjectTask::READMY));
+   }
 
+   /**
+    * Is the current user have right to show the current task ?
+    *
+    * @return boolean
+   **/
+   function canViewItem() {
+
+      if (!Session::haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      $project = new Project();
+      if ($project->getFromDB($this->fields['projects_id'])) {
+         return (Session::haveRight(self::$rightname, Project::READALL)
+                  || (Session::haveRight(self::$rightname, Project::READMY) &&
+                     (($project->fields["users_id"] === Session::getLoginUserID())
+                        || $project->isInTheManagerGroup()
+                        || $project->isInTheTeam()
+                     ))
+                  || (Session::haveRight('projecttask', ProjectTask::READMY) &&
+                     (($this->fields["users_id"] === Session::getLoginUserID())
+                        || $this->isInTheTeam()
+                     ))
+               );
+      }
+      return false;
+   }
+
+   static function canUpdate() {
+      return (parent::canUpdate()
+            || Session::haveRight('projecttask', self::UPDATEMY));
+   }
+   
+   /**
+    * Is the current user have right to edit the current task ?
+    *
+    * @return boolean
+   **/
+   function canUpdateItem() {
+
+      if (!Session::haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      $project = new Project();
+      if ($project->getFromDB($this->fields['projects_id'])) {
+         return (Session::haveRight(self::$rightname, UPDATE)
+                  || (Session::haveRight('projecttask', ProjectTask::UPDATEMY) &&
+                     (($this->fields["users_id"] === Session::getLoginUserID())
+                        || $this->isInTheTeam()
+                     ))
+               );
+      }
+      return false;
+   }
+   
    /**
     * @since version 0.85
     *
@@ -117,19 +175,6 @@ class ProjectTask extends CommonDBChild {
                if ($data['items_id'] == $groups_id) {
                   return true;
                }
-            }
-         }
-      }
-      return false;
-   }
-
-   /// Is the current user in manager group ?
-   function isInTheManagerGroup() {
-      if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
-         && $this->fields['groups_id']) {
-         foreach ($_SESSION['glpigroups'] as $groups_id) {
-            if ($this->fields['groups_id'] == $groups_id) {
-               return true;
             }
          }
       }
@@ -773,7 +818,6 @@ class ProjectTask extends CommonDBChild {
    **/
    function showTeam(ProjectTask $task) {
       global $DB, $CFG_GLPI;
-
 
       /// TODO : permit to simple add member of project team ?
 
