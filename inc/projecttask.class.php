@@ -52,7 +52,9 @@ class ProjectTask extends CommonDBChild {
 
    protected $team          = array();
 
-
+   const READMY      = 1;
+   const UPDATEMY    = 1024;
+   
    static function getTypeName($nb=0) {
       return _n('Task', 'Tasks', $nb);
    }
