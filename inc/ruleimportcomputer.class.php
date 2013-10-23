@@ -443,7 +443,11 @@ class RuleImportComputer extends Rule {
          }
       }
       if (!$entity_as_criteria) {
-         echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan ='2'>".__('Entity')."</td>";
+         echo "<td>";
+         Dropdown::show('Entity');
+         echo "</td></tr>";
       }
    }
 
