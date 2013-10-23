@@ -111,7 +111,7 @@ class Project extends CommonDBTM {
       unset($values[READ]);
 
       $values[self::READALL] = __('See all');
-      $values[self::READMY]  = __('See (author)');
+      $values[self::READMY]  = __('See (actor)');
 
       return $values;
    }

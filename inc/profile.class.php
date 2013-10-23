@@ -921,7 +921,10 @@ class Profile extends CommonDBTM {
 
       $rights = array(array('itemtype'   => 'Project',
                             'label'      => _n('Project', 'Projects', 2),
-                            'field'      => 'project'));
+                            'field'      => 'project'),
+                      array('itemtype'   => 'ProjectTask',
+                            'label'      => _n('Task', 'Task', 2),
+                            'field'      => 'projecttask'));
       $matrix_options['title'] = _n('Project', 'Projects', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
       
