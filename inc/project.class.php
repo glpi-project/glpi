@@ -105,6 +105,13 @@ class Project extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong    = array();
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(),
+                                             "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
+                  $ong[1] = self::createTabEntry($this->getTypeName(2), $nb);
+               } else {
+                  $ong[1] = $this->getTypeName(2);
+               }
                $ong[2] = __('GANTT');
                return $ong;
          }
@@ -119,6 +126,9 @@ class Project extends CommonDBTM {
       switch ($item->getType()) {
          case __CLASS__ :
             switch ($tabnum) {
+               case 1 :
+                  $item->showChildren();
+                  break;
                case 2 :
                   $item->showGantt($item->getID());
                   break;
@@ -415,7 +425,7 @@ class Project extends CommonDBTM {
 
          // First column
          $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
-
+         /// TODO add color of project state
          if ($item->fields["projectstates_id"]) {
             $first_col = sprintf(__('%1$s - %2$s'), $first_col,
                                  Dropdown::getDropdownName('glpi_projectstates',
@@ -535,6 +545,46 @@ class Project extends CommonDBTM {
       return $input;
    }
 
+   /**
+    * Print the HTML array children of a TreeDropdown
+    *
+    * @return Nothing (display)
+    **/
+   function showChildren() {
+      global $DB, $CFG_GLPI;
+
+      $ID = $this->getID();
+      $this->check($ID, READ);
+      $rand = mt_rand();
+      
+      $query = "SELECT *
+                  FROM `".$this->getTable()."`
+                  WHERE `".$this->getForeignKeyField()."` = '$ID'";
+      if ($result = $DB->query($query)) {
+         $numrows = $DB->numrows($result);
+      }
+
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
+      if ($numrows) {
+         Project::commonListHeader(Search::HTML_OUTPUT);
+         Session::initNavigateListItems('Project',
+                                 //TRANS : %1$s is the itemtype name,
+                                 //        %2$s is the name of the item (used for headings of a list)
+                                         sprintf(__('%1$s = %2$s'), Project::getTypeName(1),
+                                                 $this->fields["name"]));
+
+         $i = 0;
+         while ($data = $DB->fetch_assoc($result)) {
+            Session::addToNavigateListItems('Project', $data["id"]);
+            Project::showShort($data['id'], array('row_num' => $i));
+            $i++;
+         }
+      }
+      echo "</table>";
+      echo "</div>\n";
+   }
 
    /**
     * Print the computer form
