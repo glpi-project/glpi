@@ -243,8 +243,8 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      return (Session::haveRights(self::$rightname, self::READALL)
-               || (Session::haveRights(self::$rightname, self::READMY) &&
+      return (Session::haveRight(self::$rightname, self::READALL)
+               || (Session::haveRight(self::$rightname, self::READMY) &&
                   (($this->fields["users_id_recipient"] === Session::getLoginUserID())
                   || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                   || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
