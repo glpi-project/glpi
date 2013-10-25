@@ -926,6 +926,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input['_stock_image'])) {
             $this->addImagePaste();
             $input['content'] = $this->input['content'];
+            $input['_disablenotif'] = true;
          } else if ($CFG_GLPI["use_rich_text"]) {
             $input['content'] = $this->convertTagToImage($input['content']);
             if(!isset($this->input['_filename'])){
@@ -5595,6 +5596,8 @@ class Ticket extends CommonITILObject {
          
          ksort($this->input['_filename']);
          ksort($this->input['_tag']);
+
+//         $this->input['_forcenotif'] = 1;
       }
   
    }
@@ -5623,6 +5626,25 @@ class Ticket extends CommonITILObject {
          if (isset($matches[1]) && count($matches[1])) {
             $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
          }
+         // TODO : add only image files
+//         $fullpath = GLPI_DOC_DIR."/_uploads/".$doc_data['filename'];
+//         if (function_exists('finfo_open')
+//             && ($finfo = finfo_open(FILEINFO_MIME))) {
+//            $mime = finfo_file($finfo, $fullpath);
+//            finfo_close($finfo);
+//
+//         } else if (function_exists('mime_content_type')) {
+//            $mime = mime_content_type($fullpath);
+//         }
+//         switch($mime){
+//            case 'image/gif':case 'image/jpg':case 'image/jpeg':case 'image/png':
+//               // OK
+//               break;
+//            default:
+//               // NOK
+//               $doc_data = array();
+//               break;
+//         }
       }
 
       if (count($doc_data)) {

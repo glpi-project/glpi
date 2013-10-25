@@ -515,9 +515,10 @@ abstract class CommonITILObject extends CommonDBTM {
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
-         $docadded = $this->addFiles();
+         $docadded = $this->addFiles(1, $input['_disablenotif']);
          if(isset($this->input['_forcenotif'])){
             $input['_forcenotif'] = $this->input['_forcenotif'];
+            unset($input['_disablenotif']);
          }
          if(isset($this->input['content'])){
             $input['content'] = $this->input['content'];
@@ -1531,7 +1532,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($CFG_GLPI["use_rich_text"]) {
          $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
                                                             $docadded);
-         $this->input['_forcenotif'] = 1;
+         $this->input['_forcenotif'] = true;
       } else {
          $this->fields['content'] = $this->setSimpleTextContent($this->input['content']);
          $this->updateInDB(array('content'));
