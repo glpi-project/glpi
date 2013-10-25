@@ -1883,35 +1883,31 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($this->maybeRecursive()){
-            if (Session::isMultiEntitiesMode()){
-                if ((get_class($this) != 'Contract')
-                    || ((get_class($this) == 'Contract')
-                        && ($params['withtemplate'] == 2))) {
-                   echo $LANG['entity'][9]."&nbsp;:&nbsp;";
+            if (Session::isMultiEntitiesMode()) {
+                echo $LANG['entity'][9]."&nbsp;:&nbsp;";
 
-                   if ($params['canedit']) {
-                      if (!$this->can($ID,'recursive')) {
-                         echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                         $comment = $LANG['common'][86];
-                         // CommonDBChild : entity data is get or copy from parent
-
-                      } else if ( $this instanceof CommonDBChild) {
-                         echo Dropdown::getYesNo($this->isRecursive());
-                         $comment = $LANG['common'][91];
-
-                      } else if ( !$this->canUnrecurs()) {
-                         echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                         $comment = $LANG['common'][84];
-
-                      } else {
-                         Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-                         $comment = $LANG['common'][85];
-                      }
-                      echo "&nbsp;";
-                      Html::showToolTip($comment);
-                   } else {
+                if ($params['canedit']) {
+                   if (!$this->can($ID,'recursive')) {
                       echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                      $comment = $LANG['common'][86];
+                      // CommonDBChild : entity data is get or copy from parent
+
+                   } else if ( $this instanceof CommonDBChild) {
+                      echo Dropdown::getYesNo($this->isRecursive());
+                      $comment = $LANG['common'][91];
+
+                   } else if ( !$this->canUnrecurs()) {
+                      echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                      $comment = $LANG['common'][84];
+
+                   } else {
+                      Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
+                      $comment = $LANG['common'][85];
                    }
+                   echo "&nbsp;";
+                   Html::showToolTip($comment);
+                } else {
+                   echo Dropdown::getYesNo($this->fields["is_recursive"]);
                 }
             } else {
                echo "<input type='hidden' name='is_recursive' value='0'>";
