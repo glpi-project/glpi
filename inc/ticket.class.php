@@ -923,11 +923,14 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($this->input['content'])) {
-         if (isset($this->input['stock_image'])) {
+         if (isset($this->input['_stock_image'])) {
             $this->addImagePaste();
             $input['content'] = $this->input['content'];
          } else if ($CFG_GLPI["use_rich_text"]) {
             $input['content'] = $this->convertTagToImage($input['content']);
+            if(!isset($this->input['_filename'])){
+               $input['_donotadddocs'] = true;
+            }
          }
       }
 
@@ -1347,7 +1350,7 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       if (isset($this->input['content'])) {
-         if (isset($this->input['stock_image'])) {
+         if (isset($this->input['_stock_image'])) {
             $this->addImagePaste();
          }
       }
@@ -3180,8 +3183,8 @@ class Ticket extends CommonITILObject {
          }
 
          if ($CFG_GLPI["use_rich_text"]) {
-            Html::initEditorSystem("content$rand", $this->getType());
-            $values["content"] = $this->setRichTextContent("content$rand", $values["content"]);
+            Html::initEditorSystem($content_id, $this->getType());
+            $values["content"] = $this->setRichTextContent($content_id, $values["content"]);
             $cols = 110;
             $rows = 20;
          } else {
@@ -3189,7 +3192,7 @@ class Ticket extends CommonITILObject {
          }
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='content$rand' name='content' cols='80' rows='14'>".
+         echo "<textarea id='$content_id' name='content' cols='80' rows='14'>".
                 $values['content']."</textarea></div>";
          echo "</td></tr>";
       }
@@ -3413,7 +3416,7 @@ class Ticket extends CommonITILObject {
 
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI;
-
+      
       $default_values = self::getDefaultValues();
 
       // Get default values from posted values on reload form
@@ -4190,22 +4193,23 @@ class Ticket extends CommonITILObject {
           || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldValue('content');
          echo "<div></div>";
-         $rand      = mt_rand();
-         $rand_text = mt_rand();
-
-         $cols      = 90;
-         $rows      = 6;
+         $rand       = mt_rand();
+         $rand_text  = mt_rand();
+         $cols       = 90;
+         $rows       = 6;
+         $content_id = "content$rand";
          if ($CFG_GLPI["use_rich_text"]) {
-            $this->fields["content"] = $this->setRichTextContent("content$rand",
-                                                                 $this->fields["content"]);
-            $cols = 110;
+            $this->fields["content"] = $this->setRichTextContent($content_id,
+                                                                 $this->fields["content"],
+                                                                 $rand);
+            $cols = 120;
             $rows = 20;
          } else {
             $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
          }
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='content$rand' name='content' cols='$cols' rows='$rows'>".
+         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
          echo $tt->getEndHiddenFieldValue('content', $this);
 
@@ -4217,50 +4221,6 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      // Permit to add doc when creating a ticket
-      if (!$ID) {
-         echo "<th width='$colsize1%'>";
-         echo $tt->getBeginHiddenFieldText('_documents_id');
-         $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
-         printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
-         // Do not show if hidden.
-         if (!$tt->isHiddenField('_documents_id')) {
-            DocumentType::showAvailableTypesLink();
-         }
-         echo $tt->getEndHiddenFieldText('_documents_id');
-         echo "</th>";
-         echo "<td width='$colsize2%'>";
-         echo $tt->getBeginHiddenFieldValue('_documents_id');
-         echo Html::file(array('multiple' => true));
-         // Do not set values
-         echo $tt->getEndHiddenFieldValue('_documents_id');
-         if ($tt->isPredefinedField('_documents_id')) {
-            if (isset($values['_documents_id'])
-                && is_array($values['_documents_id'])
-                && count($values['_documents_id'])) {
-               echo "<span class='b'>".__('Default documents:').'</span>';
-               echo "<br>";
-               $doc = new Document();
-               foreach ($values['_documents_id'] as $key => $val) {
-                  if ($doc->getFromDB($val)) {
-                     echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
-                     echo "- ".$doc->getNameID()."<br>";
-                  }
-               }
-            }
-         }
-
-         echo "</td>";
-
-      } else {
-         echo "<th colspan='2'>";
-         $docnb = Document_Item::countForItem($this);
-         echo "<a href=\"".$this->getLinkURL()."&amp;forcetab=Document_Item$1\">";
-         //TRANS: %d is the document number
-         echo sprintf(_n('%d associated document', '%d associated documents', $docnb), $docnb);
-         echo "</a></th>";
-      }
-
       if ($view_linked_tickets) {
          echo "<th width='$colsize3%'>". _n('Linked ticket', 'Linked tickets', 2);
          $rand_linked_ticket = mt_rand();
@@ -4296,7 +4256,42 @@ class Ticket extends CommonITILObject {
          Ticket_Ticket::displayLinkedTicketsTo($ID);
          echo "</td>";
       }
-
+      echo "</tr>";
+      
+      // View files added
+      echo "<tr>";
+      // Permit to add doc when creating a ticket
+      echo "<th width='$colsize3%'>";
+      echo $tt->getBeginHiddenFieldText('_documents_id');
+      $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
+      printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
+      // Do not show if hidden.
+      if (!$tt->isHiddenField('_documents_id')) {
+         DocumentType::showAvailableTypesLink();
+      }
+      echo $tt->getEndHiddenFieldText('_documents_id');
+      echo "</th>";
+      echo "<td colspan='2'>";
+      // Do not set values
+      echo $tt->getEndHiddenFieldValue('_documents_id');
+      if ($tt->isPredefinedField('_documents_id')) {
+         if (isset($values['_documents_id'])
+             && is_array($values['_documents_id'])
+             && count($values['_documents_id'])) {
+        
+            echo "<span class='b'>".__('Default documents:').'</span>';
+            echo "<br>";
+            $doc = new Document();
+            foreach ($values['_documents_id'] as $key => $val) {
+               if ($doc->getFromDB($val)) {
+                  echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
+                  echo "- ".$doc->getNameID()."<br>";
+               }
+            }
+         }
+      }
+      echo "<div id='fileupload_info'></div>";
+      echo "</td>";
       echo "</tr>";
 
       if ((!$ID
@@ -4354,6 +4349,24 @@ class Ticket extends CommonITILObject {
             }
          }
       }
+      
+      // File upload system
+      $coslpan = 2;
+      if(!$CFG_GLPI['use_rich_text']){
+         $coslpan = 4;
+      }
+      echo "<tr>";
+      echo "<td colspan='$coslpan'>";
+      echo $tt->getBeginHiddenFieldValue('_documents_id');
+      echo Html::file(array('multiple' => true, 'showfilecontainer' => 'fileupload_info'));
+      echo "</td>";
+      if($CFG_GLPI['use_rich_text']){
+         echo "<td colspan='$coslpan'>";
+         if(!isset($rand)) $rand = mt_rand();
+         echo Html::imagePaste(array('rand' => $rand));
+         echo "</td>";
+      }
+      echo "</tr>";
 
       echo "</table>";
       echo "<input type='hidden' name='id' value='$ID'>";
@@ -5545,70 +5558,45 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Actions done after ADD and before UPDATE of the item in the database
+    * Add image pasted to GLPI doc after ADD and before UPDATE of the item in the database
     *
     * @since version 0.85
     *
     * @return nothing
    **/
    function addImagePaste() {
-
-      $file_put_contents_ok = false;
-      $count_files          = 0;
-
-      if (isset($this->input['_filename'])) {
-         $count_files = count($this->input['_filename']);
-      }
-
-      // Adding each image in textarea as Glpi document
-      if (count($this->input['stock_image']) > 0) {
-         foreach ($this->input['stock_image'] as $image_name => $image) {
-
-            // Create a temporary file
-            $tempfile = GLPI_DOC_DIR."/_tmp/".$image_name.".png";
-
-            // IE decode : the tmp file content
-            if (isset($this->input['IE_support'])) {
-               if (file_put_contents($tempfile,
-                                     base64_decode(str_replace('%0A', '', $image['data'])))) {
-                  $file_put_contents_ok = true;
-               }
-
-            // FF, Chrome : decode the tmp file content
-            } else {
-               $image['data'] = substr($image['data'], strpos($image['data'], ",") + 1);
-               if (file_put_contents($tempfile,
-                                     base64_decode(str_replace(' ', '+', $image['data'])))) {
-                  $file_put_contents_ok = true;
-               }
-
-               // Crop image (coordinates get with Jcrop plugin)
-               if (isset($image['coordinates']) && !empty($image['coordinates'])) {
-                  $image_coordinates = json_decode(urldecode($image['coordinates']), true);
-                  Toolbox::resizePicture($tempfile, $tempfile,
-                                         $image_coordinates['img_w'],
-                                         $image_coordinates['img_h'],
-                                         $image_coordinates['img_y'],
-                                         $image_coordinates['img_x'],
-                                         $image_coordinates['img_w'],
-                                         $image_coordinates['img_h']);
-               } else {
-                  Toolbox::resizePicture($tempfile, $tempfile,0,0,0,0,0,0);
-               }
+      if (count($this->input['_stock_image']) > 0) {
+         $count_files = 0;
+         // Filename
+         if (isset($this->input['_filename'])) {
+            $count_files = count($this->input['_stock_image']);
+            foreach($this->input['_filename'] as $key => $filename){
+               $this->input['_filename'][$count_files] = $filename;
+               $count_files++;
             }
-
-            // Prepare file data for Document add
-            if ($file_put_contents_ok) {
-               $this->input['_filename'][$count_files] =  $image_name.".png";
-               $this->input['_tag'][$count_files]      = '#'.$image_name;// Add a tag on each image
-
-            } else {
-               unlink($tempfile);// destruct tmp file
+            $count_files = count($this->input['_stock_image']);
+            foreach($this->input['_tag_filename'] as $key => $tag){
+               $this->input['_tag'][$count_files] = $tag;
+               $count_files++;
             }
+            unset($this->input['_tag_filename']);
+         }
+
+         // Stock_image
+         foreach ($this->input['_stock_image'] as $key => $filename) {
+            $this->input['_filename'][$key] = $filename;
+         }
+         unset($this->input['_stock_image']);
+         foreach($this->input['_tag_stock_image'] as $key => $tag){
+            $this->input['_tag'][$key] = $tag;
             $count_files++;
          }
-         $this->addFiles(0, 1);
+         unset($this->input['_tag_stock_image']);
+         
+         ksort($this->input['_filename']);
+         ksort($this->input['_tag']);
       }
+  
    }
 
 
@@ -5619,7 +5607,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $content_text         text content of input
     * @param $force_update         force update of content in item (false by default
-    * @param $doc_data       array file names and tags
+    * @param $doc_data       array of filenames and tags
     *
     * @return nothing
    **/
@@ -5631,9 +5619,9 @@ class Ticket extends CommonITILObject {
       // If no doc data available we match all tags in content
       if (!count($doc_data)) {
          $doc = new Document();
-         preg_match_all('/#([a-z0-9]+)/', $content_text, $matches, PREG_PATTERN_ORDER);
-         if (count($matches[0]) > 0) {
-            $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[0]))."')");
+         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text, $matches, PREG_PATTERN_ORDER);
+         if (isset($matches[1]) && count($matches[1])) {
+            $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
          }
       }
 
@@ -5641,11 +5629,11 @@ class Ticket extends CommonITILObject {
          foreach ($doc_data as $id => $image) {
             if (isset($image['tag'])) {
                // Replace tags by image in textarea
-               $img = "<img id='".str_replace('#', '', $image['tag'])."' src='".$CFG_GLPI['root_doc'].
+               $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
                         "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
 
                // Replace tag by the image
-               $content_text = preg_replace('/'.$image['tag'].'/',
+               $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
                                             Html::entities_deep($img), $content_text);
 
                // Replace <br> TinyMce bug
@@ -5692,8 +5680,8 @@ class Ticket extends CommonITILObject {
             // If config display image
             for ($i = 0; $i < $nodeListLength; $i ++) {
                $node = $nodes->item(0);
-               if ($node->getAttribute('id')) {
-                  $tag = $dom->createTextNode('#'.$node->getAttribute('id'));
+               if ($node->getAttribute('alt')) {
+                  $tag = $dom->createTextNode(Document::getImageTag($node->getAttribute('alt')));
                }
                $p = $dom->createElement('p');
                $p->appendChild($tag);
@@ -5723,7 +5711,7 @@ class Ticket extends CommonITILObject {
     * @since version 0.85
     *
     * @param $content_html         html content of input
-    * @param $files         array  of file name
+    * @param $files         array  of filename
     * @param $tags          array  of image tag
     *
     * @return htlm content
@@ -5748,7 +5736,7 @@ class Ticket extends CommonITILObject {
          foreach ($files as $id => $data) {
             if (preg_match("/".$data."/i", $src)) {
                $p   = $dom->createElement('p');
-               $tag = $dom->createTextNode($tags[$id]);
+               $tag = $dom->createTextNode(Document::getImageTag($tags[$id]));
                $p->appendChild($tag);
 
                $node->parentNode->replaceChild($p, $node);
@@ -5778,7 +5766,7 @@ class Ticket extends CommonITILObject {
    **/
    function convertContentForNotification($content, $item) {
       global $CFG_GLPI, $DB;
-
+      
       $tag  = '';
       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
                           html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
@@ -5797,62 +5785,130 @@ class Ticket extends CommonITILObject {
          // If config display image
          for ($i = 0; $i < $nodeListLength; $i++) {
             $node = $nodes->item($i);
-            if ($node->getAttribute('id')) {
-               $tag =  '#'.$node->getAttribute('id');
+            if ($node->getAttribute('alt')) {
+               $tag =  Document::getImageTag($node->getAttribute('alt'));
                $img = $dom->createElement('img');
                $img->setAttribute('src', 'cid:'.$tag);
 
                $node->parentNode->replaceChild($img, $node);
             }
          }
+         
          $content = $dom->saveHTML();
       // If is text content
       } else {
          $doc = new Document();
-         preg_match_all('/#([a-z0-9]+)/', $content, $matches, PREG_PATTERN_ORDER);
-         if (count($matches[0]) > 0) {
-            $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[0]))."')");
+         $doc_data = array();
+         
+         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content, $matches, PREG_PATTERN_ORDER);
+         if (isset($matches[1]) && count($matches[1])) {
+            $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
          }
 
          if (count($doc_data)) {
             foreach ($doc_data as $image) {
                // Replace tags by image in textarea
-               $img = "<img src='cid:".$image['tag']."'/>";
+               $img = "<img src='cid:".Document::getImageTag($image['tag'])."'/>";
 
                // Replace tag by the image
-               $content = preg_replace('/'.$image['tag'].'/', $img, $content);
+               $content = preg_replace('/'.Document::getImageTag($image['tag']).'/', $img, $content);
             }
          }
       }
 
       // Get all attached documents of ticket
-      if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
-
-         $query = "SELECT `glpi_documents_items`.`id` AS assocID,
+      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
                        `glpi_entities`.`id` AS entity,
                        `glpi_documents`.`name` AS assocName,
                        `glpi_documents`.*
-                   FROM `glpi_documents_items`
-                   LEFT JOIN `glpi_documents`
-                     ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
-                   LEFT JOIN `glpi_entities`
-                     ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                   WHERE `glpi_documents_items`.`items_id` = '".$item->fields['id']."'
-                         AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+                FROM `glpi_documents_items`
+                LEFT JOIN `glpi_documents`
+                  ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
+                LEFT JOIN `glpi_entities`
+                  ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                WHERE `glpi_documents_items`.`items_id` = '".$item->fields['id']."'
+                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
-         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
-         $result = $DB->query($query);
+      $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+      $result = $DB->query($query);
 
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               if (!empty($data['id'])) {
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            if (!empty($data['id'])) {
+               // Image document
+               if(!empty($data['tag'])){
+                  $item->documents[] = $data['id'];
+               // Other document
+               } elseif($CFG_GLPI['attach_ticket_documents_to_mail']) {
                   $item->documents[] = $data['id'];
                }
             }
          }
       }
-
+      
       return $content;
+   }
+   
+   /**
+    * Delete tag or image from ticket content
+    *
+    * @since version 0.85
+    *
+    * @param $content : html content of input
+    *
+    * @return htlm content
+   **/
+   function cleanTagOrImage($content, $tags){
+      global $CFG_GLPI;
+      
+      // RICH TEXT : delete img tag
+      if($CFG_GLPI["use_rich_text"]){
+         $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
+                    html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+
+         // We parse HTML with dom
+         libxml_use_internal_errors(true);
+         $dom = new DOMDocument();
+         $dom->loadHTML('<html>'.$html.'</html>');
+         $dom->preserveWhiteSpace = false;
+
+         // We replace each <img> by a <p>
+         $nodes = $dom->getElementsByTagName('img');
+         $nodeListLength = $nodes->length;
+
+         $nodesToDelete = array();
+         for ($i = 0; $i < $nodeListLength; $i++) {
+            $node = $nodes->item($i);
+            if ($id = $node->getAttribute('alt')) {
+               foreach ($tags as $tag) {
+                  if (preg_match("/".$tag."/i", $id)) {
+                     $nodesToDelete[] = $node;
+                  }
+               }
+            } 
+         }
+         
+         foreach($nodesToDelete as $node){ 
+            $p = $dom->createElement('p');
+            $node->parentNode->replaceChild($p, $node);
+         } 
+
+         // Get only body content
+         $doc  = new DOMDocument();
+         $body = $dom->getElementsByTagName('body')->item(0);
+         foreach ($body->childNodes as $child)
+            $doc->appendChild($doc->importNode($child, true));
+
+         return utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
+         
+      // SIMPLE TEXT : delete tag   
+      } else {
+         foreach ($tags as $tag) {
+            $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
+         }
+         
+         return $content;
+      }
    }
 
 
@@ -5888,21 +5944,21 @@ class Ticket extends CommonITILObject {
     *
     * @return $content
    **/
-   function setRichTextContent($name, $content) {
+   function setRichTextContent($name, $content, $rand) {
 
       $content = Html::entity_decode_deep($content);
 
       // Init html editor
-      Html::initEditorSystem($name, $this->getType());
+      Html::initEditorSystem($name, $rand);
 
       // If no html
       if ($content == strip_tags($content)) {
          $content = $this->convertTagToImage($content);
       }
 
-      // If content does not contain <br> html tag, use nl2br
+      // If content does not contain <br> or <p> html tag, use nl2br
       $content = Html::entity_decode_deep($content);
-      if (!preg_match("/<br\s?\/?>/", $content)) {
+      if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
       }
 

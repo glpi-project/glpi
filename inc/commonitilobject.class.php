@@ -516,6 +516,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
          $docadded = $this->addFiles();
+         if(isset($this->input['_forcenotif'])){
+            $input['_forcenotif'] = $this->input['_forcenotif'];
+         }
+         if(isset($this->input['content'])){
+            $input['content'] = $this->input['content'];
+         }
       }
 
       if (isset($input["document"]) && ($input["document"] > 0)) {
@@ -1440,6 +1446,27 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach ($this->input['_filename'] as $key => $file) {
          $docID = 0;
          $filename = GLPI_DOC_DIR."/_tmp/".$file;
+         
+         // Crop/Resize image file if needed
+         if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
+            $image_coordinates = json_decode(urldecode($this->input['_coordinates'][$key]), true);
+            Toolbox::resizePicture($filename, 
+                                   $filename,
+                                   $image_coordinates['img_w'],
+                                   $image_coordinates['img_h'],
+                                   $image_coordinates['img_y'],
+                                   $image_coordinates['img_x'],
+                                   $image_coordinates['img_w'],
+                                   $image_coordinates['img_h']);
+         } else {
+            Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0);
+         }
+         
+         //If file tag is present
+         if (isset($this->input['_tag_filename']) && !empty($this->input['_tag_filename'][$key])) {
+            $this->input['_tag'][$key] = $this->input['_tag_filename'][$key];
+         }
+
          // Check for duplicate
          if ($doc->getFromDBbyContent($this->fields["entities_id"],
                                       $filename)) {
@@ -1447,13 +1474,13 @@ abstract class CommonITILObject extends CommonDBTM {
                $docID = $doc->fields["id"];
             }
 
-            // check sum already exist, we replace the tag by the existing one
+            // File already exist, we replace the tag by the existing one
             if (isset($this->input['_tag'][$key])
                 && ($docID > 0)) {
-               $this->input['content'] = preg_replace('/'.$this->input['_tag'][$key].'/',
-                                                      $doc->fields["tag"],
+               
+               $this->input['content'] = preg_replace('/'.Document::getImageTag($this->input['_tag'][$key]).'/',
+                                                      Document::getImageTag($doc->fields["tag"]),
                                                       $this->input['content']);
-
                $docadded[$docID]['tag'] = $doc->fields["tag"];
             }
 
@@ -1464,6 +1491,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($this->getType() == 'Ticket') {
                $input2["tickets_id"]           = $this->getID();
+               // Insert image tag
                if (isset($this->input['_tag'][$key])) {
                   $input2["tag"]               = $this->input['_tag'][$key];
                }
@@ -1491,6 +1519,9 @@ abstract class CommonITILObject extends CommonDBTM {
                   unset($this->input['_filename'][$key]);
                   unset($this->input['_tag'][$key]);
                }
+               if (isset($this->input['_coordinates'][$key])) {
+                  unset($this->input['_coordinates'][$key]);
+               }
             }
          }
          // Only notification for the first New doc
@@ -1500,6 +1531,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($CFG_GLPI["use_rich_text"]) {
          $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
                                                             $docadded);
+         $this->input['_forcenotif'] = 1;
+      } else {
+         $this->fields['content'] = $this->setSimpleTextContent($this->input['content']);
+         $this->updateInDB(array('content'));
       }
 
       return $docadded;

@@ -1392,7 +1392,7 @@ class MailCollector  extends CommonDBTM {
                if (($structure->type == 5)
                    && $structure->subtype) {
                   end($this->files);
-                  $this->tags[key($this->files)]  = '#'.Toolbox::getRandomString(8);
+                  $this->tags[key($this->files)]  = Rule::getUuid();
                }
             }
          } // fetchbody

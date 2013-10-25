@@ -714,11 +714,7 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
       echo "<span class='red' id='".$id."'></span>";
       echo "</td>";
-
-      echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
-      Dropdown::showYesNo("attach_ticket_documents_to_mail",
-                          $CFG_GLPI["attach_ticket_documents_to_mail"]);
-      echo "</td></tr>";
+      echo "</tr>";
 
       echo "</table>";
 
