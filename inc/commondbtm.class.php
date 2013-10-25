@@ -1882,8 +1882,11 @@ class CommonDBTM extends CommonGLPI {
          // is recursive but cannot be change
 
       } else {
-         if ($this->maybeRecursive()) {
-            if (Session::isMultiEntitiesMode()) {
+         if ($this->maybeRecursive()){
+            if (Session::isMultiEntitiesMode()){
+                if ((get_class($this) != 'Contract')
+                    || ((get_class($this) == 'Contract')
+                        && ($params['withtemplate'] == 2))) {
                echo $LANG['entity'][9]."&nbsp;:&nbsp;";
 
                if ($params['canedit']) {
@@ -1909,6 +1912,7 @@ class CommonDBTM extends CommonGLPI {
                } else {
                   echo Dropdown::getYesNo($this->fields["is_recursive"]);
                }
+                }
             } else {
                echo "<input type='hidden' name='is_recursive' value='0'>";
             }
