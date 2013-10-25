@@ -2070,7 +2070,6 @@ class CommonDBTM extends CommonGLPI {
          // is recursive but cannot be change
 
       } else {
-         toolbox::logdebug("thos", $this);
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()
                 && ((get_class($this) == 'Contract')
