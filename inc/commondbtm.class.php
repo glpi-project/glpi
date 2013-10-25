@@ -2071,36 +2071,39 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($this->maybeRecursive()) {
-            if (Session::isMultiEntitiesMode()
-                && ((get_class($this) == 'Contract')
-                    && ($this->input['withtemplate']) == 2)) {
-               echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>".
-                    "<th class='right'>".__('Child entities')."</th><th>";
+            if (Session::isMultiEntitiesMode()) {
+               if ((get_class($this) != 'Contract')
+                   || ((get_class($this) == 'Contract')
+                       && ($params['withtemplate'] == 2))) {
 
-               if ($params['canedit']) {
-                  if (!$this->can($ID,'recursive')) {
-                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = __('You are not allowed to change the visibility flag for child entities.');
-                     // CommonDBChild : entity data is get or copy from parent
+                  echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>".
+                       "<th class='right'>".__('Child entities')."</th><th>";
 
-                  } else if ( $this instanceof CommonDBChild) {
-                     echo Dropdown::getYesNo($this->isRecursive());
-                     $comment = __("Can't change this attribute. It's inherited from its parent.");
+                  if ($params['canedit']) {
+                     if (!$this->can($ID,'recursive')) {
+                        echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                        $comment = __('You are not allowed to change the visibility flag for child entities.');
+                        // CommonDBChild : entity data is get or copy from parent
 
-                  } else if ( !$this->canUnrecurs()) {
-                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = __('Flag change forbidden. Linked items found.');
+                     } else if ( $this instanceof CommonDBChild) {
+                        echo Dropdown::getYesNo($this->isRecursive());
+                        $comment = __("Can't change this attribute. It's inherited from its parent.");
 
+                     } else if ( !$this->canUnrecurs()) {
+                        echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                        $comment = __('Flag change forbidden. Linked items found.');
+
+                     } else {
+                        Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
+                        $comment = __('Change visibility in child entities');
+                     }
+                     echo " ";
+                     Html::showToolTip($comment);
                   } else {
-                     Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-                     $comment = __('Change visibility in child entities');
+                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
                   }
-                  echo " ";
-                  Html::showToolTip($comment);
-               } else {
-                  echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                  echo "</th></tr></table>";
                }
-               echo "</th></tr></table>";
             } else {
                echo $entityname;
                echo "<input type='hidden' name='is_recursive' value='0'>";
