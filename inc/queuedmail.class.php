@@ -360,30 +360,35 @@ class QueuedMail extends CommonDBTM {
             $mmail->Body = $this->fields['body_text'];
          } else {
             $mmail->isHTML(true);
-            $mmail->Body    = $this->fields['body_html'];
-            $mmail->AltBody = $this->fields['body_text'];
-
+            $mmail->Body = '';
+            
             $documents = importArrayFromDB($this->fields['documents']);
+            $link_doc = array();
             if (is_array($documents) && count($documents)) {
                $doc = new Document();
                foreach ($documents as $docID) {
                   $doc->getFromDB($docID);
-                  // Add embeded image if tag present
-                  if (!empty($doc->fields['tag'])) {
+                  // Add embeded image if tag present in ticket content
+                  if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/', 
+                                  $this->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
                      $mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                              $doc->fields['tag'],
-                                              $doc->fields['filename'],
-                                              'base64',
-                                              $doc->fields['mime']);
-                  // Else Add attached document
+                                             Document::getImageTag($doc->fields['tag']),
+                                             $doc->fields['filename'],
+                                             'base64',
+                                             $doc->fields['mime']);
+                  // Else Add link to the document
                   } else {
-                     $mmail->AddAttachment(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                           $doc->fields['filename'],
-                                           'base64',
-                                           $doc->fields['mime']);
+                     $link_doc[] = "<a href='".rtrim($CFG_GLPI["url_base"], '/').
+                             "/front/document.send.php?docid=".$doc->fields['id']."' >".$doc->fields['name']."</a>";
                   }
                }
             }
+            if(count($link_doc)){
+               $mmail->Body   .= '<p style="border:1px solid #cccccc;padding:5px"><b>'.
+                       _n('Associated item','Associated items', 2).' : </b>'.implode(', ', $link_doc).'</p>';
+            }
+            $mmail->Body   .= $this->fields['body_html'];
+            $mmail->AltBody = $this->fields['body_text'];
          }
 
          $mmail->AddAddress($this->fields['recipient'], $this->fields['recipientname']);

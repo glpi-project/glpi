@@ -46,6 +46,7 @@ class Document extends CommonDBTM {
    static protected $forward_entity_to = array('Document_Item');
 
    static $rightname                   = 'document';
+   static $tag_prefix                  = '#';
    protected $usenotepadrights = true;
 
 
@@ -175,6 +176,11 @@ class Document extends CommonDBTM {
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
          $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
+      }
+      
+      // Tag
+      if (isset($input["_tag_filename"]) && !empty($input["_tag_filename"]) == 1) {
+         $input['tag'] = array_shift($input["_tag_filename"]);
       }
 
       // Upload failed : do not create document
@@ -683,7 +689,8 @@ class Document extends CommonDBTM {
 
 
    function getSearchOptions() {
-
+      global $CFG_GLPI;
+      
       $tab                       = array();
       $tab['common']             = __('Characteristics');
 
@@ -715,11 +722,13 @@ class Document extends CommonDBTM {
       $tab[5]['name']            = __('MIME type');
       $tab[5]['datatype']        = 'string';
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'tag';
-      $tab[6]['name']            = __('Tag');
-      $tab[6]['datatype']        = 'text';
-      $tab[6]['massiveaction']   = false;
+      if($CFG_GLPI['use_rich_text']){
+         $tab[6]['table']           = $this->getTable();
+         $tab[6]['field']           = 'tag';
+         $tab[6]['name']            = __('Tag');
+         $tab[6]['datatype']        = 'text';
+         $tab[6]['massiveaction']   = false;
+      }
 
       $tab[90]['table']          = $this->getTable();
       $tab[90]['field']          = 'notepad';
@@ -1234,43 +1243,6 @@ class Document extends CommonDBTM {
       return $rand;
    }
 
-
-   /**
-    * showImagePaste : Show the popup of image paste for an item
-    *
-    * @since version 0.85
-    *
-    * @param $name   text  Name of the textarea
-    *
-    * @return nothing (print the image paste)
-   **/
-   function showImagePaste($name) {
-
-      if (!self::canCreate()) {
-         return false;
-      }
-
-      // Init the image paste system
-      echo "<div id='image_paste'>";
-      // Upload and clear buttons (and paste button for IE)
-      echo "<div id='paste_image_menu' class='center'>";
-      echo "<a id='paste_image' class='vsubmit' style='display:none'>"._sx('button', 'Paste image').
-           "</a>";
-      echo "<a id='upload_image' class='vsubmit' style='display:none'>"._sx('button', 'Save')."</a>";
-      echo "<a id='clear_image' class='vsubmit' style='display:none'>"._sx('button', 'Cancel')."</a>";
-      echo "</div>";
-
-      $params = array('image_name' => Toolbox::getRandomString(8), // generate image name
-                      'name'       => $name,
-                      'modalName'  => 'imagepaste_'.$name,
-                      'initMsg'    => __('Paste an image')." (ctrl+v)",
-                      'errorMsg'   => __('Item not found'));
-
-      Html::initImagePasteSystem($params);
-      echo "</div>\n";
-   }
-
-
    /**
     * @since version 0.85
     *
@@ -1293,6 +1265,10 @@ class Document extends CommonDBTM {
          $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
+   }
+   
+   static function getImageTag($string){
+      return self::$tag_prefix.$string.self::$tag_prefix;
    }
 
 }

@@ -1109,11 +1109,15 @@ a.icon_nav_move:hover img {
 
 /* ################--------------- File upload  ---------------#################### */
 .fileupload {
-   text-align:center;
+   text-align: center;
    border:1px dashed #cccccc;
-/*    background-color: #d7d7d2; */
-/*    font-size:9px; */
+   min-height: 65px;
+    background-color: #fff;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   -o-border-radius: 5px;
 }
+
 
 /* ################--------------- planning  ---------------#################### */
 

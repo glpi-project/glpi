@@ -2228,7 +2228,6 @@ function update084to085() {
    $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
                            array('value' => CommonITILValidation::WAITING));
 
-
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
@@ -2237,7 +2236,11 @@ function update084to085() {
 
    // must always be at the end
    $migration->executeMigration();
-
+   
+   $query = "UPDATE `glpi_documents`
+                   SET `tag` = `id`";
+   $DB->queryOrDie($query, "0.85 set tag to all documents");
+   
    return $updateresult;
 }
 

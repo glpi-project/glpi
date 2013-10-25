@@ -125,6 +125,15 @@ class Document_Item extends CommonDBRelation{
          if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
             $input['_forcenotif'] = true;
          }
+         
+         //Clean ticket description if an image is in it
+         $doc = new Document();
+         $doc->getFromDB($this->fields['documents_id']);
+         if(!empty($doc->fields['tag'])){
+            $ticket->getFromDB($this->fields['items_id']);
+            $input['content'] = $ticket->cleanTagOrImage($ticket->fields['content'], array($doc->fields['tag']));
+         }
+         
          $ticket->update($input);
       }
       parent::post_purgeItem();
@@ -692,10 +701,12 @@ class Document_Item extends CommonDBRelation{
                        'filename'  => __('File'),
                        'link'      => __('Web link'),
                        'headings'  => __('Heading'),
-                       'mime'      => __('MIME type'),
-                       'tag'       => __('Tag'),
-                       'assocdate' => __('Date'));
-
+                       'mime'      => __('MIME type'));
+      if($CFG_GLPI['use_rich_text']){
+         $columns['tag'] = __('Tag');
+      }
+      $columns['assocdate'] = __('Date');
+      
       foreach ($columns as $key => $val) {
          echo "<th>".(($sort == "`$key`") ?$sort_img:"").
                "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
@@ -754,7 +765,11 @@ class Document_Item extends CommonDBRelation{
                                                                  $data["documentcategories_id"]);
             echo "</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
-            echo "<td class='center'>".$data["tag"]."</td>";
+            if($CFG_GLPI['use_rich_text']){
+               echo "<td class='center'>";
+               echo !empty($data["tag"]) ? Document::getImageTag($data["tag"]) : '';
+               echo "</td>";
+            }
             echo "<td class='center'>".Html::convDateTime($data["assocdate"])."</td>";
             echo "</tr>";
             $i++;
