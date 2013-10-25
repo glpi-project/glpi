@@ -80,7 +80,7 @@ class CommonDBTM extends CommonGLPI {
 
    /// Is this item use notepad ?
    protected $usenotepadrights = false;
-   
+
    /// FLush mail queue for
    public $mailqueueonaction = false;
 
@@ -2228,7 +2228,8 @@ class CommonDBTM extends CommonGLPI {
          // is recursive but cannot be change
 
       } else {
-         if ($this->maybeRecursive()) {
+         if ($this->maybeRecursive()
+             && !$this->input['withtemplate']) {
             if (Session::isMultiEntitiesMode()) {
                echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>".
                     "<th class='right'>".__('Child entities')."</th><th>";
