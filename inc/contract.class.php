@@ -171,7 +171,13 @@ class Contract extends CommonDBTM {
    **/
    function showForm($ID,$options=array()) {
 
-      $this->initForm($ID, $options);
+//      $this->initForm($ID, $options);
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+      }
 
       $can_edit = $this->can($ID,'w');
 
