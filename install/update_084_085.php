@@ -2213,8 +2213,6 @@ function update084to085() {
                     'accepted' => CommonITILValidation::ACCEPTED,
                     'refused'  => CommonITILValidation::REFUSED);
 
-   /// TODO : Migrate bookmarks / see predefined request
-
    // Migrate datas
    foreach ($status as $old => $new) {
       $query = "UPDATE `glpi_ticketvalidations`
@@ -2240,6 +2238,42 @@ function update084to085() {
       $migration->changeField($table, 'global_validation', 'global_validation', 'integer',
                               array('value' => CommonITILValidation::NONE));
    }
+
+   // Upgrade ticket bookmarks
+   $query = "SELECT *
+             FROM `glpi_bookmarks`";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $num     = 0;
+            $num2    = 0;
+            $options = array();
+            parse_str($data["query"], $options);
+            if (isset($options['field'])) {
+               // update ticket statuses
+               if (($data['itemtype'] = 'Ticket')
+                   &&( $data['type'] == Bookmark::SEARCH)) {
+                  foreach ($options['field'] as $key => $val) {
+                     if (($val == 55)
+                         && isset($options['contains'][$key])) {
+                        if (isset($status[$options['contains'][$key]])) {
+                           $options['contains'][$key] = $status[$options['contains'][$key]];
+                        }
+                     }
+                  }
+               }
+            }
+            $query2 = "UPDATE `glpi_bookmarks`
+                       SET `query` = '".addslashes(Toolbox::append_params($options))."'
+                       WHERE `id` = '".$data['id']."'";
+
+            $DB->queryOrDie($query2, "0.85 update bookmarks");
+         }
+      }
+   }
+
+
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
