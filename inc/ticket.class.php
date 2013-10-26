@@ -924,11 +924,11 @@ class Ticket extends CommonITILObject {
       if (isset($this->input['content'])) {
          if (isset($this->input['_stock_image'])) {
             $this->addImagePaste();
-            $input['content'] = $this->input['content'];
+            $input['content']       = $this->input['content'];
             $input['_disablenotif'] = true;
          } else if ($CFG_GLPI["use_rich_text"]) {
             $input['content'] = $this->convertTagToImage($input['content']);
-            if(!isset($this->input['_filename'])){
+            if (!isset($this->input['_filename'])) {
                $input['_donotadddocs'] = true;
             }
          }
@@ -3416,7 +3416,7 @@ class Ticket extends CommonITILObject {
 
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI;
-      
+
       $default_values = self::getDefaultValues();
 
       // Get default values from posted values on reload form
@@ -4257,7 +4257,7 @@ class Ticket extends CommonITILObject {
          echo "</td>";
       }
       echo "</tr>";
-      
+
       // View files added
       echo "<tr>";
       // Permit to add doc when creating a ticket
@@ -4278,7 +4278,7 @@ class Ticket extends CommonITILObject {
          if (isset($values['_documents_id'])
              && is_array($values['_documents_id'])
              && count($values['_documents_id'])) {
-        
+
             echo "<span class='b'>".__('Default documents:').'</span>';
             echo "<br>";
             $doc = new Document();
@@ -4349,7 +4349,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       // File upload system
       $coslpan = 2;
       if(!$CFG_GLPI['use_rich_text']){
@@ -4360,7 +4360,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getBeginHiddenFieldValue('_documents_id');
       echo Html::file(array('multiple' => true, 'showfilecontainer' => 'fileupload_info'));
       echo "</td>";
-      if($CFG_GLPI['use_rich_text']){
+      if ($CFG_GLPI['use_rich_text']) {
          echo "<td colspan='$coslpan'>";
          if(!isset($rand)) $rand = mt_rand();
          echo Html::imagePaste(array('rand' => $rand));
@@ -5592,13 +5592,13 @@ class Ticket extends CommonITILObject {
             $count_files++;
          }
          unset($this->input['_tag_stock_image']);
-         
+
          ksort($this->input['_filename']);
          ksort($this->input['_tag']);
 
 //         $this->input['_forcenotif'] = 1;
       }
-  
+
    }
 
 
@@ -5621,7 +5621,8 @@ class Ticket extends CommonITILObject {
       // If no doc data available we match all tags in content
       if (!count($doc_data)) {
          $doc = new Document();
-         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text, $matches, PREG_PATTERN_ORDER);
+         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
+                        $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
             $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
          }
@@ -5787,7 +5788,7 @@ class Ticket extends CommonITILObject {
    **/
    function convertContentForNotification($content, $item) {
       global $CFG_GLPI, $DB;
-      
+
       $tag  = '';
       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
                           html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
@@ -5814,14 +5815,15 @@ class Ticket extends CommonITILObject {
                $node->parentNode->replaceChild($img, $node);
             }
          }
-         
+
          $content = $dom->saveHTML();
       // If is text content
       } else {
          $doc = new Document();
          $doc_data = array();
-         
-         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content, $matches, PREG_PATTERN_ORDER);
+
+         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content,
+                        $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
             $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
          }
@@ -5832,7 +5834,8 @@ class Ticket extends CommonITILObject {
                $img = "<img src='cid:".Document::getImageTag($image['tag'])."'/>";
 
                // Replace tag by the image
-               $content = preg_replace('/'.Document::getImageTag($image['tag']).'/', $img, $content);
+               $content = preg_replace('/'.Document::getImageTag($image['tag']).'/', $img,
+                                       $content);
             }
          }
       }
@@ -5857,48 +5860,50 @@ class Ticket extends CommonITILObject {
          while ($data = $DB->fetch_assoc($result)) {
             if (!empty($data['id'])) {
                // Image document
-               if(!empty($data['tag'])){
+               if (!empty($data['tag'])) {
                   $item->documents[] = $data['id'];
                // Other document
-               } elseif($CFG_GLPI['attach_ticket_documents_to_mail']) {
+               } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
                   $item->documents[] = $data['id'];
                }
             }
          }
       }
-      
+
       return $content;
    }
-   
+
+
    /**
     * Delete tag or image from ticket content
     *
     * @since version 0.85
     *
-    * @param $content : html content of input
+    * @param $content   html content of input
+    * @param $tags
     *
     * @return htlm content
    **/
    function cleanTagOrImage($content, $tags){
       global $CFG_GLPI;
-      
+
       // RICH TEXT : delete img tag
-      if($CFG_GLPI["use_rich_text"]){
+      if ($CFG_GLPI["use_rich_text"]) {
          $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
-                    html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+                             html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
 
          // We parse HTML with dom
          libxml_use_internal_errors(true);
-         $dom = new DOMDocument();
+         $dom                     = new DOMDocument();
          $dom->loadHTML('<html>'.$html.'</html>');
          $dom->preserveWhiteSpace = false;
 
          // We replace each <img> by a <p>
-         $nodes = $dom->getElementsByTagName('img');
+         $nodes          = $dom->getElementsByTagName('img');
          $nodeListLength = $nodes->length;
 
          $nodesToDelete = array();
-         for ($i = 0; $i < $nodeListLength; $i++) {
+         for ($i=0 ; $i<$nodeListLength ; $i++) {
             $node = $nodes->item($i);
             if ($id = $node->getAttribute('alt')) {
                foreach ($tags as $tag) {
@@ -5906,13 +5911,13 @@ class Ticket extends CommonITILObject {
                      $nodesToDelete[] = $node;
                   }
                }
-            } 
+            }
          }
-         
-         foreach($nodesToDelete as $node){ 
+
+         foreach($nodesToDelete as $node){
             $p = $dom->createElement('p');
             $node->parentNode->replaceChild($p, $node);
-         } 
+         }
 
          // Get only body content
          $doc  = new DOMDocument();
@@ -5921,13 +5926,13 @@ class Ticket extends CommonITILObject {
             $doc->appendChild($doc->importNode($child, true));
 
          return utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
-         
-      // SIMPLE TEXT : delete tag   
+
+      // SIMPLE TEXT : delete tag
       } else {
          foreach ($tags as $tag) {
             $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
          }
-         
+
          return $content;
       }
    }
@@ -5962,6 +5967,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $name       name of textarea
     * @param $content    content to convert in html
+    * @param $rand
     *
     * @return $content
    **/

@@ -46,6 +46,7 @@ class Document extends CommonDBTM {
    static protected $forward_entity_to = array('Document_Item');
 
    static $rightname                   = 'document';
+   static $tag_prefix                  = '#';
    protected $usenotepadrights         = true;
 
 
@@ -176,7 +177,7 @@ class Document extends CommonDBTM {
          // Move doc from upload dir
          $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
       }
-      
+
       // Tag
       if (isset($input["_tag_filename"]) && !empty($input["_tag_filename"]) == 1) {
          $input['tag'] = array_shift($input["_tag_filename"]);
@@ -689,7 +690,7 @@ class Document extends CommonDBTM {
 
    function getSearchOptions() {
       global $CFG_GLPI;
-      
+
       $tab                       = array();
       $tab['common']             = __('Characteristics');
 
@@ -721,7 +722,7 @@ class Document extends CommonDBTM {
       $tab[5]['name']            = __('MIME type');
       $tab[5]['datatype']        = 'string';
 
-      if($CFG_GLPI['use_rich_text']){
+      if ($CFG_GLPI['use_rich_text']) {
          $tab[6]['table']           = $this->getTable();
          $tab[6]['field']           = 'tag';
          $tab[6]['name']            = __('Tag');
@@ -1242,6 +1243,7 @@ class Document extends CommonDBTM {
       return $rand;
    }
 
+
    /**
     * @since version 0.85
     *
@@ -1265,7 +1267,15 @@ class Document extends CommonDBTM {
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
    }
-   
+
+
+   /**
+    * @since version 0.85
+    *
+    * @param $string
+    *
+    * @return string
+   **/
    static function getImageTag($string){
       return self::$tag_prefix.$string.self::$tag_prefix;
    }
