@@ -1938,22 +1938,31 @@ class CommonDBTM extends CommonGLPI {
       if (isset($options['withtemplate'])
           && ($options['withtemplate'] == 2)
           && !$this->isNewID($ID)) {
+
          // Create item from template
          // Check read right on the template
          $this->check($ID, 'r');
          // Restore saved input or template data
          $input = $this->restoreInput($this->fields);
          // Check create right
-         $this->check(-1, 'w', $input);
+         // for recursive template
+         if (($ID > 0)
+             && $input['is_recursive'] ) {
+            $this->check($ID, 'r');
+         } else {
+            $this->check(-1, 'w', $input);
+         }
 
       } else if ($this->isNewID($ID)) {
          // Restore saved input if available
          $input = $this->restoreInput($options);
          // Create item
          $this->check(-1, 'w', $input);
+toolbox::logdebug("dans elseif");
       } else {
          // Modify item
          $this->check($ID,'r');
+         toolbox::logdebug("dans else");
       }
 
       return (isset($options['withtemplate']) ? $options['withtemplate'] : '');
