@@ -3622,53 +3622,53 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function showNotesForm() {
+//   function showNotesForm() {
 
-      if (!READNOTE) {
-         return false;
-      }
+//      if (!READNOTE) {
+//         return false;
+//      }
 
-      if (!$this->isField('notepad')
-          || !isset($this->fields[static::getIndexName()])) {
-         return false;
-      }
+//      if (!$this->isField('notepad')
+//          || !isset($this->fields[static::getIndexName()])) {
+//         return false;
+//      }
 
-      //getFromDB
-      $canedit = (UPDATENOTE
-                  && (!$this->isEntityAssign()
-                      || Session::haveAccessToEntity($this->getEntityID())));
-      $target = $this->getFormURL();
+//      //getFromDB
+//      $canedit = (UPDATENOTE
+//                  && (!$this->isEntityAssign()
+//                      || Session::haveAccessToEntity($this->getEntityID())));
+//      $target = $this->getFormURL();
 
-      if ($canedit) {
-         echo "<form name='form' method='post' action='".$target."'>";
-      }
+//      if ($canedit) {
+//         echo "<form name='form' method='post' action='".$target."'>";
+//      }
 
-      echo "<div class='center'>";
-      echo "<table class='tab_cadre_fixe' >";
-      echo "<tr><th>".__('Notes')."</th></tr>";
+//      echo "<div class='center'>";
+//      echo "<table class='tab_cadre_fixe' >";
+//      echo "<tr><th>".__('Notes')."</th></tr>";
 
-      echo "<tr><td class='tab_bg_1 center middle'>";
-      echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".
-            $this->getField('notepad')."</textarea></td></tr>";
+//      echo "<tr><td class='tab_bg_1 center middle'>";
+//      echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".
+//            $this->getField('notepad')."</textarea></td></tr>";
 
-      echo "<tr><td class='tab_bg_2 center'>";
-      echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
+//      echo "<tr><td class='tab_bg_2 center'>";
+//      echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
       // for all objects without id as primary key
-      if (static::getIndexName() != 'id') {
-         echo "<input type='hidden' name='".static::getIndexName()."' value='".
-                $this->fields[static::getIndexName()]."'>";
-      }
+//      if (static::getIndexName() != 'id') {
+//         echo "<input type='hidden' name='".static::getIndexName()."' value='".
+//                $this->fields[static::getIndexName()]."'>";
+//      }
 
-      if ($canedit) {
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-      }
-      echo "</td></tr>";
-      echo "</table></div>";
+//      if ($canedit) {
+//         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+//      }
+//      echo "</td></tr>";
+//      echo "</table></div>";
 
-      if ($canedit) {
-         Html::closeForm();
-      }
-   }
+//      if ($canedit) {
+//         Html::closeForm();
+//      }
+//   }
 
 
    /**
