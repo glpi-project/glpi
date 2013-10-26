@@ -516,11 +516,11 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
          $docadded = $this->addFiles(1, $input['_disablenotif']);
-         if(isset($this->input['_forcenotif'])){
+         if (isset($this->input['_forcenotif'])) {
             $input['_forcenotif'] = $this->input['_forcenotif'];
             unset($input['_disablenotif']);
          }
-         if(isset($this->input['content'])){
+         if (isset($this->input['content'])) {
             $input['content'] = $this->input['content'];
          }
       }
@@ -1447,11 +1447,11 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach ($this->input['_filename'] as $key => $file) {
          $docID = 0;
          $filename = GLPI_DOC_DIR."/_tmp/".$file;
-         
+
          // Crop/Resize image file if needed
          if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
             $image_coordinates = json_decode(urldecode($this->input['_coordinates'][$key]), true);
-            Toolbox::resizePicture($filename, 
+            Toolbox::resizePicture($filename,
                                    $filename,
                                    $image_coordinates['img_w'],
                                    $image_coordinates['img_h'],
@@ -1462,7 +1462,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else {
             Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0);
          }
-         
+
          //If file tag is present
          if (isset($this->input['_tag_filename']) && !empty($this->input['_tag_filename'][$key])) {
             $this->input['_tag'][$key] = $this->input['_tag_filename'][$key];
@@ -1478,7 +1478,7 @@ abstract class CommonITILObject extends CommonDBTM {
             // File already exist, we replace the tag by the existing one
             if (isset($this->input['_tag'][$key])
                 && ($docID > 0)) {
-               
+
                $this->input['content'] = preg_replace('/'.Document::getImageTag($this->input['_tag'][$key]).'/',
                                                       Document::getImageTag($doc->fields["tag"]),
                                                       $this->input['content']);

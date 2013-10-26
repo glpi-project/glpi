@@ -1290,7 +1290,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "$('[name=\"status\"]').change(function() {
                      var status_ko = 0;
                      var input_status = $(this).val();
-                     if(input_status != undefined){
+                     if (input_status != undefined) {
                         if ((";
             $first = true;
             foreach ($status as $val) {

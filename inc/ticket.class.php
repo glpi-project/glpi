@@ -4353,7 +4353,7 @@ class Ticket extends CommonITILObject {
 
       // File upload system
       $coslpan = 2;
-      if(!$CFG_GLPI['use_rich_text']){
+      if (!$CFG_GLPI['use_rich_text']) {
          $coslpan = 4;
       }
       echo "<tr>";
@@ -4363,7 +4363,9 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       if ($CFG_GLPI['use_rich_text']) {
          echo "<td colspan='$coslpan'>";
-         if(!isset($rand)) $rand = mt_rand();
+         if (!isset($rand)) {
+            $rand = mt_rand();
+         }
          echo Html::imagePaste(array('rand' => $rand));
          echo "</td>";
       }

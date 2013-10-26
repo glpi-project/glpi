@@ -3633,9 +3633,9 @@ class Html {
       Html::scriptStart();
       echo "function waitforpastedata(elem){
          var _html = elem.innerHTML;
-         if(_html != undefined){
+         if(_html != undefined) {
             if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
-               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');			
+               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
                tinyMCE.activeEditor.setContent(_html);
             } else {
                that = {
@@ -3675,12 +3675,12 @@ class Html {
          // directionality + search replace plugin
       echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
       echo "theme_advanced_toolbar_location : 'top',
-         theme_advanced_toolbar_align : 'left',
-         theme_advanced_statusbar_location : 'none',
-         theme_advanced_resizing : 'true',
-         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-         theme_advanced_buttons3 : '',";
+            theme_advanced_toolbar_align : 'left',
+            theme_advanced_statusbar_location : 'none',
+            theme_advanced_resizing : 'true',
+            theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+            theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+            theme_advanced_buttons3 : '',";
       echo "setup : function(ed) {
          ed.onInit.add(function(ed) {";
       echo (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
@@ -3719,14 +3719,14 @@ class Html {
    static function initImagePasteSystem($name, $rand) {
       global $CFG_GLPI;
 
-      $params = array('name'              => $name,
-                      'root_doc'          => $CFG_GLPI['root_doc'],
-                      'rand'              => $rand,
-                      'lang'              => array('pasteimage'      => _sx('button', 'Paste image'), 
-                                                   'itemnotfound'    => __('Item not found'),
-                                                   'save'            => _sx('button', 'Save'),
-                                                   'cancel'          => _sx('button', 'Cancel')));
-      
+      $params = array('name'     => $name,
+                      'root_doc' => $CFG_GLPI['root_doc'],
+                      'rand'     => $rand,
+                      'lang'     => array('pasteimage'      => _sx('button', 'Paste image'),
+                                          'itemnotfound'    => __('Item not found'),
+                                          'save'            => _sx('button', 'Save'),
+                                          'cancel'          => _sx('button', 'Cancel')));
+
       return "if (!tinyMCE.isIE) { // Chrome, Firefox plugin
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");
               } else {// IE plugin
@@ -3845,7 +3845,8 @@ class Html {
             $rand     = mt_rand();
             echo "</td><td class='top'>";
             if ($jsexpand && $is_array) {
-               echo "<a class='pointer' onclick=\"javafile:showHideDiv('content$key$rand','','','')\">=></a>";
+               echo "<a class='pointer' onclick=\"javafile:showHideDiv('content$key$rand','','','')\">";
+                    "=></a>";
             } else {
                echo "=>";
             }
@@ -4815,9 +4816,9 @@ class Html {
    **/
    static function file($options=array()) {
       global $CFG_GLPI;
-      
+
       $randupload             = mt_rand();
-      
+
       $p['name']              = 'filename';
       $p['multiple']          = false;
       $p['onlyimages']        = false;
@@ -4826,13 +4827,13 @@ class Html {
       $p['pasteZone']         = false;
       $p['dropZone']          = 'dropdoc'.$randupload;
       $p['rand']              = $randupload;
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
       }
-      
+
       $addshowfilecontainer = false;
       if (empty($p['showfilecontainer'])) {
          $addshowfilecontainer   = true;
@@ -4846,17 +4847,18 @@ class Html {
                 $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name'].
                 "&showfilesize=".$p['showfilesize']."'>";
 
-      $script = self::fileScript($p)."\n uploadFile();";
-      $out .= Html::scriptBlock($script);
-      $out .=  "<div id='progress$randupload' style='display:none'><div class='uploadbar' style='width: 0%;'></div></div>";
+      $script  = self::fileScript($p)."\n uploadFile();";
+      $out    .= Html::scriptBlock($script);
+      $out    .=  "<div id='progress$randupload' style='display:none'>".
+                  "<div class='uploadbar' style='width: 0%;'></div></div>";
       if ($addshowfilecontainer) {
          $out .= "<div id='".$p['showfilecontainer']."'></div>";
       }
       $out .= "</div>";
-      
+
       return $out;
    }
-      
+
    /**
     * imagePaste : Show image paste for an item, with TinyMce
     *
@@ -4864,21 +4866,21 @@ class Html {
     *
     * @param $options       array of options
     *     - name              string   field name (default filename)
+    *     - multiple          boolean  allow multiple file upload (default false
+    *     - onlyimages        boolean  restrict to image files (default false)
+    *     - showfilecontainer string   DOM ID of the container showing file uploaded:
+    *                                  use selector to display
+    *     - imagePaste        boolean  image paste with tinyMce
+    *     - dropZone          string   DOM ID of the drop zone
     *     - rand              string   already computed rand value
     *     - pasteZone         string   DOM ID of the paste zone
-    *     - dropZone          string   DOM ID of the drop zone
-    *     - onlyimages        boolean  restrict to image files (default false)
-    *     - imagePaste        boolean  image paste with tinyMce
-    *     - showfilecontainer string   DOM ID of the container showing file uploaded:
-    *                                  use selector to display 
-    *     - multiple          boolean  allow multiple file upload (default false
     *
     * @return nothing (print the image paste)
    **/
    static function imagePaste($options=array()) {
-      
+
       $rand = mt_rand();
-      
+
       $p['name']              = 'stock_image';
       $p['multiple']          = true;
       $p['onlyimages']        = true;
@@ -4886,43 +4888,44 @@ class Html {
       $p['imagePaste']        = 1;
       $p['dropZone']          = 'image_paste';
       $p['rand']              = $rand;
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
       }
-      
+
       echo '<script type="text/javascript">';
       echo Html::fileScript($p);
       echo '</script>';
-      
+
       echo "<div class='fileupload' id='".$p['dropZone']."'></div>\n";
    }
-   
+
+
    /**
     * fileScript : file upload script
     *
     * @since version 0.85
     *
     * @param $options   array of possible options:
+    *     - imagePaste        boolean  image paste with tinyMce
     *     - name              string   field name (default filename)
-    *     - rand              string   already computed rand value
+    *     - multiple          boolean  allow multiple file upload (default false)
+    *     - onlyimages        boolean  restrict to image files (default false)
+    *     - showfilecontainer string   DOM ID of the container showing file uploaded:
+    *                                  use selector to display
     *     - pasteZone         string   DOM ID of the paste zone
     *     - dropZone          string   DOM ID of the drop zone
-    *     - onlyimages        boolean  restrict to image files (default false)
-    *     - imagePaste        boolean  image paste with tinyMce
-    *     - showfilecontainer string   DOM ID of the container showing file uploaded:
-    *                                  use selector to display 
-    *     - multiple          boolean  allow multiple file upload (default false)
+    *     - rand              string   already computed rand value
     *
     * @return nothing (print the image paste)
    **/
    static function fileScript($options=array()){
       global $CFG_GLPI;
-      
+
       $randupload             = mt_rand();
-      
+
       $p['imagePaste']        = 0;
       $p['name']              = 'filename';
       $p['multiple']          = false;
@@ -4931,7 +4934,7 @@ class Html {
       $p['pasteZone']         = false;
       $p['dropZone']          = 'dropdoc'.$randupload;
       $p['rand']              = $randupload;
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
@@ -4939,16 +4942,16 @@ class Html {
       }
 
       $script = "var fileindex".$p['rand']." = 0;
-         function uploadFile(){
+         function uploadFile() {
             $('#fileupload".$p['rand']."').fileupload({
                //forceIframeTransport: true,
                //replaceFileInput: false,
                dataType: 'json',";
       if ($p['pasteZone'] != false) {
          $script .= "pasteZone : $('#".$p['pasteZone']."'),";
-      } elseif(!$p['imagePaste']) {
+      } else if (!$p['imagePaste']) {
          $script .= "pasteZone : false,";
-      } 
+      }
       if ($p['dropZone'] != false) {
          $script .= "dropZone : $('#".$p['dropZone']."'),";
       } else {
@@ -4966,11 +4969,11 @@ class Html {
                         $('#progress".$p['rand']." .uploadbar').text(progress + '%').show().delay(2000).fadeOut('slow');
                   },
                send: function (e, data) {
-                  if(1==".(($p['imagePaste'])?1:0)." 
+                  if (1==".(($p['imagePaste'])?1:0)."
                      && tinyMCE != undefined
                      && tinyMCE.imagePaste != undefined
-                     && tinyMCE.imagePaste.pasteddata == undefined){
-                     
+                     && tinyMCE.imagePaste.pasteddata == undefined) {
+
                      var reader = new FileReader();
                      reader.readAsDataURL(data.originalFiles[0]);//Convert the blob from clipboard to base64
                      reader.onloadend = function(e){
@@ -5001,9 +5004,9 @@ class Html {
                                  $('<input/>').attr('type', 'hidden').attr('name', '_tag_".$p['name']."['+fileindex".$p['rand']."+']').attr('value', tag[index].name).appendTo(p);\n
 
                                  // Coordinates
-                                 if(tinyMCE != undefined 
-                                       && tinyMCE.imagePaste != undefined 
-                                       && (tinyMCE.imagePaste.imageCoordinates != undefined || tinyMCE.imagePaste.imageCoordinates != null)){
+                                 if (tinyMCE != undefined
+                                       && tinyMCE.imagePaste != undefined
+                                       && (tinyMCE.imagePaste.imageCoordinates != undefined || tinyMCE.imagePaste.imageCoordinates != null)) {
                                     $('<input/>').attr('type', 'hidden').attr('name', '_coordinates['+fileindex".$p['rand']."+']').attr('value', encodeURIComponent(JSON.stringify(tinyMCE.imagePaste.imageCoordinates))).appendTo(p2);
                                     tinyMCE.imagePaste.imageCoordinates = null;
                                  }
@@ -5013,13 +5016,13 @@ class Html {
                                  $('<img src=\"".$CFG_GLPI['root_doc']."/pics/delete.png\">').click(function(){\n
                                     deleteImagePasted(elementsIdToRemove, tag[index].tag);\n
                                  }).appendTo(p);\n
-                                 
+
                                  ";
-      if($p['imagePaste']){
+      if ($p['imagePaste']) {
          $script.= "             // Insert tag in textarea
-                                 if(tinyMCE != undefined){\n
+                                 if (tinyMCE != undefined) {\n
                                     tinyMCE.activeEditor.execCommand('mceInsertContent', false, '<p>'+tag[index].tag+'</p>');\n
-                                    if(tinyMCE.imagePaste != undefined){
+                                    if (tinyMCE.imagePaste != undefined) {
                                        tinyMCE.imagePaste.pasteddata = undefined;
                                     }
                                  }\n";
@@ -5036,7 +5039,7 @@ class Html {
                            });
                         }
                     });
-                  
+
                }
             });
          }\n
@@ -5046,20 +5049,20 @@ class Html {
                 $('#'+id).remove();\n
             });\n
             ";
-   if($p['imagePaste']){
+   if ($p['imagePaste']) {
       $script.= "
             // TINYMCE : Remove tag from textarea
-            if(tinyMCE != undefined){
+            if (tinyMCE != undefined) {
                tinyMCE.activeEditor.setContent(tinyMCE.activeEditor.getContent().replace('<p>'+tagToRemove+'</p>', ''));\n
             }";
    }
    $script.= "
             // File counter
-            if(fileindex".$p['rand']." > 0){\n
+            if (fileindex".$p['rand']." > 0) {\n
                fileindex".$p['rand']."--;\n
             }
          }\n";
-      
+
       return $script;
    }
 
