@@ -2212,19 +2212,34 @@ function update084to085() {
                     'waiting'  => CommonITILValidation::WAITING,
                     'accepted' => CommonITILValidation::ACCEPTED,
                     'refused'  => CommonITILValidation::REFUSED);
-   /// TODO : migrate glpi_tickets.global_validation
+
    /// TODO : Migrate bookmarks / see predefined request
 
    // Migrate datas
    foreach ($status as $old => $new) {
       $query = "UPDATE `glpi_ticketvalidations`
-                  SET `status` = '$new'
-                  WHERE `status` = '$old'";
+                SET `status` = '$new'
+                WHERE `status` = '$old'";
       $DB->queryOrDie($query, "0.85 status in glpi_ticketvalidations $old to $new");
 
    }
    $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
                            array('value' => CommonITILValidation::WAITING));
+
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                              'tickets and changes global_validation'));
+
+   $tables = array('glpi_tickets', 'glpi_changes');
+   foreach ($tables as $table) {
+      foreach ($status as $old => $new) {
+         $query = "UPDATE `".$table."`
+                   SET `global_validation` = '$new'
+                   WHERE `global_validation` = '$old'";
+         $DB->queryOrDie($query, "0.85 global_validation in $table $old to $new");
+      }
+      $migration->changeField($table, 'global_validation', 'global_validation', 'integer',
+                              array('value' => CommonITILValidation::NONE));
+   }
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
@@ -2234,11 +2249,11 @@ function update084to085() {
 
    // must always be at the end
    $migration->executeMigration();
-   
+
    $query = "UPDATE `glpi_documents`
                    SET `tag` = `id`";
    $DB->queryOrDie($query, "0.85 set tag to all documents");
-   
+
    return $updateresult;
 }
 

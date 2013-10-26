@@ -1158,7 +1158,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (!isset($input['global_validation'])) {
-         $input['global_validation'] = 'none';
+         $input['global_validation'] = CommonITILValidation::NONE;
       }
 
       // Set additional default dropdown
@@ -2904,7 +2904,7 @@ class Ticket extends CommonITILObject {
                               'items_id'            => 0,
                               'entities_id'         => $_SESSION['glpiactive_entity'],
                               'plan'                => array(),
-                              'global_validation'   => 'none',
+                              'global_validation'   => CommonITILValidation::NONE,
                               'due_date'            => 'NULL',
                               'slas_id'             => 0,
                               '_add_validation'     => 0,
@@ -3282,7 +3282,7 @@ class Ticket extends CommonITILObject {
                     'items_id'                  => 0,
                     'locations_id'              => 0,
                     'plan'                      => array(),
-                    'global_validation'         => 'none',
+                    'global_validation'         => CommonITILValidation::NONE,
                     'due_date'                  => 'NULL',
                     'slas_id'                   => 0,
                     '_add_validation'           => 0,
