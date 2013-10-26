@@ -45,7 +45,7 @@ class Monitor extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'ReservationItem');
 
    static $rightname                   = 'monitor';
-   protected $usenotepadrights = true;
+   protected $usenotepadrights         = true;
 
 
    /**

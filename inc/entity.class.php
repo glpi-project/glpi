@@ -40,23 +40,23 @@ if (!defined('GLPI_ROOT')) {
  */
 class Entity extends CommonTreeDropdown {
 
-   public $must_be_replace = true;
-   public $dohistory       = true;
+   public $must_be_replace              = true;
+   public $dohistory                    = true;
 
-   public $first_level_menu  = "admin";
-   public $second_level_menu = "entity";
+   public $first_level_menu             = "admin";
+   public $second_level_menu            = "entity";
 
-   static $rightname = 'entity';
-   protected $usenotepadrights = true;
+   static $rightname                    = 'entity';
+   protected $usenotepadrights          = true;
 
-   const READHELPDESK    = 1024;
-   const UPDATEHELPDESK  = 2048;
+   const READHELPDESK                   = 1024;
+   const UPDATEHELPDESK                 = 2048;
 
-   const CONFIG_PARENT   = -2;
-   const CONFIG_NEVER    = -10;
+   const CONFIG_PARENT                  = -2;
+   const CONFIG_NEVER                   = -10;
 
-   const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
-   const AUTO_ASSIGN_CATEGORY_HARDWARE = 2;
+   const AUTO_ASSIGN_HARDWARE_CATEGORY  = 1;
+   const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
 
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)

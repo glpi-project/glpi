@@ -47,7 +47,7 @@ class SoftwareLicense extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom');
 
    static $rightname                   = 'software';
-   protected $usenotepadrights = true;
+   protected $usenotepadrights         = true;
 
 
 
@@ -567,7 +567,7 @@ class SoftwareLicense extends CommonDBTM {
       if ($canedit) {
          echo "<div class='center firstbloc'>";
          echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                  _sx('button', 'Add a license')."</a>";
+                _x('button', 'Add a license')."</a>";
          echo "</div>";
       }
 
@@ -613,23 +613,23 @@ class SoftwareLicense extends CommonDBTM {
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
 
-            $columns = array('name'    => __('Name'),
-                           'entity'    => __('Entity'),
-                           'serial'    => __('Serial number'),
-                           'number'    => _x('quantity', 'Number'),
-                           '_affected' => __('Affected computers'),
-                           'typename'  => __('Type'),
-                           'buyname'   => __('Purchase version'),
-                           'usename'   => __('Version in use'),
-                           'expire'    => __('Expiration'));
+            $columns = array('name'      => __('Name'),
+                             'entity'    => __('Entity'),
+                             'serial'    => __('Serial number'),
+                             'number'    => _x('quantity', 'Number'),
+                             '_affected' => __('Affected computers'),
+                             'typename'  => __('Type'),
+                             'buyname'   => __('Purchase version'),
+                             'usename'   => __('Version in use'),
+                             'expire'    => __('Expiration'));
             if ($software->isRecursive()) {
                unset($columns['entity']);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                              (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             echo "<table class='tab_cadre_fixehov'><tr>";
-            
+
             echo "<th>";
             Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";

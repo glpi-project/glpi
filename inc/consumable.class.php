@@ -48,7 +48,7 @@ class Consumable extends CommonDBChild {
    var $no_form_page                   = true;
 
    static $rightname                   = 'consumable';
-   protected $usenotepadrights = true;
+   protected $usenotepadrights         = true;
 
    // From CommonDBChild
    static public $itemtype             = 'ConsumableItem';

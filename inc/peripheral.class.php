@@ -47,7 +47,7 @@ class Peripheral extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
    static $rightname                   = 'peripheral';
-   protected $usenotepadrights = true;
+   protected $usenotepadrights         = true;
 
 
    /**

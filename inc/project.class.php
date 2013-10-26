@@ -46,12 +46,12 @@ class Project extends CommonDBTM {
    public $dohistory                   = true;
    static protected $forward_entity_to = array('ProjectTask');
    static $rightname                   = 'project';
-   protected $usenotepadrights = true;
+   protected $usenotepadrights         = true;
 
-   const READMY      = 1;
-   const READALL     = 1024;
+   const READMY                        = 1;
+   const READALL                       = 1024;
 
-   protected $team   = array();
+   protected $team                     = array();
 
 
    /**
@@ -68,6 +68,7 @@ class Project extends CommonDBTM {
       return Session::haveRightsOr(self::$rightname, array(self::READALL, self::READMY));
    }
 
+
    /**
     * Is the current user have right to show the current project ?
     *
@@ -79,14 +80,15 @@ class Project extends CommonDBTM {
          return false;
       }
       return (Session::haveRight(self::$rightname, self::READALL)
-               || (Session::haveRight(self::$rightname, self::READMY) &&
-                  (($this->fields["users_id"] === Session::getLoginUserID())
-                     || $this->isInTheManagerGroup()
-                     || $this->isInTheTeam()
+              || (Session::haveRight(self::$rightname, self::READMY)
+                  && (($this->fields["users_id"] === Session::getLoginUserID())
+                      || $this->isInTheManagerGroup()
+                      || $this->isInTheTeam()
                   ))
-             );
+              );
    }
-   
+
+
    /**
     * Is the current user have right to create the current change ?
     *
@@ -126,7 +128,8 @@ class Project extends CommonDBTM {
                $ong    = array();
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
+                                             "`".$this->getForeignKeyField()."` = '".
+                                                $item->getID()."'");
                   $ong[1] = self::createTabEntry($this->getTypeName(2), $nb);
                } else {
                   $ong[1] = $this->getTypeName(2);
@@ -148,6 +151,7 @@ class Project extends CommonDBTM {
                case 1 :
                   $item->showChildren();
                   break;
+
                case 2 :
                   $item->showGantt($item->getID());
                   break;
@@ -175,11 +179,15 @@ class Project extends CommonDBTM {
       return $ong;
    }
 
+
    static function getAdditionalMenuContent() {
+
       // No view to project by right on tasks add it
-      if (!static::canView() && Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $menu['project']['title']           = Project::getTypeName(2);
-         $menu['project']['page']            = ProjectTask::getSearchURL(false);
+      if (!static::canView()
+          && Session::haveRight('projecttask', ProjectTask::READMY)) {
+         $menu['project']['title']                    = Project::getTypeName(2);
+         $menu['project']['page']                     = ProjectTask::getSearchURL(false);
+
          $links = static::getAdditionalMenuLinks();
          if (count($links)) {
             $menu['project']['links'] = $links;
@@ -187,24 +195,27 @@ class Project extends CommonDBTM {
          $menu['project']['options']['task']['title'] = __('My tasks');
          $menu['project']['options']['task']['page']  = ProjectTask::getSearchURL(false);
          return $menu;
-      }   
+      }
       return false;
    }
+
+
    static function getAdditionalMenuOptions() {
+
       return array('task' => array('title' => __('My tasks'),
                                    'page'  => ProjectTask::getSearchURL(false)));
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
-    *
-    * @since version 0.85
    **/
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
       $links = array();
-      if (static::canView() || Session::haveRight('projecttask', ProjectTask::READMY)) {
+      if (static::canView()
+          || Session::haveRight('projecttask', ProjectTask::READMY)) {
          $pic_validate = "<img title=\"".__s('Task','Tasks',2)."\" alt=\"".
                            __s('Task','Tasks',2)."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
@@ -216,6 +227,7 @@ class Project extends CommonDBTM {
       }
       return false;
    }
+
 
    function post_getEmpty() {
 
@@ -229,8 +241,14 @@ class Project extends CommonDBTM {
       $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
    }
 
-   /// Is the current user in the team ?
+
+   /**
+    * Is the current user in the team?
+    *
+    * @return boolean
+   **/
    function isInTheTeam() {
+
       if (isset($this->team['User']) && count($this->team['User'])) {
          foreach ($this->team['User'] as $data) {
             if ($data['items_id'] == Session::getLoginUserID()) {
@@ -238,9 +256,9 @@ class Project extends CommonDBTM {
             }
          }
       }
-   
+
       if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
-         && isset($this->team['Group']) && count($this->team['Group'])) {
+          && isset($this->team['Group']) && count($this->team['Group'])) {
          foreach ($_SESSION['glpigroups'] as $groups_id) {
             foreach ($this->team['Group'] as $data) {
                if ($data['items_id'] == $groups_id) {
@@ -252,10 +270,16 @@ class Project extends CommonDBTM {
       return false;
    }
 
-   /// Is the current user in manager group ?
+
+   /**
+    * Is the current user in manager group?
+    *
+    * @return boolean
+   **/
    function isInTheManagerGroup() {
+
       if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
-         && $this->fields['groups_id']) {
+          && $this->fields['groups_id']) {
          foreach ($_SESSION['glpigroups'] as $groups_id) {
             if ($this->fields['groups_id'] == $groups_id) {
                return true;
@@ -264,6 +288,7 @@ class Project extends CommonDBTM {
       }
       return false;
    }
+
 
    /**
     * Get team member count
@@ -640,6 +665,7 @@ class Project extends CommonDBTM {
       return $input;
    }
 
+
    /**
     * Print the HTML array children of a TreeDropdown
     *
@@ -648,13 +674,13 @@ class Project extends CommonDBTM {
    function showChildren() {
       global $DB, $CFG_GLPI;
 
-      $ID = $this->getID();
+      $ID   = $this->getID();
       $this->check($ID, READ);
       $rand = mt_rand();
-      
+
       $query = "SELECT *
-                  FROM `".$this->getTable()."`
-                  WHERE `".$this->getForeignKeyField()."` = '$ID'";
+                FROM `".$this->getTable()."`
+                WHERE `".$this->getForeignKeyField()."` = '$ID'";
       if ($result = $DB->query($query)) {
          $numrows = $DB->numrows($result);
       }
@@ -663,7 +689,7 @@ class Project extends CommonDBTM {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
       if ($numrows) {
-         Project::commonListHeader(Search::HTML_OUTPUT);
+         Project::commonListHeader();
          Session::initNavigateListItems('Project',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -680,6 +706,7 @@ class Project extends CommonDBTM {
       echo "</table>";
       echo "</div>\n";
    }
+
 
    /**
     * Print the computer form
@@ -1008,7 +1035,7 @@ class Project extends CommonDBTM {
          if (is_null($project->fields['real_start_date'])) {
             $real_begin = $project->fields['real_start_date'];
          }
-         
+
          // Determine begin / end date of current project if not set (min/max sub projects / tasks)
          if (is_null($real_begin)) {
             if (!is_null($project->fields['plan_start_date'])) {
@@ -1016,16 +1043,16 @@ class Project extends CommonDBTM {
             } else {
                foreach ($tasks as $task) {
                   if (is_null($real_begin)
-                     || (!is_null($task['plan_start_date'])
-                        && ($real_begin > $task['plan_start_date']))) {
+                      || (!is_null($task['plan_start_date'])
+                          && ($real_begin > $task['plan_start_date']))) {
                      $real_begin = $task['plan_start_date'];
                   }
                }
                foreach ($projects as $p) {
                   if (is_null($real_begin)
-                     || (($p['type'] == 'project')
-                        && !is_null($p['from'])
-                        && ($real_begin > $p['from']))) {
+                      || (($p['type'] == 'project')
+                          && !is_null($p['from'])
+                          && ($real_begin > $p['from']))) {
                      $real_begin = $p['from'];
                   }
                }
@@ -1042,16 +1069,16 @@ class Project extends CommonDBTM {
             } else {
                foreach ($tasks as $task) {
                   if (is_null($real_end)
-                     || (!is_null($task['plan_end_date'])
-                        && ($real_end < $task['plan_end_date']))) {
+                      || (!is_null($task['plan_end_date'])
+                          && ($real_end < $task['plan_end_date']))) {
                      $real_end = $task['plan_end_date'];
                   }
                }
                foreach ($projects as $p) {
                   if (is_null($real_end)
-                     || (($p['type'] == 'project')
-                        && !is_null($p['to'])
-                        && ($real_end < $p['to']))) {
+                      || (($p['type'] == 'project')
+                          && !is_null($p['to'])
+                          && ($real_end < $p['to']))) {
                      $real_end = $p['to'];
                   }
                }

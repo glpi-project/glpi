@@ -44,12 +44,12 @@ class Problem extends CommonITILObject {
    public $dohistory = true;
 
    // From CommonITIL
-   public $userlinkclass     = 'Problem_User';
-   public $grouplinkclass    = 'Group_Problem';
-   public $supplierlinkclass = 'Problem_Supplier';
+   public $userlinkclass        = 'Problem_User';
+   public $grouplinkclass       = 'Group_Problem';
+   public $supplierlinkclass    = 'Problem_Supplier';
 
-   static $rightname         = 'problem';
-   protected $usenotepadrights = true;
+   static $rightname            = 'problem';
+   protected $usenotepadrights  = true;
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';

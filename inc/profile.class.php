@@ -102,12 +102,12 @@ class Profile extends CommonDBTM {
                } else {
                   /// TODO split it in 2 or 3 tabs
                   $ong[2] = __('Assets');
+                  $ong[3] = __('Management');
                   $ong[4] = __('Assistance');
                   $ong[5] = __('Life cycles');
-                  $ong[3] = __('Management');
-                  $ong[8] = __('Tools');
                   $ong[6] = __('Administration');
                   $ong[7] = __('Setup');
+                  $ong[8] = __('Tools');
                }
                return $ong;
          }
@@ -144,11 +144,11 @@ class Profile extends CommonDBTM {
             case 6 :
                $item->showFormAdmin();
                break;
-               
+
             case 7 :
                $item->showFormSetup();
                break;
-               
+
             case 8 :
                $item->showFormTools();
                break;
@@ -818,8 +818,11 @@ class Profile extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
     * Print the Management rights form for the current profile
+    *
+    * @since version 0.85 (before showFormInventory)
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
@@ -872,9 +875,12 @@ class Profile extends CommonDBTM {
       }
       echo "</div>";
    }
-   
+
+
    /**
     * Print the Tools rights form for the current profile
+    *
+    * @since version 0.85
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
@@ -927,7 +933,7 @@ class Profile extends CommonDBTM {
                             'field'      => 'projecttask'));
       $matrix_options['title'] = _n('Project', 'Projects', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
-      
+
       if ($canedit
           && $closeform) {
          echo "<div class='center'>";
