@@ -244,11 +244,10 @@ class Ticket extends CommonITILObject {
       }
 
       return (Session::haveRight(self::$rightname, self::READALL)
-               || (Session::haveRight(self::$rightname, self::READMY) &&
-                  (($this->fields["users_id_recipient"] === Session::getLoginUserID())
-                  || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                  || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-                  ))
+              || (Session::haveRight(self::$rightname, self::READMY)
+                  && (($this->fields["users_id_recipient"] === Session::getLoginUserID())
+                      || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                      || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())))
               || (Session::haveRight(self::$rightname, self::READGROUP)
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
@@ -1995,21 +1994,21 @@ class Ticket extends CommonITILObject {
       $tab[80]['datatype']          = 'dropdown';
 
       // For ticket template
-      $tab[142]['table']         = 'glpi_documents';
-      $tab[142]['field']         = 'name';
-      $tab[142]['name']          = _n('Document', 'Documents', 2);
-      $tab[142]['forcegroupby']  = true;
-      $tab[142]['usehaving']     = true;
-      $tab[142]['nosearch']      = true;
-      $tab[142]['nodisplay']     = true;
-      $tab[142]['datatype']      = 'dropdown';
-      $tab[142]['massiveaction'] = false;
-      $tab[142]['joinparams']    = array('jointype'   => 'items_id',
-                                         'beforejoin' => array('table'
-                                                                 => 'glpi_documents_items',
-                                                               'joinparams'
-                                                                 => array('jointype'
-                                                                            => 'itemtype_item')));
+      $tab[142]['table']            = 'glpi_documents';
+      $tab[142]['field']            = 'name';
+      $tab[142]['name']             = _n('Document', 'Documents', 2);
+      $tab[142]['forcegroupby']     = true;
+      $tab[142]['usehaving']        = true;
+      $tab[142]['nosearch']         = true;
+      $tab[142]['nodisplay']        = true;
+      $tab[142]['datatype']         = 'dropdown';
+      $tab[142]['massiveaction']    = false;
+      $tab[142]['joinparams']       = array('jointype'   => 'items_id',
+                                            'beforejoin' => array('table'
+                                                                    => 'glpi_documents_items',
+                                                                  'joinparams'
+                                                                    => array('jointype'
+                                                                               => 'itemtype_item')));
 
       $tab += $this->getSearchOptionsActors();
 
@@ -2150,21 +2149,21 @@ class Ticket extends CommonITILObject {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
-         $tab[40]['table']         = 'glpi_tickets_tickets';
-         $tab[40]['field']         = 'tickets_id_1';
-         $tab[40]['name']          = __('All linked tickets');
-         $tab[40]['massiveaction'] = false;
-         $tab[40]['searchtype']    = 'equals';
-         $tab[40]['joinparams']    = array('jointype' => 'item_item');
+         $tab[40]['table']          = 'glpi_tickets_tickets';
+         $tab[40]['field']          = 'tickets_id_1';
+         $tab[40]['name']           = __('All linked tickets');
+         $tab[40]['massiveaction']  = false;
+         $tab[40]['searchtype']     = 'equals';
+         $tab[40]['joinparams']     = array('jointype' => 'item_item');
 
-         $tab[47]['table']         = 'glpi_tickets_tickets';
-         $tab[47]['field']         = 'tickets_id_1';
-         $tab[47]['name']          = __('Duplicated tickets');
-         $tab[47]['massiveaction'] = false;
-         $tab[47]['searchtype']    = 'equals';
-         $tab[47]['joinparams']    = array('jointype'  => 'item_item',
-                                           'condition' => "AND NEWTABLE.`link` = ".
-                                                          Ticket_Ticket::DUPLICATE_WITH);
+         $tab[47]['table']          = 'glpi_tickets_tickets';
+         $tab[47]['field']          = 'tickets_id_1';
+         $tab[47]['name']           = __('Duplicated tickets');
+         $tab[47]['massiveaction']  = false;
+         $tab[47]['searchtype']     = 'equals';
+         $tab[47]['joinparams']     = array('jointype'  => 'item_item',
+                                            'condition' => "AND NEWTABLE.`link` = ".
+                                                            Ticket_Ticket::DUPLICATE_WITH);
          $tab[47]['datatype']       = 'dropdown';
          $tab[47]['forcegroupby']   = true;
 

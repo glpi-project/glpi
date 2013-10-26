@@ -68,8 +68,11 @@ class RuleTicket extends Rule {
       return count($this->getActions());
    }
 
+
    /**
     * display title for action form
+    *
+    * @since version 0.84.3
    **/
    function getTitleAction() {
 
@@ -92,6 +95,7 @@ class RuleTicket extends Rule {
          echo "</table><br>";
       }
    }
+
 
    /**
     * @param $params

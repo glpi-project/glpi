@@ -47,24 +47,29 @@ class ProjectTask extends CommonDBChild {
    public $dohistory = true;
 
    // From CommonDBChild
-   static public $itemtype  = 'Project';
-   static public $items_id  = 'projects_id';
+   static public $itemtype     = 'Project';
+   static public $items_id     = 'projects_id';
 
-   protected $team          = array();
-   static $rightname                   = 'project';
+   protected $team             = array();
+   static $rightname           = 'project';
    protected $usenotepadrights = true;
-   
+
    const READMY      = 1;
    const UPDATEMY    = 1024;
-   
+
+
+
    static function getTypeName($nb=0) {
       return _n('Task', 'Tasks', $nb);
    }
 
+
    static function canView() {
+
       return (Session::haveRightsOr(self::$rightname, array(Project::READALL, Project::READMY))
-               || Session::haveRight('projecttask', ProjectTask::READMY));
+              || Session::haveRight('projecttask', ProjectTask::READMY));
    }
+
 
    /**
     * Is the current user have right to show the current task ?
@@ -79,25 +84,25 @@ class ProjectTask extends CommonDBChild {
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
          return (Session::haveRight(self::$rightname, Project::READALL)
-                  || (Session::haveRight(self::$rightname, Project::READMY) &&
-                     (($project->fields["users_id"] === Session::getLoginUserID())
-                        || $project->isInTheManagerGroup()
-                        || $project->isInTheTeam()
-                     ))
-                  || (Session::haveRight('projecttask', ProjectTask::READMY) &&
-                     (($this->fields["users_id"] === Session::getLoginUserID())
-                        || $this->isInTheTeam()
-                     ))
-               );
+                 || (Session::haveRight(self::$rightname, Project::READMY)
+                     && (($project->fields["users_id"] === Session::getLoginUserID())
+                         || $project->isInTheManagerGroup()
+                         || $project->isInTheTeam()))
+                 || (Session::haveRight('projecttask', ProjectTask::READMY)
+                     && (($this->fields["users_id"] === Session::getLoginUserID())
+                         || $this->isInTheTeam())));
       }
       return false;
    }
 
+
    static function canUpdate() {
+
       return (parent::canUpdate()
-            || Session::haveRight('projecttask', self::UPDATEMY));
+              || Session::haveRight('projecttask', self::UPDATEMY));
    }
-   
+
+
    /**
     * Is the current user have right to edit the current task ?
     *
@@ -111,18 +116,15 @@ class ProjectTask extends CommonDBChild {
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
          return (Session::haveRight(self::$rightname, UPDATE)
-                  || (Session::haveRight('projecttask', ProjectTask::UPDATEMY) &&
-                     (($this->fields["users_id"] === Session::getLoginUserID())
-                        || $this->isInTheTeam()
-                     ))
-               );
+                 || (Session::haveRight('projecttask', ProjectTask::UPDATEMY)
+                     && (($this->fields["users_id"] === Session::getLoginUserID())
+                         || $this->isInTheTeam())));
       }
       return false;
    }
-   
+
+
    /**
-    * @since version 0.85
-    *
     * @see commonDBTM::getRights()
     **/
    function getRights($interface='central') {
@@ -135,7 +137,7 @@ class ProjectTask extends CommonDBChild {
       return $values;
    }
 
-   
+
    function defineTabs($options=array()) {
 
       $ong = array();
@@ -159,8 +161,14 @@ class ProjectTask extends CommonDBChild {
       $this->fields['percent_done'] = 0;
    }
 
-   /// Is the current user in the team ?
+
+   /**
+    * Is the current user in the team?
+    *
+    * @return boolean
+   **/
    function isInTheTeam() {
+
       if (isset($this->team['User']) && count($this->team['User'])) {
          foreach ($this->team['User'] as $data) {
             if ($data['items_id'] == Session::getLoginUserID()) {
@@ -170,7 +178,7 @@ class ProjectTask extends CommonDBChild {
       }
 
       if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
-         && isset($this->team['Group']) && count($this->team['Group'])) {
+          && isset($this->team['Group']) && count($this->team['Group'])) {
          foreach ($_SESSION['glpigroups'] as $groups_id) {
             foreach ($this->team['Group'] as $data) {
                if ($data['items_id'] == $groups_id) {
@@ -181,7 +189,8 @@ class ProjectTask extends CommonDBChild {
       }
       return false;
    }
-   
+
+
    /**
     * Get team member count
     *
@@ -481,24 +490,24 @@ class ProjectTask extends CommonDBChild {
       $tab                          = array();
       $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false; // implicit key==1
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               = __('Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false; // implicit key==1
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false; // implicit field is id
-      $tab[2]['datatype']        = 'number';
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false; // implicit field is id
+      $tab[2]['datatype']           = 'number';
 
-      $tab[2]['table']           = 'glpi_projects';
-      $tab[2]['field']           = 'name';
-      $tab[2]['name']            = __('Project');
-      $tab[2]['massiveaction']   = false; 
-      $tab[2]['datatype']        = 'dropdown';
-      
+      $tab[2]['table']              = 'glpi_projects';
+      $tab[2]['field']              = 'name';
+      $tab[2]['name']               = __('Project');
+      $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'dropdown';
+
       $tab[13]['table']             = $this->getTable();
       $tab[13]['field']             = 'name';
       $tab[13]['name']              = __('Father');
@@ -571,7 +580,6 @@ class ProjectTask extends CommonDBChild {
       $tab[10]['name']              = __('Real end date');
       $tab[10]['datatype']          = 'datetime';
 
-                                    
       $tab[11]['table']             = $this->getTable();
       $tab[11]['field']             = 'planned_duration';
       $tab[11]['name']              = __('Planned duration');
@@ -581,7 +589,7 @@ class ProjectTask extends CommonDBChild {
       $tab[11]['step']              = HOUR_TIMESTAMP;
       $tab[11]['addfirstminutes']   = true;
       $tab[11]['inhours']           = true;
-      
+
       $tab[17]['table']             = $this->getTable();
       $tab[17]['field']             = 'effective_duration';
       $tab[17]['name']              = __('Effective duration');
@@ -591,7 +599,7 @@ class ProjectTask extends CommonDBChild {
       $tab[17]['step']              = HOUR_TIMESTAMP;
       $tab[17]['addfirstminutes']   = true;
       $tab[17]['inhours']           = true;
-      
+
       $tab[16]['table']             = $this->getTable();
       $tab[16]['field']             = 'comment';
       $tab[16]['name']              = __('Comments');
@@ -657,12 +665,13 @@ class ProjectTask extends CommonDBChild {
          case 'Project' :
             $where = "WHERE `glpi_projecttasks`.`projects_id` = '$ID'";
             break;
+
          case 'ProjectTask' :
             $where = "WHERE `glpi_projecttasks`.`projecttasks_id` = '$ID'";
             break;
+
          default : // Not available type
             return;
-            break;
       }
 
       echo "<div class='spaced'>";
@@ -671,7 +680,7 @@ class ProjectTask extends CommonDBChild {
       if ($canedit) {
          echo "<div class='center firstbloc'>";
          echo "<a class='vsubmit' href='projecttask.form.php?projects_id=$ID'>".
-                  _x('button', 'Add a task')."</a>";
+                _x('button', 'Add a task')."</a>";
          echo "</div>";
       }
 
@@ -700,17 +709,17 @@ class ProjectTask extends CommonDBChild {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre_fixe'><tr>";
 
-            $columns = array('name'           => self::getTypeName(2),
-                           'tname'            => __('Type'),
-                           'sname'            => __('Status'),
-                           'percent_done'     => __('Percent done'),
-                           'plan_start_date'  => __('Planned start date'),
-                           'plan_end_date'    => __('Planned end date'),
-                           'planned_duration' => __('Planned duration'),
-                           '_effect_duration'  => __('Effective duration'),
-                           'fname'            => __('Father'),);
+            $columns = array('name'             => self::getTypeName(2),
+                             'tname'            => __('Type'),
+                             'sname'            => __('Status'),
+                             'percent_done'     => __('Percent done'),
+                             'plan_start_date'  => __('Planned start date'),
+                             'plan_end_date'    => __('Planned end date'),
+                             'planned_duration' => __('Planned duration'),
+                             '_effect_duration' => __('Effective duration'),
+                             'fname'            => __('Father'),);
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                              (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             foreach ($columns as $key => $val) {
                // Non order column
@@ -722,7 +731,7 @@ class ProjectTask extends CommonDBChild {
                            (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
             }
-            
+
             echo "</tr>\n";
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
                Session::addToNavigateListItems('ProjectTask',$data['id']);
@@ -798,10 +807,12 @@ class ProjectTask extends CommonDBChild {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
       switch ($item->getType()) {
          case 'Project' :
             self::showFor($item);
             break;
+
          case __CLASS__ :
             self::showFor($item);
             break;
@@ -939,7 +950,7 @@ class ProjectTask extends CommonDBChild {
          if (!is_null($task->fields['real_start_date'])) {
             $real_begin = $task->fields['real_start_date'];
          }
-         
+
          // Determine begin / end date of current task if not set (min/max sub projects / tasks)
          if (is_null($real_begin)) {
             if (!is_null($task->fields['plan_start_date'])) {
@@ -947,8 +958,8 @@ class ProjectTask extends CommonDBChild {
             } else {
                foreach($subtasks as $subtask) {
                   if (is_null($real_begin)
-                     || (!is_null($subtask['from'])
-                        && ($real_begin > $subtask['from']))) {
+                      || (!is_null($subtask['from'])
+                          && ($real_begin > $subtask['from']))) {
                      $real_begin = $subtask['from'];
                   }
                }
@@ -965,8 +976,8 @@ class ProjectTask extends CommonDBChild {
             } else {
                foreach($subtasks as $subtask) {
                   if (is_null($real_end)
-                     || (!is_null($subtask['to'])
-                        && ($real_end < $subtask['to']))) {
+                      || (!is_null($subtask['to'])
+                          && ($real_end < $subtask['to']))) {
                      $real_end = $subtask['to'];
                   }
                }

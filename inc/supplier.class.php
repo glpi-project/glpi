@@ -41,9 +41,9 @@ if (!defined('GLPI_ROOT')) {
 class Supplier extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory           = true;
 
-   static $rightname = 'contact_enterprise';
+   static $rightname           = 'contact_enterprise';
    protected $usenotepadrights = true;
 
 

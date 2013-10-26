@@ -45,7 +45,9 @@ class Contract extends CommonDBTM {
    static protected $forward_entity_to = array('ContractCost');
 
    static $rightname                   = 'contract';
-   protected $usenotepadrights = true;
+   protected $usenotepadrights         = true;
+
+
 
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);

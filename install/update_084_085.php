@@ -49,22 +49,18 @@ function update084to085() {
 
    $backup_tables = false;
    $newtables     = array('glpi_blacklistedmailcontents',
-                           'glpi_changes', 'glpi_changecosts', 'glpi_changes_groups',
-                          'glpi_changes_items',
-                          'glpi_changes_problems', 'glpi_changes_projects',
-                          'glpi_changes_suppliers',
-                          'glpi_changes_tickets', 'glpi_changes_users',
+                          'glpi_changecosts', 'glpi_changes', 'glpi_changes_groups',
+                          'glpi_changes_items', 'glpi_changes_problems', 'glpi_changes_projects',
+                          'glpi_changes_suppliers', 'glpi_changes_tickets', 'glpi_changes_users',
                           'glpi_changetasks', 'glpi_changevalidations',
                           'glpi_dropdowntranslations',
                           'glpi_knowbaseitemtranslations',
                           'glpi_notepads',
                           'glpi_problemcosts',
-                          'glpi_projects', 'glpi_projects_changes',
-                          'glpi_projectstates', 'glpi_projectteams',
-                          'glpi_projecttypes', 'glpi_projects_items',
-                          'glpi_projecttasks', 'glpi_projecttasks_tickets',
-                          'glpi_projecttaskteams',
-                          'glpi_projecttasktypes',
+                          'glpi_projects', 'glpi_projects_changes', 'glpi_projects_items',
+                          'glpi_projectstates', 'glpi_projecttasks', 'glpi_projecttasks_tickets',
+                          'glpi_projecttaskteams', 'glpi_projecttasktypes',
+                          'glpi_projectteams', 'glpi_projecttypes',
                           'glpi_queuedmails'
                           // Only do profilerights once : so not delete it
                           /*, 'glpi_profilerights'*/);
@@ -2195,12 +2191,14 @@ function update084to085() {
          // Migrate data
          if (FieldExists($t, 'notepad')) {
             $query = "SELECT id, notepad
-                     FROM `$t`
-                     WHERE notepad IS NOT NULL
-                        AND notepad <>'';";
+                      FROM `$t`
+                      WHERE notepad IS NOT NULL
+                            AND notepad <>'';";
             foreach ($DB->request($query) as $data) {
-               $iq = "INSERT INTO `glpi_notepads` (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
-                  VALUES ('".getItemTypeForTable($t)."', '".$data['id']."', '".addslashes($data['notepad'])."', NOW(), NOW())";
+               $iq = "INSERT INTO `glpi_notepads`
+                             (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
+                      VALUES ('".getItemTypeForTable($t)."', '".$data['id']."',
+                              '".addslashes($data['notepad'])."', NOW(), NOW())";
                $DB->queryOrDie($iq, "0.85 migrate notepad data");
             }
             $migration->dropField($t, 'notepad');
@@ -2216,14 +2214,14 @@ function update084to085() {
                     'refused'  => CommonITILValidation::REFUSED);
    /// TODO : migrate glpi_tickets.global_validation
    /// TODO : Migrate bookmarks / see predefined request
-   
+
    // Migrate datas
    foreach ($status as $old => $new) {
       $query = "UPDATE `glpi_ticketvalidations`
                   SET `status` = '$new'
                   WHERE `status` = '$old'";
       $DB->queryOrDie($query, "0.85 status in glpi_ticketvalidations $old to $new");
-      
+
    }
    $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
                            array('value' => CommonITILValidation::WAITING));

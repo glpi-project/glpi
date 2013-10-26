@@ -76,10 +76,10 @@ class CommonDBTM extends CommonGLPI {
    static protected $plugins_forward_entity = array();
 
    /// Profile name
-   static $rightname = '';
+   static $rightname                        = '';
 
    /// Is this item use notepad ?
-   protected $usenotepadrights = false;
+   protected $usenotepadrights              = false;
 
    /// FLush mail queue for
    public $mailqueueonaction = false;
@@ -2340,8 +2340,8 @@ class CommonDBTM extends CommonGLPI {
              && ($this->fields['users_id'] === Session::getLoginUserID())) {
             return true;
          }
-         if (!static::canCreate()) echo 'ii';
-         if (!$this->canCreateItem()) echo 'jj';
+  //       if (!static::canCreate()) echo 'ii';
+  //       if (!$this->canCreateItem()) echo 'jj';
          return (static::canCreate() && $this->canCreateItem());
 
       }

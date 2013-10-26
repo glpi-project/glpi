@@ -41,25 +41,25 @@ if (!defined('GLPI_ROOT')) {
 class Change extends CommonITILObject {
 
    // From CommonDBTM
-   public $dohistory          = true;
+   public $dohistory                   = true;
    static protected $forward_entity_to = array('ChangeValidation');
 
    // From CommonITIL
-   public $userlinkclass      = 'Change_User';
-   public $grouplinkclass     = 'Change_Group';
-   public $supplierlinkclass  = 'Change_Supplier';
+   public $userlinkclass               = 'Change_User';
+   public $grouplinkclass              = 'Change_Group';
+   public $supplierlinkclass           = 'Change_Supplier';
 
-   static $rightname          = 'change';
-   protected $usenotepadrights = true;
+   static $rightname                   = 'change';
+   protected $usenotepadrights         = true;
 
-   const MATRIX_FIELD         = 'priority_matrix';
-   const URGENCY_MASK_FIELD   = 'urgency_mask';
-   const IMPACT_MASK_FIELD    = 'impact_mask';
-   const STATUS_MATRIX_FIELD  = 'change_status';
+   const MATRIX_FIELD                  = 'priority_matrix';
+   const URGENCY_MASK_FIELD            = 'urgency_mask';
+   const IMPACT_MASK_FIELD             = 'impact_mask';
+   const STATUS_MATRIX_FIELD           = 'change_status';
 
 
-   const READMY               = 1;
-   const READALL              = 1024;
+   const READMY                        = 1;
+   const READALL                       = 1024;
 
 
 
