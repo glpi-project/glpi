@@ -3730,7 +3730,7 @@ class Html {
       return "if (!tinyMCE.isIE) { // Chrome, Firefox plugin
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");
               } else {// IE plugin
-                  $(document).IE_support_imagePaste(".json_encode($params).");
+                  tinyMCE.imagePaste = $(document).IE_support_imagePaste(".json_encode($params).");
               }
               uploadFile();";
    }
@@ -4974,12 +4974,14 @@ class Html {
                      && tinyMCE.imagePaste != undefined
                      && tinyMCE.imagePaste.pasteddata == undefined 
                      && tinyMCE.imagePaste.stockimage == undefined) {
-
-                     var reader = new FileReader();
-                     reader.readAsDataURL(data.originalFiles[0]);//Convert the blob from clipboard to base64
-                     reader.onloadend = function(e){
-                        $('#desc_paste_image').html(e.target.result);
-                        tinyMCE.imagePaste.processpaste($('#desc_paste_image'), '"._sx('button', 'Paste image')."');
+                     
+                     if(!tinyMCE.isIE){
+                        var reader = new FileReader();
+                        reader.readAsDataURL(data.originalFiles[0]);//Convert the blob from clipboard to base64
+                        reader.onloadend = function(e){
+                           $('#desc_paste_image').html(e.target.result);
+                           tinyMCE.imagePaste.processpaste($('#desc_paste_image'), '"._sx('button', 'Paste image')."');
+                        }
                      }
                      return false
                   }
