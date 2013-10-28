@@ -515,7 +515,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
-         $docadded = $this->addFiles(1, $input['_disablenotif']);
+         $docadded = $this->addFiles(1, isset($input['_disablenotif'])?$input['_disablenotif']:0);
          if (isset($this->input['_forcenotif'])) {
             $input['_forcenotif'] = $this->input['_forcenotif'];
             unset($input['_disablenotif']);
@@ -1068,7 +1068,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
-         $input['name'] = Html::clean($input['content']);
+         $input['name'] = Html::clean(Html::entity_decode_deep($input['content']));
          $input["name"] = preg_replace('/\\r\\n/',' ',$input['name']);
          $input["name"] = preg_replace('/\\n/',' ',$input['name']);
          // For mailcollector

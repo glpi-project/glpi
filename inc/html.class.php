@@ -4972,13 +4972,14 @@ class Html {
                   if (1==".(($p['imagePaste'])?1:0)."
                      && tinyMCE != undefined
                      && tinyMCE.imagePaste != undefined
-                     && tinyMCE.imagePaste.pasteddata == undefined) {
+                     && tinyMCE.imagePaste.pasteddata == undefined 
+                     && tinyMCE.imagePaste.stockimage == undefined) {
 
                      var reader = new FileReader();
                      reader.readAsDataURL(data.originalFiles[0]);//Convert the blob from clipboard to base64
                      reader.onloadend = function(e){
                         $('#desc_paste_image').html(e.target.result);
-                        tinyMCE.imagePaste.processpaste($('#desc_paste_image'), '');
+                        tinyMCE.imagePaste.processpaste($('#desc_paste_image'), '"._sx('button', 'Paste image')."');
                      }
                      return false
                   }
@@ -5024,6 +5025,7 @@ class Html {
                                     tinyMCE.activeEditor.execCommand('mceInsertContent', false, '<p>'+tag[index].tag+'</p>');\n
                                     if (tinyMCE.imagePaste != undefined) {
                                        tinyMCE.imagePaste.pasteddata = undefined;
+                                       tinyMCE.imagePaste.stockimage = undefined;
                                     }
                                  }\n";
       }
