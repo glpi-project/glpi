@@ -2836,7 +2836,7 @@ class Html {
                   changeYear: true,
                   showOn: 'button',
                   showWeek: true,
-                  buttonImage: '../pics/calendar.png',
+                  buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
                   buttonImageOnly: true  ";
       if (!empty($p['min'])) {
          $js .= ",minDate: '".self::convDate($p['min'])."'";
