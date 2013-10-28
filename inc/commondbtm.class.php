@@ -2104,8 +2104,15 @@ class CommonDBTM extends CommonGLPI {
          // Create item from template
          // Check read right on the template
          $this->check($ID, READ);
+         
          // Restore saved input or template data
          $input = $this->restoreInput($this->fields);
+         
+         // If entity assign force current entity to manage recursive templates
+         if ($this->isEntityAssign()) {
+            $input['entities_id'] = $_SESSION['glpiactive_entity'];
+         }
+         
          // Check create right
          $this->check(-1, CREATE, $input);
 
