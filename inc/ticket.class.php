@@ -5628,30 +5628,30 @@ class Ticket extends CommonITILObject {
          if (isset($matches[1]) && count($matches[1])) {
             $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
          }
-         // TODO : add only image files
-//         $fullpath = GLPI_DOC_DIR."/_uploads/".$doc_data['filename'];
-//         if (function_exists('finfo_open')
-//             && ($finfo = finfo_open(FILEINFO_MIME))) {
-//            $mime = finfo_file($finfo, $fullpath);
-//            finfo_close($finfo);
-//
-//         } else if (function_exists('mime_content_type')) {
-//            $mime = mime_content_type($fullpath);
-//         }
-//         switch($mime){
-//            case 'image/gif':case 'image/jpg':case 'image/jpeg':case 'image/png':
-//               // OK
-//               break;
-//            default:
-//               // NOK
-//               $doc_data = array();
-//               break;
-//         }
       }
 
       if (count($doc_data)) {
          foreach ($doc_data as $id => $image) {
-            if (isset($image['tag'])) {
+            // Add only image files : try to detect mime type
+            $ok       = false;
+            $mime     = '';
+            if(isset($image['filepath'])){
+               $fullpath = GLPI_DOC_DIR."/".$image['filepath'];
+               if (function_exists('finfo_open')
+                   && ($finfo = finfo_open(FILEINFO_MIME))) {
+                  $mime = finfo_file($finfo, $fullpath);
+                  finfo_close($finfo);
+
+               } else if (function_exists('mime_content_type')) {
+                  $mime = mime_content_type($fullpath);
+               }
+               switch(substr($mime, 0, strrpos($mime, ';'))){
+                  case 'image/gif':case 'image/jpg':case 'image/jpeg':case 'image/png':
+                     $ok = true;
+                     break;
+               }
+            }
+            if (isset($image['tag']) && ($ok || empty($mime))) {
                // Replace tags by image in textarea
                $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
                         "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
@@ -5663,6 +5663,10 @@ class Ticket extends CommonITILObject {
                // Replace <br> TinyMce bug
                $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
                                            '&gt;&lt;', $content_text);
+            } else {
+               // Remove tag
+               $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
+                                            '', $content_text);
             }
          }
       }
