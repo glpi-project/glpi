@@ -3184,8 +3184,7 @@ class Ticket extends CommonITILObject {
 
          if ($CFG_GLPI["use_rich_text"]) {
             Html::initEditorSystem($content_id, $this->getType());
-            //TODO missing pram $rang r22107
-            $values["content"] = $this->setRichTextContent($content_id, $values["content"]);
+            $values["content"] = $this->setRichTextContent($content_id, $values["content"], $rand);
             $cols = 110;
             $rows = 20;
          } else {
