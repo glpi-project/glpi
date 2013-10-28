@@ -437,7 +437,7 @@ class Infocom extends CommonDBChild {
                              AND `glpi_infocoms`.`warranty_date` IS NOT NULL
                              AND DATEDIFF(ADDDATE(`glpi_infocoms`.`warranty_date`,
                                                   INTERVAL (`glpi_infocoms`.`warranty_duration`) MONTH),
-                                          NOW() )<'0'
+                                          CURDATE() )<='0'
                              AND `glpi_alerts`.`date` IS NULL";
 
          foreach ($DB->request($query_end) as $data) {
