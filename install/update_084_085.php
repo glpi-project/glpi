@@ -2255,7 +2255,7 @@ function update084to085() {
                if (($data['itemtype'] = 'Ticket')
                    &&( $data['type'] == Bookmark::SEARCH)) {
                   foreach ($options['field'] as $key => $val) {
-                     if (($val == 55)
+                     if (($val == 55 || $val == 52)
                          && isset($options['contains'][$key])) {
                         if (isset($status[$options['contains'][$key]])) {
                            $options['contains'][$key] = $status[$options['contains'][$key]];
