@@ -373,14 +373,19 @@ class NetworkPortMigration extends CommonDBChild {
                   if ($val == 1) {
                      if ($networkport->can($key,'w')
                          && $this->can($key,'d')) {
-                        if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
-                           $instantiation             = $networkport->getInstantiation();
-                           $input2                    = $this->fields;
-                           $input2['networkports_id'] = $input2['id'];
-                           unset($input2['id']);
-                           if ($instantiation->add($input2)) {
-                              $this->delete(array('id' => $key));
-                              $res['ok']++;
+                        // Don't try to migrate already affected ports
+                        if (empty($networkport->fields['instantiation_type'])) {
+                           if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
+                              $instantiation             = $networkport->getInstantiation();
+                              $input2                    = $this->fields;
+                              $input2['networkports_id'] = $input2['id'];
+                              unset($input2['id']);
+                              if ($instantiation->add($input2)) {
+                                 $this->delete(array('id' => $key));
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                              }
                            } else {
                               $res['ko']++;
                            }
