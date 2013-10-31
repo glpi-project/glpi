@@ -83,80 +83,79 @@ class Calendar extends CommonDropdown {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['duplicate'] = _x('button', 'Duplicate');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate'] = _x('button', 'Duplicate');
       }
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($input['action']) {
-         case "duplicate" :
+      switch ($ma->getAction()) {
+         case 'duplicate' :
             Entity::dropdown();
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Duplicate')."'>";
+            echo "<br><br>";
+            echo Html::submit(_sx('button', 'Duplicate'), array('name' => 'massiveaction'))."</span>";
             return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
       }
-      return false;
+
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since version 0.85
+    *
+    * @TODO: why not transfering duplicate to MassiveAction ?
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "duplicate" : // For calendar duplicate in another entity
-            if (method_exists($this,'duplicate')) {
+      switch ($ma->getAction()) {
+         case 'duplicate' : // For calendar duplicate in another entity
+            if (method_exists($item,'duplicate')) {
+               $input = $ma->getInput();
                $options = array();
-               if ($this->isEntityAssign()) {
+               if ($item->isEntityAssign()) {
                   $options = array('entities_id' => $input['entities_id']);
                }
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->getFromDB($key)) {
-                        if (!$this->isEntityAssign()
-                            || ($input['entities_id'] != $this->getEntityID())) {
-                           if ($this->can(-1, CREATE, $options)) {
-                              if ($this->duplicate($options)) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                                 $res['ko']++;
-                              }
+               foreach ($ids as $id) {
+                  if ($item->getFromDB($id)) {
+                     if (!$item->isEntityAssign()
+                         || ($input['entities_id'] != $item->getEntityID())) {
+                        if ($item->can(-1, CREATE, $options)) {
+                           if ($item->duplicate($options)) {
+                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                            } else {
-                              $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                              $res['noright']++;
+                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                              $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                            }
                         } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                           $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                      } else {
-                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
-                        $res['ko']++;
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                      }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   }
                }
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
