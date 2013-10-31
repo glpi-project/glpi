@@ -322,81 +322,81 @@ class NetworkPortMigration extends CommonDBChild {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $actions['transform_to'] = __('Transform this network port to');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'transform_to'] = __('Transform this network port to');
       }
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "transform_to" :
+      switch ($ma->getAction()) {
+         case 'transform_to' :
             Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
                                     array('value' => 'NetworkPortEthernet'));
-
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Save')."'>";
+            echo "<br><br>";
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
             return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
       }
       return false;
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "transform_to" :
+      switch ($ma->getAction()) {
+         case 'transform_to':
+            $input = $ma->getInput();
             if (isset($input["transform_to"]) && !empty($input["transform_to"])) {
                $networkport = new NetworkPort();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($networkport->canEdit($key)
-                         && $this->can($key, DELETE)) {
+               foreach ($ids as $id) {
+                  if ($networkport->canEdit($id)
+                      && $item->can($id, DELETE)) {
+                     if (empty($networkport->fields['instantiation_type'])) {
                         if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
                            $instantiation             = $networkport->getInstantiation();
-                           $input2                    = $this->fields;
+                           $input2                    = $item->fields;
                            $input2['networkports_id'] = $input2['id'];
                            unset($input2['id']);
                            if ($instantiation->add($input2)) {
-                              $this->delete(array('id' => $key));
-                              $res['ok']++;
+                              $item->delete(array('id' => $id));
+                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                            } else {
-                              $res['ko']++;
-                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
+                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                              $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                            }
                         } else {
-                           $res['ko']++;
-                           $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                         }
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                      }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($networkport->getErrorMessage(ERROR_RIGHT));
                   }
                }
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
