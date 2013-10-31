@@ -160,76 +160,68 @@ class Problem_Ticket extends CommonDBRelation{
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since version 0.85
     *
-    * @since version 0.84
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
 
-      switch ($input['action']) {
+      switch ($ma->getAction()) {
          case "solveticket" :
             $problem = new Problem();
+            $input = $ma->getInput();
             if (isset($input['problems_id']) && $problem->getFromDB($input['problems_id'])) {
                Ticket::showMassiveSolutionForm($problem->getEntityID());
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                               _sx('button', 'Post')."'>";
+               echo "<br><br>";
+               echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
                return true;
             }
             return false;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since version 0.85
     *
-    * @since version 0.84
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-          case "solveticket" :
+      switch ($ma->getAction()) {
+          case 'solveticket' :
+            $input  = $ma->getInput();
             $ticket = new Ticket();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->can($key, READ)) {
-                     if ($ticket->getFromDB($this->fields['tickets_id'])
-                         && $ticket->canSolve()) {
-                        $toupdate                     = array();
-                        $toupdate['id']               = $ticket->getID();
-                        $toupdate['solutiontypes_id'] = $input['solutiontypes_id'];
-                        $toupdate['solution']         = $input['solution'];
+            foreach ($ids as $id) {
+               if ($item->can($id, READ)) {
+                  if ($ticket->getFromDB($item->fields['tickets_id'])
+                      && $ticket->canSolve()) {
+                     $toupdate                     = array();
+                     $toupdate['id']               = $ticket->getID();
+                     $toupdate['solutiontypes_id'] = $input['solutiontypes_id'];
+                     $toupdate['solution']         = $input['solution'];
 
-                        if ($ticket->update($toupdate)) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
-                        }
+                     if ($ticket->update($toupdate)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($ticket->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
                }
             }
-           break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -305,7 +297,7 @@ class Problem_Ticket extends CommonDBRelation{
                                       'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                                                     => _x('button',
                                                                           'Delete permanently'),
-                                                                  'solveticket'
+                                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                                     => __('Solve tickets')),
                                       'extraparams'      => array('problems_id' => $problem->getID()),
                                       'width'            => 1000,
