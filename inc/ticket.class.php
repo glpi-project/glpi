@@ -3700,9 +3700,14 @@ class Ticket extends CommonITILObject {
       }
 
       // Load ticket template if available :
-      $tt = $this->getTicketTemplateToUse($options['template_preview'], $values['type'],
-                                          $values['itilcategories_id'], $values['entities_id']);
-
+      if ($ID) {
+         $tt = $this->getTicketTemplateToUse($options['template_preview'], $this->fields['type'],
+                                             $this->fields['itilcategories_id'], $this->fields['entities_id']);
+      } else {
+         $tt = $this->getTicketTemplateToUse($options['template_preview'], $values['type'],
+                                             $values['itilcategories_id'], $values['entities_id']);
+      }
+      
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
          $values['_predefined_fields']
