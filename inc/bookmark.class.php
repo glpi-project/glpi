@@ -102,7 +102,7 @@ class Bookmark extends CommonDBTM {
             echo Html::submit(_sx('button', 'Move'), array('name' => 'massiveaction'))."</span>"; 
             return true;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

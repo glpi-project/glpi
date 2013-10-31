@@ -552,7 +552,7 @@ class Rule extends CommonDBTM {
                            _sx('button', 'Move')."'>\n";
             return true;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

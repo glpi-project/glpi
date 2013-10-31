@@ -365,7 +365,7 @@ class Group extends CommonTreeDropdown {
             }
             return true;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

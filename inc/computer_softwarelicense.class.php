@@ -104,7 +104,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             }
             return false;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
