@@ -70,72 +70,62 @@ class NotImportedEmail extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['delete_email'] = __('Delete emails');
-         $actions['import_email'] = _x('button', 'Import');
+         $prefix                          = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $actions[$prefix.'delete_email'] = __('Delete emails');
+         $actions[$prefix.'import_email'] = _x('button', 'Import');
       }
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($input['action']) {
-         case "import_email" :
+      switch ($ma->getAction()) {
+         case 'import_email' :
             Entity::dropdown();
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Import')."'>";
+            echo "<br><br>";
+            echo Html::submit(_sx('button', 'Import'), array('name' => 'massiveaction'));
             return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-    **/
-   function doSpecificMassiveActions($input=array()) {
+    * @since version 0.85
+    *
+    * @TODO: check because I (webmyster) don't have all elements to check
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
+      switch ($ma->getAction()) {
          case 'delete_email' :
          case 'import_email' :
-            if (!static::canCreate()) {
-               $res['noright']++;
+            if (!$item->canCreate()) {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
             } else {
-               $emails_ids = array();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     $emails_ids[$key] = $key;
-                  }
-               }
-               if (count($emails_ids)) {
+               $input = $ma->getInput();
+               if (count($ids)) {
                   $mailcollector = new MailCollector();
-                  if ($input["action"] == 'delete_email') {
-                     $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
-                  }
-                  else {
-                     $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1,
-                                                                 $input['entities_id']);
+                  if ($ma->getAction() == 'delete_email') {
+                     $mailcollector->deleteOrImportSeveralEmails($ids, 0);
+                  } else {
+                     $mailcollector->deleteOrImportSeveralEmails($ids, 1, $input['entities_id']);
                   }
                }
-               $res['ok']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
