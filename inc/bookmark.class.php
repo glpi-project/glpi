@@ -74,7 +74,7 @@ class Bookmark extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $actions['move_bookmark'] = __('Move');
+      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_bookmark'] = __('Move');
       return $actions;
    }
 
@@ -82,12 +82,13 @@ class Bookmark extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "move_bookmark" :
+      switch ($ma->getAction()) {
+         case 'move_bookmark' :
             $values             = array('after'  => __('After'),
                                         'before' => __('Before'));
             Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
@@ -97,13 +98,9 @@ class Bookmark extends CommonDBTM {
             $param['condition'] = "(`is_private`='1' AND `users_id`='".Session::getLoginUserID()."') ";
             $param['entity']    = -1;
             Bookmark::dropdown($param);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Move')."'>\n";
+            echo "<br><br>\n";
+            echo Html::submit(_sx('button', 'Move'), array('name' => 'massiveaction'))."</span>"; 
             return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
       return false;
    }
@@ -112,34 +109,24 @@ class Bookmark extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "move_bookmark" :
-            $items = array();
-            foreach ($input["item"] as $key => $val) {
-               if ($val) {
-                  $items[$key] = $key;
-               }
-            }
-            if ($this->moveBookmark($items, $input['bookmarks_id_ref'],
+      switch ($ma->getAction()) {
+         case 'move_bookmark' :
+            $input = $ma->getInput();
+            if ($item->moveBookmark($ids, $input['bookmarks_id_ref'],
                                     $input['move_type'])) {
-               $res['ok']+=count($items);
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
             } else {
-               $res['ko']+=count($items);
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -703,8 +690,7 @@ class Bookmark extends CommonDBTM {
       $maactions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                            => _x('button', 'Delete permanently'));
       if ($is_private) {
-         // TODO MassiveAction: specific_actions
-         $maactions['move_bookmark'] = __('Move');
+         $maactions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_bookmark'] = __('Move');
       }
       $massiveactionparams = array('num_displayed'     => $numrows,
                                     'container'        => 'mass'.__CLASS__.$rand,
