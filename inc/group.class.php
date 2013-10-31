@@ -698,7 +698,6 @@ class Group extends CommonTreeDropdown {
          echo Html::hidden('field', array('value'                 => $field,
                                           'data-glpicore-ma-tags' => 'common'));
 
-         // TODO MassiveAction: specific_actions
          $massiveactionparams = array('num_displayed'    => $nb,
                            'check_itemtype'   => 'Group',
                            'check_items_id'   => $ID,

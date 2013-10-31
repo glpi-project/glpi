@@ -291,7 +291,6 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         // TODO MassiveAction: specific_actions
          $massiveactionparams = array('num_displayed'    => $numrows,
                                       'container'        => 'mass'.__CLASS__.$rand,
                                       'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'

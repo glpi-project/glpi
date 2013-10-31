@@ -584,7 +584,6 @@ class DisplayPreference extends CommonDBTM {
          $rand = mt_rand();
          echo "<div class='spaced'>";
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         // TODO MassiveAction: specific_actions
          $massiveactionparams = array('width'            => 400,
                            'height'           => 200,
                            'container'        => 'mass'.__CLASS__.$rand,

@@ -524,7 +524,6 @@ class Cartridge extends CommonDBChild {
          if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            // TODO MassiveAction: specific_actions
             $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                        => _x('button', 'Delete permanently'),
                              'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'

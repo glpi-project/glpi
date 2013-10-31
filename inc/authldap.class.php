@@ -1233,7 +1233,6 @@ class AuthLDAP extends CommonDBTM {
                $textbutton  = _x('button','Import');
                $form_action = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'import';
             }
-            // TODO MassiveAction: specific_actions
 
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = array('num_displayed'    => min(count($ldap_users),
@@ -1619,7 +1618,6 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<div class='center'>";
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            // TODO MassiveAction: specific_actions
             $massiveactionparams
                = array('num_displayed'
                            => min($_SESSION['glpilist_limit'], count($ldap_groups)),
