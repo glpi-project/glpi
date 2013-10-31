@@ -1862,7 +1862,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (TicketTask::canCreate()) {
-         $actions['add_task'] = __('Add a new task');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
       }
 
       if (TicketValidation::canCreate()) {
@@ -1871,7 +1871,8 @@ class Ticket extends CommonITILObject {
       }
 
       if (Session::haveRight(self::$rightname, UPDATE)) {
-         $actions['add_actor']   = __('Add an actor');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
+            = __('Add an actor');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'link_ticket']
             = _x('button', 'Link tickets');
       }

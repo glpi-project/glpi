@@ -393,10 +393,10 @@ class Problem extends CommonITILObject {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (ProblemTask::canCreate()) {
-         $actions['add_task'] = __('Add a new task');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
       }
       if (Session::haveRight(self::$rightname, UPDATE)) {
-         $actions['add_actor'] = __('Add an actor');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor'] = __('Add an actor');
       }
 
       if ($isadmin) {

@@ -2194,21 +2194,24 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "add_task" :
-            $tasktype = $input['itemtype']."Task";
+      switch ($ma->getAction()) {
+         case 'add_task' :
+            $itemtype = $ma->getItemtype(true);
+            $tasktype = $itemtype.'Task';
             if ($ttype = getItemForItemtype($tasktype)) {
                $ttype->showFormMassiveAction();
                return true;
             }
-            break;
+            return false;
 
-         case "add_actor" :
+         case 'add_actor' :
             $types            = array(0                          => Dropdown::EMPTY_VALUE,
                                       CommonITILActor::REQUESTER => __('Requester'),
                                       CommonITILActor::OBSERVER  => __('Watcher'),
@@ -2223,90 +2226,81 @@ abstract class CommonITILObject extends CommonDBTM {
                                           $paramsmassaction);
             echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
             return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_actor" :
-            $item = new $input['itemtype']();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  $input2 = array('id' => $key);
-                  if (isset($input['_itil_requester'])) {
-                     $input2['_itil_requester'] = $input['_itil_requester'];
-                  }
-                  if (isset($input['_itil_observer'])) {
-                     $input2['_itil_observer'] = $input['_itil_observer'];
-                  }
-                  if (isset($input['_itil_assign'])) {
-                     $input2['_itil_assign'] = $input['_itil_assign'];
-                  }
-                  if ($item->can($key, UPDATE)) {
-                     if ($item->update($input2)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                     }
+      switch ($ma->getAction()) {
+         case 'add_actor' :
+            $input = $ma->getInput();
+            foreach ($ids as $id) {
+               $input2 = array('id' => $id);
+               if (isset($input['_itil_requester'])) {
+                  $input2['_itil_requester'] = $input['_itil_requester'];
+               }
+               if (isset($input['_itil_observer'])) {
+                  $input2['_itil_observer'] = $input['_itil_observer'];
+               }
+               if (isset($input['_itil_assign'])) {
+                  $input2['_itil_assign'] = $input['_itil_assign'];
+               }
+               if ($item->can($id, UPDATE)) {
+                  if ($item->update($input2)) { 
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
-            break;
+            return;
 
-         case "add_task" :
-            $taskitemtype = $input['itemtype'].'Task';
-            $item         = new $input['itemtype']();
-            if (!($task = getItemForItemtype($taskitemtype))) {
-               return false;
+         case 'add_task' :
+            if (!($task = getItemForItemtype($item->getType().'Task'))) {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+               break;
             }
-            $field = $this->getForeignKeyField();
+            $field = $item->getForeignKeyField();
 
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($item->getFromDB($key)) {
-                     $input2 = array($field              => $key,
-                                    'taskcategories_id' => $input['taskcategories_id'],
-                                    'content'           => $input['content']);
-                     if ($task->can(-1, CREATE, $input2)) {
-                        if ($task->add($input2)) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                        }
+            $input = $ma->getInput();
+
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $input2 = array($field              => $id,
+                                  'taskcategories_id' => $input['taskcategories_id'],
+                                  'content'           => $input['content']);
+                  if ($task->can(-1, CREATE, $input2)) {
+                     if ($task->add($input2)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                }
             }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
