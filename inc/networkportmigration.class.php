@@ -344,7 +344,7 @@ class NetworkPortMigration extends CommonDBChild {
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
             return true;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

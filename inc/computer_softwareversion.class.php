@@ -125,7 +125,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             return false;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
