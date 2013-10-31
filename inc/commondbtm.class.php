@@ -3084,38 +3084,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Display specific options add action button for massive actions
-    *
-    * @since version 0.84
-    *
-    * This may be overloaded in Class
-    * Parameters must not be : itemtype, action, is_deleted, check_itemtype or check_items_id
-    *
-    * @param $input array of input datas
-    *
-    * @return boolean if parameters displayed ?
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-      return false;
-   }
-
-
-   /**
-    * Do the specific massive actions
-    *
-    * @since version 0.84
-    *
-    * This may be overloaded in Class
-    * @param $input array of input datas
-    *
-    * @return an array of results (nbok, nbko, nbnoright counts)
-   **/
-   function doSpecificMassiveActions($input=array()) {
-      return false;
-   }
-
-
-   /**
     * Get the standard massive actions which are forbidden
     *
     * @since version 0.84

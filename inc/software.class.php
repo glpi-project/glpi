@@ -904,7 +904,6 @@ class Software extends CommonDBTM {
       if ($nb = $req->numrows()) {
          $link = Toolbox::getItemTypeFormURL('Software');
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         // TODO MassiveAction: specific_actions
          $massiveactionparams
             = array('num_displayed' => $nb,
                     'container'     => 'mass'.__CLASS__.$rand,

@@ -432,7 +432,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               // TODO MassiveAction: specific_actions
                $massiveactionparams
                   = array('num_displayed'
                            => $_SESSION['glpilist_limit'],
@@ -856,7 +855,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
-            // TODO MassiveAction: specific_actions
             $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                 'install' => _x('button', 'Install'));
             if (SoftwareLicense::canUpdate()) {

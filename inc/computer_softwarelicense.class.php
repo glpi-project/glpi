@@ -429,7 +429,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               // TODO MassiveAction: specific_actions
                $massiveactionparams
                   = array('num_displayed'
                            => $_SESSION['glpilist_limit'],

@@ -640,7 +640,11 @@ class MassiveAction {
             if (!($item = getItemForItemtype($input['itemtype']))) {
                exit();
             }
-            if (!$item->showSpecificMassiveActionsParameters($input)) {
+            if (method_exists($item, 'showSpecificMassiveActionsParameters')) {
+               if (!$item->showSpecificMassiveActionsParameters($input)) {
+                  self::showDefaultSubForm();
+               }
+            } else {
                self::showDefaultSubForm();
             }
          }
@@ -830,7 +834,11 @@ class MassiveAction {
                   // hook from the plugin defining the type
                   //$res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
                } else {
-                  $res = $item->doSpecificMassiveActions($input);
+                  if (method_exists($item, 'doSpecificMassiveActions')) {
+                     $res = $item->doSpecificMassiveActions($input);
+                  } else {
+                     $res = false;
+                  }
                }
 
                if (is_array($res)) {
