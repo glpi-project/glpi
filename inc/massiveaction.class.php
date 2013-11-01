@@ -610,6 +610,9 @@ class MassiveAction {
          }
 
       } else {
+         // TODO: this part is only provided for compatibility with old system
+         // Actually, only plugins uses that: all core actions have been converted
+         // Do we have to keep it ?
          $input             = $this->POST;
          unset($input['items']);
          unset($input['initial_items']);
@@ -815,6 +818,9 @@ class MassiveAction {
             $this->processForSeveralItemtypes();
 
          } else {
+            // TODO: this part is only provided for compatibility with old system
+            // Actually, only plugins uses that: all core actions have been converted
+            // Do we have to keep it ?
             $input             = $this->POST;
             $itemtype          = $this->getItemType(false);
             $input['itemtype'] = $itemtype;
