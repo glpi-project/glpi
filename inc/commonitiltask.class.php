@@ -901,7 +901,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       } else {
          echo "<table>";
          if (isset($this->fields["state"])) {
-            echo "<tr><td>".__('State')."</td><td>";
+            echo "<tr><td>"._x('item', 'State')."</td><td>";
             echo Planning::getState($this->fields["state"])."</td></tr>";
          }
          echo "<tr><td>".__('Begin')."</td><td>";

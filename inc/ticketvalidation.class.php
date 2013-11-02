@@ -645,7 +645,7 @@ class TicketValidation  extends CommonDBChild {
       $number = $DB->numrows($result);
 
       if ($number) {
-         $colonnes = array(__('State'),
+         $colonnes = array(_x('item', 'State'),
                            sprintf(__('%1$s: %2$s'), __('Request'), __('Date')),
                            __('Approval requester'),
                            sprintf(__('%1$s: %2$s'), __('Request'), __('Comments')),

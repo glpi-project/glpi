@@ -498,7 +498,7 @@ class Consumable extends CommonDBChild {
             echo "</th>";
          }
          echo "<th>".__('ID')."</th>";
-         echo "<th>".__('State')."</th>";
+         echo "<th>"._x('item', 'State')."</th>";
          echo "<th>".__('Add date')."</th>";
          if ($show_old) {
             echo "<th>".__('Use date')."</th>";

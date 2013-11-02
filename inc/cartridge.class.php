@@ -535,7 +535,7 @@ class Cartridge extends CommonDBChild {
             echo "</th>";
          }
          echo "<th>".__('ID')."</th>";
-         echo "<th>".__('State')."</th>";
+         echo "<th>"._x('item', 'State')."</th>";
          echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
          echo "<th>".__('Used on')."</th>";
 
