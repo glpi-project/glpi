@@ -192,7 +192,7 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "email");
       echo "</td>";
-      echo "<td>".__('State')."</td>";
+      echo "<td>"._x('location','State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "state");
       echo "</td></tr>";
@@ -308,7 +308,7 @@ class Contact extends CommonDBTM{
 
       $tab[85]['table']         = $this->getTable();
       $tab[85]['field']         = 'state';
-      $tab[85]['name']          = __('State');
+      $tab[85]['name']          = _x('location','State');
       $tab[85]['datatype']      = 'string';
 
       $tab[87]['table']         = $this->getTable();

@@ -313,7 +313,7 @@ class ProjectTask extends CommonDBChild {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('State')."</td>";
+      echo "<td>"._x('item', 'State')."</td>";
       echo "<td>";
       ProjectState::dropdown(array('value' => $this->fields["projectstates_id"]));
       echo "</td>";
@@ -524,7 +524,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[12]['table']             = 'glpi_projectstates';
       $tab[12]['field']             = 'name';
-      $tab[12]['name']              = __('State');
+      $tab[12]['name']              = _x('item', 'State');
       $tab[12]['datatype']          = 'dropdown';
 
       $tab[14]['table']             = 'glpi_projecttasktypes';
