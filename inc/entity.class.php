@@ -498,7 +498,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'state';
-      $tab[12]['name']          = __('State');
+      $tab[12]['name']          = _x('location','State');
       $tab[12]['massiveaction'] = false;
       $tab[12]['datatype']      = 'string';
 
@@ -1052,7 +1052,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('State')."</td>";
+      echo "<td>"._x('location','State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entity, "state");
       echo "</td></tr>";

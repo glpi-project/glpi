@@ -640,7 +640,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr>";
-      echo "<th colspan='2'>".__('State')."</th>";
+      echo "<th colspan='2'>"._x('item', 'State')."</th>";
       echo "<th colspan='2'>";
       echo self::getValidationStats($tID);
       echo "</th>";
@@ -705,7 +705,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $number = $DB->numrows($result);
 
       if ($number) {
-         $colonnes = array(__('State'), __('Request date'), __('Approval requester'),
+         $colonnes = array(_x('item', 'State'), __('Request date'), __('Approval requester'),
                            __('Request comments'), __('Approval status'),
                            __('Approver'), __('Approval comments'));
          $nb_colonnes = count($colonnes);
