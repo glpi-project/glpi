@@ -643,6 +643,7 @@ class MassiveAction {
             if (!($item = getItemForItemtype($input['itemtype']))) {
                exit();
             }
+            // TODO webmyster method not exist (replace r22139)
             if (method_exists($item, 'showSpecificMassiveActionsParameters')) {
                if (!$item->showSpecificMassiveActionsParameters($input)) {
                   self::showDefaultSubForm();
@@ -840,6 +841,7 @@ class MassiveAction {
                   // hook from the plugin defining the type
                   //$res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
                } else {
+                  // TODO webmyster method not exist (replace r22139)
                   if (method_exists($item, 'doSpecificMassiveActions')) {
                      $res = $item->doSpecificMassiveActions($input);
                   } else {
