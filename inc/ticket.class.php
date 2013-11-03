@@ -3176,8 +3176,8 @@ class Ticket extends CommonITILObject {
          $rand      = mt_rand();
          $rand_text = mt_rand();
 
-         $cols      = 90;
-         $rows      = 6;
+         $cols       = 90;
+         $rows       = 6;
          $content_id = "content$rand";
          if ($CFG_GLPI["use_rich_text"]) {
             $cols = 110;
@@ -3186,8 +3186,8 @@ class Ticket extends CommonITILObject {
 
          if ($CFG_GLPI["use_rich_text"]) {
             $values["content"] = $this->setRichTextContent($content_id, $values["content"], $rand);
-            $cols = 110;
-            $rows = 20;
+            $cols              = 110;
+            $rows              = 20;
          } else {
             $values["content"] = $this->setSimpleTextContent($values["content"]);
          }
@@ -5641,7 +5641,7 @@ class Ticket extends CommonITILObject {
             // Add only image files : try to detect mime type
             $ok       = false;
             $mime     = '';
-            if(isset($image['filepath'])){
+            if (isset($image['filepath'])) {
                $fullpath = GLPI_DOC_DIR."/".$image['filepath'];
                if (function_exists('finfo_open')
                    && ($finfo = finfo_open(FILEINFO_MIME))) {
@@ -5651,13 +5651,14 @@ class Ticket extends CommonITILObject {
                } else if (function_exists('mime_content_type')) {
                   $mime = mime_content_type($fullpath);
                }
-               switch(substr($mime, 0, strrpos($mime, ';'))){
-                  case 'image/gif':case 'image/jpg':case 'image/jpeg':case 'image/png':
+               switch (substr($mime, 0, strrpos($mime, ';'))) {
+                  case 'image/gif':case 'image/jpg':case 'image/jpeg':case 'image/png' :
                      $ok = true;
                      break;
                }
             }
-            if (isset($image['tag']) && ($ok || empty($mime))) {
+            if (isset($image['tag'])
+                && ($ok || empty($mime))) {
                // Replace tags by image in textarea
                $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
                         "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";

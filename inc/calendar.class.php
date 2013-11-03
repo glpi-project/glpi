@@ -100,7 +100,7 @@ class Calendar extends CommonDropdown {
          case 'duplicate' :
             Entity::dropdown();
             echo "<br><br>";
-            echo Html::submit(_sx('button', 'Duplicate'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button', 'Duplicate'), array('name' => 'massiveaction'))."</span>";
             return true;
       }
 
@@ -390,7 +390,7 @@ class Calendar extends CommonDropdown {
                $dayofweek   = self::getDayNumberInWeek($actualtime);
             }
          }
-         
+
          while ($numberofdays > 0) {
             if (!$this->isHoliday($actualdate)
                 && ($cache_duration[$dayofweek] > 0)) {
@@ -412,7 +412,7 @@ class Calendar extends CommonDropdown {
                $dayofweek   = self::getDayNumberInWeek($actualtime);
             }
          }
-         
+
          $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
          $actualtime      = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
          return date('Y-m-d H:i:s', $actualtime);
