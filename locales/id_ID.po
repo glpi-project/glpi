@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
-"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-01 09:42+0100\n"
-"PO-Revision-Date: 2013-11-01 08:43+0000\n"
+"PO-Revision-Date: 2013-11-01 09:00+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/GLPI/language/id_ID/)\n"
 "MIME-Version: 1.0\n"
@@ -4102,7 +4102,7 @@ msgstr ""
 #: inc/consumable.class.php:501 inc/ticketvalidation.class.php:648
 msgctxt "item"
 msgid "State"
-msgstr ""
+msgstr "State"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:776
 #: inc/cartridge.class.php:924 inc/consumable.class.php:502

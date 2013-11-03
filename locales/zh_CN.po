@@ -11,9 +11,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
-"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-01 09:42+0100\n"
-"PO-Revision-Date: 2013-11-01 08:43+0000\n"
+"PO-Revision-Date: 2013-11-01 09:00+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/GLPI/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -4106,7 +4106,7 @@ msgstr "旧打印机弹药"
 #: inc/consumable.class.php:501 inc/ticketvalidation.class.php:648
 msgctxt "item"
 msgid "State"
-msgstr ""
+msgstr "状态"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:776
 #: inc/cartridge.class.php:924 inc/consumable.class.php:502

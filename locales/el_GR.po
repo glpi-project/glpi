@@ -8,10 +8,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
-"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-01 09:42+0100\n"
-"PO-Revision-Date: 2013-11-01 08:43+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-11-01 10:10+0000\n"
+"Last-Translator: el_EL <stergios.vradelis@dramahospital.gr>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/GLPI/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1317,7 +1317,7 @@ msgstr ""
 #: install/update_0681_07.php:551 install/update_0681_07.php:554
 #, php-format
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #: front/crontask.php:45 inc/crontask.class.php:516
 #: inc/transfer.class.php:2993
@@ -4169,7 +4169,7 @@ msgstr "Φθαρμένα φυσίγγια"
 #: inc/consumable.class.php:501 inc/ticketvalidation.class.php:648
 msgctxt "item"
 msgid "State"
-msgstr ""
+msgstr "Κατάσταση"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:776
 #: inc/cartridge.class.php:924 inc/consumable.class.php:502
@@ -8381,11 +8381,11 @@ msgstr "Άκυρο όνομα internet: %s"
 
 #: inc/group.class.php:118 inc/group.class.php:638 inc/user.class.php:195
 msgid "Used items"
-msgstr ""
+msgstr "Χρησιμοποιημένα στοιχεία"
 
 #: inc/group.class.php:121 inc/group.class.php:634 inc/user.class.php:196
 msgid "Managed items"
-msgstr ""
+msgstr "Στοιχεία σε διαχείριση"
 
 #: inc/group.class.php:219
 msgid "Visible in a ticket"
@@ -13058,7 +13058,7 @@ msgstr "Εαν η έγκριση απορριφθεί, προσδιορίστε 
 #: inc/ticketvalidation.class.php:358
 #, php-format
 msgid "Approval granted by %s"
-msgstr ""
+msgstr "Η έγκριση παραχωρήθηκε από %s"
 
 #. TRANS: %s is the username
 #: inc/ticketvalidation.class.php:361
@@ -13089,7 +13089,7 @@ msgstr "Δεν υπόκειται σε έγκριση"
 
 #: inc/ticketvalidation.class.php:406
 msgid "Granted + Not subject to approval"
-msgstr ""
+msgstr "Παραχωρήθηκε + Δεν υπόκειται σε έγκριση"
 
 #: inc/ticketvalidation.class.php:652 inc/ticketvalidation.class.php:844
 msgid "Approval date"
@@ -13134,7 +13134,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:809
 msgid "You must install at least PHP 5.3.0."
-msgstr ""
+msgstr "Πρέπει να εγκαταστήσετε κατ'ελαχιστο την έκδοση 5.3.0 της PHP."
 
 #: inc/toolbox.class.php:814
 msgid "MySQL Improved extension test"
@@ -13293,13 +13293,13 @@ msgstr "Έχετε την τελευταία διαθέσιμη έκδοση"
 #: inc/toolbox.class.php:1500
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
-msgstr ""
+msgstr "Η σύνδεση απέτυχε.Εαν χρησιμοποίειτε proxy, παρακαλώ ρυθμίστε τον. (%s)"
 
 #. TRANS: %s is the error string
 #: inc/toolbox.class.php:1520
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
-msgstr ""
+msgstr "Αποτυχία σύνδεσης με τον διακομιστή proxy (%s)"
 
 #: inc/toolbox.class.php:1585
 msgid "No data available on the web site"
@@ -13309,7 +13309,7 @@ msgstr "Δεν υπάρχουν δεδομένα σε αυτό το site"
 #: inc/toolbox.class.php:1588
 #, php-format
 msgid "Impossible to connect to site (%s)"
-msgstr ""
+msgstr "Αδύνατη η σύνδεση με την ιστοσελίδα (%s)"
 
 #: inc/toolbox.class.php:1942
 msgid "Connection options"
@@ -13377,7 +13377,7 @@ msgstr "Debug"
 
 #: inc/toolbox.class.php:2004
 msgid "Incoming mail folder (optional, often INBOX)"
-msgstr ""
+msgstr "Φάκελος εισερχόμενης αλληλογραφίας (προαιρετικό, συχνά INBOX)"
 
 #. TRANS: for mail connection system
 #: inc/toolbox.class.php:2009
@@ -13440,7 +13440,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3039 inc/transfer.class.php:3046
 msgid "Keep"
-msgstr ""
+msgstr "Διατήρησε"
 
 #: inc/transfer.class.php:3052
 msgid "Software of computers"
@@ -13452,27 +13452,27 @@ msgstr ""
 
 #: inc/transfer.class.php:3066
 msgid "Components of computers"
-msgstr ""
+msgstr "Εξαρτήματα υπολογιστών"
 
 #: inc/transfer.class.php:3072
 msgid "Links between printers and cartridge types and cartridges"
-msgstr ""
+msgstr "Σύνδεσμοι μεταξύ εκτυπωτών, τύπων φυσιγγίων και φυσιγγίων."
 
 #: inc/transfer.class.php:3077
 msgid "If the cartridge types are no longer used"
-msgstr ""
+msgstr "Εαν ο τύπος φυσιγγίου δεν χρησιμοποιείται πλέον"
 
 #: inc/transfer.class.php:3083
 msgid "Links between cartridge types and cartridges"
-msgstr ""
+msgstr "Σύνδεσμοι μεταξύ τύπων φυσιγγίων και φυσιγγίων."
 
 #: inc/transfer.class.php:3093
 msgid "Links between consumable types and consumables"
-msgstr ""
+msgstr "Σύνδεσμοι μεταξύ τύπων αναλωσίμων και αναλωσίμων."
 
 #: inc/transfer.class.php:3097
 msgid "Links between computers and volumes"
-msgstr ""
+msgstr "Σύνδεσμοι μεταξύ υπολογιστών και τόμων"
 
 #: inc/transfer.class.php:3103
 msgid "Direct connections"
@@ -13500,7 +13500,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3159
 msgid "Links between suppliers and contacts"
-msgstr ""
+msgstr "Σύνδεσμοι μεταξύ προμηθευτών και επαφών"
 
 #: inc/transfer.class.php:3163
 msgid "If contacts are no longer used"
