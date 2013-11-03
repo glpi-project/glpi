@@ -99,7 +99,7 @@ class Bookmark extends CommonDBTM {
             $param['entity']    = -1;
             Bookmark::dropdown($param);
             echo "<br><br>\n";
-            echo Html::submit(_sx('button', 'Move'), array('name' => 'massiveaction'))."</span>"; 
+            echo Html::submit(_x('button', 'Move'), array('name' => 'massiveaction'))."</span>";
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);

@@ -89,7 +89,7 @@ class NotImportedEmail extends CommonDBTM {
          case 'import_email' :
             Entity::dropdown();
             echo "<br><br>";
-            echo Html::submit(_sx('button', 'Import'), array('name' => 'massiveaction'));
+            echo Html::submit(_x('button', 'Import'), array('name' => 'massiveaction'));
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);
