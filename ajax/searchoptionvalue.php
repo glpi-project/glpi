@@ -117,7 +117,6 @@ if (isset($_POST['searchtype'])) {
                echo $out;
                $display = true;
             }
-            break;
 
             //Could display be handled by a plugin ?
             if (!$display
