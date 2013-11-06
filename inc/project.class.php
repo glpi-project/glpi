@@ -221,6 +221,8 @@ class Project extends CommonDBTM {
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
 
          $links[$pic_validate] = '/front/projecttask.php';
+
+         $links['summary'] = '/front/project.form.php?showglobalgantt=1';
       }
       if (count($links)) {
          return $links;
@@ -1033,8 +1035,9 @@ class Project extends CommonDBTM {
 
    /** Get data to display on GANTT
    * @param $ID ID of the project
+   * @param $showall boolean show all sub items (projects / tasks)
    */
-   static function getDataToDisplayOnGantt($ID) {
+   static function getDataToDisplayOnGantt($ID, $showall = true) {
       global $DB;
 
       $todisplay = array();
@@ -1115,12 +1118,14 @@ class Project extends CommonDBTM {
                               'from'     => $real_begin,
                               'to'       => $real_end);
 
-         // Add current tasks
-         $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
+         if ($showall) {
+            // Add current tasks
+            $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
 
-         // Add ordered subprojects
-         foreach($projects as $key => $val) {
-            $todisplay[$key] = $val;
+            // Add ordered subprojects
+            foreach($projects as $key => $val) {
+               $todisplay[$key] = $val;
+            }
          }
       }
 
@@ -1135,24 +1140,25 @@ class Project extends CommonDBTM {
    static function showGantt($ID) {
       global $DB;
 
+      
       if ($ID > 0) {
          $project = new Project();
          if ($project->getFromDB($ID) && $project->canView()) {
             $todisplay = static::getDataToDisplayOnGantt($ID);
-//             echo json_encode($todisplay);
-//             // Get all sub projects
-//
-//             $projects = getSonsOf('glpi_projects', $ID);
-//             foreach ($projects as $pID) {
-//                $temp = array();
-//                // Get all tasks
-//                $tasks = array();
-//                $tasks[$pID] = ProjectTask::getAllForProject($pID);
-//             }
          } else {
             return false;
          }
-
+      } else {
+         $todisplay= array();
+         // Get all root projects
+         $query = "SELECT *
+            FROM `glpi_projects`
+            WHERE `projects_id` = '0'
+               ".getEntitiesRestrictRequest("AND",'glpi_projects',"", '', true);
+         foreach ($DB->request($query) as $data) {
+            $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
+         }
+         ksort($todisplay);
       }
 
       if (count($todisplay)) {

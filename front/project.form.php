@@ -93,7 +93,12 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Project::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "project");
-   $project->display($_GET);
+
+   if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
+      $project->showGantt(-1);
+   } else {
+      $project->display($_GET);
+   }
    Html::footer();
 }
 ?>
