@@ -247,6 +247,9 @@ class Problem extends CommonITILObject {
       $pt = new Problem_Ticket();
       $pt->cleanDBonItemDelete('Problem', $this->fields['id']);
 
+      $cp = new Change_Problem();
+      $cp->cleanDBonItemDelete('Problem', $this->fields['id']);
+      
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete('Problem', $this->fields['id']);
 
