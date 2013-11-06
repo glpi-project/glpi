@@ -180,11 +180,11 @@ class Profile extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
-      if (count($this->profileRight) > 0) {
          $profile_right = new ProfileRight();
-         $profile_right->updateProfileRights($this->getID(), $this->profileRight);
+         $rights = ProfileRight::getAllPossibleRights();
+         $profile_right->updateProfileRights($this->fields['id'], $rights);
          unset($this->profileRight);
-      }
+
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
