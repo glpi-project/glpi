@@ -430,10 +430,6 @@ class CommonGLPI {
             }
             return true;
 
-//         case 'Note' :
-//            $item->showNotesForm();
-//            return true;
-
          case -2 :
             $item->showDebugInfo();
             return true;
