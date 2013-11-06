@@ -228,7 +228,6 @@ class Change extends CommonITILObject {
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      /// TODO add stats
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -240,12 +239,29 @@ class Change extends CommonITILObject {
       global $DB;
 
 
-      /// TODO uncomment when changetask OK
-//       $query1 = "DELETE
-//                  FROM `glpi_changetasks`
-//                  WHERE `changes_id` = '".$this->fields['id']."'";
-//       $DB->query($query1);
+      $query1 = "DELETE
+                 FROM `glpi_changetasks`
+                 WHERE `changes_id` = '".$this->fields['id']."'";
+      $DB->query($query1);
 
+      $cp = new Change_Problem();
+      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $ct = new Change_Ticket();
+      $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      
+      $cp = new Change_Project();
+      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $ci = new Change_Item();
+      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $cv = new ChangeValidation();
+      $cv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $cc = new ChangeCost();
+      $cc->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      
       parent::cleanDBonPurge();
    }
 
