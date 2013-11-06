@@ -64,6 +64,25 @@ class Supplier extends CommonDBTM {
       $supplierjob = new Supplier_Ticket();
       $supplierjob->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
+      $ps = new Problem_Supplier();
+      $ps->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $cs = new Change_Supplier();
+      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $query1 = "DELETE
+                 FROM `glpi_projecttaskteams`
+                 WHERE `items_id` = '".$this->fields['id']."'
+                  AND `itemtype` = '".__CLASS__."'";
+      $DB->query($query1);
+
+      $query1 = "DELETE
+                 FROM `glpi_projectteams`
+                 WHERE `items_id` = '".$this->fields['id']."'
+                  AND `itemtype` = '".__CLASS__."'";
+      $DB->query($query1);
+
+      
       $cs  = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 

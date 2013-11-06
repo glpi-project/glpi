@@ -658,6 +658,9 @@ class Ticket extends CommonITILObject {
                        OR `tickets_id_2` = '".$this->fields['id']."'";
       $DB->query($query1);
 
+      $ct = new Change_Ticket();
+      $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
       parent::cleanDBonPurge();
 
    }

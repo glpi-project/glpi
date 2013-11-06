@@ -242,6 +242,25 @@ class Project extends CommonDBTM {
    }
 
 
+   function cleanDBonPurge() {
+      global $DB;
+
+      $pt = new ProjectTask();
+      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $cp = new Change_Project();
+      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $ip = new Item_Project();
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $pt = new ProjectTeam();
+      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      
+      parent::cleanDBonPurge();
+   }
+
+   
    /**
     * Is the current user in the team?
     *
