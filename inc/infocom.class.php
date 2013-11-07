@@ -57,6 +57,36 @@ class Infocom extends CommonDBChild {
    const ON_ASSET_IMPORT    = 5;
 
 
+   /**
+    * Check if given object can have InfoCom
+    *
+    * @since version 0.85
+    *
+    * @param $item  an object or a string
+    *
+    * @return true if $object is an object that can have InfoCom
+    *
+   **/
+   static function isConcerned($item) {
+      global $CFG_GLPI;
+
+      // All devices are subjects to infocom !
+      if (Toolbox::is_a($item, 'Item_Devices')) {
+         return true;
+      }
+
+      // We also allow direct items to check
+      if ($item instanceof CommonGLPI) {
+         $item = $item->getType();
+      }
+
+      if (in_array($item, $CFG_GLPI['infocom_types'])){
+         return true;
+      }
+
+      return false;
+   }
+
    static function getTypeName($nb=0) {
       //TRANS: Always plural
       return __('Financial and administrative information');
@@ -1630,11 +1660,10 @@ class Infocom extends CommonDBChild {
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
                                                 CommonDBTM $checkitem = NULL) {
-      global $CFG_GLPI;
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
 
-      if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+      if (InfoCom::isConcerned($itemtype)
           && static::canCreate()) {
          $actions[$action_name] = __('Enable the financial and administrative information');
       }

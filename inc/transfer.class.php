@@ -738,7 +738,9 @@ class Transfer extends CommonDBTM {
          }
          // Supplier infocoms
          if ($this->options['keep_infocom']) {
-            foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
+            // TODO : fix that to keep infocom for devices
+            foreach (array_merge($CFG_GLPI["infocom_types"], $CFG_GLPI['items_that_owns_devices'])
+                     as $itemtype) {
                if (isset($this->item_search[$itemtype])) {
                   $itemtable = getTableForItemType($itemtype);
                   // Clean DB
@@ -1002,7 +1004,7 @@ class Transfer extends CommonDBTM {
             $this->transferTickets($itemtype, $ID, $newID);
             // Infocoms : keep / delete
 
-            if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+            if (InfoCom::isConcerned($itemtype)) {
                $this->transferInfocoms($itemtype, $ID, $newID);
             }
 
@@ -2623,7 +2625,9 @@ class Transfer extends CommonDBTM {
          if ($links_remaining == 0) {
             // Search for infocoms
             if ($this->options['keep_infocom']) {
-               foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
+               // TODO : fix that to keep infocom for devices
+               foreach (array_merge($CFG_GLPI["infocom_types"],$CFG_GLPI['items_that_owns_devices'])
+                        as $itemtype) {
                   if (isset($this->item_search[$itemtype])) {
                      $query = "SELECT COUNT(*) AS cpt
                                FROM `glpi_infocoms`
