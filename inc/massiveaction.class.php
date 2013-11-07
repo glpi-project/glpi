@@ -539,7 +539,7 @@ class MassiveAction {
 
       } else {
          if ($canupdate
-             || (in_array($itemtype, $CFG_GLPI["infocom_types"])
+             || (InfoCom::isConcerned($itemtype)
                  && Infocom::canUpdate())) {
 
             //TRANS: select action 'update' (before doing it)
@@ -685,7 +685,7 @@ class MassiveAction {
             $show_all       = true;
             $show_infocoms  = true;
 
-            if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+            if (InfoCom::isConcerned($itemtype)
                 && (!$itemtype::canUpdate()
                     || !Infocom::canUpdate())) {
                $show_all      = false;

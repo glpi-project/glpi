@@ -922,7 +922,7 @@ class Search {
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
             if (!$isadmin
-                && in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+                && InfoCom::isConcerned($itemtype)) {
                $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
             }
             $showmassiveactions = false;
@@ -5090,7 +5090,7 @@ class Search {
       $todel   = array();
 
       if (!Session::haveRight('infocom',$action)
-          && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
+          && InfoCom::isConcerned($itemtype)) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
@@ -5326,7 +5326,7 @@ class Search {
             $search[$itemtype] += Document::getSearchOptionsToAdd();
          }
 
-         if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+         if (InfoCom::isConcerned($itemtype)
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
@@ -5421,7 +5421,7 @@ class Search {
                || (($searchID >= 37) && ($searchID <= 38))
                || (($searchID >= 50) && ($searchID <= 59))
                || (($searchID >= 120) && ($searchID <= 125)))
-              && in_array($itemtype, $CFG_GLPI["infocom_types"]));
+              && InfoCom::isConcerned($itemtype));
    }
 
 

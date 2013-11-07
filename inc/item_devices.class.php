@@ -460,6 +460,9 @@ class Item_Devices extends CommonDBRelation {
          $specificity_columns[$field] = $spec_column;
       }
 
+      $infocom_column = $table_group->addHeader('infocom', Infocom::getTypeName(2),
+                                                $specific_column, $spec_column);
+
       if ($item->isDynamic()) {
          $dynamics_column = $table_group->addHeader('one', '&nbsp;', $dynamic_column,
                                                     $spec_column);
@@ -541,6 +544,10 @@ class Item_Devices extends CommonDBRelation {
             }
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
+
+         $content = array(array('function' => 'Infocom::showDisplayLink',
+                                'parameters' => array(static::getType(), $link['id'])));
+         $current_row->addCell($infocom_column, $content, $spec_cell);
 
          if ($item->isDynamic()) {
             $previous_cell = $current_row->addCell($dynamics_column,

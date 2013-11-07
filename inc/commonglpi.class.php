@@ -164,7 +164,7 @@ class CommonGLPI {
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && (!$this->isNewItem() || $this->showdebug)
           && (method_exists($class, 'showDebug')
-              || in_array($class, $CFG_GLPI["infocom_types"])
+              || InfoCom::isConcerned($class)
               || in_array($class, $CFG_GLPI["reservation_types"]))) {
 
             $onglets[-2] = __('Debug');
@@ -1005,7 +1005,7 @@ class CommonGLPI {
          $this->showDebug();
       }
 
-      if (in_array($class, $CFG_GLPI["infocom_types"])) {
+      if (InfoCom::isConcerned($class)) {
          $infocom = new Infocom();
          if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
             $infocom->showDebug();
