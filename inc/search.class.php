@@ -4120,6 +4120,16 @@ class Search {
             }
             return "&nbsp;";
 
+         case "glpi_contracts.end_date" :
+            if ($data[$NAME.$num."_renewal"] > 0) {
+               return Contract::getContractEndDate($data['id'], $data[$NAME.$num."_begin_date"],
+                                                   $data[$NAME.$num."_duration"],
+                                                   $data[$NAME.$num."_periodicity"],
+                                                   $data[$NAME.$num."_renewal"]);
+            }
+            return Infocom::getWarrantyExpir($data[$NAME.$num."_begin_date"],
+                                             $data[$NAME.$num."_duration"]);
+
          case "glpi_contracts.renewal" :
             return Contract::getContractRenewalName($data[$NAME.$num]);
 
