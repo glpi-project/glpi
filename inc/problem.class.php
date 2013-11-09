@@ -59,6 +59,7 @@ class Problem extends CommonITILObject {
    const READMY               = 1;
    const READALL              = 1024;
 
+
    /**
     * Name of the type
     *
@@ -249,7 +250,7 @@ class Problem extends CommonITILObject {
 
       $cp = new Change_Problem();
       $cp->cleanDBonItemDelete('Problem', $this->fields['id']);
-      
+
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete('Problem', $this->fields['id']);
 

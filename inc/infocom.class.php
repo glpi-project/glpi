@@ -87,6 +87,7 @@ class Infocom extends CommonDBChild {
       return false;
    }
 
+
    static function getTypeName($nb=0) {
       //TRANS: Always plural
       return __('Financial and administrative information');
@@ -688,15 +689,15 @@ class Infocom extends CommonDBChild {
       $text   = __('Add');
       $result = $DB->query($query);
       if ($DB->result($result,0,0) > 0) {
-         $add = "";
+         $add  = "";
          $text = __('Show');
       } else if (!Infocom::canUpdate()) {
          return false;
       }
 
       if ($item->canView()) {
-         echo "<span onClick=\"".Html::jsGetElementbyID('infocom'.$itemtype.$device_id).".dialog('open');\"
-                style='cursor:pointer'>
+         echo "<span onClick=\"".Html::jsGetElementbyID('infocom'.$itemtype.$device_id).".
+                dialog('open');\" style='cursor:pointer'>
                <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
          Ajax::createIframeModalWindow('infocom'.$itemtype.$device_id,

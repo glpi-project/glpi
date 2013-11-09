@@ -66,7 +66,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jquery| tinymc
             'es_AR' => array('Español (Argentina)',  'es_AR.mo','es',    'es','spanish'),
             'es_CO' => array('Español (Colombia)',   'es_CO.mo','es',    'es','spanish'),
             'es_ES' => array('Español (España)',     'es_ES.mo','es',    'es','spanish'),
-            'es_419' => array('Español (América Latina)', 'es_419.mo','es',    'es','spanish'),            
+            'es_419' => array('Español (América Latina)', 'es_419.mo','es',    'es','spanish'),
             'es_MX' => array('Español (Mexico)',     'es_MX.mo','es',    'es','spanish'),
             'es_VE' => array('Español (Venezuela)',  'es_VE.mo','es',    'es','spanish'),
             'eu_ES' => array('Euskara',              'eu_ES.mo','eu',    'en','basque'),
@@ -229,14 +229,20 @@ $CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'Networ
                                                   'NetworkPortDialup',   'NetworkPortLocal' );
 
 // Warning : the indices are used by OCS
-$CFG_GLPI['items_that_owns_devices'] = array(1  => 'Item_DeviceMotherboard', 2  => 'Item_DeviceProcessor',
-                                             3  => 'Item_DeviceMemory',      4  => 'Item_DeviceHardDrive',
-                                             5  => 'Item_DeviceNetworkCard', 6  => 'Item_DeviceDrive',
-                                             7  => 'Item_DeviceControl',     8  => 'Item_DeviceGraphicCard',
-                                             9  => 'Item_DeviceSoundCard',   10 => 'Item_DevicePci',
-                                             11 => 'Item_DeviceCase',        12 => 'Item_DevicePowerSupply');
+$CFG_GLPI['items_that_owns_devices'] = array(1  => 'Item_DeviceMotherboard',
+                                             2  => 'Item_DeviceProcessor',
+                                             3  => 'Item_DeviceMemory',
+                                             4  => 'Item_DeviceHardDrive',
+                                             5  => 'Item_DeviceNetworkCard',
+                                             6  => 'Item_DeviceDrive',
+                                             7  => 'Item_DeviceControl',
+                                             8  => 'Item_DeviceGraphicCard',
+                                             9  => 'Item_DeviceSoundCard',
+                                             10 => 'Item_DevicePci',
+                                             11 => 'Item_DeviceCase',
+                                             12 => 'Item_DevicePowerSupply');
 
-$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 
+$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract',
                                                   'Crontask', 'DBConnection', 'FieldUnicity', 'Infocom',
                                                   'MailCollector', 'PlanningRecall',
                                                   'Problem', 'Reservation', 'SoftwareLicense',
