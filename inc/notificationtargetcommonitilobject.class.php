@@ -890,7 +890,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
          //costs infos
          $costtype = $item->getType().'Cost';
-         $costs    = $costtype::getCostsSummary($item->getField("id"));
+         $costs    = $costtype::getCostsSummary($costtype, $item->getField("id"));
 
          $datas["##$objettype.costfixed##"]    = $costs['costfixed'];
          $datas["##$objettype.costmaterial##"] = $costs['costmaterial'];
