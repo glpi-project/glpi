@@ -3753,7 +3753,7 @@ class Ticket extends CommonITILObject {
             echo $tt->getEndHiddenFieldText('slas_id')."</td>";
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue('slas_id');
             Sla::dropdown(array('entity' => $this->fields["entities_id"],
-                              'value'  => $this->fields["slas_id"]));
+                                'value'  => $this->fields["slas_id"]));
             echo $tt->getEndHiddenFieldValue('slas_id',$this);
             echo "</td>";
          }

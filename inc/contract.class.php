@@ -556,225 +556,225 @@ class Contract extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab                          = array();
+      $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               = __('Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'number';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'num';
-      $tab[3]['name']            = _x('phone', 'Number');
-      $tab[3]['datatype']        = 'string';
+      $tab[3]['table']              = $this->getTable();
+      $tab[3]['field']              = 'num';
+      $tab[3]['name']               = _x('phone', 'Number');
+      $tab[3]['datatype']           = 'string';
 
-      $tab[4]['table']           = 'glpi_contracttypes';
-      $tab[4]['field']           = 'name';
-      $tab[4]['name']            = __('Type');
-      $tab[4]['datatype']        = 'dropdown';
+      $tab[4]['table']              = 'glpi_contracttypes';
+      $tab[4]['field']              = 'name';
+      $tab[4]['name']               = __('Type');
+      $tab[4]['datatype']           = 'dropdown';
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'begin_date';
-      $tab[5]['name']            = __('Start date');
-      $tab[5]['datatype']        = 'date';
-      $tab[5]['maybefuture']     = true;
+      $tab[5]['table']              = $this->getTable();
+      $tab[5]['field']              = 'begin_date';
+      $tab[5]['name']               = __('Start date');
+      $tab[5]['datatype']           = 'date';
+      $tab[5]['maybefuture']        = true;
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'duration';
-      $tab[6]['name']            = __('Duration');
-      $tab[6]['datatype']        = 'number';
-      $tab[6]['max']             = 120;
-      $tab[6]['unit']            = 'month';
+      $tab[6]['table']              = $this->getTable();
+      $tab[6]['field']              = 'duration';
+      $tab[6]['name']               = __('Duration');
+      $tab[6]['datatype']           = 'number';
+      $tab[6]['max']                = 120;
+      $tab[6]['unit']               = 'month';
 
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'end_date';
-      $tab[20]['name']           = __('End date');
-      $tab[20]['datatype']       = 'date_delay';
-      $tab[20]['datafields'][1]  = 'begin_date';
-      $tab[20]['datafields'][2]  = 'duration';
-      $tab[20]['searchunit']     = 'MONTH';
-      $tab[20]['delayunit']      = 'MONTH';
-      $tab[20]['maybefuture']    = true;
-      $tab[20]['massiveaction']  = false;
-      $tab[20]['additionalfields'] = array('duration', 'renewal', 'periodicity', 'begin_date');
+      $tab[20]['table']             = $this->getTable();
+      $tab[20]['field']             = 'end_date';
+      $tab[20]['name']              = __('End date');
+      $tab[20]['datatype']          = 'date_delay';
+      $tab[20]['datafields'][1]     = 'begin_date';
+      $tab[20]['datafields'][2]     = 'duration';
+      $tab[20]['searchunit']        = 'MONTH';
+      $tab[20]['delayunit']         = 'MONTH';
+      $tab[20]['maybefuture']       = true;
+      $tab[20]['massiveaction']     = false;
+      $tab[20]['additionalfields']  = array('duration', 'renewal', 'periodicity', 'begin_date');
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'notice';
-      $tab[7]['name']            = __('Notice');
-      $tab[7]['datatype']        = 'number';
-      $tab[7]['max']             = 120;
-      $tab[7]['unit']            = 'month';
+      $tab[7]['table']              = $this->getTable();
+      $tab[7]['field']              = 'notice';
+      $tab[7]['name']               = __('Notice');
+      $tab[7]['datatype']           = 'number';
+      $tab[7]['max']                = 120;
+      $tab[7]['unit']               = 'month';
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'periodicity';
-      $tab[21]['name']           = __('Periodicity');
-      $tab[21]['massiveaction']  = false;
-      $tab[21]['datatype']       = 'number';
-      $tab[21]['min']            = 12;
-      $tab[21]['max']            = 60;
-      $tab[21]['step']           = 12;
-      $tab[21]['toadd']          = array(0 => Dropdown::EMPTY_VALUE,
-                                         1 => sprintf(_n('%d month', '%d months', 1), 1),
-                                         2 => sprintf(_n('%d month', '%d months', 2), 2),
-                                         3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                         6 => sprintf(_n('%d month', '%d months', 6), 6));
-      $tab[21]['unit']           = 'month';
+      $tab[21]['table']             = $this->getTable();
+      $tab[21]['field']             = 'periodicity';
+      $tab[21]['name']              = __('Periodicity');
+      $tab[21]['massiveaction']     = false;
+      $tab[21]['datatype']          = 'number';
+      $tab[21]['min']               = 12;
+      $tab[21]['max']               = 60;
+      $tab[21]['step']              = 12;
+      $tab[21]['toadd']             = array(0 => Dropdown::EMPTY_VALUE,
+                                            1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                            2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                            3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                            6 => sprintf(_n('%d month', '%d months', 6), 6));
+      $tab[21]['unit']              = 'month';
 
-      $tab[22]['table']          = $this->getTable();
-      $tab[22]['field']          = 'billing';
-      $tab[22]['name']           = __('Invoice period');
-      $tab[22]['massiveaction']  = false;
-      $tab[22]['datatype']      = 'number';
-      $tab[22]['min']           = 12;
-      $tab[22]['max']           = 60;
-      $tab[22]['step']          = 12;
-      $tab[22]['toadd']         = array(0 => Dropdown::EMPTY_VALUE,
-                                        1 => sprintf(_n('%d month', '%d months', 1), 1),
-                                        2 => sprintf(_n('%d month', '%d months', 2), 2),
-                                        3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                        6 => sprintf(_n('%d month', '%d months', 6), 6));
-      $tab[22]['unit']          = 'month';
+      $tab[22]['table']             = $this->getTable();
+      $tab[22]['field']             = 'billing';
+      $tab[22]['name']              = __('Invoice period');
+      $tab[22]['massiveaction']     = false;
+      $tab[22]['datatype']          = 'number';
+      $tab[22]['min']               = 12;
+      $tab[22]['max']               = 60;
+      $tab[22]['step']              = 12;
+      $tab[22]['toadd']             = array(0 => Dropdown::EMPTY_VALUE,
+                                            1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                            2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                            3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                            6 => sprintf(_n('%d month', '%d months', 6), 6));
+      $tab[22]['unit']              = 'month';
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'accounting_number';
-      $tab[10]['name']           = __('Account number');
-      $tab[10]['datatype']       = 'string';
+      $tab[10]['table']             = $this->getTable();
+      $tab[10]['field']             = 'accounting_number';
+      $tab[10]['name']              = __('Account number');
+      $tab[10]['datatype']          = 'string';
 
-      $tab[23]['table']          = $this->getTable();
-      $tab[23]['field']          = 'renewal';
-      $tab[23]['name']           = __('Renewal');
-      $tab[23]['massiveaction']  = false;
-      $tab[23]['datatype']       = 'specific';
+      $tab[23]['table']             = $this->getTable();
+      $tab[23]['field']             = 'renewal';
+      $tab[23]['name']              = __('Renewal');
+      $tab[23]['massiveaction']     = false;
+      $tab[23]['datatype']          = 'specific';
 
-      $tab[12]['table']          = $this->getTable();
-      $tab[12]['field']          = 'expire';
-      $tab[12]['name']           = __('Expiration');
-      $tab[12]['datatype']       = 'date_delay';
-      $tab[12]['datafields'][1]  = 'begin_date';
-      $tab[12]['datafields'][2]  = 'duration';
-      $tab[12]['searchunit']     = 'DAY';
-      $tab[12]['delayunit']      = 'MONTH';
-      $tab[12]['maybefuture']    = true;
-      $tab[12]['massiveaction']  = false;
+      $tab[12]['table']             = $this->getTable();
+      $tab[12]['field']             = 'expire';
+      $tab[12]['name']              = __('Expiration');
+      $tab[12]['datatype']          = 'date_delay';
+      $tab[12]['datafields'][1]     = 'begin_date';
+      $tab[12]['datafields'][2]     = 'duration';
+      $tab[12]['searchunit']        = 'DAY';
+      $tab[12]['delayunit']         = 'MONTH';
+      $tab[12]['maybefuture']       = true;
+      $tab[12]['massiveaction']     = false;
 
-      $tab[13]['table']          = $this->getTable();
-      $tab[13]['field']          = 'expire_notice';
-      $tab[13]['name']           = __('Expiration date + notice');
-      $tab[13]['datatype']       = 'date_delay';
-      $tab[13]['datafields'][1]  = 'begin_date';
-      $tab[13]['datafields'][2]  = 'duration';
-      $tab[13]['datafields'][3]  = 'notice';
-      $tab[13]['searchunit']     = 'DAY';
-      $tab[13]['delayunit']      = 'MONTH';
-      $tab[13]['maybefuture']    = true;
-      $tab[13]['massiveaction']  = false;
+      $tab[13]['table']             = $this->getTable();
+      $tab[13]['field']             = 'expire_notice';
+      $tab[13]['name']              = __('Expiration date + notice');
+      $tab[13]['datatype']          = 'date_delay';
+      $tab[13]['datafields'][1]     = 'begin_date';
+      $tab[13]['datafields'][2]     = 'duration';
+      $tab[13]['datafields'][3]     = 'notice';
+      $tab[13]['searchunit']        = 'DAY';
+      $tab[13]['delayunit']         = 'MONTH';
+      $tab[13]['maybefuture']       = true;
+      $tab[13]['massiveaction']     = false;
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'notepad';
-      $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']  = false;
+      $tab[90]['table']             = $this->getTable();
+      $tab[90]['field']             = 'notepad';
+      $tab[90]['name']              = __('Notes');
+      $tab[90]['massiveaction']     = false;
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['massiveaction']     = false;
+      $tab[80]['datatype']          = 'dropdown';
 
-      $tab[59]['table']          = $this->getTable();
-      $tab[59]['field']          = 'alert';
-      $tab[59]['name']           = __('Email alarms');
-      $tab[59]['datatype']       = 'specific';
+      $tab[59]['table']             = $this->getTable();
+      $tab[59]['field']             = 'alert';
+      $tab[59]['name']              = __('Email alarms');
+      $tab[59]['datatype']          = 'specific';
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
+      $tab[86]['table']             = $this->getTable();
+      $tab[86]['field']             = 'is_recursive';
+      $tab[86]['name']              = __('Child entities');
+      $tab[86]['datatype']          = 'bool';
 
-      $tab[72]['table']          = 'glpi_contracts_items';
-      $tab[72]['field']          = 'count';
-      $tab[72]['name']           = _x('quantity', 'Number of items');
-      $tab[72]['forcegroupby']   = true;
-      $tab[72]['usehaving']      = true;
-      $tab[72]['datatype']       = 'number';
-      $tab[72]['massiveaction']  = false;
-      $tab[72]['joinparams']     = array('jointype' => 'child');
+      $tab[72]['table']             = 'glpi_contracts_items';
+      $tab[72]['field']             = 'count';
+      $tab[72]['name']              = _x('quantity', 'Number of items');
+      $tab[72]['forcegroupby']      = true;
+      $tab[72]['usehaving']         = true;
+      $tab[72]['datatype']          = 'number';
+      $tab[72]['massiveaction']     = false;
+      $tab[72]['joinparams']        = array('jointype' => 'child');
 
-      $tab[29]['table']         = 'glpi_suppliers';
-      $tab[29]['field']         = 'name';
-      $tab[29]['name']          = _n('Associated supplier', 'Associated suppliers', 2);
-      $tab[29]['forcegroupby']  = true;
-      $tab[29]['datatype']      = 'itemlink';
-      $tab[29]['massiveaction'] = false;
-      $tab[29]['joinparams']    = array('beforejoin'
-                                       => array('table'      => 'glpi_contracts_suppliers',
-                                                'joinparams' => array('jointype' => 'child')));
+      $tab[29]['table']             = 'glpi_suppliers';
+      $tab[29]['field']             = 'name';
+      $tab[29]['name']              = _n('Associated supplier', 'Associated suppliers', 2);
+      $tab[29]['forcegroupby']      = true;
+      $tab[29]['datatype']          = 'itemlink';
+      $tab[29]['massiveaction']     = false;
+      $tab[29]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_contracts_suppliers',
+                                                      'joinparams' => array('jointype' => 'child')));
 
-      $tab['cost']               = __('Cost');
+      $tab['cost']                  = __('Cost');
 
-      $tab[11]['table']          = 'glpi_contractcosts';
-      $tab[11]['field']          = 'totalcost';
-      $tab[11]['name']           = __('Total cost');
-      $tab[11]['datatype']       = 'decimal';
-      $tab[11]['forcegroupby']   = true;
-      $tab[11]['usehaving']      = true;
-      $tab[11]['massiveaction']  = false;
-      $tab[11]['joinparams']     = array('jointype' => 'child');
+      $tab[11]['table']             = 'glpi_contractcosts';
+      $tab[11]['field']             = 'totalcost';
+      $tab[11]['name']              = __('Total cost');
+      $tab[11]['datatype']          = 'decimal';
+      $tab[11]['forcegroupby']      = true;
+      $tab[11]['usehaving']         = true;
+      $tab[11]['massiveaction']     = false;
+      $tab[11]['joinparams']        = array('jointype' => 'child');
 
-      $tab[41]['table']          = 'glpi_contractcosts';
-      $tab[41]['field']          = 'cost';
-      $tab[41]['name']           = _n('Cost', 'Costs', 2);
-      $tab[41]['datatype']       = 'decimal';
-      $tab[41]['forcegroupby']   = true;
-      $tab[41]['massiveaction']  = false;
-      $tab[41]['joinparams']     = array('jointype' => 'child');
+      $tab[41]['table']             = 'glpi_contractcosts';
+      $tab[41]['field']             = 'cost';
+      $tab[41]['name']              = _n('Cost', 'Costs', 2);
+      $tab[41]['datatype']          = 'decimal';
+      $tab[41]['forcegroupby']      = true;
+      $tab[41]['massiveaction']     = false;
+      $tab[41]['joinparams']        = array('jointype' => 'child');
 
-      $tab[42]['table']          = 'glpi_contractcosts';
-      $tab[42]['field']          = 'begin_date';
-      $tab[42]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Begin date'));
-      $tab[42]['datatype']       = 'date';
-      $tab[42]['forcegroupby']   = true;
-      $tab[42]['massiveaction']  = false;
-      $tab[42]['joinparams']     = array('jointype' => 'child');
+      $tab[42]['table']             = 'glpi_contractcosts';
+      $tab[42]['field']             = 'begin_date';
+      $tab[42]['name']              = sprintf(__('%1$s - %2$s'), __('Cost'), __('Begin date'));
+      $tab[42]['datatype']          = 'date';
+      $tab[42]['forcegroupby']      = true;
+      $tab[42]['massiveaction']     = false;
+      $tab[42]['joinparams']        = array('jointype' => 'child');
 
-      $tab[43]['table']          = 'glpi_contractcosts';
-      $tab[43]['field']          = 'end_date';
-      $tab[43]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('End date'));
-      $tab[43]['datatype']       = 'date';
-      $tab[43]['forcegroupby']   = true;
-      $tab[43]['massiveaction']  = false;
-      $tab[43]['joinparams']     = array('jointype' => 'child');
+      $tab[43]['table']             = 'glpi_contractcosts';
+      $tab[43]['field']             = 'end_date';
+      $tab[43]['name']              = sprintf(__('%1$s - %2$s'), __('Cost'), __('End date'));
+      $tab[43]['datatype']          = 'date';
+      $tab[43]['forcegroupby']      = true;
+      $tab[43]['massiveaction']     = false;
+      $tab[43]['joinparams']        = array('jointype' => 'child');
 
-      $tab[44]['table']          = 'glpi_contractcosts';
-      $tab[44]['field']          = 'name';
-      $tab[44]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Name'));
-      $tab[44]['forcegroupby']   = true;
-      $tab[44]['massiveaction']  = false;
-      $tab[44]['joinparams']     = array('jointype' => 'child');
-      $tab[44]['datatype']       = 'dropdown';
+      $tab[44]['table']             = 'glpi_contractcosts';
+      $tab[44]['field']             = 'name';
+      $tab[44]['name']              = sprintf(__('%1$s - %2$s'), __('Cost'), __('Name'));
+      $tab[44]['forcegroupby']      = true;
+      $tab[44]['massiveaction']     = false;
+      $tab[44]['joinparams']        = array('jointype' => 'child');
+      $tab[44]['datatype']          = 'dropdown';
 
-      $tab[45]['table']          = 'glpi_budgets';
-      $tab[45]['field']          = 'name';
-      $tab[45]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Budget'));
-      $tab[45]['datatype']       = 'dropdown';
-      $tab[45]['forcegroupby']   = true;
-      $tab[45]['massiveaction']  = false;
-      $tab[45]['joinparams']    = array('beforejoin'
-                                       => array('table'      => 'glpi_contractcosts',
-                                                'joinparams' => array('jointype' => 'child')));
+      $tab[45]['table']             = 'glpi_budgets';
+      $tab[45]['field']             = 'name';
+      $tab[45]['name']              = sprintf(__('%1$s - %2$s'), __('Cost'), __('Budget'));
+      $tab[45]['datatype']          = 'dropdown';
+      $tab[45]['forcegroupby']      = true;
+      $tab[45]['massiveaction']     = false;
+      $tab[45]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_contractcosts',
+                                                      'joinparams' => array('jointype' => 'child')));
 
       return $tab;
    }

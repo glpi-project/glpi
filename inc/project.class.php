@@ -258,11 +258,11 @@ class Project extends CommonDBTM {
 
       $pt = new ProjectTeam();
       $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       parent::cleanDBonPurge();
    }
 
-   
+
    /**
     * Is the current user in the team?
     *
@@ -1034,10 +1034,11 @@ class Project extends CommonDBTM {
 
 
    /** Get data to display on GANTT
-   * @param $ID ID of the project
-   * @param $showall boolean show all sub items (projects / tasks)
+    *
+   * @param $ID        integer   ID of the project
+   * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
    */
-   static function getDataToDisplayOnGantt($ID, $showall = true) {
+   static function getDataToDisplayOnGantt($ID, $showall=true) {
       global $DB;
 
       $todisplay = array();
@@ -1140,7 +1141,7 @@ class Project extends CommonDBTM {
    static function showGantt($ID) {
       global $DB;
 
-      
+
       if ($ID > 0) {
          $project = new Project();
          if ($project->getFromDB($ID) && $project->canView()) {
@@ -1149,12 +1150,12 @@ class Project extends CommonDBTM {
             return false;
          }
       } else {
-         $todisplay= array();
+         $todisplay = array();
          // Get all root projects
          $query = "SELECT *
-            FROM `glpi_projects`
-            WHERE `projects_id` = '0'
-               ".getEntitiesRestrictRequest("AND",'glpi_projects',"", '', true);
+                   FROM `glpi_projects`
+                   WHERE `projects_id` = '0'
+                         ".getEntitiesRestrictRequest("AND",'glpi_projects',"", '', true);
          foreach ($DB->request($query) as $data) {
             $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
          }
