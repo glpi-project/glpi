@@ -520,15 +520,16 @@ abstract class CommonITILCost extends CommonDBChild {
    /**
     * Get costs summary values
     *
+    * @param $type    string  type
     * @param $ID      integer ID of the ticket
     *
     * @return array of costs and actiontime
    **/
-   static function getCostsSummary($ID) {
+   static function getCostsSummary($type, $ID) {
       global $DB;
 
       $query = "SELECT *
-                FROM `".getTableForItemtype(static::$itemtype)."`
+                FROM `".getTableForItemtype($type)."`
                 WHERE `".static::$items_id."` = '$ID'
                 ORDER BY `begin_date`";
 
