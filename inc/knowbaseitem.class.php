@@ -1029,31 +1029,29 @@ class KnowbaseItem extends CommonDBTM {
          default :
             // Build query
             if (Session::getLoginUserID() && $type != 'myunpublished') {
-               $where = self::addVisibilityRestrict()." AND ";
+               $where = self::addVisibilityRestrict();
             } else {
                // Anonymous access
                if (Session::isMultiEntitiesMode()) {
                   $where = " (`glpi_entities_knowbaseitems`.`entities_id` = '0'
-                              AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')
-                           AND ";
+                              AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')";
                }
             }
             break;
       }
 
       if ($params['faq']) { // helpdesk
-         $where .= " (`glpi_knowbaseitems`.`is_faq` = '1')
-                      AND ";
+         $where .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
       // a search with $contains
       switch ($type) {
          case 'allmy' :
-            $where .= "`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'";
+            $where .= " AND `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'";
             break;
 
          case 'myunpublished' :
-            $where .= "`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
+            $where .= " AND `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
                         AND (`glpi_entities_knowbaseitems`.`entities_id` IS NULL
                               AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
                               AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
@@ -1062,7 +1060,7 @@ class KnowbaseItem extends CommonDBTM {
 
          case 'allunpublished' :
             // Only published
-            $where .= "(`glpi_entities_knowbaseitems`.`entities_id` IS NULL
+            $where .= " AND (`glpi_entities_knowbaseitems`.`entities_id` IS NULL
                               AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
                               AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
                               AND `glpi_knowbaseitems_users`.`users_id` IS NULL)";
@@ -1108,8 +1106,8 @@ class KnowbaseItem extends CommonDBTM {
             break;
 
          case 'browse' :
-            $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id`
-                           = '".$params["knowbaseitemcategories_id"]."')";
+            $where .= " AND (`glpi_knowbaseitems`.`knowbaseitemcategories_id`
+                             = '".$params["knowbaseitemcategories_id"]."')";
             $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
             break;
       }
