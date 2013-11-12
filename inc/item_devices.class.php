@@ -797,5 +797,21 @@ class Item_Devices extends CommonDBRelation {
       unset($values[READ]);
       return $values;
    }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
+   **/
+   static function getConnexityMassiveActionsSpecificities() {
+
+      $specificities              = parent::getConnexityMassiveActionsSpecificities();
+
+      $specificities['reaffect']  = 1;
+      $specificities['itemtypes'] = self::getConcernedItems();
+
+      return $specificities;
+   }
 }
 ?>
