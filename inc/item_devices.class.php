@@ -545,8 +545,13 @@ class Item_Devices extends CommonDBRelation {
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
 
-         $content = array(array('function'   => 'Infocom::showDisplayLink',
-                                'parameters' => array(static::getType(), $link['id'])));
+         if (countElementsInTable('glpi_infocoms', "`itemtype`='".static::getType()."' AND
+                                                    `items_id`='".$link['id']."'")) {
+            $content = array(array('function'   => 'Infocom::showDisplayLink',
+                                   'parameters' => array(static::getType(), $link['id'])));
+         } else {
+            $content = '';
+         }
          $current_row->addCell($infocom_column, $content, $spec_cell);
 
          if ($item->isDynamic()) {
