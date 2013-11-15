@@ -705,7 +705,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-         
+
          // Supplier infocoms
          if ($this->options['keep_infocom']) {
             foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
@@ -993,6 +993,11 @@ class Transfer extends CommonDBTM {
                $this->transferComputerSoftwares($ID);
                // Computer Disks :  delete them or not ?
                $this->transferComputerDisks($ID);
+            }
+
+            // Connected item is transfered
+            if (in_array($itemtype, $CFG_GLPI["directconnect_types"])) {
+               $this->manageConnectionComputer($itemtype, $ID);
             }
 
             // Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
@@ -2139,6 +2144,46 @@ class Transfer extends CommonDBTM {
                } else {
                   // Unexisting item / Force disconnect
                   $conn = new Computer_Item();
+                  $conn->delete(array('id'             => $data['id'],
+                                      '_no_history'    => true,
+                                      '_no_auto_action'=> true));
+               }
+
+            }
+         }
+      }
+   }
+
+
+   /**
+    * Delete direct connection beetween an item and a computer when transfering the item
+    *
+    * @param $itemtype        itemtype to tranfer
+    * @param $ID              ID of the item
+    *
+    * @since version 0.84.4
+    **/
+   function manageConnectionComputer($itemtype ,$ID) {
+      global $DB;
+
+      // Get connections
+      $query = "SELECT *
+                FROM `glpi_computers_items`
+                WHERE `computers_id` NOT IN ".$this->item_search['Computer']."
+                      AND `itemtype` = '".$itemtype."'
+                      AND `items_id` = $ID";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 0) {
+            // Foreach get item
+            $conn = new Computer_Item();
+            $comp = New Computer();
+            while ($data = $DB->fetch_assoc($result)) {
+               $item_ID = $data['items_id'];
+               if ($comp->getFromDB($item_ID)) {
+                  $conn->delete(array('id' => $data['id']));
+               } else {
+                  // Unexisting item / Force disconnect
                   $conn->delete(array('id'             => $data['id'],
                                       '_no_history'    => true,
                                       '_no_auto_action'=> true));
