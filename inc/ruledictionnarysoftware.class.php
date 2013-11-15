@@ -66,62 +66,6 @@ class RuleDictionnarySoftware extends Rule {
    }
 
 
-//    /**
-//     * @see RuleCached::showCacheRuleHeader()
-//    **/
-//    function showCacheRuleHeader() {
-// 
-//       echo "<tr><th colspan='4'>" . __('Cache information') . "</th>";
-//       echo "<th colspan='4'>" . $this->fields["name"];
-//       echo "</th></tr>";
-// 
-//       echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
-//       echo "<td class='tab_bg_1 b'>" . __('Original entity value')."</td>";
-//       echo "<td class='tab_bg_1 b'>" . __('Original publisher')."</td>";
-//       echo "<td class='tab_bg_1 b'>" . __('Modified value') . "</td>";
-//       echo "<td class='tab_bg_1 b'>" . _n('Version', 'Versions', 1) . "</td>";
-//       echo "<td class='tab_bg_1 b'>" . __('New publisher') . "</td>";
-//       echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td>";
-//       echo "<td class='tab_bg_1 b'>" . __('Associable to a ticket') . "</td>\n";
-//       echo "<td class='tab_bg_1 b'>" . __('Destination entity') . "</td></tr>\n";
-//    }
-// 
-// 
-//    /**
-//     * @see RuleCached::showCacheRuleDetail()
-//    **/
-//    function showCacheRuleDetail($fields) {
-// 
-//       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
-//       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities",
-//                                                                $fields["entities_id"]) ."</td>";
-//       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
-//       echo "<td class='tab_bg_2'>".(($fields["new_value"] != '') ? $fields["new_value"]
-//                                                                  : __('Unchanged'))."</td>";
-//       echo "<td class='tab_bg_2'>". (($fields["version"] != '') ? $fields["version"]
-//                                                                 : __('Unchanged'))."</td>";
-//       echo "<td class='tab_bg_2'>".
-//              ((isset($fields["new_manufacturer"]) && ($fields["new_manufacturer"] != ''))
-//               ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
-//               : __('Unchanged')) . "</td>";
-//       echo "<td class='tab_bg_2'>";
-//       if ($fields["ignore_import"] == '') {
-//          echo "&nbsp;";
-//       } else {
-//          echo Dropdown::getYesNo($fields["ignore_import"]);
-//       }
-//       echo "</td>";
-//       echo "<td class='tab_bg_2'>".
-//              ((isset($fields["is_helpdesk_visible"]) && ($fields["is_helpdesk_visible"] != ''))
-//               ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
-//               : __('Unchanged')) . "</td>";
-//       echo "<td class='tab_bg_2'>" .
-//              (isset($fields['new_entities_id']) && strlen($fields['new_entities_id'])
-//               ? getDropdownName('glpi_entities', $fields['new_entities_id'])
-//               : __('Unchanged')) . "</td>";
-//    }
-
-
    /**
     * @see Rule::getCriterias()
    **/
