@@ -28,22 +28,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_peripheraltypes";
    public $menu_option = "type.peripheral";
 
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_peripheraltypes";
-//       $this->initCache("glpi_rulecacheperipheraltypes");
-//       $this->menu_option = "type.peripheral";
-//    }
 
 
    /**

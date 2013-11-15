@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownCollection {
@@ -39,18 +39,6 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
    public $item_table  = "glpi_manufacturers";
    public $menu_option = "manufacturers";
 
-
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table  = "glpi_manufacturers";
-//       //Init cache system values
-//       $this->initCache("glpi_rulecachemanufacturers");
-//       $this->menu_option = "manufacturers";
-//    }
 
 
    /**

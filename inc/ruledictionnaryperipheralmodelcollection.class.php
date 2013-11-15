@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection {
@@ -37,16 +37,6 @@ class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCo
    public $item_table  = "glpi_peripheralmodels";
    public $menu_option = "model.peripheral";
 
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table  = "glpi_peripheralmodels";
-//       $this->initCache("glpi_rulecacheperipheralmodels", array("name"         => "old_value",
-//                                                                "manufacturer" => "manufacturer"));
-//       $this->menu_option = "model.peripheral";
-//    }
 
 
    /**

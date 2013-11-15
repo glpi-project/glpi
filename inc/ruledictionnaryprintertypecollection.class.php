@@ -28,22 +28,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_printertypes";
    public $menu_option = "type.printer";
 
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_printertypes";
-//       $this->initCache("glpi_rulecacheprintertypes");
-//       $this->menu_option = "type.printer";
-//    }
 
 
    /**

@@ -44,21 +44,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    public $menu_option         = 'printer';
 
 
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-//
-//       //Init cache system values
-//       $this->initCache("glpi_rulecacheprinters",
-//                        array("name"               => "old_value",
-//                              "manufacturer"       => "manufacturer"),
-//                        array("name"               => "new_value",
-//                              "manufacturer"       => "new_manufacturer",
-//                              "_ignore_import"     => "ignore_import",
-//                              "is_global"          => "is_global"));
-//    }
-
 
    /**
     * @see RuleCollection::getTitle()

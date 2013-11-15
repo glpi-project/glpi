@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownCollection {
@@ -39,17 +39,6 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
    public $item_table  = "glpi_computertypes";
    public $menu_option = "type.computer";
 
-
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_computertypes";
-//       //Init cache system values
-//       $this->initCache("glpi_rulecachecomputertypes");
-//       $this->menu_option = "type.computer";
-//    }
 
 
    /**

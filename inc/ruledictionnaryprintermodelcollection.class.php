@@ -28,24 +28,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_printermodels";
    public $menu_option = "model.printer";
 
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table  = "glpi_printermodels";
-//       //Init cache system values
-//       $this->initCache("glpi_rulecacheprintermodels", array("name"         => "old_value",
-//                                                             "manufacturer" => "manufacturer"));
-//       $this->menu_option="model.printer";
-//    }
 
 
    /**

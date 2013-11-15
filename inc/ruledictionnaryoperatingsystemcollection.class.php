@@ -28,22 +28,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_operatingsystems";
    public $menu_option = "os";
 
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table  = "glpi_operatingsystems";
-//       $this->initCache("glpi_rulecacheoperatingsystems");
-//       $this->menu_option = "os";
-//    }
 
 
    /**
