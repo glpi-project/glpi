@@ -38,6 +38,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
+   public $can_replay_rules    = true;
    static public $right        = 'rule_dictionnary_software';
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'software';
@@ -47,7 +48,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 //     * Constructor
 //    **/
 //    function __construct() {
-// 
+//
 //       //Init cache system values
 //       $this->initCache("glpi_rulecachesoftwares", array("name"         => "old_value",
 //                                                         "manufacturer" => "manufacturer",
