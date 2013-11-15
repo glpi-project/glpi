@@ -41,6 +41,10 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
    /// dropdown table
    public $item_table = "";
 
+   public $stop_on_first_match = true;
+   public $can_replay_rules    = true;
+
+
 
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
