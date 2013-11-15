@@ -381,8 +381,8 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
