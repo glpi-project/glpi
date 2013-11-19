@@ -618,7 +618,7 @@ class MassiveAction {
          unset($input['initial_items']);
          unset($input['processor']);
          unset($input['action_name']);
-         $input['itemtype'] = $this->getItemType(true);
+         $input['itemtype'] = $this->getItemtype(true);
          $input['action']   = $this->action;
          $input['item']     = array_fill_keys(array_keys($this->items[$input['itemtype']]), 1);
 
@@ -675,72 +675,249 @@ class MassiveAction {
 
       switch ($ma->getAction()) {
          case 'update':
-            $itemtype = $ma->getItemType(true);
-            // TODO: review it to remove use of ajax/dropdownMassiveActionField.php
-            // Specific options for update fields
-            if (!isset($input['options'])) {
-               $input['options'] = array();
-            }
-            $group          = "";
-            $show_all       = true;
-            $show_infocoms  = true;
+            if (!isset($ma->POST['id_field'])) {
+               $itemtypes        = array_keys($ma->items);
+               $options_per_type = array();
+               $options_counts   = array();
+               foreach ($itemtypes as $itemtype) {
 
-            if (InfoCom::isConcerned($itemtype)
-                && (!$itemtype::canUpdate()
-                    || !Infocom::canUpdate())) {
-               $show_all      = false;
-               $show_infocoms = Infocom::canUpdate();
-            }
-            $searchopt = Search::getCleanedOptions($itemtype, UPDATE);
+                  $options_per_type[$itemtype] = array();
+                  $group          = '';
+                  $show_all       = true;
+                  $show_infocoms  = true;
 
-            $values    = array(0 => Dropdown::EMPTY_VALUE);
+                  if (InfoCom::isConcerned($itemtype)
+                      && (!$itemtype::canUpdate()
+                          || !Infocom::canUpdate())) {
+                     $show_all      = false;
+                     $show_infocoms = Infocom::canUpdate();
+                  }
+                  foreach (Search::getCleanedOptions($itemtype, UPDATE) as $index => $option) {
+                     if (!is_array($option)) {
+                        $group                               = $option;
+                        $options_per_type[$itemtype][$group] = array();
+                     } else {
+                        if (($option['field'] != 'id')
+                            && ($index != 1)
+                            // Permit entities_id is explicitly activate
+                            && (($option["linkfield"] != 'entities_id')
+                                || (isset($option['massiveaction']) && $option['massiveaction']))) {
 
-            foreach ($searchopt as $key => $val) {
-               if (!is_array($val)) {
-                  $group = $val;
-               } else {
-                  // No id and no entities_id massive action and no first item
-                  if (($val["field"] != 'id')
-                      && ($key != 1)
-                     // Permit entities_id is explicitly activate
-                      && (($val["linkfield"] != 'entities_id')
-                          || (isset($val['massiveaction']) && $val['massiveaction']))) {
+                           if (!isset($option['massiveaction']) || $option['massiveaction']) {
+                              if (($show_all)
+                                  || (($show_infocoms
+                                       && Search::isInfocomOption($itemtype, $index))
+                                      || (!$show_infocoms
+                                          && !Search::isInfocomOption($itemtype, $index)))) {
+                                 $options_per_type[$itemtype][$group][$itemtype.':'.$index] =
+                                                         $option['name'];
 
-                     if (!isset($val['massiveaction']) || $val['massiveaction']) {
-
-                        if ($show_all) {
-                           $values[$group][$key] = $val["name"];
-                        } else {
-                           // Do not show infocom items
-                           if (($show_infocoms
-                                && Search::isInfocomOption($itemtype, $key))
-                               || (!$show_infocoms
-                                   && !Search::isInfocomOption($itemtype, $key))) {
-                              $values[$group][$key] = $val["name"];
+                                 $field_key = $option['table'].':'.$option['field'];
+                                 if (!isset($options_count[$field_key])) {
+                                    $options_count[$field_key] = array();
+                                 }
+                                 $options_count[$field_key][] = $itemtype.':'.$index.':'.$group;
+                              }
                            }
                         }
                      }
                   }
                }
-            }
 
-            $rand             = Dropdown::showFromArray('id_field', $values);
-
-            $paramsmassaction = array('id_field' => '__VALUE__',
-                                      'itemtype' => $itemtype,
-                                      'options'  => $input['options']);
-
-            foreach ($input as $key => $val) {
-               if (preg_match("/extra_/",$key,$regs)) {
-                  $paramsmassaction[$key] = $val;
+               if (count($itemtypes) > 1) {
+                  $options        = array(0 => Dropdown::EMPTY_VALUE);
+                  $common_options = array();
+                  foreach ($options_count as $field => $users) {
+                     if (count($users) > 1) {
+                        $labels = array();
+                        foreach ($users as $user) {
+                           $user      = explode(':', $user);
+                           $itemtype  = $user[0];
+                           $index     = $itemtype.':'.$user[1];
+                           $group     = implode(':', array_slice($user, 2));
+                           if (isset($options_per_type[$itemtype][$group][$index])) {
+                              if (!in_array($options_per_type[$itemtype][$group][$index],
+                                            $labels)) {
+                                 $labels[] = $options_per_type[$itemtype][$group][$index];
+                              }
+                           }
+                           $common_options[$field][] = $index;
+                        }
+                        $options[$group][$field] = implode('/', $labels);
+                     }
+                  }
+                  $choose_itemtype = true;
+                  $itemtype_choices = array(-1 => Dropdown::EMPTY_VALUE);
+                  foreach ($itemtypes as $itemtype) {
+                     $itemtype_choices[$itemtype] = $itemtype::getTypeName(2);
+                  }
+               } else {
+                  $options          = array(0 => Dropdown::EMPTY_VALUE);
+                  $options         += $options_per_type[$itemtypes[0]];
+                  $common_options  = false;
+                  $choose_itemtype = false;
                }
-            }
-            Ajax::updateItemOnSelectEvent("dropdown_id_field$rand", "show_massiveaction_field",
-                                          $CFG_GLPI["root_doc"].
-                                                "/ajax/dropdownMassiveActionField.php",
-                                          $paramsmassaction);
+               $choose_field = (count($options) > 1);
 
-            echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+               // Beware: "class='tab_cadre_fixe'" induce side effects ...
+               echo "<table width='100%'><tr>";
+
+               $colspan = 0;
+               if ($choose_field) {
+                  $colspan ++;
+                  echo "<td>";
+                  if ($common_options) {
+                     echo __('Select the common field that you want to update');
+                  } else {
+                     echo __('Select the field that you want to update');
+                  }
+                  echo "</td>";
+                  if ($choose_itemtype) {
+                     $colspan ++;
+                     echo "<td rowspan='2'>".__('or')."</td>";
+                  }
+               }
+
+               if ($choose_itemtype) {
+                  $colspan ++;
+                  echo "<td>".__('Select the type of the item on which applying this action')."</td>";
+               }
+
+               echo "</tr><tr>";
+               if ($choose_field) {
+                  echo "<td>";
+                  $field_rand = Dropdown::showFromArray('id_field', $options);
+                  echo "</td>";
+               }
+               if ($choose_itemtype) {
+                  echo "<td>";
+                  $itemtype_rand = Dropdown::showFromArray('specialize_itemtype',
+                                                           $itemtype_choices);
+                  echo "</td>";
+               }
+
+               $next_step_rand = mt_rand();
+
+               echo "</tr></table>";
+               echo "<span id='update_next_step$next_step_rand'>&nbsp;</span>";
+
+               if ($choose_field) {
+                  $params                   = $ma->POST;
+                  $params['id_field']       = '__VALUE__';
+                  $params['common_options'] = $common_options;
+                  Ajax::updateItemOnSelectEvent("dropdown_id_field$field_rand",
+                                                "update_next_step$next_step_rand",
+                                                $_SERVER['REQUEST_URI'], $params);
+               }
+
+               if ($choose_itemtype) {
+                  $params                        = $ma->POST;
+                  $params['specialize_itemtype'] = '__VALUE__';
+                  $params['common_options']      = $common_options;
+                  Ajax::updateItemOnSelectEvent("dropdown_specialize_itemtype$itemtype_rand",
+                                                "update_next_step$next_step_rand",
+                                                $_SERVER['REQUEST_URI'], $params);
+               }
+               // Only display the form for this stage
+               exit();
+
+            }
+
+            if (!isset($ma->POST['common_options'])) {
+               echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
+                              __s('Warning')."'><br><br>";
+               echo "<span class='b'>".__('Implementation error !')."</span><br>";
+               echo "</div>";
+               exit();
+            }
+
+            if ($ma->POST['common_options'] == 'false') {
+               $search_options = array($ma->POST['id_field']);
+            } elseif (isset($ma->POST['common_options'][$ma->POST['id_field']])) {
+               $search_options = $ma->POST['common_options'][$ma->POST['id_field']];
+            } else {
+               $search_options = array();
+            }
+
+            $items         = array();
+            foreach ($search_options as $search_option) {
+               $search_option = explode(':', $search_option);
+               $itemtype      = $search_option[0];
+               $index         = $search_option[1];
+
+               if (!$item = getItemForItemtype($itemtype)) {
+                  continue;
+               }
+
+               if (InfoCom::isConcerned($itemtype)) {
+                  Session::checkSeveralRightsOr(array($itemtype  => UPDATE,
+                                                      "infocom"  => UPDATE));
+               } else {
+                  $item->checkGlobal(UPDATE);
+               }
+
+               $search = Search::getOptions($itemtype);
+               if (!isset($search[$index])) {
+                  exit();
+               }
+               $item->search = $search[$index];
+
+               $items[] = $item;
+            }
+
+            if (count($items) == 0) {
+               exit();
+            }
+
+            // TODO: ensure that all items are equivalent ...
+            $item   = $items[0];
+            $search = $item->search;
+
+            $plugdisplay = false;
+            if (($plug = isPluginItemType($item->getType()))
+                // Specific for plugin which add link to core object
+                || ($plug = isPluginItemType(getItemTypeForTable($item->search['table'])))) {
+               $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
+                                                array('itemtype' => $item->getType(),
+                                                      'options'  => $item->search));
+            }
+
+            if (empty($search["linkfield"])
+                ||($search['table'] == 'glpi_infocoms')) {
+               $fieldname = $search["field"];
+            } else {
+               $fieldname = $search["linkfield"];
+            }
+
+            if (!$plugdisplay) {
+               $options = array();
+               $values  = array();
+               // For ticket template or aditional options of massive actions
+               if (isset($ma->POST['options'])) {
+                  $options = $ma->POST['options'];
+               }
+               if (isset($ma->POST['additionalvalues'])) {
+                  $values = $ma->POST['additionalvalues'];
+               }
+               $values[$search["field"]] = '';
+               echo $item->getValueToSelect($search, $fieldname, $values, $options);
+            }
+
+            $items_index = array();
+            foreach ($search_options as $search_option) {
+               $search_option = explode(':', $search_option);
+               $items_index[$search_option[0]] = $search_option[1];
+            }
+            echo Html::recursiveHidden('search_options', array('value' => $items_index));
+            echo Html::hidden('field', array('value' => $fieldname));
+            echo "<br>\n";
+
+            $submitname = _sx('button','Post');
+            if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
+               $submitname= stripslashes($ma->POST['submitname']);
+            }
+            echo Html::submit($submitname, array('name' => 'massiveaction'));
+
             return true;
 
       }
@@ -823,7 +1000,7 @@ class MassiveAction {
             // Actually, only plugins uses that: all core actions have been converted
             // Do we have to keep it ?
             $input             = $this->POST;
-            $itemtype          = $this->getItemType(false);
+            $itemtype          = $this->getItemtype(false);
             $input['itemtype'] = $itemtype;
             $input['action']   = $this->action;
             $input['item']     = array_fill_keys(array_keys($this->items[$itemtype]), 1);
@@ -970,18 +1147,22 @@ class MassiveAction {
             break;
 
          case 'update' :
-            $input             = $ma->getInput();
-            $input['itemtype'] = $ma->getItemtype(false);
-            $searchopt         = Search::getCleanedOptions($input["itemtype"], UPDATE);
-            if (isset($searchopt[$input["id_field"]])) {
+            if ((!isset($ma->POST['search_options']))
+                || (!isset($ma->POST['search_options'][$item->getType()]))) {
+               return false;
+            }
+            $index     = $ma->POST['search_options'][$item->getType()];
+            $searchopt = Search::getCleanedOptions($item->getType(), UPDATE);
+            $input     = $ma->POST;
+            if (isset($searchopt[$index])) {
                /// Infocoms case
-               if (!isPluginItemType($input["itemtype"])
-                   && Search::isInfocomOption($input["itemtype"], $input["id_field"])) {
+               if (!isPluginItemType($item->getType())
+                   && Search::isInfocomOption($item->getType(), $index)) {
 
                   $ic               = new Infocom();
                   $link_entity_type = -1;
                   /// Specific entity item
-                  if ($searchopt[$input["id_field"]]["table"] == "glpi_suppliers") {
+                  if ($searchopt[$index]["table"] == "glpi_suppliers") {
                      $ent = new Supplier();
                      if ($ent->getFromDB($input[$input["field"]])) {
                         $link_entity_type = $ent->fields["entities_id"];
@@ -996,16 +1177,16 @@ class MassiveAction {
                                             getAncestorsOf("glpi_entities",
                                                            $item->getEntityID())))) {
                            $input2["items_id"] = $key;
-                           $input2["itemtype"] = $input["itemtype"];
+                           $input2["itemtype"] = $item->getType();
 
                            if ($ic->can(-1, CREATE, $input2)) {
                               // Add infocom if not exists
-                              if (!$ic->getFromDBforDevice($input["itemtype"],$key)) {
+                              if (!$ic->getFromDBforDevice($item->getType(),$key)) {
                                  $input2["items_id"] = $key;
-                                 $input2["itemtype"] = $input["itemtype"];
+                                 $input2["itemtype"] = $item->getType();
                                  unset($ic->fields);
                                  $ic->add($input2);
-                                 $ic->getFromDBforDevice($input["itemtype"], $key);
+                                 $ic->getFromDBforDevice($item->getType(), $key);
                               }
                               $id = $ic->fields["id"];
                               unset($ic->fields);
@@ -1033,11 +1214,11 @@ class MassiveAction {
                } else { /// Not infocoms
                   $link_entity_type = array();
                   /// Specific entity item
-                  $itemtable = getTableForItemType($input["itemtype"]);
-                  $itemtype2 = getItemTypeForTable($searchopt[$input["id_field"]]["table"]);
+                  $itemtable = getTableForItemType($item->getType());
+                  $itemtype2 = getItemTypeForTable($searchopt[$index]["table"]);
                   if ($item2 = getItemForItemtype($itemtype2)) {
-                     if (($input["id_field"] != 80) // No entities_id fields
-                         && ($searchopt[$input["id_field"]]["table"] != $itemtable)
+                     if (($index != 80) // No entities_id fields
+                         && ($searchopt[$index]["table"] != $itemtable)
                          && $item2->isEntityAssign()
                          && $item->isEntityAssign()) {
                         if ($item2->getFromDB($input[$input["field"]])) {
