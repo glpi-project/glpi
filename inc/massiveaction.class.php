@@ -717,6 +717,12 @@ class MassiveAction {
                                     $options_count[$field_key] = array();
                                  }
                                  $options_count[$field_key][] = $itemtype.':'.$index.':'.$group;
+                                 if (isset($option['MA_common_field'])) {
+                                    if (!isset($options_count[$option['MA_common_field']])) {
+                                       $options_count[$option['MA_common_field']] = array();
+                                    }
+                                    $options_count[$option['MA_common_field']][] = $itemtype.':'.$index.':'.$group;
+                                 }
                               }
                            }
                         }
