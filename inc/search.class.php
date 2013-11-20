@@ -925,19 +925,20 @@ class Search {
                 && InfoCom::isConcerned($itemtype)) {
                $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
             }
-            $showmassiveactions = false;
             if ($itemtype != 'AllAssets') {
                $showmassiveactions = count(MassiveAction::getAllMassiveActions($item,
                                                                                $p['is_deleted']));
-               if ($showmassiveactions
-                   && ($output_type == self::HTML_OUTPUT)) {
-                  Html::openMassiveActionsForm('massform'.$itemtype);
-                  $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
-                                               'fixed'         => false,
-                                               'is_deleted'    => $p['is_deleted'],
-                                               'container'     => 'massform'.$itemtype);
-                  Html::showMassiveActions($massiveactionparams);
-               }
+            } else {
+               $showmassiveactions = true;
+            }
+            if ($showmassiveactions
+                && ($output_type == self::HTML_OUTPUT)) {
+               Html::openMassiveActionsForm('massform'.$itemtype);
+               $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
+                                            'fixed'         => false,
+                                            'is_deleted'    => $p['is_deleted'],
+                                            'container'     => 'massform'.$itemtype);
+               Html::showMassiveActions($massiveactionparams);
             }
 
             // Compute number of columns to display
@@ -1072,7 +1073,7 @@ class Search {
             $row_num = 1;
 
             $massiveaction_field = 'id';
-            if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+            if (($itemtype != 'AllAssets') && isset($CFG_GLPI["union_search_type"][$itemtype])) {
                $massiveaction_field = 'refID';
             }
 
@@ -1087,8 +1088,10 @@ class Search {
                // New line
                echo self::showNewLine($output_type, ($i%2), $p['is_deleted']);
 
+               $current_type = (isset($data['TYPE']) ? $data['TYPE'] : $itemtype);
+
                // Add item in item list
-               Session::addToNavigateListItems($itemtype, $data["id"]);
+               Session::addToNavigateListItems($current_type, $data["id"]);
 
                if (($output_type == self::HTML_OUTPUT)
                    && $showmassiveactions) { // HTML display - massive modif
@@ -1098,12 +1101,14 @@ class Search {
 
                      $tmpcheck = "&nbsp;";
 
-                  } else if ($item->maybeRecursive()
+                  } else if (($item instanceof CommonDBTM)
+                              && $item->maybeRecursive()
                               && !in_array($data["entities_id"], $_SESSION["glpiactiveentities"])) {
                      $tmpcheck = "&nbsp;";
 
                   } else {
-                     $tmpcheck = Html::getMassiveActionCheckBox($itemtype, $data[$massiveaction_field]);
+                     $tmpcheck = Html::getMassiveActionCheckBox($current_type,
+                                                                $data[$massiveaction_field]);
                   }
                   echo self::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
                }
