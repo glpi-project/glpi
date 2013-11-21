@@ -922,7 +922,7 @@ class Search {
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
             if (!$isadmin
-                && InfoCom::isConcerned($itemtype)) {
+                && InfoCom::canApplyOn($itemtype)) {
                $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
             }
             if ($itemtype != 'AllAssets') {
@@ -5105,7 +5105,7 @@ class Search {
       $todel   = array();
 
       if (!Session::haveRight('infocom',$action)
-          && InfoCom::isConcerned($itemtype)) {
+          && InfoCom::canApplyOn($itemtype)) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
@@ -5341,7 +5341,7 @@ class Search {
             $search[$itemtype] += Document::getSearchOptionsToAdd();
          }
 
-         if (InfoCom::isConcerned($itemtype)
+         if (InfoCom::canApplyOn($itemtype)
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
@@ -5436,7 +5436,7 @@ class Search {
                || (($searchID >= 37) && ($searchID <= 38))
                || (($searchID >= 50) && ($searchID <= 59))
                || (($searchID >= 120) && ($searchID <= 125)))
-              && InfoCom::isConcerned($itemtype));
+              && InfoCom::canApplyOn($itemtype));
    }
 
 

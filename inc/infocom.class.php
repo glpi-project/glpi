@@ -67,7 +67,7 @@ class Infocom extends CommonDBChild {
     * @return true if $object is an object that can have InfoCom
     *
    **/
-   static function isConcerned($item) {
+   static function canApplyOn($item) {
       global $CFG_GLPI;
 
       // All devices are subjects to infocom !
@@ -1664,7 +1664,7 @@ class Infocom extends CommonDBChild {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
 
-      if (InfoCom::isConcerned($itemtype)
+      if (InfoCom::canApplyOn($itemtype)
           && static::canCreate()) {
          $actions[$action_name] = __('Enable the financial and administrative information');
       }

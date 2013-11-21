@@ -652,7 +652,7 @@ class CommonDBTM extends CommonGLPI {
       global $CFG_GLPI, $DB;
 
       // If this type have INFOCOM, clean one associated to purged item
-      if (Infocom::isConcerned($this)) {
+      if (Infocom::canApplyOn($this)) {
          $infocom = new Infocom();
 
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
@@ -833,7 +833,7 @@ class CommonDBTM extends CommonGLPI {
 
                 // Auto create infocoms
                if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
-                   && Infocom::isConcerned($this)) {
+                   && Infocom::canApplyOn($this)) {
 
                   $ic = new Infocom();
                   if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
@@ -844,7 +844,7 @@ class CommonDBTM extends CommonGLPI {
 
                // If itemtype is in infocomtype and if states_id field is filled
                // and item is not a template
-               if (InfoCom::isConcerned($this)
+               if (InfoCom::canApplyOn($this)
                    && isset($this->input['states_id'])
                             && (!isset($this->input['is_template'])
                                 || !$this->input['is_template'])) {
@@ -1121,7 +1121,7 @@ class CommonDBTM extends CommonGLPI {
 
                      // If itemtype is in infocomtype and if states_id field is filled
                      // and item not a template
-                     if (InfoCom::isConcerned($this)
+                     if (InfoCom::canApplyOn($this)
                          && in_array('states_id',$this->updates)
                          && ($this->getField('is_template') != NOT_AVAILABLE)) {
                         //Check if we have to automatical fill dates
@@ -1679,7 +1679,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Can delete an object with Infocom only if can delete Infocom
-      if (InfoCom::isConcerned($this)) {
+      if (InfoCom::canApplyOn($this)) {
          $infocom = new Infocom();
 
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
@@ -1706,7 +1706,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Can delete an object with Infocom only if can delete Infocom
-      if (InfoCom::isConcerned($this)) {
+      if (InfoCom::canApplyOn($this)) {
          $infocom = new Infocom();
 
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
@@ -2832,7 +2832,7 @@ class CommonDBTM extends CommonGLPI {
                           'value' => nl2br($this->getField('contact_num')));
       }
 
-      if (InfoCom::isConcerned($this)) {
+      if (InfoCom::canApplyOn($this)) {
          $infocom = new Infocom();
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
             $toadd[] = array('name'  => __('Warranty expiration date'),

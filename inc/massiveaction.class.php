@@ -539,7 +539,7 @@ class MassiveAction {
 
       } else {
          if ($canupdate
-             || (InfoCom::isConcerned($itemtype)
+             || (InfoCom::canApplyOn($itemtype)
                  && Infocom::canUpdate())) {
 
             //TRANS: select action 'update' (before doing it)
@@ -686,7 +686,7 @@ class MassiveAction {
                   $show_all       = true;
                   $show_infocoms  = true;
 
-                  if (InfoCom::isConcerned($itemtype)
+                  if (InfoCom::canApplyOn($itemtype)
                       && (!$itemtype::canUpdate()
                           || !Infocom::canUpdate())) {
                      $show_all      = false;
@@ -855,7 +855,7 @@ class MassiveAction {
                   continue;
                }
 
-               if (InfoCom::isConcerned($itemtype)) {
+               if (InfoCom::canApplyOn($itemtype)) {
                   Session::checkSeveralRightsOr(array($itemtype  => UPDATE,
                                                       "infocom"  => UPDATE));
                } else {

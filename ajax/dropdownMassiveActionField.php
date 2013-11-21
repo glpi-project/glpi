@@ -40,7 +40,7 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
    exit();
 }
 
-if (InfoCom::isConcerned($_POST["itemtype"])) {
+if (InfoCom::canApplyOn($_POST["itemtype"])) {
    Session::checkSeveralRightsOr(array($_POST["itemtype"] => UPDATE,
                                        "infocom"          => UPDATE));
 } else {
