@@ -314,7 +314,7 @@ class Document_Item extends CommonDBRelation{
 
          echo "<tr class='tab_bg_1'><td class='right'>";
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
-                                                       => $CFG_GLPI["document_types"],
+                                                       => Document::getItemtypesThatCanHave(),
                                                      'entity_restrict'
                                                        => ($doc->fields['is_recursive']
                                                            ?getSonsOf('glpi_entities',
@@ -817,7 +817,7 @@ class Document_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       $specificities              = parent::getRelationMassiveActionsSpecificities();
-      $specificities['itemtypes'] = $CFG_GLPI['document_types'];
+      $specificities['itemtypes'] = Document::getItemtypesThatCanHave();
 
       // Define normalized action for add_item and remove_item
       $specificities['normalized']['add'][]          = 'add_item';

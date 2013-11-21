@@ -88,6 +88,21 @@ class Infocom extends CommonDBChild {
    }
 
 
+   /**
+    * Get all the types that can have an infocom
+    *
+    * @since version 0.85
+    *
+    * @return array of the itemtypes
+    *
+   **/
+   static function getItemtypesThatCanHave() {
+      global $CFG_GLPI;
+
+      return array_merge($CFG_GLPI['infocom_types'], $CFG_GLPI['items_that_owns_devices']);
+   }
+
+
    static function getTypeName($nb=0) {
       //TRANS: Always plural
       return __('Financial and administrative information');
