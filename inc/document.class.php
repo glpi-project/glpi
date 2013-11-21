@@ -56,6 +56,52 @@ class Document extends CommonDBTM {
 
 
    /**
+    * Check if given object can have Document
+    *
+    * @since version 0.85
+    *
+    * @param $item  an object or a string
+    *
+    * @return true if $object is an object that can have InfoCom
+    *
+   **/
+   static function canApplyOn($item) {
+      global $CFG_GLPI;
+
+      // All devices are subjects to infocom !
+      if (Toolbox::is_a($item, 'Item_Devices')) {
+         return true;
+      }
+
+      // We also allow direct items to check
+      if ($item instanceof CommonGLPI) {
+         $item = $item->getType();
+      }
+
+      if (in_array($item, $CFG_GLPI['document_types'])){
+         return true;
+      }
+
+      return false;
+   }
+
+
+   /**
+    * Get all the types that can have a document
+    *
+    * @since version 0.85
+    *
+    * @return array of the itemtypes
+    *
+   **/
+   static function getItemtypesThatCanHave() {
+      global $CFG_GLPI;
+
+      return array_merge($CFG_GLPI['document_types'], $CFG_GLPI['items_that_owns_devices']);
+   }
+
+
+   /**
     * @see CommonGLPI::getMenuShorcut()
     *
     * @since version 0.85
@@ -1255,7 +1301,7 @@ class Document extends CommonDBTM {
 
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
 
-      if (in_array($itemtype, $CFG_GLPI["document_types"])) {
+      if (self::canApplyOn($itemtype)) {
          if (Document::canView()) {
             $actions[$action_prefix.'add']    = _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');

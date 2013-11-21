@@ -5117,7 +5117,7 @@ class Search {
       }
 
       if (!Session::haveRight('document',$action)
-          && in_array($itemtype, $CFG_GLPI["document_types"])) {
+          && Document::canApplyOn($itemtype)) {
          $itemstodel = Document::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
@@ -5336,7 +5336,7 @@ class Search {
             $search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
 
-         if (in_array($itemtype, $CFG_GLPI["document_types"])
+         if (Document::canApplyOn($itemtype)
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Document::getSearchOptionsToAdd();
          }

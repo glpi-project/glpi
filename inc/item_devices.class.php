@@ -460,8 +460,11 @@ class Item_Devices extends CommonDBRelation {
          $specificity_columns[$field] = $spec_column;
       }
 
-      $infocom_column = $table_group->addHeader('infocom', Infocom::getTypeName(2),
-                                                $specific_column, $spec_column);
+      $infocom_column  = $table_group->addHeader('infocom', Infocom::getTypeName(2),
+                                                 $specific_column, $spec_column);
+
+      $document_column = $table_group->addHeader('document', Document::getTypeName(2),
+                                                 $specific_column, $spec_column);
 
       if ($item->isDynamic()) {
          $dynamics_column = $table_group->addHeader('one', '&nbsp;', $dynamic_column,
@@ -553,6 +556,22 @@ class Item_Devices extends CommonDBRelation {
             $content = '';
          }
          $current_row->addCell($infocom_column, $content, $spec_cell);
+
+         $content = array();
+         $query = "SELECT `documents_id`
+                     FROM `glpi_documents_items`
+                    WHERE `itemtype`='".static::getType()."' AND
+                          `items_id`='".$link['id']."'";
+         $document = new Document();
+         foreach ($DB->request($query) as $document_link) {
+            if ($document->can($document_link['documents_id'], READ)) {
+               $content[] = $document->getLink();
+            }
+         }
+         $content = implode('<br>', $content);
+         $current_row->addCell($document_column, $content, $spec_cell);
+         
+         
 
          if ($item->isDynamic()) {
             $previous_cell = $current_row->addCell($dynamics_column,
