@@ -1004,7 +1004,7 @@ class Transfer extends CommonDBTM {
             $this->transferTickets($itemtype, $ID, $newID);
             // Infocoms : keep / delete
 
-            if (InfoCom::isConcerned($itemtype)) {
+            if (InfoCom::canApplyOn($itemtype)) {
                $this->transferInfocoms($itemtype, $ID, $newID);
             }
 
