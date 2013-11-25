@@ -228,19 +228,10 @@ $CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'Networ
                                                   'NetworkPortAggregate', 'NetworkPortAlias',
                                                   'NetworkPortDialup',   'NetworkPortLocal' );
 
-// Warning : the indices are used by OCS
-$CFG_GLPI['items_that_owns_devices'] = array(1  => 'Item_DeviceMotherboard',
-                                             2  => 'Item_DeviceProcessor',
-                                             3  => 'Item_DeviceMemory',
-                                             4  => 'Item_DeviceHardDrive',
-                                             5  => 'Item_DeviceNetworkCard',
-                                             6  => 'Item_DeviceDrive',
-                                             7  => 'Item_DeviceControl',
-                                             8  => 'Item_DeviceGraphicCard',
-                                             9  => 'Item_DeviceSoundCard',
-                                             10 => 'Item_DevicePci',
-                                             11 => 'Item_DeviceCase',
-                                             12 => 'Item_DevicePowerSupply');
+$CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
+                                  'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
+                                  'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
+                                  'DevicePci', 'DeviceCase', 'DevicePowerSupply');
 
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract',
                                                   'Crontask', 'DBConnection', 'FieldUnicity', 'Infocom',
