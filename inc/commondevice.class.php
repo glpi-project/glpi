@@ -57,6 +57,34 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
+    * Get all the kind of devices available inside the system.
+    *
+    * @since version 0.85
+    *
+    * @return array of the types of CommonDevice available
+   **/
+   static function getDeviceTypes() {
+      global $CFG_GLPI;
+
+      return $CFG_GLPI['device_types'];
+   }
+
+
+
+   /**
+    * Get the assiociated item_device associated with this device
+    * This method can be override, for instance by the plugin
+    *
+    * @since version 0.85
+    *
+    * @return array of the types of CommonDevice available
+   **/
+   static function getItem_DeviceType() {
+      return 'Item_'.get_called_class();
+   }
+
+
+   /**
     *  @see CommonGLPI::getMenuContent()
     *
     *  @since version 0.85
