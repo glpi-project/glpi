@@ -80,7 +80,11 @@ abstract class CommonDevice extends CommonDropdown {
     * @return array of the types of CommonDevice available
    **/
    static function getItem_DeviceType() {
-      return 'Item_'.get_called_class();
+      $devicetype = get_called_class();
+      if ($plug = isPluginItemType($devicetype)) {
+         return 'Plugin'.$plug['plugin'].'Item_'.$plug['class'];
+      }
+      return "Item_$devicetype";
    }
 
 
@@ -207,7 +211,7 @@ abstract class CommonDevice extends CommonDropdown {
          $content = static::getTypeName(1);
       }
 
-      $linktype = 'Item_'.static::getType();
+      $linktype = static::getItem_DeviceType();
       if (in_array($itemtype, $linktype::itemAffinity())) {
          $column = $base->addHeader('device', $content, $super, $father);
          $column->setItemType($this_type,
@@ -262,7 +266,7 @@ abstract class CommonDevice extends CommonDropdown {
                            "</span>");
       }
 
-      $linktype = 'Item_'.$this->getType();
+      $linktype = static::getItem_DeviceType();
       if (in_array($item->getType(), $linktype::itemAffinity())) {
          $cell = $row->addCell($row->getHeaderByName('common', 'device'),
                                $content, $father, $this);
@@ -340,7 +344,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Item_'.static::getType(), $ong, $options);
+      $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
 
       return $ong;

@@ -43,7 +43,7 @@ Session::checkCentralAccess();
 if ($_POST['items_id']
     && $_POST['itemtype'] && class_exists($_POST['itemtype'])) {
    $devicetype = $_POST['itemtype'];
-   $linktype   = 'Item_'.$devicetype;
+   $linktype   = $devicetype::getItem_DeviceType();
 
    if (count($linktype::getSpecificities())) {
       $name_field = "CONCAT_WS(' - ', `".implode('`, `', array_keys($linktype::getSpecificities()))."`)";
