@@ -99,7 +99,9 @@ class Infocom extends CommonDBChild {
    static function getItemtypesThatCanHave() {
       global $CFG_GLPI;
 
-      return array_merge($CFG_GLPI['infocom_types'], $CFG_GLPI['items_that_owns_devices']);
+      return array_merge($CFG_GLPI['infocom_types'],
+                         CommonDevice::getDeviceTypes(),
+                         Item_Devices::getDeviceTypes());
    }
 
 
