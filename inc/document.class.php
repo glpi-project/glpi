@@ -73,6 +73,11 @@ class Document extends CommonDBTM {
          return true;
       }
 
+      // All devices are subjects to infocom !
+      if (Toolbox::is_a($item, 'CommonDevice')) {
+         return true;
+      }
+
       // We also allow direct items to check
       if ($item instanceof CommonGLPI) {
          $item = $item->getType();
@@ -97,7 +102,9 @@ class Document extends CommonDBTM {
    static function getItemtypesThatCanHave() {
       global $CFG_GLPI;
 
-      return array_merge($CFG_GLPI['document_types'], $CFG_GLPI['items_that_owns_devices']);
+      return array_merge($CFG_GLPI['document_types'],
+                         CommonDevice::getDeviceTypes(),
+                         Item_Devices::getDeviceTypes());
    }
 
 

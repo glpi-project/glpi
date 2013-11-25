@@ -570,10 +570,14 @@ class Item_Devices extends CommonDBRelation {
          $current_row->addCell($infocom_column, $content, $spec_cell);
 
          $content = array();
+         // The order is to be sure that specific documents appear first
          $query = "SELECT `documents_id`
                      FROM `glpi_documents_items`
-                    WHERE `itemtype`='".static::getType()."' AND
-                          `items_id`='".$link['id']."'";
+                    WHERE (`itemtype`='".static::getType()."' AND
+                           `items_id`='".$link['id']."') OR
+                          (`itemtype`='".static::getDeviceType()."' AND
+                           `items_id`='".$link[static::getDeviceForeignKey()]."')
+                   ORDER BY `itemtype` = '".static::getDeviceType()."'";
          $document = new Document();
          foreach ($DB->request($query) as $document_link) {
             if ($document->can($document_link['documents_id'], READ)) {
