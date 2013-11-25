@@ -1023,6 +1023,15 @@ class Plugin extends CommonDBTM {
          }
       }
 
+      if (isset($attrib['device_types'])
+          && $attrib['device_types']
+          && method_exists($itemtype, 'getItem_DeviceType')) {
+         if (class_exists($itemtype::getItem_DeviceType())) {
+            array_push($CFG_GLPI['device_types'], $itemtype);
+         }
+         unset($attrib[$att]);
+      }
+
       if (isset($attrib['addtabon'])) {
          if (!is_array($attrib['addtabon'])) {
             $attrib['addtabon'] = array($attrib['addtabon']);

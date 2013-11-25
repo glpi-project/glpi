@@ -142,7 +142,6 @@ class Item_Devices extends CommonDBRelation {
    /**
     * Get all the kind of devices available inside the system.
     * This method is equivalent to getItemAffinities('')
-    * TODO: allow any plugin to include its own kind of device !
     *
     * @return array of the types of Item_Device* available
    **/
@@ -206,8 +205,19 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   /**
+    * Get associated device to the current item_device
+    *
+    * @since version 0.85
+    *
+    * @return string containing the device
+   **/
    static function getDeviceType() {
-      return str_replace ('Item_', '', get_called_class());
+      $devicetype = get_called_class();
+      if ($plug = isPluginItemType($devicetype)) {
+         return 'Plugin'.$plug['plugin'].str_replace ('Item_', '', $plug['class']);
+      }
+      return str_replace ('Item_', '', $devicetype);
    }
 
 
@@ -259,7 +269,7 @@ class Item_Devices extends CommonDBRelation {
          if ($item instanceof CommonDevice) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                $deviceClass     = $item->getType();
-               $linkClass       = "Item_$deviceClass";
+               $linkClass       = $deviceClass::getItem_DeviceType();
                $table           = $linkClass::getTable();
                $foreignkeyField = $deviceClass::getForeignKeyField();
                $nb = countElementsInTable($table,
@@ -656,7 +666,8 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if (isset($input['devicetype'])) {
-         $linktype = 'Item_'.$input['devicetype'];
+         $devicetype = $input['devicetype'];
+         $linktype = $devicetype::getItem_DeviceType();
          if ($link = getItemForItemtype($linktype)) {
             if ((isset($input[$linktype::getForeignKeyField()]))
                 && (count($input[$linktype::getForeignKeyField()]))) {
@@ -675,7 +686,7 @@ class Item_Devices extends CommonDBRelation {
             Html::displayNotFoundError();
          }
          if ($item instanceof CommonDevice) {
-            if ($link = getItemForItemtype('Item_'.$item->getType())) {
+            if ($link = getItemForItemtype($item->getItem_DeviceType())) {
                $link->addDevices($input['number_devices_to_add'], '', 0, $input['items_id']);
             }
          }
@@ -703,7 +714,7 @@ class Item_Devices extends CommonDBRelation {
 
       $is_device = ($item instanceof CommonDevice);
       if ($is_device) {
-         $link_type = 'Item_'.$itemtype;
+         $link_type = $itemtype::getItem_DeviceType();
       }
 
       $links   = array();
@@ -717,9 +728,12 @@ class Item_Devices extends CommonDBRelation {
             continue;
          }
          if (!$is_device) {
-            if (!empty($data[1])
-                && in_array('Item_'.$data[1], self::getItemAffinities($itemtype))) {
-               $link_type = 'Item_'.$data[1];
+            if (!empty($data[1])) {
+               $device_type = $data[1];
+               if (in_array($device_type::getItem_DeviceType(),
+                            self::getItemAffinities($itemtype))) {
+                  $link_type = $device_type::getItem_DeviceType();
+               }
             } else {
                continue;
             }
