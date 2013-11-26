@@ -46,7 +46,8 @@ if ($_POST['items_id']
    $linktype   = $devicetype::getItem_DeviceType();
 
    if (count($linktype::getSpecificities())) {
-      $name_field = "CONCAT_WS(' - ', `".implode('`, `', array_keys($linktype::getSpecificities()))."`)";
+      $name_field = "CONCAT_WS(' - ', `".implode('`, `',
+                                                 array_keys($linktype::getSpecificities()))."`)";
    } else {
       $name_field = "`id`";
    }
@@ -55,6 +56,9 @@ if ($_POST['items_id']
              WHERE `".$devicetype::getForeignKeyField()."` = '".$_POST['items_id']."'
                     AND `itemtype` = ''";
    $result = $DB->request($query);
+   echo "<table width='100%'><tr><td>" . __('Choose an existing device') . "</td><td rowspan='2'>" .
+        __('and/or') . "</td><td>" . __('Add new devices') . '</td></tr>';
+   echo "<tr><td>";
    if ($result->numrows() == 0) {
       echo __('No unaffected device !');
    } else {
@@ -64,6 +68,9 @@ if ($_POST['items_id']
       }
       dropdown::showFromArray($linktype::getForeignKeyField(), $devices, array('multiple' => true));
    }
+   echo "</td><td>";
+   Dropdown::showNumber('new_devices', array('min'   => 0, 'max'   => 10));
+   echo "</td></tr></table>";
 
 }
 ?>

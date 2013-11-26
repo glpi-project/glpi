@@ -381,7 +381,7 @@ class Item_Devices extends CommonDBRelation {
                                                         'items_id_name'       => 'devices_id',
                                                         'itemtypes'           => $devtypes,
                                                         'showItemSpecificity' => $CFG_GLPI['root_doc']
-                                                                 .'/ajax/getUnaffectedItemDevice.php'));
+                                                                 .'/ajax/selectUnaffectedOrNewItem_Device.php'));
          }
          echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
@@ -677,8 +677,9 @@ class Item_Devices extends CommonDBRelation {
                   $update_input['id'] = $id;
                   $link->update($update_input);
                }
-            } else {
-               $link->addDevices(1, $input['itemtype'], $input['items_id'], $input['devices_id']);
+            } 
+            if (isset($input['new_devices'])) {
+               $link->addDevices($input['new_devices'], $input['itemtype'], $input['items_id'], $input['devices_id']);
             }
          }
       } else {
