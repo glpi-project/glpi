@@ -650,16 +650,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @param $canedit     true if we can edit the child
     * @param $field_name  the name of the HTML field inside Item's form
+    * @param $id          id of the child
     *
     * @return nothing (display only)
    **/
-   function showChildForItemForm($canedit, $field_name) {
+   function showChildForItemForm($canedit, $field_name, $id) {
 
       if ($this->isNewID($this->getID())) {
          $value = '';
       } else {
          $value = $this->getName();
       }
+      $field_name = $field_name."[$id]";
       if ($canedit) {
          echo "<input type='text' size='40' name='$field_name' value='$value'>";
       } else {
@@ -681,10 +683,12 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param $item         CommonDBTM object: the item on which to add the current CommenDBChild
     * @param $field_name   the name of the HTML field inside Item's form
     * @param $canedit      (default NULL) NULL to use default behaviour
+    * @param $display      (boolean) true display or false to return the button HTML code
     *
-    * @return nothing (display only)
+    * @return the button HTML code if $display is true
    **/
-   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit=NULL) {
+   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit=NULL,
+                                                 $display = true) {
       global $CFG_GLPI;
 
       $items_id = $item->getID();
@@ -704,19 +708,27 @@ abstract class CommonDBChild extends CommonDBConnexity {
          }
       }
 
+      $result = '';
+
       if ($canedit) {
          $lower_name         = strtolower(get_called_class());
          $child_count_js_var = 'nb'.$lower_name.'s';
          $div_id             = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
 
-         echo "&nbsp;<script type='text/javascript'>var $child_count_js_var=1; </script>";
-         echo "<span id='add".$lower_name."button'>".
+         // Beware : -1 is for the first element added ...
+         $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
+         $result .= "<span id='add".$lower_name."button'>".
               "<img title=\"".__s('Add')."\" alt=\"". __s('Add').
                 "\" onClick=\"var row = ".Html::jsGetElementByID($div_id).";
                              row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
                             $child_count_js_var++;\"
                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+      }
+      if ($display) {
+         echo $result;
+      } else {
+         return $result;
       }
    }
 
@@ -789,8 +801,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          }
          $count++;
 
-         $current_item->showChildForItemForm($canedit, $field_name . "[" .
-                                             $current_item->getID() . "]");
+         $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID());
 
       }
 
@@ -799,7 +810,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          // No Child display field
          if ($count == 0) {
             $current_item->getEmpty();
-            $current_item->showChildForItemForm($canedit, $field_name . "[-100]");
+            $current_item->showChildForItemForm($canedit, $field_name, -1);
          }
          echo "</div>";
       }

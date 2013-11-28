@@ -2274,6 +2274,49 @@ function update084to085() {
    }
 
 
+   // Adding the Registered ID class that contains PCI IDs and USB IDs for vendors
+   // as well devices
+   if (!TableExists('glpi_registeredids')) {
+      $query = "CREATE TABLE `glpi_registeredids` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `name` varchar(255) DEFAULT NULL,
+                 `items_id` int(11) NOT NULL DEFAULT '0',
+                 `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                 `device_type` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'USB, PCI ...',
+                 PRIMARY KEY (`id`),
+                 KEY `name` (`name`),
+                 KEY `item` (`items_id`, `itemtype`),
+                 KEY `device_type` (`device_type`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_registeredids");
+   }
+
+   // Complete the item_devices
+   foreach (array('glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
+                  'glpi_items_devicegraphiccards', 'glpi_items_devicemotherboards',
+                  'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
+                  'glpi_items_devicepowersupplies', 'glpi_items_devicesoundcards') as $table) {
+      if (!FieldExists($table, 'serial')) {
+         $migration->addField($table, 'serial', 'string');
+         $migration->addKey($table, 'serial');
+      }
+   }
+
+   foreach (array('glpi_items_devicecontrols', 'glpi_items_devicedrives',
+                  'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
+                  'glpi_items_devicememories', 'glpi_items_devicenetworkcards',
+                  'glpi_items_devicepcis', 'glpi_items_deviceprocessors',
+                  'glpi_items_devicesoundcards') as $table) {
+      if (!FieldExists($table, 'busID')) {
+         $migration->addField($table, 'busID', 'string');
+         $migration->addKey($table, 'busID');
+      }
+   }
+
+   if (!FieldExists('glpi_devicegraphiccards', 'chipset')) {
+      $migration->addField('glpi_devicegraphiccards', 'chipset', 'string');
+      $migration->addKey('glpi_devicegraphiccards', 'chipset');
+   }
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

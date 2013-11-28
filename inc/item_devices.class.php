@@ -699,7 +699,7 @@ class Item_Devices extends CommonDBRelation {
     * @param $input array of input: should be $_POST
     * @param $delete
    **/
-   static function updateAll($input, $delete) {
+   static function updateAll($input) {
 
       if (!isset($input['itemtype'])
           || !isset($input['items_id'])) {
@@ -719,7 +719,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       $links   = array();
-      // Update quantity
+      // Update quantity or values
       $device_type = '';
       foreach ($input as $key => $val) {
          $data = explode("_",$key);
@@ -728,15 +728,18 @@ class Item_Devices extends CommonDBRelation {
          } else {
             continue;
          }
+         if (($command != 'quantity') && ($command != 'value')) {
+            // items_id, itemtype, devicetype ...
+            continue;
+         }
          if (!$is_device) {
-            if (!empty($data[1])) {
-               $device_type = $data[1];
-               if (in_array($device_type::getItem_DeviceType(),
-                            self::getItemAffinities($itemtype))) {
-                  $link_type = $device_type::getItem_DeviceType();
-               }
-            } else {
+            if (empty($data[1])) {
                continue;
+            }
+            $device_type = $data[1];
+            if (in_array($device_type::getItem_DeviceType(),
+                         self::getItemAffinities($itemtype))) {
+               $link_type = $device_type::getItem_DeviceType();
             }
          }
          if (!empty($data[2])) {
@@ -746,8 +749,7 @@ class Item_Devices extends CommonDBRelation {
          }
          if (!isset($links[$link_type])) {
             $links[$link_type] = array('add'    => array(),
-                                       'update' => array(),
-                                       'remove' => array());
+                                       'update' => array());
          }
 
          switch ($command) {
@@ -763,29 +765,17 @@ class Item_Devices extends CommonDBRelation {
                   $links[$link_type]['update'][$links_id][$data[3]] = $val;
                }
                break;
-
-            case 'remove' :
-               if ($val == 1) {
-                  $links[$link_type]['remove'][] = $links_id;
-               }
-               break;
          }
       }
 
       foreach ($links as $type => $commands) {
          if ($link = getItemForItemtype($type)) {
-            if ($delete) {
-               foreach ($commands['remove'] as $link_to_remove) {
-                  $link->delete(array('id' => $link_to_remove));
-               }
-            } else {
-               foreach ($commands['add'] as $link_to_add => $number) {
-                  $link->addDevices($number, $itemtype, $items_id, $link_to_add);
-               }
-               foreach ($commands['update'] as $link_to_update => $input) {
-                  $input['id'] = $link_to_update;
-                  $link->update($input);
-               }
+            foreach ($commands['add'] as $link_to_add => $number) {
+               $link->addDevices($number, $itemtype, $items_id, $link_to_add);
+            }
+            foreach ($commands['update'] as $link_to_update => $input) {
+               $input['id'] = $link_to_update;
+               $link->update($input);
             }
             unset($link);
          }

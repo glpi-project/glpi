@@ -50,9 +50,15 @@ class Item_DeviceNetworkCard extends Item_Devices {
 
    static function getSpecificities() {
 
-      return array('mac' => array('long name'  => __('MAC address'),
-                                  'short name' => __('MAC address'),
-                                  'size'       => 18));
+      return array('mac'    => array('long name'  => __('MAC address'),
+                                     'short name' => __('MAC address'),
+                                     'size'       => 18),
+                   'serial' => array('long name'  => __('Serial number'),
+                                     'short name' => __('Serial number'),
+                                     'size'       => 20),
+                   'busID'  => array('long name'  => __('position of the device on its bus'),
+                                     'short name' => __('bus ID'),
+                                     'size'       => 10));
    }
 
 

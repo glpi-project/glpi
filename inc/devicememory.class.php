@@ -83,6 +83,26 @@ class DeviceMemory extends CommonDevice {
    }
 
 
+   function prepareInputForAddOrUpdate($input) {
+
+      foreach (array('size_default') as $field) {
+         if (isset($input[$field]) && !is_numeric($input[$field])) {
+            $input[$field] = 0;
+         }
+      }
+      return $input;
+   } 
+
+   function prepareInputForAdd($input) {
+      return self::prepareInputForAddOrUpdate($input);
+   }
+
+
+   function prepareInputForUpdate($input) {
+      return self::prepareInputForAddOrUpdate($input);
+   }
+
+
    /**
     * @since version 0.84
     *

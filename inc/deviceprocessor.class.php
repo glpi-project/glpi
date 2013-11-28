@@ -75,12 +75,23 @@ class DeviceProcessor extends CommonDevice {
    }
 
 
-   function prepareInputForAdd($input) {
+   function prepareInputForAddOrUpdate($input) {
 
-      if (isset($input['frequence']) && !is_numeric($input['frequence'])) {
-         $input['frequence'] = 0;
+      foreach (array('frequence', 'frequency_default') as $field) {
+         if (isset($input[$field]) && !is_numeric($input[$field])) {
+            $input[$field] = 0;
+         }
       }
       return $input;
+   } 
+
+   function prepareInputForAdd($input) {
+      return self::prepareInputForAddOrUpdate($input);
+   }
+
+
+   function prepareInputForUpdate($input) {
+      return self::prepareInputForAddOrUpdate($input);
    }
 
 
