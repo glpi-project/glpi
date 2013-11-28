@@ -67,7 +67,12 @@ class DeviceNetworkCard extends CommonDevice {
                                      'type'  => 'text'),
                                array('name'  => 'bandwidth',
                                      'label' => __('Flow'),
-                                     'type'  => 'text')));
+                                     'type'  => 'text'),
+                               array('name'     => 'none',
+                                     'label'    => RegisteredID::getTypeName(2).
+                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
+                                                                                 false),
+                                     'type'     => 'registeredIDChooser')));
    }
 
 

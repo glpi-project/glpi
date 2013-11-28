@@ -45,5 +45,14 @@ class Item_DeviceControl extends Item_Devices {
 
    static protected $notable = false;
 
+   static function getSpecificities() {
+      return array('serial' => array('long name'  => __('Serial number'),
+                                     'short name' => __('Serial number'),
+                                     'size'       => 20),
+                   'busID'  => array('long name'  => __('position of the device on its bus'),
+                                     'short name' => __('bus ID'),
+                                     'size'       => 10));
+   }
+
 }
 ?>

@@ -45,6 +45,73 @@ class Manufacturer extends CommonDropdown {
    }
 
 
+   function displaySpecificTypeField($ID, $field=array()) {
+      switch ($field['type']) {
+         case 'registeredIDChooser':
+            RegisteredID::showChildsForItemForm($this, '_registeredID');
+            break;
+      }
+   }
+
+
+   function getAdditionalFields() {
+
+      return array(array('name'     => 'none',
+                         'label'    => RegisteredID::getTypeName(2).
+                         RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
+                                                                     false),
+                         'type'     => 'registeredIDChooser'));
+   }
+
+
+   function post_workOnItem() {
+
+      if ((isset($this->input['_registeredID']))
+          && (is_array($this->input['_registeredID']))) {
+         $input = array('itemtype'=> $this->getType(),
+                        'items_id' => $this->getID());
+         foreach ($this->input['_registeredID'] as $id => $registered_id) {
+            $id_object     = new RegisteredID();
+            $input['name'] = $registered_id;
+            if (isset($this->input['_registeredID_type'][$id])) {
+               $input['device_type'] = $this->input['_registeredID_type'][$id];
+            } else {
+               $input['device_type'] = '';
+            }
+            //$input['device_type'] = ;
+            if ($id < 0) {
+               if (!empty($registered_id)) {
+                  $id_object->add($input);
+               }
+            } else {
+               if (!empty($registered_id)) {
+                  $input['id'] = $id;
+                  $id_object->update($input);
+                  unset($input['id']);
+               } else {
+                  $id_object->delete(array('id' => $id));
+               }
+            }
+         }
+         unset($this->input['_registeredID']);
+      }
+   }
+
+
+   function post_addItem() {
+
+      $this->post_workOnItem();
+      parent::post_addItem();
+   }
+
+
+   function post_updateItem($history=1) {
+
+      $this->post_workOnItem();
+      parent::post_updateItem($history);
+   }
+
+
    /**
     * @param $old_name Old name (need to be addslashes)
     *

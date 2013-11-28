@@ -40,10 +40,7 @@ if (isset($_POST["add"])) {
    Item_Devices::addDevicesFromPOST($_POST);
    Html::back();
 } else if (isset($_POST["updateall"])) {
-   Item_Devices::updateAll($_POST, false);
-   Html::back();
-} else if (isset($_POST["purge"])) {
-   Item_Devices::updateAll($_POST, true);
+   Item_Devices::updateAll($_POST);
    Html::back();
 }
 Html::displayErrorAndDie('Lost');

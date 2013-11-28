@@ -52,7 +52,10 @@ class Item_DeviceProcessor extends Item_Devices {
                                         'size'       => 10),
                    'serial'    => array('long name'  => __('Serial number'),
                                         'short name' => __('Serial number'),
-                                        'size'       => 20));
+                                        'size'       => 20),
+                   'busID'     => array('long name'  => __('position of the device on its bus'),
+                                        'short name' => __('bus ID'),
+                                        'size'       => 10));
    }
 
 }

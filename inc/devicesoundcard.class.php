@@ -48,7 +48,12 @@ class DeviceSoundCard extends CommonDevice {
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'type',
                                      'label' => __('Type'),
-                                     'type'  => 'text')));
+                                     'type'  => 'text'),
+                               array('name'     => 'none',
+                                     'label'    => RegisteredID::getTypeName(2).
+                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
+                                                                                 false),
+                                     'type'     => 'registeredIDChooser')));
    }
 
 

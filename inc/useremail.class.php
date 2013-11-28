@@ -142,7 +142,7 @@ class UserEmail  extends CommonDBChild {
     * @param $canedit
     * @param $field_name
    **/
-   function showChildForItemForm($canedit, $field_name) {
+   function showChildForItemForm($canedit, $field_name, $id) {
 
       if ($this->isNewID($this->getID())) {
          $value = '';
@@ -150,6 +150,7 @@ class UserEmail  extends CommonDBChild {
          $value = $this->fields['email'];
       }
 
+      $field_name = $field_name."[$id]";
       echo "<input title='".__s('Default email')."' type='radio' name='_default_email'
              value='".$this->getID()."'";
       if (!$canedit) {

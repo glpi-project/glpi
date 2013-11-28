@@ -51,7 +51,12 @@ class DeviceControl extends CommonDevice {
                                      'type'  => 'bool'),
                                array('name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue'),
+                               array('name'     => 'none',
+                                     'label'    => RegisteredID::getTypeName(2).
+                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
+                                                                                 false),
+                                     'type'     => 'registeredIDChooser')));
    }
 
 

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2013-10-23 15:20
+#GLPI Dump database on 2013-11-28 13:13
 
 ### Dump table glpi_alerts
 
@@ -392,7 +392,7 @@ CREATE TABLE `glpi_changes` (
   `rolloutplancontent` longtext COLLATE utf8_unicode_ci,
   `backoutplancontent` longtext COLLATE utf8_unicode_ci,
   `checklistcontent` longtext COLLATE utf8_unicode_ci,
-  `global_validation` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'none',
+  `global_validation` int(11) NOT NULL DEFAULT '1',
   `validation_percent` int(11) NOT NULL DEFAULT '0',
   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
   `solution` text COLLATE utf8_unicode_ci,
@@ -1320,10 +1320,12 @@ CREATE TABLE `glpi_devicegraphiccards` (
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `memory_default` int(11) NOT NULL DEFAULT '0',
+  `chipset` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfacetypes_id` (`interfacetypes_id`)
+  KEY `interfacetypes_id` (`interfacetypes_id`),
+  KEY `chipset` (`chipset`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2438,11 +2440,13 @@ CREATE TABLE `glpi_items_devicecases` (
   `devicecases_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicecases_id` (`devicecases_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2456,11 +2460,15 @@ CREATE TABLE `glpi_items_devicecontrols` (
   `devicecontrols_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicecontrols_id` (`devicecontrols_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2474,11 +2482,15 @@ CREATE TABLE `glpi_items_devicedrives` (
   `devicedrives_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicedrives_id` (`devicedrives_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2493,12 +2505,16 @@ CREATE TABLE `glpi_items_devicegraphiccards` (
   `memory` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicegraphiccards_id` (`devicegraphiccards_id`),
   KEY `specificity` (`memory`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2514,13 +2530,15 @@ CREATE TABLE `glpi_items_deviceharddrives` (
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `deviceharddrives_id` (`deviceharddrives_id`),
   KEY `specificity` (`capacity`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `serial` (`serial`)
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2536,13 +2554,15 @@ CREATE TABLE `glpi_items_devicememories` (
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicememories_id` (`devicememories_id`),
   KEY `specificity` (`size`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `serial` (`serial`)
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2556,11 +2576,13 @@ CREATE TABLE `glpi_items_devicemotherboards` (
   `devicemotherboards_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicemotherboards_id` (`devicemotherboards_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2575,12 +2597,16 @@ CREATE TABLE `glpi_items_devicenetworkcards` (
   `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicenetworkcards_id` (`devicenetworkcards_id`),
   KEY `specificity` (`mac`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2594,11 +2620,15 @@ CREATE TABLE `glpi_items_devicepcis` (
   `devicepcis_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicepcis_id` (`devicepcis_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2612,11 +2642,13 @@ CREATE TABLE `glpi_items_devicepowersupplies` (
   `devicepowersupplies_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicepowersupplies_id` (`devicepowersupplies_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2632,13 +2664,15 @@ CREATE TABLE `glpi_items_deviceprocessors` (
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `deviceprocessors_id` (`deviceprocessors_id`),
   KEY `specificity` (`frequency`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `serial` (`serial`)
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2652,11 +2686,15 @@ CREATE TABLE `glpi_items_devicesoundcards` (
   `devicesoundcards_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`items_id`),
   KEY `devicesoundcards_id` (`devicesoundcards_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `busID` (`busID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -5358,6 +5396,22 @@ CREATE TABLE `glpi_queuedmails` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_registeredids
+
+DROP TABLE IF EXISTS `glpi_registeredids`;
+CREATE TABLE `glpi_registeredids` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `device_type` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'USB, PCI ...',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `item` (`items_id`,`itemtype`),
+  KEY `device_type` (`device_type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_reminders
 
 DROP TABLE IF EXISTS `glpi_reminders`;
@@ -6074,7 +6128,7 @@ CREATE TABLE `glpi_tickets` (
   `type` int(11) NOT NULL DEFAULT '1',
   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
   `solution` text COLLATE utf8_unicode_ci,
-  `global_validation` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'none',
+  `global_validation` int(11) NOT NULL DEFAULT '1',
   `slas_id` int(11) NOT NULL DEFAULT '0',
   `slalevels_id` int(11) NOT NULL DEFAULT '0',
   `due_date` datetime DEFAULT NULL,
