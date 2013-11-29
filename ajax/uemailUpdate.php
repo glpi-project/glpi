@@ -42,12 +42,20 @@ Session::checkLoginUser();
 
 if ((isset($_POST['field']) && ($_POST["value"] > 0))
     || (isset($_POST['allow_email']) && $_POST['allow_email'])) {
-   $user          = new User();
+
    $default_email = "";
    $emails        = array();
-   if ($user->getFromDB($_POST["value"])) {
-      $default_email = $user->getDefaultEmail();
-      $emails        = $user->getAllEmails();
+   if ($_POST['field'] == '_suppliers_id_assign_notif') {
+      $supplier = new Supplier();
+      if ($supplier->getFromDB($_POST["value"])) {
+      $default_email = $supplier->fields['email'];
+      }
+   } else {
+      $user          = new User();
+      if ($user->getFromDB($_POST["value"])) {
+         $default_email = $user->getDefaultEmail();
+         $emails        = $user->getAllEmails();
+      }
    }
 
    echo __('Email followup').'&nbsp;';
