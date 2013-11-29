@@ -221,13 +221,13 @@ class MassiveAction {
                                             'massiveaction', 'is_deleted', 'initial_items');
 
                   $this->identifier  = mt_rand();
-                  $this->messages    = array();
                   $this->done        = array();
                   $this->nb_done     = 0;
                   $this->action_name = $POST['action_name'];
                   $this->results     = array('ok'      => 0,
                                              'ko'      => 0,
-                                             'noright' => 0);
+                                             'noright' => 0,
+                                             'messages' => array());
                   foreach ($POST['items'] as $itemtype => $ids) {
                      $this->nb_items += count($ids);
                   }
@@ -1139,6 +1139,19 @@ class MassiveAction {
                   if ($action == 'purge_item_but_devices') {
                      $delete_array['keep_devices'] = true;
                   }
+
+                  if ($item instanceof CommonDropdown) {
+                     if ($item->haveChildren()) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage(__("You can't delete that item, because it has sub-items"));
+                        continue;
+                     }
+                     if ($item->isUsed()) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
+                        continue;
+                     }
+                  }
                   if ($item->delete($delete_array, $force)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
@@ -1308,7 +1321,7 @@ class MassiveAction {
     * @return nothing
    **/
    function addMessage($message) {
-      $this->messages[] = $message;
+      $this->results['messages'][] = $message;
    }
 
 
