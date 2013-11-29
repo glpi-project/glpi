@@ -3101,6 +3101,91 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
+    * show supplier add div on creation
+    *
+    * @param $options   array    options for default values ($options of showForm)
+    *
+    * @return nothing display
+    **/
+   function showSupplierAddFormOnCreate(array $options) {
+      global $CFG_GLPI;
+
+      $itemtype = $this->getType();
+
+      echo self::getActorIcon('supplier', 'assign');
+      // For ticket templates : mandatories
+      if (($itemtype == 'Ticket')
+            && isset($options['_tickettemplate'])) {
+         echo $options['_tickettemplate']->getMandatoryMark("_suppliers_id_assign");
+      }
+      echo "&nbsp;";
+
+      $rand   = mt_rand();
+      $params = array('name'        => '_suppliers_id_assign',
+                      'value'       => $options["_suppliers_id_assign"],
+                      'rand'        => $rand);
+
+      if ($CFG_GLPI['use_mailing']) {
+         $paramscomment = array('value'       => '__VALUE__',
+                                'field'       => "_suppliers_id_assign_notif",
+                                'allow_email' => false,
+                                'use_notification'
+                                    => $options["_suppliers_id_assign_notif"]['use_notification']);
+         if (isset($options["_suppliers_id_assign_notif"]['alternative_email'])) {
+            $paramscomment['alternative_email']
+            = $options["_suppliers_id_assign_notif"]['alternative_email'];
+         }
+         $params['toupdate'] = array('value_fieldname'
+                                                  => 'value',
+                                     'to_update'  => "notif_assign_$rand",
+                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                     'moreparams' => $paramscomment);
+
+      }
+
+      if ($itemtype == 'Ticket') {
+         $toupdate = array();
+         if (isset($params['toupdate']) && is_array($params['toupdate'])) {
+            $toupdate[] = $params['toupdate'];
+         }
+         $toupdate[] = array('value_fieldname' => 'value',
+                             'to_update'       => "countassign_$rand",
+                             'url'             => $CFG_GLPI["root_doc"].
+                                                      "/ajax/ticketassigninformation.php",
+                             'moreparams'      => array('suppliers_id_assign' => '__VALUE__'));
+         $params['toupdate'] = $toupdate;
+      }
+
+      Supplier::dropdown($params);
+
+      if ($itemtype == 'Ticket') {
+         // Display active tickets for a tech
+         // Need to update information on dropdown changes
+         echo "<span id='countassign_$rand'>";
+         echo "</span>";
+         echo "<script type='text/javascript'>";
+         Ajax::updateItemJsCode("countassign_$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                array('suppliers_id_assign' => '__VALUE__'),
+                                "dropdown__suppliers_id_assign".$rand);
+         echo "</script>";
+      }
+
+      if ($CFG_GLPI['use_mailing']) {
+         echo "<div id='notif_assign_$rand'>";
+         echo "</div>";
+
+         echo "<script type='text/javascript'>";
+         Ajax::updateItemJsCode("notif_assign_$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                                "dropdown__suppliers_id_assign".$rand);
+         echo "</script>";
+      }
+   }
+
+
+
+   /**
     * show actor part in ITIL object form
     *
     * @param $ID        integer  ITIL object ID
@@ -3450,19 +3535,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($can_assign
              && !$is_hidden['_suppliers_id_assign']) {
+            $this->showSupplierAddFormOnCreate($options);
+            echo '<hr>';
             echo self::getActorIcon('supplier', CommonITILActor::ASSIGN);
-            /// For ticket templates : mandatories
-            if (isset($options['_tickettemplate'])) {
-               echo $options['_tickettemplate']->getMandatoryMark('_suppliers_id_assign');
-            }
             echo "&nbsp;";
-            $rand   = mt_rand();
-            $params = array('name'      => '_suppliers_id_assign',
-                            'value'     => $options["_suppliers_id_assign"],
-                            'entity'    => $this->fields["entities_id"],
-                            'rand'      => $rand);
-
-            Supplier::dropdown($params);
          } else { // predefined value
             if (isset($options["_suppliers_id_assign"])
                 && $options["_suppliers_id_assign"]) {
