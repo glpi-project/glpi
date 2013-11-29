@@ -2255,7 +2255,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $input2['_itil_assign'] = $input['_itil_assign'];
                }
                if ($item->can($id, UPDATE)) {
-                  if ($item->update($input2)) { 
+                  if ($item->update($input2)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -3001,7 +3001,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
-         $params['on_change'] = 'this.form.submit()';
+         $params['on_change'] = 'submit()';
       } else { // Force entity search if needed
          $params['entity'] = $options['entities_id'];
       }
@@ -3221,7 +3221,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<tr class='tab_bg_1 top'>";
       echo "<td>";
-
       if ($rand_requester >= 0) {
          $this->showActorAddForm(CommonITILActor::REQUESTER, $rand_requester,
                                  $this->fields['entities_id'], $is_hidden);
