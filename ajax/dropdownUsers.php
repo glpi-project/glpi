@@ -70,6 +70,15 @@ if (isset($_POST["entity_restrict"])
    $_POST["entity_restrict"] = Toolbox::decodeArrayFromInput($_POST["entity_restrict"]);
 }
 
+// for multi rights
+if (isset($_POST["right"])
+    && !is_array($_POST["right"])) {
+   $temp = Toolbox::decodeArrayFromInput($_POST["right"]);
+   if (count($temp)) {
+      $_POST['right'] = $temp;
+   }
+}
+
 $result = User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restrict"],
                                    $_POST['value'], $used, $_POST['searchText']);
 
