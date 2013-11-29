@@ -2318,6 +2318,9 @@ function update084to085() {
       $migration->addKey('glpi_devicegraphiccards', 'chipset');
    }
 
+   $migration->addField("glpi_suppliers_tickets", "use_notification", "bool");
+   $migration->addField("glpi_suppliers_tickets", "alternative_email", "string");
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
