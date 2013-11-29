@@ -3269,6 +3269,8 @@ class Ticket extends CommonITILObject {
                     '_link'                     => array('tickets_id_2' => '',
                                                          'link'         => ''),
                     '_suppliers_id_assign'      => 0,
+                    '_suppliers_id_assign_notif' => array('use_notification'  => 1,
+                                                          'alternative_email' => ''),
                     'name'                      => '',
                     'content'                   => '',
                     'itilcategories_id'         => 0,
