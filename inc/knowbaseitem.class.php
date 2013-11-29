@@ -968,7 +968,8 @@ class KnowbaseItem extends CommonDBTM {
                $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
                            AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
 
-               $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
+               $where_1 = $where." AND MATCH(`glpi_knowbaseitems`.`name`,
+                                             `glpi_knowbaseitems`.`answer` $addscore)
                           AGAINST('$search' IN BOOLEAN MODE) ";
 
                $order   = "ORDER BY `SCORE` DESC";
