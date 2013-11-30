@@ -94,7 +94,6 @@ class Infocom extends CommonDBChild {
     * @since version 0.85
     *
     * @return array of the itemtypes
-    *
    **/
    static function getItemtypesThatCanHave() {
       global $CFG_GLPI;

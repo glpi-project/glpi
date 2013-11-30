@@ -58,9 +58,9 @@ class DeviceGraphicCard extends CommonDevice {
                                      'type'  => 'dropdownValue'),
                                array('name'  => 'none',
                                      'label' => RegisteredID::getTypeName(2).
-                                     RegisteredID::showAddChildButtonForItemForm($this,
-                                                                                 '_registeredID',
-                                                                                 NULL, false),
+                                        RegisteredID::showAddChildButtonForItemForm($this,
+                                                                                    '_registeredID',
+                                                                                    NULL, false),
                                      'type'  => 'registeredIDChooser')));
    }
 
@@ -83,6 +83,12 @@ class DeviceGraphicCard extends CommonDevice {
    }
 
 
+   /**
+    * @since version 0.85
+    * @param  $input
+    *
+    * @return number
+   **/
    function prepareInputForAddOrUpdate($input) {
 
       foreach (array('memory_default') as $field) {
@@ -91,13 +97,22 @@ class DeviceGraphicCard extends CommonDevice {
          }
       }
       return $input;
-   } 
+   }
 
+
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
       return self::prepareInputForAddOrUpdate($input);
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
       return self::prepareInputForAddOrUpdate($input);
    }

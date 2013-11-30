@@ -1073,7 +1073,8 @@ class Search {
             $row_num = 1;
 
             $massiveaction_field = 'id';
-            if (($itemtype != 'AllAssets') && isset($CFG_GLPI["union_search_type"][$itemtype])) {
+            if (($itemtype != 'AllAssets')
+                && isset($CFG_GLPI["union_search_type"][$itemtype])) {
                $massiveaction_field = 'refID';
             }
 
@@ -1102,8 +1103,8 @@ class Search {
                      $tmpcheck = "&nbsp;";
 
                   } else if (($item instanceof CommonDBTM)
-                              && $item->maybeRecursive()
-                              && !in_array($data["entities_id"], $_SESSION["glpiactiveentities"])) {
+                             && $item->maybeRecursive()
+                             && !in_array($data["entities_id"], $_SESSION["glpiactiveentities"])) {
                      $tmpcheck = "&nbsp;";
 
                   } else {

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,7 +45,12 @@ class Manufacturer extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::displaySpecificTypeField()
+   **/
    function displaySpecificTypeField($ID, $field=array()) {
+
       switch ($field['type']) {
          case 'registeredIDChooser':
             RegisteredID::showChildsForItemForm($this, '_registeredID');
@@ -54,25 +59,36 @@ class Manufacturer extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::getAdditionalFields()
+   **/
    function getAdditionalFields() {
 
-      return array(array('name'     => 'none',
-                         'label'    => RegisteredID::getTypeName(2).
-                         RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
-                                                                     false),
-                         'type'     => 'registeredIDChooser'));
+      return array(array('name'  => 'none',
+                         'label' => RegisteredID::getTypeName(2).
+                                       RegisteredID::showAddChildButtonForItemForm($this,
+                                                                                   '_registeredID',
+                                                                                   NULL, false),
+                         'type'  => 'registeredIDChooser'));
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    function post_workOnItem() {
 
       if ((isset($this->input['_registeredID']))
           && (is_array($this->input['_registeredID']))) {
-         $input = array('itemtype'=> $this->getType(),
+
+         $input = array('itemtype' => $this->getType(),
                         'items_id' => $this->getID());
+
          foreach ($this->input['_registeredID'] as $id => $registered_id) {
             $id_object     = new RegisteredID();
             $input['name'] = $registered_id;
+
             if (isset($this->input['_registeredID_type'][$id])) {
                $input['device_type'] = $this->input['_registeredID_type'][$id];
             } else {
@@ -98,6 +114,10 @@ class Manufacturer extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_addItem()
+   **/
    function post_addItem() {
 
       $this->post_workOnItem();
@@ -105,6 +125,10 @@ class Manufacturer extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
 
       $this->post_workOnItem();

@@ -1010,12 +1010,13 @@ class Plugin extends CommonDBTM {
          unset($attrib['netport_types']);
       }
 
-      foreach (array('contract_types', 'directconnect_types', 'document_types', 'helpdesk_visible_types',
-                     'infocom_types', 'linkgroup_tech_types', 'linkgroup_types', 'linkuser_tech_types',
-                     'linkuser_types', 'location_types', 'networkport_instantiations',
-                     'networkport_types', 'notificationtemplates_types', 'planning_types',
-                     'reservation_types', 'rulecollections_types', 'systeminformations_types',
-                     'ticket_types', 'unicity_types', 'link_types') as $att) {
+      foreach (array('contract_types', 'directconnect_types', 'document_types',
+                     'helpdesk_visible_types', 'infocom_types', 'linkgroup_tech_types',
+                     'linkgroup_types', 'linkuser_tech_types', 'linkuser_types', 'location_types',
+                     'networkport_instantiations', 'networkport_types',
+                     'notificationtemplates_types', 'planning_types', 'reservation_types',
+                     'rulecollections_types', 'systeminformations_types', 'ticket_types',
+                     'unicity_types', 'link_types') as $att) {
 
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
@@ -1023,9 +1024,9 @@ class Plugin extends CommonDBTM {
          }
       }
 
-      if (isset($attrib['device_types'])
-          && $attrib['device_types']
+      if (isset($attrib['device_types']) && $attrib['device_types']
           && method_exists($itemtype, 'getItem_DeviceType')) {
+
          if (class_exists($itemtype::getItem_DeviceType())) {
             array_push($CFG_GLPI['device_types'], $itemtype);
          }

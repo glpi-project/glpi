@@ -82,7 +82,8 @@ class Item_Devices extends CommonDBRelation {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
 
-      if ((count(static::getSpecificities()) == 0) && (!InfoCom::canApplyOn($this))) {
+      if ((count(static::getSpecificities()) == 0)
+          && !InfoCom::canApplyOn($this)) {
          $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       }
 
@@ -213,6 +214,7 @@ class Item_Devices extends CommonDBRelation {
     * @return string containing the device
    **/
    static function getDeviceType() {
+
       $devicetype = get_called_class();
       if ($plug = isPluginItemType($devicetype)) {
          return 'Plugin'.$plug['plugin'].str_replace ('Item_', '', $plug['class']);
@@ -477,8 +479,9 @@ class Item_Devices extends CommonDBRelation {
       $spec_column         = NULL;
       $specificity_columns = array();
       foreach (static::getSpecificities() as $field => $attributs) {
-         $spec_column = $table_group->addHeader('spec_'.$field, $attributs['long name'],
-                                                $specific_column, $spec_column);
+         $spec_column                 = $table_group->addHeader('spec_'.$field,
+                                                                $attributs['long name'],
+                                                                $specific_column, $spec_column);
          $specificity_columns[$field] = $spec_column;
       }
 
@@ -582,11 +585,10 @@ class Item_Devices extends CommonDBRelation {
          $content = array();
          // The order is to be sure that specific documents appear first
          $query = "SELECT `documents_id`
-                     FROM `glpi_documents_items`
-                    WHERE (`itemtype`='".static::getType()."' AND
-                           `items_id`='".$link['id']."') OR
-                          (`itemtype`='".static::getDeviceType()."' AND
-                           `items_id`='".$link[static::getDeviceForeignKey()]."')
+                   FROM `glpi_documents_items`
+                   WHERE (`itemtype` = '".static::getType()."' AND `items_id` = '".$link['id']."')
+                         OR (`itemtype` = '".static::getDeviceType()."'
+                             AND `items_id` = '".$link[static::getDeviceForeignKey()]."')
                    ORDER BY `itemtype` = '".static::getDeviceType()."'";
          $document = new Document();
          foreach ($DB->request($query) as $document_link) {
@@ -596,8 +598,8 @@ class Item_Devices extends CommonDBRelation {
          }
          $content = implode('<br>', $content);
          $current_row->addCell($document_column, $content, $spec_cell);
-         
-         
+
+
 
          if ($item->isDynamic()) {
             $previous_cell = $current_row->addCell($dynamics_column,
@@ -667,7 +669,7 @@ class Item_Devices extends CommonDBRelation {
 
       if (isset($input['devicetype'])) {
          $devicetype = $input['devicetype'];
-         $linktype = $devicetype::getItem_DeviceType();
+         $linktype   = $devicetype::getItem_DeviceType();
          if ($link = getItemForItemtype($linktype)) {
             if ((isset($input[$linktype::getForeignKeyField()]))
                 && (count($input[$linktype::getForeignKeyField()]))) {
@@ -677,9 +679,10 @@ class Item_Devices extends CommonDBRelation {
                   $update_input['id'] = $id;
                   $link->update($update_input);
                }
-            } 
+            }
             if (isset($input['new_devices'])) {
-               $link->addDevices($input['new_devices'], $input['itemtype'], $input['items_id'], $input['devices_id']);
+               $link->addDevices($input['new_devices'], $input['itemtype'], $input['items_id'],
+                                 $input['devices_id']);
             }
          }
       } else {
@@ -737,8 +740,7 @@ class Item_Devices extends CommonDBRelation {
                continue;
             }
             $device_type = $data[1];
-            if (in_array($device_type::getItem_DeviceType(),
-                         self::getItemAffinities($itemtype))) {
+            if (in_array($device_type::getItem_DeviceType(), self::getItemAffinities($itemtype))) {
                $link_type = $device_type::getItem_DeviceType();
             }
          }

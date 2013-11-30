@@ -37,8 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * DeviceNetworkCard Class
-**
- */
+**/
 class DeviceNetworkCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
@@ -68,11 +67,12 @@ class DeviceNetworkCard extends CommonDevice {
                                array('name'  => 'bandwidth',
                                      'label' => __('Flow'),
                                      'type'  => 'text'),
-                               array('name'     => 'none',
-                                     'label'    => RegisteredID::getTypeName(2).
-                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
-                                                                                 false),
-                                     'type'     => 'registeredIDChooser')));
+                               array('name'  => 'none',
+                                     'label' => RegisteredID::getTypeName(2).
+                                        RegisteredID::showAddChildButtonForItemForm($this,
+                                                                                    '_registeredID',
+                                                                                    NULL, false),
+                                     'type'  => 'registeredIDChooser')));
    }
 
 

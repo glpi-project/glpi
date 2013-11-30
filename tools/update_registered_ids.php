@@ -28,6 +28,7 @@
  */
 
 /** @file
+ * @since version 0.85
 * @brief Purge history with some criterias
 */
 
@@ -46,12 +47,12 @@ foreach (array('PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       if (empty($line)) {
          continue;
       }
-      if ($line[0] != '\t') {        
+      if ($line[0] != '\t') {
          $id   = strtolower(substr($line, 0, 4));
          $name = addslashes(trim(substr($line, 4)));
          if ($registeredid->getFromDBByQuery("WHERE `itemtype` = 'Manufacturer'
-                                             AND `name` = '$id'
-                                             AND `device_type` = '$type'")) {
+                                                    AND `name` = '$id'
+                                                    AND `device_type` = '$type'")) {
             $manufacturer->getFromDB($registeredid->fields['items_id']);
          } else {
             if (!$manufacturer->getFromDBByQuery("WHERE `name` = '$name'")) {
@@ -74,5 +75,4 @@ foreach (array('PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       // }
    }
 }
-
 ?>

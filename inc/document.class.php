@@ -63,18 +63,13 @@ class Document extends CommonDBTM {
     * @param $item  an object or a string
     *
     * @return true if $object is an object that can have InfoCom
-    *
    **/
    static function canApplyOn($item) {
       global $CFG_GLPI;
 
       // All devices are subjects to infocom !
-      if (Toolbox::is_a($item, 'Item_Devices')) {
-         return true;
-      }
-
-      // All devices are subjects to infocom !
-      if (Toolbox::is_a($item, 'CommonDevice')) {
+      if (Toolbox::is_a($item, 'Item_Devices')
+          || Toolbox::is_a($item, 'CommonDevice')) {
          return true;
       }
 
@@ -97,7 +92,6 @@ class Document extends CommonDBTM {
     * @since version 0.85
     *
     * @return array of the itemtypes
-    *
    **/
    static function getItemtypesThatCanHave() {
       global $CFG_GLPI;

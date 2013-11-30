@@ -36,7 +36,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * UserEmail class
+ * RegisteredID class
+ * @since version 0.85
 **/
 class RegisteredID  extends CommonDBChild {
 
@@ -50,17 +51,26 @@ class RegisteredID  extends CommonDBChild {
 
 
    static function getRegisteredIDTypes() {
+
       return array('PCI' => __('PCI'),
                    'USB' => __('USB'));
    }
+
 
    static function getTypeName($nb=0) {
       return _n('Registered ID (issued by PCI-SIG)', 'Registered IDs', $nb);
    }
 
+
+   /**
+    * @param $field_name
+    * @param $child_count_js_var
+    *
+    * @return string
+   **/
    static function getJSCodeToAddForItemChild($field_name, $child_count_js_var) {
-      $result ="<select name=\'" . $field_name .
-               "_type[-'+$child_count_js_var+']\'>";
+
+      $result  ="<select name=\'" . $field_name . "_type[-'+$child_count_js_var+']\'>";
       $result .="<option value=\'\'>".Dropdown::EMPTY_VALUE."</option>";
       foreach (self::getRegisteredIDTypes() as $name => $label) {
          $result .="<option value=\'$name\'>$label</option>";
@@ -72,6 +82,9 @@ class RegisteredID  extends CommonDBChild {
    }
 
 
+   /**
+    * @see CommonDBChild::showChildForItemForm()
+   **/
    function showChildForItemForm($canedit, $field_name, $id) {
 
       if ($this->isNewID($this->getID())) {
@@ -82,6 +95,7 @@ class RegisteredID  extends CommonDBChild {
       $main_field        = $field_name."[$id]";
       $type_field        = $field_name."_type[$id]";
       $registeredIDTypes = self::getRegisteredIDTypes();
+
       if ($canedit) {
          echo "<select name='$type_field'>";
          echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
@@ -96,10 +110,13 @@ class RegisteredID  extends CommonDBChild {
       } else {
          echo "<input type='hidden' name='$main_field' value='$value'>";
          if (!empty($this->fields['device_type'])) {
-            echo $registeredIDTypes[$this->fields['device_type']].":";
+            printf(__('%1%s: %2$s'), $registeredIDTypes[$this->fields['device_type']],
+                   $value);
+         } else {
+            echo $value;
          }
-         echo "$value";
       }
    }
+
 }
 ?>
