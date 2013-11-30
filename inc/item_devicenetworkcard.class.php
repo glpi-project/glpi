@@ -47,18 +47,16 @@ class Item_DeviceNetworkCard extends Item_Devices {
    static protected $notable = false;
 
 
-
-   static function getSpecificities() {
+   /**
+    * @since version 0.85
+   **/
+   static function getSpecificities($specif='') {
 
       return array('mac'    => array('long name'  => __('MAC address'),
                                      'short name' => __('MAC address'),
                                      'size'       => 18),
-                   'serial' => array('long name'  => __('Serial number'),
-                                     'short name' => __('Serial number'),
-                                     'size'       => 20),
-                   'busID'  => array('long name'  => __('position of the device on its bus'),
-                                     'short name' => __('bus ID'),
-                                     'size'       => 10));
+                   'serial' => parent::getSpecificities('serial'),
+                   'busID'  => parent::getSpecificities('busID'));
    }
 
 

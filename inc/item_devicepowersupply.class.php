@@ -57,11 +57,9 @@ class Item_DevicePowerSupply extends Item_Devices {
    /**
     * @since version 0.85
    **/
-   static function getSpecificities() {
+   static function getSpecificities($specif='') {
 
-      return array('serial' => array('long name'  => __('Serial number'),
-                                     'short name' => __('Serial number'),
-                                     'size'       => 20));
+      return array('serial' => parent::getSpecificities('serial'));
    }
 
 }

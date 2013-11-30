@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,17 +45,18 @@ class Item_DeviceHardDrive extends Item_Devices {
 
    static protected $notable = false;
 
-   static function getSpecificities() {
+
+   /**
+    * @since version 0.85
+   **/
+   static function getSpecificities($specif='') {
+
       return array('capacity' => array('long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'),
                                                                __('Mio')),
                                        'short name' => __('Capacity'),
                                        'size'       => 10),
-                   'serial'   => array('long name'  => __('Serial number'),
-                                       'short name' => __('Serial number'),
-                                       'size'       => 20),
-                   'busID'    => array('long name'  => __('position of the device on its bus'),
-                                       'short name' => __('bus ID'),
-                                       'size'       => 10));
+                   'serial'   => parent::getSpecificities('serial'),
+                   'busID'    => parent::getSpecificities('busID'));
    }
 
 }
