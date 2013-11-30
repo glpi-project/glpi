@@ -115,12 +115,26 @@ class Item_Devices extends CommonDBRelation {
     * Get the specificities of the given device. For instance, the
     * serial number, the size of the memory, the frequency of the CPUs ...
     *
+    * @param $specif   string   specificity to display
+    *
     * Should be overloaded by Item_Device*
     *
     * @return array of the specificities: index is the field name and the values are the attributs
     *                                     of the specificity (long name, short name, size)
    **/
-   static function getSpecificities() {
+   static function getSpecificities($specif='') {
+
+      switch($specif) {
+         case 'serial' :
+            return array('long name'  => __('Serial number'),
+                         'short name' => __('Serial number'),
+                         'size'       => 20);
+
+         case 'busID' :
+            return array('long name'  => __('position of the device on its bus'),
+                         'short name' => __('bus ID'),
+                         'size'       => 10);
+      }
       return array();
    }
 
@@ -700,7 +714,6 @@ class Item_Devices extends CommonDBRelation {
 
    /**
     * @param $input array of input: should be $_POST
-    * @param $delete
    **/
    static function updateAll($input) {
 

@@ -51,14 +51,10 @@ class Item_DeviceSoundCard extends Item_Devices {
    /**
     * @since version 0.85
    **/
+   static function getSpecificities($specif='') {
 
-   static function getSpecificities() {
-      return array('serial' => array('long name'  => __('Serial number'),
-                                     'short name' => __('Serial number'),
-                                     'size'       => 20),
-                   'busID'  => array('long name'  => __('position of the device on its bus'),
-                                     'short name' => __('bus ID'),
-                                     'size'       => 10));
+      return array('serial' => parent::getSpecificities('serial'),
+                   'busID'  => parent::getSpecificities('busID'));
    }
 
 }

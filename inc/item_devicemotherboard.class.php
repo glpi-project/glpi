@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,10 +46,11 @@ class Item_DeviceMotherboard extends Item_Devices {
    static protected $notable = false;
 
 
-   static function getSpecificities() {
-      return array('serial' => array('long name'  => __('Serial number'),
-                                     'short name' => __('Serial number'),
-                                     'size'       => 20));
+   /**
+    * @since version 0.85
+   **/
+   static function getSpecificities($specif='') {
+      return array('serial' => parent::getSpecificities('serial'));
    }
 
 }
