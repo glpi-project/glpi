@@ -680,15 +680,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @todo study if we cannot use these methods for the user emails
     * @see showChildsForItemForm(CommonDBTM $item, $field_name)
     *
-    * @param $item         CommonDBTM object: the item on which to add the current CommenDBChild
-    * @param $field_name   the name of the HTML field inside Item's form
-    * @param $canedit      (default NULL) NULL to use default behaviour
-    * @param $display      (boolean) true display or false to return the button HTML code
+    * @param $item                  CommonDBTM object: the item on which to add the current CommenDBChild
+    * @param $field_name            the name of the HTML field inside Item's form
+    * @param $canedit               (default NULL) NULL to use default behaviour
+    * @param $display      boolean  true display or false to return the button HTML code (true by default)
+    *
     *
     * @return the button HTML code if $display is true
    **/
    static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit=NULL,
-                                                 $display = true) {
+                                                 $display=true) {
       global $CFG_GLPI;
 
       $items_id = $item->getID();

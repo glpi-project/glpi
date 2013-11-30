@@ -28,15 +28,18 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DeviceSoundCard
+/**
+ * DeviceSoundCard Class
+**/
 class DeviceSoundCard extends CommonDevice {
+
 
    static function getTypeName($nb=0) {
       return _n('Soundcard', 'Soundcards', $nb);
@@ -49,11 +52,12 @@ class DeviceSoundCard extends CommonDevice {
                          array(array('name'  => 'type',
                                      'label' => __('Type'),
                                      'type'  => 'text'),
-                               array('name'     => 'none',
-                                     'label'    => RegisteredID::getTypeName(2).
-                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
-                                                                                 false),
-                                     'type'     => 'registeredIDChooser')));
+                               array('name'  => 'none',
+                                     'label' => RegisteredID::getTypeName(2).
+                                        RegisteredID::showAddChildButtonForItemForm($this,
+                                                                                    '_registeredID',
+                                                                                    NULL, false),
+                                     'type'  => 'registeredIDChooser')));
    }
 
 

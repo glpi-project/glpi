@@ -75,6 +75,12 @@ class DeviceProcessor extends CommonDevice {
    }
 
 
+   /**
+    * @since version 0.85
+    * @param $input
+    *
+    * @return number
+   **/
    function prepareInputForAddOrUpdate($input) {
 
       foreach (array('frequence', 'frequency_default') as $field) {
@@ -83,13 +89,18 @@ class DeviceProcessor extends CommonDevice {
          }
       }
       return $input;
-   } 
+   }
+
 
    function prepareInputForAdd($input) {
       return self::prepareInputForAddOrUpdate($input);
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
       return self::prepareInputForAddOrUpdate($input);
    }

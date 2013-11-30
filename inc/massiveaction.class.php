@@ -531,9 +531,6 @@ class MassiveAction {
             } else {
                $actions[$self_pref.'purge']  = _x('button', 'Delete permanently');
             }
-         }
-
-         if ( $canpurge) {
             $actions[$self_pref.'restore'] = _x('button', 'Restore');
          }
 
@@ -680,11 +677,10 @@ class MassiveAction {
                $options_per_type = array();
                $options_counts   = array();
                foreach ($itemtypes as $itemtype) {
-
                   $options_per_type[$itemtype] = array();
-                  $group          = '';
-                  $show_all       = true;
-                  $show_infocoms  = true;
+                  $group                       = '';
+                  $show_all                    = true;
+                  $show_infocoms               = true;
 
                   if (InfoCom::canApplyOn($itemtype)
                       && (!$itemtype::canUpdate()
@@ -709,8 +705,8 @@ class MassiveAction {
                                        && Search::isInfocomOption($itemtype, $index))
                                       || (!$show_infocoms
                                           && !Search::isInfocomOption($itemtype, $index)))) {
-                                 $options_per_type[$itemtype][$group][$itemtype.':'.$index] =
-                                                         $option['name'];
+                                 $options_per_type[$itemtype][$group][$itemtype.':'.$index]
+                                             = $option['name'];
 
                                  $field_key = $option['table'].':'.$option['field'];
                                  if (!isset($options_count[$field_key])) {
@@ -721,7 +717,8 @@ class MassiveAction {
                                     if (!isset($options_count[$option['MA_common_field']])) {
                                        $options_count[$option['MA_common_field']] = array();
                                     }
-                                    $options_count[$option['MA_common_field']][] = $itemtype.':'.$index.':'.$group;
+                                    $options_count[$option['MA_common_field']][]
+                                          = $itemtype.':'.$index.':'.$group;
                                  }
                               }
                            }
@@ -752,14 +749,14 @@ class MassiveAction {
                         $options[$group][$field] = implode('/', $labels);
                      }
                   }
-                  $choose_itemtype = true;
+                  $choose_itemtype  = true;
                   $itemtype_choices = array(-1 => Dropdown::EMPTY_VALUE);
                   foreach ($itemtypes as $itemtype) {
                      $itemtype_choices[$itemtype] = $itemtype::getTypeName(2);
                   }
                } else {
-                  $options          = array(0 => Dropdown::EMPTY_VALUE);
-                  $options         += $options_per_type[$itemtypes[0]];
+                  $options         = array(0 => Dropdown::EMPTY_VALUE);
+                  $options        += $options_per_type[$itemtypes[0]];
                   $common_options  = false;
                   $choose_itemtype = false;
                }
@@ -839,7 +836,7 @@ class MassiveAction {
 
             if ($ma->POST['common_options'] == 'false') {
                $search_options = array($ma->POST['id_field']);
-            } elseif (isset($ma->POST['common_options'][$ma->POST['id_field']])) {
+            } else if (isset($ma->POST['common_options'][$ma->POST['id_field']])) {
                $search_options = $ma->POST['common_options'][$ma->POST['id_field']];
             } else {
                $search_options = array();

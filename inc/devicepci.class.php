@@ -28,14 +28,16 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DevicePci
+/**
+ * DevicePci Class
+**/
 class DevicePci extends CommonDevice {
 
    static function getTypeName($nb=0) {
@@ -43,14 +45,19 @@ class DevicePci extends CommonDevice {
    }
 
 
+   /**
+    * @see CommonDevice::getAdditionalFields()
+    * @since version 0.85
+    */
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'     => 'none',
-                                     'label'    => RegisteredID::getTypeName(2).
-                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
-                                                                                 false),
-                                     'type'     => 'registeredIDChooser')));
+                         array(array('name'  => 'none',
+                                     'label' => RegisteredID::getTypeName(2).
+                                        RegisteredID::showAddChildButtonForItemForm($this,
+                                                                                    '_registeredID',
+                                                                                    NULL, false),
+                                     'type'  => 'registeredIDChooser')));
    }
 
 

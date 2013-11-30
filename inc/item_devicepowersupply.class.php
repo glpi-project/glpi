@@ -53,7 +53,12 @@ class Item_DevicePowerSupply extends Item_Devices {
       return array('Computer', 'NetworkEquipment');
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function getSpecificities() {
+
       return array('serial' => array('long name'  => __('Serial number'),
                                      'short name' => __('Serial number'),
                                      'size'       => 20));

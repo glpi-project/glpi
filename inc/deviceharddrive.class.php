@@ -91,6 +91,12 @@ class DeviceHardDrive extends CommonDevice {
    }
 
 
+   /**
+    * @since version 0.85
+    * @param $input
+    *
+    * @return number
+   **/
    function prepareInputForAddOrUpdate($input) {
 
       foreach (array('capacity_default') as $field) {
@@ -99,13 +105,22 @@ class DeviceHardDrive extends CommonDevice {
          }
       }
       return $input;
-   } 
+   }
 
+
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
       return self::prepareInputForAddOrUpdate($input);
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
       return self::prepareInputForAddOrUpdate($input);
    }

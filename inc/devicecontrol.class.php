@@ -28,14 +28,16 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DeviceControl
+/**
+ * DeviceControl Class
+**/
 class DeviceControl extends CommonDevice {
 
    static function getTypeName($nb=0) {
@@ -52,11 +54,12 @@ class DeviceControl extends CommonDevice {
                                array('name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
                                      'type'  => 'dropdownValue'),
-                               array('name'     => 'none',
-                                     'label'    => RegisteredID::getTypeName(2).
-                                     RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', NULL,
-                                                                                 false),
-                                     'type'     => 'registeredIDChooser')));
+                               array('name'  => 'none',
+                                     'label' => RegisteredID::getTypeName(2).
+                                        RegisteredID::showAddChildButtonForItemForm($this,
+                                                                                    '_registeredID',
+                                                                                    NULL, false),
+                                     'type'  => 'registeredIDChooser')));
    }
 
 

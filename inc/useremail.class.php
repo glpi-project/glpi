@@ -137,10 +137,11 @@ class UserEmail  extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since version 0.85 (since 0.85 but param $id since 0.85)
     *
     * @param $canedit
     * @param $field_name
+    * @param $id
    **/
    function showChildForItemForm($canedit, $field_name, $id) {
 

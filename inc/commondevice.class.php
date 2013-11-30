@@ -80,6 +80,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @return array of the types of CommonDevice available
    **/
    static function getItem_DeviceType() {
+
       $devicetype = get_called_class();
       if ($plug = isPluginItemType($devicetype)) {
          return 'Plugin'.$plug['plugin'].'Item_'.$plug['class'];
@@ -122,9 +123,14 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-  function displaySpecificTypeField($ID, $field=array()) {
+   /**
+    * @since version 0.85
+    * @see CommonDropdown::displaySpecificTypeField()
+   **/
+   function displaySpecificTypeField($ID, $field=array()) {
+
       switch ($field['type']) {
-         case 'registeredIDChooser':
+         case 'registeredIDChooser' :
             RegisteredID::showChildsForItemForm($this, '_registeredID');
             break;
       }
@@ -359,15 +365,22 @@ abstract class CommonDevice extends CommonDropdown {
       return $ong;
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    function post_workOnItem() {
 
       if ((isset($this->input['_registeredID']))
           && (is_array($this->input['_registeredID']))) {
-         $input = array('itemtype'=> $this->getType(),
+
+         $input = array('itemtype' => $this->getType(),
                         'items_id' => $this->getID());
+
          foreach ($this->input['_registeredID'] as $id => $registered_id) {
             $id_object     = new RegisteredID();
             $input['name'] = $registered_id;
+
             if (isset($this->input['_registeredID_type'][$id])) {
                $input['device_type'] = $this->input['_registeredID_type'][$id];
             } else {
@@ -393,6 +406,10 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_addItem()
+   **/
    function post_addItem() {
 
       $this->post_workOnItem();
@@ -400,6 +417,10 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
 
       $this->post_workOnItem();
