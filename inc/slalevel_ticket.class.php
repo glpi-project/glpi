@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -99,7 +99,10 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_slalevels_tickets`
-                WHERE `glpi_slalevels_tickets`.`date` < NOW()";
+                LEFT JOIN `glpi_tickets`
+                  ON `glpi_slalevels_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                WHERE `glpi_tickets`.`is_deleted` = 0
+                      AND `glpi_slalevels_tickets`.`date` < NOW()";
 
       foreach ($DB->request($query) as $data) {
          $tot++;
