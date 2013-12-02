@@ -99,10 +99,7 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_slalevels_tickets`
-                LEFT JOIN `glpi_tickets`
-                  ON `glpi_slalevels_tickets`.`tickets_id` = `glpi_tickets`.`id`
-                WHERE `glpi_tickets`.`is_deleted` = 0
-                      AND `glpi_slalevels_tickets`.`date` < NOW()";
+                WHERE `glpi_slalevels_tickets`.`date` < NOW()";
 
       foreach ($DB->request($query) as $data) {
          $tot++;
@@ -126,7 +123,9 @@ class SlaLevel_Ticket extends CommonDBTM {
       $ticket         = new Ticket();
       $slalevelticket = new self();
 
-      if ($ticket->getFromDB($data['tickets_id'])) {
+      // existing ticket and not deleted
+      if ($ticket->getFromDB($data['tickets_id'])
+            && !$ticket->isDeleted()) {
          $slalevel = new SlaLevel();
          $sla      = new SLA();
          // Check if sla datas are OK
