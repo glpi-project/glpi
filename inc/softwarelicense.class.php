@@ -692,7 +692,7 @@ class SoftwareLicense extends CommonDBTM {
                   }
                }
             }
-            echo "<tr class='tab_bg_1'>";
+            echo "<tr class='tab_bg_1 noHover'>";
             echo "<td colspan='".
                    ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
             echo "<td class='numeric'>".(($tot > 0)?$tot."":__('Unlimited')).

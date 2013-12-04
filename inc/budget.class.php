@@ -267,7 +267,7 @@ class Budget extends CommonDropdown{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       Html::printPagerForm();
       echo "</th><th colspan='4'>";
@@ -569,7 +569,7 @@ class Budget extends CommonDropdown{
       $budget->getFromDB($budgets_id);
 
       $colspan = count($found_types)+2;
-      echo "<div class='spaced'><table class='tab_cadre'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
       echo "<tr><th>".__('Entity')."</th>";
       if (count($found_types)) {
@@ -615,11 +615,11 @@ class Budget extends CommonDropdown{
          echo "</tr>";
       }
       echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1 noHover'>";
       echo "<td class='right' colspan='".($colspan-1)."'>".__('Total spent on the budget')."</td>";
       echo "<td class='numeric b'>".Html::formatNumber($total)."</td></tr>";
       if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
-         echo "<tr class='tab_bg_1'>";
+         echo "<tr class='tab_bg_1 noHover'>";
          echo "<td class='right' colspan='".($colspan-1)."'>".__('Total remaining on the budget').
                "</td>";
          echo "<td class='numeric b'>".Html::formatNumber($budget->fields['value'] - $total).
