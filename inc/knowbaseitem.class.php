@@ -930,6 +930,10 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
+      if (empty($where)) {
+         $where = '1 = 1';
+      }
+
       if ($params['faq']) { // helpdesk
          $where .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
@@ -998,7 +1002,7 @@ class KnowbaseItem extends CommonDBTM {
                      $addwhere = " OR `glpi_knowbaseitemtranslations`.`name` ".Search::makeTextSearch($contains)."
                                     OR `glpi_knowbaseitemtranslations`.`answer` ".Search::makeTextSearch($contains);
                   }
-                  $where   .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
+                  $where   .= " AND (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
                                  OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains)."
                                  $addwhere)";
                } else {
