@@ -178,7 +178,7 @@ class SLA extends CommonDBTM {
       for ($i=1 ; $i<24 ; $i++) {
          $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i),$i);
       }
-      for ($i=1 ; $i<30 ; $i++) {
+      for ($i=1 ; $i<=100 ; $i++) {
          $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i),$i);
       }
       Dropdown::showFromArray('resolution_time', $possible_values,
