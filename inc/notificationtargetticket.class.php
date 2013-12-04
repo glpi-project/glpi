@@ -281,6 +281,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                      = Dropdown::getDropdownName('glpi_slas', $item->getField('slas_id'));
       }
 
+      $datas['##ticket.location##'] = '';
+      if ($item->getField('locations_id')) {
+         $datas['##ticket.location##']
+                     = Dropdown::getDropdownName('glpi_locations', $item->getField('locations_id'));
+      }
+      
       // is ticket deleted
       $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($item->getField('is_deleted'));
 
@@ -597,7 +603,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.name'             => __('Associated item'),
                     'ticket.item.serial'           => __('Serial number'),
                     'ticket.item.otherserial'      => __('Inventory number'),
-                    'ticket.item.location'         => __('Location'),
+                    'ticket.item.location'         => sprintf(__('%1$s: %2$s'),
+                                                            __('Associated element'),
+                                                            __('Location')),
                     'ticket.item.model'            => __('Model'),
                     'ticket.item.contact'          => __('Alternate username'),
                     'ticket.item.contactnumber'    => __('Alternate username number'),
@@ -628,6 +636,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberoflinkedtickets' => __('Number of linked tickets'),
                     'ticket.numberofproblems'      => __('Number of problems'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
+                    'ticket.location'              => __('Location'),
                     'ticket.globalvalidation'      => __('Global approval status'),
                     'cost.name'                    => sprintf(__('%1$s: %2$s'), __('Cost'),
                                                             __('Name')),
