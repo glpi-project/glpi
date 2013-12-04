@@ -2236,7 +2236,7 @@ class CommonDBTM extends CommonGLPI {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
                echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>";
-                    "<th class='right'>".__('Child entities')."</th><th>";
+               echo "<th class='right'>".__('Child entities')."</th><th>";
                if ($params['canedit']) {
                   if (!$this->can($ID,'recursive')) {
                      echo Dropdown::getYesNo($this->fields["is_recursive"]);
