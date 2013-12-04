@@ -279,7 +279,7 @@ class Log extends CommonDBTM {
       Html::printAjaxPager(self::getTypeName(1), $start, $number);
 
       // Output events
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
       echo "<th>".__('User')."</th><th>".__('Field')."</th>";
       //TRANS: a noun, modification, change

@@ -3486,6 +3486,7 @@ class Ticket extends CommonITILObject {
             }
          }
          $this->countentitiesforuser = count($this->userentities);
+         
          if (($this->countentitiesforuser > 0)
              && !in_array($this->fields["entities_id"], $this->userentities)) {
             // If entity is not in the list of user's entities,
@@ -5066,8 +5067,8 @@ class Ticket extends CommonITILObject {
                               array('itemtype' => $item->getType(),
                                     'items_id' => $item->getID()));
       }
-
-      echo "<table class='tab_cadre_fixe'>";
+      echo "</div><div>";
+      echo "<table class='tab_cadre_fixehov'>";
 
       if ($number > 0) {
 

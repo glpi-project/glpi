@@ -423,7 +423,7 @@ class Computer_Item extends CommonDBRelation{
                            => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixehov'>";
          echo "<tr>";
 
          if ($canedit) {
@@ -562,7 +562,7 @@ class Computer_Item extends CommonDBRelation{
                         => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
 
       if ($number > 0) {
          echo "<tr>";
