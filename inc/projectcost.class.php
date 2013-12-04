@@ -397,7 +397,7 @@ class ProjectCost extends CommonDBChild {
                echo "</tr>";
                Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
-            echo "<tr class='b'><td colspan='3'>&nbsp;</td>";
+            echo "<tr class='b noHover'><td colspan='3'>&nbsp;</td>";
             echo "<td class='right'>".__('Total cost').'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
          } else {

@@ -502,7 +502,7 @@ abstract class CommonITILCost extends CommonDBChild {
                echo "</tr>";
                Session::addToNavigateListItems(static::getType(), $data['id']);
             }
-            echo "<tr class='b'><td colspan='4' class='right'>".__('Total').'</td>';
+            echo "<tr class='b noHover'><td colspan='4' class='right'>".__('Total').'</td>';
             echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
             echo "<td class='numeric'>".Html::formatNumber($total_costtime)."</td>";
             echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
