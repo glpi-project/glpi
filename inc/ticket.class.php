@@ -4721,73 +4721,57 @@ class Ticket extends CommonITILObject {
          if ($showgrouptickets) {
             switch ($status) {
                case "toapprove" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 71; // groups_id
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = self::SOLVED;
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                     $forcetab                    = 'Ticket$2';
-                  }
+                  $options['field'][0]      = 12; // status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = self::SOLVED;
+                  $options['link'][0]       = 'AND';
+                  $options['field'][1]      = 71; // groups_id
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'mygroups';
+                  $options['link'][1]       = 'AND';
+                  $forcetab                    = 'Ticket$2';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
                   break;
 
                case "waiting" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 8; // groups_id_assign
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = self::WAITING;
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['field'][0]      = 12; // status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = self::WAITING;
+                  $options['link'][0]       = 'AND';
+                  $options['field'][1]      = 8; // groups_id_assign
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'mygroups';
+                  $options['link'][1]       = 'AND';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets on pending status'), $number, $numrows)."</a>";
                   break;
 
                case "process" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 8; // groups_id_assign
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'process';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['field'][0]      = 12; // status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'process';
+                  $options['link'][0]       = 'AND';
+                  $options['field'][1]      = 8; // groups_id_assign
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'mygroups';
+                  $options['link'][1]       = 'AND';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
                   break;
 
                case "observed":
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 65; // groups_id
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'notold';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['field'][0]      = 12; // status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'notold';
+                  $options['link'][0]       = 'AND';
+                  $options['field'][1]      = 65; // groups_id
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'mygroups';
+                  $options['link'][1]       = 'AND';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
@@ -4795,18 +4779,14 @@ class Ticket extends CommonITILObject {
 
                case "requestbyself" :
                default :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 71; // groups_id
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'notold';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['field'][0]      = 12; // status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'notold';
+                  $options['link'][0]       = 'AND';
+                  $options['field'][1]      = 71; // groups_id
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'mygroups';
+                  $options['link'][1]       = 'AND';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your tickets in progress'), $number, $numrows)."</a>";

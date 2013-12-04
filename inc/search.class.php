@@ -2858,13 +2858,37 @@ class Search {
                             $toadd2) $toadd)";
 
 
-//          case "glpi_groups.name" :
-//             $linkfield = "";
-//             if (in_array($searchtype, array('equals', 'notequals'))) {
-//                return " $link (`$table`.`id`".$SEARCH.
-//                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
-//             }
-//             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+         case "glpi_groups.completename" :
+            if ($val == 'mygroups') {
+               switch ($searchtype) {
+                  case 'equals' :
+                     return " $link (`$table`.`id` IN ('".implode("','",$_SESSION['glpigroups'])."')) ";
+                     break;
+
+                  case 'notequals' :
+                     return " $link (`$table`.`id` NOT IN ('".implode("','",$_SESSION['glpigroups'])."')) ";
+                     break;
+                     
+                  case 'under' :
+                     $groups = $_SESSION['glpigroups'];
+                     foreach ($_SESSION['glpigroups'] as $g) {
+                        $groups += getSonsOf($inittable, $g);
+                     }
+                     $groups = array_unique($groups);
+                     return " $link (`$table`.`id` IN ('".implode("','", $groups)."')) ";
+                     break;
+                     
+                  case 'notunder' :
+                     $groups = $_SESSION['glpigroups'];
+                     foreach ($_SESSION['glpigroups'] as $g) {
+                        $groups += getSonsOf($inittable, $g);
+                     }
+                     $groups = array_unique($groups);
+                     return " $link (`$table`.`id` NOT IN ('".implode("','", $groups)."')) ";
+                     break;                     
+               }
+            }
+            break;
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {

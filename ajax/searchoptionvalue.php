@@ -76,6 +76,11 @@ if (isset($_POST['searchtype'])) {
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
+               // Add mygroups choice to searchopt
+               case "glpi_groups.completename" :
+                  $searchopt['toadd'] = array('mygroups' => __('My groups'));
+                  break;
+                  
                case "glpi_changes.status" :
                case "glpi_changes.impact" :
                case "glpi_changes.urgency" :
