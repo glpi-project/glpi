@@ -3001,7 +3001,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
-         $params['on_change'] = 'submit()';
+         $params['on_change'] = 'this.form.submit()';
       } else { // Force entity search if needed
          $params['entity'] = $options['entities_id'];
       }
