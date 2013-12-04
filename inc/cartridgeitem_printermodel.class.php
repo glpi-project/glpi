@@ -173,7 +173,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
 
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixehov'>";
          echo "<tr>";
          if ($canedit) {
             echo "<th width='10'>";

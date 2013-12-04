@@ -280,7 +280,7 @@ class SoftwareVersion extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            echo "<table class='tab_cadre'><tr>";
+            echo "<table class='tab_cadre_fixehov'><tr>";
             echo "<th>".self::getTypeName(2)."</th>";
             echo "<th>".__('Status')."</th>";
             echo "<th>".__('Operating system')."</th>";
@@ -303,7 +303,7 @@ class SoftwareVersion extends CommonDBChild {
                echo "<td>".$data['comment']."</td></tr>\n";
             }
 
-            echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".__('Total')."</td>";
+            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";
             echo "<td class='numeric b'>$tot</td></tr>";
             echo "</table>\n";
 

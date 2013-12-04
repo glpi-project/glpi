@@ -536,7 +536,7 @@ class Cartridge extends CommonDBChild {
                               'rand'             => $rand);
             Html::showMassiveActions($massiveactionparams);
          }
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixehov'>";
          if (!$show_old) {
             echo "<tr><th colspan='".($canedit?'7':'6')."'>".self::getCount($tID,-1)."</th>";
             echo "</tr>";

@@ -205,7 +205,7 @@ class Contact_Supplier extends CommonDBRelation{
                                       'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $number) {
          echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
@@ -333,7 +333,7 @@ class Contact_Supplier extends CommonDBRelation{
                                       'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
 
       echo "<tr>";
       if ($canedit && $number) {

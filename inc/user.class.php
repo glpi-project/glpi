@@ -3355,7 +3355,7 @@ class User extends CommonDBTM {
          }
       }
 
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th>".__('Type')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
@@ -3430,7 +3430,7 @@ class User extends CommonDBTM {
       echo "</table></div>";
 
       if (!empty($group_where)) {
-         echo "<div class='spaced'><table class='tab_cadre_fixe'><tr>".
+         echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr>".
                "<th>".__('Type')."</th>".
                "<th>".__('Entity')."</th>".
                "<th>".__('Name')."</th>".
