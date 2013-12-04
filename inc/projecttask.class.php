@@ -721,7 +721,7 @@ class ProjectTask extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            echo "<table class='tab_cadre_fixe'><tr>";
+            echo "<table class='tab_cadre_fixehov'><tr>";
 
             $columns = array('name'             => self::getTypeName(2),
                              'tname'            => __('Type'),
@@ -774,18 +774,13 @@ class ProjectTask extends CommonDBChild {
                     "</td></tr>";
             }
 
-            echo "<tr class='tab_bg_1'><td class='right b' colspan='1'>".__('Total')."</td>";
+            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='1'>".__('Total')."</td>";
             echo "<td class='numeric b'>$tot</td></tr>";
             echo "</table>\n";
 
          } else {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".__('No item found')."</th></tr>";
-            if ($canedit) {
-               echo "<tr class='tab_bg_2'><td class='center'>";
-               echo "<a href='projecttask.form.php?projects_id=$ID'>".
-                      _x('button', 'Add a task')."</a></td></tr>";
-            }
             echo "</table>\n";
          }
 
