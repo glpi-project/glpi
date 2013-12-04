@@ -3536,9 +3536,9 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($can_assign
              && !$is_hidden['_suppliers_id_assign']) {
             $this->showSupplierAddFormOnCreate($options);
-            echo '<hr>';
-            echo self::getActorIcon('supplier', CommonITILActor::ASSIGN);
-            echo "&nbsp;";
+//             echo '<hr>';
+//             echo self::getActorIcon('supplier', CommonITILActor::ASSIGN);
+//             echo "&nbsp;";
          } else { // predefined value
             if (isset($options["_suppliers_id_assign"])
                 && $options["_suppliers_id_assign"]) {
