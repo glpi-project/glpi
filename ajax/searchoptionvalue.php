@@ -61,10 +61,10 @@ if (isset($_POST['searchtype'])) {
    $inputname        = 'contains'.$addmeta.'['.$_POST['num'].']';
    $display          = false;
    $item             = getItemForItemtype($_POST['itemtype']);
-   $options = array();
-   $options['value'] = $_POST['value'];
+   $options2 = array();
+   $options2['value'] = $_POST['value'];
    // For tree dropdpowns
-   $options['permit_select_parent'] = true;
+   $options2['permit_select_parent'] = true;
 
    switch ($_POST['searchtype']) {
       case "equals" :
@@ -85,24 +85,24 @@ if (isset($_POST['searchtype'])) {
                case "glpi_tickets.status" :
                case "glpi_tickets.impact" :
                case "glpi_tickets.urgency" :
-                  $options['showtype'] = 'search';
+                  $options2['showtype'] = 'search';
                   break;
 
                case "glpi_changes.priority" :
                case "glpi_problems.priority" :
                case "glpi_tickets.priority" :
-                  $options['showtype']  = 'search';
-                  $options['withmajor'] = true;
+                  $options2['showtype']  = 'search';
+                  $options2['withmajor'] = true;
                   break;
 
 
                case "glpi_tickets.global_validation" :
-                  $options['all'] = true;
+                  $options2['all'] = true;
                   break;
 
 
                case "glpi_ticketvalidations.status" :
-                  $options['all'] = true;
+                  $options2['all'] = true;
                   break;
             }
 
@@ -113,12 +113,12 @@ if (isset($_POST['searchtype'])) {
                   case "date" :
                   case "date_delay" :
                   case "datetime" :
-                     $options['relative_dates'] = true;
+                     $options2['relative_dates'] = true;
                      break;
                }
             }
 
-            $out = $item->getValueToSelect($searchopt, $inputname, $_POST['value'], $options);
+            $out = $item->getValueToSelect($searchopt, $inputname, $_POST['value'], $options2);
             if (strlen($out)) {
                echo $out;
                $display = true;
