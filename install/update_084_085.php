@@ -56,7 +56,7 @@ function update084to085() {
                           'glpi_dropdowntranslations',
                           'glpi_knowbaseitemtranslations',
                           'glpi_notepads',
-                          'glpi_problemcosts',
+                          'glpi_problemcosts', 'glpi_projectcosts',
                           'glpi_projects', 'glpi_projects_changes', 'glpi_projects_items',
                           'glpi_projectstates', 'glpi_projecttasks', 'glpi_projecttasks_tickets',
                           'glpi_projecttaskteams', 'glpi_projecttasktypes',
@@ -1997,6 +1997,31 @@ function update084to085() {
                                                    "`name` = 'change'
                                                      AND `rights` & ".Change::READMY);
    }
+
+   if (!TableExists('glpi_projectcosts')) {
+      $query = "CREATE TABLE `glpi_projectcosts` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `begin_date` date DEFAULT NULL,
+                  `end_date` date DEFAULT NULL,
+                  `cost` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                  `budgets_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `projects_id` (`projects_id`),
+                  KEY `begin_date` (`begin_date`),
+                  KEY `end_date` (`end_date`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `budgets_id` (`budgets_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_projectcosts");
+   }
+   
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
