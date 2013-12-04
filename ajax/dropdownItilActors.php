@@ -100,7 +100,7 @@ if (isset($_POST["type"])
                echo "</span>";
             }
 
-            if ($CFG_GLPI["use_mailing"] == 1) {
+            if ($CFG_GLPI["use_mailing"]) {
                echo "<br><span id='notif_user_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
@@ -158,6 +158,7 @@ if (isset($_POST["type"])
                                             'url'             => $CFG_GLPI["root_doc"].
                                                                      "/ajax/uemailUpdate.php",
                                             'moreparams'      => $paramscomment);
+               /// TODO this update part does not work on selecting supplier
             }
             if ($_POST["itemtype"] == 'Ticket') {
                $toupdate = array();
@@ -176,10 +177,10 @@ if (isset($_POST["type"])
             // Display active tickets for a supplier
             // Need to update information on dropdown changes
             if ($_POST["itemtype"] == 'Ticket') {
-               echo "<br><span id='countassign_$rand'>--";
+               echo "<span id='countassign_$rand'>";
                echo "</span>";
             }
-            if ($CFG_GLPI["use_mailing"] == 1) {
+            if ($CFG_GLPI["use_mailing"]) {
                echo "<br><span id='notif_supplier_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
