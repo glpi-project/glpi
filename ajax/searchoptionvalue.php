@@ -56,6 +56,7 @@ if (isset($_POST['searchtype'])) {
    $inputname        = 'contains'.$addmeta.'['.$_POST['num'].']';
    $display          = false;
    $item             = getItemForItemtype($_POST['itemtype']);
+   $options = array();
    $options['value'] = $_POST['value'];
    $options['width'] = '100%';
    // For tree dropdpowns
