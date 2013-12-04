@@ -874,7 +874,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "</td></tr>";
 
          } else {
-            $status = array("rejected","accepted");
+            $status = array(self::REFUSED,self::ACCEPTED);
             if (in_array($this->fields["status"],$status)) {
                echo "<tr class='tab_bg_1'>";
                echo "<td>".__('Approval comments')."</td>";
