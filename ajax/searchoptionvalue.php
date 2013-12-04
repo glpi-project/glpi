@@ -61,6 +61,7 @@ if (isset($_POST['searchtype'])) {
    $inputname        = 'contains'.$addmeta.'['.$_POST['num'].']';
    $display          = false;
    $item             = getItemForItemtype($_POST['itemtype']);
+   $options = array();
    $options['value'] = $_POST['value'];
    // For tree dropdpowns
    $options['permit_select_parent'] = true;
@@ -116,6 +117,7 @@ if (isset($_POST['searchtype'])) {
                      break;
                }
             }
+
             $out = $item->getValueToSelect($searchopt, $inputname, $_POST['value'], $options);
             if (strlen($out)) {
                echo $out;
