@@ -1040,6 +1040,10 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
+      if (empty($where)) {
+         $where = '1 = 1';
+      }
+      
       if ($params['faq']) { // helpdesk
          $where .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
@@ -1097,7 +1101,7 @@ class KnowbaseItem extends CommonDBTM {
                                    /* 8 */   "/\)/",
                                    /* 9 */   "/\-/");
                   $contains = preg_replace($search1,"", $params["contains"]);
-                  $where   .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
+                  $where   .= " AND (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
                                  OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
                } else {
                   $where = $where_1;
