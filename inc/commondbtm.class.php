@@ -1420,6 +1420,10 @@ class CommonDBTM extends CommonGLPI {
          $addMessAfterRedirect = true;
       }
 
+      if (isset($this->input['_purge'])) {
+         $this->input['_no_message_link'] = true;
+      }
+
       if (isset($this->input['_no_message'])
           || !$this->auto_message_on_action) {
          $addMessAfterRedirect = false;
@@ -1435,8 +1439,9 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $display = $this->getLink();
          }
-         //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully purged'), $display));
+          //TRANS : %s is the description of the updated item
+         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully purged'),
+                                                  $display));
       }
    }
 
@@ -2102,15 +2107,15 @@ class CommonDBTM extends CommonGLPI {
          // Create item from template
          // Check read right on the template
          $this->check($ID, READ);
-         
+
          // Restore saved input or template data
          $input = $this->restoreInput($this->fields);
-         
+
          // If entity assign force current entity to manage recursive templates
          if ($this->isEntityAssign()) {
             $input['entities_id'] = $_SESSION['glpiactive_entity'];
          }
-         
+
          // Check create right
          $this->check(-1, CREATE, $input);
 
