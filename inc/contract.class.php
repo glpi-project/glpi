@@ -202,8 +202,12 @@ class Contract extends CommonDBTM {
       Dropdown::showInteger("duration", $this->fields["duration"], 1, 120, 1,
                             array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"])) {
-         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                               $this->fields["duration"], 0, true);
+         echo " -> ".self::getContractEndDate($this->fields['id'], $this->fields["begin_date"],
+                                              $this->fields["duration"],
+                                              $this->fields["periodicity"],
+                                              $this->fields["renewal"]);
+               //Infocom::getWarrantyExpir($this->fields["begin_date"],
+          //                                     $this->fields["duration"], 0, true);
       }
       echo "</td>";
       echo "</tr>";
@@ -1392,6 +1396,10 @@ class Contract extends CommonDBTM {
             $date->add(new DateInterval('P'.$periodicity.'M'));
          }
       }
+      if ($date < $now) {
+         return "<span class='red'>".$date->format('d-m-Y')."</span>";
+      }
+
       return  $date->format('d-m-Y');
    }
 
