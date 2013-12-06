@@ -167,7 +167,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                 || (isset($res_rule['new_entities_id'])
                     && ($res_rule['new_entities_id'] != $input['entities_id']))
                 || (isset($res_rule['is_helpdesk_visible'])
-                    && ($res_rule['is_helpdesk_visible'] != $input['helpdesk']))) {
+                    && ($res_rule['is_helpdesk_visible'] != $input['helpdesk']))
+                || (isset($res_rule['manufacturers_id'])
+                    && ($res_rule['manufacturers_id'] != $input['manufacturers_id']))) {
 
                $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
