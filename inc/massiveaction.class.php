@@ -1140,12 +1140,15 @@ class MassiveAction {
                   if ($item instanceof CommonDropdown) {
                      if ($item->haveChildren()) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage(__("You can't delete that item, because it has sub-items"));
+                        $ma->addMessage(__("You can't delete that item by massive actions, because it has sub-items"));
+                        $ma->addMessage(__("but you can do it by the form of the item"));
+
                         continue;
                      }
                      if ($item->isUsed()) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
+                        $ma->addMessage(__("but you can do it by the form of the item"));
                         continue;
                      }
                   }
