@@ -1353,6 +1353,10 @@ class CommonDBTM extends CommonGLPI {
          $addMessAfterRedirect = true;
       }
 
+      if (isset($this->input['_purge'])) {
+         $this->input['_no_message_link'] = true;
+      }
+
       if (isset($this->input['_no_message'])
           || !$this->auto_message_on_action) {
          $addMessAfterRedirect = false;
