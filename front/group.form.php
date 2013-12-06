@@ -39,7 +39,7 @@ if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$group     = new Group();
+$group = new Group();
 
 if (isset($_POST["add"])) {
    $group->check(-1, CREATE, $_POST);
@@ -54,11 +54,20 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["purge"])) {
    $group->check($_POST["id"], PURGE);
-   $group->delete($_POST, 1);
-   Event::log($_POST["id"], "groups", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $group->redirectToList();
+   if ($group->isUsed()
+         && empty($_POST["forcepurge"])) {
+      Html::header($group->getTypeName(1), $_SERVER['PHP_SELF'], "admin", "group",
+      str_replace('glpi_','',$group->getTable()));
+
+      $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
+      Html::footer();
+   } else {
+      $group->delete($_POST, 1);
+      Event::log($_POST["id"], "groups", 4, "setup",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+      $group->redirectToList();
+   }
 
 } else if (isset($_POST["update"])) {
    $group->check($_POST["id"], UPDATE);
@@ -72,6 +81,15 @@ if (isset($_POST["add"])) {
    Html::popHeader(Group::getTypeName(2),$_SERVER['PHP_SELF']);
    $group->showForm($_GET["id"]);
    Html::popFooter();
+
+} else if (isset($_POST["replace"])) {
+   $group->check($_POST["id"], PURGE);
+   $group->delete($_POST, 1);
+
+   Event::log($_POST["id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s replaces an item'), $_SESSION["glpiname"]));
+   $group->redirectToList();
 
 } else {
    Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
