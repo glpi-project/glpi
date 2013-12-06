@@ -2021,7 +2021,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projectcosts");
    }
-   
+
    if (!TableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2244,8 +2244,8 @@ function update084to085() {
                 SET `status` = '$new'
                 WHERE `status` = '$old'";
       $DB->queryOrDie($query, "0.85 status in glpi_ticketvalidations $old to $new");
-
    }
+
    $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
                            array('value' => CommonITILValidation::WAITING));
 
@@ -2263,6 +2263,18 @@ function update084to085() {
       $migration->changeField($table, 'global_validation', 'global_validation', 'integer',
                               array('value' => CommonITILValidation::NONE));
    }
+
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'tickettemplatepredefinedfields value'));
+
+   foreach ($status as $old => $new) {
+      $query = "UPDATE `glpi_tickettemplatepredefinedfields`
+                SET `value` = '$new'
+                WHERE `num` = '52'
+                      AND `value` = '$old'";
+      $DB->queryOrDie($query, "0.85 value in glpi_tickettemplatepredefinedfields $old to $new");
+   }
+
 
    // Upgrade ticket bookmarks
    $query = "SELECT *
