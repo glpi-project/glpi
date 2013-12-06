@@ -132,7 +132,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                         AND `glpi_softwares`.`is_template` = '0' ";
 
          if (isset($params['manufacturer']) && $params['manufacturer']) {
-            $sql .= " AND `manufacturer` = '" . $params['manufacturer'] . "'";
+            $sql .= " AND `glpi_softwares`.`manufacturers_id` = '" . $params['manufacturer'] . "'";
          }
          if ($offset) {
             $sql .= " LIMIT " . intval($offset) . ",999999999";
