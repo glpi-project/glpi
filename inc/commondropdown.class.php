@@ -542,7 +542,8 @@ abstract class CommonDropdown extends CommonDBTM {
                         array('name'   => '_replace_by',
                               'value'  => $this->fields[$fk],
                               'entity' => $this->getEntityID(),
-                              'used'   => getSonsOf($this->getTable(), $ID)));
+                              'used'   => getSonsOf($this->getTable(), $ID),
+                              'width'   => '100%'));
 
       } else {
          Dropdown::show(getItemTypeForTable($this->getTable()),
