@@ -3486,7 +3486,7 @@ class Ticket extends CommonITILObject {
             }
          }
          $this->countentitiesforuser = count($this->userentities);
-         
+
          if (($this->countentitiesforuser > 0)
              && !in_array($this->fields["entities_id"], $this->userentities)) {
             // If entity is not in the list of user's entities,
@@ -4565,7 +4565,7 @@ class Ticket extends CommonITILObject {
                   $options['searchtype'][1] = 'equals';
                   $options['contains'][1]   = 'mygroups';
                   $options['link'][1]       = 'AND';
-                  $forcetab                    = 'Ticket$2';
+                  $forcetab                 = 'Ticket$2';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
@@ -4579,7 +4579,7 @@ class Ticket extends CommonITILObject {
                   $options['field'][1]      = 8; // groups_id_assign
                   $options['searchtype'][1] = 'equals';
                   $options['contains'][1]   = 'mygroups';
-                  $options['link'][1]       = 'AND';               
+                  $options['link'][1]       = 'AND';
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets on pending status'), $number, $numrows)."</a>";

@@ -305,10 +305,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $datas['##ticket.location##'] = '';
       if ($item->getField('locations_id')) {
-         $datas['##ticket.location##']
-                     = Dropdown::getDropdownName('glpi_locations', $item->getField('locations_id'));
+         $datas['##ticket.location##'] = Dropdown::getDropdownName('glpi_locations',
+                                                                   $item->getField('locations_id'));
       }
-      
+
       // is ticket deleted
       $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($item->getField('is_deleted'));
 
@@ -605,8 +605,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.serial'           => __('Serial number'),
                     'ticket.item.otherserial'      => __('Inventory number'),
                     'ticket.item.location'         => sprintf(__('%1$s: %2$s'),
-                                                            __('Associated element'),
-                                                            __('Location')),
+                                                              __('Associated element'),
+                                                              __('Location')),
                     'ticket.item.model'            => __('Model'),
                     'ticket.item.contact'          => __('Alternate username'),
                     'ticket.item.contactnumber'    => __('Alternate username number'),

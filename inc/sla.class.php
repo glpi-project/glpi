@@ -194,7 +194,8 @@ class SLA extends CommonDBTM {
       echo "</script>\n";
 
       echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td><div id='title_endworkingday'>".__('End of working day')."</div></td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td><div id='title_endworkingday'>".__('End of working day')."</div></td>";
       echo "<td><div id='dropdown_endworkingday'>";
       Dropdown::showYesNo("end_of_working_day", $this->fields["end_of_working_day"]);
       echo "</div></td></tr>";

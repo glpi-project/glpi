@@ -53,10 +53,10 @@ if (isset($_POST['searchtype'])) {
       $addmeta = '2';
    }
 
-   $inputname        = 'contains'.$addmeta.'['.$_POST['num'].']';
-   $display          = false;
-   $item             = getItemForItemtype($_POST['itemtype']);
-   $options2 = array();
+   $inputname         = 'contains'.$addmeta.'['.$_POST['num'].']';
+   $display           = false;
+   $item              = getItemForItemtype($_POST['itemtype']);
+   $options2          = array();
    $options2['value'] = $_POST['value'];
    $options2['width'] = '100%';
    // For tree dropdpowns
@@ -76,7 +76,7 @@ if (isset($_POST['searchtype'])) {
                case "glpi_groups.completename" :
                   $searchopt['toadd'] = array('mygroups' => __('My groups'));
                   break;
-                  
+
                case "glpi_changes.status" :
                case "glpi_changes.impact" :
                case "glpi_changes.urgency" :
@@ -118,7 +118,7 @@ if (isset($_POST['searchtype'])) {
                      break;
                }
             }
-            
+
             $out = $item->getValueToSelect($searchopt, $inputname, $_POST['value'], $options2);
             if (strlen($out)) {
                echo $out;

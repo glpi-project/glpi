@@ -2863,12 +2863,12 @@ class Search {
             if ($val == 'mygroups') {
                switch ($searchtype) {
                   case 'equals' :
-                     return " $link (`$table`.`id` IN ('".implode("','",$_SESSION['glpigroups'])."')) ";
-                     break;
+                     return " $link (`$table`.`id` IN ('".implode("','",
+                                                                  $_SESSION['glpigroups'])."')) ";
 
                   case 'notequals' :
-                     return " $link (`$table`.`id` NOT IN ('".implode("','",$_SESSION['glpigroups'])."')) ";
-                     break;
+                     return " $link (`$table`.`id` NOT IN ('".implode("','",
+                                                                      $_SESSION['glpigroups'])."')) ";
 
                   case 'under' :
                      $groups = $_SESSION['glpigroups'];
@@ -2877,7 +2877,6 @@ class Search {
                      }
                      $groups = array_unique($groups);
                      return " $link (`$table`.`id` IN ('".implode("','", $groups)."')) ";
-                     break;
 
                   case 'notunder' :
                      $groups = $_SESSION['glpigroups'];
@@ -2886,11 +2885,10 @@ class Search {
                      }
                      $groups = array_unique($groups);
                      return " $link (`$table`.`id` NOT IN ('".implode("','", $groups)."')) ";
-                     break;
                }
             }
             break;
-            
+
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
                return "$link (".self::makeTextCriteria("`glpi_items_devicenetworkcards`.`mac`",

@@ -249,7 +249,7 @@ class Change extends CommonITILObject {
 
       $ct = new Change_Ticket();
       $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       $cp = new Change_Project();
       $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
@@ -261,7 +261,7 @@ class Change extends CommonITILObject {
 
       $cc = new ChangeCost();
       $cc->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       parent::cleanDBonPurge();
    }
 
@@ -561,28 +561,28 @@ class Change extends CommonITILObject {
 
       // Set default options
       if (!$ID) {
-         $values = array('_users_id_requester'       => Session::getLoginUserID(),
-                         '_users_id_requester_notif' => array('use_notification' => 1,
-                                                              'alternative_email' => ''),
-                         '_groups_id_requester'      => 0,
-                         '_users_id_assign'          => 0,
-                         '_users_id_assign_notif'    => array('use_notification' => 1,
-                                                              'alternative_email' => ''),
-                         '_groups_id_assign'         => 0,
-                         '_users_id_observer'        => 0,
-                         '_users_id_observer_notif'  => array('use_notification' => 1,
-                                                              'alternative_email' => ''),
+         $values = array('_users_id_requester'        => Session::getLoginUserID(),
+                         '_users_id_requester_notif'  => array('use_notification'  => 1,
+                                                               'alternative_email' => ''),
+                         '_groups_id_requester'       => 0,
+                         '_users_id_assign'           => 0,
+                         '_users_id_assign_notif'     => array('use_notification'  => 1,
+                                                               'alternative_email' => ''),
+                         '_groups_id_assign'          => 0,
+                         '_users_id_observer'         => 0,
+                         '_users_id_observer_notif'   => array('use_notification'  => 1,
+                                                               'alternative_email' => ''),
                          '_suppliers_id_assign_notif' => array('use_notification'  => 1,
-                                                              'alternative_email' => ''),
-                         '_groups_id_observer'       => 0,
-                         '_suppliers_id_assign'      => 0,
-                         'priority'                  => 3,
-                         'urgency'                   => 3,
-                         'impact'                    => 3,
-                         'content'                   => '',
-                         'entities_id'               => $_SESSION['glpiactive_entity'],
-                         'name'                      => '',
-                         'itilcategories_id'         => 0);
+                                                               'alternative_email' => ''),
+                         '_groups_id_observer'        => 0,
+                         '_suppliers_id_assign'       => 0,
+                         'priority'                   => 3,
+                         'urgency'                    => 3,
+                         'impact'                     => 3,
+                         'content'                    => '',
+                         'entities_id'                => $_SESSION['glpiactive_entity'],
+                         'name'                       => '',
+                         'itilcategories_id'          => 0);
          foreach ($values as $key => $val) {
             if (!isset($options[$key])) {
                $options[$key] = $val;
