@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Version class
+/**
+ * SoftwareVersion Class
+**/
 class SoftwareVersion extends CommonDBChild {
 
    // From CommonDBTM
@@ -264,7 +266,7 @@ class SoftwareVersion extends CommonDBChild {
                       _x('button', 'Add a version')."</a>";
                echo "</div>";
             }
-            
+
       $query = "SELECT `glpi_softwareversions`.*,
                        `glpi_states`.`name` AS sname
                 FROM `glpi_softwareversions`
