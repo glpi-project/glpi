@@ -63,12 +63,14 @@ class Entity extends CommonTreeDropdown {
                                                    'authldaps_id', 'entity_ldapfilter', 'ldap_dn',
                                                    'mail_domain', 'tag',
                                                    // Inventory
-                                                   'autofill_buy_date', 'autofill_delivery_date',
-                                                   'autofill_order_date', 'autofill_use_date',
-                                                   'autofill_warranty_date',
                                                    'entities_id_software', 'level', 'name',
                                                    'completename', 'entities_id',
                                                    'ancestors_cache', 'sons_cache', 'comment'),
+                                       // Inventory
+                                       'infocom'
+                                          => array('autofill_buy_date', 'autofill_delivery_date',
+                                                   'autofill_order_date', 'autofill_use_date',
+                                                   'autofill_warranty_date'),
                                        // Notification
                                        'notification'
                                           => array('admin_email', 'admin_reply', 'admin_email_name',
