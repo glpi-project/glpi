@@ -66,9 +66,9 @@ class EntityData extends CommonDBChild {
                                                                   'website',
                                                                   // Advanced (could be user_authtype ?)
                                                                   'authldaps_id', 'entity_ldapfilter',
-                                                                  'ldap_dn', 'mail_domain', 'tag',
-                                                                  // Inventory
-                                                                  'autofill_buy_date',
+                                                                  'ldap_dn', 'mail_domain', 'tag'),
+                                       // Inventory
+                                       'infocom'         => array('autofill_buy_date',
                                                                   'autofill_delivery_date',
                                                                   'autofill_order_date',
                                                                   'autofill_use_date',
@@ -395,7 +395,7 @@ class EntityData extends CommonDBChild {
       global $LANG;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r')) {
+      if (!$entity->can($ID,'r') || !Session::haveRight('infocom','r')) {
          return false;
       }
 
