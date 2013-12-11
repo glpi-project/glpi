@@ -2311,6 +2311,21 @@ class Toolbox {
       return preg_replace("/[^0-9\.-]/", "", $decimal);
    }
 
+   /**
+    * Clean new lines of a string
+    *
+    * @since versin 0.85
+    *
+    * @param $string string     string to clean
+    *
+    * @return clean string
+   **/
+   static function cleanNewLines($string) {
+      $string = preg_replace("/\r\n/", " ", $string);
+      $string = preg_replace("/\n/", " ", $string);
+      $string = preg_replace("/\r/", " ", $string);
+      return $string;
+   }
 
    /**
     * Save a configuration file

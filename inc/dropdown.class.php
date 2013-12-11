@@ -174,7 +174,7 @@ class Dropdown {
                  'display_emptychoice'  => $params['display_emptychoice'],
                  'displaywith'          => $params['displaywith'],
                  'emptylabel'           => $params['emptylabel'],
-                 'condition'            => $params['condition'],
+                 'condition'            => Toolbox::cleanNewLines($params['condition']),
                  'used'                 => $params['used'],
                  'toadd'                => $params['toadd'],
                  'entity_restrict'      => $params['entity'],
