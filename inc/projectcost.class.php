@@ -405,7 +405,13 @@ class ProjectCost extends CommonDBChild {
          }
          echo "</table>";
       }
-      echo "</div><br>";
+      echo "</div>";
+      echo "<div>";
+      $ticketcost = TicketCost::showForObject($project);
+      echo "</div>";
+      echo "<div class='b'>";
+      printf(__('%1$s: %2$s'), __('Total cost'),$total+$ticketcost);
+      echo "</div>";
    }
 
 }

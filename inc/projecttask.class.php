@@ -260,6 +260,26 @@ class ProjectTask extends CommonDBChild {
       return $tasks;
    }
 
+    /**
+    * Get all linked tickets for a project
+    *
+    * @param $ID        integer  Id of the project
+    *
+    * @return array of tickets
+   **/
+   static function getAllTicketsForProject($ID) {
+      global $DB;
+
+      $tasks = array();
+      foreach ($DB->request(array('glpi_projecttasks_tickets', 'glpi_projecttasks'),
+                            array("`glpi_projecttasks`.`projects_id`" => $ID,
+                                  "`glpi_projecttasks_tickets`.`projecttasks_id`" => "`glpi_projecttasks`.`id`",
+                                  'FIELDS' =>  "tickets_id" ))
+                        as $data) {
+         $tasks[] = $data['tickets_id'];
+      }
+      return $tasks;
+   }
 
    /**
     * Print the Project task form
