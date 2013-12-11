@@ -1318,7 +1318,7 @@ class Ticket extends CommonITILObject {
       if (($manual_slas_id == 0)
           && isset($input["due_date"]) && ($input['due_date'] != 'NULL')) {
          // Valid due date
-         if ($input['due_date'] > $input['date']) {
+         if ($input['due_date'] >= $input['date']) {
             if (isset($input["slas_id"])) {
                unset($input["slas_id"]);
             }
