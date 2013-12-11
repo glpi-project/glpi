@@ -1683,6 +1683,11 @@ function update084to085() {
    $migration->addField('glpi_users', 'begin_date', 'datetime');
    $migration->addField('glpi_users', 'end_date', 'datetime');
 
+   // add validity date for a knowbaseitem
+   $migration->addField('glpi_knowbaseitems', 'begin_date', 'datetime');
+   $migration->addField('glpi_knowbaseitems', 'end_date', 'datetime');
+
+   
    // Add validation percent for tickets
    $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
 
