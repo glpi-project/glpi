@@ -1873,15 +1873,13 @@ class User extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='2'>" .  __('Validity dates') . "</td>";
-      echo "<td><span class='tracking_small'>".__('From')."</span>&nbsp;";
+      echo "<td>".__('Valid since')."</td><td>";
       Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
                                                   'timestep'    => 1,
                                                   'maybeempty'  => true));
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><span class='tracking_small'>".__('To')."</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      echo "<td>".__('Valid until')."</td><td>";
       Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
                                                 'timestep'    => 1,
                                                 'maybeempty'  => true));
