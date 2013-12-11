@@ -692,7 +692,7 @@ function generateGlobalDropdowns() {
 
    $items = array("Technicien", "Commercial", "Technico-Commercial", "President", "Secretaire",
                   "Directeur d'agence");
-   $dp    = new ContractType();
+   $dp    = new ContactType();
    for ($i=0 ; $i<$MAX['contact_type'] ; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
@@ -703,6 +703,18 @@ function generateGlobalDropdowns() {
                                               'comment' => "comment $val")));
    }
 
+   $items = array("Maintenance", "Support", "Location", "Adhesion");
+   $dp    = new ContractType();
+   for ($i=0 ; $i<$MAX['contract_type'] ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "type d' crontact $i";
+      }
+      $dp->add(toolbox::addslashes_deep(array('name'    => $val,
+                                              'comment' => "comment $val")));
+   }
+   
 
    $items = array("Fournisseur", "Transporteur", "SSII", "Revendeur d'", "Assembleur", "SSLL",
                   "Financeur", "Assureur");
@@ -1383,7 +1395,7 @@ function getMaxItem($table) {
  * @param $ID_entity entity ID
 **/
 function generate_entity($ID_entity) {
-   global $MAX, $DB, $MAX_CONTRACT_TYPE, $percent, $FIRST, $LAST, $MAX_KBITEMS_BY_CAT, $MAX_DISK,
+   global $MAX, $DB, $percent, $FIRST, $LAST, $MAX_KBITEMS_BY_CAT, $MAX_DISK,
          $DOCUMENTS, $NET_PORT, $NET_LOC;
 
    regenerateTreeCompleteName("glpi_entities");
@@ -1984,7 +1996,7 @@ function generate_entity($ID_entity) {
                                   'is_recursive'       => 0,
                                   'name'               => "contract' $i-$ID_entity",
                                   'num'                => "num' $i",
-                                  'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
+                                  'contracttypes_id'   => mt_rand(1,$MAX['contract_type']),
                                   'begin_date'         => $date,
                                   'duration'           => mt_rand(1,36),
                                   'notice'             => mt_rand(1,3),
@@ -2017,7 +2029,7 @@ function generate_entity($ID_entity) {
                                   'name'               => "Recursive contract' $i-$ID_entity",
                                   'num'                => "num' $i",
                                   'cost'               => mt_rand(100,10000),
-                                  'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
+                                  'contracttypes_id'   => mt_rand(1,$MAX['contract_type']),
                                   'begin_date'         => $date,
                                   'duration'           => mt_rand(1,36),
                                   'notice'             => mt_rand(1,3),
