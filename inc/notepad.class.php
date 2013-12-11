@@ -167,6 +167,11 @@ class Notepad extends CommonDBChild {
       $rand    = mt_rand();
       $canedit = Session::haveRight($item::$rightname, UPDATENOTE);
 
+      $showuserlink = 0;
+      if (User::canView()) {
+         $showuserlink = 1;
+      }
+      
       if ($canedit) {
          echo "<div class='boxnote center'>";
           echo "<div class='boxnoteleft'></div>";
@@ -217,13 +222,13 @@ class Notepad extends CommonDBChild {
                echo "<div class='floatright'>";
                 $username = NOT_AVAILABLE;
                 if ($note['users_id_lastupdater']) {
-                   $username = getUserName($note['users_id_lastupdater']);
+                   $username = getUserName($note['users_id_lastupdater'], $showuserlink);
                 }
                 $update = sprintf(__('Last update by %1$s on %2$s'), $username,
                                   Html::convDateTime($note['date_mod']));
                 $username = NOT_AVAILABLE;
                 if ($note['users_id']) {
-                   $username = getUserName($note['users_id']);
+                   $username = getUserName($note['users_id'], $showuserlink);
                 }
                 $create = sprintf(__('Create by %1$s on %2$s'), $username,
                                   Html::convDateTime($note['date']));
