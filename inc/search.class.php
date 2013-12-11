@@ -2412,6 +2412,8 @@ class Search {
                                     AS ".$NAME."_".$num."_2,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
                                     AS ".$NAME."_".$num."_3,
+                        GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
+                                    AS ".$NAME."_".$num."_4,
                         $ADDITONALFIELDS";
             }
             break;
@@ -4058,15 +4060,26 @@ class Search {
                $split         = explode("$$$$",$data[$NAME.$num]);
                $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
                $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
+               $split4        = explode("$$$$",$data[$NAME.$num."_4"]);
                $added         = array();
                $count_display = 0;
                for ($k=0 ; $k<count($split) ; $k++) {
                   if (strlen(trim($split[$k])) > 0) {
                      $text = sprintf(__('%1$s - %2$s'), $split[$k],
                                      Dropdown::getDropdownName('glpi_profiles', $split2[$k]));
-                     if ($split3[$k]) {
-                        $text = sprintf(__('%1$s %2$s'), $text, "(".__('R').")");
-                     }
+                        $comp = '';
+                        if ($split3[$k]) {
+                           $comp = __('R');
+                           if ($split4[$k]) {
+                              $comp = sprintf(__('%1$s%2$s'), $comp, ", ");
+                           }
+                        }
+                        if ($split4[$k]) {
+                           $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
+                        }
+                        if (!empty($comp)) {
+                           $text = sprintf(__('%1$s %2$s'), $text, "(".$comp.")");
+                        }
                      if (!in_array($text,$added)) {
                         if ($count_display) {
                            $out .= "<br>";
