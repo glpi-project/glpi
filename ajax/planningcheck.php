@@ -43,16 +43,16 @@ if (strpos($_SERVER['PHP_SELF'],"planningcheck.php")) {
 Session::checkLoginUser();
 
 if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
-
-      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck').".dialog('open');\">";
+      $rand = mt_rand();
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
              title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
              class='calendrier'>";
       echo "</a>";
-      Ajax::createIframeModalWindow('planningcheck',
+      Ajax::createIframeModalWindow('planningcheck'.$rand,
                                     $CFG_GLPI["root_doc"].
                                           "/front/planning.php?checkavailability=checkavailability".
-                                          "&users_id=".$_POST['users_id'],
+                                          "&itemtype=User&users_id=".$_POST['users_id'],
                                     array('title'  => __('Availability')));
 }
 ?>

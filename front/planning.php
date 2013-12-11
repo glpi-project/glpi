@@ -53,16 +53,8 @@ if (!isset($_GET["limititemtype"])) {
 // Normal call via $_GET
 if (isset($_GET['checkavailability'])) {
    Html::popHeader(__('Availability'));
-   if (!isset($_GET["begin"])) {
-      $_GET["begin"] = "";
-   }
-   if (!isset($_GET["end"])) {
-      $_GET["end"] = "";
-   }
-   if (!isset($_GET["users_id"])) {
-      $_GET["users_id"] = "";
-   }
-   Planning::checkAvailability($_GET['users_id'], $_GET['begin'], $_GET['end']);
+
+   Planning::checkAvailability($_GET);
    Html::popFooter();
 
 } else if (isset($_GET['genical'])) {

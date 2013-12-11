@@ -416,35 +416,85 @@ class Planning extends CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $who    ID of the user
-    * @param $begin  begin date to check (default '')
-    * @param $end    end date to check (default '')
+    * @param $param   array of param
+    *    must contain :
+    *          - begin: begin date to check (default '')
+    *          - end: end date to check (default '')
+    *          - itemtype : User or Object type (Ticket...)
+    *          - foreign key field of the itemtype to define which item to used
+    *    optional :
+    *          - limitto : limit display to a specific user
     *
     * @return Nothing (display function)
    **/
-   static function checkAvailability($who, $begin='', $end='') {
+   static function checkAvailability($params = array()) {
       global $CFG_GLPI, $DB;
 
-      if (empty($who)) {
+      
+      if (!isset($params['itemtype'])) {
          return false;
       }
-      if (empty($begin)) {
+      if (!($item = getItemForItemtype($params['itemtype']))) {
+         return false;
+      } else {
+         if (!isset($params[$item->getForeignKeyField()])
+               || !$item->getFromDB($params[$item->getForeignKeyField()])) {
+            return false;
+         }
+      }
+      // No limit by default
+      if (!isset($params['limitto'])) {
+         $params['limitto'] = 0;
+      }
+      if (isset($params['begin']) && !empty($params['begin'])) {
+         $begin = $params['begin'];
+      } else {
          $begin = date("Y-m-d");
       }
-      if (empty($end)) {
+      if (isset($params['end']) && !empty($params['end'])) {
+         $end = $params['end'];
+      } else {
          $end = date("Y-m-d");
-      }
+      }      
+
       if ($end < $begin) {
          $end = $begin;
       }
       $realbegin = $begin." ".$CFG_GLPI["planning_begin"];
       $realend   = $end." ".$CFG_GLPI["planning_end"];
 
+      $users = array();
+      
+      switch ($item->getType()) {
+         case 'User' :
+            $users[$item->getID()] = $item->getName();
+            break;
+            
+         default :
+            if (Toolbox::is_a($item, 'CommonITILObject')) {
+               foreach ($item->getUsers(CommonITILActor::ASSIGN) as $data) {
+                  $users[$data['users_id']] = getUserName($data['users_id']);
+               }
+               foreach ($item->getGroups(CommonITILActor::ASSIGN) as $data) {
+                  foreach (Group_User::getGroupUsers($data['groups_id']) as $data2) {
+                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"], $data2["realname"],
+                                                         $data2["firstname"]);
+                  }
+               }
+            }
+            
+            break;
+      }
+      asort($users);
       // Use get method to check availability
       echo "<div class='center'><form method='GET' name='form' action='planning.php'>\n";
-      echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Availability')."</th>";
-      echo "<th colspan='3'>".getUserName($who)."</th></tr>";
+      echo "<table class='tab_cadre_fixe'>";
+      $colspan=5;
+      if (count($users) >1) {
+         $colspan++;
+      }
+      echo "<tr class='tab_bg_1'><th colspan='$colspan'>".__('Availability')."</th>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start')."</td>\n";
@@ -457,9 +507,18 @@ class Planning extends CommonGLPI {
       Html::showDateField("end", array('value'      => $end,
                                        'maybeempty' => false));
       echo "</td>\n";
-
-      echo "<td rowspan='2' class='center'>";
-      echo "<input type='hidden' name='users_id' value=\"$who\">";
+      if (count($users)>1) {
+         echo "<td width='40%'>";
+         $data = array(0 => __('All'));
+         $data += $users;
+         Dropdown::showFromArray('limitto', $data, array('width' => '100%',
+                                                         'value' => $params['limitto']));
+         echo "</td>";
+      }
+      
+      echo "<td class='center'>";
+      echo "<input type='hidden' name='".$item->getForeignKeyField()."' value=\"".$item->getID()."\">";
+      echo "<input type='hidden' name='itemtype' value=\"".$item->getType()."\">";
       echo "<input type='submit' class='submit' name='checkavailability' value=\"".
              _sx('button', 'Search') ."\">";
       echo "</td>\n";
@@ -469,124 +528,141 @@ class Planning extends CommonGLPI {
       Html::closeForm();
       echo "</div>\n";
 
-      $params = array('who'       => $who,
-                      'who_group' => 0,
-                      'begin'     => $realbegin,
-                      'end'       => $realend);
-
-      $interv = array();
-      foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $interv = array_merge($interv, $itemtype::populatePlanning($params));
+      if ($params['limitto'] > 0 && isset($users[$params['limitto']])) {
+         $displayuser[$params['limitto']] = $users[$params['limitto']];
+      } else {
+         $displayuser = $users;
       }
 
-      // Print Headers
-      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
-      $colnumber  = 1;
-      $plan_begin = explode(":",$CFG_GLPI["planning_begin"]);
-      $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
-      $begin_hour = intval($plan_begin[0]);
-      $end_hour   = intval($plan_end[0]);
-      if ($plan_end[1] != 0) {
-         $end_hour++;
-      }
-      $colsize = floor((100-15)/($end_hour-$begin_hour));
+      if (count($displayuser)) {
+         foreach ($displayuser as $who => $whoname) {
 
-      // Print Headers
-      echo "<tr class='tab_bg_1'><th width='15%'>&nbsp;</th>";
+            $params = array('who'       => $who,
+                           'who_group' => 0,
+                           'begin'     => $realbegin,
+                           'end'       => $realend);
 
-      for ($i=$begin_hour ; $i<$end_hour ; $i++) {
-         $from = ($i<10?'0':'').$i;
-//          $to   = ((($i+1) < 10)?'0':'').($i+1);
-         echo "<th width='$colsize%' colspan='4'>".$from.":00</th>";
-         $colnumber += 4;
-      }
-      echo "</tr>";
-
-      $day_begin = strtotime($realbegin);
-      $day_end   = strtotime($realend);
-
-
-      for ($time=$day_begin ; $time<$day_end ; $time+=DAY_TIMESTAMP) {
-         $current_day = date('Y-m-d', $time);
-         echo "<tr><th>".Html::convDate($current_day)."</th>";
-         $begin_quarter = $begin_hour*4;
-         $end_quarter   = $end_hour*4;
-         for ($i=$begin_quarter ; $i<$end_quarter ; $i++) {
-
-            $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP/4);
-            $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP/4);
-            // Init activity interval
-            $begin_act  = $end_time;
-            $end_act    = $begin_time;
-
-            reset($interv);
-            while ($data = current($interv)) {
-               if (($data["begin"] >= $begin_time)
-                   && ($data["end"] <= $end_time)) {
-                  // In
-                  if ($begin_act > $data["begin"]) {
-                     $begin_act = $data["begin"];
-                  }
-                  if ($end_act < $data["end"]) {
-                     $end_act = $data["end"];
-                  }
-
-                  unset($interv[key($interv)]);
-               } else if (($data["begin"] < $begin_time)
-                          && ($data["end"] > $end_time)) {
-                  // Through
-                  $begin_act = $begin_time;
-                  $end_act   = $end_time;
-
-                  next($interv);
-               } else if (($data["begin"] >= $begin_time)
-                          && ($data["begin"] < $end_time)) {
-                  // Begin
-                  if ($begin_act > $data["begin"]) {
-                     $begin_act = $data["begin"];
-                  }
-                  $end_act = $end_time;
-
-                  next($interv);
-               } else if (($data["end"] > $begin_time)
-                          && ($data["end"] <= $end_time)) {
-                  //End
-                  $begin_act = $begin_time;
-                  if ($end_act < $data["end"]) {
-                     $end_act = $data["end"];
-                  }
-                  unset($interv[key($interv)]);
-               } else { // Defautl case
-                  next($interv);
-               }
+            $interv = array();
+            foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+               $interv = array_merge($interv, $itemtype::populatePlanning($params));
             }
-            if ($begin_act < $end_act) {
-               if (($begin_act <= $begin_time)
-                   && ($end_act >= $end_time)) {
-                  // Activity in quarter
-                  echo "<td class='notavailable'>&nbsp;</td>";
-               } else {
-                  // Not all the quarter
-                  if ($begin_act <= $begin_time) {
-                     echo "<td class='partialavailableend'>&nbsp;</td>";
+
+            // Print Headers
+            echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+            $colnumber  = 1;
+            $plan_begin = explode(":",$CFG_GLPI["planning_begin"]);
+            $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
+            $begin_hour = intval($plan_begin[0]);
+            $end_hour   = intval($plan_end[0]);
+            if ($plan_end[1] != 0) {
+               $end_hour++;
+            }
+            $colsize = floor((100-15)/($end_hour-$begin_hour));
+            $timeheader = '';
+            for ($i=$begin_hour ; $i<$end_hour ; $i++) {
+               $from = ($i<10?'0':'').$i;
+               $timeheader.= "<th width='$colsize%' colspan='4'>".$from.":00</th>";
+               $colnumber += 4;
+            }
+
+            // Print Headers
+            echo "<tr class='tab_bg_1'><th colspan='$colnumber'>";
+            echo $whoname;
+            echo "</th></tr>";
+            echo "<tr class='tab_bg_1'><th width='15%'>&nbsp;</th>";
+            echo $timeheader;
+            echo "</tr>";
+
+      
+            
+            $day_begin = strtotime($realbegin);
+            $day_end   = strtotime($realend);
+
+
+            for ($time=$day_begin ; $time<$day_end ; $time+=DAY_TIMESTAMP) {
+               $current_day = date('Y-m-d', $time);
+               echo "<tr><th>".Html::convDate($current_day)."</th>";
+               $begin_quarter = $begin_hour*4;
+               $end_quarter   = $end_hour*4;
+               for ($i=$begin_quarter ; $i<$end_quarter ; $i++) {
+
+                  $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP/4);
+                  $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP/4);
+                  // Init activity interval
+                  $begin_act  = $end_time;
+                  $end_act    = $begin_time;
+
+                  reset($interv);
+                  while ($data = current($interv)) {
+                     if (($data["begin"] >= $begin_time)
+                        && ($data["end"] <= $end_time)) {
+                        // In
+                        if ($begin_act > $data["begin"]) {
+                           $begin_act = $data["begin"];
+                        }
+                        if ($end_act < $data["end"]) {
+                           $end_act = $data["end"];
+                        }
+
+                        unset($interv[key($interv)]);
+                     } else if (($data["begin"] < $begin_time)
+                              && ($data["end"] > $end_time)) {
+                        // Through
+                        $begin_act = $begin_time;
+                        $end_act   = $end_time;
+
+                        next($interv);
+                     } else if (($data["begin"] >= $begin_time)
+                              && ($data["begin"] < $end_time)) {
+                        // Begin
+                        if ($begin_act > $data["begin"]) {
+                           $begin_act = $data["begin"];
+                        }
+                        $end_act = $end_time;
+
+                        next($interv);
+                     } else if (($data["end"] > $begin_time)
+                              && ($data["end"] <= $end_time)) {
+                        //End
+                        $begin_act = $begin_time;
+                        if ($end_act < $data["end"]) {
+                           $end_act = $data["end"];
+                        }
+                        unset($interv[key($interv)]);
+                     } else { // Defautl case
+                        next($interv);
+                     }
+                  }
+                  if ($begin_act < $end_act) {
+                     if (($begin_act <= $begin_time)
+                        && ($end_act >= $end_time)) {
+                        // Activity in quarter
+                        echo "<td class='notavailable'>&nbsp;</td>";
+                     } else {
+                        // Not all the quarter
+                        if ($begin_act <= $begin_time) {
+                           echo "<td class='partialavailableend'>&nbsp;</td>";
+                        } else {
+                           echo "<td class='partialavailablebegin'>&nbsp;</td>";
+                        }
+                     }
                   } else {
-                     echo "<td class='partialavailablebegin'>&nbsp;</td>";
+                     // No activity
+                     echo "<td class='available'>&nbsp;</td>";
                   }
                }
-            } else {
-               // No activity
-               echo "<td class='available'>&nbsp;</td>";
+               echo "</tr>";
             }
+            echo "<tr class='tab_bg_1'><td colspan='$colnumber'>&nbsp;</td></tr>";
+            echo "</table></div>";
          }
-         echo "</tr>";
       }
-      echo "<tr class='tab_bg_1'><td colspan='$colnumber'>&nbsp;</td></tr>";
-
+      echo "<div><table class='tab_cadre'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th>".__('Caption')."</th>";
       echo "<td class='available' colspan=8>".__('Available')."</td>";
       echo "<td class='notavailable' colspan=8>".__('Unavailable')."</td>";
-      echo "<td colspan='".($colnumber-17)."'>&nbsp;</td></tr>";
+      echo "</tr>";
       echo "</table></div>";
 
    }
