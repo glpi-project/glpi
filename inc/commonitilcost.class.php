@@ -383,14 +383,19 @@ abstract class CommonITILCost extends CommonDBChild {
    /**
     * Print the item costs
     *
-    * @param $item                  CommonITILObject object
+    * @param $item                  CommonITILObject object or Project
     * @param $withtemplate boolean  Template or basic item (default '')
     *
-    * @return Nothing (call to classes members)
+    * @return total cost
    **/
-   static function showForObject(CommonITILObject $item, $withtemplate='') {
+   static function showForObject($item, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
+      $forproject = false;
+      if (Toolbox::is_a($item, 'Project')) {
+         $forproject = true;
+      }
+      
       $ID = $item->fields['id'];
 
       if (!$item->getFromDB($ID)
@@ -398,14 +403,22 @@ abstract class CommonITILCost extends CommonDBChild {
           || !static::canView()) {
          return false;
       }
-
-      $canedit = $item->canUpdateItem();
+      $canedit = false;
+      if (!$forproject) {
+         $canedit = $item->canUpdateItem();
+      }
 
       echo "<div class='center'>";
 
+      $condition = "= '$ID'";
+
+      if ($forproject) {
+         $condition = " IN ('".implode("','",ProjectTask::getAllTicketsForProject($ID))."')";
+      }
+      
       $query = "SELECT *
                 FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` = '$ID'
+                WHERE `".static::$items_id."` $condition
                 ORDER BY `begin_date`";
 
       $rand   = mt_rand();
@@ -431,13 +444,22 @@ abstract class CommonITILCost extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th>";
-         echo "<th>".__('Item duration')."</th>";
-         echo "<th>".CommonITILObject::getActionTime($item->fields['actiontime'])."</th>";
+         if ($forproject) {
+            echo "<tr><th colspan='10'>"._n('Ticket cost', 'Ticket costs', $DB->numrows($result))."</th>";
+         } else {
+            echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th>";
+            echo "<th>".__('Item duration')."</th>";
+            echo "<th>".CommonITILObject::getActionTime($item->fields['actiontime'])."</th>";
+         }
          echo "</tr>";
 
          if ($DB->numrows($result)) {
-            echo "<tr><th>".__('Name')."</th>";
+            echo "<tr>";
+            if ($forproject) {
+               echo "<th>".__('Ticket')."</th>";
+               $ticket = new Ticket();
+            }
+            echo "<th>".__('Name')."</th>";
             echo "<th>".__('Begin date')."</th>";
             echo "<th>".__('End date')."</th>";
             echo "<th>".__('Budget')."</th>";
@@ -448,7 +470,7 @@ abstract class CommonITILCost extends CommonDBChild {
             echo "<th>".__('Total cost')."</th>";
             echo "</tr>";
 
-         Session::initNavigateListItems(static::getType(),
+            Session::initNavigateListItems(static::getType(),
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
@@ -468,6 +490,11 @@ abstract class CommonITILCost extends CommonDBChild {
                $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
                                                       $data['name'], $data['id'])
                                             : $data['name']);
+
+               if ($forproject) {
+                  $ticket->getFromDB($data['tickets_id']);
+                  echo "<td>".$ticket->getLink()."</td>";
+               }
                echo "<td>";
                printf(__('%1$s %2$s'), $name,
                         Html::showToolTip($data['comment'], array('display' => false)));
@@ -502,7 +529,11 @@ abstract class CommonITILCost extends CommonDBChild {
                echo "</tr>";
                Session::addToNavigateListItems(static::getType(), $data['id']);
             }
-            echo "<tr class='b noHover'><td colspan='4' class='right'>".__('Total').'</td>';
+            $colspan = 4;
+            if ($forproject) {
+               $colspan++;
+            }
+            echo "<tr class='b noHover'><td colspan='$colspan' class='right'>".__('Total').'</td>';
             echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
             echo "<td class='numeric'>".Html::formatNumber($total_costtime)."</td>";
             echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
@@ -514,6 +545,7 @@ abstract class CommonITILCost extends CommonDBChild {
          echo "</table>";
       }
       echo "</div><br>";
+      return $total;
    }
 
 
