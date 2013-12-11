@@ -1129,7 +1129,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       $canplan = Session::haveRight("planning", Planning::READMY);
-
+      $rand = mt_rand();
       $this->showFormHeader($options);
 
       $rowspan = 3 ;
@@ -1196,7 +1196,19 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('By')."</td>";
+      echo "<td>".__('By');
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
+             title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
+             class='calendrier'>";
+      echo "</a>";
+      Ajax::createIframeModalWindow('planningcheck'.$rand,
+                                    $CFG_GLPI["root_doc"].
+                                          "/front/planning.php?checkavailability=checkavailability".
+                                          "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
+                                    array('title'  => __('Availability')));
+      
+      echo "</td>";
       echo "<td class='center'>";
       $rand_user          = mt_rand();
       $params             = array('name'   => "users_id_tech",
