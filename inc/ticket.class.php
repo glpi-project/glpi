@@ -1131,7 +1131,6 @@ class Ticket extends CommonITILObject {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
       }
-
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                        Toolbox::stripslashes_deep($input),
                                        array('recursive' => true));
@@ -1139,6 +1138,7 @@ class Ticket extends CommonITILObject {
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
 
+      
       if (isset($input['_users_id_requester'])
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector
@@ -1237,7 +1237,7 @@ class Ticket extends CommonITILObject {
       if (($manual_slas_id == 0)
           && isset($input["due_date"]) && ($input['due_date'] != 'NULL')) {
          // Valid due date
-         if ($input['due_date'] > $input['date']) {
+         if ($input['due_date'] >= $input['date']) {
             if (isset($input["slas_id"])) {
                unset($input["slas_id"]);
             }
@@ -1263,7 +1263,6 @@ class Ticket extends CommonITILObject {
          $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'], '',
                                                 Ticket::INCIDENT_TYPE);
       }
-
       return $input;
    }
 
