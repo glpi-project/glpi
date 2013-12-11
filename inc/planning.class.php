@@ -45,7 +45,10 @@ class Planning extends CommonGLPI {
    const READGROUP = 1024;
    const READALL   = 2048;
 
-
+   const INFO = 0;
+   const TODO = 1;
+   const DONE = 2;
+   
    /**
     * @since version 0.85
     *
@@ -150,13 +153,13 @@ class Planning extends CommonGLPI {
    static function getState($value) {
 
       switch ($value) {
-         case 0 :
+         case static::INFO :
             return _n('Information', 'Information', 1);
 
-         case 1 :
+         case static::TODO :
             return __('To do');
 
-         case 2 :
+         case static::DONE :
             return __('Done');
       }
    }
@@ -171,9 +174,9 @@ class Planning extends CommonGLPI {
    **/
    static function dropdownState($name, $value='', $display=true) {
 
-      $values = array(0 => _n('Information', 'Information', 1),
-                      1 => __('To do'),
-                      2 => __('Done'));
+      $values = array(static::INFO => _n('Information', 'Information', 1),
+                      static::TODO => __('To do'),
+                      static::DONE => __('Done'));
 
       return Dropdown::showFromArray($name, $values, array('value'   => $value,
                                                            'display' => $display));

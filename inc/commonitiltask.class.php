@@ -1017,6 +1017,24 @@ abstract class CommonITILTask  extends CommonDBTM {
             "$rand'>";
 
       echo "<td>";
+      switch ($this->fields['state']) {
+         case Planning::INFO :
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/faqedit.png'>";
+            break;
+         case Planning::TODO :
+            if (empty($this->fields['begin'])) {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>";
+            } else {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/rdv.png'>";
+            }
+            break;
+         case Planning::DONE :
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>";
+            break;
+      }
+      echo "</td>";
+            
+      echo "<td>";
       $typename = $this->getTypeName(1);
       if ($this->fields['taskcategories_id']) {
          printf(__('%1$s - %2$s'), $typename,
@@ -1337,7 +1355,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
+         echo "<tr><th>&nbsp;</th><th>".__('Type')."</th><th>" . __('Date') . "</th>";
          echo "<th>" . __('Description') . "</th><th>" .  __('Duration') . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
