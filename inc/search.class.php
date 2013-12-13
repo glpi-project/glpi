@@ -2150,11 +2150,23 @@ class Search {
          }
       }
 
+
+      $tocompute      = "`$table$addtable`.`$field`";
+      $tocomputeid    = "`$table$addtable`.`id`";
+      $tocomputetrans = "`$table".$addtable."_trans`.`value`";
+      
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
           && count($searchopt[$ID]["additionalfields"])) {
          foreach ($searchopt[$ID]["additionalfields"] as $key) {
-            $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS ".$NAME."_".$num."_$key, ";
+            if ($meta
+               || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+               $ADDITONALFIELDS .= " GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`, '".self::NULLVALUE."') ,
+                                                   '$$', $tocomputeid) SEPARATOR '$$$$')
+                                    AS ".$NAME."_".$num."_$key, ";
+            } else {
+               $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS ".$NAME."_".$num."_$key, ";
+            }
          }
       }
 
@@ -2226,14 +2238,6 @@ class Search {
                            / COUNT(`$table$addtable`.`id`)) AS ".$NAME."_".$num.",
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
                       $ADDITONALFIELDS";
-
-
-         case "glpi_tickets_tickets.tickets_id_1" :
-            return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
-                                 AS ".$NAME."_$num,
-                     GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
-                                 AS ".$NAME."_".$num."_2,
-                     $ADDITONALFIELDS";
 
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
@@ -2372,10 +2376,6 @@ class Search {
             }
          }
       }
-
-      $tocompute      = "`$table$addtable`.`$field`";
-      $tocomputeid    = "`$table$addtable`.`id`";
-      $tocomputetrans = "`$table".$addtable."_trans`.`value`";
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
@@ -4124,10 +4124,13 @@ class Search {
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
                $split      = explode("$$$$",$data[$NAME.$num]);
-               $split2     = explode("$$$$",$data[$NAME.$num."_2"]);
+               $split2     = explode("$$$$",$data[$NAME.$num."_tickets_id_2"]);
                $displayed  = array();
                for ($k=0 ; $k<count($split) ; $k++) {
-                  $linkid = ($split[$k] == $data['id']) ? $split2[$k] : $split[$k];
+                  $split3 = self::explodeWithID("$$", $split[$k]);
+                  $split4 = self::explodeWithID("$$", $split2[$k]);
+               
+                  $linkid = ($split4[0] == $data['id']) ? $split4[0] : $split4[0];
                   if (($linkid > 0) && !isset($displayed[$linkid])) {
                      $text  = "<a ";
                      $text .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$linkid\">";

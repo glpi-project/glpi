@@ -2154,12 +2154,14 @@ class Ticket extends CommonITILObject {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
-         $tab[40]['table']          = 'glpi_tickets_tickets';
-         $tab[40]['field']          = 'tickets_id_1';
-         $tab[40]['name']           = __('All linked tickets');
-         $tab[40]['massiveaction']  = false;
-         $tab[40]['searchtype']     = 'equals';
-         $tab[40]['joinparams']     = array('jointype' => 'item_item');
+         $tab[40]['table']            = 'glpi_tickets_tickets';
+         $tab[40]['field']            = 'tickets_id_1';
+         $tab[40]['name']             = __('All linked tickets');
+         $tab[40]['massiveaction']    = false;
+         $tab[40]['forcegroupby']     = true;
+         $tab[40]['searchtype']       = 'equals';
+         $tab[40]['joinparams']       = array('jointype' => 'item_item');
+         $tab[40]['additionalfields'] = array('tickets_id_2');
 
          $tab[47]['table']          = 'glpi_tickets_tickets';
          $tab[47]['field']          = 'tickets_id_1';
