@@ -391,7 +391,7 @@ class Reminder extends CommonDBTM {
       $tab[3]['name']          = __('Status');
       $tab[3]['datatype']      = 'specific';
       $tab[3]['massiveaction'] = false;
-      $tab[3]['searchtype']    = 'equals';
+      $tab[3]['searchtype']    = array('equals', 'notequals');
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'text';
