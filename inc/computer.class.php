@@ -919,6 +919,8 @@ class Computer extends CommonDBTM {
       $tab[34]['width']          = 1000;
       $tab[34]['massiveaction']  = false;
       $tab[34]['joinparams']     = $items_device_joinparams;
+      $tab[34]['computation']    = "(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)";
 
 
       $tab[39]['table']          = 'glpi_devicepowersupplies';
