@@ -121,7 +121,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          $sql = "SELECT DISTINCT `glpi_softwares`.`name`,
                         `glpi_manufacturers`.`name` AS manufacturer,
                         `glpi_softwares`.`manufacturers_id` AS manufacturers_id,
-                        `glpi_softwares`.`entities_id` AS entities_id
+                        `glpi_softwares`.`entities_id` AS entities_id,
+                        `glpi_softwares`.`is_helpdesk_visible` AS helpdesk
                  FROM `glpi_softwares`
                  LEFT JOIN `glpi_manufacturers`
                      ON (`glpi_manufacturers`.`id` = `glpi_softwares`.`manufacturers_id`)";
@@ -131,7 +132,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                         AND `glpi_softwares`.`is_template` = '0' ";
 
          if (isset($params['manufacturer']) && $params['manufacturer']) {
-            $sql .= " AND `manufacturer` = '" . $params['manufacturer'] . "'";
+            $sql .= " AND `glpi_softwares`.`manufacturers_id` = '" . $params['manufacturer'] . "'";
          }
          if ($offset) {
             $sql .= " LIMIT " . intval($offset) . ",999999999";
@@ -162,7 +163,11 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
                 || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
                 || (isset($res_rule['new_entities_id'])
-                    && ($res_rule['new_entities_id'] != $input['entities_id']))) {
+                    && ($res_rule['new_entities_id'] != $input['entities_id']))
+                || (isset($res_rule['is_helpdesk_visible'])
+                    && ($res_rule['is_helpdesk_visible'] != $input['helpdesk']))
+                || (isset($res_rule['manufacturer'])
+                    && ($res_rule['manufacturer'] != $input['manufacturer']))) {
 
                $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
