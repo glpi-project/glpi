@@ -39,8 +39,17 @@ if (!defined('GLPI_ROOT')) {
 $link = new Supplier_Ticket();
 
 Session ::checkLoginUser();
+Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
-if (isset($_POST['delete'])) {
+if (isset($_POST["update"])) {
+   $link->check($_POST["id"], UPDATE);
+
+   $link->update($_POST);
+   echo "<script type='text/javascript' >\n";
+   echo "window.parent.location.reload();";
+   echo "</script>";
+
+} else if (isset($_POST['delete'])) {
    $link->check($_POST['id'], DELETE);
    $link->delete($_POST);
 
@@ -48,7 +57,11 @@ if (isset($_POST['delete'])) {
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$link->fields['tickets_id']);
 
+} else if (isset($_GET["id"])) {
+   $link->showNotificationForm($_GET["id"]);
+} else {
+   Html::displayErrorAndDie('Lost');
 }
 
-Html::displayErrorAndDie('Lost');
+Html::popFooter();
 ?>

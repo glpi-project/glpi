@@ -2362,6 +2362,10 @@ function update084to085() {
 
    $migration->addField("glpi_suppliers_tickets", "use_notification", "bool");
    $migration->addField("glpi_suppliers_tickets", "alternative_email", "string");
+   $migration->addField("glpi_problems_suppliers", "use_notification", "bool");
+   $migration->addField("glpi_problems_suppliers", "alternative_email", "string");
+   $migration->addField("glpi_changes_suppliers", "use_notification", "bool");
+   $migration->addField("glpi_changes_suppliers", "alternative_email", "string");
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

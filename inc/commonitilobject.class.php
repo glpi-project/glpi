@@ -1289,7 +1289,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!is_null($supplieractors)) {
          if (isset($this->input["_suppliers_id_assign"])
              && ($this->input["_suppliers_id_assign"] > 0)) {
-            $input3->add(array($supplieractors->getItilObjectForeignKey()
+            $supplieractors->add(array($supplieractors->getItilObjectForeignKey()
                                               => $this->fields['id'],
                                'suppliers_id' => $this->input["_suppliers_id_assign"],
                                'type'         => CommonITILActor::ASSIGN));
@@ -2153,7 +2153,8 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                   echo "&nbsp;";
                   if ($canedit) {
-                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png');
+                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                  'popup' => $linksupplier->getFormURL()."?id=".$d['id']);
                      Html::showToolTip($text, $opt);
                   }
 
@@ -3190,6 +3191,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $paramscomment = array('value'       => '__VALUE__',
                                 'field'       => "_suppliers_id_assign_notif",
                                 'allow_email' => true,
+                                 'typefield'   => 'supplier',
                                 'use_notification'
                                     => $options["_suppliers_id_assign_notif"]['use_notification']);
          if (isset($options["_suppliers_id_assign_notif"]['alternative_email'])) {
