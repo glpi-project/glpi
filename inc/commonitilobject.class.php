@@ -241,6 +241,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return array();
    }
 
+
    /**
     * get suppliers linked to a object
     *
@@ -258,6 +259,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return array();
    }
+
 
    /**
     * count users linked to object by type or global
@@ -311,6 +313,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return 0;
    }
+
 
    /**
     * count suppliers linked to object by type or global
@@ -488,6 +491,36 @@ abstract class CommonITILObject extends CommonDBTM {
                                                           array_merge($this->getSolvedStatusArray(),
                                                                       $this->getClosedStatusArray())
                                                           )."')");
+   }
+
+
+   /**
+    * Count active ITIL Objects assigned to a supplier
+    *
+    * @since version 0.85
+    *
+    * @param $suppliers_id integer ID of the Supplier
+    *
+    * @return integer
+    **/
+   function countActiveObjectsForSupplier($suppliers_id) {
+
+      $linkclass = new $this->supplierlinkclass();
+      $itemtable = $this->getTable();
+      $itemtype  = $this->getType();
+      $itemfk    = $this->getForeignKeyField();
+      $linktable = $linkclass->getTable();
+
+      return countElementsInTable(array($itemtable,$linktable),
+            "`$linktable`.`$itemfk` = `$itemtable`.`id`
+            AND `$linktable`.`suppliers_id` = '$suppliers_id'
+            AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
+            AND `$itemtable`.`is_deleted` = 0
+            AND `$itemtable`.`status`
+            NOT IN ('".implode("', '",
+            array_merge($this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray())
+      )."')");
    }
 
 

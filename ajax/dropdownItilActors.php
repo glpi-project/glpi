@@ -160,7 +160,7 @@ if (isset($_POST["type"])
                                             'moreparams'      => $paramscomment);
                /// TODO this update part does not work on selecting supplier
             }
-            if ($_POST["itemtype"] == 'Ticket') {
+/*            if ($_POST["itemtype"] == 'Ticket') {
                $toupdate = array();
                if (isset($options['toupdate']) && is_array($options['toupdate'])) {
                   $toupdate[] = $options['toupdate'];
@@ -172,7 +172,7 @@ if (isset($_POST["type"])
                                    'moreparams'      => array('suppliers_id_assign' => '__VALUE__'));
                $options['toupdate'] = $toupdate;
             }
-
+*/
             $rand = Supplier::dropdown($options);
             // Display active tickets for a supplier
             // Need to update information on dropdown changes

@@ -86,5 +86,29 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
    printf(__('%1$s: %2$s'), __('Processing'),
           $ticket->countActiveObjectsForTechGroup($_POST['groups_id_assign']));
    echo ")</a>";
+
+} else if (isset($_POST['suppliers_id_assign']) && ($_POST['suppliers_id_assign'] > 0)) {
+
+   $ticket = new Ticket();
+
+   $options2['field'][0]      = 6; // suppliers_id assign
+   $options2['searchtype'][0] = 'equals';
+   $options2['contains'][0]   = $_POST['suppliers_id_assign'];
+   $options2['link'][0]       = 'AND';
+
+   $options2['field'][1]      = 12; // status
+   $options2['searchtype'][1] = 'equals';
+   $options2['contains'][1]   = 'notold';
+   $options2['link'][1]       = 'AND';
+
+   $options2['reset'] = 'reset';
+
+   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+
+   //TRANS: %d is number of objects for the user
+   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
+   printf(__('%1$s: %2$s'), __('Processing'),
+          $ticket->countActiveObjectsForSupplier($_POST['suppliers_id_assign']));
+   echo ")</a>";
 }
 ?>
