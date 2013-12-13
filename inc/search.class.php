@@ -2938,15 +2938,6 @@ class Search {
                               self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name`
                            $SEARCH ) ";
 
-         case "glpi_profiles.interface" :
-            if (stristr(Profile::getInterfaceName('central'),$val)) {
-               return $link." `$table`.`$field`='central'";
-            }
-            if (stristr(Profile::getInterfaceName('helpdesk'),$val)) {
-               return $link." `$table`.`$field`='helpdesk'";
-            }
-            return "";
-
          case "glpi_ipaddresses.name" :
             $search  = array("/\&lt;/","/\&gt;/");
             $replace = array("<",">");
@@ -3088,8 +3079,6 @@ class Search {
             }
             break;
 
-         case "glpi_ticketsatisfactions.type" :
-            return $link." `$table`.`$field` = '$val' ";
 
          case "glpi_tickets.is_late" :
          case "glpi_problems.is_late" :
@@ -4026,9 +4015,6 @@ class Search {
                }
                break;
 
-            case "glpi_profiles.interface" :
-               return Profile::getInterfaceName($data[$NAME.$num]);
-
             case "glpi_profiles.name" :
                if (($itemtype == 'User')
                    && ($ID == 20)) {
@@ -4553,9 +4539,6 @@ class Search {
                   }
                }
                return $out;
-
-            case 'glpi_ticketsatisfactions.type' :
-               return TicketSatisfaction::getTypeInquestName($data[$NAME.$num]);
 
             case 'glpi_ticketsatisfactions.satisfaction' :
                return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);

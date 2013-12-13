@@ -2039,7 +2039,8 @@ class Ticket extends CommonITILObject {
       $tab[31]['field']             = 'type';
       $tab[31]['name']              = __('Type');
       $tab[31]['massiveaction']     = false;
-      $tab[31]['searchtype']        = 'equals';
+      $tab[31]['searchtype']        = array('equals', 'notequals');
+      $tab[31]['searchequalsonfield'] = true;
       $tab[31]['joinparams']        = array('jointype' => 'child');
       $tab[31]['datatype']          = 'specific';
 

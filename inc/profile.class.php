@@ -1392,6 +1392,7 @@ class Profile extends CommonDBTM {
       $tab[2]['name']            = __("Profile's interface");
       $tab[2]['massiveaction']   = false;
       $tab[2]['datatype']        = 'specific';
+      $tab[2]['searchtype']      = array('equals', 'notequals');
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'is_default';
