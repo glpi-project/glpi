@@ -323,7 +323,7 @@ class Item_Devices extends CommonDBRelation {
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {
-         echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
+         echo "\n<form id='form_device_add$rand' name='form_device_action$rand'
                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>\n";
          echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
          echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
@@ -402,6 +402,14 @@ class Item_Devices extends CommonDBRelation {
          echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
          echo "</td></tr></table>";
+         Html::closeForm();
+      }
+      
+      if ($canedit) {
+         echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
+                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>\n";
+         echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
+         echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
       }
 
       $table->display(array('display_super_for_each_group' => false,

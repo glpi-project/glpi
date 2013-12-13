@@ -2227,15 +2227,6 @@ class Search {
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
                       $ADDITONALFIELDS";
 
-         case "glpi_items_deviceharddrives.capacity" :
-            if ($itemtype != 'DeviceHardDrive') {
-               return " SUM(`glpi_items_deviceharddrives`.`capacity`)
-                        / COUNT(`glpi_items_deviceharddrives`.`id`)
-                        * COUNT(DISTINCT `glpi_items_deviceharddrives`.`id`) AS ".$NAME."_".$num.",
-                        $ADDITONALFIELDS";
-            }
-            break;
-
          case "glpi_items_devicememories.size" :
             if ($itemtype != 'DeviceMemory') {
                return " SUM(`glpi_items_devicememories`.`size`)
