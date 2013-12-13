@@ -2802,6 +2802,7 @@ class User extends CommonDBTM {
 
       $joinprofile      = false;
       $joinprofileright = false;
+
       switch ($right) {
          case "interface" :
             $joinprofile = true;
@@ -2857,34 +2858,6 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
-            /// TODO : il me semble qu'il faut revoir avec la nouvelle gestion du controle des droits.
-            ///  TODO : par exemple en en appasant array(droit_a_verifier => valeur attendue) et un controle pour avoir au moins ce droit.
-            if (in_array('reservation', Profile::$helpdesk_rights)
-                & !ReservationItem::RESERVEANITEM) {
-               return false;
-            }
-
-            if (in_array('ticket', Profile::$helpdesk_rights)
-                & !Ticket::canCreate()) {
-               return false;
-            }
-            if (in_array('followup', Profile::$helpdesk_rights)
-                & !Session::haveRightsOr('followup', array(TicketFollowup::ADDMYTICKET,
-                                                           TicketFollowup::UPDATEMY,
-                                                           TicketFollowup::SEEPUBLIC))) {
-               return false;
-            }
-            if (in_array('task', Profile::$helpdesk_rights)
-                & !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
-               return false;
-            }
-            if (in_array('ticketvalidation', Profile::$helpdesk_rights)
-                && !Session::haveRightsOr('ticketvalidation', array(TicketValidation::CREATEREQUEST,
-                                                              TicketValidation::CREATEINCIDENT,
-                                                              TicketValidation::VALIDATEREQUEST,
-                                                              TicketValidation::VALIDATEINCIDENT))) {
-               return false;
-            }
 
             foreach ($right as $r) {
                switch ($r) {
