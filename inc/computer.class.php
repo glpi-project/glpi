@@ -835,7 +835,8 @@ class Computer extends CommonDBTM {
       $tab[36]['width']          = 100;
       $tab[36]['massiveaction']  = false;
       $tab[36]['joinparams']     = $items_device_joinparams;
-
+      $tab[36]['computation']    = "SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)";
+      
       $tab[10]['table']          = 'glpi_devicememories';
       $tab[10]['field']          = 'designation';
       $tab[10]['name']           = __('Memory type');
@@ -849,6 +850,7 @@ class Computer extends CommonDBTM {
 
       $tab[35]['table']          = 'glpi_items_devicememories';
       $tab[35]['field']          = 'size';
+      $tab[35]['unit']           = __('Mio');
       $tab[35]['name']           = sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'));
       $tab[35]['forcegroupby']   = true;
       $tab[35]['usehaving']      = true;
@@ -856,6 +858,8 @@ class Computer extends CommonDBTM {
       $tab[35]['width']          = 100;
       $tab[35]['massiveaction']  = false;
       $tab[35]['joinparams']     = $items_device_joinparams;
+      $tab[35]['computation']    = "(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)";
 
 
       $tab[11]['table']          = 'glpi_devicenetworkcards';
@@ -913,6 +917,7 @@ class Computer extends CommonDBTM {
       $tab[34]['table']          = 'glpi_items_deviceharddrives';
       $tab[34]['field']          = 'capacity';
       $tab[34]['name']           = __('Hard drive size');
+      $tab[34]['unit']           = __('Mio');
       $tab[34]['forcegroupby']   = true;
       $tab[34]['usehaving']      = true;
       $tab[34]['datatype']       = 'number';
