@@ -121,7 +121,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          //Select all the differents software
          $sql = "SELECT DISTINCT `glpi_softwares`.`name`,
                         `glpi_manufacturers`.`name` AS manufacturer,
-                        `glpi_softwares`.`manufacturers_id` AS manufacturers_id,
                         `glpi_softwares`.`entities_id` AS entities_id,
                         `glpi_softwares`.`is_helpdesk_visible` AS helpdesk
                  FROM `glpi_softwares`
@@ -161,15 +160,14 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             //Replay software dictionnary rules
             $res_rule = $this->processAllRules($input, array(), array());
 
-            // TODO manque editeur et is_heldesk_visible
             if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
                 || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
                 || (isset($res_rule['new_entities_id'])
                     && ($res_rule['new_entities_id'] != $input['entities_id']))
                 || (isset($res_rule['is_helpdesk_visible'])
                     && ($res_rule['is_helpdesk_visible'] != $input['helpdesk']))
-                || (isset($res_rule['manufacturers_id'])
-                    && ($res_rule['manufacturers_id'] != $input['manufacturers_id']))) {
+                || (isset($res_rule['manufacturer'])
+                    && ($res_rule['manufacturer'] != $input['manufacturer']))) {
 
                $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
