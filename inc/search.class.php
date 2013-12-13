@@ -2159,22 +2159,6 @@ class Search {
       }
 
       switch ($table.".".$field) {
-         case "glpi_tickets.due_date" :
-         case "glpi_problems.due_date" :
-         case "glpi_changes.due_date" :
-            return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                     `$table$addtable`.`status` AS ".$NAME."_".$num."_2,
-                      $ADDITONALFIELDS";
-
-         case "glpi_tickets.is_late" :
-         case "glpi_problems.is_late" :
-         case "glpi_changes.is_late" :
-            return " IF(`$table$addtable`.`due_date` IS NOT NULL
-                        AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
-                             OR (`$table$addtable`.`solvedate` IS NULL
-                                 AND `$table$addtable`.`due_date` < NOW())),
-                        1, 0) AS ".$NAME."_$num,
-                     $ADDITONALFIELDS";
 
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
@@ -2243,13 +2227,6 @@ class Search {
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
                       $ADDITONALFIELDS";
 
-         case "glpi_contractcosts.totalcost" :
-            return " SUM(`glpi_contractcosts$addtable`.`cost`)
-                     / COUNT(`glpi_contractcosts$addtable`.`id`)
-                     * COUNT(DISTINCT `glpi_contractcosts$addtable`.`id`)
-                     AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
          case "glpi_items_deviceharddrives.capacity" :
             if ($itemtype != 'DeviceHardDrive') {
                return " SUM(`glpi_items_deviceharddrives`.`capacity`)
@@ -2296,17 +2273,6 @@ class Search {
                      AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
-         case "glpi_ticketcosts.totalcost" :
-         case "glpi_changecosts.totalcost" :
-         case "glpi_problemcosts.totalcost" :
-            return " SUM(`$table$addtable`.`actiontime`
-                         * `$table$addtable`.`cost_time`/".HOUR_TIMESTAMP."
-                         + `$table$addtable`.`cost_fixed`
-                         + `$table$addtable`.`cost_material`)
-                     / COUNT(`$table$addtable`.`id`)
-                     * COUNT(DISTINCT `$table$addtable`.`id`)
-                     AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
 
          case "glpi_tickets_tickets.tickets_id_1" :
             return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
@@ -2509,7 +2475,8 @@ class Search {
       }
       // Default case
       if ($meta
-         || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+         || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
+            && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = ", '$$', $tocomputetrans";
@@ -3078,17 +3045,6 @@ class Search {
                return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
             }
             break;
-
-
-         case "glpi_tickets.is_late" :
-         case "glpi_problems.is_late" :
-         case "glpi_changes.is_late" :
-            return " $link IF(`$table$addtable`.`due_date` IS NOT NULL
-                              AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
-                                   OR (`$table$addtable`.`solvedate` IS NULL
-                                       AND `$table$addtable`.`due_date` < NOW())),
-                              1, 0)
-                     $SEARCH ";
 
       }
 
@@ -3876,7 +3832,7 @@ class Search {
          case "glpi_problems.due_date" :
          case "glpi_changes.due_date" :
             if (($ID <> 151) && !empty($data[$NAME.$num])
-                && ($data[$NAME.$num.'_2'] != CommonITILObject::WAITING)
+                && ($data[$NAME.$num.'_status'] != CommonITILObject::WAITING)
                 && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
                return " style=\"background-color: #cf9b9b\" ";
             }
@@ -4312,14 +4268,14 @@ class Search {
                   $out = Html::convDate($data[$NAME.$num]);
 
                   // No due date in waiting status
-                  if ($data[$NAME.$num.'_2'] == CommonITILObject::WAITING) {
+                  if ($data[$NAME.$num.'_status'] == CommonITILObject::WAITING) {
                      return '';
                   }
                   if (empty($data[$NAME.$num])) {
                      return '';
                   }
-                  if (($data[$NAME.$num.'_2'] == Ticket::SOLVED)
-                      || ($data[$NAME.$num.'_2'] == Ticket::CLOSED)) {
+                  if (($data[$NAME.$num.'_status'] == Ticket::SOLVED)
+                      || ($data[$NAME.$num.'_status'] == Ticket::CLOSED)) {
                      return $data[$NAME.$num];
                   }
                   $itemtype = getItemTypeForTable($table);

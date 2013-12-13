@@ -170,6 +170,12 @@ abstract class CommonITILCost extends CommonDBChild {
       $tab[48]['usehaving']      = true;
       $tab[48]['massiveaction']  = false;
       $tab[48]['joinparams']     = array('jointype'  => 'child');
+      $tab[48]['computation']    = "(SUM(TABLE.`actiontime`
+                                    * TABLE.`cost_time`/".HOUR_TIMESTAMP."
+                                    + TABLE.`cost_fixed`
+                                    + TABLE.`cost_material`)
+                                 / COUNT(TABLE.`id`))
+                                 * COUNT(DISTINCT TABLE.`id`)";
 
       $tab[42]['table']          = static::getTable();
       $tab[42]['field']          = 'cost_time';
@@ -442,6 +448,12 @@ abstract class CommonITILCost extends CommonDBChild {
          }
       }
 
+      $total          = 0;
+      $total_time     = 0;
+      $total_costtime = 0;
+      $total_fixed    = 0;
+      $total_material = 0;
+
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
          if ($forproject) {
@@ -475,12 +487,6 @@ abstract class CommonITILCost extends CommonDBChild {
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
-
-            $total          = 0;
-            $total_time     = 0;
-            $total_costtime = 0;
-            $total_fixed    = 0;
-            $total_material = 0;
 
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2' ".

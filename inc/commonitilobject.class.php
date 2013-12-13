@@ -2435,6 +2435,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[18]['datatype']         = 'datetime';
       $tab[18]['maybefuture']      = true;
       $tab[18]['massiveaction']    = false;
+      $tab[18]['additionalfields'] = array('status');
+      
 
 
       $tab[151]['table']           = $this->getTable();
@@ -2448,6 +2450,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[82]['name']             = __('Late');
       $tab[82]['datatype']         = 'bool';
       $tab[82]['massiveaction']    = false;
+      $tab[82]['computation']      = "IF(TABLE.`due_date` IS NOT NULL
+                                       AND (TABLE.`solvedate` > TABLE.`due_date`
+                                             OR (TABLE.`solvedate` IS NULL
+                                                   AND TABLE.`due_date` < NOW())),
+                                       1, 0)";
+      
 
       $tab[17]['table']            = $this->getTable();
       $tab[17]['field']            = 'solvedate';
