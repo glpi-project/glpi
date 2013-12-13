@@ -2334,11 +2334,6 @@ class Search {
             }
             break;
 
-         case 'glpi_notifications.event' :
-            return " `glpi_notifications`.`itemtype` AS `itemtype`,
-                     `glpi_notifications`.`event` AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
          case 'glpi_tickets.name' :
             if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`,'$$',
@@ -3213,21 +3208,6 @@ class Search {
 
          case 'Reminder' :
             return Reminder::addVisibilityJoins();
-            /*
-            $out  = self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                      "glpi_reminders_users", "reminders_users_id", 0, 0,
-                                       array('jointype' => 'child'));
-            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                      "glpi_groups_reminders", "groups_reminders_id", 0, 0,
-                                       array('jointype' => 'child'));
-            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                      "glpi_entities_reminders", "entities_reminders_id", 0, 0,
-                                       array('jointype' => 'child'));
-            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                      "glpi_profiles_reminders", "profiles_reminders_id", 0, 0,
-                                       array('jointype' => 'child'));
-            return $out;
-            */
 
          case 'ProjectTask' :
             // Same structure in addDefaultWhere
@@ -3252,13 +3232,6 @@ class Search {
             $out = '';
             if (!Session::haveRight("ticket", Ticket::READALL)) {
                $searchopt = &self::getOptions($itemtype);
-
-//                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
-//                $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
-//                $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
-//                $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
-//               $observer_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']['joinparams']).'`';
-//               $observergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']['joinparams']).'`';
 
                // show mine : requester
                $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
@@ -4334,22 +4307,6 @@ class Search {
                return "<a title=\"".__s('Modify the comment')."\"
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
                         $data['refID']."' >".Html::resume_text($data[$NAME.$num])."</a>";
-
-            case 'glpi_notifications.mode' :
-               return Notification::getMode($data[$NAME.$num]);
-
-            case 'glpi_notifications.event' :
-               $item = NotificationTarget::getInstanceByType($data['itemtype']);
-               if ($item) {
-                  $events = $item->getAllEvents();
-                  if (isset($events[$data[$NAME.$num]])) {
-                     return $events[$data[$NAME.$num]];
-                  }
-               }
-               return '';
-
-            case 'glpi_reminders.state' :
-               return Planning::getState($data[$NAME.$num]);
 
             case 'glpi_crontasks.description' :
                $tmp = new CronTask();

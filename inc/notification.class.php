@@ -275,6 +275,7 @@ class Notification extends CommonDBTM {
          $values = array($field => $values);
       }
       $options['display'] = false;
+
       switch ($field) {
          case 'event' :
             if (isset($values['itemtype'])
@@ -317,6 +318,7 @@ class Notification extends CommonDBTM {
       $tab[3]['name']            = __('Notification method');
       $tab[3]['massiveaction']   = false;
       $tab[3]['datatype']        = 'specific';
+      $tab[3]['searchtype']      = array('equals', 'notequals');
 
       $tab[4]['table']           = 'glpi_notificationtemplates';
       $tab[4]['field']           = 'name';
@@ -399,7 +401,7 @@ class Notification extends CommonDBTM {
          }
       }
 
-      Dropdown::showFromArray($p['name'], self::getModes(), $p);
+      return Dropdown::showFromArray($p['name'], self::getModes(), $p);
    }
 
 
