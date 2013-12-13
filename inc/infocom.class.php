@@ -570,6 +570,9 @@ class Infocom extends CommonDBChild {
       if (is_null($val)) {
          return $tmp;
       }
+      // Default value for display
+      $tmp[0] = ' ';
+      
       if (isset($tmp[$val])) {
          return $tmp[$val];
       }

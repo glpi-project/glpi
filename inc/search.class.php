@@ -4071,25 +4071,6 @@ class Search {
                }
                return $out;
 
-            case "glpi_infocoms.alert" :
-               if ($data[$NAME.$num] == pow(2,Alert::END)) {
-                  return __s('Warranty expiration date');
-               }
-               return "";
-
-            case "glpi_contracts.alert" :
-               switch ($data[$NAME.$num]) {
-                  case pow(2,Alert::END) :
-                     return __('End');
-
-                  case pow(2,Alert::NOTICE) :
-                     return __('Notice');
-
-                  case pow(2,Alert::END) + pow(2,Alert::NOTICE) :
-                     return __('End + Notice');
-               }
-               return "";
-
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
                $split      = explode("$$$$",$data[$NAME.$num]);
