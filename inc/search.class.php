@@ -1139,6 +1139,7 @@ class Search {
                         if (!isset($already_printed[$p['itemtype2'][$j].$p['field2'][$j]])) {
                            // General case
                            if (strpos($data["META_$j"],"$$$$") === false) {
+                              
                               $out = self::giveItem($p['itemtype2'][$j], $p['field2'][$j], $data,
                                                     $j, 1);
                               echo self::showItem($output_type, $out, $item_num, $row_num);
@@ -1171,7 +1172,7 @@ class Search {
                                        $out .= $separate;
                                     }
                                     $count_display++;
-
+                                    /// TODO : use getSpecificValueToDisplay to display item (test with meat on sink_type)
                                     // Manage Link to item
                                     $split2 = self::explodeWithID("$$", $split[$k]);
                                     if (isset($split2[1])) {
@@ -3772,6 +3773,7 @@ class Search {
             return self::giveItem($data["TYPE"], $ID, $data, $num, $meta,
                                   $searchopt[$ID]['addobjectparams']);
          }
+
          return self::giveItem($data["TYPE"], $ID, $data, $num, $meta);
       }
 
@@ -4677,6 +4679,7 @@ class Search {
             }
          }
       }
+
       // Manage auto CONCAT id
       $split = self::explodeWithID('$$', $data[$NAME.$num]);
       $split[0] = trim($split[0]);
