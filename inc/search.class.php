@@ -2227,43 +2227,6 @@ class Search {
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
                       $ADDITONALFIELDS";
 
-         case "glpi_items_devicememories.size" :
-            if ($itemtype != 'DeviceMemory') {
-               return " SUM(`glpi_items_devicememories`.`size`)
-                        / COUNT(`glpi_items_devicememories`.`id`)
-                        * COUNT(DISTINCT `glpi_items_devicememories`.`id`) AS ".$NAME."_".$num.",
-                        $ADDITONALFIELDS";
-            }
-            break;
-
-         case "glpi_items_deviceprocessors.frequency" :
-            if ($itemtype != 'DeviceProcessor') {
-               return " SUM(`glpi_items_deviceprocessors`.`frequency`)
-                        / COUNT(`glpi_items_deviceprocessors`.`id`) AS ".$NAME."_".$num.",
-                        $ADDITONALFIELDS";
-            }
-            break;
-
-         case "glpi_ticketcosts.cost_time" :
-         case "glpi_problemcosts.cost_time" :
-         case "glpi_changecosts.cost_time" :
-            return " SUM(`$table$addtable`.`$field`*`$table$addtable`.`actiontime`/".HOUR_TIMESTAMP.")
-                     / COUNT(`$table$addtable`.`id`)
-                     * COUNT(DISTINCT `$table$addtable`.`id`)
-                     AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-         case "glpi_ticketcosts.cost_fixed" :
-         case "glpi_changecosts.cost_fixed" :
-         case "glpi_problemcosts.cost_fixed" :
-         case "glpi_ticketcosts.cost_material" :
-         case "glpi_changecosts.cost_material" :
-         case "glpi_problemcosts.cost_material" :
-            return " SUM(`$table$addtable`.`$field`)
-                     / COUNT(`$table$addtable`.`id`)
-                     * COUNT(DISTINCT `$table$addtable`.`id`)
-                     AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
 
          case "glpi_tickets_tickets.tickets_id_1" :
             return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
