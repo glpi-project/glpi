@@ -704,6 +704,7 @@ class Contract extends CommonDBTM {
       $tab[59]['field']             = 'alert';
       $tab[59]['name']              = __('Email alarms');
       $tab[59]['datatype']          = 'specific';
+      $tab[59]['searchtype']        = array('equals', 'notequals');
 
       $tab[86]['table']             = $this->getTable();
       $tab[86]['field']             = 'is_recursive';
@@ -1357,6 +1358,9 @@ class Contract extends CommonDBTM {
       if (is_null($val)) {
          return $tmp;
       }
+      // Default value for display
+      $tmp[0] = ' ';
+      
       if (isset($tmp[$val])) {
          return $tmp[$val];
       }
