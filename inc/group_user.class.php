@@ -178,7 +178,6 @@ class Group_User extends CommonDBRelation{
          Html::closeForm();
          echo "</div>";
       }
-
       echo "<div class='spaced'>";
       if ($canedit && count($used)) {
          $rand = mt_rand();
@@ -452,10 +451,14 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']));
+            $actions = array('delete'             => _x('button', 'Delete permanently'),
+                             'update'             => _x('button', 'Update'),
+                             'change_groupe_user' => __('Change group'));
+            $paramsma = array('num_displayed'    => min($number-$start, $_SESSION['glpilist_limit']),
+                              'specific_actions' => $actions,);
+
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
-
          echo "<table class='tab_cadre_fixehov'><tr>";
          if ($canedit) {
             echo "<th width='10'>";
@@ -527,6 +530,12 @@ class Group_User extends CommonDBRelation{
    function showSpecificMassiveActionsParameters($input=array()) {
 
       switch ($input['action']) {
+         case 'change_groupe_user' :
+            Group::dropdown(array('right'  => '`is_usergroup`'));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                  _sx('button', 'update')."'>";
+            return true;
+
          case "add_user_group" :
          case "add_supervisor_group" :
          case "add_delegatee_group" :
@@ -562,6 +571,21 @@ class Group_User extends CommonDBRelation{
                    'noright' => 0);
 
       switch ($input['action']) {
+         case 'change_groupe_user' :
+            $groupuser = new self();
+            foreach ($input["item"] as $key => $val) {
+                  if ($groupuser->getFromDB($key)) {
+                     $user = $groupuser->getField('users_id');
+                     if ($val == 1) {
+                        $inputcg = array('groups_id' => $input['groups_id'],
+                                         'users_id'  => $user,
+                                         'id'        => $key);
+                        $groupuser->update($inputcg);
+                     }
+                  }
+            }
+            break;
+
          case "add_user_group" :
          case "add_supervisor_group" :
          case "add_delegatee_group" :
@@ -738,6 +762,7 @@ class Group_User extends CommonDBRelation{
       }
       return true;
    }
+
 
 }
 ?>
