@@ -1289,10 +1289,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!is_null($supplieractors)) {
          if (isset($this->input["_suppliers_id_assign"])
              && ($this->input["_suppliers_id_assign"] > 0)) {
-            $supplieractors->add(array($supplieractors->getItilObjectForeignKey()
+            $input3 = array($supplieractors->getItilObjectForeignKey()
                                               => $this->fields['id'],
                                'suppliers_id' => $this->input["_suppliers_id_assign"],
-                               'type'         => CommonITILActor::ASSIGN));
+                               'type'         => CommonITILActor::ASSIGN);
 
             if (isset($this->input["_suppliers_id_assign_notif"])) {
                foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
