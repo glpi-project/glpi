@@ -2090,11 +2090,11 @@ class Ticket extends CommonITILObject {
       $tab[25]['datatype']          = 'text';
 
       $tab[27]['table']             = 'glpi_ticketfollowups';
-      $tab[27]['field']             = 'count';
+      $tab[27]['field']             = 'id';
       $tab[27]['name']              = _x('quantity', 'Number of followups');
       $tab[27]['forcegroupby']      = true;
       $tab[27]['usehaving']         = true;
-      $tab[27]['datatype']          = 'number';
+      $tab[27]['datatype']          = 'count';
       $tab[27]['massiveaction']     = false;
       $tab[27]['joinparams']        = array('jointype'  => 'child',
                                             'condition' => $followup_condition);
@@ -2172,18 +2172,18 @@ class Ticket extends CommonITILObject {
          $tab[47]['forcegroupby']   = true;
 
          $tab[41]['table']          = 'glpi_tickets_tickets';
-         $tab[41]['field']          = 'count';
+         $tab[41]['field']          = 'id';
          $tab[41]['name']           = __('Number of all linked tickets');
          $tab[41]['massiveaction']  = false;
-         $tab[41]['datatype']       = 'number';
+         $tab[41]['datatype']       = 'count';
          $tab[41]['usehaving']      = true;
          $tab[41]['joinparams']     = array('jointype' => 'item_item');
 
          $tab[46]['table']          = 'glpi_tickets_tickets';
-         $tab[46]['field']          = 'count';
+         $tab[46]['field']          = 'id';
          $tab[46]['name']           = __('Number of duplicated tickets');
          $tab[46]['massiveaction']  = false;
-         $tab[46]['datatype']       = 'number';
+         $tab[46]['datatype']       = 'count';
          $tab[46]['usehaving']      = true;
          $tab[46]['joinparams']     = array('jointype' => 'item_item',
                                            'condition' => "AND NEWTABLE.`link` = ".
@@ -2198,11 +2198,11 @@ class Ticket extends CommonITILObject {
          $tab['problem']            = Problem::getTypeName(2);
 
          $tab[141]['table']         = 'glpi_problems_tickets';
-         $tab[141]['field']         = 'count';
+         $tab[141]['field']         = 'id';
          $tab[141]['name']          = _x('quantity', 'Number of problems');
          $tab[141]['forcegroupby']  = true;
          $tab[141]['usehaving']     = true;
-         $tab[141]['datatype']      = 'number';
+         $tab[141]['datatype']      = 'count';
          $tab[141]['massiveaction'] = false;
          $tab[141]['joinparams']    = array('jointype' => 'child');
 

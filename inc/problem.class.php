@@ -418,11 +418,11 @@ class Problem extends CommonITILObject {
       $tab += $this->getSearchOptionsMain();
 
       $tab[65]['table']         = 'glpi_items_problems';
-      $tab[65]['field']         = 'count';
+      $tab[65]['field']         = 'id';
       $tab[65]['name']          = _x('quantity','Number of items');
       $tab[65]['forcegroupby']  = true;
       $tab[65]['usehaving']     = true;
-      $tab[65]['datatype']      = 'number';
+      $tab[65]['datatype']      = 'count';
       $tab[65]['massiveaction'] = false;
       $tab[65]['joinparams']    = array('jointype' => 'child');
 
@@ -465,11 +465,11 @@ class Problem extends CommonITILObject {
       $tab['ticket']             = Ticket::getTypeName(2);
 
       $tab[141]['table']         = 'glpi_problems_tickets';
-      $tab[141]['field']         = 'count';
+      $tab[141]['field']         = 'id';
       $tab[141]['name']          = _x('quantity', 'Number of tickets');
       $tab[141]['forcegroupby']  = true;
       $tab[141]['usehaving']     = true;
-      $tab[141]['datatype']      = 'number';
+      $tab[141]['datatype']      = 'count';
       $tab[141]['massiveaction'] = false;
       $tab[141]['joinparams']    = array('jointype' => 'child');
 

@@ -599,11 +599,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[26]['joinparams']     = array('jointype' => 'child');
 
       $tab[28]['table']          = static::getTable();
-      $tab[28]['field']          = 'count';
+      $tab[28]['field']          = 'id';
       $tab[28]['name']           = _x('quantity', 'Number of tasks');
       $tab[28]['forcegroupby']   = true;
       $tab[28]['usehaving']      = true;
-      $tab[28]['datatype']       = 'number';
+      $tab[28]['datatype']       = 'count';
       $tab[28]['massiveaction']  = false;
       $tab[28]['joinparams']     = array('jointype' => 'child');
 

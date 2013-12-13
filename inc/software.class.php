@@ -510,11 +510,11 @@ class Software extends CommonDBTM {
       $tab[80]['datatype']       = 'dropdown';
 
       $tab[72]['table']          = 'glpi_computers_softwareversions';
-      $tab[72]['field']          = 'count';
+      $tab[72]['field']          = 'id';
       $tab[72]['name']           = _x('quantity', 'Number of installations');
       $tab[72]['forcegroupby']   = true;
       $tab[72]['usehaving']      = true;
-      $tab[72]['datatype']       = 'number';
+      $tab[72]['datatype']       = 'count';
       $tab[72]['nometa']         = true;
       $tab[72]['massiveaction']  = false;
       if (Session::getLoginUserID()) {

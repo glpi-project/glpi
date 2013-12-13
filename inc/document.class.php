@@ -707,11 +707,11 @@ class Document extends CommonDBTM {
       $tab['document']           = self::getTypeName(2);
 
       $tab[119]['table']         = 'glpi_documents_items';
-      $tab[119]['field']         = 'count';
+      $tab[119]['field']         = 'id';
       $tab[119]['name']          = _x('quantity', 'Number of documents');
       $tab[119]['forcegroupby']  = true;
       $tab[119]['usehaving']     = true;
-      $tab[119]['datatype']      = 'number';
+      $tab[119]['datatype']      = 'count';
       $tab[119]['massiveaction'] = false;
       $tab[119]['joinparams']    = array('jointype' => 'itemtype_item');
 
@@ -812,11 +812,11 @@ class Document extends CommonDBTM {
       $tab[20]['datatype']       = 'string';
 
       $tab[72]['table']          = 'glpi_documents_items';
-      $tab[72]['field']          = 'count';
+      $tab[72]['field']          = 'id';
       $tab[72]['name']           = _x('quantity', 'Number of associated items');
       $tab[72]['forcegroupby']   = true;
       $tab[72]['usehaving']      = true;
-      $tab[72]['datatype']       = 'number';
+      $tab[72]['datatype']       = 'count';
       $tab[72]['massiveaction']  = false;
       $tab[72]['joinparams']     = array('jointype' => 'child');
 

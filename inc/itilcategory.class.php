@@ -152,21 +152,29 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[3]['datatype']        = 'bool';
 
       $tab[77]['table']          = 'glpi_tickets';
-      $tab[77]['field']          = 'count';
+      $tab[77]['field']          = 'id';
       $tab[77]['name']           = _x('quantity', 'Number of tickets');
-      $tab[77]['datatype']       = 'integer';
+      $tab[77]['datatype']       = 'count';
       $tab[77]['forcegroupby']   = true;
       $tab[77]['massiveaction']  = false;
       $tab[77]['joinparams']     = array('jointype' => 'child');
 
       $tab[78]['table']          = 'glpi_problems';
-      $tab[78]['field']          = 'count';
+      $tab[78]['field']          = 'id';
       $tab[78]['name']           = _x('quantity', 'Number of problems');
-      $tab[78]['datatype']       = 'integer';
+      $tab[78]['datatype']       = 'count';
       $tab[78]['forcegroupby']   = true;
       $tab[78]['massiveaction']  = false;
       $tab[78]['joinparams']     = array('jointype' => 'child');
 
+      $tab[76]['table']          = 'glpi_changes';
+      $tab[76]['field']          = 'id';
+      $tab[76]['name']           = _x('quantity', 'Number of changes');
+      $tab[76]['datatype']       = 'count';
+      $tab[76]['forcegroupby']   = true;
+      $tab[76]['massiveaction']  = false;
+      $tab[76]['joinparams']     = array('jointype' => 'child');
+      
       $tab[79]['table']          = 'glpi_knowbaseitemcategories';
       $tab[79]['field']          = 'completename';
       $tab[79]['name']           = __('Knowledge base');

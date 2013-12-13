@@ -3243,6 +3243,7 @@ class CommonDBTM extends CommonGLPI {
 
                switch ($searchOption['datatype']) {
                   case 'integer' :
+                  case 'count' :
                   case 'number' :
                   case 'decimal' :
                      $value = str_replace(',','.',$value);
@@ -3694,6 +3695,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
             switch ($searchoptions['datatype']) {
+               case "count" :
                case "number" :
                   if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
                      return $searchoptions['toadd'][$value];
@@ -3926,6 +3928,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          switch ($searchoptions['datatype']) {
+            case "count" :
             case "number" :
             case "integer" :
                $copytooption = array('min', 'max', 'step', 'toadd', 'unit');
