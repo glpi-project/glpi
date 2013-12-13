@@ -3182,21 +3182,17 @@ class Ticket extends CommonITILObject {
          $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
-         if ($CFG_GLPI["use_rich_text"]) {
-            $cols = 110;
-            $rows = 20;
-         }
 
          if ($CFG_GLPI["use_rich_text"]) {
             $values["content"] = $this->setRichTextContent($content_id, $values["content"], $rand);
-            $cols              = 110;
-            $rows              = 20;
+            $cols              = 100;
+            $rows              = 10;
          } else {
             $values["content"] = $this->setSimpleTextContent($values["content"]);
          }
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' cols='80' rows='14'>".
+         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
                 $values['content']."</textarea></div>";
          echo "</td></tr>";
       }
@@ -4214,8 +4210,8 @@ class Ticket extends CommonITILObject {
             $this->fields["content"] = $this->setRichTextContent($content_id,
                                                                  $this->fields["content"],
                                                                  $rand);
-            $cols = 120;
-            $rows = 20;
+            $cols = 100;
+            $rows = 10;
          } else {
             $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
          }
