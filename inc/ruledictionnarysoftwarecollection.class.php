@@ -121,6 +121,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          //Select all the differents software
          $sql = "SELECT DISTINCT `glpi_softwares`.`name`,
                         `glpi_manufacturers`.`name` AS manufacturer,
+                        `glpi_softwares`.`manufacturers_id` AS manufacturers_id,
                         `glpi_softwares`.`entities_id` AS entities_id,
                         `glpi_softwares`.`is_helpdesk_visible` AS helpdesk
                  FROM `glpi_softwares`
