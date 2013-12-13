@@ -1289,11 +1289,19 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!is_null($supplieractors)) {
          if (isset($this->input["_suppliers_id_assign"])
              && ($this->input["_suppliers_id_assign"] > 0)) {
-            $supplieractors->add(array($supplieractors->getItilObjectForeignKey()
-                                                      => $this->fields['id'],
-                                       'suppliers_id' => $this->input["_suppliers_id_assign"],
-                                       'type'         => CommonITILActor::ASSIGN,
-                                       '_from_object' => true));
+            $input3->add(array($supplieractors->getItilObjectForeignKey()
+                                              => $this->fields['id'],
+                               'suppliers_id' => $this->input["_suppliers_id_assign"],
+                               'type'         => CommonITILActor::ASSIGN));
+
+            if (isset($this->input["_suppliers_id_assign_notif"])) {
+               foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
+                  $input3[$key] = $val;
+               }
+            }
+            $input3['_from_object'] = true;
+            $supplieractors->add($input3);
+
          }
       }
 
@@ -2115,12 +2123,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $showsupplierlink = 0;
       if (Session::haveRight('contact_enterprise', READ)) {
-         $showsupplierlink = 1;
+         $showsupplierlink = 2;
       }
 
       $suppliericon = self::getActorIcon('supplier',$type);
       $supplier     = new Supplier();
-      $linkclass    = new $this->supplierlinkclass();
+      $linksupplier  = new $this->supplierlinkclass();
 
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
@@ -2131,10 +2139,30 @@ abstract class CommonITILObject extends CommonDBTM {
                echo "&nbsp;";
                $tmpname = Dropdown::getDropdownName($supplier->getTable(), $k, 1);
                Html::showToolTip($tmpname['comment']);
+
+               if ($CFG_GLPI['use_mailing']) {
+                  $text = __('Email followup')."&nbsp;".Dropdown::getYesNo($d['use_notification']).
+                  '<br>';
+
+                  if ($d['use_notification']) {
+                     $supemail = $d['alternative_email'];
+                     if (empty($supemail)) {
+                        $supemail = $supplier->fields['email'];
+                     }
+                     $text .= sprintf(__('%1$s: %2$s'),__('Email'), $supemail);
+                  }
+                  echo "&nbsp;";
+                  if ($canedit) {
+                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png');
+                     Html::showToolTip($text, $opt);
+                  }
+
+               }
+
             }
             if ($canedit) {
                echo "&nbsp;";
-               Html::showSimpleForm($linkclass->getFormURL(), 'delete',
+               Html::showSimpleForm($linksupplier->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
@@ -3161,7 +3189,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($CFG_GLPI['use_mailing']) {
          $paramscomment = array('value'       => '__VALUE__',
                                 'field'       => "_suppliers_id_assign_notif",
-                                'allow_email' => false,
+                                'allow_email' => true,
                                 'use_notification'
                                     => $options["_suppliers_id_assign_notif"]['use_notification']);
          if (isset($options["_suppliers_id_assign_notif"]['alternative_email'])) {
@@ -3569,9 +3597,6 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($can_assign
              && !$is_hidden['_suppliers_id_assign']) {
             $this->showSupplierAddFormOnCreate($options);
-//             echo '<hr>';
-//             echo self::getActorIcon('supplier', CommonITILActor::ASSIGN);
-//             echo "&nbsp;";
          } else { // predefined value
             if (isset($options["_suppliers_id_assign"])
                 && $options["_suppliers_id_assign"]) {

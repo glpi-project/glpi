@@ -45,7 +45,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
 
    $default_email = "";
    $emails        = array();
-   if ($_POST['field'] == '_suppliers_id_assign_notif') {
+   if ($_POST['typefield'] == 'supplier') {
       $supplier = new Supplier();
       if ($supplier->getFromDB($_POST["value"])) {
       $default_email = $supplier->fields['email'];
