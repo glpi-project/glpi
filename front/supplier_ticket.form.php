@@ -58,7 +58,7 @@ if (isset($_POST["update"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$link->fields['tickets_id']);
 
 } else if (isset($_GET["id"])) {
-   $link->showNotificationForm($_GET["id"]);
+   $link->showSupplierNotificationForm($_GET["id"]);
 } else {
    Html::displayErrorAndDie('Lost');
 }
