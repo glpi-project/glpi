@@ -1246,11 +1246,12 @@ class CronTask extends CommonDBTM{
       $tab[3]['nosort']        = true;
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'text';
+      $tab[3]['computation']   = "TABLE.`id`"; // Virtual data
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'state';
       $tab[4]['name']          = __('Status');
-      $tab[4]['searchtype']    = array('equals');
+      $tab[4]['searchtype']    = array('equals', 'notequals');
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'specific';
 
@@ -1258,6 +1259,7 @@ class CronTask extends CommonDBTM{
       $tab[5]['field']         = 'mode';
       $tab[5]['name']          = __('Run mode');
       $tab[5]['datatype']      = 'specific';
+      $tab[5]['searchtype']    = array('equals', 'notequals');
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'frequency';

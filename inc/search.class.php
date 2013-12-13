@@ -2334,10 +2334,6 @@ class Search {
             }
             break;
 
-         case 'glpi_crontasks.description' :
-            return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
          case 'glpi_notifications.event' :
             return " `glpi_notifications`.`itemtype` AS `itemtype`,
                      `glpi_notifications`.`event` AS ".$NAME."_".$num.",
@@ -4357,19 +4353,7 @@ class Search {
 
             case 'glpi_crontasks.description' :
                $tmp = new CronTask();
-               return $tmp->getDescription($data['id']);
-
-            case 'glpi_crontasks.state' :
-               return CronTask::getStateName($data[$NAME.$num]);
-
-            case 'glpi_crontasks.mode' :
-               return CronTask::getModeName($data[$NAME.$num]);
-
-            case 'glpi_crontasks.itemtype' :
-               if ($plug = isPluginItemType($data[$NAME.$num])) {
-                  return $plug['plugin'];
-               }
-               return '';
+               return $tmp->getDescription($data[$NAME.$num]);
 
             case 'glpi_changes.status':
                $status = Change::getStatus($data[$NAME.$num]);
