@@ -644,7 +644,7 @@ class Infocom extends CommonDBChild {
             return __('Decreasing');
 
          case 0 :
-            return "";
+            return " ";
       }
    }
 
@@ -1410,6 +1410,8 @@ class Infocom extends CommonDBChild {
       $tab[57]['forcegroupby']   = true;
       $tab[57]['joinparams']     = $joinparams;
       $tab[57]['datatype']       = 'specific';
+      $tab[57]['searchequalsonfield']       = 'specific';
+      $tab[57]['searchtype']     = array('equals', 'notequals');
 
       $tab[58]['table']          = 'glpi_infocoms';
       $tab[58]['field']          = 'sink_coeff';
@@ -1535,7 +1537,8 @@ class Infocom extends CommonDBChild {
       $tab[15]['table']          = $this->getTable();
       $tab[15]['field']          = 'sink_type';
       $tab[15]['name']           = __('Amortization type');
-      $tab[15]['datatype']       = 'integer';
+      $tab[15]['datatype']       = 'specific';
+      $tab[15]['searchtype']     = array('equals', 'notequals');
 
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
