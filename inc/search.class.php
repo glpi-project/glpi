@@ -1843,6 +1843,7 @@ class Search {
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "count" :
             case "number" :
             case "decimal" :
             case "timestamp" :
@@ -2242,24 +2243,11 @@ class Search {
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
                       $ADDITONALFIELDS";
 
-         case "glpi_documents_items.count" :
-            return " COUNT(DISTINCT `glpi_documents_items`.`id`) AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
-         case "glpi_contracts_items.count" :
-            return " COUNT(DISTINCT `glpi_contracts_items`.`id`) AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
          case "glpi_contractcosts.totalcost" :
             return " SUM(`glpi_contractcosts$addtable`.`cost`)
                      / COUNT(`glpi_contractcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_contractcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
-
-         case "glpi_computers_softwareversions.count" :
-            return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
-                          AS ".$NAME."_".$num.",
                      $ADDITONALFIELDS";
 
          case "glpi_items_deviceharddrives.capacity" :
@@ -2287,17 +2275,6 @@ class Search {
                         $ADDITONALFIELDS";
             }
             break;
-
-         case "glpi_problems.count" :
-         case "glpi_problemtasks.count" :
-         case "glpi_tickets.count" :
-         case "glpi_ticketfollowups.count" :
-         case "glpi_tickettasks.count" :
-         case "glpi_tickets_tickets.count" :
-         case "glpi_items_problems.count" :
-         case "glpi_problems_tickets.count" :
-            return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.",
-                     $ADDITONALFIELDS";
 
          case "glpi_ticketcosts.cost_time" :
          case "glpi_problemcosts.cost_time" :
@@ -2488,6 +2465,10 @@ class Search {
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "count" :
+               return " COUNT(DISTINCT `$table$addtable`.`$field`) AS ".$NAME."_".$num.",
+                     $ADDITONALFIELDS";
+
             case "date_delay" :
                $interval = "MONTH";
                if (isset($searchopt[$ID]['delayunit'])) {
@@ -2957,13 +2938,6 @@ class Search {
                               self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name`
                            $SEARCH ) ";
 
-         case "glpi_contracts.renewal" :
-            $valid = Contract::getContractRenewalIDByName($val);
-            if ($valid > 0) {
-               return $link." `$table`.`$field`"."="."'$valid'";
-            }
-            return "";
-
          case "glpi_profiles.interface" :
             if (stristr(Profile::getInterfaceName('central'),$val)) {
                return $link." `$table`.`$field`='central'";
@@ -3247,6 +3221,7 @@ class Search {
                }
                // No break here : use number comparaison case
 
+            case "count" :
             case "number" :
             case "decimal" :
             case "timestamp" :
@@ -4223,41 +4198,6 @@ class Search {
                return Infocom::getWarrantyExpir($data[$NAME.$num."_begin_date"],
                                                 $data[$NAME.$num."_duration"]);
 
-            case "glpi_contracts.renewal" :
-               return Contract::getContractRenewalName($data[$NAME.$num]);
-
-//          case "glpi_infocoms.sink_time" :
-//             if (!empty($data[$NAME.$num])) {
-//                $split = explode("$$$$", $data[$NAME.$num]);
-//                $out   = '';
-//                foreach ($split as $val) {
-//                   $out .= (empty($out)?'':self::LBBR);
-//                   if ($val > 0) {
-//                      //TRANS: %d is a number of years
-//                      $out .= sprintf(_n('%d year', '%d years', $val), $val);
-//                   }
-//                }
-//                return $out;
-//             }
-//             return "&nbsp;";
-//
-//          case "glpi_infocoms.warranty_duration" :
-//             if (!empty($data[$NAME.$num])) {
-//                $split = explode("$$$$", $data[$NAME.$num]);
-//                $out   = '';
-//                foreach ($split as $val) {
-//                   $out .= (empty($out)?'':self::LBBR);
-//                   if ($val > 0) {
-//                      $out .= sprintf(_n('%d month', '%d months', $val), $val);
-//                   }
-//                   if ($val < 0) {
-//                      $out .= __('Lifelong');
-//                   }
-//                }
-//                return $out;
-//             }
-//             return "&nbsp;";
-
             case "glpi_infocoms.sink_type" :
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
@@ -4807,6 +4747,7 @@ class Search {
                }
                return "&nbsp;";
 
+            case "count" :
             case "number" :
                if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
                   $out           = "";
@@ -5550,8 +5491,10 @@ class Search {
             }
             return $actions;
          }
+
          if (isset($searchopt[$field_num]['datatype'])) {
             switch ($searchopt[$field_num]['datatype']) {
+               case 'count' :
                case 'number' :
                   $opt = array('contains'  => __('contains'),
                                'equals'    => __('is'),

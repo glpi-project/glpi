@@ -356,11 +356,11 @@ class Contract extends CommonDBTM {
                                                                'joinparams' => $joinparams));
 
       $tab[139]['table']         = 'glpi_contracts_items';
-      $tab[139]['field']         = 'count';
+      $tab[139]['field']         = 'id';
       $tab[139]['name']          = _x('quantity', 'Number of contracts');
       $tab[139]['forcegroupby']  = true;
       $tab[139]['usehaving']     = true;
-      $tab[139]['datatype']      = 'number';
+      $tab[139]['datatype']      = 'count';
       $tab[139]['massiveaction'] = false;
       $tab[139]['joinparams']    = array('jointype' => 'itemtype_item');
 
@@ -658,6 +658,7 @@ class Contract extends CommonDBTM {
       $tab[23]['name']              = __('Renewal');
       $tab[23]['massiveaction']     = false;
       $tab[23]['datatype']          = 'specific';
+      $tab[23]['searchtype']        = array('equals', 'notequals');
 
       $tab[12]['table']             = $this->getTable();
       $tab[12]['field']             = 'expire';
@@ -709,11 +710,11 @@ class Contract extends CommonDBTM {
       $tab[86]['datatype']          = 'bool';
 
       $tab[72]['table']             = 'glpi_contracts_items';
-      $tab[72]['field']             = 'count';
+      $tab[72]['field']             = 'id';
       $tab[72]['name']              = _x('quantity', 'Number of items');
       $tab[72]['forcegroupby']      = true;
       $tab[72]['usehaving']         = true;
-      $tab[72]['datatype']          = 'number';
+      $tab[72]['datatype']          = 'count';
       $tab[72]['massiveaction']     = false;
       $tab[72]['joinparams']        = array('jointype' => 'child');
 

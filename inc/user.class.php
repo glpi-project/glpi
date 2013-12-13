@@ -2669,11 +2669,11 @@ class User extends CommonDBTM {
       $tab[63]['datatype']             = 'datetime';
 
       $tab[60]['table']                = 'glpi_tickets';
-      $tab[60]['field']                = 'count';
+      $tab[60]['field']                = 'id';
       $tab[60]['name']                 = __('Number of tickets as requester');
       $tab[60]['forcegroupby']         = true;
       $tab[60]['usehaving']            = true;
-      $tab[60]['datatype']             = 'number';
+      $tab[60]['datatype']             = 'count';
       $tab[60]['massiveaction']        = false;
       $tab[60]['joinparams']           = array('beforejoin'
                                                => array('table'
@@ -2686,11 +2686,11 @@ class User extends CommonDBTM {
                                                                         = '.CommonITILActor::REQUESTER)));
 
       $tab[61]['table']                = 'glpi_tickets';
-      $tab[61]['field']                = 'count';
+      $tab[61]['field']                = 'id';
       $tab[61]['name']                 = __('Number of written tickets');
       $tab[61]['forcegroupby']         = true;
       $tab[61]['usehaving']            = true;
-      $tab[61]['datatype']             = 'number';
+      $tab[61]['datatype']             = 'count';
       $tab[61]['massiveaction']        = false;
       $tab[61]['joinparams']           = array('jointype'  => 'child',
                                                'linkfield' => 'users_id_recipient');
