@@ -2794,28 +2794,6 @@ class Search {
             }
             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
-         case "glpi_infocoms.sink_type" :
-            $ADD = "";
-            if ($nott
-                && ($val != 'NULL') && ($val != 'null')) {
-               $ADD = " OR `$table`.`$field` IS NULL";
-            }
-
-            if (stristr($val,Infocom::getAmortTypeName(1))) {
-               $val = 1;
-            } else if (stristr($val,Infocom::getAmortTypeName(2))) {
-               $val = 2;
-            }
-
-            if (is_int($val) && ($val > 0)) {
-               if ($nott) {
-                  return $link." (`$table`.`$field` <> '$val' ".
-                                  $ADD." ) ";
-               }
-               return $link." (`$table`.`$field` = '$val' ".
-                               $ADD." ) ";
-            }
-            break;
 
          case "glpi_contacts.completename" :
             if (in_array($searchtype, array('equals', 'notequals'))) {
@@ -4062,14 +4040,6 @@ class Search {
                }
                return Infocom::getWarrantyExpir($data[$NAME.$num."_begin_date"],
                                                 $data[$NAME.$num."_duration"]);
-
-            case "glpi_infocoms.sink_type" :
-               $split = explode("$$$$", $data[$NAME.$num]);
-               $out   = '';
-               foreach ($split as $val) {
-                  $out .= (empty($out)?'':self::LBBR).Infocom::getAmortTypeName($val);
-               }
-               return $out;
 
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
