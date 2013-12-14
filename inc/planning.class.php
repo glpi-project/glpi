@@ -48,7 +48,7 @@ class Planning extends CommonGLPI {
    const INFO = 0;
    const TODO = 1;
    const DONE = 2;
-   
+
    /**
     * @since version 0.85
     *
@@ -427,20 +427,19 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
    **/
-   static function checkAvailability($params = array()) {
+   static function checkAvailability($params=array()) {
       global $CFG_GLPI, $DB;
 
-      
+
       if (!isset($params['itemtype'])) {
          return false;
       }
       if (!($item = getItemForItemtype($params['itemtype']))) {
          return false;
-      } else {
-         if (!isset($params[$item->getForeignKeyField()])
-               || !$item->getFromDB($params[$item->getForeignKeyField()])) {
-            return false;
-         }
+      }
+      if (!isset($params[$item->getForeignKeyField()])
+          || !$item->getFromDB($params[$item->getForeignKeyField()])) {
+         return false;
       }
       // No limit by default
       if (!isset($params['limitto'])) {
@@ -455,7 +454,7 @@ class Planning extends CommonGLPI {
          $end = $params['end'];
       } else {
          $end = date("Y-m-d");
-      }      
+      }
 
       if ($end < $begin) {
          $end = $begin;
@@ -464,12 +463,12 @@ class Planning extends CommonGLPI {
       $realend   = $end." ".$CFG_GLPI["planning_end"];
 
       $users = array();
-      
+
       switch ($item->getType()) {
          case 'User' :
             $users[$item->getID()] = $item->getName();
             break;
-            
+
          default :
             if (Toolbox::is_a($item, 'CommonITILObject')) {
                foreach ($item->getUsers(CommonITILActor::ASSIGN) as $data) {
@@ -477,20 +476,20 @@ class Planning extends CommonGLPI {
                }
                foreach ($item->getGroups(CommonITILActor::ASSIGN) as $data) {
                   foreach (Group_User::getGroupUsers($data['groups_id']) as $data2) {
-                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"], $data2["realname"],
-                                                         $data2["firstname"]);
+                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
+                                                        $data2["realname"], $data2["firstname"]);
                   }
                }
             }
-            
+
             break;
       }
       asort($users);
       // Use get method to check availability
       echo "<div class='center'><form method='GET' name='form' action='planning.php'>\n";
       echo "<table class='tab_cadre_fixe'>";
-      $colspan=5;
-      if (count($users) >1) {
+      $colspan = 5;
+      if (count($users) > 1) {
          $colspan++;
       }
       echo "<tr class='tab_bg_1'><th colspan='$colspan'>".__('Availability')."</th>";
@@ -507,7 +506,7 @@ class Planning extends CommonGLPI {
       Html::showDateField("end", array('value'      => $end,
                                        'maybeempty' => false));
       echo "</td>\n";
-      if (count($users)>1) {
+      if (count($users) > 1) {
          echo "<td width='40%'>";
          $data = array(0 => __('All'));
          $data += $users;
@@ -515,7 +514,7 @@ class Planning extends CommonGLPI {
                                                          'value' => $params['limitto']));
          echo "</td>";
       }
-      
+
       echo "<td class='center'>";
       echo "<input type='hidden' name='".$item->getForeignKeyField()."' value=\"".$item->getID()."\">";
       echo "<input type='hidden' name='itemtype' value=\"".$item->getType()."\">";
@@ -528,7 +527,7 @@ class Planning extends CommonGLPI {
       Html::closeForm();
       echo "</div>\n";
 
-      if ($params['limitto'] > 0 && isset($users[$params['limitto']])) {
+      if (($params['limitto'] > 0) && isset($users[$params['limitto']])) {
          $displayuser[$params['limitto']] = $users[$params['limitto']];
       } else {
          $displayuser = $users;
@@ -536,11 +535,10 @@ class Planning extends CommonGLPI {
 
       if (count($displayuser)) {
          foreach ($displayuser as $who => $whoname) {
-
             $params = array('who'       => $who,
-                           'who_group' => 0,
-                           'begin'     => $realbegin,
-                           'end'       => $realend);
+                            'who_group' => 0,
+                            'begin'     => $realbegin,
+                            'end'       => $realend);
 
             $interv = array();
             foreach ($CFG_GLPI['planning_types'] as $itemtype) {
@@ -557,10 +555,10 @@ class Planning extends CommonGLPI {
             if ($plan_end[1] != 0) {
                $end_hour++;
             }
-            $colsize = floor((100-15)/($end_hour-$begin_hour));
+            $colsize    = floor((100-15)/($end_hour-$begin_hour));
             $timeheader = '';
             for ($i=$begin_hour ; $i<$end_hour ; $i++) {
-               $from = ($i<10?'0':'').$i;
+               $from       = ($i<10?'0':'').$i;
                $timeheader.= "<th width='$colsize%' colspan='4'>".$from.":00</th>";
                $colnumber += 4;
             }
@@ -573,19 +571,17 @@ class Planning extends CommonGLPI {
             echo $timeheader;
             echo "</tr>";
 
-      
-            
+
             $day_begin = strtotime($realbegin);
             $day_end   = strtotime($realend);
 
 
             for ($time=$day_begin ; $time<$day_end ; $time+=DAY_TIMESTAMP) {
-               $current_day = date('Y-m-d', $time);
+               $current_day   = date('Y-m-d', $time);
                echo "<tr><th>".Html::convDate($current_day)."</th>";
                $begin_quarter = $begin_hour*4;
                $end_quarter   = $end_hour*4;
                for ($i=$begin_quarter ; $i<$end_quarter ; $i++) {
-
                   $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP/4);
                   $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP/4);
                   // Init activity interval
@@ -595,7 +591,7 @@ class Planning extends CommonGLPI {
                   reset($interv);
                   while ($data = current($interv)) {
                      if (($data["begin"] >= $begin_time)
-                        && ($data["end"] <= $end_time)) {
+                         && ($data["end"] <= $end_time)) {
                         // In
                         if ($begin_act > $data["begin"]) {
                            $begin_act = $data["begin"];
@@ -603,39 +599,40 @@ class Planning extends CommonGLPI {
                         if ($end_act < $data["end"]) {
                            $end_act = $data["end"];
                         }
-
                         unset($interv[key($interv)]);
+
                      } else if (($data["begin"] < $begin_time)
-                              && ($data["end"] > $end_time)) {
+                                && ($data["end"] > $end_time)) {
                         // Through
                         $begin_act = $begin_time;
                         $end_act   = $end_time;
-
                         next($interv);
+
                      } else if (($data["begin"] >= $begin_time)
-                              && ($data["begin"] < $end_time)) {
+                                && ($data["begin"] < $end_time)) {
                         // Begin
                         if ($begin_act > $data["begin"]) {
                            $begin_act = $data["begin"];
                         }
                         $end_act = $end_time;
-
                         next($interv);
+
                      } else if (($data["end"] > $begin_time)
-                              && ($data["end"] <= $end_time)) {
+                                && ($data["end"] <= $end_time)) {
                         //End
                         $begin_act = $begin_time;
                         if ($end_act < $data["end"]) {
                            $end_act = $data["end"];
                         }
                         unset($interv[key($interv)]);
+
                      } else { // Defautl case
                         next($interv);
                      }
                   }
                   if ($begin_act < $end_act) {
                      if (($begin_act <= $begin_time)
-                        && ($end_act >= $end_time)) {
+                         && ($end_act >= $end_time)) {
                         // Activity in quarter
                         echo "<td class='notavailable'>&nbsp;</td>";
                      } else {

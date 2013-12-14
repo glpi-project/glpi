@@ -133,11 +133,11 @@ class ProjectTask extends CommonDBChild {
 
       $pt = new ProjectTask_Ticket();
       $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       parent::cleanDBonPurge();
    }
 
-   
+
    /**
     * @see commonDBTM::getRights()
     **/
@@ -260,6 +260,7 @@ class ProjectTask extends CommonDBChild {
       return $tasks;
    }
 
+
     /**
     * Get all linked tickets for a project
     *
@@ -272,14 +273,17 @@ class ProjectTask extends CommonDBChild {
 
       $tasks = array();
       foreach ($DB->request(array('glpi_projecttasks_tickets', 'glpi_projecttasks'),
-                            array("`glpi_projecttasks`.`projects_id`" => $ID,
-                                  "`glpi_projecttasks_tickets`.`projecttasks_id`" => "`glpi_projecttasks`.`id`",
+                            array("`glpi_projecttasks`.`projects_id`"
+                                          => $ID,
+                                  "`glpi_projecttasks_tickets`.`projecttasks_id`"
+                                          => "`glpi_projecttasks`.`id`",
                                   'FIELDS' =>  "tickets_id" ))
                         as $data) {
          $tasks[] = $data['tickets_id'];
       }
       return $tasks;
    }
+
 
    /**
     * Print the Project task form

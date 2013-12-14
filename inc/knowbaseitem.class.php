@@ -604,7 +604,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td></tr>";
 
 
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
       echo "<td colspan='3'>";
@@ -913,6 +913,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    static function getListRequest(array $params, $type='search') {
       global $DB;
+
       // Lists kb Items
       $where     = "";
       $order     = "";
@@ -944,7 +945,7 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
-      
+
       if (!empty($where)) {
          $where .= '1 = 1';
       }
@@ -993,11 +994,10 @@ class KnowbaseItem extends CommonDBTM {
 
                // Add visibility date
                $where_1 .= " AND (`glpi_knowbaseitems`.`begin_date` IS NULL
-                                        OR `glpi_knowbaseitems`.`begin_date` < NOW())
-                                   AND (`glpi_knowbaseitems`.`end_date` IS NULL
-                                        OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
+                                   OR `glpi_knowbaseitems`.`begin_date` < NOW())
+                             AND (`glpi_knowbaseitems`.`end_date` IS NULL
+                                  OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
 
-               
                $order   = "ORDER BY `SCORE` DESC";
 
                // preliminar query to allow alternate search if no result with fulltext
@@ -1038,9 +1038,9 @@ class KnowbaseItem extends CommonDBTM {
                            = '".$params["knowbaseitemcategories_id"]."')";
             // Add visibility date
             $where .= " AND (`glpi_knowbaseitems`.`begin_date` IS NULL
-                                       OR `glpi_knowbaseitems`.`begin_date` < NOW())
-                                 AND (`glpi_knowbaseitems`.`end_date` IS NULL
-                                       OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
+                             OR `glpi_knowbaseitems`.`begin_date` < NOW())
+                        AND (`glpi_knowbaseitems`.`end_date` IS NULL
+                             OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
 
             $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
             break;
@@ -1347,12 +1347,12 @@ class KnowbaseItem extends CommonDBTM {
                            OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
                            OR `glpi_groups_knowbaseitems`.`groups_id` IS NOT NULL
                            OR `glpi_knowbaseitems_users`.`users_id` IS NOT NULL)";
-                           
+
       // Add visibility date
       $faq_limit .= " AND (`glpi_knowbaseitems`.`begin_date` IS NULL
-                                 OR `glpi_knowbaseitems`.`begin_date` < NOW())
-                           AND (`glpi_knowbaseitems`.`end_date` IS NULL
-                                 OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
+                           OR `glpi_knowbaseitems`.`begin_date` < NOW())
+                      AND (`glpi_knowbaseitems`.`end_date` IS NULL
+                           OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
 
 
       if ($faq) { // FAQ
