@@ -2161,8 +2161,9 @@ class Search {
           && count($searchopt[$ID]["additionalfields"])) {
          foreach ($searchopt[$ID]["additionalfields"] as $key) {
             if ($meta
-               || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-               $ADDITONALFIELDS .= " GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`, '".self::NULLVALUE."') ,
+                || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+               $ADDITONALFIELDS .= " GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`,
+                                                                         '".self::NULLVALUE."'),
                                                    '$$', $tocomputeid) SEPARATOR '$$$$')
                                     AS ".$NAME."_".$num."_$key, ";
             } else {

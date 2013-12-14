@@ -2163,34 +2163,34 @@ class Ticket extends CommonITILObject {
          $tab[40]['joinparams']       = array('jointype' => 'item_item');
          $tab[40]['additionalfields'] = array('tickets_id_2');
 
-         $tab[47]['table']          = 'glpi_tickets_tickets';
-         $tab[47]['field']          = 'tickets_id_1';
-         $tab[47]['name']           = __('Duplicated tickets');
-         $tab[47]['massiveaction']  = false;
-         $tab[47]['searchtype']     = 'equals';
-         $tab[47]['joinparams']     = array('jointype'  => 'item_item',
-                                            'condition' => "AND NEWTABLE.`link` = ".
-                                                            Ticket_Ticket::DUPLICATE_WITH);
-         $tab[47]['datatype']       = 'dropdown';
-         $tab[47]['forcegroupby']   = true;
+         $tab[47]['table']            = 'glpi_tickets_tickets';
+         $tab[47]['field']            = 'tickets_id_1';
+         $tab[47]['name']             = __('Duplicated tickets');
+         $tab[47]['massiveaction']    = false;
+         $tab[47]['searchtype']       = 'equals';
+         $tab[47]['joinparams']       = array('jointype'  => 'item_item',
+                                              'condition' => "AND NEWTABLE.`link` = ".
+                                                              Ticket_Ticket::DUPLICATE_WITH);
+         $tab[47]['datatype']         = 'dropdown';
+         $tab[47]['forcegroupby']     = true;
 
-         $tab[41]['table']          = 'glpi_tickets_tickets';
-         $tab[41]['field']          = 'id';
-         $tab[41]['name']           = __('Number of all linked tickets');
-         $tab[41]['massiveaction']  = false;
-         $tab[41]['datatype']       = 'count';
-         $tab[41]['usehaving']      = true;
-         $tab[41]['joinparams']     = array('jointype' => 'item_item');
+         $tab[41]['table']            = 'glpi_tickets_tickets';
+         $tab[41]['field']            = 'id';
+         $tab[41]['name']             = __('Number of all linked tickets');
+         $tab[41]['massiveaction']    = false;
+         $tab[41]['datatype']         = 'count';
+         $tab[41]['usehaving']        = true;
+         $tab[41]['joinparams']       = array('jointype' => 'item_item');
 
-         $tab[46]['table']          = 'glpi_tickets_tickets';
-         $tab[46]['field']          = 'id';
-         $tab[46]['name']           = __('Number of duplicated tickets');
-         $tab[46]['massiveaction']  = false;
-         $tab[46]['datatype']       = 'count';
-         $tab[46]['usehaving']      = true;
-         $tab[46]['joinparams']     = array('jointype' => 'item_item',
-                                           'condition' => "AND NEWTABLE.`link` = ".
-                                                           Ticket_Ticket::DUPLICATE_WITH);
+         $tab[46]['table']            = 'glpi_tickets_tickets';
+         $tab[46]['field']            = 'id';
+         $tab[46]['name']             = __('Number of duplicated tickets');
+         $tab[46]['massiveaction']    = false;
+         $tab[46]['datatype']         = 'count';
+         $tab[46]['usehaving']        = true;
+         $tab[46]['joinparams']       = array('jointype' => 'item_item',
+                                             'condition' => "AND NEWTABLE.`link` = ".
+                                                             Ticket_Ticket::DUPLICATE_WITH);
 
          $tab += TicketTask::getSearchOptionsToAdd();
 
