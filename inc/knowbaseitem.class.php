@@ -946,8 +946,8 @@ class KnowbaseItem extends CommonDBTM {
       }
 
 
-      if (!empty($where)) {
-         $where .= '1 = 1';
+      if (empty($where)) {
+         $where = '1 = 1';
       }
 
       if ($params['faq']) { // helpdesk
