@@ -408,7 +408,7 @@ abstract class CommonITILCost extends CommonDBChild {
       if (Toolbox::is_a($item, 'Project')) {
          $forproject = true;
       }
-      
+
       $ID = $item->fields['id'];
 
       if (!$item->getFromDB($ID)
@@ -428,7 +428,7 @@ abstract class CommonITILCost extends CommonDBChild {
       if ($forproject) {
          $condition = " IN ('".implode("','",ProjectTask::getAllTicketsForProject($ID))."')";
       }
-      
+
       $query = "SELECT *
                 FROM `".static::getTable()."`
                 WHERE `".static::$items_id."` $condition
@@ -492,8 +492,8 @@ abstract class CommonITILCost extends CommonDBChild {
             Session::initNavigateListItems(static::getType(),
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $item->getTypeName(1), $item->getName()));
+                                           sprintf(__('%1$s = %2$s'),
+                                                   $item->getTypeName(1), $item->getName()));
 
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2' ".

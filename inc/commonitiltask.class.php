@@ -1021,6 +1021,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          case Planning::INFO :
             echo "<img src='".$CFG_GLPI['root_doc']."/pics/faqedit.png'>";
             break;
+
          case Planning::TODO :
             if (empty($this->fields['begin'])) {
                echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>";
@@ -1028,12 +1029,13 @@ abstract class CommonITILTask  extends CommonDBTM {
                echo "<img src='".$CFG_GLPI['root_doc']."/pics/rdv.png'>";
             }
             break;
+
          case Planning::DONE :
             echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>";
             break;
       }
       echo "</td>";
-            
+
       echo "<td>";
       $typename = $this->getTypeName(1);
       if ($this->fields['taskcategories_id']) {
@@ -1207,7 +1209,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
                                     array('title'  => __('Availability')));
-      
+
       echo "</td>";
       echo "<td class='center'>";
       $rand_user          = mt_rand();
