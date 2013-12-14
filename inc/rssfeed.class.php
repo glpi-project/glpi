@@ -1002,7 +1002,7 @@ class RSSFeed extends CommonDBTM {
                            'container'
                               => 'mass'.__CLASS__.$rand,
                            'specific_actions'
-                              => array('MassiveAction'.MassivzeAction::CLASS_ACTION_SEPARATOR.
+                              => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                        'delete' => _x('button', 'Delete permanently')));
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
