@@ -2033,46 +2033,46 @@ class Ticket extends CommonITILObject {
 
       $tab += TicketValidation::getSearchOptionsToAdd();
 
-      $tab['satisfaction']          = __('Satisfaction survey');
+      $tab['satisfaction']             = __('Satisfaction survey');
 
-      $tab[31]['table']             = 'glpi_ticketsatisfactions';
-      $tab[31]['field']             = 'type';
-      $tab[31]['name']              = __('Type');
-      $tab[31]['massiveaction']     = false;
-      $tab[31]['searchtype']        = array('equals', 'notequals');
-      $tab[31]['searchequalsonfield'] = true;
-      $tab[31]['joinparams']        = array('jointype' => 'child');
-      $tab[31]['datatype']          = 'specific';
+      $tab[31]['table']                = 'glpi_ticketsatisfactions';
+      $tab[31]['field']                = 'type';
+      $tab[31]['name']                 = __('Type');
+      $tab[31]['massiveaction']        = false;
+      $tab[31]['searchtype']           = array('equals', 'notequals');
+      $tab[31]['searchequalsonfield']  = true;
+      $tab[31]['joinparams']           = array('jointype' => 'child');
+      $tab[31]['datatype']             = 'specific';
 
-      $tab[60]['table']             = 'glpi_ticketsatisfactions';
-      $tab[60]['field']             = 'date_begin';
-      $tab[60]['name']              = __('Creation date');
-      $tab[60]['datatype']          = 'datetime';
-      $tab[60]['massiveaction']     = false;
-      $tab[60]['joinparams']        = array('jointype' => 'child');
+      $tab[60]['table']                = 'glpi_ticketsatisfactions';
+      $tab[60]['field']                = 'date_begin';
+      $tab[60]['name']                 = __('Creation date');
+      $tab[60]['datatype']             = 'datetime';
+      $tab[60]['massiveaction']        = false;
+      $tab[60]['joinparams']           = array('jointype' => 'child');
 
-      $tab[61]['table']             = 'glpi_ticketsatisfactions';
-      $tab[61]['field']             = 'date_answered';
-      $tab[61]['name']              = __('Response date');
-      $tab[61]['datatype']          = 'datetime';
-      $tab[61]['massiveaction']     = false;
-      $tab[61]['joinparams']        = array('jointype' => 'child');
+      $tab[61]['table']                = 'glpi_ticketsatisfactions';
+      $tab[61]['field']                = 'date_answered';
+      $tab[61]['name']                 = __('Response date');
+      $tab[61]['datatype']             = 'datetime';
+      $tab[61]['massiveaction']        = false;
+      $tab[61]['joinparams']           = array('jointype' => 'child');
 
-      $tab[62]['table']             = 'glpi_ticketsatisfactions';
-      $tab[62]['field']             = 'satisfaction';
-      $tab[62]['name']              = __('Satisfaction');
-      $tab[62]['datatype']          = 'number';
-      $tab[62]['massiveaction']     = false;
-      $tab[62]['joinparams']        = array('jointype' => 'child');
+      $tab[62]['table']                = 'glpi_ticketsatisfactions';
+      $tab[62]['field']                = 'satisfaction';
+      $tab[62]['name']                 = __('Satisfaction');
+      $tab[62]['datatype']             = 'number';
+      $tab[62]['massiveaction']        = false;
+      $tab[62]['joinparams']           = array('jointype' => 'child');
 
-      $tab[63]['table']             = 'glpi_ticketsatisfactions';
-      $tab[63]['field']             = 'comment';
-      $tab[63]['name']              = __('Comments');
-      $tab[63]['datatype']          = 'text';
-      $tab[63]['massiveaction']     = false;
-      $tab[63]['joinparams']        = array('jointype' => 'child');
+      $tab[63]['table']                = 'glpi_ticketsatisfactions';
+      $tab[63]['field']                = 'comment';
+      $tab[63]['name']                 = __('Comments');
+      $tab[63]['datatype']             = 'text';
+      $tab[63]['massiveaction']        = false;
+      $tab[63]['joinparams']           = array('jointype' => 'child');
 
-      $tab['followup']              = _n('Followup', 'Followups', 2);
+      $tab['followup']                 = _n('Followup', 'Followups', 2);
 
       $followup_condition = '';
       if (!Session::haveRight('followup', TicketFollowup::SEEPRIVATE)) {
@@ -2152,7 +2152,7 @@ class Ticket extends CommonITILObject {
       if (Session::haveRightsOr(self::$rightname,
                                 array(self::READALL, self::READASSIGN, self::OWN))) {
 
-         $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
+         $tab['linktickets']          = _n('Linked ticket', 'Linked tickets', 2);
 
          $tab[40]['table']            = 'glpi_tickets_tickets';
          $tab[40]['field']            = 'tickets_id_1';

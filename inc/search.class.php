@@ -1139,7 +1139,7 @@ class Search {
                         if (!isset($already_printed[$p['itemtype2'][$j].$p['field2'][$j]])) {
                            // General case
                            if (strpos($data["META_$j"],"$$$$") === false) {
-                              
+
                               $out = self::giveItem($p['itemtype2'][$j], $p['field2'][$j], $data,
                                                     $j, 1);
                               echo self::showItem($output_type, $out, $item_num, $row_num);
@@ -2155,7 +2155,7 @@ class Search {
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
       $tocomputetrans = "`$table".$addtable."_trans`.`value`";
-      
+
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
           && count($searchopt[$ID]["additionalfields"])) {
@@ -2421,8 +2421,8 @@ class Search {
       }
       // Default case
       if ($meta
-         || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
-            && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
+          || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
+              && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = ", '$$', $tocomputetrans";
@@ -4051,7 +4051,7 @@ class Search {
                for ($k=0 ; $k<count($split) ; $k++) {
                   $split3 = self::explodeWithID("$$", $split[$k]);
                   $split4 = self::explodeWithID("$$", $split2[$k]);
-               
+
                   $linkid = ($split4[0] == $data['id']) ? $split4[0] : $split4[0];
                   if (($linkid > 0) && !isset($displayed[$linkid])) {
                      $text  = "<a ";

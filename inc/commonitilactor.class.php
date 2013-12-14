@@ -217,8 +217,11 @@ abstract class CommonITILActor extends CommonDBRelation {
       Html::closeForm();
    }
 
+
    /**
     * Print the object user form for notification
+    *
+    * @since version 0.85
     *
     * @param $ID              integer ID of the item
     * @param $options   array
@@ -265,7 +268,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $this->fields['alternative_email'] = $default_email;
       }
       echo "<input type='text' size='40' name='alternative_email' value='".
-               $this->fields['alternative_email']."'>";
+             $this->fields['alternative_email']."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -277,7 +280,8 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "</table></div>";
       Html::closeForm();
    }
-   
+
+
    function post_deleteFromDB() {
       global $CFG_GLPI;
 

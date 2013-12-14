@@ -45,7 +45,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
 
    $default_email = "";
    $emails        = array();
-   if (isset($_POST['typefield']) && $_POST['typefield'] == 'supplier') {
+   if (isset($_POST['typefield']) && ($_POST['typefield'] == 'supplier')) {
       $supplier = new Supplier();
       if ($supplier->getFromDB($_POST["value"])) {
       $default_email = $supplier->fields['email'];

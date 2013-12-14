@@ -171,11 +171,11 @@ abstract class CommonITILCost extends CommonDBChild {
       $tab[48]['massiveaction']  = false;
       $tab[48]['joinparams']     = array('jointype'  => 'child');
       $tab[48]['computation']    = "(SUM(TABLE.`actiontime`
-                                    * TABLE.`cost_time`/".HOUR_TIMESTAMP."
-                                    + TABLE.`cost_fixed`
-                                    + TABLE.`cost_material`)
-                                 / COUNT(TABLE.`id`))
-                                 * COUNT(DISTINCT TABLE.`id`)";
+                                         * TABLE.`cost_time`/".HOUR_TIMESTAMP."
+                                         + TABLE.`cost_fixed`
+                                         + TABLE.`cost_material`)
+                                     / COUNT(TABLE.`id`))
+                                   * COUNT(DISTINCT TABLE.`id`)";
 
       $tab[42]['table']          = static::getTable();
       $tab[42]['field']          = 'cost_time';
