@@ -323,7 +323,7 @@ class Item_Devices extends CommonDBRelation {
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {
-         echo "\n<form id='form_device_add$rand' name='form_device_action$rand'
+         echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>\n";
          echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
          echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
@@ -335,7 +335,7 @@ class Item_Devices extends CommonDBRelation {
 
       if ($canedit) {
          $delete_all_column = $table->addHeader('delete all',
-                                                Html::getCheckAllAsCheckbox("form_device_action$rand",
+                                                Html::getCheckAllAsCheckbox("form_device_add$rand",
                                                 '__RAND__'));
          $delete_all_column->setHTMLClass('center');
       } else {
@@ -354,7 +354,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         $massiveactionparams = array('container'     => 'form_device_action'.$rand,
+         $massiveactionparams = array('container'     => 'form_device_add'.$rand,
                                       'fixed'         => false,
                                       'display_arrow' => false);
          $content = array(array('function'   => 'Html::showMassiveActions',
@@ -404,7 +404,7 @@ class Item_Devices extends CommonDBRelation {
          echo "</td></tr></table>";
          Html::closeForm();
       }
-      
+
       if ($canedit) {
          echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>\n";
