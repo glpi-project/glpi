@@ -740,7 +740,8 @@ class Contract extends CommonDBTM {
       $tab[11]['usehaving']         = true;
       $tab[11]['massiveaction']     = false;
       $tab[11]['joinparams']        = array('jointype' => 'child');
-      $tab[11]['computation']   = "(SUM(TABLE.`cost`) / COUNT(TABLE.`id`)) * COUNT(DISTINCT TABLE.`id`)";
+      $tab[11]['computation']       = "(SUM(TABLE.`cost`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)";
 
       $tab[41]['table']             = 'glpi_contractcosts';
       $tab[41]['field']             = 'cost';
@@ -1360,7 +1361,7 @@ class Contract extends CommonDBTM {
       }
       // Default value for display
       $tmp[0] = ' ';
-      
+
       if (isset($tmp[$val])) {
          return $tmp[$val];
       }

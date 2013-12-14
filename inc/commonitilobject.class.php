@@ -1290,9 +1290,9 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($this->input["_suppliers_id_assign"])
              && ($this->input["_suppliers_id_assign"] > 0)) {
             $input3 = array($supplieractors->getItilObjectForeignKey()
-                                              => $this->fields['id'],
-                               'suppliers_id' => $this->input["_suppliers_id_assign"],
-                               'type'         => CommonITILActor::ASSIGN);
+                                           => $this->fields['id'],
+                            'suppliers_id' => $this->input["_suppliers_id_assign"],
+                            'type'         => CommonITILActor::ASSIGN);
 
             if (isset($this->input["_suppliers_id_assign_notif"])) {
                foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
@@ -2436,7 +2436,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[18]['maybefuture']      = true;
       $tab[18]['massiveaction']    = false;
       $tab[18]['additionalfields'] = array('status');
-      
+
 
 
       $tab[151]['table']           = $this->getTable();
@@ -2451,11 +2451,11 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[82]['datatype']         = 'bool';
       $tab[82]['massiveaction']    = false;
       $tab[82]['computation']      = "IF(TABLE.`due_date` IS NOT NULL
-                                       AND (TABLE.`solvedate` > TABLE.`due_date`
-                                             OR (TABLE.`solvedate` IS NULL
+                                         AND (TABLE.`solvedate` > TABLE.`due_date`
+                                              OR (TABLE.`solvedate` IS NULL
                                                    AND TABLE.`due_date` < NOW())),
-                                       1, 0)";
-      
+                                         1, 0)";
+
 
       $tab[17]['table']            = $this->getTable();
       $tab[17]['field']            = 'solvedate';
@@ -3199,7 +3199,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $paramscomment = array('value'       => '__VALUE__',
                                 'field'       => "_suppliers_id_assign_notif",
                                 'allow_email' => true,
-                                 'typefield'   => 'supplier',
+                                'typefield'   => 'supplier',
                                 'use_notification'
                                     => $options["_suppliers_id_assign_notif"]['use_notification']);
          if (isset($options["_suppliers_id_assign_notif"]['alternative_email'])) {
