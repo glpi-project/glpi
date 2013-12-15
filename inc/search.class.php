@@ -1172,7 +1172,6 @@ class Search {
                                        $out .= $separate;
                                     }
                                     $count_display++;
-                                    /// TODO : use getSpecificValueToDisplay to display item (test with meat on sink_type)
                                     // Manage Link to item
                                     $split2 = self::explodeWithID("$$", $split[$k]);
                                     if (isset($split2[1])) {
@@ -1192,7 +1191,18 @@ class Search {
                                           }
                                           $out = $linkout."</a>";
                                        } else {
-                                          $out .= Dropdown::getValueWithUnit($split2[0],$unit);
+                                          // Get specific display if available
+//                                           print_r($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]);
+                                          $itemtypemeta = getItemTypeForTable($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['table']);
+                                          if ($itemmeta = getItemForItemtype($itemtypemeta)) {
+                                             $tmpdata  = array($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['field'] => $split2[0]);
+                                             $specific = $itemmeta->getSpecificValueToDisplay($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['field'], $tmpdata, array('html' => true));
+                                          }
+                                          if (!empty($specific)) {
+                                             $out .= $specific;
+                                          } else {
+                                             $out      .= Dropdown::getValueWithUnit($split2[0], $unit);
+                                          }
                                        }
                                     } else {
                                        $out .= Dropdown::getValueWithUnit($split[$k],$unit);
