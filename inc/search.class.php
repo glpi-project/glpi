@@ -2191,8 +2191,8 @@ class Search {
                   if ((($itemtype == 'Ticket') || ($itemtype == 'Problem'))
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                       && (($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users')
-                          || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                == 'glpi_problems_users'))) { // For tickets_users
+                          || ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')
+                          || ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_changes_users'))) { // For tickets_users
 
                      $ticket_user_table
                         = $searchopt[$ID]['joinparams']['beforejoin']['table'].
@@ -2317,19 +2317,6 @@ class Search {
                         $ADDITONALFIELDS";
             }
             break;
-
-         case 'glpi_tickets.name' :
-            if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`,'$$',
-                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num.",
-                        $ADDITONALFIELDS";
-            }
-            return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                     `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
-                     `$table$addtable`.`content` AS ".$NAME."_".$num."_3,
-                     `$table$addtable`.`status` AS ".$NAME."_".$num."_4,
-                     $ADDITONALFIELDS";
 
          case 'glpi_tickets.items_id':
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
@@ -2719,7 +2706,8 @@ class Search {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                    && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
                    && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_tickets_users')
-                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_problems_users'))) {
+                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_problems_users')
+                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_changes_users'))) {
 
                   $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
@@ -4253,48 +4241,35 @@ class Search {
                return '&nbsp;';
 
             case 'glpi_tickets.name' :
-               if (isset($searchopt[$ID]['forcegroupby'])
-                   && $searchopt[$ID]['forcegroupby']) {
-                  $split = explode("$$$$",$data[$NAME.$num]);
-                  $out   = '';
-                  $link  = Toolbox::getItemTypeFormURL('Ticket');
-                  foreach ($split as $val) {
-                     if (!empty($val)) {
-                        $split2 = self::explodeWithID("$$", $val);
-                        $out   .= "<a id='ticket".$split2[1]."' href=\"".$link;
-                        $out   .= (strstr($link,'?') ?'&amp;' :  '?');
-                        $out   .= 'id='.$split2[1];
-                        $out   .= "\">";
-                        $name   = $split2[0];
-                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                           $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
-                        }
-                        $out .= $name."</a>".self::LBBR;
+            case 'glpi_problems.name' :
+            case 'glpi_changes.name' :
+               
+               if (isset($data[$NAME.$num."_content"])
+                  && isset($data[$NAME.$num."_id"])
+                  && isset($data[$NAME.$num."_status"])) {
+                  $link = Toolbox::getItemTypeFormURL($itemtype);
+                  $out  = "<a id='$itemtype".$data[$NAME.$num."_id"]."' href=\"".$link;
+                  $out .= (strstr($link,'?') ?'&amp;' :  '?');
+                  $out .= 'id='.$data[$NAME.$num."_id"];
+                  // Force solution tab if solved
+                  if ($item = getItemForItemtype($itemtype)) {
+                     if (in_array($data[$NAME.$num."_status"], $item->getSolvedStatusArray())) {
+                        $out .= "&amp;forcetab=$itemtype$2";
                      }
                   }
+                  $out .= "\">";
+                  $name = $data[$NAME.$num];
+                  if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
+                     $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_id"]);
+                  }
+                  $out .= $name."</a>";
+                  $content=Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($data[$NAME.$num."_content"]));
+                  $out = sprintf(__('%1$s %2$s'), $out,
+                                 Html::showToolTip(nl2br(Html::Clean($content)),
+                                                         array('applyto' => $itemtype.$data[$NAME.$num."_id"],
+                                                               'display' => false)));
                   return $out;
                }
-               $link = Toolbox::getItemTypeFormURL('Ticket');
-               $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
-               $out .= (strstr($link,'?') ?'&amp;' :  '?');
-               $out .= 'id='.$data[$NAME.$num."_2"];
-               // Force solution tab if solved
-               if ($data[$NAME.$num."_4"] == CommonITILObject::SOLVED) {
-                  $out .= "&amp;forcetab=Ticket$2";
-               }
-               $out .= "\">";
-               $name = $data[$NAME.$num];
-               if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
-                  $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
-               }
-               $out .= $name."</a>";
-               $content=Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($data[$NAME.$num."_3"]));
-               $out = sprintf(__('%1$s %2$s'), $out,
-                              Html::showToolTip(nl2br(Html::Clean($content)),
-                                                      array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
-                                                            'display' => false)));
-
-               return $out;
 
             case 'glpi_ticketvalidations.status' :
                $split = explode("$$$$",$data[$NAME.$num]);
