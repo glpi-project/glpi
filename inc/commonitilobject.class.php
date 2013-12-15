@@ -2445,6 +2445,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[151]['name']            = __('Due date + Progress');
       $tab[151]['massiveaction']   = false;
       $tab[151]['nosearch']        = true;
+      $tab[151]['additionalfields'] = array('status');
+      
 
       $tab[82]['table']            = $this->getTable();
       $tab[82]['field']            = 'is_late';

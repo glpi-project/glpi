@@ -2317,11 +2317,6 @@ class Search {
                         $ADDITONALFIELDS";
             }
             break;
-
-         case 'glpi_tickets.items_id':
-            return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                     `$table$addtable`.`itemtype` AS ".$NAME."_".$num."_2,
-                     $ADDITONALFIELDS";
       }
 
       //// Default cases
@@ -2795,7 +2790,6 @@ class Search {
                $regs[1] .= $regs[2];
                return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." INET_ATON('".$regs[3]."')) ";
             }
-//             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             break;
 
          case "glpi_tickets.status" :
@@ -3921,11 +3915,6 @@ class Search {
                }
                return NOT_AVAILABLE;
 
-            case "glpi_deviceharddrives.specificity" :
-            case "glpi_devicememories.specificity" :
-            case "glpi_deviceprocessors.specificity" :
-               return $data[$NAME.$num];
-
             case "glpi_networkports.mac" :
                $out = "";
                if ($itemtype == 'Computer') {
@@ -3968,21 +3957,6 @@ class Search {
                   return $out;
                }
                break;
-
-            case "glpi_contracts.duration" :
-            case "glpi_contracts.notice" :
-            case "glpi_contracts.periodicity" :
-            case "glpi_contracts.billing" :
-               if (!empty($data[$NAME.$num])) {
-                  $split  = explode('$$$$', $data[$NAME.$num]);
-                  $output = "";
-                  foreach ($split as $duration) {
-                     $output .= (empty($output)?'':self::LBBR) .
-                                 sprintf(_n('%d month', '%d months', $duration), $duration);
-                  }
-                  return $output;
-               }
-               return "&nbsp;";
 
             case "glpi_contracts.end_date" :
                if ($data[$NAME.$num."_renewal"] > 0) {
@@ -4232,8 +4206,8 @@ class Search {
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
             case 'glpi_tickets.items_id' :
-               if (!empty($data[$NAME.$num."_2"])
-                   && ($item = getItemForItemtype($data[$NAME.$num."_2"]))) {
+               if (!empty($data[$NAME.$num."_itemtype"])
+                   && ($item = getItemForItemtype($data[$NAME.$num."_itemtype"]))) {
                   if ($item->getFromDB($data[$NAME.$num])) {
                      return $item->getLink(array('comments' => true));
                   }
@@ -4288,13 +4262,6 @@ class Search {
             case 'glpi_ticketsatisfactions.satisfaction' :
                return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);
 
-            case 'glpi_notimportedemails.reason' :
-               return NotImportedEmail::getReason($data[$NAME.$num]);
-
-            case 'glpi_notimportedemails.messageid' :
-               $clean = array('<' => '',
-                              '>' => '');
-               return strtr($data[$NAME.$num], $clean);
          }
       }
 

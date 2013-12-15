@@ -233,6 +233,10 @@ class NotImportedEmail extends CommonDBTM {
       switch ($field) {
          case 'reason':
             return self::getReason($values[$field]);
+         case 'messageid':
+            $clean = array('<' => '',
+                           '>' => '');
+            return strtr($values[$field], $clean);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
