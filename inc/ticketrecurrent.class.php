@@ -451,8 +451,10 @@ class TicketRecurrent extends CommonDropdown {
             }
          }
          // Set date to creation date
-         $createtime    = strtotime($data['next_creation_date']) + $data['create_before'];
-         $input['date'] = date('Y-m-d H:i:s', $createtime);
+         $createtime    = strtotime($data['next_creation_date']);
+         $opentime    = $createtime + $data['create_before'];
+         $input['date'] = date('Y-m-d H:i:s', $opentime);
+
          // Compute due_date if predefined based on create date
          if (isset($predefined['due_date'])) {
             $input['due_date'] = Html::computeGenericDateTimeSearch($predefined['due_date'], false,
