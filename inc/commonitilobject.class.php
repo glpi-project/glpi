@@ -2379,7 +2379,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[1]['datatype']          = 'itemlink';
       $tab[1]['searchtype']        = 'contains';
       $tab[1]['massiveaction']     = false;
-
+      $tab[1]['additionalfields']  = array('id', 'content', 'status');
+      
       $tab[21]['table']            = $this->getTable();
       $tab[21]['field']            = 'content';
       $tab[21]['name']             = __('Description');
@@ -3690,7 +3691,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Alert if validation waiting
       $validationtype = $this->getType().'Validation';
-      $validationtype::alertValidation($this, 'solution');
+      if (method_exists($validationtype, 'alertValidation')) {
+         $validationtype::alertValidation($this, 'solution');
+      }
 
       $this->showFormHeader($options);
 
