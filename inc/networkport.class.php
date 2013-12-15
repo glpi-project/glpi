@@ -863,7 +863,7 @@ class NetworkPort extends CommonDBChild {
       $tab[21]['forcegroupby']  = true;
       $tab[21]['massiveaction'] = false;
       $tab[21]['joinparams']    = $joinparams;
-
+      
       $tab[87]['table']         = 'glpi_networkports';
       $tab[87]['field']         = 'instantiation_type';
       $tab[87]['name']          = __('Network port type');

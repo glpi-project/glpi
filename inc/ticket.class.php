@@ -1968,6 +1968,7 @@ class Ticket extends CommonITILObject {
       $tab[13]['name']              = __('Associated element');
       $tab[13]['datatype']          = 'specific';
       $tab[13]['nosearch']          = true;
+      $tab[13]['comments']          = true;
       $tab[13]['nosort']            = true;
       $tab[13]['massiveaction']     = false;
       $tab[13]['additionalfields']  = array('itemtype');
