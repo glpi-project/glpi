@@ -282,12 +282,21 @@ class Supplier extends CommonDBTM {
       $tab[9]['name']            = __('Third party type');
       $tab[9]['datatype']        = 'dropdown';
 
+      if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+         $name1 = 'firstname';
+         $name2 = 'name';
+      } else {
+         $name1 = 'name';
+         $name2 = 'firstname';
+      }
       $tab[8]['table']           = 'glpi_contacts';
       $tab[8]['field']           = 'completename';
       $tab[8]['name']            = _n('Associated contact', 'Associated contacts', 2);
       $tab[8]['forcegroupby']    = true;
       $tab[8]['datatype']        = 'itemlink';
       $tab[8]['massiveaction']   = false;
+      $tab[8]['computation']     = "CONCAT(TABLE.`$name1`, ' ', TABLE.`$name2`)";
+      $tab[8]['computationgroupby'] = true;
       $tab[8]['joinparams']      = array('beforejoin'
                                           => array('table'      => 'glpi_contacts_suppliers',
                                                    'joinparams' => array('jointype' => 'child')));
