@@ -50,24 +50,14 @@ if (isset($_GET["globalsearch"])) {
 
          Search::manageGetValues($itemtype,false,true);
 
-         if (!isset($_GET["field"][0])) {
-            // From global search only
-            $_GET["field"][0] = 'view';
-         }
-         if ($_GET["field"][0] =='view') {
-            $_GET["contains"][0]                    = $searchtext;
-            $_GET["searchtype"][0]                  = 'contains';
-            $_SESSION["glpisearchcount"][$itemtype] = 1;
+         $count = count($_GET["field"]);
 
-         } else {
-            $_GET["field"][1] = 'view';
-            $_GET["contains"][1]                    = $searchtext;
-            $_GET["searchtype"][1]                  = 'contains';
-            $_SESSION["glpisearchcount"][$itemtype] = 2;
-         }
+         $_GET["field"][$count]                  = 'view';
+         $_GET["contains"][$count]               = $searchtext;
+         $_GET["searchtype"][$count]             = 'contains';
+         $_SESSION["glpisearchcount"][$itemtype] = $count+1;
+         
          Search::showList($itemtype, $_GET);
-         unset($_GET["contains"]);
-         unset($_GET["searchtype"]);
          echo "<hr>";
          $_GET = array();
       }
