@@ -2184,21 +2184,6 @@ class Search {
 
       switch ($table.".".$field) {
 
-         case "glpi_contacts.completename" :
-            // Contact for display in the enterprise item
-            if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
-               $name1 = 'firstname';
-               $name2 = 'name';
-            } else {
-               $name1 = 'name';
-               $name2 = 'firstname';
-            }
-            return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$name1`, ' ',
-                                                  `$table$addtable`.`$name2`, '$$',
-                                                  `$table$addtable`.`id`)
-                                  SEPARATOR '$$$$') AS ".$NAME."_$num,
-                     $ADDITONALFIELDS";
-
          case "glpi_users.name" :
             if ($itemtype != 'User') {
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
@@ -2227,19 +2212,6 @@ class Search {
                         `$table$addtable`.`realname` AS ".$NAME."_".$num."_2,
                         `$table$addtable`.`id`  AS ".$NAME."_".$num."_3,
                         `$table$addtable`.`firstname` AS ".$NAME."_".$num."_4,
-                        $ADDITONALFIELDS";
-            }
-            break;
-
-         case "glpi_groups.name" :
-            if (($itemtype != 'Group') && ($itemtype != 'User')) {
-               if ($meta
-                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`,'$$',
-                                                        `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                       AS ".$NAME."_$num, ";
-               }
-               return " `$table$addtable`.`$field` AS ".$NAME."_$num,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2420,7 +2392,7 @@ class Search {
             case "itemlink" :
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
+                  return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '$$' ,
                                                         `$table$addtable`.`id`) SEPARATOR '$$$$')
                                        AS ".$NAME."_$num,
                            $ADDITONALFIELDS";
@@ -2806,26 +2778,6 @@ class Search {
             }
             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
-
-         case "glpi_contacts.completename" :
-            if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link `$table`.`id`".$SEARCH;
-            }
-            if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
-               $name1 = 'firstname';
-               $name2 = 'name';
-            } else {
-               $name1 = 'name';
-               $name2 = 'firstname';
-            }
-
-            $tmplink = 'OR';
-            if ($nott) {
-               $tmplink = 'AND';
-            }
-            return $link." (`$table`.`$name1` $SEARCH
-                            $tmplink `$table`.`$name2` $SEARCH
-                            $tmplink CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
