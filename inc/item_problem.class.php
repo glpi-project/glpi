@@ -261,9 +261,16 @@ class Item_Problem extends CommonDBRelation{
                                                 " `itemtype` = '".$item->getType()."'
                                                    AND `items_id` = '".$item->getID()."'");
                      // Linked items
-                     if ($subquery = $item->getSelectLinkedItem()) {
-                        $nb += countElementsInTable('glpi_items_problems',
-                                                    " (`itemtype`,`items_id`) IN (" . $subquery . ")");
+                     $linkeditems = $item->getLinkedItems();
+
+                     if (count($linkeditems)) {
+                        foreach ($linkeditems as $type => $tab) {
+                           foreach ($tab as $ID) {
+                              $nb += countElementsInTable('glpi_items_problems',
+                                                " `itemtype` = '$type'
+                                                   AND `items_id` = '$ID'");
+                           }
+                        }
                      }
                   }
                   return self::createTabEntry(Problem::getTypeName(2), $nb);

@@ -2520,15 +2520,32 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Return the SQL command to retrieve linked object
+    * Return the linked items (in computers_items)
     *
-    * @return a SQL command which return a set of (itemtype, items_id)
+    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+    * @since version 0.84.4
    **/
-   function getSelectLinkedItem() {
-      return '';
+   function getLinkedItems() {
+      return array();
    }
 
-
+   /**
+    * Return the count of linked items (in computers_items)
+    *
+    * @return number of linked items
+    * @since version 0.84.4
+   **/
+   function getLinkedItemsCount() {
+      $linkeditems = $this->getLinkedItems();
+      $nb = 0;
+      if (count($linkeditems)) {
+         foreach ($linkeditems as $tab) {
+            $nb += count($tab);
+         }
+      }
+      return $nb;
+   }
+   
    /**
     * Return a field Value if exists
     *

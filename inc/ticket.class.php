@@ -429,10 +429,18 @@ class Ticket extends CommonITILObject {
                   $nb = countElementsInTable('glpi_tickets',
                                              " `itemtype` = '".$item->getType()."'
                                                 AND `items_id` = '".$item->getID()."'");
-                  // Linked items
-                  if ($subquery = $item->getSelectLinkedItem()) {
-                     $nb += countElementsInTable('glpi_tickets',
-                                                 "(`itemtype`,`items_id`) IN (" . $subquery . ")");
+
+
+                  $linkeditems = $item->getLinkedItems();
+
+                  if (count($linkeditems)) {
+                     foreach ($linkeditems as $type => $tab) {
+                        foreach ($tab as $ID) {
+                           $nb += countElementsInTable('glpi_tickets',
+                                             " `itemtype` = '$type'
+                                                AND `items_id` = '$ID'");
+                        }
+                     }
                   }
                   break;
             }
@@ -5312,12 +5320,21 @@ class Ticket extends CommonITILObject {
       }
 
       echo "</table></div>";
-
+      
       // Tickets for linked items
-      if ($subquery = $item->getSelectLinkedItem()) {
+      $linkeditems = $item->getLinkedItems();
+      $restrict = array();
+      if (count($linkeditems)) {
+         foreach ($linkeditems as $ltype => $tab) {
+            foreach ($tab as $lID) {
+               $restrict[] = "(`itemtype` = '$ltype' AND `items_id` = '$lID')";
+            }
+         }
+      }
+      if (count($restrict)) {
          $query = "SELECT ".self::getCommonSelect()."
                    FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                   WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
+                   WHERE ".implode(' OR ', $restrict).
                          getEntitiesRestrictRequest(' AND ', 'glpi_tickets') . "
                    ORDER BY `glpi_tickets`.`date_mod` DESC
                    LIMIT ".intval($_SESSION['glpilist_limit']);

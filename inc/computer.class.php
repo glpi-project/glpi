@@ -605,15 +605,22 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * Return the SQL command to retrieve linked object
+    * Return the linked items (in computers_items)
     *
-    * @return a SQL command which return a set of (itemtype, items_id)
-    */
-   function getSelectLinkedItem() {
+    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+    * @since version 0.84.4
+   **/
+   function getLinkedItems() {
+      global $DB;
 
-      return "SELECT `itemtype`, `items_id`
+      $query = "SELECT `itemtype`, `items_id`
               FROM `glpi_computers_items`
               WHERE `computers_id` = '" . $this->fields['id']."'";
+      $tab = array();
+      foreach ($DB->request($query) as $data) {
+         $tab[$data['itemtype']][$data['items_id']] = $data['items_id'];
+      };
+      return $tab;
    }
 
 

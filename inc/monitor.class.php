@@ -356,16 +356,23 @@ class Monitor extends CommonDBTM {
 
 
    /**
-    * Return the SQL command to retrieve linked object
+    * Return the linked items (in computers_items)
     *
-    * @return a SQL command which return a set of (itemtype, items_id)
+    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+    * @since version 0.84.4
    **/
-   function getSelectLinkedItem() {
+   function getLinkedItems() {
+      global $DB;
 
-      return "SELECT 'Computer', `computers_id`
+      $query = "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
               WHERE `itemtype` = '".$this->getType()."'
                     AND `items_id` = '" . $this->fields['id']."'";
+      $tab = array();
+      foreach ($DB->request($query) as $data) {
+         $tab['Computer'][$data['computers_id']] = $data['computers_id'];
+      };
+      return $tab;
    }
 
 
