@@ -1387,11 +1387,11 @@ class Problem extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
+         $colspan = 10;
          if (count($_SESSION["glpiactiveentities"]) > 1) {
-            echo "<tr><th colspan='11'>";
-         } else {
-            echo "<tr><th colspan='10'>";
+            $colspan++;
          }
+         echo "<tr><th colspan='$colspan'>";
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d problem','Last %d problems',$number), $number);
@@ -1417,13 +1417,24 @@ class Problem extends CommonITILObject {
       echo "</table></div>";
 
       // Tickets for linked items
-      if ($subquery = $item->getSelectLinkedItem()) {
+      $linkeditems = $item->getLinkedItems();
+      $restrict = array();
+      if (count($linkeditems)) {
+         foreach ($linkeditems as $ltype => $tab) {
+            foreach ($tab as $lID) {
+               $restrict[] = "(`itemtype` = '$ltype' AND `items_id` = '$lID')";
+            }
+         }
+      }
+
+      if (count($restrict)) {
+
          $query = "SELECT ".self::getCommonSelect()."
                    FROM `glpi_problems`
                    LEFT JOIN `glpi_items_problems`
                         ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
                    self::getCommonLeftJoin()."
-                   WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
+                   WHERE ".implode(' OR ', $restrict).
                          getEntitiesRestrictRequest(' AND ', 'glpi_problems') . "
                    ORDER BY `glpi_problems`.`date_mod` DESC
                    LIMIT ".intval($_SESSION['glpilist_limit']);
@@ -1431,7 +1442,7 @@ class Problem extends CommonITILObject {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='8'>";
+         echo "<tr><th colspan='$colspan'>";
          _e('Problems on linked items');
 
          echo "</th></tr>";
