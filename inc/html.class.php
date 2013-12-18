@@ -3651,7 +3651,7 @@ class Html {
       echo "
          tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-         mode : 'textareas',
+         mode : 'exact',
          elements: '$name',
          valid_elements: '*[*]',
          plugins : 'table,directionality,searchreplace,paste,tabfocus',

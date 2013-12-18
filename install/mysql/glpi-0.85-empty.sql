@@ -1,4 +1,4 @@
-#GLPI Dump database on 2013-12-13 16:48
+#GLPI Dump database on 2013-12-18 14:18
 
 ### Dump table glpi_alerts
 
@@ -1197,8 +1197,8 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','17','0','2013-12-13 16:48:44','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','17','1','2013-12-13 16:48:44','2','0.00569582','0','Action terminée, rien à faire');
+INSERT INTO `glpi_crontasklogs` VALUES ('1','17','0','2013-12-18 14:18:08','0','0','0','Run mode: GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('2','17','1','2013-12-18 14:18:08','2','0.00466704','0','Action completed, no processing required');
 
 ### Dump table glpi_crontasks
 
@@ -1238,7 +1238,7 @@ INSERT INTO `glpi_crontasks` VALUES ('13','CronTask','graph','3600',NULL,'1','1'
 INSERT INTO `glpi_crontasks` VALUES ('14','ReservationItem','reservation','3600',NULL,'1','1','3','0','24','30','2012-04-05 20:31:57',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30','2013-05-28 09:51:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30','2013-09-03 09:47:00',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30','2013-12-13 16:48:00',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30','2013-12-18 14:18:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('19','Crontask','watcher','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('20','TicketRecurrent','ticketrecurrent','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -2034,7 +2034,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2013-12-13 16:48:46','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2013-12-18 14:18:10','login','3','glpi log in from IP 127.0.0.1');
 
 ### Dump table glpi_fieldblacklists
 
@@ -3451,16 +3451,19 @@ INSERT INTO `glpi_notifications` VALUES ('38','Contract End Periodicity','0','Co
 INSERT INTO `glpi_notifications` VALUES ('39','Contract Notice Periodicity','0','Contract','periodicitynotice','mail','12','','1','1','2013-05-28 09:50:42');
 INSERT INTO `glpi_notifications` VALUES ('40','Planning recall','0','PlanningRecall','planningrecall','mail','18','','1','1','2013-05-28 09:50:43');
 INSERT INTO `glpi_notifications` VALUES ('41','Delete Ticket','0','Ticket','delete','mail','4','','1','1','2013-05-28 09:50:44');
-INSERT INTO `glpi_notifications` VALUES ('42','New Change','0','Change','new','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('43','Update Change','0','Change','update','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('44','Resolve Change','0','Change','solved','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('45','Add Task','0','Change','add_task','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('46','Update Task','0','Change','update_task','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('47','Delete Task','0','Change','delete_task','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('48','Close Change','0','Change','closed','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('49','Delete Change','0','Change','delete','mail','19','','1','1','2013-12-13 16:48:38');
-INSERT INTO `glpi_notifications` VALUES ('50','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2013-12-13 16:48:39');
-INSERT INTO `glpi_notifications` VALUES ('51','Receiver errors','0','MailCollector','error','mail','20','','1','1','2013-12-13 16:48:39');
+INSERT INTO `glpi_notifications` VALUES ('42','New Change','0','Change','new','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('43','Update Change','0','Change','update','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('44','Resolve Change','0','Change','solved','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('45','Add Task','0','Change','add_task','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('46','Update Task','0','Change','update_task','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('47','Delete Task','0','Change','delete_task','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('48','Close Change','0','Change','closed','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('49','Delete Change','0','Change','delete','mail','19','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('50','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('51','Receiver errors','0','MailCollector','error','mail','20','','1','1','2013-12-18 14:18:02');
+INSERT INTO `glpi_notifications` VALUES ('52','New Project','0','Project','new','mail','21','','1','1','2013-12-18 14:18:03');
+INSERT INTO `glpi_notifications` VALUES ('53','Update Project','0','Project','update','mail','21','','1','1','2013-12-18 14:18:03');
+INSERT INTO `glpi_notifications` VALUES ('54','Delete Project','0','Project','delete','mail','21','','1','1','2013-12-18 14:18:03');
 
 ### Dump table glpi_notificationtargets
 
@@ -3577,6 +3580,15 @@ INSERT INTO `glpi_notificationtargets` VALUES ('101','21','1','49');
 INSERT INTO `glpi_notificationtargets` VALUES ('102','3','1','50');
 INSERT INTO `glpi_notificationtargets` VALUES ('103','2','1','50');
 INSERT INTO `glpi_notificationtargets` VALUES ('104','1','1','51');
+INSERT INTO `glpi_notificationtargets` VALUES ('105','27','1','52');
+INSERT INTO `glpi_notificationtargets` VALUES ('106','1','1','52');
+INSERT INTO `glpi_notificationtargets` VALUES ('107','28','1','52');
+INSERT INTO `glpi_notificationtargets` VALUES ('108','27','1','53');
+INSERT INTO `glpi_notificationtargets` VALUES ('109','1','1','53');
+INSERT INTO `glpi_notificationtargets` VALUES ('110','28','1','53');
+INSERT INTO `glpi_notificationtargets` VALUES ('111','27','1','54');
+INSERT INTO `glpi_notificationtargets` VALUES ('112','1','1','54');
+INSERT INTO `glpi_notificationtargets` VALUES ('113','28','1','54');
 
 ### Dump table glpi_notificationtemplates
 
@@ -3612,8 +3624,9 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('15','Item not unique','FieldUn
 INSERT INTO `glpi_notificationtemplates` VALUES ('16','Crontask','Crontask','2011-03-04 11:35:16',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('17','Problems','Problem','2011-12-06 09:48:33',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('18','Planning recall','PlanningRecall','2013-05-28 09:50:43',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('19','Changes','Change','2013-12-13 16:48:38',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('20','Receiver errors','MailCollector','2013-12-13 16:48:39',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('19','Changes','Change','2013-12-18 14:18:02',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('20','Receiver errors','MailCollector','2013-12-18 14:18:02',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('21','Projects','Project','2013-12-18 14:18:03',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -4102,6 +4115,41 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('20','20','','##mail
 ##mailcollector.url##
 ##ENDFOREACHmailcollectors##','&lt;p&gt;##FOREACHmailcollectors##&lt;br /&gt;##lang.mailcollector.name## : ##mailcollector.name##&lt;br /&gt; ##lang.mailcollector.errors## : ##mailcollector.errors##&lt;br /&gt;&lt;a href=\"##mailcollector.url##\"&gt;##mailcollector.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHmailcollectors##&lt;/p&gt;
 &lt;p&gt;&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('21','21','','##project.action## ##project.name## ##project.code##','##lang.project.url## : ##project.url##
+
+##lang.project.description##
+
+##lang.project.name## : ##project.name##
+##lang.project.code## : ##project.code##
+ ##lang.project.manager## : ##project.manager##
+##lang.project.managergroup## : ##project.managergroup##
+ ##lang.project.creationdate## : ##project.creationdate##
+##lang.project.priority## : ##project.priority##
+##lang.project.state## : ##project.state##
+##lang.project.type## : ##project.type##
+##lang.project.description## : ##project.description##
+
+##lang.project.numberoftasks## : ##project.numberoftasks##
+
+
+
+##FOREACHtasks##
+
+[##task.creationdate##]
+ ##lang.task.state## : ##task.state##
+##lang.task.type## : ##task.type##
+##lang.task.percent## : ##task.percent##
+##lang.task.description## : ##task.description##
+
+##ENDFOREACHtasks##','&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;##lang.project.description##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.project.name## : ##project.name##&lt;br /&gt;##lang.project.code## : ##project.code##&lt;br /&gt; ##lang.project.manager## : ##project.manager##&lt;br /&gt;##lang.project.managergroup## : ##project.managergroup##&lt;br /&gt; ##lang.project.creationdate## : ##project.creationdate##&lt;br /&gt;##lang.project.priority## : ##project.priority## &lt;br /&gt;##lang.project.state## : ##project.state##&lt;br /&gt;##lang.project.type## : ##project.type##&lt;br /&gt;##lang.project.description## : ##project.description##&lt;/p&gt;
+&lt;p&gt;##lang.project.numberoftasks## : ##project.numberoftasks##&lt;/p&gt;
+&lt;div&gt;
+&lt;p&gt;##FOREACHtasks##&lt;/p&gt;
+&lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt; ##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
+&lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
+&lt;/div&gt;');
 
 ### Dump table glpi_notimportedemails
 
@@ -5278,9 +5326,9 @@ CREATE TABLE `glpi_projectstates` (
   KEY `is_finished` (`is_finished`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_projectstates` VALUES ('1','Nouveau',NULL,'#06ff00','0');
-INSERT INTO `glpi_projectstates` VALUES ('2','En cours',NULL,'#ffb800','0');
-INSERT INTO `glpi_projectstates` VALUES ('3','Clos',NULL,'#ff0000','1');
+INSERT INTO `glpi_projectstates` VALUES ('1','New',NULL,'#06ff00','0');
+INSERT INTO `glpi_projectstates` VALUES ('2','Processing',NULL,'#ffb800','0');
+INSERT INTO `glpi_projectstates` VALUES ('3','Closed',NULL,'#ff0000','1');
 
 ### Dump table glpi_projecttasks
 
@@ -5678,12 +5726,12 @@ CREATE TABLE `glpi_rules` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','b062a539-2bd6e957-52ab2c57284bf8.06485002');
-INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','b062a539-2bd6e957-52ab2c572859b8.56674528');
-INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1','b062a539-2bd6e957-52ab2c57286248.38576982');
-INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1','b062a539-2bd6e957-52ab2c57286923.65746050');
-INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','b062a539-2bd6e957-52ab2c57286fa0.68213651');
-INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','b062a539-2bd6e957-52ab2c57287604.76954756');
+INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','b062a539-2bd6e957-52b1a08a726f96.08776528');
+INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','b062a539-2bd6e957-52b1a08a727b70.07408811');
+INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1','b062a539-2bd6e957-52b1a08a728455.06220277');
+INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1','b062a539-2bd6e957-52b1a08a728b68.04212352');
+INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','b062a539-2bd6e957-52b1a08a729229.78524453');
+INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','b062a539-2bd6e957-52b1a08a7298b1.71119396');
 
 ### Dump table glpi_slalevelactions
 
@@ -6512,7 +6560,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_deleted_ldap` (`is_deleted_ldap`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$mQjfJ4CfB6KJQU28n00URu6DPEyU94thaG/UldA9pFIcKDO.8VvLW','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2013-12-13 16:48:46','2013-12-13 16:48:46',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$3Vq92GhFixBYBfFEcvXPfO71MfmBLkVHgqKKAviJkzrxppJzuhRIa','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2013-12-18 14:18:10','2013-12-18 14:18:10',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);

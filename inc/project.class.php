@@ -231,12 +231,29 @@ class Project extends CommonDBTM {
       return false;
    }
 
+   function post_updateItem($history=1) {
+      global $CFG_GLPI;
+      
+      if ($CFG_GLPI["use_mailing"]) {
+         // Read again project to be sure that all data are up to date
+         $this->getFromDB($this->fields['id']);
+         NotificationEvent::raiseEvent("update", $this);
+      }
+   }
+   
    function post_addItem() {
       global $DB;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          ProjectCost::cloneProject($this->input["_oldID"], $this->fields['id']);
+      }
+      if ($CFG_GLPI["use_mailing"]) {
+         // Clean reload of the project
+         $this->getFromDB($this->fields['id']);
+
+         $type = "new";
+         NotificationEvent::raiseEvent($type, $this);
       }
    }
    
@@ -258,6 +275,11 @@ class Project extends CommonDBTM {
       $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
    }
 
+   function pre_deleteItem() {
+
+      NotificationEvent::raiseEvent('delete',$this);
+      return true;
+   }
 
    function cleanDBonPurge() {
       global $DB;
