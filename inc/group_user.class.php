@@ -533,7 +533,7 @@ class Group_User extends CommonDBRelation{
          case 'change_groupe_user' :
             Group::dropdown(array('right'  => '`is_usergroup`'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                  _sx('button', 'update')."'>";
+                  _sx('button', 'Update')."'>";
             return true;
 
          case "add_user_group" :
