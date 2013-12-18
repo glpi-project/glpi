@@ -57,6 +57,8 @@ class Search {
 
    const NULLVALUE = '__NULL__';
 
+   static $output_type = self::HTML_OUTPUT;
+
    /**
     * Display search engine for an type
     *
@@ -156,9 +158,8 @@ class Search {
       $LIST_LIMIT = $_SESSION['glpilist_limit'];
 
       // Set display type for export if define
-      $output_type = self::HTML_OUTPUT;
       if (isset($_GET['display_type'])) {
-         $output_type = $_GET['display_type'];
+         self::$output_type = $_GET['display_type'];
          // Limit to 10 element
          if ($_GET['display_type'] == self::GLOBAL_SEARCH) {
             $LIST_LIMIT = self::GLOBAL_DISPLAY_COUNT;
@@ -781,7 +782,7 @@ class Search {
             }
          }
          if (empty($QUERY)) {
-            echo self::showError($output_type);
+            echo self::showError(self::$output_type);
             return;
          }
          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$itemtype].".", "", $ORDER) . $LIMIT;
@@ -840,7 +841,7 @@ class Search {
             $parameters = $tmp[1].'&amp;'.$parameters;
          }
          */
-         if ($output_type == self::GLOBAL_SEARCH) {
+         if (self::$output_type == self::GLOBAL_SEARCH) {
             if ($item = getItemForItemtype($itemtype)) {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
@@ -856,7 +857,7 @@ class Search {
          // If the begin of the view is before the number of items
          if ($p['start'] < $numrows) {
             // Display pager only for HTML
-            if ($output_type == self::HTML_OUTPUT) {
+            if (self::$output_type == self::HTML_OUTPUT) {
                // For plugin add new parameter if available
                if ($plug = isPluginItemType($itemtype)) {
                   $function = 'plugin_'.$plug['plugin'].'_addParamFordynamicReport';
@@ -932,7 +933,7 @@ class Search {
                $showmassiveactions = true;
             }
             if ($showmassiveactions
-                && ($output_type == self::HTML_OUTPUT)) {
+                && (self::$output_type == self::HTML_OUTPUT)) {
                Html::openMassiveActionsForm('massform'.$itemtype);
                $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
                                             'fixed'         => false,
@@ -962,27 +963,27 @@ class Search {
                }
             }
 
-            if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
+            if (self::$output_type == self::HTML_OUTPUT) { // HTML display - massive modif
                $nbcols++;
             }
 
 
             // Display List Header
-            echo self::showHeader($output_type, $end_display-$begin_display+1, $nbcols);
+            echo self::showHeader(self::$output_type, $end_display-$begin_display+1, $nbcols);
 
             // New Line for Header Items Line
             $headers_line        = '';
             $headers_line_top    = '';
             $headers_line_bottom = '';
-            echo self::showBeginHeader($output_type);
-            echo self::showNewLine($output_type);
+            echo self::showBeginHeader(self::$output_type);
+            echo self::showNewLine(self::$output_type);
             $header_num = 1;
-            if (($output_type == self::HTML_OUTPUT)
+            if ((self::$output_type == self::HTML_OUTPUT)
                 && $showmassiveactions) { // HTML display - massive modif
-               $headers_line_top    .= self::showHeaderItem($output_type,
+               $headers_line_top    .= self::showHeaderItem(self::$output_type,
                                                             Html::getCheckAllAsCheckbox('massform'.$itemtype),
                                                             $header_num, "", 0, $p['order']);
-               $headers_line_bottom .= self::showHeaderItem($output_type,
+               $headers_line_bottom .= self::showHeaderItem(self::$output_type,
                                                             Html::getCheckAllAsCheckbox('massform'.$itemtype),
                                                             $header_num, "", 0, $p['order']);
             }
@@ -997,7 +998,7 @@ class Search {
                              (($p['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$p['start'].
                              $globallinkto;
                }
-               $headers_line .= self::showHeaderItem($output_type,
+               $headers_line .= self::showHeaderItem(self::$output_type,
                                                      $searchopt[$itemtype][$val]["name"],
                                                      $header_num, $linkto, ($p['sort'] == $val),
                                                      $p['order']);
@@ -1019,7 +1020,7 @@ class Search {
                            }
                         }
 
-                        $headers_line .= self::showHeaderItem($output_type,
+                        $headers_line .= self::showHeaderItem(self::$output_type,
                                                               sprintf(__('%1$s - %2$s'),
                                                                       $metanames[$p['itemtype2'][$i]],
                                                                       $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"]),
@@ -1031,29 +1032,17 @@ class Search {
             }
 
             // Add specific column Header
-            if ($itemtype == 'CartridgeItem') {
-               $headers_line .= self::showHeaderItem($output_type, _n('Cartridge','Cartridges',2),
-                                                     $header_num);
-            }
-            if ($itemtype == 'ConsumableItem') {
-               $headers_line .= self::showHeaderItem($output_type, _n('Consumable','Consumables',2),
-                                                     $header_num);
-            }
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
-               $headers_line .= self::showHeaderItem($output_type, __('Item type'), $header_num);
-            }
-            if (($itemtype == 'ReservationItem')
-                && ($output_type == self::HTML_OUTPUT)) {
-               $headers_line .= self::showHeaderItem($output_type, "&nbsp;", $header_num);
+               $headers_line .= self::showHeaderItem(self::$output_type, __('Item type'), $header_num);
             }
             // End Line for column headers
-            $headers_line        .= self::showEndLine($output_type);
+            $headers_line        .= self::showEndLine(self::$output_type);
 
             $headers_line_top    .= $headers_line;
             $headers_line_bottom .= $headers_line;
 
             echo $headers_line_top;
-            echo self::showEndHeader($output_type);
+            echo self::showEndHeader(self::$output_type);
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
@@ -1065,7 +1054,7 @@ class Search {
             $i = $begin_display;
 
             // Init list of items displayed
-            if ($output_type == self::HTML_OUTPUT) {
+            if (self::$output_type == self::HTML_OUTPUT) {
                Session::initNavigateListItems($itemtype);
             }
 
@@ -1087,7 +1076,7 @@ class Search {
                $i++;
                $row_num++;
                // New line
-               echo self::showNewLine($output_type, ($i%2), $p['is_deleted']);
+               echo self::showNewLine(self::$output_type, ($i%2), $p['is_deleted']);
 
                $current_type       = (isset($data['TYPE']) ? $data['TYPE'] : $itemtype);
                $massiveaction_type = $current_type;
@@ -1100,7 +1089,7 @@ class Search {
                // Add item in item list
                Session::addToNavigateListItems($current_type, $data["id"]);
 
-               if (($output_type == self::HTML_OUTPUT)
+               if ((self::$output_type == self::HTML_OUTPUT)
                    && $showmassiveactions) { // HTML display - massive modif
                   $tmpcheck = "";
                   if (($itemtype == 'Entity')
@@ -1117,12 +1106,12 @@ class Search {
                      $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
                                                                 $data[$massiveaction_field]);
                   }
-                  echo self::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
+                  echo self::showItem(self::$output_type, $tmpcheck, $item_num, $row_num, "width='10'");
                }
 
                // Print other toview items
                foreach ($toview as $key => $val) {
-                  echo self::showItem($output_type, self::giveItem($itemtype, $val, $data, $key),
+                  echo self::showItem(self::$output_type, self::giveItem($itemtype, $val, $data, $key),
                                       $item_num, $row_num,
                                       self::displayConfigItem($itemtype, $val, $data, $key));
                }
@@ -1142,7 +1131,7 @@ class Search {
 
                               $out = self::giveItem($p['itemtype2'][$j], $p['field2'][$j], $data,
                                                     $j, 1);
-                              echo self::showItem($output_type, $out, $item_num, $row_num);
+                              echo self::showItem(self::$output_type, $out, $item_num, $row_num);
 
                            // Case of GROUP_CONCAT item : split item and multilline display
                            } else {
@@ -1209,66 +1198,28 @@ class Search {
                                     }
                                  }
                               }
-                              echo self::showItem($output_type, $out, $item_num, $row_num);
+                              echo self::showItem(self::$output_type, $out, $item_num, $row_num);
                            }
                            $already_printed[$p['itemtype2'][$j].$p['field2'][$j]] = 1;
                         }
                      }
                   }
                }
-               // Specific column display
-               if ($itemtype == 'CartridgeItem') {
-                  $extrastyle = '';
-                  if ($output_type != self::HTML_OUTPUT) {
-                     if (Cartridge::getUnusedNumber($data["id"]) <= $data["ALARM"]) {
-                        $extrastyle = "style=\"background-color: #cf9b9b;\"";
-                     }
-                  }
-                  echo self::showItem($output_type,
-                                      Cartridge::getCount($data["id"], $data["ALARM"],
-                                                          $output_type != self::HTML_OUTPUT),
-                                      $item_num, $row_num, $extrastyle);
-               }
-               if ($itemtype == 'ConsumableItem') {
-                  $extrastyle = '';
-                  if ($output_type != self::HTML_OUTPUT) {
-                     if (Consumable::getUnusedNumber($data["id"]) <= $data["ALARM"]) {
-                        $extrastyle = "style=\"background-color: #cf9b9b;\"";
-                     }
-                  }
-                  echo self::showItem($output_type,
-                                      Consumable::getCount($data["id"], $data["ALARM"],
-                                                           $output_type != self::HTML_OUTPUT),
-                                      $item_num, $row_num, $extrastyle);
-               }
                if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                   $typename = $data["TYPE"];
                   if ($itemtmp = getItemForItemtype($data["TYPE"])) {
                      $typename = $itemtmp->getTypeName();
                   }
-                  echo self::showItem($output_type, $typename, $item_num, $row_num);
-               }
-               if (($itemtype == 'ReservationItem')
-                   && ($output_type == self::HTML_OUTPUT)) {
-                  if ($data["ACTIVE"]) {
-                     echo self::showItem($output_type,
-                                         "<a href='reservation.php?reservationitems_id=".
-                                           $data["refID"]."' title=\"".__s('See planning')."\">".
-                                           "<img src=\"".$CFG_GLPI["root_doc"].
-                                             "/pics/reservation-3.png\" alt='' title=''></a>",
-                                         $item_num, $row_num, "class='center'");
-                  } else {
-                     echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
-                  }
+                  echo self::showItem(self::$output_type, $typename, $item_num, $row_num);
                }
                // End Line
-               echo self::showEndLine($output_type);
+               echo self::showEndLine(self::$output_type);
             }
 
             $title = "";
             // Create title
-            if (($output_type == self::PDF_OUTPUT_LANDSCAPE)
-                || ($output_type == self::PDF_OUTPUT_PORTRAIT)) {
+            if ((self::$output_type == self::PDF_OUTPUT_LANDSCAPE)
+                || (self::$output_type == self::PDF_OUTPUT_PORTRAIT)) {
 
                if (($_SESSION["glpisearchcount"][$itemtype] > 0)
                    && (count($p['contains']) > 0)) {
@@ -1436,14 +1387,14 @@ class Search {
                }
             }
 
-            if ($output_type == self::HTML_OUTPUT) {
+            if (self::$output_type == self::HTML_OUTPUT) {
                echo $headers_line_bottom;
             }
             // Display footer
-            echo self::showFooter($output_type, $title);
+            echo self::showFooter(self::$output_type, $title);
 
             // Delete selected item
-            if ($output_type == self::HTML_OUTPUT) {
+            if (self::$output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
                   $massiveactionparams['ontop'] = false;
                   Html::showMassiveActions($massiveactionparams);
@@ -1453,12 +1404,12 @@ class Search {
                   echo "<br>";
                }
             }
-            if ($output_type == self::HTML_OUTPUT) { // In case of HTML display
+            if (self::$output_type == self::HTML_OUTPUT) { // In case of HTML display
                Html::printPager($p['start'], $numrows, $p['target'], $parameters, '', 0, $search_config);
 
             }
          } else {
-            echo self::showError($output_type);
+            echo self::showError(self::$output_type);
          }
       } else {
          echo $DBread->error();
@@ -2072,17 +2023,6 @@ class Search {
       }
       $ret = "";
       switch ($itemtype) {
-         case 'ReservationItem' :
-            $ret = "`glpi_reservationitems`.`is_active` AS ACTIVE, ";
-            break;
-
-         case 'CartridgeItem' :
-            $ret = "`glpi_cartridgeitems`.`alarm_threshold` AS ALARM, ";
-            break;
-
-         case 'ConsumableItem' :
-            $ret = "`glpi_consumableitems`.`alarm_threshold` AS ALARM, ";
-            break;
 
          case 'FieldUnicity' :
             $ret = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE,";
@@ -2180,6 +2120,12 @@ class Search {
                $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS ".$NAME."_".$num."_$key, ";
             }
          }
+      }
+
+
+      // Virtual display no select : only get additional fields
+      if ($field == '_virtual') {
+         return $ADDITONALFIELDS;
       }
 
       switch ($table.".".$field) {
@@ -3254,6 +3200,11 @@ class Search {
       $nt = $new_table;
       $cleannt    = $nt;
 
+      // Virtual field no link
+      if ($linkfield == '_virtual') {
+         return false;
+      }
+      
       // Multiple link possibilies case
 //       if ($new_table=="glpi_users"
 //           || $new_table=="glpi_groups"
@@ -4265,6 +4216,21 @@ class Search {
             case 'glpi_ticketsatisfactions.satisfaction' :
                return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);
 
+            case 'glpi_cartridgeitems._virtual' :
+               return Cartridge::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
+                                                          self::$output_type != self::HTML_OUTPUT);
+            case 'glpi_consumableitems._virtual' :
+               return Consumable::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
+                                                          self::$output_type != self::HTML_OUTPUT);
+            case 'glpi_reservationitems._virtual' :
+               if ($data[$NAME.$num.'_is_active']) {
+                  return "<a href='reservation.php?reservationitems_id=".
+                                          $data["refID"]."' title=\"".__s('See planning')."\">".
+                                          "<img src=\"".$CFG_GLPI["root_doc"].
+                                          "/pics/reservation-3.png\" alt='' title=''></a>";
+               } else {
+                  return "&nbsp;";
+               }
          }
       }
 

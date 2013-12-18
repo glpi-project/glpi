@@ -255,6 +255,16 @@ class ConsumableItem extends CommonDBTM {
       $tab[23]['name']           = __('Manufacturer');
       $tab[23]['datatype']       = 'dropdown';
 
+      $tab[9]['table']          = 'glpi_consumableitems';
+      $tab[9]['field']          = '_virtual';
+      $tab[9]['linkfield']      = '_virtual';
+      $tab[9]['name']           = _n('Consumable','Consumables',2);
+      $tab[9]['datatype']       = 'specific';
+      $tab[9]['massiveaction']  = false;
+      $tab[9]['nosearch']       = true;
+      $tab[9]['nosort']         = true;
+      $tab[9]['additionalfields'] = array('alarm_threshold');
+      
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[24]['table']          = 'glpi_users';
