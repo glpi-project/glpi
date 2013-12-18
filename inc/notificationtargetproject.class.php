@@ -288,9 +288,27 @@ class NotificationTargetProject extends NotificationTarget {
                               = Dropdown::getDropdownName('glpi_groups',
                                                           $item->getField('groups_id'));
       }
+      // Team infos
+      $restrict = "`projects_id` = '".$item->getField('id')."'";
+      $items    = getAllDatasFromTable('glpi_projectteams',$restrict);
 
+      $datas['teammembers'] = array();
+      if (count($items)) {
+         foreach ($items as $data) {
+            if ($item2 = getItemForItemtype($data['itemtype'])) {
+               if ($item2->getFromDB($data['items_id'])) {
+                  $tmp = array();
+                  $tmp['##teammember.itemtype##']    = $item2->getTypeName();
+                  $tmp['##teammember.name##']        = $item2->Name();
+                  $datas['teammembers'][] = $tmp;
+               }
+            }
+         }
+      }
 
-      //Task infos
+      $datas['##project.numberofteammembers##'] = count($datas['teammembers']);
+
+      // Task infos
       $restrict = "`projects_id`='".$item->getField('id')."'";
       $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
@@ -368,6 +386,7 @@ class NotificationTargetProject extends NotificationTarget {
 
       $datas["##project.numberoflogs##"] = count($datas['log']);
 
+      // Changes infos
       $restrict         = "`projects_id`='".$item->getField('id')."'";
       $changes          = getAllDatasFromTable('glpi_changes_projects',$restrict);
       $datas['changes'] = array();
@@ -445,6 +464,7 @@ class NotificationTargetProject extends NotificationTarget {
       $datas["##project.numberofdocuments##"]
                      = count($datas['documents']);
 
+      // Items infos
       $restrict = "`projects_id` = '".$item->getField('id')."'";
       $items    = getAllDatasFromTable('glpi_items_projects',$restrict);
 
@@ -502,7 +522,6 @@ class NotificationTargetProject extends NotificationTarget {
 
       $datas['##project.numberofitems##'] = count($datas['items']);
       
-      /// TODO Team
       /// TODO contrats
       
       $this->getTags();
@@ -538,6 +557,7 @@ class NotificationTargetProject extends NotificationTarget {
                         'project.plannedduration'   => __('Planned duration'),
                         'project.effectiveduration' => __('Effective duration'),
                         'project.numberoftasks'     => _x('quantity', 'Number of tasks'),
+                        'project.numberofteammembers' => _x('quantity', 'Number of team members'),
                         'task.date'                 => __('Opening date'),
                         'task.name'                 => __('Name'),
                         'task.description'          => __('Description'),
@@ -616,13 +636,17 @@ class NotificationTargetProject extends NotificationTarget {
                                                             __('Web Link')),
                     'document.name'           => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Name')),
-                     'project.urldocument'   => sprintf(__('%1$s: %2$s'),
+                    'project.urldocument'     => sprintf(__('%1$s: %2$s'),
                                                             _n('Document', 'Documents', 2),
                                                             __('URL')),
                     'project.entity'         => sprintf(__('%1$s (%2$s)'),
                                                             __('Entity'), __('Complete name')),
                     'project.shortentity'    => sprintf(__('%1$s (%2$s)'),
                                                             __('Entity'), __('Name')),
+                    'teammember.name'        => sprintf(__('%1$s: %2$s'), _n('Team member', 'Team members', 1),
+                                                            __('Name')),
+                    'teammember.itemtype'    => sprintf(__('%1$s: %2$s'), _n('Team member', 'Team members', 1),
+                                                            __('Type')),
                      );
 
 
@@ -637,6 +661,7 @@ class NotificationTargetProject extends NotificationTarget {
       $tags = array('project.entity'   => __('Entity'),
                     'project.log'      => __('Historical'),
                     'project.tasks'    => _n('Task', 'Tasks', 2),
+                    'project.team'     => __('Project team'),
                     'project.costs'    => _n('Cost', 'Costs', 2),
                     'project.changes'  => _n('Change', 'Changes', 2),
                     'project.items'    => _n('Item', 'Items', 2));
@@ -653,6 +678,7 @@ class NotificationTargetProject extends NotificationTarget {
                     'tasks'    => _n('Task', 'Tasks', 2),
                     'costs'    => _n('Cost', 'Costs', 2),
                     'changes'  => _n('Change', 'Changes', 2),
+                    'teammembers' => _n('Team member', 'Team members', 2),
                     'items'    => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
