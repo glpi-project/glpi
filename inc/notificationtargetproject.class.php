@@ -245,6 +245,15 @@ class NotificationTargetProject extends NotificationTarget {
                                                    ProjectTask::getTotalEffectiveDurationForProject($item->getID()),
                                                    false);
 
+
+      $entity = new Entity();
+      $datas["##project.entity##"] = '';
+      $datas["##project.shortentity##"] = '';
+      if ($entity->getFromDB($this->getEntity())) {
+         $datas["##project.entity##"]      = $entity->getField('completename');
+         $datas["##project.shortentity##"] = $entity->getField('name');
+      }
+
       $datas["##project.father##"] = '';
       if ($item->getField('projects_id')) {
          $datas["##project.father##"]
@@ -359,10 +368,85 @@ class NotificationTargetProject extends NotificationTarget {
 
       $datas["##project.numberoflogs##"] = count($datas['log']);
 
+      $restrict         = "`projects_id`='".$item->getField('id')."'";
+      $changes          = getAllDatasFromTable('glpi_changes_projects',$restrict);
+      $datas['changes'] = array();
+      if (count($changes)) {
+         $change = new Change();
+         foreach ($changes as $data) {
+            if ($change->getFromDB($data['changes_id'])) {
+               $tmp = array();
+      $entity = new Entity();
+      if ($entity->getFromDB($this->getEntity())) {
+         $datas["##$objettype.entity##"]      = $entity->getField('completename');
+         $datas["##$objettype.shortentity##"] = $entity->getField('name');
+      }
+
+               $tmp['##change.id##']
+                              = $data['changes_id'];
+               $tmp['##change.date##']
+                              = $change->getField('date');
+               $tmp['##change.title##']
+                              = $change->getField('name');
+               $tmp['##change.url##']
+                              = $this->formatURL($options['additionnaloption']['usertype'],
+                                                   "change_".$data['changes_id']);
+               $tmp['##change.content##']
+                              = $change->getField('content');
+
+               $datas['changes'][] = $tmp;
+            }
+         }
+      }
+
+      $datas['##project.numberofchanges##'] = count($datas['changes']);
+
+
+         // Document
+         $query = "SELECT `glpi_documents`.*
+                   FROM `glpi_documents`
+                   LEFT JOIN `glpi_documents_items`
+                     ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
+                   WHERE `glpi_documents_items`.`itemtype` =  'Project'
+                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+
+
+         $datas["documents"] = array();
+         if ($result = $DB->query($query)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $tmp                      = array();
+               $tmp['##document.id##']   = $data['id'];
+               $tmp['##document.name##'] = $data['name'];
+               $tmp['##document.weblink##']
+                                         = $data['link'];
+
+               $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                            "document_".$data['id']);
+               $downloadurl              = "/front/document.send.php?docid=".$data['id'];
+
+               $tmp['##document.downloadurl##']
+                                         = $this->formatURL($options['additionnaloption']['usertype'],
+                                                            $downloadurl);
+               $tmp['##document.heading##']
+                                         = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                     $data['documentcategories_id']);
+
+               $tmp['##document.filename##']
+                                         = $data['filename'];
+
+               $datas['documents'][]     = $tmp;
+            }
+         }
+
+         $datas["##project.urldocument##"]
+                        = $this->formatURL($options['additionnaloption']['usertype'],
+                                           $objettype."_".$item->getField("id").'_Document_Item$1');
+
+         $datas["##project.numberofdocuments##"]
+                        = count($datas['documents']);
+      
       /// TODO Team
-      /// TODO Change
       /// TODO Items
-      /// TODO document
       /// TODO contrats
       
       
@@ -412,17 +496,6 @@ class NotificationTargetProject extends NotificationTarget {
                         'task.planenddate'          => __('Planned end date'),
                         'task.realstartdate'        => __('Real start date'),
                         'task.realenddate'          => __('Real end date'),
-                        'cost.name'                 => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                        __('Name')),
-                        'cost.comment'              => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                        __('Comments')),
-                        'cost.datebegin'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                        __('Begin date')),
-                        'cost.dateend'              => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                        __('End date')),
-                        'cost.cost'                 => __('Cost'),
-                        'cost.budget'               => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                        __('Budget')),
                         'project.totalcost'             => __('Total cost'),
                         'project.numberofcosts'         => __('Number of costs'),
                         'project.numberoflogs'   => sprintf(__('%1$s: %2$s'), __('Historical'),
@@ -435,8 +508,10 @@ class NotificationTargetProject extends NotificationTarget {
                                                                   __('Field')),
                         'project.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                                   _x('name', 'Update')),
+                        'project.numberofchanges'       => _x('quantity', 'Number of changes'),
+                        'project.numberofdocuments'     => _x('quantity', 'Number of documents'),
 
-                        );
+                     );
 
       foreach ($tags_all as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -445,10 +520,72 @@ class NotificationTargetProject extends NotificationTarget {
       }
 
 
+      //Tags without lang
+      $tags = array('change.id'               => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
+                    'change.date'             => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
+                    'change.url'              => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
+                    'change.title'            => sprintf(__('%1$s: %2$s'), __('Change'),
+                                                         __('Title')),
+                    'change.content'          => sprintf(__('%1$s: %2$s'), __('Change'),
+                                                         __('Description')),
+                    'cost.name'               => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                     __('Name')),
+                    'cost.comment'            => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                     __('Comments')),
+                    'cost.datebegin'          => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                     __('Begin date')),
+                    'cost.dateend'            => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                     __('End date')),
+                    'cost.cost'               => __('Cost'),
+                    'cost.budget'             => sprintf(__('%1$s: %2$s'), __('Cost'),
+                                                                     __('Budget')),
+                    'document.url'            => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('URL')),
+                    'document.downloadurl'    => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Download URL')),
+                    'document.heading'        => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Heading')),
+                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('ID')),
+                    'document.filename'       => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('File')),
+                    'document.weblink'        => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Web Link')),
+                    'document.name'           => sprintf(__('%1$s: %2$s'), __('Document'),
+                                                            __('Name')),
+                     'project.urldocument'   => sprintf(__('%1$s: %2$s'),
+                                                            _n('Document', 'Documents', 2),
+                                                            __('URL')),
+                    'project.entity'         => sprintf(__('%1$s (%2$s)'),
+                                                            __('Entity'), __('Complete name')),
+                    'project.shortentity'    => sprintf(__('%1$s (%2$s)'),
+                                                            __('Entity'), __('Name')),
+                                                            
+                     );
+
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true,
+                                   'lang'  => false));
+      }
+
+      //Tags with just lang
+      $tags = array('project.entity' => __('Entity'));
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => false,
+                                   'lang'  => true));
+      }
+      
       //Foreach global tags
       $tags = array('log'      => __('Historical'),
                     'tasks'    => _n('Task', 'Tasks', 2),
-                    'costs'    => _n('Cost', 'Costs', 2));
+                    'costs'    => _n('Cost', 'Costs', 2),
+                    'changes'  => _n('Change', 'Changes', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
