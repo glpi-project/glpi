@@ -656,7 +656,28 @@ class Printer  extends CommonDBTM {
       $tab[9]['massiveaction']  = false;
       $tab[9]['nosearch']       = true;
       $tab[9]['nosort']         = true;
-      
+
+      $tab[17]['table']          = 'glpi_cartridges';
+      $tab[17]['field']          = 'id';
+      $tab[17]['name']           = __('Number of used cartridges');
+      $tab[17]['datatype']       = 'count';
+      $tab[17]['forcegroupby']   = true;
+      $tab[17]['usehaving']         = true;
+      $tab[17]['massiveaction']  = false;
+      $tab[17]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_use` IS NOT NULL
+                                                      AND NEWTABLE.`date_out` IS NULL");
+
+      $tab[18]['table']          = 'glpi_cartridges';
+      $tab[18]['field']          = 'id';
+      $tab[18]['name']           = __('Number of worn cartridges');
+      $tab[18]['datatype']       = 'count';
+      $tab[18]['forcegroupby']   = true;
+      $tab[18]['usehaving']         = true;
+      $tab[18]['massiveaction']  = false;
+      $tab[18]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
+                                                      
       $tab[90]['table']          = $this->getTable();
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
