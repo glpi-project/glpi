@@ -3036,9 +3036,11 @@ class Search {
                      break;
                }
             }
-
             if (count($tocheck) == 0) {
-               $tocheck = array($val);
+               $statuses = $item->getAllStatusArray();
+               if (isset($statuses[$val])) {
+                  $tocheck = array($val);
+               }
             }
 
             if (count($tocheck)) {
