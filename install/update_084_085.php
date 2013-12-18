@@ -2214,9 +2214,9 @@ function update084to085() {
 
 ##lang.project.name## : ##project.name##
 ##lang.project.code## : ##project.code##
- ##lang.project.manager## : ##project.manager##
+##lang.project.manager## : ##project.manager##
 ##lang.project.managergroup## : ##project.managergroup##
- ##lang.project.creationdate## : ##project.creationdate##
+##lang.project.creationdate## : ##project.creationdate##
 ##lang.project.priority## : ##project.priority##
 ##lang.project.state## : ##project.state##
 ##lang.project.type## : ##project.type##
@@ -2229,7 +2229,8 @@ function update084to085() {
 ##FOREACHtasks##
 
 [##task.creationdate##]
- ##lang.task.state## : ##task.state##
+##lang.task.name## : ##task.name##
+##lang.task.state## : ##task.state##
 ##lang.task.type## : ##task.type##
 ##lang.task.percent## : ##task.percent##
 ##lang.task.description## : ##task.description##
@@ -2241,7 +2242,7 @@ function update084to085() {
 &lt;p&gt;##lang.project.numberoftasks## : ##project.numberoftasks##&lt;/p&gt;
 &lt;div&gt;
 &lt;p&gt;##FOREACHtasks##&lt;/p&gt;
-&lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt; ##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
+&lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt; ##lang.task.name## : ##task.name##&lt;br /&gt;##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;')";
          $DB->queryOrDie($query, "0.85 add project notification translation");
@@ -2300,38 +2301,36 @@ function update084to085() {
                    VALUES ($notid, '', '##projecttask.action## ##projecttask.name##',
                           '##lang.projecttask.url## : ##projecttask.url##
 
-##lang.project.description##
+##lang.projecttask.description##
 
-##lang.project.name## : ##project.name##
-##lang.project.code## : ##project.code##
- ##lang.project.manager## : ##project.manager##
-##lang.project.managergroup## : ##project.managergroup##
- ##lang.project.creationdate## : ##project.creationdate##
-##lang.project.priority## : ##project.priority##
-##lang.project.state## : ##project.state##
-##lang.project.type## : ##project.type##
-##lang.project.description## : ##project.description##
+##lang.projecttask.name## : ##projecttask.name##
+##lang.projecttask.project## : ##projecttask.name##
+##lang.projecttask.creationdate## : ##projecttask.creationdate##
+##lang.projecttask.state## : ##projecttask.state##
+##lang.projecttask.type## : ##projecttask.type##
+##lang.projecttask.description## : ##projecttask.description##
 
-##lang.project.numberoftasks## : ##project.numberoftasks##
+##lang.projecttask.numberoftasks## : ##projecttask.numberoftasks##
 
 
 
 ##FOREACHtasks##
 
 [##task.creationdate##]
- ##lang.task.state## : ##task.state##
+##lang.task.name## : ##task.name##
+##lang.task.state## : ##task.state##
 ##lang.task.type## : ##task.type##
 ##lang.task.percent## : ##task.percent##
 ##lang.task.description## : ##task.description##
 
 ##ENDFOREACHtasks##',
-                          '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;##lang.project.description##&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;##lang.project.name## : ##project.name##&lt;br /&gt;##lang.project.code## : ##project.code##&lt;br /&gt; ##lang.project.manager## : ##project.manager##&lt;br /&gt;##lang.project.managergroup## : ##project.managergroup##&lt;br /&gt; ##lang.project.creationdate## : ##project.creationdate##&lt;br /&gt;##lang.project.priority## : ##project.priority## &lt;br /&gt;##lang.project.state## : ##project.state##&lt;br /&gt;##lang.project.type## : ##project.type##&lt;br /&gt;##lang.project.description## : ##project.description##&lt;/p&gt;
-&lt;p&gt;##lang.project.numberoftasks## : ##project.numberoftasks##&lt;/p&gt;
+                          '&lt;p&gt;##lang.projecttask.url## : &lt;a href=\"##projecttask.url##\"&gt;##projecttask.url##&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;##lang.projecttask.description##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.projecttask.name## : ##projecttask.name##&lt;br /&gt;##lang.projecttask.project## : &lt;a href=\"##projecttask.projecturl##\"&gt;##projecttask.name##&lt;/a&gt;&lt;br /&gt;##lang.projecttask.creationdate## : ##projecttask.creationdate##&lt;br /&gt;##lang.projecttask.state## : ##projecttask.state##&lt;br /&gt;##lang.projecttask.type## : ##projecttask.type##&lt;br /&gt;##lang.projecttask.description## : ##projecttask.description##&lt;/p&gt;
+&lt;p&gt;##lang.projecttask.numberoftasks## : ##projecttask.numberoftasks##&lt;/p&gt;
 &lt;div&gt;
 &lt;p&gt;##FOREACHtasks##&lt;/p&gt;
-&lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt; ##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
+&lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt;##lang.task.name## : ##task.name##&lt;br /&gt;##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;')";
          $DB->queryOrDie($query, "0.85 add project task notification translation");
