@@ -877,7 +877,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $options array of options
     *    - comments     : boolean / display comments
     *    - complete     : boolean / display completename instead of name
-    *    - additional   : boolean / display aditionals information
+    *    - additional   : boolean / display additionals information
     *    - linkoption   : string  / additional options to add to <a>
     *
     * @return string : HTML link
