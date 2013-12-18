@@ -302,7 +302,39 @@ class CartridgeItem extends CommonDBTM {
       $tab[9]['nosearch']       = true;
       $tab[9]['nosort']         = true;
       $tab[9]['additionalfields'] = array('alarm_threshold');
-      
+
+      $tab[17]['table']          = 'glpi_cartridges';
+      $tab[17]['field']          = 'id';
+      $tab[17]['name']           = __('Number of used cartridges');
+      $tab[17]['datatype']       = 'count';
+      $tab[17]['forcegroupby']   = true;
+      $tab[17]['usehaving']         = true;
+      $tab[17]['massiveaction']  = false;
+      $tab[17]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_use` IS NOT NULL
+                                                      AND NEWTABLE.`date_out` IS NULL");
+
+      $tab[18]['table']          = 'glpi_cartridges';
+      $tab[18]['field']          = 'id';
+      $tab[18]['name']           = __('Number of worn cartridges');
+      $tab[18]['datatype']       = 'count';
+      $tab[18]['forcegroupby']   = true;
+      $tab[18]['usehaving']         = true;
+      $tab[18]['massiveaction']  = false;
+      $tab[18]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
+
+      $tab[19]['table']          = 'glpi_cartridges';
+      $tab[19]['field']          = 'id';
+      $tab[19]['name']           = __('Number of new cartridges');
+      $tab[19]['datatype']       = 'count';
+      $tab[19]['forcegroupby']   = true;
+      $tab[19]['usehaving']         = true;
+      $tab[19]['massiveaction']  = false;
+      $tab[19]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_use` IS NULL
+                                                         AND NEWTABLE.`date_out` IS NULL");
+
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[24]['table']          = 'glpi_users';
