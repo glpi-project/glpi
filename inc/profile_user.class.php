@@ -852,9 +852,9 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @see CommonDBTM::getName()
+    * @see CommonDBTM::getRawName()
    **/
-   function getName($options=array()) {
+   function getRawName() {
 
       $name = sprintf(__('%1$s, %2$s'),
                       Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']),

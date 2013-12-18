@@ -62,11 +62,11 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
 
    /**
-    * @see CommonDBTM::getName()
+    * @see CommonDBTM::getRawName()
     *
-    * @since version 0.84
+    * @since version 0.85
    **/
-   function getName($options=array()) {
+   function getRawName() {
 
       $tt     = new TicketTemplate();
       $fields = $tt->getAllowedFieldsNames(true);
@@ -74,7 +74,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       if (isset($fields[$this->fields["num"]])) {
          return $fields[$this->fields["num"]];
       }
-      return NOT_AVAILABLE;
+      return '';
    }
 
 

@@ -1156,9 +1156,9 @@ class User extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::getName()
+    * @see CommonDBTM::getRawName()
    **/
-   function getName($options=array()) {
+   function getRawName() {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
          return formatUserName($this->fields["id"],
@@ -1166,7 +1166,7 @@ class User extends CommonDBTM {
                                (isset($this->fields["realname"]) ? $this->fields["realname"] : ''),
                                (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''));
       }
-      return NOT_AVAILABLE;
+      return '';
    }
 
 

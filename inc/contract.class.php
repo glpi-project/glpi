@@ -120,7 +120,6 @@ class Contract extends CommonDBTM {
       if (isset($this->input["_oldID"])) {
          // ADD Devices
          ContractCost::cloneContract($this->input["_oldID"], $this->fields['id']);
-
       }
    }
 

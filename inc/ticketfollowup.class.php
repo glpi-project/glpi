@@ -409,38 +409,19 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::getName()
+    * @see CommonDBTM::getRawName()
    **/
-   function getName($options=array()) {
-
-      $p['comments']   = false;
-
-      if (is_array($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
+   function getRawName() {
+      if (isset($this->fields['requesttypes_id'])) {
+         if ($this->fields['requesttypes_id']) {
+            return Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
+         } else {
+            return $this->getTypeName();
          }
       }
 
-      if (!isset($this->fields['requesttypes_id'])) {
-         return NOT_AVAILABLE;
-      }
-
-      if ($this->fields['requesttypes_id']) {
-         $name = Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
-      } else {
-         $name = $this->getTypeName();
-      }
-
-      if ($p['comments']) {
-         $name = sprintf(__('%1$s (%2$s)'), $name,
-                         sprintf(__('%1$s - %2$s'), Html::convDateTime($this->fields['date']),
-                                 sprintf(__('%1$s - %2$s'), getUserName($this->fields['users_id']),
-                                         ($this->fields['is_private']
-                                             ? __('Private') : __('Public')))));
-      }
-      return $name;
+      return '';
    }
-
 
    /**
     * @param $ticket       Tichet object

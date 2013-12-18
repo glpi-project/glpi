@@ -256,6 +256,19 @@ class Contact extends CommonDBTM{
       return $actions;
    }
 
+   /**
+    * @see CommonDBTM::getRawName()
+   **/
+   function getRawName() {
+
+      if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
+         return formatUserName('',
+                               '',
+                               (isset($this->fields["name"]) ? $this->fields["name"] : ''),
+                               (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''));
+      }
+      return '';
+   }
 
    function getSearchOptions() {
 

@@ -64,18 +64,18 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    /**
-    * @see CommonDBTM::getName()
+    * @see CommonDBTM::getRawName()
    **/
-   function getName($options=array()) {
+   function getRawName() {
       global $CFG_GLPI;
 
       if ($this->getField('language') != '') {
-         $toadd = $CFG_GLPI['languages'][$this->getField('language')][0];
+         return $CFG_GLPI['languages'][$this->getField('language')][0];
       } else {
-         $toadd = self::getTypeName(1);
+         return self::getTypeName(1);
       }
 
-      return $toadd;
+      return '';
    }
 
 

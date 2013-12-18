@@ -2907,6 +2907,30 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   /** Get raw name of the object
+    * Maybe overloaded
+    * @see CommonDBTM::getNameField
+    * @since version 0.85
+   */
+   function getRawName() {
+      if (isset($this->fields[static::getNameField()])) {
+         return $this->fields[static::getNameField()];
+      }
+      return '';
+   }
+
+   /** Get raw completename of the object
+    * Maybe overloaded
+    * @see CommonDBTM::getCompleteNameField
+    * @since version 0.85
+   */
+   function getRawCompleteName() {
+      if (isset($this->fields[static::getCompleteNameField()])) {
+         return $this->fields[static::getCompleteNameField()];
+      }
+      return '';
+   }
+   
    /**
     * Get the name of the object
     *
@@ -2931,14 +2955,16 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $val;
          }
       }
-      $field = static::getNameField();
-
-      if ($p['complete'] && isset($this->fields[static::getCompleteNameField()])) {
-         $field = static::getCompleteNameField();
+      
+      $name = '';
+      if ($p['complete']) {
+         $name = $this->getRawCompleteName();
+      }
+      if (empty($name)) {
+         $name = $this->getRawName();
       }
 
-      if (isset($this->fields[$field]) && (strlen($this->fields[$field]) != 0)) {
-         $name = $this->fields[$field];
+      if (strlen($name) != 0) {
          if ($p['additional']) {
             $pre = $this->getPreAdditionalInfosForName();
             if (!empty($pre)) {
