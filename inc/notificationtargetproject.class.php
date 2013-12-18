@@ -402,53 +402,108 @@ class NotificationTargetProject extends NotificationTarget {
       $datas['##project.numberofchanges##'] = count($datas['changes']);
 
 
-         // Document
-         $query = "SELECT `glpi_documents`.*
-                   FROM `glpi_documents`
-                   LEFT JOIN `glpi_documents_items`
-                     ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                   WHERE `glpi_documents_items`.`itemtype` =  'Project'
-                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+      // Document
+      $query = "SELECT `glpi_documents`.*
+                  FROM `glpi_documents`
+                  LEFT JOIN `glpi_documents_items`
+                  ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
+                  WHERE `glpi_documents_items`.`itemtype` =  'Project'
+                        AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
 
-         $datas["documents"] = array();
-         if ($result = $DB->query($query)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $tmp                      = array();
-               $tmp['##document.id##']   = $data['id'];
-               $tmp['##document.name##'] = $data['name'];
-               $tmp['##document.weblink##']
-                                         = $data['link'];
+      $datas["documents"] = array();
+      if ($result = $DB->query($query)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $tmp                      = array();
+            $tmp['##document.id##']   = $data['id'];
+            $tmp['##document.name##'] = $data['name'];
+            $tmp['##document.weblink##']
+                                       = $data['link'];
 
-               $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                            "document_".$data['id']);
-               $downloadurl              = "/front/document.send.php?docid=".$data['id'];
+            $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         "document_".$data['id']);
+            $downloadurl              = "/front/document.send.php?docid=".$data['id'];
 
-               $tmp['##document.downloadurl##']
-                                         = $this->formatURL($options['additionnaloption']['usertype'],
-                                                            $downloadurl);
-               $tmp['##document.heading##']
-                                         = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                     $data['documentcategories_id']);
+            $tmp['##document.downloadurl##']
+                                       = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         $downloadurl);
+            $tmp['##document.heading##']
+                                       = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                  $data['documentcategories_id']);
 
-               $tmp['##document.filename##']
-                                         = $data['filename'];
+            $tmp['##document.filename##']
+                                       = $data['filename'];
 
-               $datas['documents'][]     = $tmp;
+            $datas['documents'][]     = $tmp;
+         }
+      }
+
+      $datas["##project.urldocument##"]
+                     = $this->formatURL($options['additionnaloption']['usertype'],
+                                          $objettype."_".$item->getField("id").'_Document_Item$1');
+
+      $datas["##project.numberofdocuments##"]
+                     = count($datas['documents']);
+
+      $restrict = "`projects_id` = '".$item->getField('id')."'";
+      $items    = getAllDatasFromTable('glpi_items_projects',$restrict);
+
+      $datas['items'] = array();
+      if (count($items)) {
+         foreach ($items as $data) {
+            if ($item2 = getItemForItemtype($data['itemtype'])) {
+               if ($item2->getFromDB($data['items_id'])) {
+                  $tmp = array();
+                  $tmp['##item.itemtype##']    = $item2->getTypeName();
+                  $tmp['##item.name##']        = $item2->getField('name');
+                  $tmp['##item.serial##']      = $item2->getField('serial');
+                  $tmp['##item.otherserial##'] = $item2->getField('otherserial');
+                  $tmp['##item.contact##']     = $item2->getField('contact');
+                  $tmp['##item.contactnum##']  = $item2->getField('contactnum');
+                  $tmp['##item.location##']    = '';
+                  $tmp['##item.user##']        = '';
+                  $tmp['##item.group##']       = '';
+                  $tmp['##item.model##']       = '';
+
+                  //Object location
+                  if ($item2->getField('locations_id') != NOT_AVAILABLE) {
+                     $tmp['##item.location##']
+                                    = Dropdown::getDropdownName('glpi_locations',
+                                                                  $item2->getField('locations_id'));
+                  }
+
+                  //Object user
+                  if ($item2->getField('users_id')) {
+                     $user_tmp = new User();
+                     if ($user_tmp->getFromDB($item2->getField('users_id'))) {
+                        $tmp['##item.user##'] = $user_tmp->getName();
+                     }
+                  }
+
+                  //Object group
+                  if ($item2->getField('groups_id')) {
+                     $tmp['##item.group##']
+                                    = Dropdown::getDropdownName('glpi_groups',
+                                                                  $item2->getField('groups_id'));
+                  }
+
+                  $modeltable = getSingular($item2->getTable())."models";
+                  $modelfield = getForeignKeyFieldForTable($modeltable);
+
+                  if ($item2->isField($modelfield)) {
+                     $tmp['##item.model##'] = $item2->getField($modelfield);
+                  }
+
+                  $datas['items'][] = $tmp;
+               }
             }
          }
+      }
 
-         $datas["##project.urldocument##"]
-                        = $this->formatURL($options['additionnaloption']['usertype'],
-                                           $objettype."_".$item->getField("id").'_Document_Item$1');
-
-         $datas["##project.numberofdocuments##"]
-                        = count($datas['documents']);
+      $datas['##project.numberofitems##'] = count($datas['items']);
       
       /// TODO Team
-      /// TODO Items
       /// TODO contrats
-      
       
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -510,7 +565,15 @@ class NotificationTargetProject extends NotificationTarget {
                                                                   _x('name', 'Update')),
                         'project.numberofchanges'       => _x('quantity', 'Number of changes'),
                         'project.numberofdocuments'     => _x('quantity', 'Number of documents'),
-
+                        'item.name'                 => __('Associated item'),
+                        'item.serial'               => __('Serial number'),
+                        'item.otherserial'          => __('Inventory number'),
+                        'item.location'             => __('Location'),
+                        'item.model'                => __('Model'),
+                        'item.contact'              => __('Alternate username'),
+                        'item.contactnumber'        => __('Alternate username number'),
+                        'item.user'                 => __('User'),
+                        'item.group'                => __('Group')
                      );
 
       foreach ($tags_all as $tag => $label) {
@@ -560,7 +623,6 @@ class NotificationTargetProject extends NotificationTarget {
                                                             __('Entity'), __('Complete name')),
                     'project.shortentity'    => sprintf(__('%1$s (%2$s)'),
                                                             __('Entity'), __('Name')),
-                                                            
                      );
 
 
@@ -572,7 +634,12 @@ class NotificationTargetProject extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('project.entity' => __('Entity'));
+      $tags = array('project.entity'   => __('Entity'),
+                    'project.log'      => __('Historical'),
+                    'project.tasks'    => _n('Task', 'Tasks', 2),
+                    'project.costs'    => _n('Cost', 'Costs', 2),
+                    'project.changes'  => _n('Change', 'Changes', 2),
+                    'project.items'    => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -585,7 +652,8 @@ class NotificationTargetProject extends NotificationTarget {
       $tags = array('log'      => __('Historical'),
                     'tasks'    => _n('Task', 'Tasks', 2),
                     'costs'    => _n('Cost', 'Costs', 2),
-                    'changes'  => _n('Change', 'Changes', 2));
+                    'changes'  => _n('Change', 'Changes', 2),
+                    'items'    => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
