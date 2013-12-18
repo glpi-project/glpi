@@ -245,6 +245,11 @@ class Project extends CommonDBTM {
 
       $this->fields['priority']     = 3;
       $this->fields['percent_done'] = 0;
+
+      // Set as manager to be able to see it after creation
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
+         $this->fields['users_id'] = Session::getLoginUserID();
+      }
    }
 
 
