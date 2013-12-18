@@ -438,7 +438,6 @@ class NotificationTarget extends CommonDBChild {
       if (isset($data['language'])) {
          $new_lang = trim($data['language']);
       }
-
       $username = '';
       if (isset($data['name']) && !empty($data['name'])) {
          $username = $data['name'];
@@ -448,8 +447,10 @@ class NotificationTarget extends CommonDBChild {
          if (!$user->getFromDB($data['users_id'])
              || ($user->getField('is_deleted') == 1)
              || ($user->getField('is_active') == 0)
-             || ($user->getField('begin_date') < $_SESSION["glpi_currenttime"])
-             || ($user->getField('end_date') > $_SESSION["glpi_currenttime"])) {
+             || (!is_null($user->getField('begin_date'))
+                  && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
+             || (!is_null($user->getField('end_date'))
+                  && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))) {
             // unknown, deleted or disabled user
             return false;
          }
@@ -560,7 +561,45 @@ class NotificationTarget extends CommonDBChild {
       }
    }
 
+   /**
+    * Get Group of the item
+   **/
+   function getItemGroupAddress() {
 
+      if ($this->target_object) {
+         $id = $this->target_object->getField('groups_id');
+         if ($id > 0) {
+            $this->getAddressesByGroup(0, $id);
+         }
+      }
+   }
+
+   /**
+    * Get Group supervisor of the item
+   **/
+   function getItemGroupSupervisorAddress() {
+
+      if ($this->target_object) {
+         $id = $this->target_object->getField('groups_id');
+         if ($id > 0) {
+            $this->getAddressesByGroup(1, $id);
+         }
+      }
+   }
+
+   /**
+    * Get Group without supervisor of the item
+   **/
+   function getItemGroupWithoutSupervisorAddress() {
+
+      if ($this->target_object) {
+         $id = $this->target_object->getField('groups_id');
+         if ($id > 0) {
+            $this->getAddressesByGroup(2, $id);
+         }
+      }
+   }
+   
    /**
     * Get entity admin email
    **/
