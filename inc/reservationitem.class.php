@@ -175,6 +175,15 @@ class ReservationItem extends CommonDBChild {
       $tab[2]['massiveaction']   = false;
       $tab[2]['datatype']        = 'number';
 
+      $tab[9]['table']          = 'glpi_reservationitems';
+      $tab[9]['field']          = '_virtual';
+      $tab[9]['name']           = __('Planning');
+      $tab[9]['datatype']       = 'specific';
+      $tab[9]['massiveaction']  = false;
+      $tab[9]['nosearch']       = true;
+      $tab[9]['nosort']         = true;
+      $tab[9]['additionalfields'] = array('is_active');
+
       $loc = Location::getSearchOptionsToAdd();
       // Force massive actions to false
       foreach ($loc as $key => $val) {
