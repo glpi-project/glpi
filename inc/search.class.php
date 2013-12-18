@@ -4219,6 +4219,10 @@ class Search {
             case 'glpi_cartridgeitems._virtual' :
                return Cartridge::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
                                                           self::$output_type != self::HTML_OUTPUT);
+
+            case 'glpi_printers._virtual' :
+               return Cartridge::getCountForPrinter($data["id"], self::$output_type != self::HTML_OUTPUT);
+               
             case 'glpi_consumableitems._virtual' :
                return Consumable::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
                                                           self::$output_type != self::HTML_OUTPUT);

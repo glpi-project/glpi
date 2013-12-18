@@ -366,7 +366,56 @@ class Cartridge extends CommonDBChild {
       return $out;
    }
 
+   /**
+    * Print the cartridge count HTML array for the printer $pID
+    *
+    * @param $pID              integer: printer identifier.
+    * @param $nohtml           integer: Return value without HTML tags (default 0)
+    *
+    * @return string to display
+   **/
+   static function getCountForPrinter($pID, $nohtml=0) {
+      global $DB;
 
+      /// TODO to be more useful permit to have several columns and display number in it
+      // Get total
+      $total = self::getTotalNumberForPrinter($pID);
+      $out   = "";
+      if ($total != 0) {
+         $used       = self::getUsedNumberForPrinter($pID);
+         $old        = self::getOldNumberForPrinter($pID);
+         $highlight  = "";
+         if ($used == 0) {
+            $highlight = "tab_bg_1_2";
+         }
+
+         if (!$nohtml) {
+            $out .= "<table  class='tab_format $highlight' width='100%'><tr><td>";
+            $out .= __('Total')."</td><td>$total";
+            $out .= "</td><td colspan='2'></td><tr>";
+            $out .= "<tr><td>";
+            $out .= _nx('cartridge','Used','Used',$used);
+            $out .= "</td><td>$used</span></td><td>";
+            $out .= _nx('cartridge','Worn','Worn',$old);
+            $out .= "</td><td>$old</span></td></tr></table>";
+
+         } else {
+            //TRANS : for display cartridges count : %1$d is the total number,
+            //        %2$d the new one, %3$d the used one, %4$d worn one
+            $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'),
+                            $total , $used, $old);
+         }
+
+      } else {
+         if (!$nohtml) {
+            $out .= "<div class='tab_bg_1_2'><i>".__('No cartridge')."</i></div>";
+         } else {
+            $out .= __('No cartridge');
+         }
+      }
+      return $out;
+   }
+   
    /**
     * count how many cartbridge for the cartridge item $tID
     *
@@ -384,7 +433,23 @@ class Cartridge extends CommonDBChild {
       return $DB->numrows($result);
    }
 
+   /**
+    * count how many cartbridge for the printer $pID
+    *
+    * @param $pID integer: printer identifier.
+    *
+    * @return integer : number of cartridge counted.
+   **/
+   static function getTotalNumberForPrinter($pID) {
+      global $DB;
 
+      $query = "SELECT id
+                FROM `glpi_cartridges`
+                WHERE (`printers_id` = '$pID')";
+      $result = $DB->query($query);
+      return $DB->numrows($result);
+   }
+   
    /**
     * count how many cartridge used for the cartridge item $tID
     *
@@ -404,7 +469,25 @@ class Cartridge extends CommonDBChild {
       return $DB->numrows($result);
    }
 
+   /**
+    * count how many cartridge used for the printer $pID
+    *
+    * @param $pID integer: printer identifier.
+    *
+    * @return integer : number of cartridge used counted.
+   **/
+   static function getUsedNumberForPrinter($pID) {
+      global $DB;
 
+      $query = "SELECT id
+                FROM `glpi_cartridges`
+                WHERE (`printers_id` = '$pID'
+                       AND `date_use` IS NOT NULL
+                       AND `date_out` IS NULL)";
+      $result = $DB->query($query);
+      return $DB->numrows($result);
+   }
+   
    /**
     * count how many old cartbridge for the cartridge item $tID
     *
@@ -423,6 +506,23 @@ class Cartridge extends CommonDBChild {
       return $DB->numrows($result);
    }
 
+   /**
+    * count how many old cartbridge for theprinter $pID
+    *
+    * @param $pID integer: printer identifier.
+    *
+    * @return integer : number of old cartridge counted.
+   **/
+   static function getOldNumberForPrinter($pID) {
+      global $DB;
+
+      $query = "SELECT id
+                FROM `glpi_cartridges`
+                WHERE (`printers_id` = '$pID'
+                       AND `date_out` IS NOT NULL)";
+      $result = $DB->query($query);
+      return $DB->numrows($result);
+   }
 
    /**
     * count how many cartbridge unused for the cartridge item $tID
