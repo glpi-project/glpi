@@ -264,7 +264,27 @@ class ConsumableItem extends CommonDBTM {
       $tab[9]['nosearch']       = true;
       $tab[9]['nosort']         = true;
       $tab[9]['additionalfields'] = array('alarm_threshold');
-      
+
+      $tab[17]['table']          = 'glpi_consumables';
+      $tab[17]['field']          = 'id';
+      $tab[17]['name']           = __('Number of used consumables');
+      $tab[17]['datatype']       = 'count';
+      $tab[17]['forcegroupby']   = true;
+      $tab[17]['usehaving']         = true;
+      $tab[17]['massiveaction']  = false;
+      $tab[17]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
+
+      $tab[19]['table']          = 'glpi_consumables';
+      $tab[19]['field']          = 'id';
+      $tab[19]['name']           = __('Number of new consumables');
+      $tab[19]['datatype']       = 'count';
+      $tab[19]['forcegroupby']   = true;
+      $tab[19]['usehaving']         = true;
+      $tab[19]['massiveaction']  = false;
+      $tab[19]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND NEWTABLE.`date_out` IS NULL");
+                                        
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[24]['table']          = 'glpi_users';
