@@ -345,7 +345,7 @@ class ProjectCost extends CommonDBChild {
                "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
          echo __('Add a new cost')."</a></div>\n";
       }
-
+      $total = 0;
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='5'>".self::getTypeName($DB->numrows($result))."</th></tr>";
@@ -364,7 +364,7 @@ class ProjectCost extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'),
                                                 Project::getTypeName(1), $project->getName()));
 
-            $total = 0;
+
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2' ".
                      ($canedit
@@ -412,7 +412,6 @@ class ProjectCost extends CommonDBChild {
       echo "<div class='b'>";
       printf(__('%1$s: %2$s'), __('Total cost'),$total+$ticketcost);
       echo "</div>";
-   }
-
+   }  
 }
 ?>

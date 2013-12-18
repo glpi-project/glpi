@@ -231,6 +231,15 @@ class Project extends CommonDBTM {
       return false;
    }
 
+   function post_addItem() {
+      global $DB;
+
+      // Manage add from template
+      if (isset($this->input["_oldID"])) {
+         ProjectCost::cloneProject($this->input["_oldID"], $this->fields['id']);
+      }
+   }
+   
 
    function post_getEmpty() {
 
