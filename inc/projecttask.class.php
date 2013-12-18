@@ -60,7 +60,7 @@ class ProjectTask extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      return _n('Task', 'Tasks', $nb);
+      return _n('Project task', 'Project tasks', $nb);
    }
 
 
@@ -158,6 +158,7 @@ class ProjectTask extends CommonDBChild {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__,$ong, $options);
       $this->addStandardTab('ProjectTaskTeam',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('ProjectTask_Ticket',$ong, $options);
       $this->addStandardTab('Notepad',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
@@ -175,7 +176,27 @@ class ProjectTask extends CommonDBChild {
       $this->fields['percent_done'] = 0;
    }
 
+   function post_updateItem($history=1) {
+      global $CFG_GLPI;
 
+      if ($CFG_GLPI["use_mailing"]) {
+         // Read again project to be sure that all data are up to date
+         $this->getFromDB($this->fields['id']);
+         NotificationEvent::raiseEvent("update", $this);
+      }
+   }
+
+   function post_addItem() {
+      global $DB, $CFG_GLPI;
+
+      if ($CFG_GLPI["use_mailing"]) {
+         // Clean reload of the project
+         $this->getFromDB($this->fields['id']);
+
+         NotificationEvent::raiseEvent('new', $this);
+      }
+   }
+   
    /**
     * Is the current user in the team?
     *
@@ -222,6 +243,12 @@ class ProjectTask extends CommonDBChild {
    }
 
 
+   function pre_deleteItem() {
+
+      NotificationEvent::raiseEvent('delete',$this);
+      return true;
+   }
+   
    function prepareInputForUpdate($input) {
       return Project::checkPlanAndRealDates($input);
    }
@@ -419,11 +446,11 @@ class ProjectTask extends CommonDBChild {
                                     'addfirstminutes' => true,
                                     'inhours'         => true));
       if ($ID) {
-         $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->fields['id']);
+         $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
          echo "<br>";
-         printf(__('Ticket duration: %s'), Html::timestampToString($ticket_duration, false));
+         printf(__('%1$s: %2$s'),__('Tickets duration'), Html::timestampToString($ticket_duration, false));
          echo '<br>';
-         printf(__('Total duration: %s'),
+         printf(__('%1$s: %2$s'),__('Total duration'),
                 Html::timestampToString($ticket_duration+$this->fields["effective_duration"],
                                         false));
       }
@@ -1059,6 +1086,13 @@ class ProjectTask extends CommonDBChild {
       }
 
       return $todisplay;
+   }
+   
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+      NotificationEvent::debugEvent($this);
    }
 
 }

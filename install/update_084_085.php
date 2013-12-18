@@ -2190,7 +2190,7 @@ function update084to085() {
    }
 
 
-   // Change notifications
+   // Project notifications
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'Project'";
@@ -2267,14 +2267,104 @@ function update084to085() {
                               `date_mod`)
                       VALUES ('".$notif_names[$type]."', 0, 'Project', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
-            $DB->queryOrDie($query, "0.85 add change $type notification");
+            $DB->queryOrDie($query, "0.85 add project $type notification");
             $notifid = $DB->insert_id();
 
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
                                 (`id`, `notifications_id`, `type`, `items_id`)
                          VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
-               $DB->queryOrDie($query, "0.85 add change $type notification target");
+               $DB->queryOrDie($query, "0.85 add project $type notification target");
+            }
+         }
+      }
+   }
+
+   // Project Task notifications
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `itemtype` = 'ProjectTask'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Project Tasks', 'ProjectTask', NOW())";
+         $DB->queryOrDie($query, "0.85 add project task notification");
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`,
+                           `content_html`)
+                   VALUES ($notid, '', '##projecttask.action## ##projecttask.name##',
+                          '##lang.projecttask.url## : ##projecttask.url##
+
+##lang.project.description##
+
+##lang.project.name## : ##project.name##
+##lang.project.code## : ##project.code##
+ ##lang.project.manager## : ##project.manager##
+##lang.project.managergroup## : ##project.managergroup##
+ ##lang.project.creationdate## : ##project.creationdate##
+##lang.project.priority## : ##project.priority##
+##lang.project.state## : ##project.state##
+##lang.project.type## : ##project.type##
+##lang.project.description## : ##project.description##
+
+##lang.project.numberoftasks## : ##project.numberoftasks##
+
+
+
+##FOREACHtasks##
+
+[##task.creationdate##]
+ ##lang.task.state## : ##task.state##
+##lang.task.type## : ##task.type##
+##lang.task.percent## : ##task.percent##
+##lang.task.description## : ##task.description##
+
+##ENDFOREACHtasks##',
+                          '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;##lang.project.description##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.project.name## : ##project.name##&lt;br /&gt;##lang.project.code## : ##project.code##&lt;br /&gt; ##lang.project.manager## : ##project.manager##&lt;br /&gt;##lang.project.managergroup## : ##project.managergroup##&lt;br /&gt; ##lang.project.creationdate## : ##project.creationdate##&lt;br /&gt;##lang.project.priority## : ##project.priority## &lt;br /&gt;##lang.project.state## : ##project.state##&lt;br /&gt;##lang.project.type## : ##project.type##&lt;br /&gt;##lang.project.description## : ##project.description##&lt;/p&gt;
+&lt;p&gt;##lang.project.numberoftasks## : ##project.numberoftasks##&lt;/p&gt;
+&lt;div&gt;
+&lt;p&gt;##FOREACHtasks##&lt;/p&gt;
+&lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt; ##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
+&lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
+&lt;/div&gt;')";
+         $DB->queryOrDie($query, "0.85 add project task notification translation");
+
+         $notifications = array('new'         => array(),
+                                'update'      => array(),
+                                'delete'      => array());
+
+         $notif_names   = array('new'         => 'New Project Task',
+                                'update'      => 'Update Project Task',
+                                'delete'      => 'Delete Project Task');
+
+         foreach ($notifications as $key => $val) {
+            $notifications[$key][] = Notification::TEAM_USER;
+            $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
+            $notifications[$key][] = Notification::TEAM_GROUP;
+         }
+
+         foreach ($notifications as $type => $targets) {
+            $query = "INSERT INTO `glpi_notifications`
+                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                              `date_mod`)
+                      VALUES ('".$notif_names[$type]."', 0, 'ProjectTask', '$type', 'mail',
+                              $notid, '', 1, 1, NOW())";
+            $DB->queryOrDie($query, "0.85 add project task  $type notification");
+            $notifid = $DB->insert_id();
+
+            foreach ($targets as $target) {
+               $query = "INSERT INTO `glpi_notificationtargets`
+                                (`id`, `notifications_id`, `type`, `items_id`)
+                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
+               $DB->queryOrDie($query, "0.85 add project task $type notification target");
             }
          }
       }

@@ -187,7 +187,7 @@ class NotificationTargetProject extends NotificationTarget {
       foreach ($DB->request($query) as $data) {
          if ($contact->getFromDB($data['items_id'])) {
             $this->addToAddressesList(array("email"    => $contact->fields["email"],
-                                            "name"     => $contact->fields["name"]." ".$contact->fields["firstname"],
+                                            "name"     => $contact->getName(),
                                             "language" => $CFG_GLPI["language"],
                                             'usertype' => NotificationTarget::ANONYMOUS_USER));
          }
@@ -208,7 +208,7 @@ class NotificationTargetProject extends NotificationTarget {
       foreach ($DB->request($query) as $data) {
          if ($supplier->getFromDB($data['items_id'])) {
             $this->addToAddressesList(array("email"    => $supplier->fields["email"],
-                                            "name"     => $supplier->fields["name"],
+                                            "name"     => $supplier->getName(),
                                             "language" => $CFG_GLPI["language"],
                                             'usertype' => NotificationTarget::ANONYMOUS_USER));
          }
@@ -376,6 +376,7 @@ class NotificationTargetProject extends NotificationTarget {
       }
       $this->datas["##project.numberofcosts##"] = count($this->datas['costs']);
 
+      // History infos
       $this->datas['log'] = array();
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
@@ -398,11 +399,6 @@ class NotificationTargetProject extends NotificationTarget {
          foreach ($changes as $data) {
             if ($change->getFromDB($data['changes_id'])) {
                $tmp = array();
-      $entity = new Entity();
-      if ($entity->getFromDB($this->getEntity())) {
-         $this->datas["##$objettype.entity##"]      = $entity->getField('completename');
-         $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
-      }
 
                $tmp['##change.id##']
                               = $data['changes_id'];

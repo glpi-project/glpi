@@ -242,7 +242,7 @@ class Project extends CommonDBTM {
    }
    
    function post_addItem() {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -252,8 +252,7 @@ class Project extends CommonDBTM {
          // Clean reload of the project
          $this->getFromDB($this->fields['id']);
 
-         $type = "new";
-         NotificationEvent::raiseEvent($type, $this);
+         NotificationEvent::raiseEvent('new', $this);
       }
    }
    
