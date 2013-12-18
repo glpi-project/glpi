@@ -648,6 +648,15 @@ class Printer  extends CommonDBTM {
       $tab[12]['name']           = __('Current counter of pages');
       $tab[12]['datatype']       = 'number';
 
+      $tab[9]['table']          = 'glpi_printers';
+      $tab[9]['field']          = '_virtual';
+      $tab[9]['linkfield']      = '_virtual';
+      $tab[9]['name']           = _n('Cartridge','Cartridges',2);
+      $tab[9]['datatype']       = 'specific';
+      $tab[9]['massiveaction']  = false;
+      $tab[9]['nosearch']       = true;
+      $tab[9]['nosort']         = true;
+      
       $tab[90]['table']          = $this->getTable();
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
