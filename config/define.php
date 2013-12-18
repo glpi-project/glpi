@@ -236,7 +236,7 @@ $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'Devic
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract',
                                                   'Crontask', 'DBConnection', 'FieldUnicity', 'Infocom',
                                                   'MailCollector', 'PlanningRecall',
-                                                  'Problem', 'Reservation', 'SoftwareLicense',
+                                                  'Problem', 'Project', 'Reservation', 'SoftwareLicense',
                                                   'Ticket', 'User');
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');

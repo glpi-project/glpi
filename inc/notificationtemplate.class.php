@@ -331,6 +331,7 @@ class NotificationTemplate extends CommonDBTM {
       //Template processed
       $output = "";
 
+      $cleandata = array();
       // clean data for strtr
       foreach ($data as $field => $value) {
          if (!is_array($value)) {

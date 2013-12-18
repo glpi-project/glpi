@@ -1250,5 +1250,12 @@ class Project extends CommonDBTM {
          _e('Nothing to display');
       }
    }
+
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+      NotificationEvent::debugEvent($this);
+   }
 }
 ?>

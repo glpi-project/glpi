@@ -108,6 +108,26 @@ class Notification extends CommonDBTM {
    const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;
    //Notification to the ticket's observer group without supervisor
    const OBSERVER_GROUP_WITHOUT_SUPERVISOR   = 26;
+   // Notification to manager user
+   const MANAGER_USER = 27;
+   // Notification to manager group
+   const MANAGER_GROUP = 28;
+   // Notification to manager group
+   const MANAGER_GROUP_SUPERVISOR = 29;
+   // Notification to manager group without supervisor
+   const MANAGER_GROUP_WITHOUT_SUPERVISOR = 30;
+   // Notification to team users
+   const TEAM_USER = 31;
+   // Notification to team users
+   const TEAM_GROUP = 32;
+   // Notification to team users
+   const TEAM_GROUP_SUPERVISOR = 33;
+   // Notification to team users
+   const TEAM_GROUP_WITHOUT_SUPERVISOR = 34;
+   // Notification to team users
+   const TEAM_CONTACT = 35;
+   // Notification to team users
+   const TEAM_SUPPLIER = 36;
 
    // From CommonDBTM
    public $dohistory = true;

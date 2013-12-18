@@ -1346,10 +1346,10 @@ function update084to085() {
    }
 
 
- // Change notifications
+   // Change notifications
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
-             WHERE `name` = 'Changes'";
+             WHERE `itemtype` = 'Change'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==0) {
@@ -2189,6 +2189,63 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
    }
 
+
+   // Change notifications
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `itemtype` = 'Project'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Projects', 'Project', NOW())";
+         $DB->queryOrDie($query, "0.85 add project notification");
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`,
+                           `content_html`)
+                   VALUES ($notid, '', '##project.action## ##project.title##',
+                          'TODO',
+                          'TODO')";
+         $DB->queryOrDie($query, "0.85 add project notification translation");
+
+         $notifications = array('new'         => array(),
+                                'update'      => array(),
+                                'delete'      => array());
+
+         $notif_names   = array('new'         => 'New Project',
+                                'update'      => 'Update Project',
+                                'delete'      => 'Delete Project');
+
+         foreach ($notifications as $key => $val) {
+            $notifications[$key][] = Notification::MANAGER_USER;
+            $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
+            $notifications[$key][] = Notification::MANAGER_GROUP;
+         }
+
+         foreach ($notifications as $type => $targets) {
+            $query = "INSERT INTO `glpi_notifications`
+                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                              `date_mod`)
+                      VALUES ('".$notif_names[$type]."', 0, 'Project', '$type', 'mail',
+                              $notid, '', 1, 1, NOW())";
+            $DB->queryOrDie($query, "0.85 add change $type notification");
+            $notifid = $DB->insert_id();
+
+            foreach ($targets as $target) {
+               $query = "INSERT INTO `glpi_notificationtargets`
+                                (`id`, `notifications_id`, `type`, `items_id`)
+                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
+               $DB->queryOrDie($query, "0.85 add change $type notification target");
+            }
+         }
+      }
+   }
+   
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'notepad'));
    // Create new notepad table
    if (!TableExists('glpi_notepads')) {
