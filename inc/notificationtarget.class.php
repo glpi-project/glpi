@@ -221,9 +221,9 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving the object which raises the event
     *
-    * @see CommonDBTM::getName
+    * @see CommonDBTM::getRawName
    **/
-   function getName($options=array()) {
+   function getRawName() {
 
       if (isset($this->notification_targets_labels[$this->getField("type")]
                                                   [$this->getField("items_id")])) {
@@ -231,7 +231,7 @@ class NotificationTarget extends CommonDBChild {
          return $this->notification_targets_labels[$this->getField("type")]
                                                   [$this->getField("items_id")];
       }
-      return NOT_AVAILABLE;
+      return '';
    }
 
 

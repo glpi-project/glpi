@@ -491,40 +491,18 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::getName()
+    * @see CommonDBTM::getRawName()
    **/
-   function getName($options=array()) {
-
-      $p['comments'] = false;
-
-      if (is_array($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
+   function getRawName() {
+      if (isset($this->fields['taskcategories_id'])) {
+         if ($this->fields['taskcategories_id']) {
+            return Dropdown::getDropdownName('glpi_taskcategories',
+                                             $this->fields['taskcategories_id']);
+         } else {
+            return $this->getTypeName(1);
          }
       }
-
-      if (!isset($this->fields['taskcategories_id'])) {
-         return NOT_AVAILABLE;
-      }
-
-      if ($this->fields['taskcategories_id']) {
-         $name = Dropdown::getDropdownName('glpi_taskcategories',
-                                           $this->fields['taskcategories_id']);
-      } else {
-         $name = $this->getTypeName(1);
-      }
-
-      if ($p['comments']) {
-         $addname  = Html::convDateTime($this->fields['date']);
-         $addname = sprintf(__('%1$s, %2$s'), $addname, getUserName($this->fields['users_id']));
-         // Manage private case
-         if (isset($this->maybeprivate)) {
-            $addname = sprintf(__('%1$s, %2$s'), $addname,
-                               ($this->fields['is_private'] ? __('Private') : __('Public')));
-         }
-         $name = sprintf(__('%1$s (%2$s)'), $name, $addname);
-      }
-      return $name;
+      return '';
    }
 
 
