@@ -165,7 +165,8 @@ $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Ch
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Problem', 'Project', 'Reminder', 'Software',
+                                                  'Printer', 'Problem', 'Project', 'ProjectTask',
+                                                  'Reminder', 'Software',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User');
 
 $CFG_GLPI["consumables_types"]            = array('Group', 'User');
@@ -236,7 +237,8 @@ $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'Devic
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract',
                                                   'Crontask', 'DBConnection', 'FieldUnicity', 'Infocom',
                                                   'MailCollector', 'PlanningRecall',
-                                                  'Problem', 'Project', 'Reservation', 'SoftwareLicense',
+                                                  'Problem', 'Project', 'ProjectTask',
+                                                  'Reservation', 'SoftwareLicense',
                                                   'Ticket', 'User');
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
