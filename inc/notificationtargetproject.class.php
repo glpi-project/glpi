@@ -219,72 +219,75 @@ class NotificationTargetProject extends NotificationTarget {
     * @see NotificationTarget::getDatasForTemplate()
    **/
    function getDatasForTemplate($event, $options=array()) {
+      global $CFG_GLPI, $DB;
+      
       //----------- Reservation infos -------------- //
-      $events                                  = $this->getAllEvents();
-
+      $events = $this->getAllEvents();
+      $item   = $this->obj;
+      
       $this->datas['##project.action##']   = $events[$event];
       $this->datas['##project.url##']      = $this->formatURL($options['additionnaloption']['usertype'],
                                               "Project_".$item->getField("id"));
-      $datas["##project.name##"]           = $item->getField('name');
-      $datas["##project.code##"]           = $item->getField('code');
-      $datas["##project.description##"]    = $item->getField('content');
-      $datas["##project.comments##"]       = $item->getField('comment');
-      $datas["##project.creationdate##"]   = Html::convDateTime($item->getField('date'));
-      $datas["##project.lastupdatedate##"] = Html::convDateTime($item->getField('date_mod'));
-      $datas["##project.priority##"]       = CommonITILObject::getPriorityName($item->getField('priority'));
-      $datas["##project.percent##"]        = Dropdown::getValueWithUnit($item->getField('percent_done'),"%");
-      $datas["##project.planstartdate##"]  = Html::convDateTime($item->getField('plan_start_date'));
-      $datas["##project.planenddate##"]    = Html::convDateTime($item->getField('plan_end_date'));
-      $datas["##project.realstartdate##"]  = Html::convDateTime($item->getField('real_start_date'));
-      $datas["##project.realenddate##"]    = Html::convDateTime($item->getField('real_end_date'));
+      $this->datas["##project.name##"]           = $item->getField('name');
+      $this->datas["##project.code##"]           = $item->getField('code');
+      $this->datas["##project.description##"]    = $item->getField('content');
+      $this->datas["##project.comments##"]       = $item->getField('comment');
+      $this->datas["##project.creationdate##"]   = Html::convDateTime($item->getField('date'));
+      $this->datas["##project.lastupdatedate##"] = Html::convDateTime($item->getField('date_mod'));
+      $this->datas["##project.priority##"]       = CommonITILObject::getPriorityName($item->getField('priority'));
+      $this->datas["##project.percent##"]        = Dropdown::getValueWithUnit($item->getField('percent_done'),"%");
+      $this->datas["##project.planstartdate##"]  = Html::convDateTime($item->getField('plan_start_date'));
+      $this->datas["##project.planenddate##"]    = Html::convDateTime($item->getField('plan_end_date'));
+      $this->datas["##project.realstartdate##"]  = Html::convDateTime($item->getField('real_start_date'));
+      $this->datas["##project.realenddate##"]    = Html::convDateTime($item->getField('real_end_date'));
 
-      $datas["##project.plannedduration##"]   = Html::timestampToString(
+      $this->datas["##project.plannedduration##"]   = Html::timestampToString(
                                                    ProjectTask::getTotalPlannedDurationForProject($item->getID()),
                                                    false);
-      $datas["##project.effectiveduration##"] = Html::timestampToString(
+      $this->datas["##project.effectiveduration##"] = Html::timestampToString(
                                                    ProjectTask::getTotalEffectiveDurationForProject($item->getID()),
                                                    false);
 
 
       $entity = new Entity();
-      $datas["##project.entity##"] = '';
-      $datas["##project.shortentity##"] = '';
+      $this->datas["##project.entity##"] = '';
+      $this->datas["##project.shortentity##"] = '';
       if ($entity->getFromDB($this->getEntity())) {
-         $datas["##project.entity##"]      = $entity->getField('completename');
-         $datas["##project.shortentity##"] = $entity->getField('name');
+         $this->datas["##project.entity##"]      = $entity->getField('completename');
+         $this->datas["##project.shortentity##"] = $entity->getField('name');
       }
 
-      $datas["##project.father##"] = '';
+      $this->datas["##project.father##"] = '';
       if ($item->getField('projects_id')) {
-         $datas["##project.father##"]
+         $this->datas["##project.father##"]
                               = Dropdown::getDropdownName('glpi_projects',
                                                           $item->getField('projects_id'));
       }
 
-      $datas["##project.state##"] = '';
+      $this->datas["##project.state##"] = '';
       if ($item->getField('projectstates_id')) {
-         $datas["##project.state##"]
+         $this->datas["##project.state##"]
                               = Dropdown::getDropdownName('glpi_projectstates',
                                                           $item->getField('projectstates_id'));
       }
 
-      $datas["##project.type##"] = '';
+      $this->datas["##project.type##"] = '';
       if ($item->getField('projecttypes_id')) {
-         $datas["##project.type##"]
+         $this->datas["##project.type##"]
                               = Dropdown::getDropdownName('glpi_projecttypes',
                                                           $item->getField('projecttypes_id'));
       }
 
-      $datas["##project.manager##"] = '';
+      $this->datas["##project.manager##"] = '';
       if ($item->getField('users_id')) {
          $user_tmp = new User();
          $user_tmp->getFromDB($item->getField('users_id'));
-         $datas["##project.manager##"] = $user_tmp->getName();
+         $this->datas["##project.manager##"] = $user_tmp->getName();
       }
 
-      $datas["##project.managergroup##"] = '';
+      $this->datas["##project.managergroup##"] = '';
       if ($item->getField('groups_id')) {
-         $datas["##project.managergroup##"]
+         $this->datas["##project.managergroup##"]
                               = Dropdown::getDropdownName('glpi_groups',
                                                           $item->getField('groups_id'));
       }
@@ -292,28 +295,28 @@ class NotificationTargetProject extends NotificationTarget {
       $restrict = "`projects_id` = '".$item->getField('id')."'";
       $items    = getAllDatasFromTable('glpi_projectteams',$restrict);
 
-      $datas['teammembers'] = array();
+      $this->datas['teammembers'] = array();
       if (count($items)) {
          foreach ($items as $data) {
             if ($item2 = getItemForItemtype($data['itemtype'])) {
                if ($item2->getFromDB($data['items_id'])) {
                   $tmp = array();
                   $tmp['##teammember.itemtype##']    = $item2->getTypeName();
-                  $tmp['##teammember.name##']        = $item2->Name();
-                  $datas['teammembers'][] = $tmp;
+                  $tmp['##teammember.name##']        = $item2->getName();
+                  $this->datas['teammembers'][] = $tmp;
                }
             }
          }
       }
 
-      $datas['##project.numberofteammembers##'] = count($datas['teammembers']);
+      $this->datas['##project.numberofteammembers##'] = count($this->datas['teammembers']);
 
       // Task infos
       $restrict = "`projects_id`='".$item->getField('id')."'";
       $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
       $tasks          = getAllDatasFromTable('glpi_projecttasks',$restrict);
-      $datas['tasks'] = array();
+      $this->datas['tasks'] = array();
       foreach ($tasks as $task) {
          $tmp                            = array();
          $tmp['##task.creationdate##']   = Html::convDateTime($task['date']);
@@ -328,10 +331,10 @@ class NotificationTargetProject extends NotificationTarget {
                                                                      $task['projecttasktypes_id']);
          $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'],"%");
 
-         $datas["##task.planstartdate##"]  = '';
-         $datas["##task.planenddate##"]    = '';
-         $datas["##task.realstartdate##"]  = '';
-         $datas["##task.realenddate##"]    = '';
+         $this->datas["##task.planstartdate##"]  = '';
+         $this->datas["##task.planenddate##"]    = '';
+         $this->datas["##task.realstartdate##"]  = '';
+         $this->datas["##task.realenddate##"]    = '';
          if (!is_null($task['plan_start_date'])) {
             $tmp['##task.planstartdate##']     = Html::convDateTime($task['plan_start_date']);
          }
@@ -345,18 +348,18 @@ class NotificationTargetProject extends NotificationTarget {
             $tmp['##task.realenddate##']     = Html::convDateTime($task['real_end_date']);
          }
 
-         $datas['tasks'][]             = $tmp;
+         $this->datas['tasks'][]             = $tmp;
       }
 
-      $datas["##project.numberoftasks##"] = count($datas['tasks']);
+      $this->datas["##project.numberoftasks##"] = count($this->datas['tasks']);
 
       //costs infos
       $restrict  = "`projects_id`='".$item->getField('id')."'";
       $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
 
       $costs          = getAllDatasFromTable('glpi_projectcosts',$restrict);
-      $datas['costs'] = array();
-      $datas["##project.totalcost##"] = 0;
+      $this->datas['costs'] = array();
+      $this->datas["##project.totalcost##"] = 0;
       foreach ($costs as $cost) {
          $tmp = array();
          $tmp['##cost.name##']         = $cost['name'];
@@ -366,14 +369,14 @@ class NotificationTargetProject extends NotificationTarget {
          $tmp['##cost.cost##']         = Html::formatNumber($cost['cost']);
          $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
                                                                      $cost['budgets_id']);
-         $datas["##project.totalcost##"] += $cost['cost'];
-         $datas['costs'][]             = $tmp;
+         $this->datas["##project.totalcost##"] += $cost['cost'];
+         $this->datas['costs'][]             = $tmp;
 
          /// TODO add ticket costs ?
       }
-      $datas["##project.numberofcosts##"] = count($datas['costs']);
+      $this->datas["##project.numberofcosts##"] = count($this->datas['costs']);
 
-      $datas['log'] = array();
+      $this->datas['log'] = array();
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
          $tmp                               = array();
@@ -381,15 +384,15 @@ class NotificationTargetProject extends NotificationTarget {
          $tmp["##project.log.user##"]    = $data['user_name'];
          $tmp["##project.log.field##"]   = $data['field'];
          $tmp["##project.log.content##"] = $data['change'];
-         $datas['log'][]                    = $tmp;
+         $this->datas['log'][]                    = $tmp;
       }
 
-      $datas["##project.numberoflogs##"] = count($datas['log']);
+      $this->datas["##project.numberoflogs##"] = count($this->datas['log']);
 
       // Changes infos
       $restrict         = "`projects_id`='".$item->getField('id')."'";
       $changes          = getAllDatasFromTable('glpi_changes_projects',$restrict);
-      $datas['changes'] = array();
+      $this->datas['changes'] = array();
       if (count($changes)) {
          $change = new Change();
          foreach ($changes as $data) {
@@ -397,8 +400,8 @@ class NotificationTargetProject extends NotificationTarget {
                $tmp = array();
       $entity = new Entity();
       if ($entity->getFromDB($this->getEntity())) {
-         $datas["##$objettype.entity##"]      = $entity->getField('completename');
-         $datas["##$objettype.shortentity##"] = $entity->getField('name');
+         $this->datas["##$objettype.entity##"]      = $entity->getField('completename');
+         $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
       }
 
                $tmp['##change.id##']
@@ -413,12 +416,12 @@ class NotificationTargetProject extends NotificationTarget {
                $tmp['##change.content##']
                               = $change->getField('content');
 
-               $datas['changes'][] = $tmp;
+               $this->datas['changes'][] = $tmp;
             }
          }
       }
 
-      $datas['##project.numberofchanges##'] = count($datas['changes']);
+      $this->datas['##project.numberofchanges##'] = count($this->datas['changes']);
 
 
       // Document
@@ -430,7 +433,7 @@ class NotificationTargetProject extends NotificationTarget {
                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
 
-      $datas["documents"] = array();
+      $this->datas["documents"] = array();
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
             $tmp                      = array();
@@ -453,22 +456,22 @@ class NotificationTargetProject extends NotificationTarget {
             $tmp['##document.filename##']
                                        = $data['filename'];
 
-            $datas['documents'][]     = $tmp;
+            $this->datas['documents'][]     = $tmp;
          }
       }
 
-      $datas["##project.urldocument##"]
+      $this->datas["##project.urldocument##"]
                      = $this->formatURL($options['additionnaloption']['usertype'],
-                                          $objettype."_".$item->getField("id").'_Document_Item$1');
+                                          "Project_".$item->getField("id").'_Document_Item$1');
 
-      $datas["##project.numberofdocuments##"]
-                     = count($datas['documents']);
+      $this->datas["##project.numberofdocuments##"]
+                     = count($this->datas['documents']);
 
       // Items infos
       $restrict = "`projects_id` = '".$item->getField('id')."'";
       $items    = getAllDatasFromTable('glpi_items_projects',$restrict);
 
-      $datas['items'] = array();
+      $this->datas['items'] = array();
       if (count($items)) {
          foreach ($items as $data) {
             if ($item2 = getItemForItemtype($data['itemtype'])) {
@@ -514,15 +517,13 @@ class NotificationTargetProject extends NotificationTarget {
                      $tmp['##item.model##'] = $item2->getField($modelfield);
                   }
 
-                  $datas['items'][] = $tmp;
+                  $this->datas['items'][] = $tmp;
                }
             }
          }
       }
 
-      $datas['##project.numberofitems##'] = count($datas['items']);
-      
-      /// TODO contrats
+      $this->datas['##project.numberofitems##'] = count($this->datas['items']);
       
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
