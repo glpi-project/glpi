@@ -241,7 +241,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       //Tags with just lang
       $tags = array('problem.tickets'  => _n('Ticket', 'Tickets', 2),
                     'problem.changes'  => _n('Change', 'Changes', 2),
-                    'items'            => _n('Item', 'Items', 2));
+                    'problem.items'    => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
