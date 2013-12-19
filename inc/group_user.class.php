@@ -457,8 +457,9 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
-                              'container'     => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = array('num_displayed'    => min($number-$start,
+                                                                   $_SESSION['glpilist_limit']),
+                                         'container'        => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -682,6 +683,70 @@ class Group_User extends CommonDBRelation{
             break;
       }
       return true;
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getSpecificMassiveActions()
+    **/
+   function getSpecificMassiveActions($checkitem=NULL) {
+
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+      if ($isadmin) {
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
+               = __('Change group user');
+      }
+
+      return $actions;
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+    **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
+
+      $input = $ma->getInput();
+      switch ($ma->getAction()) {
+         case 'change_group_user' :
+            Group::dropdown(array('condition'  => '`is_usergroup`'));
+            echo "<br><br>";
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
+            return true;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $CFG_GLPI;
+
+      $action = $ma->getAction();
+
+      switch ($action) {
+         case 'change_group_user' :
+            $groupuser = new self();
+            foreach ($ids as $key => $val) {
+               if ($groupuser->getFromDB($key)) {
+                  $user = $groupuser->getField('users_id');
+                  $inputcg = array('groups_id' => $ma->POST['groups_id'],
+                                   'users_id'  => $user,
+                                   'id'        => $key);
+                  $groupuser->update($inputcg);
+               }
+            }
+            break;
+      }
    }
 
 }
