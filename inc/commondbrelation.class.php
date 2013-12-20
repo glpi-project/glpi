@@ -212,10 +212,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    function getOnePeer($number) {
 
-      if ($number = 0) {
+      if ($number == 0) {
          $itemtype = static::$itemtype_1;
          $items_id = static::$items_id_1;
-      } else if ($number = 1) {
+      } else if ($number == 1) {
          $itemtype = static::$itemtype_2;
          $items_id = static::$items_id_2;
       } else {
