@@ -504,7 +504,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       $specificity_columns = array();
-      $link_column         = $table_group->addHeader('spec_link', __('Device'),
+      $link_column         = $table_group->addHeader('spec_link', '',
                                                      $specific_column);
       $spec_column         = $link_column;
 
@@ -594,13 +594,18 @@ class Item_Devices extends CommonDBRelation {
 
          }
 
-         $content = "<a href='".$this->getLinkURL()."'>device</a>";
-         $spec_cell = $current_row->addCell($link_column, $this->getLink());
+         if ($options['canedit']) {
+            $mode = __s('Update');
+         } else {
+            $mode = __s('View');
+         }
+         $content = "<a href='".$this->getLinkURL()."'>$mode</a>";
+         $spec_cell = $current_row->addCell($link_column, $content);
          foreach ($this->getSpecificities() as $field => $attributs) {
-            $content = $link[$field];
-            if ($options['canedit']) {
-               $content = "<input type='text' name='value_" . $peer_type . "_".$link['id']."_" .
-                            $field . "' value='$content' size='".$attributs['size']."'>";
+            if (!empty($link[$field])) {
+               $content = $link[$field];
+            } else {
+               $content = '';
             }
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
@@ -946,7 +951,7 @@ class Item_Devices extends CommonDBRelation {
          }
          echo "<td>".$attributs['long name']."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, $field);
+         Html::autocompletionTextField($this, $field, array('size' => $attributs['size']));
          echo "</td>";
          if (($even % 2) == 1) {
             echo "</tr>";
