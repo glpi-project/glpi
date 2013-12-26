@@ -1411,8 +1411,6 @@ class Contract extends CommonDBTM {
    static function getContractEndDate($id, $begin, $duration, $periodicity, $renewal) {
       global $DB;
 
-      /// TODO Need to use date firmat of the user for display
-
       $date = new DateTime($begin);
       $now  = new DateTime("now");
       $date->add(new DateInterval('P'.$duration.'M'));
@@ -1422,7 +1420,7 @@ class Contract extends CommonDBTM {
          }
       }
       if ($date < $now) {
-         return "<span class='red'>".$date->format('d-m-Y')."</span>";
+         return "<span class='red'>".Html::convDate($date->format('d-m-Y'))."</span>";
       }
       return  $date->format('d-m-Y');
    }
