@@ -1687,7 +1687,7 @@ function update084to085() {
    $migration->addField('glpi_knowbaseitems', 'begin_date', 'datetime');
    $migration->addField('glpi_knowbaseitems', 'end_date', 'datetime');
 
-   
+
    // Add validation percent for tickets
    $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
 
@@ -2195,8 +2195,8 @@ function update084to085() {
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'Project'";
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==0) {
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) == 0) {
          $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Projects', 'Project', NOW())";
@@ -2286,8 +2286,8 @@ function update084to085() {
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'ProjectTask'";
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==0) {
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) == 0) {
          $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Project Tasks', 'ProjectTask', NOW())";
@@ -2368,7 +2368,7 @@ function update084to085() {
          }
       }
    }
-   
+
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'notepad'));
    // Create new notepad table
    if (!TableExists('glpi_notepads')) {
@@ -2551,7 +2551,7 @@ function update084to085() {
    $ADDTODISPLAYPREF['CartridgeItem']   = array(9);
    $ADDTODISPLAYPREF['ConsumableItem']  = array(9);
    $ADDTODISPLAYPREF['ReservationItem'] = array(9);
-   
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

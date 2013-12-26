@@ -492,15 +492,17 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getRawName()
+    *
+    * @since version 0.85
    **/
    function getRawName() {
+
       if (isset($this->fields['taskcategories_id'])) {
          if ($this->fields['taskcategories_id']) {
             return Dropdown::getDropdownName('glpi_taskcategories',
                                              $this->fields['taskcategories_id']);
-         } else {
-            return $this->getTypeName(1);
          }
+         return $this->getTypeName(1);
       }
       return '';
    }

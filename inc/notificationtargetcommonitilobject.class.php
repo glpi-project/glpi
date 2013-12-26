@@ -1076,9 +1076,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.attribution'        => __('Assigned to'),
                     $objettype.'.entity'             => __('Entity'),
                     $objettype.'.nocategoryassigned' => __('No defined category'),
-                    $objettype.'.log'      => __('Historical'),
-                    $objettype.'.tasks'    => _n('Task', 'Tasks', 2),
-                    $objettype.'.costs'    => _n('Cost', 'Costs', 2));
+                    $objettype.'.log'                => __('Historical'),
+                    $objettype.'.tasks'              => _n('Task', 'Tasks', 2),
+                    $objettype.'.costs'              => _n('Cost', 'Costs', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
