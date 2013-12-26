@@ -276,8 +276,8 @@ class Item_Problem extends CommonDBRelation{
                         foreach ($linkeditems as $type => $tab) {
                            foreach ($tab as $ID) {
                               $nb += countElementsInTable('glpi_items_problems',
-                                                " `itemtype` = '$type'
-                                                   AND `items_id` = '$ID'");
+                                                          " `itemtype` = '$type'
+                                                            AND `items_id` = '$ID'");
                            }
                         }
                      }

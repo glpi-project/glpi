@@ -162,7 +162,7 @@ class Monitor extends CommonDBTM {
 
       $ip = new Item_Project();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
 
@@ -374,13 +374,13 @@ class Monitor extends CommonDBTM {
       global $DB;
 
       $query = "SELECT 'Computer', `computers_id`
-              FROM `glpi_computers_items`
-              WHERE `itemtype` = '".$this->getType()."'
-                    AND `items_id` = '" . $this->fields['id']."'";
+                FROM `glpi_computers_items`
+                WHERE `itemtype` = '".$this->getType()."'
+                      AND `items_id` = '" . $this->fields['id']."'";
       $tab = array();
       foreach ($DB->request($query) as $data) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
-      };
+      }
       return $tab;
    }
 
