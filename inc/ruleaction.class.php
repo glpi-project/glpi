@@ -566,6 +566,8 @@ class RuleAction extends CommonDBChild {
                                                        "action_type = 'add_validation'
                                                         AND field = 'users_id_validate'");
                      $used = array();
+                     /// TODO think used is populate using all rules.
+                     /// Need to limit to select rule or do not set used.
                      foreach ($rule_data as $data) {
                         $used[] = $data['value'];
                      }
