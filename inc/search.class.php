@@ -486,17 +486,22 @@ class Search {
                if (!isset($searchopt[$p['itemtype2'][$i]])) {
                   $searchopt[$p['itemtype2'][$i]] = &self::getOptions($p['itemtype2'][$i]);
                }
-               if (!in_array($searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"]."_".$p['itemtype2'][$i],
+               if (!in_array($searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"]."_".
+                                 $p['itemtype2'][$i],
                              $already_link_tables2)) {
 
                   $FROM .= self::addLeftJoin($p['itemtype2'][$i],
                                              getTableForItemType($p['itemtype2'][$i]),
                                              $already_link_tables2,
-                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
-                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]
+                                                       ["table"],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]
+                                                       ["linkfield"],
                                              1, $p['itemtype2'][$i],
-                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"],
-                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["field"]);
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]
+                                                       ["joinparams"],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]
+                                                       ["field"]);
                }
             }
          }
@@ -656,7 +661,8 @@ class Search {
                   } else {// Ref table case
                      $reftable = getTableForItemType($itemtype);
                      if ($item && $item->maybeDeleted()) {
-                        $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.`is_deleted`",
+                        $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.
+                                                   `is_deleted`",
                                                 "`$reftable`.`is_deleted`", $tmpquery);
                      }
                      $replace  = "FROM `$reftable`
@@ -754,7 +760,8 @@ class Search {
                               $FROM.
                               $WHERE;
                   if ($item->maybeDeleted()) {
-                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.`is_deleted`",
+                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.
+                                                `is_deleted`",
                                              "`$reftable`.`is_deleted`", $tmpquery);
                   }
 
@@ -879,7 +886,8 @@ class Search {
                if (Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
                                                                 DisplayPreference::GENERAL))) {
 
-                  $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open');\"";
+                  $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".
+                                                       dialog('open');\"";
 
                   $search_config
                      = "<img alt=\"".__s('Select default items to show')."\" title=\"".
@@ -980,12 +988,14 @@ class Search {
             $header_num = 1;
             if ((self::$output_type == self::HTML_OUTPUT)
                 && $showmassiveactions) { // HTML display - massive modif
-               $headers_line_top    .= self::showHeaderItem(self::$output_type,
-                                                            Html::getCheckAllAsCheckbox('massform'.$itemtype),
-                                                            $header_num, "", 0, $p['order']);
-               $headers_line_bottom .= self::showHeaderItem(self::$output_type,
-                                                            Html::getCheckAllAsCheckbox('massform'.$itemtype),
-                                                            $header_num, "", 0, $p['order']);
+               $headers_line_top
+                  .= self::showHeaderItem(self::$output_type,
+                                          Html::getCheckAllAsCheckbox('massform'.$itemtype),
+                                          $header_num, "", 0, $p['order']);
+               $headers_line_bottom
+                  .= self::showHeaderItem(self::$output_type,
+                                          Html::getCheckAllAsCheckbox('massform'.$itemtype),
+                                          $header_num, "", 0, $p['order']);
             }
 
             // Display column Headers for toview items
@@ -1020,11 +1030,13 @@ class Search {
                            }
                         }
 
-                        $headers_line .= self::showHeaderItem(self::$output_type,
-                                                              sprintf(__('%1$s - %2$s'),
-                                                                      $metanames[$p['itemtype2'][$i]],
-                                                                      $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"]),
-                                                              $header_num);
+                        $headers_line
+                           .= self::showHeaderItem(self::$output_type,
+                                                   sprintf(__('%1$s - %2$s'),
+                                                           $metanames[$p['itemtype2'][$i]],
+                                                           $searchopt[$p['itemtype2'][$i]]
+                                                               [$p['field2'][$i]]["name"]),
+                                                           $header_num);
                         $already_printed[$p['itemtype2'][$i].$p['field2'][$i]] = 1;
                      }
                   }
@@ -1033,7 +1045,8 @@ class Search {
 
             // Add specific column Header
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
-               $headers_line .= self::showHeaderItem(self::$output_type, __('Item type'), $header_num);
+               $headers_line .= self::showHeaderItem(self::$output_type, __('Item type'),
+                                                     $header_num);
             }
             // End Line for column headers
             $headers_line        .= self::showEndLine(self::$output_type);
@@ -1106,7 +1119,8 @@ class Search {
                      $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
                                                                 $data[$massiveaction_field]);
                   }
-                  echo self::showItem(self::$output_type, $tmpcheck, $item_num, $row_num, "width='10'");
+                  echo self::showItem(self::$output_type, $tmpcheck, $item_num, $row_num,
+                                      "width='10'");
                }
 
                // Print other toview items
@@ -1141,8 +1155,10 @@ class Search {
                               $unit          = "";
                               $separate      = self::LBBR;
 
-                              if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
-                                  && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
+                              if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]
+                                                  ['splititems'])
+                                  && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]
+                                               ['splititems']) {
 
                                  $separate = self::LBHR;
                               }
@@ -1155,7 +1171,8 @@ class Search {
                                  if (($p['contains2'][$j] == "NULL")
                                      || (strlen($p['contains2'][$j]) == 0)
                                      || preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
-                                     || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
+                                     || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]
+                                                        ['forcegroupby'])) {
 
                                     if ($count_display) {
                                        $out .= $separate;
@@ -1164,8 +1181,10 @@ class Search {
                                     // Manage Link to item
                                     $split2 = self::explodeWithID("$$", $split[$k]);
                                     if (isset($split2[1])) {
-                                       if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'])
-                                           && ($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'] == 'itemlink')) {
+                                       if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]
+                                                           ['datatype'])
+                                           && ($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]
+                                                         ['datatype'] == 'itemlink')) {
                                           $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
                                                    $split2[1]."' ";
                                           $out .= "href=\"".
@@ -1182,15 +1201,24 @@ class Search {
                                        } else {
                                           // Get specific display if available
 //                                           print_r($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]);
-                                          $itemtypemeta = getItemTypeForTable($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['table']);
+                                          $itemtypemeta = getItemTypeForTable($searchopt[$p['itemtype2'][$j]]
+                                                                              [$p['field2'][$j]]['table']);
                                           if ($itemmeta = getItemForItemtype($itemtypemeta)) {
-                                             $tmpdata  = array($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['field'] => $split2[0]);
-                                             $specific = $itemmeta->getSpecificValueToDisplay($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['field'], $tmpdata, array('html' => true));
+                                             $tmpdata
+                                                = array($searchopt[$p['itemtype2'][$j]]
+                                                        [$p['field2'][$j]]['field'] => $split2[0]);
+                                             $valdiplay = $searchopt[$p['itemtype2'][$j]]
+                                                                    [$p['field2'][$j]]['field'];
+                                             $specific
+                                                = $itemmeta->getSpecificValueToDisplay($valdisplay,
+                                                                                       $tmpdata,
+                                                                                       array('html'
+                                                                                             => true));
                                           }
                                           if (!empty($specific)) {
                                              $out .= $specific;
                                           } else {
-                                             $out      .= Dropdown::getValueWithUnit($split2[0], $unit);
+                                             $out .= Dropdown::getValueWithUnit($split2[0], $unit);
                                           }
                                        }
                                     } else {
@@ -1241,17 +1269,20 @@ class Search {
                               break;
 
                            default :
-                              $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                                      $searchopt[$itemtype][$p['field'][$key]]["name"]);
+                              $titlecontain
+                                 = sprintf(__('%1$s %2$s'), $titlecontain,
+                                           $searchopt[$itemtype][$p['field'][$key]]["name"]);
                         }
 
+                        $gdname = Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]
+                                                                      ["table"],
+                                                            $p['contains'][$key]);
                         switch ($p['searchtype'][$key]) {
                            case "equals" :
                               if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],
                                            array('name', 'completename'))) {
                                  $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                                         Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
-                                                                                   $p['contains'][$key]));
+                                                         $gdname);
                               } else {
                                  $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
                                                          $p['contains'][$key]);
@@ -1262,8 +1293,7 @@ class Search {
                               if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],
                                            array('name', 'completename'))) {
                                  $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
-                                                         Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
-                                                                                   $p['contains'][$key]));
+                                                         $gdname);
                               } else {
                                  $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
                                                          $p['contains'][$key]);
@@ -1288,15 +1318,13 @@ class Search {
                            case "under" :
                               $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
                                                       sprintf(__('%1$s %2$s'), __('under'),
-                                                              Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
-                                                                                        $p['contains'][$key])));
+                                                               $gdname));
                               break;
 
                            case "notunder" :
                               $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
                                                       sprintf(__('%1$s %2$s'), __('not under'),
-                                                              Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
-                                                                                        $p['contains'][$key])));
+                                                              $gdname));
                               break;
 
                            default :
@@ -1317,18 +1345,23 @@ class Search {
                            $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
                                                     $p['link2'][$key]);
                         }
-                        $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
-                                                 sprintf(__('%1$s / %2$s'),
-                                                         $metanames[$p['itemtype2'][$key]],
-                                                         $searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["name"]));
+                        $titlecontain2
+                           = sprintf(__('%1$s %2$s'), $titlecontain2,
+                                     sprintf(__('%1$s / %2$s'),
+                                             $metanames[$p['itemtype2'][$key]],
+                                             $searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]
+                                                       ["name"]));
 
+                        $gdname2 = Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]]
+                                                                       [$p['field2'][$key]]["table"],
+                                                             $p['contains2'][$key]);
                         switch ($p['searchtype2'][$key]) {
                            case "equals" :
-                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],
+                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]
+                                                     ["field"],
                                            array('name', 'completename'))) {
                                  $titlecontain2 = sprintf(__('%1$s = %2$s'), $titlecontain2,
-                                                          Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
-                                                                                    $p['contains2'][$key]));
+                                                          $gdname2);
                               } else {
                                  $titlecontain2 = sprintf(__('%1$s = %2$s'), $titlecontain2,
                                                           $p['contains2'][$key]);
@@ -1336,11 +1369,11 @@ class Search {
                               break;
 
                            case "notequals" :
-                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],
+                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]
+                                                     ["field"],
                                            array('name', 'completename'))) {
                                  $titlecontain2 = sprintf(__('%1$s <> %2$s'), $titlecontain2,
-                                                          Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
-                                                                                    $p['contains2'][$key]));
+                                                          $gdname2);
                               } else {
                                  $titlecontain2 = sprintf(__('%1$s <> %2$s'), $titlecontain2,
                                                           $p['contains2'][$key]);
@@ -1365,15 +1398,13 @@ class Search {
                            case "under" :
                               $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
                                                        sprintf(__('%1$s %2$s'), __('under'),
-                                                               Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
-                                                                                         $p['contains2'][$key])));
+                                                               $gdname2));
                               break;
 
                            case "notunder" :
                               $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
                                                        sprintf(__('%1$s %2$s'), __('not under'),
-                                                               Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
-                                                                                         $p['contains2'][$key])));
+                                                               $gdname2));
                               break;
 
                            default :
@@ -1405,7 +1436,8 @@ class Search {
                }
             }
             if (self::$output_type == self::HTML_OUTPUT) { // In case of HTML display
-               Html::printPager($p['start'], $numrows, $p['target'], $parameters, '', 0, $search_config);
+               Html::printPager($p['start'], $numrows, $p['target'], $parameters, '', 0,
+                                $search_config);
 
             }
          } else {
@@ -1499,9 +1531,12 @@ class Search {
       if (($_SESSION["glpisearchcount"][$itemtype] + $_SESSION["glpisearchcount2"][$itemtype]) > 1) {
          echo "<td width='10' class='center'>";
          echo "<a href=\"javascript:toggleTableDisplay('searchcriteriastable','searchcriteriasimg',
-                                                       '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
-                                                       '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
-         echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+                                                       '".$CFG_GLPI["root_doc"].
+                                                          "/pics/deplier_down.png',
+                                                       '".$CFG_GLPI["root_doc"].
+                                                          "/pics/deplier_up.png')\">";
+         echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"].
+                                                            "/pics/deplier_up.png\">";
          echo "</td>";
       }
       echo "<td>";
@@ -1685,14 +1720,15 @@ class Search {
             // Ajax script for display search met& item
             echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
 
-            $params = array('itemtype'    => '__VALUE__',
-                            'num'         => $i,
-                            'field'       => (is_array($p['field2'])
-                                              && isset($p['field2'][$i])?$p['field2'][$i]:""),
-                            'value'       => (is_array($p['contains2'])
-                                              && isset($p['contains2'][$i])?$p['contains2'][$i]:""),
-                            'searchtype2' => (is_array($p['searchtype2'])
-                                              && isset($p['searchtype2'][$i])?$p['searchtype2'][$i]:""));
+            $params = array('itemtype' => '__VALUE__',
+                            'num'      => $i,
+                            'field'    => (is_array($p['field2'])
+                                           && isset($p['field2'][$i])?$p['field2'][$i]:""),
+                            'value'    => (is_array($p['contains2'])
+                                           && isset($p['contains2'][$i])?$p['contains2'][$i]:""),
+                            'searchtype2'
+                                       => (is_array($p['searchtype2'])
+                                           && isset($p['searchtype2'][$i])?$p['searchtype2'][$i]:""));
 
             Ajax::updateItemOnSelectEvent($field_id,
                                           "show_".$itemtype."_".$i."_$rand",
@@ -1828,10 +1864,12 @@ class Search {
                   if (isset($searchopt[$ID]["width"])) {
                      if (!$NOT) {
                         return " $LINK (`$NAME$num` < ".(intval($val) + $searchopt[$ID]["width"])."
-                                        AND `$NAME$num` > ".(intval($val) - $searchopt[$ID]["width"]).") ";
+                                        AND `$NAME$num` > ".
+                                           (intval($val) - $searchopt[$ID]["width"]).") ";
                      }
                      return " $LINK (`$NAME$num` > ".(intval($val) + $searchopt[$ID]["width"])."
-                                     OR `$NAME$num` < ".(intval($val) - $searchopt[$ID]["width"])." ) ";
+                                     OR `$NAME$num` < ".
+                                        (intval($val) - $searchopt[$ID]["width"])." ) ";
                   }
                   // Exact search
                   if (!$NOT) {
@@ -1917,9 +1955,11 @@ class Search {
             $user_searchopt = self::getOptions('User');
             return " ORDER BY `glpi_users`.`authtype` $order,
                               `glpi_authldaps".$addtable."_".
-                                 self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name` $order,
+                                 self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.
+                                 `name` $order,
                               `glpi_authmails".$addtable."_".
-                                 self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name` $order ";
+                                 self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.
+                                 `name` $order ";
 
          case "glpi_users.name" :
             if ($itemtype!='User') {
@@ -1964,8 +2004,8 @@ class Search {
                   $add_minus = "- `$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
                }
                return " ORDER BY ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                                         INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
-                                                   "` $add_minus)
+                                         INTERVAL (`$table$addtable`.`".
+                                                   $searchopt[$ID]["datafields"][2]."` $add_minus)
                                          $interval) $order ";
          }
       }
@@ -2136,13 +2176,17 @@ class Search {
                   $addaltemail = "";
                   if ((($itemtype == 'Ticket') || ($itemtype == 'Problem'))
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                      && (($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users')
-                          || ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')
-                          || ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_changes_users'))) { // For tickets_users
+                      && (($searchopt[$ID]['joinparams']['beforejoin']['table']
+                            == 'glpi_tickets_users')
+                          || ($searchopt[$ID]['joinparams']['beforejoin']['table']
+                                == 'glpi_problems_users')
+                          || ($searchopt[$ID]['joinparams']['beforejoin']['table']
+                                == 'glpi_changes_users'))) { // For tickets_users
 
                      $ticket_user_table
                         = $searchopt[$ID]['joinparams']['beforejoin']['table'].
-                          "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
+                          "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
+                                                                   ['joinparams']);
                      $addaltemail
                         = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
                                                         `$ticket_user_table`.`alternative_email`)
@@ -2307,8 +2351,8 @@ class Search {
                   return " GROUP_CONCAT(DISTINCT ADDDATE(`$table$addtable`.`".
                                                             $searchopt[$ID]["datafields"][1]."`,
                                                          INTERVAL (`$table$addtable`.`".
-                                                                     $searchopt[$ID]["datafields"][2].
-                                                                     "` $add_minus) $interval)
+                                                                    $searchopt[$ID]["datafields"][2].
+                                                                    "` $add_minus) $interval)
                                          SEPARATOR '$$$$') AS ".$NAME."_$num,
                            $ADDITONALFIELDS";
                }
@@ -2422,24 +2466,30 @@ class Search {
                   = &self::getOptions($itemtype);
                $requester_table
                   = '`glpi_tickets_users_'.
-                     self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
+                     self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
+                                                          ['joinparams']).'`';
                $requestergroup_table
                   = '`glpi_groups_tickets_'.
-                     self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
+                     self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
+                                                          ['joinparams']).'`';
 
                $assign_table
                   = '`glpi_tickets_users_'.
-                     self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
+                     self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
+                                                          ['joinparams']).'`';
                $assigngroup_table
                   = '`glpi_groups_tickets_'.
-                     self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
+                     self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
+                                                          ['joinparams']).'`';
 
                $observer_table
                   = '`glpi_tickets_users_'.
-                     self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']['joinparams']).'`';
+                     self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
+                                                          ['joinparams']).'`';
                $observergroup_table
                   = '`glpi_groups_tickets_'.
-                     self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']['joinparams']).'`';
+                     self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
+                                                          ['joinparams']).'`';
 
                $condition = "(";
 
@@ -2646,9 +2696,12 @@ class Search {
             if (($itemtype == 'Ticket') || ($itemtype == 'Problem')) {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                    && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
-                   && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_tickets_users')
-                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_problems_users')
-                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_changes_users'))) {
+                   && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
+                         == 'glpi_tickets_users')
+                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
+                             == 'glpi_problems_users')
+                       || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
+                             == 'glpi_changes_users'))) {
 
                   $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
@@ -2942,7 +2995,8 @@ class Search {
                   }
                   $date_computation = "ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
                                                INTERVAL (`$table`.".$searchopt[$ID]["datafields"][2]."
-                                                 $add_minus) $delay_unit)";
+                                                         $add_minus)
+                                               $delay_unit)";
                }
                if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link ($date_computation ".$SEARCH.') ';
@@ -3115,7 +3169,8 @@ class Search {
                   if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                                "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                               $searchopt[71]['joinparams']['beforejoin']['joinparams']);
+                                               $searchopt[71]['joinparams']['beforejoin']
+                                                         ['joinparams']);
                   }
                }
 
@@ -3144,7 +3199,8 @@ class Search {
                   if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                                "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                               $searchopt[8]['joinparams']['beforejoin']['joinparams']);
+                                               $searchopt[8]['joinparams']['beforejoin']
+                                                         ['joinparams']);
                   }
                }
 
@@ -3204,7 +3260,7 @@ class Search {
       if ($linkfield == '_virtual') {
          return false;
       }
-      
+
       // Multiple link possibilies case
 //       if ($new_table=="glpi_users"
 //           || $new_table=="glpi_groups"
@@ -3356,9 +3412,9 @@ class Search {
                   // Item_Item join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$rt`.`id`
-                                                   = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_1`
+                                                = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_1`
                                                OR `$rt`.`id`
-                                                   = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_2`)
+                                                 = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_2`)
                                               $addcondition)";
                   break;
 
@@ -3366,9 +3422,9 @@ class Search {
                   // Item_Item join reverting previous item_item
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$nt`.`id`
-                                                   = `$rt`.`".getForeignKeyFieldForTable($cleannt)."_1`
+                                                = `$rt`.`".getForeignKeyFieldForTable($cleannt)."_1`
                                                OR `$nt`.`id`
-                                                   = `$rt`.`".getForeignKeyFieldForTable($cleannt)."_2`)
+                                                 = `$rt`.`".getForeignKeyFieldForTable($cleannt)."_2`)
                                               $addcondition)";
                   break;
 
@@ -3396,7 +3452,8 @@ class Search {
                      $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS $transAS
                                              ON (`$transAS`.`itemtype` = '$transitemtype'
                                                  AND `$transAS`.`items_id` = `$nt`.`id`
-                                                 AND `$transAS`.`language` = '".$_SESSION['glpilanguage']."'
+                                                 AND `$transAS`.`language` = '".
+                                                       $_SESSION['glpilanguage']."'
                                                  AND `$transAS`.`field` = '$field')";
                   }
                   break;
@@ -4171,10 +4228,9 @@ class Search {
             case 'glpi_tickets.name' :
             case 'glpi_problems.name' :
             case 'glpi_changes.name' :
-               
                if (isset($data[$NAME.$num."_content"])
-                  && isset($data[$NAME.$num."_id"])
-                  && isset($data[$NAME.$num."_status"])) {
+                   && isset($data[$NAME.$num."_id"])
+                   && isset($data[$NAME.$num."_status"])) {
                   $link = Toolbox::getItemTypeFormURL($itemtype);
                   $out  = "<a id='$itemtype".$data[$NAME.$num."_id"]."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
@@ -4187,15 +4243,18 @@ class Search {
                   }
                   $out .= "\">";
                   $name = $data[$NAME.$num];
-                  if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
+                  if ($_SESSION["glpiis_ids_visible"]
+                      || empty($data[$NAME.$num])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_id"]);
                   }
-                  $out .= $name."</a>";
-                  $content=Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($data[$NAME.$num."_content"]));
-                  $out = sprintf(__('%1$s %2$s'), $out,
-                                 Html::showToolTip(nl2br(Html::Clean($content)),
-                                                         array('applyto' => $itemtype.$data[$NAME.$num."_id"],
-                                                               'display' => false)));
+                  $out    .= $name."</a>";
+                  $hdecode = Html::entity_decode_deep($data[$NAME.$num."_content"]);
+                  $content = Toolbox::unclean_cross_side_scripting_deep($hdecode);
+                  $out     = sprintf(__('%1$s %2$s'), $out,
+                                     Html::showToolTip(nl2br(Html::Clean($content)),
+                                                             array('applyto' => $itemtype.
+                                                                                $data[$NAME.$num."_id"],
+                                                                   'display' => false)));
                   return $out;
                }
 
@@ -4221,8 +4280,9 @@ class Search {
                                                           self::$output_type != self::HTML_OUTPUT);
 
             case 'glpi_printers._virtual' :
-               return Cartridge::getCountForPrinter($data["id"], self::$output_type != self::HTML_OUTPUT);
-               
+               return Cartridge::getCountForPrinter($data["id"],
+                                                    self::$output_type != self::HTML_OUTPUT);
+
             case 'glpi_consumableitems._virtual' :
                return Consumable::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
                                                           self::$output_type != self::HTML_OUTPUT);
@@ -4381,7 +4441,8 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                   $out .= (empty($out)?'':'<br>').Html::timestampToString($val,$withseconds, $withdays);
+                   $out .= (empty($out)?'':'<br>').Html::timestampToString($val, $withseconds,
+                                                                           $withdays);
                }
                return $out;
 
@@ -4428,22 +4489,24 @@ class Search {
                            $out .= self::LBBR;
                         }
                         $count_display++;
-                        if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
+                        if (isset($searchopt[$ID]['toadd'])
+                            && isset($searchopt[$ID]['toadd'][$split2[0]])) {
                            $out .= $searchopt[$ID]['toadd'][$split2[0]];
                         } else {
-                           $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0], false,0));
+                           $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0],
+                                                 false, 0));
                            $out .= Dropdown::getValueWithUnit($number, $unit);
                         }
                      }
                   }
                   return $out;
                }
-               if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$data[$NAME.$num]])) {
+               if (isset($searchopt[$ID]['toadd'])
+                   && isset($searchopt[$ID]['toadd'][$data[$NAME.$num]])) {
                   return $searchopt[$ID]['toadd'][$data[$NAME.$num]];
-               } else {
-                  $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0));
-                  return Dropdown::getValueWithUnit($number, $unit);
                }
+               $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0));
+               return Dropdown::getValueWithUnit($number, $unit);
 
 
             case "decimal" :
@@ -4459,11 +4522,12 @@ class Search {
                            $out .= self::LBBR;
                         }
                         $count_display++;
-                        if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
+                        if (isset($searchopt[$ID]['toadd'])
+                            && isset($searchopt[$ID]['toadd'][$split2[0]])) {
                            $out .= $searchopt[$ID]['toadd'][$split2[0]];
                         } else {
                            $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0]));
-                           $out .= Dropdown::getValueWithUnit($number, $unit);
+                           $out   .= Dropdown::getValueWithUnit($number, $unit);
                         }
                      }
                   }
@@ -4524,7 +4588,8 @@ class Search {
                $itemtype = getItemTypeForTable($table);
                if ($item = getItemForItemtype($itemtype)) {
                   $tmpdata  = array($field => $withoutid[0]);
-                  $specific = $item->getSpecificValueToDisplay($field, $tmpdata, array('html' => true));
+                  $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
+                                                               array('html' => true));
                }
                if (!empty($specific)) {
                   $out .= $specific;

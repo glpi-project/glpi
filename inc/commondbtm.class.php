@@ -2730,6 +2730,7 @@ class CommonDBTM extends CommonGLPI {
       return array();
    }
 
+
    /**
     * Return the count of linked items (in computers_items)
     *
@@ -2737,8 +2738,9 @@ class CommonDBTM extends CommonGLPI {
     * @since version 0.84.4
    **/
    function getLinkedItemsCount() {
+
       $linkeditems = $this->getLinkedItems();
-      $nb = 0;
+      $nb          = 0;
       if (count($linkeditems)) {
          foreach ($linkeditems as $tab) {
             $nb += count($tab);
@@ -2930,7 +2932,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return '';
    }
-   
+
    /**
     * Get the name of the object
     *
@@ -2955,7 +2957,7 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $val;
          }
       }
-      
+
       $name = '';
       if ($p['complete']) {
          $name = $this->getRawCompleteName();

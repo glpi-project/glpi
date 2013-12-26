@@ -383,10 +383,10 @@ class Computer extends CommonDBTM {
 
       $ip = new Item_Project();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
-      
+
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
 
@@ -628,12 +628,12 @@ class Computer extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `itemtype`, `items_id`
-              FROM `glpi_computers_items`
-              WHERE `computers_id` = '" . $this->fields['id']."'";
+                FROM `glpi_computers_items`
+                WHERE `computers_id` = '" . $this->fields['id']."'";
       $tab = array();
       foreach ($DB->request($query) as $data) {
          $tab[$data['itemtype']][$data['items_id']] = $data['items_id'];
-      };
+      }
       return $tab;
    }
 
@@ -843,7 +843,7 @@ class Computer extends CommonDBTM {
       $tab[36]['massiveaction']  = false;
       $tab[36]['joinparams']     = $items_device_joinparams;
       $tab[36]['computation']    = "SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)";
-      
+
       $tab[10]['table']          = 'glpi_devicememories';
       $tab[10]['field']          = 'designation';
       $tab[10]['name']           = __('Memory type');

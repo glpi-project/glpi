@@ -2370,138 +2370,139 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since version 0.85
    **/
    function getSearchOptionsMain() {
-      $tab                         = array();
-      $tab['common']               = __('Characteristics');
 
-      $tab[1]['table']             = $this->getTable();
-      $tab[1]['field']             = 'name';
-      $tab[1]['name']              = __('Title');
-      $tab[1]['datatype']          = 'itemlink';
-      $tab[1]['searchtype']        = 'contains';
-      $tab[1]['massiveaction']     = false;
-      $tab[1]['additionalfields']  = array('id', 'content', 'status');
-      
-      $tab[21]['table']            = $this->getTable();
-      $tab[21]['field']            = 'content';
-      $tab[21]['name']             = __('Description');
-      $tab[21]['massiveaction']    = false;
-      $tab[21]['datatype']         = 'text';
+      $tab                            = array();
+      $tab['common']                  = __('Characteristics');
 
-      $tab[2]['table']             = $this->getTable();
-      $tab[2]['field']             = 'id';
-      $tab[2]['name']              = __('ID');
-      $tab[2]['massiveaction']     = false;
-      $tab[2]['datatype']          = 'number';
+      $tab[1]['table']                = $this->getTable();
+      $tab[1]['field']                = 'name';
+      $tab[1]['name']                 = __('Title');
+      $tab[1]['datatype']             = 'itemlink';
+      $tab[1]['searchtype']           = 'contains';
+      $tab[1]['massiveaction']        = false;
+      $tab[1]['additionalfields']     = array('id', 'content', 'status');
 
-      $tab[12]['table']            = $this->getTable();
-      $tab[12]['field']            = 'status';
-      $tab[12]['name']             = __('Status');
-      $tab[12]['searchtype']       = 'equals';
-      $tab[12]['datatype']         = 'specific';
+      $tab[21]['table']               = $this->getTable();
+      $tab[21]['field']               = 'content';
+      $tab[21]['name']                = __('Description');
+      $tab[21]['massiveaction']       = false;
+      $tab[21]['datatype']            = 'text';
 
-      $tab[10]['table']            = $this->getTable();
-      $tab[10]['field']            = 'urgency';
-      $tab[10]['name']             = __('Urgency');
-      $tab[10]['searchtype']       = 'equals';
-      $tab[10]['datatype']         = 'specific';
+      $tab[2]['table']                = $this->getTable();
+      $tab[2]['field']                = 'id';
+      $tab[2]['name']                 = __('ID');
+      $tab[2]['massiveaction']        = false;
+      $tab[2]['datatype']             = 'number';
 
-      $tab[11]['table']            = $this->getTable();
-      $tab[11]['field']            = 'impact';
-      $tab[11]['name']             = __('Impact');
-      $tab[11]['searchtype']       = 'equals';
-      $tab[11]['datatype']         = 'specific';
+      $tab[12]['table']               = $this->getTable();
+      $tab[12]['field']               = 'status';
+      $tab[12]['name']                = __('Status');
+      $tab[12]['searchtype']          = 'equals';
+      $tab[12]['datatype']            = 'specific';
 
-      $tab[3]['table']             = $this->getTable();
-      $tab[3]['field']             = 'priority';
-      $tab[3]['name']              = __('Priority');
-      $tab[3]['searchtype']        = 'equals';
-      $tab[3]['datatype']          = 'specific';
+      $tab[10]['table']               = $this->getTable();
+      $tab[10]['field']               = 'urgency';
+      $tab[10]['name']                = __('Urgency');
+      $tab[10]['searchtype']          = 'equals';
+      $tab[10]['datatype']            = 'specific';
 
+      $tab[11]['table']               = $this->getTable();
+      $tab[11]['field']               = 'impact';
+      $tab[11]['name']                = __('Impact');
+      $tab[11]['searchtype']          = 'equals';
+      $tab[11]['datatype']            = 'specific';
 
-      $tab[15]['table']            = $this->getTable();
-      $tab[15]['field']            = 'date';
-      $tab[15]['name']             = __('Opening date');
-      $tab[15]['datatype']         = 'datetime';
-      $tab[15]['massiveaction']    = false;
-
-      $tab[16]['table']            = $this->getTable();
-      $tab[16]['field']            = 'closedate';
-      $tab[16]['name']             = __('Closing date');
-      $tab[16]['datatype']         = 'datetime';
-      $tab[16]['massiveaction']    = false;
-
-      $tab[18]['table']            = $this->getTable();
-      $tab[18]['field']            = 'due_date';
-      $tab[18]['name']             = __('Due date');
-      $tab[18]['datatype']         = 'datetime';
-      $tab[18]['maybefuture']      = true;
-      $tab[18]['massiveaction']    = false;
-      $tab[18]['additionalfields'] = array('status');
+      $tab[3]['table']                = $this->getTable();
+      $tab[3]['field']                = 'priority';
+      $tab[3]['name']                 = __('Priority');
+      $tab[3]['searchtype']           = 'equals';
+      $tab[3]['datatype']             = 'specific';
 
 
+      $tab[15]['table']               = $this->getTable();
+      $tab[15]['field']               = 'date';
+      $tab[15]['name']                = __('Opening date');
+      $tab[15]['datatype']            = 'datetime';
+      $tab[15]['massiveaction']       = false;
 
-      $tab[151]['table']           = $this->getTable();
-      $tab[151]['field']           = 'due_date';
-      $tab[151]['name']            = __('Due date + Progress');
-      $tab[151]['massiveaction']   = false;
-      $tab[151]['nosearch']        = true;
-      $tab[151]['additionalfields'] = array('status');
-      
+      $tab[16]['table']               = $this->getTable();
+      $tab[16]['field']               = 'closedate';
+      $tab[16]['name']                = __('Closing date');
+      $tab[16]['datatype']            = 'datetime';
+      $tab[16]['massiveaction']       = false;
 
-      $tab[82]['table']            = $this->getTable();
-      $tab[82]['field']            = 'is_late';
-      $tab[82]['name']             = __('Late');
-      $tab[82]['datatype']         = 'bool';
-      $tab[82]['massiveaction']    = false;
-      $tab[82]['computation']      = "IF(TABLE.`due_date` IS NOT NULL
-                                         AND (TABLE.`solvedate` > TABLE.`due_date`
-                                              OR (TABLE.`solvedate` IS NULL
-                                                   AND TABLE.`due_date` < NOW())),
-                                         1, 0)";
+      $tab[18]['table']               = $this->getTable();
+      $tab[18]['field']               = 'due_date';
+      $tab[18]['name']                = __('Due date');
+      $tab[18]['datatype']            = 'datetime';
+      $tab[18]['maybefuture']         = true;
+      $tab[18]['massiveaction']       = false;
+      $tab[18]['additionalfields']    = array('status');
 
 
-      $tab[17]['table']            = $this->getTable();
-      $tab[17]['field']            = 'solvedate';
-      $tab[17]['name']             = __('Resolution date');
-      $tab[17]['datatype']         = 'datetime';
-      $tab[17]['massiveaction']    = false;
 
-      $tab[19]['table']            = $this->getTable();
-      $tab[19]['field']            = 'date_mod';
-      $tab[19]['name']             = __('Last update');
-      $tab[19]['datatype']         = 'datetime';
-      $tab[19]['massiveaction']    = false;
+      $tab[151]['table']              = $this->getTable();
+      $tab[151]['field']              = 'due_date';
+      $tab[151]['name']               = __('Due date + Progress');
+      $tab[151]['massiveaction']      = false;
+      $tab[151]['nosearch']           = true;
+      $tab[151]['additionalfields']   = array('status');
 
-      $tab[7]['table']             = 'glpi_itilcategories';
-      $tab[7]['field']             = 'completename';
-      $tab[7]['name']              = __('Category');
-      $tab[7]['datatype']          = 'dropdown';
+
+      $tab[82]['table']               = $this->getTable();
+      $tab[82]['field']               = 'is_late';
+      $tab[82]['name']                = __('Late');
+      $tab[82]['datatype']            = 'bool';
+      $tab[82]['massiveaction']       = false;
+      $tab[82]['computation']         = "IF(TABLE.`due_date` IS NOT NULL
+                                            AND (TABLE.`solvedate` > TABLE.`due_date`
+                                                 OR (TABLE.`solvedate` IS NULL
+                                                      AND TABLE.`due_date` < NOW())),
+                                            1, 0)";
+
+
+      $tab[17]['table']               = $this->getTable();
+      $tab[17]['field']               = 'solvedate';
+      $tab[17]['name']                = __('Resolution date');
+      $tab[17]['datatype']            = 'datetime';
+      $tab[17]['massiveaction']       = false;
+
+      $tab[19]['table']               = $this->getTable();
+      $tab[19]['field']               = 'date_mod';
+      $tab[19]['name']                = __('Last update');
+      $tab[19]['datatype']            = 'datetime';
+      $tab[19]['massiveaction']       = false;
+
+      $tab[7]['table']                = 'glpi_itilcategories';
+      $tab[7]['field']                = 'completename';
+      $tab[7]['name']                 = __('Category');
+      $tab[7]['datatype']             = 'dropdown';
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
-         $tab[7]['condition']      = "`is_helpdeskvisible`";
+         $tab[7]['condition']         = "`is_helpdeskvisible`";
       }
 
-      $tab[80]['table']            = 'glpi_entities';
-      $tab[80]['field']            = 'completename';
-      $tab[80]['name']             = __('Entity');
-      $tab[80]['massiveaction']    = false;
-      $tab[80]['datatype']         = 'dropdown';
+      $tab[80]['table']               = 'glpi_entities';
+      $tab[80]['field']               = 'completename';
+      $tab[80]['name']                = __('Entity');
+      $tab[80]['massiveaction']       = false;
+      $tab[80]['datatype']            = 'dropdown';
 
-      $tab[45]['table']            = $this->getTable();
-      $tab[45]['field']            = 'actiontime';
-      $tab[45]['name']             = __('Total duration');
-      $tab[45]['datatype']         = 'timestamp';
-      $tab[45]['massiveaction']    = false;
-      $tab[45]['nosearch']         = true;
+      $tab[45]['table']               = $this->getTable();
+      $tab[45]['field']               = 'actiontime';
+      $tab[45]['name']                = __('Total duration');
+      $tab[45]['datatype']            = 'timestamp';
+      $tab[45]['massiveaction']       = false;
+      $tab[45]['nosearch']            = true;
 
-      $tab[64]['table']            = 'glpi_users';
-      $tab[64]['field']            = 'name';
-      $tab[64]['linkfield']        = 'users_id_lastupdater';
-      $tab[64]['name']             = __('Last edit by');
-      $tab[64]['massiveaction']    = false;
-      $tab[64]['datatype']         = 'dropdown';
-      $tab[64]['right']            = 'all';
+      $tab[64]['table']               = 'glpi_users';
+      $tab[64]['field']               = 'name';
+      $tab[64]['linkfield']           = 'users_id_lastupdater';
+      $tab[64]['name']                = __('Last edit by');
+      $tab[64]['massiveaction']       = false;
+      $tab[64]['datatype']            = 'dropdown';
+      $tab[64]['right']               = 'all';
 
       return $tab;
    }

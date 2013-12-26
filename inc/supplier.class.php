@@ -216,71 +216,71 @@ class Supplier extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab                       = array();
+      $tab                          = array();
 
-      $tab['common']             = __('Characteristics');
+      $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               = __('Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'number';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'address';
-      $tab[3]['name']            = __('Address');
-      $tab[3]['datatype']        = 'text';
+      $tab[3]['table']              = $this->getTable();
+      $tab[3]['field']              = 'address';
+      $tab[3]['name']               = __('Address');
+      $tab[3]['datatype']           = 'text';
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'fax';
-      $tab[10]['name']           = __('Fax');
-      $tab[10]['datatype']       = 'string';
+      $tab[10]['table']             = $this->getTable();
+      $tab[10]['field']             = 'fax';
+      $tab[10]['name']              = __('Fax');
+      $tab[10]['datatype']          = 'string';
 
-      $tab[11]['table']          = $this->getTable();
-      $tab[11]['field']          = 'town';
-      $tab[11]['name']           = __('City');
-      $tab[11]['datatype']       = 'string';
+      $tab[11]['table']             = $this->getTable();
+      $tab[11]['field']             = 'town';
+      $tab[11]['name']              = __('City');
+      $tab[11]['datatype']          = 'string';
 
-      $tab[14]['table']          = $this->getTable();
-      $tab[14]['field']          = 'postcode';
-      $tab[14]['name']           = __('Postal code');
-      $tab[14]['datatype']       = 'string';
+      $tab[14]['table']             = $this->getTable();
+      $tab[14]['field']             = 'postcode';
+      $tab[14]['name']              = __('Postal code');
+      $tab[14]['datatype']          = 'string';
 
-      $tab[12]['table']          = $this->getTable();
-      $tab[12]['field']          = 'state';
-      $tab[12]['name']           = _x('location','State');
-      $tab[12]['datatype']       = 'string';
+      $tab[12]['table']             = $this->getTable();
+      $tab[12]['field']             = 'state';
+      $tab[12]['name']              = _x('location','State');
+      $tab[12]['datatype']          = 'string';
 
-      $tab[13]['table']          = $this->getTable();
-      $tab[13]['field']          = 'country';
-      $tab[13]['name']           = __('Country');
-      $tab[13]['datatype']       = 'string';
+      $tab[13]['table']             = $this->getTable();
+      $tab[13]['field']             = 'country';
+      $tab[13]['name']              = __('Country');
+      $tab[13]['datatype']          = 'string';
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'website';
-      $tab[4]['name']            = __('Website');
-      $tab[4]['datatype']        = 'weblink';
+      $tab[4]['table']              = $this->getTable();
+      $tab[4]['field']              = 'website';
+      $tab[4]['name']               = __('Website');
+      $tab[4]['datatype']           = 'weblink';
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'phonenumber';
-      $tab[5]['name']            =  __('Phone');
-      $tab[5]['datatype']       = 'string';
+      $tab[5]['table']              = $this->getTable();
+      $tab[5]['field']              = 'phonenumber';
+      $tab[5]['name']               =  __('Phone');
+      $tab[5]['datatype']           = 'string';
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'email';
-      $tab[6]['name']            = _n('Email', 'Emails', 1);
-      $tab[6]['datatype']        = 'email';
+      $tab[6]['table']              = $this->getTable();
+      $tab[6]['field']              = 'email';
+      $tab[6]['name']               = _n('Email', 'Emails', 1);
+      $tab[6]['datatype']           = 'email';
 
-      $tab[9]['table']           = 'glpi_suppliertypes';
-      $tab[9]['field']           = 'name';
-      $tab[9]['name']            = __('Third party type');
-      $tab[9]['datatype']        = 'dropdown';
+      $tab[9]['table']              = 'glpi_suppliertypes';
+      $tab[9]['field']              = 'name';
+      $tab[9]['name']               = __('Third party type');
+      $tab[9]['datatype']           = 'dropdown';
 
       if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
          $name1 = 'firstname';
@@ -289,49 +289,49 @@ class Supplier extends CommonDBTM {
          $name1 = 'name';
          $name2 = 'firstname';
       }
-      $tab[8]['table']           = 'glpi_contacts';
-      $tab[8]['field']           = 'completename';
-      $tab[8]['name']            = _n('Associated contact', 'Associated contacts', 2);
-      $tab[8]['forcegroupby']    = true;
-      $tab[8]['datatype']        = 'itemlink';
-      $tab[8]['massiveaction']   = false;
-      $tab[8]['computation']     = "CONCAT(TABLE.`$name1`, ' ', TABLE.`$name2`)";
+      $tab[8]['table']              = 'glpi_contacts';
+      $tab[8]['field']              = 'completename';
+      $tab[8]['name']               = _n('Associated contact', 'Associated contacts', 2);
+      $tab[8]['forcegroupby']       = true;
+      $tab[8]['datatype']           = 'itemlink';
+      $tab[8]['massiveaction']      = false;
+      $tab[8]['computation']        = "CONCAT(TABLE.`$name1`, ' ', TABLE.`$name2`)";
       $tab[8]['computationgroupby'] = true;
-      $tab[8]['joinparams']      = array('beforejoin'
-                                          => array('table'      => 'glpi_contacts_suppliers',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[8]['joinparams']         = array('beforejoin'
+                                             => array('table'      => 'glpi_contacts_suppliers',
+                                                      'joinparams' => array('jointype' => 'child')));
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'notepad';
-      $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']  = false;
-      $tab[90]['datatype']       = 'text';
+      $tab[90]['table']             = $this->getTable();
+      $tab[90]['field']             = 'notepad';
+      $tab[90]['name']              = __('Notes');
+      $tab[90]['massiveaction']     = false;
+      $tab[90]['datatype']          = 'text';
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['massiveaction']     = false;
+      $tab[80]['datatype']          = 'dropdown';
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
+      $tab[86]['table']             = $this->getTable();
+      $tab[86]['field']             = 'is_recursive';
+      $tab[86]['name']              = __('Child entities');
+      $tab[86]['datatype']          = 'bool';
 
-      $tab[29]['table']          = 'glpi_contracts';
-      $tab[29]['field']          = 'name';
-      $tab[29]['name']           = _n('Associated contract', 'Associated contracts', 2);
-      $tab[29]['forcegroupby']   = true;
-      $tab[29]['datatype']       = 'itemlink';
-      $tab[29]['massiveaction']  = false;
-      $tab[29]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_contracts_suppliers',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[29]['table']             = 'glpi_contracts';
+      $tab[29]['field']             = 'name';
+      $tab[29]['name']              = _n('Associated contract', 'Associated contracts', 2);
+      $tab[29]['forcegroupby']      = true;
+      $tab[29]['datatype']          = 'itemlink';
+      $tab[29]['massiveaction']     = false;
+      $tab[29]['joinparams']        = array('beforejoin'
+                                             => array('table'      => 'glpi_contracts_suppliers',
+                                                      'joinparams' => array('jointype' => 'child')));
       return $tab;
    }
 
