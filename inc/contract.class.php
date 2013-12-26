@@ -1262,6 +1262,9 @@ class Contract extends CommonDBTM {
    static function getContractRenewalName($value) {
 
       switch ($value) {
+         case 0 :
+            return __('Never');
+
          case 1 :
             return __('Tacit');
 
