@@ -266,6 +266,7 @@ class Item_Project extends CommonDBRelation{
                                                 " `itemtype` = '".$item->getType()."'
                                                    AND `items_id` = '".$item->getID()."'");
                      // Linked items
+                     // TODO function rename in r 22310
                      if ($subquery = $item->getSelectLinkedItem()) {
                         $nb += countElementsInTable('glpi_items_projects',
                                                     " (`itemtype`,`items_id`) IN (" . $subquery . ")");
