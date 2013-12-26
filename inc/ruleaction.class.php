@@ -581,6 +581,8 @@ class RuleAction extends CommonDBChild {
                                     FROM `glpi_groups_users`
                                     WHERE `groups_id` = `glpi_groups`.`id`)";
                      $used = array();
+                     /// TODO think used is populate using all rules.
+                     /// Need to limit to select rule or do not set used.
                      $rule_data = getAllDatasFromTable('glpi_ruleactions',
                                                        "action_type = 'add_validation'
                                                         AND field = 'groups_id_validate'");
