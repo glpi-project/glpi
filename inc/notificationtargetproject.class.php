@@ -37,11 +37,14 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * NotificationTargetTicket Class
+ *
+ * @since version 0.85
 **/
 class NotificationTargetProject extends NotificationTarget {
 
+
    /**
-    *Get events related to tickets
+    * Get events related to tickets
    **/
    function getEvents() {
 
@@ -52,29 +55,30 @@ class NotificationTargetProject extends NotificationTarget {
       return $events;
    }
 
+
+   /**
+    * @see NotificationTarget::getAdditionalTargets()
+   **/
    function getAdditionalTargets($event='') {
-      $this->addTarget(Notification::MANAGER_USER,
-                        __('Manager'));
-      $this->addTarget(Notification::MANAGER_GROUP,
-                        __('Manager group'));
-      $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR,
-                        __('Manager group supervisor'));
+
+      $this->addTarget(Notification::MANAGER_USER,  __('Manager'));
+      $this->addTarget(Notification::MANAGER_GROUP, __('Manager group'));
+      $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager group supervisor'));
       $this->addTarget(Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR,
                         __('Manager group without supervisor'));
-      $this->addTarget(Notification::TEAM_USER,
-                        __('Project team user'));
-      $this->addTarget(Notification::TEAM_GROUP,
-                        __('Project team group'));
-      $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR,
-                        __('Project team group supervisor'));
+      $this->addTarget(Notification::TEAM_USER, __('Project team user'));
+      $this->addTarget(Notification::TEAM_GROUP, __('Project team group'));
+      $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR,  __('Project team group supervisor'));
       $this->addTarget(Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,
                         __('Project team group without supervisor'));
-      $this->addTarget(Notification::TEAM_CONTACT,
-                        __('Project team contact'));
-      $this->addTarget(Notification::TEAM_SUPPLIER,
-                        __('Project team supplier'));
+      $this->addTarget(Notification::TEAM_CONTACT, __('Project team contact'));
+      $this->addTarget(Notification::TEAM_SUPPLIER, __('Project team supplier'));
    }
-   
+
+
+   /**
+    * @see NotificationTarget::getSpecificTargets()
+   **/
    function getSpecificTargets($data, $options) {
 
       //Look for all targets whose type is Notification::ITEM_USER
@@ -100,12 +104,12 @@ class NotificationTargetProject extends NotificationTarget {
                case Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR :
                   $this->getItemGroupWithoutSupervisorAddress();
                   break;
-                  
+
                //Send to the users in project team
                case Notification::TEAM_USER :
                   $this->getTeamUsers();
                   break;
-                  
+
                //Send to the groups in project team
                case Notification::TEAM_GROUP :
                   $this->getTeamGroups(0);
@@ -116,28 +120,28 @@ class NotificationTargetProject extends NotificationTarget {
                   $this->getTeamGroups(1);
                   break;
 
-               //Send to the groups without supervisors in project team
+               //Send to the group without supervisors in project team
                case Notification::TEAM_GROUP_WITHOUT_SUPERVISOR :
                   $this->getTeamGroups(2);
                   break;
 
-               //Send to the contact in project team
+               //Send to the contacts in project team
                case Notification::TEAM_CONTACT :
                   $this->getTeamContacts();
                   break;
 
-                  //Send to the contact in project team
+                  //Send to the suppliers in project team
                case Notification::TEAM_SUPPLIER :
                   $this->getTeamSuppliers();
                   break;
-                  
+
             }
          }
    }
 
+
    /**
     * Add team users to the notified user list
-    *
    **/
    function getTeamUsers() {
       global $DB;
@@ -145,7 +149,7 @@ class NotificationTargetProject extends NotificationTarget {
       $query = "SELECT `items_id`
                 FROM `glpi_projectteams`
                 WHERE `glpi_projectteams`.`itemtype` = 'User'
-                     AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
       $user = new User;
       foreach ($DB->request($query) as $data) {
          if ($user->getFromDB($data['items_id'])) {
@@ -154,11 +158,12 @@ class NotificationTargetProject extends NotificationTarget {
          }
       }
    }
-   
+
+
    /**
     * Add team groups to the notified user list
-    * @param $manager      0 all users, 1 only supervisors, 2 all users without supervisors
     *
+    * @param $manager      0 all users, 1 only supervisors, 2 all users without supervisors
    **/
    function getTeamGroups($manager) {
       global $DB;
@@ -166,15 +171,15 @@ class NotificationTargetProject extends NotificationTarget {
       $query = "SELECT `items_id`
                 FROM `glpi_projectteams`
                 WHERE `glpi_projectteams`.`itemtype` = 'Group'
-                     AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
       foreach ($DB->request($query) as $data) {
          $this->getAddressesByGroup($manager, $data['items_id']);
       }
    }
 
+
    /**
     * Add team contacts to the notified user list
-    *
    **/
    function getTeamContacts() {
       global $DB, $CFG_GLPI;
@@ -182,7 +187,7 @@ class NotificationTargetProject extends NotificationTarget {
       $query = "SELECT `items_id`
                 FROM `glpi_projectteams`
                 WHERE `glpi_projectteams`.`itemtype` = 'Contact'
-                     AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
       $contact = new Contact();
       foreach ($DB->request($query) as $data) {
          if ($contact->getFromDB($data['items_id'])) {
@@ -193,9 +198,10 @@ class NotificationTargetProject extends NotificationTarget {
          }
       }
    }
+
+
    /**
     * Add team suppliers to the notified user list
-    *
    **/
    function getTeamSuppliers() {
       global $DB, $CFG_GLPI;
@@ -203,7 +209,7 @@ class NotificationTargetProject extends NotificationTarget {
       $query = "SELECT `items_id`
                 FROM `glpi_projectteams`
                 WHERE `glpi_projectteams`.`itemtype` = 'Supplier'
-                     AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
       $supplier = new Supplier();
       foreach ($DB->request($query) as $data) {
          if ($supplier->getFromDB($data['items_id'])) {
@@ -215,38 +221,53 @@ class NotificationTargetProject extends NotificationTarget {
       }
    }
 
+
    /**
     * @see NotificationTarget::getDatasForTemplate()
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI, $DB;
-      
+
       //----------- Reservation infos -------------- //
       $events = $this->getAllEvents();
       $item   = $this->obj;
-      
-      $this->datas['##project.action##']   = $events[$event];
-      $this->datas['##project.url##']      = $this->formatURL($options['additionnaloption']['usertype'],
-                                              "Project_".$item->getField("id"));
-      $this->datas["##project.name##"]           = $item->getField('name');
-      $this->datas["##project.code##"]           = $item->getField('code');
-      $this->datas["##project.description##"]    = $item->getField('content');
-      $this->datas["##project.comments##"]       = $item->getField('comment');
-      $this->datas["##project.creationdate##"]   = Html::convDateTime($item->getField('date'));
-      $this->datas["##project.lastupdatedate##"] = Html::convDateTime($item->getField('date_mod'));
-      $this->datas["##project.priority##"]       = CommonITILObject::getPriorityName($item->getField('priority'));
-      $this->datas["##project.percent##"]        = Dropdown::getValueWithUnit($item->getField('percent_done'),"%");
-      $this->datas["##project.planstartdate##"]  = Html::convDateTime($item->getField('plan_start_date'));
-      $this->datas["##project.planenddate##"]    = Html::convDateTime($item->getField('plan_end_date'));
-      $this->datas["##project.realstartdate##"]  = Html::convDateTime($item->getField('real_start_date'));
-      $this->datas["##project.realenddate##"]    = Html::convDateTime($item->getField('real_end_date'));
 
-      $this->datas["##project.plannedduration##"]   = Html::timestampToString(
-                                                   ProjectTask::getTotalPlannedDurationForProject($item->getID()),
-                                                   false);
-      $this->datas["##project.effectiveduration##"] = Html::timestampToString(
-                                                   ProjectTask::getTotalEffectiveDurationForProject($item->getID()),
-                                                   false);
+      $this->datas['##project.action##']
+                  = $events[$event];
+      $this->datas['##project.url##']
+            = $this->formatURL($options['additionnaloption']['usertype'],
+                               "Project_".$item->getField("id"));
+      $this->datas["##project.name##"]
+            = $item->getField('name');
+      $this->datas["##project.code##"]
+            = $item->getField('code');
+      $this->datas["##project.description##"]
+            = $item->getField('content');
+      $this->datas["##project.comments##"]
+            = $item->getField('comment');
+      $this->datas["##project.creationdate##"]
+            = Html::convDateTime($item->getField('date'));
+      $this->datas["##project.lastupdatedate##"]
+            = Html::convDateTime($item->getField('date_mod'));
+      $this->datas["##project.priority##"]
+            = CommonITILObject::getPriorityName($item->getField('priority'));
+      $this->datas["##project.percent##"]
+            = Dropdown::getValueWithUnit($item->getField('percent_done'),"%");
+      $this->datas["##project.planstartdate##"]
+            = Html::convDateTime($item->getField('plan_start_date'));
+      $this->datas["##project.planenddate##"]
+            = Html::convDateTime($item->getField('plan_end_date'));
+      $this->datas["##project.realstartdate##"]
+            = Html::convDateTime($item->getField('real_start_date'));
+      $this->datas["##project.realenddate##"]
+            = Html::convDateTime($item->getField('real_end_date'));
+
+      $this->datas["##project.plannedduration##"]
+            = Html::timestampToString(ProjectTask::getTotalPlannedDurationForProject($item->getID()),
+                                      false);
+      $this->datas["##project.effectiveduration##"]
+            = Html::timestampToString(ProjectTask::getTotalEffectiveDurationForProject($item->getID()),
+                                      false);
 
 
       $entity = new Entity();
@@ -300,10 +321,10 @@ class NotificationTargetProject extends NotificationTarget {
          foreach ($items as $data) {
             if ($item2 = getItemForItemtype($data['itemtype'])) {
                if ($item2->getFromDB($data['items_id'])) {
-                  $tmp = array();
-                  $tmp['##teammember.itemtype##']    = $item2->getTypeName();
-                  $tmp['##teammember.name##']        = $item2->getName();
-                  $this->datas['teammembers'][] = $tmp;
+                  $tmp                            = array();
+                  $tmp['##teammember.itemtype##'] = $item2->getTypeName();
+                  $tmp['##teammember.name##']     = $item2->getName();
+                  $this->datas['teammembers'][]   = $tmp;
                }
             }
          }
@@ -312,10 +333,10 @@ class NotificationTargetProject extends NotificationTarget {
       $this->datas['##project.numberofteammembers##'] = count($this->datas['teammembers']);
 
       // Task infos
-      $restrict = "`projects_id`='".$item->getField('id')."'";
-      $restrict .= " ORDER BY `date` DESC, `id` ASC";
+      $restrict             = "`projects_id`='".$item->getField('id')."'";
+      $restrict            .= " ORDER BY `date` DESC, `id` ASC";
 
-      $tasks          = getAllDatasFromTable('glpi_projecttasks',$restrict);
+      $tasks                = getAllDatasFromTable('glpi_projecttasks',$restrict);
       $this->datas['tasks'] = array();
       foreach ($tasks as $task) {
          $tmp                            = array();
@@ -336,28 +357,28 @@ class NotificationTargetProject extends NotificationTarget {
          $this->datas["##task.realstartdate##"]  = '';
          $this->datas["##task.realenddate##"]    = '';
          if (!is_null($task['plan_start_date'])) {
-            $tmp['##task.planstartdate##']     = Html::convDateTime($task['plan_start_date']);
+            $tmp['##task.planstartdate##']       = Html::convDateTime($task['plan_start_date']);
          }
          if (!is_null($task['plan_end_date'])) {
-            $tmp['##task.planenddate##']     = Html::convDateTime($task['plan_end_date']);
+            $tmp['##task.planenddate##']         = Html::convDateTime($task['plan_end_date']);
          }
          if (!is_null($task['real_start_date'])) {
-            $tmp['##task.realstartdate##']     = Html::convDateTime($task['real_start_date']);
+            $tmp['##task.realstartdate##']       = Html::convDateTime($task['real_start_date']);
          }
          if (!is_null($task['real_end_date'])) {
-            $tmp['##task.realenddate##']     = Html::convDateTime($task['real_end_date']);
+            $tmp['##task.realenddate##']         = Html::convDateTime($task['real_end_date']);
          }
 
-         $this->datas['tasks'][]             = $tmp;
+         $this->datas['tasks'][]                 = $tmp;
       }
 
       $this->datas["##project.numberoftasks##"] = count($this->datas['tasks']);
 
       //costs infos
-      $restrict  = "`projects_id`='".$item->getField('id')."'";
-      $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
+      $restrict             = "`projects_id`='".$item->getField('id')."'";
+      $restrict            .= " ORDER BY `begin_date` DESC, `id` ASC";
 
-      $costs          = getAllDatasFromTable('glpi_projectcosts',$restrict);
+      $costs                = getAllDatasFromTable('glpi_projectcosts',$restrict);
       $this->datas['costs'] = array();
       $this->datas["##project.totalcost##"] = 0;
       foreach ($costs as $cost) {
@@ -370,7 +391,7 @@ class NotificationTargetProject extends NotificationTarget {
          $tmp['##cost.budget##']       = Dropdown::getDropdownName('glpi_budgets',
                                                                      $cost['budgets_id']);
          $this->datas["##project.totalcost##"] += $cost['cost'];
-         $this->datas['costs'][]             = $tmp;
+         $this->datas['costs'][]                = $tmp;
 
          /// TODO add ticket costs ?
       }
@@ -380,19 +401,19 @@ class NotificationTargetProject extends NotificationTarget {
       $this->datas['log'] = array();
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
-         $tmp                               = array();
+         $tmp                            = array();
          $tmp["##project.log.date##"]    = $data['date_mod'];
          $tmp["##project.log.user##"]    = $data['user_name'];
          $tmp["##project.log.field##"]   = $data['field'];
          $tmp["##project.log.content##"] = $data['change'];
-         $this->datas['log'][]                    = $tmp;
+         $this->datas['log'][]           = $tmp;
       }
 
       $this->datas["##project.numberoflogs##"] = count($this->datas['log']);
 
       // Changes infos
-      $restrict         = "`projects_id`='".$item->getField('id')."'";
-      $changes          = getAllDatasFromTable('glpi_changes_projects',$restrict);
+      $restrict               = "`projects_id`='".$item->getField('id')."'";
+      $changes                = getAllDatasFromTable('glpi_changes_projects',$restrict);
       $this->datas['changes'] = array();
       if (count($changes)) {
          $change = new Change();
@@ -408,7 +429,7 @@ class NotificationTargetProject extends NotificationTarget {
                               = $change->getField('name');
                $tmp['##change.url##']
                               = $this->formatURL($options['additionnaloption']['usertype'],
-                                                   "change_".$data['changes_id']);
+                                                 "change_".$data['changes_id']);
                $tmp['##change.content##']
                               = $change->getField('content');
 
@@ -422,57 +443,57 @@ class NotificationTargetProject extends NotificationTarget {
 
       // Document
       $query = "SELECT `glpi_documents`.*
-                  FROM `glpi_documents`
-                  LEFT JOIN `glpi_documents_items`
+                FROM `glpi_documents`
+                LEFT JOIN `glpi_documents_items`
                   ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                  WHERE `glpi_documents_items`.`itemtype` =  'Project'
-                        AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+                WHERE `glpi_documents_items`.`itemtype` =  'Project'
+                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
 
       $this->datas["documents"] = array();
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $tmp                      = array();
-            $tmp['##document.id##']   = $data['id'];
-            $tmp['##document.name##'] = $data['name'];
+            $tmp                       = array();
+            $tmp['##document.id##']    = $data['id'];
+            $tmp['##document.name##']  = $data['name'];
             $tmp['##document.weblink##']
                                        = $data['link'];
 
-            $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "document_".$data['id']);
-            $downloadurl              = "/front/document.send.php?docid=".$data['id'];
+            $tmp['##document.url##']   = $this->formatURL($options['additionnaloption']['usertype'],
+                                                          "document_".$data['id']);
+            $downloadurl               = "/front/document.send.php?docid=".$data['id'];
 
             $tmp['##document.downloadurl##']
-                                       = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         $downloadurl);
+                                        = $this->formatURL($options['additionnaloption']['usertype'],
+                                                          $downloadurl);
             $tmp['##document.heading##']
-                                       = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                  $data['documentcategories_id']);
+                                        = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                    $data['documentcategories_id']);
 
             $tmp['##document.filename##']
-                                       = $data['filename'];
+                                        = $data['filename'];
 
-            $this->datas['documents'][]     = $tmp;
+            $this->datas['documents'][] = $tmp;
          }
       }
 
       $this->datas["##project.urldocument##"]
                      = $this->formatURL($options['additionnaloption']['usertype'],
-                                          "Project_".$item->getField("id").'_Document_Item$1');
+                                        "Project_".$item->getField("id").'_Document_Item$1');
 
       $this->datas["##project.numberofdocuments##"]
                      = count($this->datas['documents']);
 
       // Items infos
-      $restrict = "`projects_id` = '".$item->getField('id')."'";
-      $items    = getAllDatasFromTable('glpi_items_projects',$restrict);
+      $restrict             = "`projects_id` = '".$item->getField('id')."'";
+      $items                = getAllDatasFromTable('glpi_items_projects',$restrict);
 
       $this->datas['items'] = array();
       if (count($items)) {
          foreach ($items as $data) {
             if ($item2 = getItemForItemtype($data['itemtype'])) {
                if ($item2->getFromDB($data['items_id'])) {
-                  $tmp = array();
+                  $tmp                         = array();
                   $tmp['##item.itemtype##']    = $item2->getTypeName();
                   $tmp['##item.name##']        = $item2->getField('name');
                   $tmp['##item.serial##']      = $item2->getField('serial');
@@ -520,7 +541,7 @@ class NotificationTargetProject extends NotificationTarget {
       }
 
       $this->datas['##project.numberofitems##'] = count($this->datas['items']);
-      
+
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
          if (!isset($this->datas[$tag])) {
@@ -532,65 +553,65 @@ class NotificationTargetProject extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('project.url'               => __('URL'),
-                        'project.action'            => _n('Event', 'Events', 1),
-                        'project.name'              => __('Name'),
-                        'project.code'              => __('Code'),
-                        'project.description'       => __('Description'),
-                        'project.comments'          => __('Comments'),
-                        'project.creationdate'      => __('Creation date'),
-                        'project.lastupdatedate'    => __('Last update'),
-                        'project.planstartdate'     => __('Planned start date'),
-                        'project.planenddate'       => __('Planned end date'),
-                        'project.realstartdate'     => __('Real start date'),
-                        'project.realenddate'       => __('Real end date'),
-                        'project.priority'          => __('Priority'),
-                        'project.father'            => __('Father'),
-                        'project.manager'           => __('Manager'),
-                        'project.managergroup'      => __('Manager group'),
-                        'project.type'              => __('Type'),
-                        'project.state'             => _x('item', 'State'),
-                        'project.percent'           => __('Percent done'),
-                        'project.plannedduration'   => __('Planned duration'),
-                        'project.effectiveduration' => __('Effective duration'),
-                        'project.numberoftasks'     => _x('quantity', 'Number of tasks'),
+      $tags_all = array('project.url'                 => __('URL'),
+                        'project.action'              => _n('Event', 'Events', 1),
+                        'project.name'                => __('Name'),
+                        'project.code'                => __('Code'),
+                        'project.description'         => __('Description'),
+                        'project.comments'            => __('Comments'),
+                        'project.creationdate'        => __('Creation date'),
+                        'project.lastupdatedate'      => __('Last update'),
+                        'project.planstartdate'       => __('Planned start date'),
+                        'project.planenddate'         => __('Planned end date'),
+                        'project.realstartdate'       => __('Real start date'),
+                        'project.realenddate'         => __('Real end date'),
+                        'project.priority'            => __('Priority'),
+                        'project.father'              => __('Father'),
+                        'project.manager'             => __('Manager'),
+                        'project.managergroup'        => __('Manager group'),
+                        'project.type'                => __('Type'),
+                        'project.state'               => _x('item', 'State'),
+                        'project.percent'             => __('Percent done'),
+                        'project.plannedduration'     => __('Planned duration'),
+                        'project.effectiveduration'   => __('Effective duration'),
+                        'project.numberoftasks'       => _x('quantity', 'Number of tasks'),
                         'project.numberofteammembers' => _x('quantity', 'Number of team members'),
-                        'task.date'                 => __('Opening date'),
-                        'task.name'                 => __('Name'),
-                        'task.description'          => __('Description'),
-                        'task.comments'             => __('Comments'),
-                        'task.creationdate'         => __('Creation date'),
-                        'task.lastupdatedate'       => __('Last update'),
-                        'task.type'                 => __('Type'),
-                        'task.state'                => _x('item', 'State'),
-                        'task.percent'              => __('Percent done'),
-                        'task.planstartdate'        => __('Planned start date'),
-                        'task.planenddate'          => __('Planned end date'),
-                        'task.realstartdate'        => __('Real start date'),
-                        'task.realenddate'          => __('Real end date'),
-                        'project.totalcost'             => __('Total cost'),
-                        'project.numberofcosts'         => __('Number of costs'),
-                        'project.numberoflogs'   => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                                  _x('quantity', 'Number of items')),
-                        'project.log.date'       => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                                  __('Date')),
-                        'project.log.user'       => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                                  __('User')),
-                        'project.log.field'      => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                                  __('Field')),
-                        'project.log.content'    => sprintf(__('%1$s: %2$s'), __('Historical'),
-                                                                  _x('name', 'Update')),
-                        'project.numberofchanges'       => _x('quantity', 'Number of changes'),
-                        'project.numberofdocuments'     => _x('quantity', 'Number of documents'),
-                        'item.name'                 => __('Associated item'),
-                        'item.serial'               => __('Serial number'),
-                        'item.otherserial'          => __('Inventory number'),
-                        'item.location'             => __('Location'),
-                        'item.model'                => __('Model'),
-                        'item.contact'              => __('Alternate username'),
-                        'item.contactnumber'        => __('Alternate username number'),
-                        'item.user'                 => __('User'),
-                        'item.group'                => __('Group')
+                        'task.date'                   => __('Opening date'),
+                        'task.name'                   => __('Name'),
+                        'task.description'            => __('Description'),
+                        'task.comments'               => __('Comments'),
+                        'task.creationdate'           => __('Creation date'),
+                        'task.lastupdatedate'         => __('Last update'),
+                        'task.type'                   => __('Type'),
+                        'task.state'                  => _x('item', 'State'),
+                        'task.percent'                => __('Percent done'),
+                        'task.planstartdate'          => __('Planned start date'),
+                        'task.planenddate'            => __('Planned end date'),
+                        'task.realstartdate'          => __('Real start date'),
+                        'task.realenddate'            => __('Real end date'),
+                        'project.totalcost'           => __('Total cost'),
+                        'project.numberofcosts'       => __('Number of costs'),
+                        'project.numberoflogs'        => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                                 _x('quantity', 'Number of items')),
+                        'project.log.date'            => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                                 __('Date')),
+                        'project.log.user'            => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                                 __('User')),
+                        'project.log.field'           => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                                 __('Field')),
+                        'project.log.content'         => sprintf(__('%1$s: %2$s'), __('Historical'),
+                                                                 _x('name', 'Update')),
+                        'project.numberofchanges'     => _x('quantity', 'Number of changes'),
+                        'project.numberofdocuments'   => _x('quantity', 'Number of documents'),
+                        'item.name'                   => __('Associated item'),
+                        'item.serial'                 => __('Serial number'),
+                        'item.otherserial'            => __('Inventory number'),
+                        'item.location'               => __('Location'),
+                        'item.model'                  => __('Model'),
+                        'item.contact'                => __('Alternate username'),
+                        'item.contactnumber'          => __('Alternate username number'),
+                        'item.user'                   => __('User'),
+                        'item.group'                  => __('Group')
                      );
 
       foreach ($tags_all as $tag => $label) {
@@ -608,42 +629,41 @@ class NotificationTargetProject extends NotificationTarget {
                                                          __('Title')),
                     'change.content'          => sprintf(__('%1$s: %2$s'), __('Change'),
                                                          __('Description')),
-                    'cost.name'               => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                     __('Name')),
+                    'cost.name'               => sprintf(__('%1$s: %2$s'), __('Cost'), __('Name')),
                     'cost.comment'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                     __('Comments')),
+                                                         __('Comments')),
                     'cost.datebegin'          => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                     __('Begin date')),
+                                                         __('Begin date')),
                     'cost.dateend'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                     __('End date')),
+                                                         __('End date')),
                     'cost.cost'               => __('Cost'),
                     'cost.budget'             => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                                     __('Budget')),
+                                                         __('Budget')),
                     'document.url'            => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('URL')),
+                                                         __('URL')),
                     'document.downloadurl'    => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Download URL')),
+                                                         __('Download URL')),
                     'document.heading'        => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Heading')),
-                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('ID')),
+                                                         __('Heading')),
+                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
                     'document.filename'       => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('File')),
+                                                         __('File')),
                     'document.weblink'        => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Web Link')),
+                                                         __('Web Link')),
                     'document.name'           => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Name')),
+                                                         __('Name')),
                     'project.urldocument'     => sprintf(__('%1$s: %2$s'),
-                                                            _n('Document', 'Documents', 2),
-                                                            __('URL')),
+                                                         _n('Document', 'Documents', 2), __('URL')),
                     'project.entity'         => sprintf(__('%1$s (%2$s)'),
-                                                            __('Entity'), __('Complete name')),
+                                                        __('Entity'), __('Complete name')),
                     'project.shortentity'    => sprintf(__('%1$s (%2$s)'),
-                                                            __('Entity'), __('Name')),
-                    'teammember.name'        => sprintf(__('%1$s: %2$s'), _n('Team member', 'Team members', 1),
-                                                            __('Name')),
-                    'teammember.itemtype'    => sprintf(__('%1$s: %2$s'), _n('Team member', 'Team members', 1),
-                                                            __('Type')),
+                                                        __('Entity'), __('Name')),
+                    'teammember.name'        => sprintf(__('%1$s: %2$s'),
+                                                        _n('Team member', 'Team members', 1),
+                                                        __('Name')),
+                    'teammember.itemtype'    => sprintf(__('%1$s: %2$s'),
+                                                        _n('Team member', 'Team members', 1),
+                                                        __('Type'))
                      );
 
 
@@ -669,22 +689,23 @@ class NotificationTargetProject extends NotificationTarget {
                                    'value' => false,
                                    'lang'  => true));
       }
-      
+
       //Foreach global tags
-      $tags = array('log'      => __('Historical'),
-                    'tasks'    => _n('Task', 'Tasks', 2),
-                    'costs'    => _n('Cost', 'Costs', 2),
-                    'changes'  => _n('Change', 'Changes', 2),
+      $tags = array('log'         => __('Historical'),
+                    'tasks'       => _n('Task', 'Tasks', 2),
+                    'costs'       => _n('Cost', 'Costs', 2),
+                    'changes'     => _n('Change', 'Changes', 2),
                     'teammembers' => _n('Team member', 'Team members', 2),
-                    'items'    => _n('Item', 'Items', 2));
+                    'items'       => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
                                    'label'   => $label,
                                    'value'   => false,
                                    'foreach' => true));
-      }      
+      }
       asort($this->tag_descriptions);
    }
+
 }
 ?>

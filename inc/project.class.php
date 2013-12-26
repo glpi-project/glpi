@@ -231,16 +231,18 @@ class Project extends CommonDBTM {
       return false;
    }
 
+
    function post_updateItem($history=1) {
       global $CFG_GLPI;
-      
+
       if ($CFG_GLPI["use_mailing"]) {
          // Read again project to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent("update", $this);
       }
    }
-   
+
+
    function post_addItem() {
       global $DB, $CFG_GLPI;
 
@@ -255,7 +257,7 @@ class Project extends CommonDBTM {
          NotificationEvent::raiseEvent('new', $this);
       }
    }
-   
+
 
    function post_getEmpty() {
 
@@ -274,11 +276,13 @@ class Project extends CommonDBTM {
       $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
    }
 
+
    function pre_deleteItem() {
 
       NotificationEvent::raiseEvent('delete',$this);
       return true;
    }
+
 
    function cleanDBonPurge() {
       global $DB;

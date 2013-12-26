@@ -256,8 +256,11 @@ class Contact extends CommonDBTM{
       return $actions;
    }
 
+
    /**
     * @see CommonDBTM::getRawName()
+    *
+    * @since version 0.85
    **/
    function getRawName() {
 
@@ -269,6 +272,7 @@ class Contact extends CommonDBTM{
       }
       return '';
    }
+
 
    function getSearchOptions() {
 
@@ -386,9 +390,6 @@ class Contact extends CommonDBTM{
 
       return $tab;
    }
-
-
-
 
 
    /**

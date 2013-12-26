@@ -561,8 +561,11 @@ class NotificationTarget extends CommonDBChild {
       }
    }
 
+
    /**
     * Get Group of the item
+    *
+    * @since version 0.85
    **/
    function getItemGroupAddress() {
 
@@ -574,8 +577,11 @@ class NotificationTarget extends CommonDBChild {
       }
    }
 
+
    /**
     * Get Group supervisor of the item
+    *
+    * @since version 0.85
    **/
    function getItemGroupSupervisorAddress() {
 
@@ -587,8 +593,11 @@ class NotificationTarget extends CommonDBChild {
       }
    }
 
+
    /**
     * Get Group without supervisor of the item
+    *
+    * @since version 0.85
    **/
    function getItemGroupWithoutSupervisorAddress() {
 
@@ -599,7 +608,8 @@ class NotificationTarget extends CommonDBChild {
          }
       }
    }
-   
+
+
    /**
     * Get entity admin email
    **/

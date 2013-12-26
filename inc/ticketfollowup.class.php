@@ -410,18 +410,20 @@ class TicketFollowup  extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getRawName()
+    *
+    * @since version 0.85
    **/
    function getRawName() {
+
       if (isset($this->fields['requesttypes_id'])) {
          if ($this->fields['requesttypes_id']) {
             return Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
-         } else {
-            return $this->getTypeName();
          }
+         return $this->getTypeName();
       }
-
       return '';
    }
+
 
    /**
     * @param $ticket       Tichet object

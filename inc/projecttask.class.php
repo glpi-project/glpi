@@ -176,6 +176,7 @@ class ProjectTask extends CommonDBChild {
       $this->fields['percent_done'] = 0;
    }
 
+
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
@@ -185,6 +186,7 @@ class ProjectTask extends CommonDBChild {
          NotificationEvent::raiseEvent("update", $this);
       }
    }
+
 
    function post_addItem() {
       global $DB, $CFG_GLPI;
@@ -196,7 +198,8 @@ class ProjectTask extends CommonDBChild {
          NotificationEvent::raiseEvent('new', $this);
       }
    }
-   
+
+
    /**
     * Is the current user in the team?
     *
@@ -248,7 +251,8 @@ class ProjectTask extends CommonDBChild {
       NotificationEvent::raiseEvent('delete',$this);
       return true;
    }
-   
+
+
    function prepareInputForUpdate($input) {
       return Project::checkPlanAndRealDates($input);
    }
@@ -448,7 +452,8 @@ class ProjectTask extends CommonDBChild {
       if ($ID) {
          $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
          echo "<br>";
-         printf(__('%1$s: %2$s'),__('Tickets duration'), Html::timestampToString($ticket_duration, false));
+         printf(__('%1$s: %2$s'),__('Tickets duration'),
+                Html::timestampToString($ticket_duration, false));
          echo '<br>';
          printf(__('%1$s: %2$s'),__('Total duration'),
                 Html::timestampToString($ticket_duration+$this->fields["effective_duration"],
@@ -1087,7 +1092,8 @@ class ProjectTask extends CommonDBChild {
 
       return $todisplay;
    }
-   
+
+
    /**
     * Display debug information for current object
    **/
