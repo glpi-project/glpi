@@ -115,9 +115,11 @@ if (isset($_POST["type"])
             break;
 
          case "group" :
-
-            $cond  = (($_POST["actortype"] == 'assign') ? $cond = '`is_assign`'
-                                                        : $cond = '`is_requester`');
+            $cond = '`is_requester`';
+            if ($_POST["actortype"] == 'assign')  {
+               $cond = '`is_assign`';
+            }
+            
             $param = array('name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
                            'entity'    => $_POST['entity_restrict'],
                            'condition' => $cond,
