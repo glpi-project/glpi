@@ -1400,10 +1400,10 @@ class Contract extends CommonDBTM {
          }
       }
       if ($date < $now) {
-         return "<span class='red'>".Html::convDate($date->format('d-m-Y'))."</span>";
+         return "<span class='red'>".Html::convDate($date->format('Y-m-d'))."</span>";
       }
 
-      return  $date->format('d-m-Y');
+      return Html::convDate($date->format('Y-m-d'));
    }
 
 }
