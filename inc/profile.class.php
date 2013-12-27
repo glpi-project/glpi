@@ -695,8 +695,8 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive`';
       }
-      $entity = implode(",", $_SESSION['glpiactiveentities']);
-      if ($entity != 0) {
+      // Only add profile if on root entity
+      if (!isset($_SESSION['glpiactiveentities'][0])) {
          $options['addicon'] = false;
       }
 
@@ -979,8 +979,8 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive`';
       }
-      $entity = implode(",", $_SESSION['glpiactiveentities']);
-      if ($entity != 0) {
+      // Only add profile if on root entity
+      if (!isset($_SESSION['glpiactiveentities'][0])) {
          $options['addicon'] = false;
       }
 
