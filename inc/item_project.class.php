@@ -258,6 +258,7 @@ class Item_Project extends CommonDBRelation{
                return _n('Item', 'Items', 2);
 
             default :
+               // Not used now
                if (Session::haveRight("project", Project::READALL)) {
                   $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
@@ -266,10 +267,16 @@ class Item_Project extends CommonDBRelation{
                                                 " `itemtype` = '".$item->getType()."'
                                                    AND `items_id` = '".$item->getID()."'");
                      // Linked items
-                     // TODO function rename in r 22310
-                     if ($subquery = $item->getSelectLinkedItem()) {
-                        $nb += countElementsInTable('glpi_items_projects',
-                                                    " (`itemtype`,`items_id`) IN (" . $subquery . ")");
+                     $linkeditems = $item->getLinkedItems();
+
+                     if (count($linkeditems)) {
+                        foreach ($linkeditems as $type => $tab) {
+                           foreach ($tab as $ID) {
+                              $nb += countElementsInTable('glpi_items_projects',
+                                                          " `itemtype` = '$type'
+                                                            AND `items_id` = '$ID'");
+                           }
+                        }
                      }
                   }
                   return self::createTabEntry(Project::getTypeName(2), $nb);
@@ -288,7 +295,8 @@ class Item_Project extends CommonDBRelation{
             break;
 
          default :
-            Project::showListForItem($item);
+         // Not defined and used now
+//            Project::showListForItem($item);
       }
       return true;
    }
