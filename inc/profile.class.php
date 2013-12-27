@@ -865,7 +865,10 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
-
+      $entity = implode(",", $_SESSION['glpiactiveentities']);
+      if ($entity != 0) {
+         $options['addicon'] = false;
+      }
 
       TicketTemplate::dropdown($options);
       echo "</td>";
