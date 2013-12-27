@@ -578,6 +578,10 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
+      // Only add profile if on root entity
+      if (!isset($_SESSION['glpiactiveentities'][0])) {
+         $options['addicon'] = false;
+      }      
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "<td>".__('Add a followup to tickets of associated groups')."</td><td>";
@@ -865,8 +869,8 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
-      $entity = implode(",", $_SESSION['glpiactiveentities']);
-      if ($entity != 0) {
+      // Only add profile if on root entity
+      if (!isset($_SESSION['glpiactiveentities'][0])) {
          $options['addicon'] = false;
       }
 
