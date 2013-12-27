@@ -2552,6 +2552,45 @@ function update084to085() {
    $ADDTODISPLAYPREF['ConsumableItem']  = array(9);
    $ADDTODISPLAYPREF['ReservationItem'] = array(9);
 
+
+   // for licence validity
+
+   $migration->addField("glpi_softwarelicenses", "valid", "bool", array("value" => 0));
+   $migration->migrationOneTable("glpi_softwarelicenses");
+
+   $queryl = "SELECT `id`, `entities_id`, `number`
+              FROM `glpi_softwarelicenses`";
+
+   foreach ($DB->request($queryl) AS $datal) {
+      if ($datal['number'] >= Computer_SoftwareLicense::countForLicense($datal['id'],
+                                                                        $datal['entities_id'])) {
+         $queryl2 = "UPDATE `glpi_softwarelicenses`
+                     SET `valid` = 1
+                     WHERE `id` = '".$datal['id']."'";
+
+         $DB->queryOrDie($queryl2, "0.85 update softwarelicense");
+      }
+   }
+
+   $migration->addField("glpi_softwares", "valid", "bool", array("value" => 0));
+   $migration->migrationOneTable("glpi_softwares");
+
+   $querys = "SELECT `glpi_softwares`.`id` AS id, `glpi_softwarelicenses`.`valid` AS licvalid,
+                     `glpi_softwarelicenses`.`softwares_id`
+              FROM `glpi_softwares`
+              LEFT JOIN `glpi_softwarelicenses`
+                  ON `glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`
+              WHERE `glpi_softwarelicenses`.`valid` = 1";
+
+   foreach ($DB->request($querys) AS $datas) {
+      $querys2 = "UPDATE `glpi_softwares`
+                  SET `valid` = 1
+                  WHERE `id` = '".$datas['id']."'";
+
+      $DB->queryOrDie($querys2, "0.85 update software");
+   }
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
