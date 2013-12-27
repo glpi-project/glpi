@@ -2554,7 +2554,8 @@ function update084to085() {
 
 
    // for licence validity
-
+   /// TODO : MoYo think consider licenses as valid by default is a better choice.
+   /// On manual creation license is valid by default because no computer is linked to it.
    $migration->addField("glpi_softwarelicenses", "valid", "bool", array("value" => 0));
    $migration->migrationOneTable("glpi_softwarelicenses");
 
@@ -2562,6 +2563,7 @@ function update084to085() {
               FROM `glpi_softwarelicenses`";
 
    foreach ($DB->request($queryl) AS $datal) {
+      /// TODO : number may be -1 as unlimited so the valid tag will be wrong whit this condition
       if ($datal['number'] >= Computer_SoftwareLicense::countForLicense($datal['id'],
                                                                         $datal['entities_id'])) {
          $queryl2 = "UPDATE `glpi_softwarelicenses`
