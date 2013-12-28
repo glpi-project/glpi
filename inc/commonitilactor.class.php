@@ -137,8 +137,7 @@ abstract class CommonITILActor extends CommonDBRelation {
               || (isset($this->fields['users_id'])
                   && ($this->fields['users_id'] == Session::getLoginUserID())));
    }
-
-
+   
    /**
     * Print the object user form for notification
     *
@@ -319,6 +318,13 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 
+   function prepareInputForAdd($input) {
+      if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
+         $input['alternative_email'] = '';
+      }
+      return $input;
+   }
+   
    function post_addItem() {
 
       $item = new static::$itemtype_1();
