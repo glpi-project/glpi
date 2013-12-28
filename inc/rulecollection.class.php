@@ -211,20 +211,21 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $retrieve_criteria  Retrieve the criterias of the rules ? (default 0)
     * @param $retrieve_action    Retrieve the action of the rules ? (default 0)
+    * @param $condition          Retrieve with a specific condition
    **/
-   function getCollectionDatas($retrieve_criteria=0, $retrieve_action=0) {
+   function getCollectionDatas($retrieve_criteria=0, $retrieve_action=0, $condition = 0) {
       global $DB;
 
       if ($this->RuleList === NULL) {
          $this->RuleList = SingletonRuleList::getInstance($this->getRuleClassName(),
                                                           $this->entity);
       }
-      $need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
+      $need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0)+(8*$condition);
 
       // check if load required
       if (($need & $this->RuleList->load) != $need) {
          //Select all the rules of a different type
-         $sql = $this->getRuleListQuery();
+         $sql = $this->getRuleListQuery(array('condition' => $condition));
 
          $result = $DB->query($sql);
          if ($result) {
@@ -1416,13 +1417,24 @@ class RuleCollection extends CommonDBTM {
     * @param input            array the input data used to check criterias (need to be clean slashes)
     * @param output           array the initial ouput array used to be manipulate by actions (need to be clean slashes)
     * @param params           array parameters for all internal functions (need to be clean slashes)
+    * @param options          array options :
+    *                            - condition : specific condition to limit rule list
+    *                            - only_criteria : only react on specific criteria
     *
     * @return the output array updated by actions (addslashes datas)
    **/
-   function processAllRules($input=array() ,$output=array(), $params=array()) {
+   function processAllRules($input=array() ,$output=array(), $params=array(), $options=array()) {
+      $p['condition']     = 0;
+      $p['only_criteria'] = NULL;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
 
       // Get Collection datas
-      $this->getCollectionDatas(1,1);
+      $this->getCollectionDatas(1,1, $p['condition']);
       $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
       $output["_no_rule_matches"] = true;
       //Store rule type being processed (for plugins)

@@ -44,6 +44,9 @@ class RuleTicket extends Rule {
    const PARENT  = 1024;
 
 
+   const ONADD    = 1;
+   const ONUPDATE = 2;
+   
    function getTitle() {
       return __('Business rules for tickets');
    }
@@ -69,9 +72,9 @@ class RuleTicket extends Rule {
    }
 
    static function getConditionsArray() {
-      return array(1 => __('Add'),
-                   2 => __('Update'),
-                   1|2 => sprintf(__('%1$s / %2$s'), __('Add'), __('Update')));
+      return array(static::ONADD => __('Add'),
+                   static::ONUPDATE => __('Update'),
+                   static::ONADD|static::ONUPDATE => sprintf(__('%1$s / %2$s'), __('Add'), __('Update')));
 
    }
    
