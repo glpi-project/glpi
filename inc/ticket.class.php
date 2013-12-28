@@ -674,7 +674,7 @@ class Ticket extends CommonITILObject {
 
 
    function prepareInputForUpdate($input) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
@@ -821,50 +821,96 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $entity = $this->fields['entities_id'];
-      if (isset($input['entities_id'])) {
-         $entity = $input['entities_id'];
+      /// Process Business Rules
+      // Add actors on standard input
+      $rules = new RuleTicketCollection($entid);
+      $rule = $rules->getRuleClass();
+      $changes = array();
+      $tocleanafterrules = array();
+      $usertypes = array('assign', 'requester', 'observer');
+      foreach ($usertypes as $t) {
+         if (isset($input['_itil_'.$t]) && isset($input['_itil_'.$t]['_type'])) {
+            $field = $input['_itil_'.$t]['_type'].'s_id';
+            if (isset($input['_itil_'.$t][$field])
+               && !isset($input[$field.'_'.$t])) {
+               $input['_'.$field.'_'.$t] = $input['_itil_'.$t][$field];
+               $tocleanafterrules['_'.$field.'_'.$t] = $input['_itil_'.$t][$field];
+            }
+         }
+
       }
-      // Process Business Rules
-      $rules = new RuleTicketCollection($entity);
+      
+      foreach ($rule->getCriterias() as $key => $val) {
+         if (array_key_exists($key,$input)) {
+            if (!isset($this->fields[$key])
+               || ($DB->escape($this->fields[$key]) != $input[$key])) {
+               $changes[] = $key;
+            }
+         }
+      }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                        Toolbox::stripslashes_deep($input),
                                        array('recursive' => true),
-                                       array('condition' => RuleTicket::ONUPDATE));
-      
+                                       array('condition'     => RuleTicket::ONUPDATE,
+                                             'only_criteria' => $changes));
 
-      // Manage fields from auto update : map rule actions to standard ones
-      if (isset($input['_auto_update'])) {
-         if (isset($input['_users_id_assign'])) {
-            $input['_itil_assign']['_type']    = 'user';
-            $input['_itil_assign']['users_id'] = $input['_users_id_assign'];
-         }
-         if (isset($input['_groups_id_assign'])) {
-            $input['_itil_assign']['_type']     = 'group';
-            $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
-         }
-         if (isset($input['_suppliers_id_assign'])) {
-            $input['_itil_assign']['_type']        = 'supplier';
-            $input['_itil_assign']['suppliers_id'] = $input['_suppliers_id_assign'];
-         }
-         if (isset($input['_users_id_requester'])) {
-            $input['_itil_requester']['_type']    = 'user';
-            $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
-         }
-         if (isset($input['_groups_id_requester'])) {
-            $input['_itil_requester']['_type']     = 'group';
-            $input['_itil_requester']['groups_id'] = $input['_groups_id_requester'];
-         }
-         if (isset($input['_users_id_observer'])) {
-            $input['_itil_observer']['_type']    = 'user';
-            $input['_itil_observer']['users_id'] = $input['_users_id_observer'];
-         }
-         if (isset($input['_groups_id_observer'])) {
-            $input['_itil_observer']['_type']     = 'group';
-            $input['_itil_observer']['groups_id'] = $input['_groups_id_observer'];
+      // Clean actors fields added for rules
+      foreach ($tocleanafterrules as $key => $val) {
+         if ($input[$key] == $val) {
+            unset($input[$key]);
          }
       }
+      // Manage fields from auto update or rules : map rule actions to standard additional ones
+      $usertypes = array('assign', 'requester', 'observer');
+      $actortypes = array('user','group','supplier');
+      foreach ($usertypes as $t) {
+         foreach ($actortypes as $a) {
+            if (isset($input['_'.$a.'s_id_'.$t])) {
+               switch ($a) {
+                  case 'user' :
+                     $additionalfield = '_additional_'.$t.'s';
+                     $input[$additionalfield][]=array('users_id' => $input['_'.$a.'s_id_'.$t]);
+                     break;
+                     
+                  default :
+                     $additionalfield = '_additional_'.$a.'s_'.$t.'s';
+                     break;
+               }
+            }
+         }
+      }
+//       print_r($input);exit();
+//       if (isset($input['_auto_update'])) {
+//          if (isset($input['_users_id_assign'])) {
+//             $input['_itil_assign']['_type']    = 'user';
+//             $input['_itil_assign']['users_id'] = $input['_users_id_assign'];
+//          }
+//          if (isset($input['_groups_id_assign'])) {
+//             $input['_itil_assign']['_type']     = 'group';
+//             $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
+//          }
+//          if (isset($input['_suppliers_id_assign'])) {
+//             $input['_itil_assign']['_type']        = 'supplier';
+//             $input['_itil_assign']['suppliers_id'] = $input['_suppliers_id_assign'];
+//          }
+//          if (isset($input['_users_id_requester'])) {
+//             $input['_itil_requester']['_type']    = 'user';
+//             $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
+//          }
+//          if (isset($input['_groups_id_requester'])) {
+//             $input['_itil_requester']['_type']     = 'group';
+//             $input['_itil_requester']['groups_id'] = $input['_groups_id_requester'];
+//          }
+//          if (isset($input['_users_id_observer'])) {
+//             $input['_itil_observer']['_type']    = 'user';
+//             $input['_itil_observer']['users_id'] = $input['_users_id_observer'];
+//          }
+//          if (isset($input['_groups_id_observer'])) {
+//             $input['_itil_observer']['_type']     = 'group';
+//             $input['_itil_observer']['groups_id'] = $input['_groups_id_observer'];
+//          }
+//       }
 
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
@@ -882,6 +928,7 @@ class Ticket extends CommonITILObject {
       if (isset($input["items_id"]) && ($input["items_id"] >= 0)
           && isset($input["itemtype"])) {
 
+         /// TODO do not understand this : groups_id is not part of ticket
          if (isset($this->fields['groups_id'])
              && ($this->fields['groups_id'] == 0)
              && (!isset($input['groups_id']) || ($input['groups_id'] == 0))) {
@@ -904,14 +951,14 @@ class Ticket extends CommonITILObject {
       }
 
       //Action for send_validation rule
-      if (isset($this->input["_add_validation"]) && ($this->input["_add_validation"] > 0)) {
+      if (isset($input["_add_validation"]) && ($input["_add_validation"] > 0)) {
          $validation = new TicketValidation();
          // if auto_update, tranfert it for validation
-         if (isset($this->input['_auto_update'])) {
-            $values['_auto_update'] = $this->input['_auto_update'];
+         if (isset($input['_auto_update'])) {
+            $values['_auto_update'] = $input['_auto_update'];
          }
-         $values['tickets_id']        = $this->input['id'];
-         $values['users_id_validate'] = $this->input["_add_validation"];
+         $values['tickets_id']        = $input['id'];
+         $values['users_id_validate'] = $input["_add_validation"];
 
          if (Session::isCron()
              || $validation->can(-1, CREATE, $values)) { // cron or allowed user
@@ -926,16 +973,16 @@ class Ticket extends CommonITILObject {
       }
 
 
-       if (isset($this->input["slas_id"]) && ($this->input["slas_id"] > 0)
+       if (isset($input["slas_id"]) && ($input["slas_id"] > 0)
            && ($this->fields['slas_id'] == 0)) {
 
          $date = $this->fields['date'];
          /// Use updated date if also done
-         if (isset($this->input["date"])) {
-            $date = $this->input["date"];
+         if (isset($input["date"])) {
+            $date = $input["date"];
          }
          // Get datas to initialize SLA and set it
-         $sla_data = $this->getDatasToAddSLA($this->input["slas_id"], $this->fields['entities_id'],
+         $sla_data = $this->getDatasToAddSLA($input["slas_id"], $this->fields['entities_id'],
                                              $date);
          if (count($sla_data)) {
             foreach ($sla_data as $key => $val) {
@@ -944,14 +991,14 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (isset($this->input['content'])) {
-         if (isset($this->input['_stock_image'])) {
+      if (isset($input['content'])) {
+         if (isset($input['_stock_image'])) {
             $this->addImagePaste();
-            $input['content']       = $this->input['content'];
+            $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
          } else if ($CFG_GLPI["use_rich_text"]) {
             $input['content'] = $this->convertTagToImage($input['content']);
-            if (!isset($this->input['_filename'])) {
+            if (!isset($input['_filename'])) {
                $input['_donotadddocs'] = true;
             }
          }
@@ -1365,7 +1412,6 @@ class Ticket extends CommonITILObject {
          $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'], '',
                                                 Ticket::INCIDENT_TYPE);
       }
-
       return $input;
    }
 

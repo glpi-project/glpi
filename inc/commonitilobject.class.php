@@ -584,6 +584,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($input["solvedate"]) && empty($input["solvedate"])) {
          unset($input["solvedate"]);
       }
+      
       if (isset($input['_itil_requester'])) {
          if (isset($input['_itil_requester']['_type'])) {
             $input['_itil_requester']['type']                      = CommonITILActor::REQUESTER;
@@ -743,7 +744,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      $this->addAdditionalActors();
+      $this->addAdditionalActors($input);
 
       // set last updater if interactive user
       if (!Session::isCron()) {
@@ -1307,7 +1308,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       // Additional actors
-      $this->addAdditionalActors();
+      $this->addAdditionalActors($this->input);
 
    }
 
@@ -1315,7 +1316,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * @since version 0.84
    **/
-   private function addAdditionalActors() {
+   private function addAdditionalActors($input) {
 
       $useractors = NULL;
       // Add user groups linked to ITIL objects
@@ -1334,14 +1335,14 @@ abstract class CommonITILObject extends CommonDBTM {
      // Additional groups actors
       if (!is_null($groupactors)) {
          // Requesters
-         if (isset($this->input['_additional_groups_requesters'])
-             && is_array($this->input['_additional_groups_requesters'])
-             && count($this->input['_additional_groups_requesters'])) {
+         if (isset($input['_additional_groups_requesters'])
+             && is_array($input['_additional_groups_requesters'])
+             && count($input['_additional_groups_requesters'])) {
 
             $input2 = array($groupactors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                  => CommonITILActor::REQUESTER);
 
-            foreach ($this->input['_additional_groups_requesters'] as $tmp) {
+            foreach ($input['_additional_groups_requesters'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id']    = $tmp;
                   $input2['_from_object'] = true;
@@ -1351,14 +1352,14 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          // Observers
-         if (isset($this->input['_additional_groups_observers'])
-             && is_array($this->input['_additional_groups_observers'])
-             && count($this->input['_additional_groups_observers'])) {
+         if (isset($input['_additional_groups_observers'])
+             && is_array($input['_additional_groups_observers'])
+             && count($input['_additional_groups_observers'])) {
 
             $input2 = array($groupactors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                  => CommonITILActor::OBSERVER);
 
-            foreach ($this->input['_additional_groups_observers'] as $tmp) {
+            foreach ($input['_additional_groups_observers'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id']    = $tmp;
                   $input2['_from_object'] = true;
@@ -1368,14 +1369,14 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          // Assigns
-         if (isset($this->input['_additional_groups_assigns'])
-             && is_array($this->input['_additional_groups_assigns'])
-             && count($this->input['_additional_groups_assigns'])) {
+         if (isset($input['_additional_groups_assigns'])
+             && is_array($input['_additional_groups_assigns'])
+             && count($input['_additional_groups_assigns'])) {
 
             $input2 = array($groupactors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                  => CommonITILActor::ASSIGN);
 
-            foreach ($this->input['_additional_groups_assigns'] as $tmp) {
+            foreach ($input['_additional_groups_assigns'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id']    = $tmp;
                   $input2['_from_object'] = true;
@@ -1388,14 +1389,14 @@ abstract class CommonITILObject extends CommonDBTM {
       // Additional suppliers actors
       if (!is_null($supplieractors)) {
          // Assigns
-         if (isset($this->input['_additional_suppliers_assigns'])
-             && is_array($this->input['_additional_suppliers_assigns'])
-             && count($this->input['_additional_suppliers_assigns'])) {
+         if (isset($input['_additional_suppliers_assigns'])
+             && is_array($input['_additional_suppliers_assigns'])
+             && count($input['_additional_suppliers_assigns'])) {
 
             $input2 = array($supplieractors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                     => CommonITILActor::ASSIGN);
 
-            foreach ($this->input['_additional_suppliers_assigns'] as $tmp) {
+            foreach ($input['_additional_suppliers_assigns'] as $tmp) {
                if ($tmp > 0) {
                   $input2['suppliers_id'] = $tmp;
                   $input2['_from_object'] = true;
@@ -1408,15 +1409,15 @@ abstract class CommonITILObject extends CommonDBTM {
       // Additional actors : using default notification parameters
       if (!is_null($useractors)) {
          // Observers : for mailcollector
-         if (isset($this->input["_additional_observers"])
-             && is_array($this->input["_additional_observers"])
-             && count($this->input["_additional_observers"])) {
+         if (isset($input["_additional_observers"])
+             && is_array($input["_additional_observers"])
+             && count($input["_additional_observers"])) {
 
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                 => CommonITILActor::OBSERVER,
                             '_from_object'                         => true);
 
-            foreach ($this->input["_additional_observers"] as $tmp) {
+            foreach ($input["_additional_observers"] as $tmp) {
                if (isset($tmp['users_id'])) {
                   foreach ($tmp as $key => $val) {
                      $input2[$key] = $val;
@@ -1426,15 +1427,15 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
 
-         if (isset($this->input["_additional_assigns"])
-             && is_array($this->input["_additional_assigns"])
-             && count($this->input["_additional_assigns"])) {
+         if (isset($input["_additional_assigns"])
+             && is_array($input["_additional_assigns"])
+             && count($input["_additional_assigns"])) {
 
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                 => CommonITILActor::ASSIGN,
                             '_from_object'                         => true);
 
-            foreach ($this->input["_additional_assigns"] as $tmp) {
+            foreach ($input["_additional_assigns"] as $tmp) {
                if (isset($tmp['users_id'])) {
                   foreach ($tmp as $key => $val) {
                      $input2[$key] = $val;
@@ -1443,16 +1444,16 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
          }
-
-         if (isset($this->input["_additional_requesters"])
-             && is_array($this->input["_additional_requesters"])
-             && count($this->input["_additional_requesters"])) {
-
+//          print_r($input);exit();
+         if (isset($input["_additional_requesters"])
+             && is_array($input["_additional_requesters"])
+             && count($input["_additional_requesters"])) {
+//             echo "ii";exit();
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                 => CommonITILActor::REQUESTER,
                             '_from_object'                         => true);
 
-            foreach ($this->input["_additional_requesters"] as $tmp) {
+            foreach ($input["_additional_requesters"] as $tmp) {
                if (isset($tmp['users_id'])) {
                   foreach ($tmp as $key => $val) {
                      $input2[$key] = $val;
