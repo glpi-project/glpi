@@ -89,17 +89,20 @@ class RuleCollection extends CommonDBTM {
     * Get Collection Size : retrieve the number of rules
     *
     * @param $recursive (true by default)
+    * @param $condition (0 by default)
     *
     * @return : number of rules
    **/
-   function getCollectionSize($recursive=true) {
+   function getCollectionSize($recursive=true, $condition=0) {
 
-      return countElementsInTable("glpi_rules",
-                                  "sub_type = '".$this->getRuleClassName()."'".
-                                               getEntitiesRestrictRequest(" AND", "glpi_rules",
-                                                                          "entities_id",
-                                                                          $this->entity,
-                                                                          $recursive));
+      $restrict = "`sub_type` = '".$this->getRuleClassName()."'".
+                  getEntitiesRestrictRequest(" AND", "glpi_rules", "entities_id",
+                                             $this->entity, $recursive);
+
+      if ($condition > 0) {
+         $restrict .= ' AND `condition` & '.$condition;
+      }
+      return countElementsInTable("glpi_rules", $restrict);
    }
 
 
@@ -111,8 +114,9 @@ class RuleCollection extends CommonDBTM {
       $p['active']    = true;
       $p['start']     = 0;
       $p['limit']     = 0;
-      $p['inherited'] = true;
-      $p['childrens'] = false;
+      $p['inherited'] = 1;
+      $p['childrens'] = 0;
+      $p['condition'] = 0;
 
       foreach ($options as $key => $value) {
          $p[$key] = $value;
@@ -123,6 +127,10 @@ class RuleCollection extends CommonDBTM {
       }
       else {
          $sql_active = "1";
+      }
+
+      if ($p['condition'] > 0) {
+         $sql_active .= " AND `condition` & ".$p['condition'];
       }
 
       $sql = "SELECT `glpi_rules`.*
@@ -172,7 +180,8 @@ class RuleCollection extends CommonDBTM {
       $p['start']     = 0;
       $p['limit']     = 0;
       $p['recursive'] = true;
-      $p['childrens'] = false;
+      $p['childrens'] = 0;
+      $p['condition'] = 0;
 
       foreach ($options as $key => $value) {
          $p[$key] = $value;
@@ -316,6 +325,28 @@ class RuleCollection extends CommonDBTM {
       return $rule->maybeRecursive();
    }
 
+  /**
+    * Indicates if the rule use conditions
+   **/
+   function isRuleUseConditions() {
+
+      $rule = $this->getRuleClass();
+      return $rule->useConditions();
+   }
+
+  /**
+    * Indicates if the rule use conditions
+   **/
+   function getDefaultRuleConditionForList() {
+
+      $rule = $this->getRuleClass();
+      $cond = $rule->getConditionsArray();
+      // Get max value
+      if (count($cond)) {
+         return max(array_keys($cond));
+      }
+      return 0;
+   }
 
    function showEngineSummary() {
 
@@ -337,6 +368,14 @@ class RuleCollection extends CommonDBTM {
          echo "<span class='center b'>".
                 __('The engine passes the result of a rule to the following one.')."</span><br>";
       }
+
+      if ($this->isRuleUseConditions()) {
+         //The engine keep the result of a rule to be processed further
+         echo "<span class='center b'>".
+                __('Rules are conditionals. Each one can be used on multiple actions.');
+         echo "</span><br>";
+      }
+
       echo "</th></tr>";
       echo "</table>\n";
    }
@@ -354,17 +393,19 @@ class RuleCollection extends CommonDBTM {
       global $CFG_GLPI;
 
 
-      $p['inherited'] = true;
-      $p['childrens'] = false;
+      $p['inherited'] = 1;
+      $p['childrens'] = 0;
       $p['active']    = false;
+      $p['condition'] = 0;
       $rand           = mt_rand();
 
-      foreach (array('inherited','childrens') as $param) {
+      foreach (array('inherited','childrens', 'condition') as $param) {
          if (isset($options[$param])
              && $this->isRuleRecursive()) {
             $p[$param] = $options[$param];
          }
       }
+      
       $rule             = $this->getRuleClass();
       $display_entities = ($this->isRuleRecursive()
                            && ($p['inherited'] || $p['childrens']));
@@ -373,7 +414,25 @@ class RuleCollection extends CommonDBTM {
       $canedit    = (self::canUpdate()
                      && !$display_entities);
 
-      $nb         = $this->getCollectionSize($p['inherited']);
+      $use_conditions = false;
+      if ($rule->useConditions()) {
+         // First get saved option
+         $p['condition'] = Session::getSavedOption($this->getType(), 'condition', 0);
+         if ($p['condition'] == 0) {
+            $p['condition'] = $this->getDefaultRuleConditionForList();
+         }
+         $use_conditions = true;
+         // Mini Search engine
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><td class='center' width='50%'>";
+         echo __('Rules used for')."</td><td>";
+         $rule->dropdownConditions(array('value' => $p['condition'],
+                                         'on_change'  => 'reloadTab("start=0&inherited='.$p['inherited']
+                                                         .'&childrens='.$p['childrens'].'&condition="+this.value)'));
+         echo "</td></tr></table>";
+      }
+
+      $nb         = $this->getCollectionSize($p['inherited'], $p['condition']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
 
       if ($p['start'] >= $nb) {
@@ -390,9 +449,10 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams = array('num_displayed' => min($p['limit'], $nb),
-                                      'extraparams'   => array('entity' => $this->entity),
                                       'container'     => 'mass'.__CLASS__.$rand,
-                                      'extraparams'   => array('rule_class_name'
+                                      'extraparams'   => array('entity' => $this->entity,
+                                                               'condition' => $p['condition'],
+                                                               'rule_class_name'
                                                                  => $this->getRuleClassName()));
          Html::showMassiveActions($massiveactionparams);
       }
@@ -403,7 +463,9 @@ class RuleCollection extends CommonDBTM {
       if ($display_entities) {
          $colspan++;
       }
-
+      if ($use_conditions) {
+         $colspan++;
+      }
       echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
 
       echo "<tr>";
@@ -414,6 +476,9 @@ class RuleCollection extends CommonDBTM {
       echo "</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Description')."</th>";
+      if ($use_conditions) {
+         echo "<th>".__('Use rule for')."</th>";
+      }
       echo "<th>".__('Active')."</th>";
 
       if ($display_entities) {
@@ -430,7 +495,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       for ($i=$p['start'],$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
-         $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities);
+         $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities, $p['condition']);
          Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
       if ($nb) {
@@ -442,6 +507,9 @@ class RuleCollection extends CommonDBTM {
          echo "</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Description')."</th>";
+         if ($use_conditions) {
+            echo "<th>".__('Use rule for')."</th>";
+         }
          echo "<th>".__('Active')."</th>";
 
          if ($display_entities) {
@@ -510,14 +578,22 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $ID     the rule ID whose ranking must be modified
     * @param $action up or down
+    * @param $condition action on a specific condition
    **/
-   function changeRuleOrder($ID, $action) {
+   function changeRuleOrder($ID, $action, $condition = 0) {
       global $DB;
 
       $sql = "SELECT `ranking`
               FROM `glpi_rules`
               WHERE `id` ='$ID'";
 
+      $add_condition = '';
+
+      if ($condition > 0) {
+         $add_condition = ' AND `condition` & '.$condition;
+
+      }
+              
       if ($result = $DB->query($sql)) {
          if ($DB->numrows($result) == 1) {
             $current_rank = $DB->result($result, 0, 0);
@@ -529,12 +605,14 @@ class RuleCollection extends CommonDBTM {
             switch ($action) {
                case "up" :
                   $sql2 .= " AND `ranking` < '$current_rank'
+                            $add_condition
                             ORDER BY `ranking` DESC
                             LIMIT 1";
                   break;
 
                case "down" :
                   $sql2 .= " AND `ranking` > '$current_rank'
+                             $add_condition
                             ORDER BY `ranking` ASC
                             LIMIT 1";
                   break;
@@ -546,12 +624,50 @@ class RuleCollection extends CommonDBTM {
             if ($result2 = $DB->query($sql2)) {
                if ($DB->numrows($result2) == 1) {
                   list($other_ID,$new_rank) = $DB->fetch_row($result2);
+                  echo $current_rank.' '.$ID.'<br>';
+                  echo $new_rank.' '.$other_ID.'<br>';
 
                   $rule = $this->getRuleClass();
-                  return ($rule->update(array('id'      => $ID,
-                                              'ranking' => $new_rank))
-                          && $rule->update(array('id'      => $other_ID,
-                                                 'ranking' => $current_rank)));
+                  $result = false;
+                  $sql3 = "SELECT `id`, `ranking`
+                           FROM `glpi_rules`
+                           WHERE `sub_type` = '".$this->getRuleClassName()."'";
+                  $diff = $new_rank - $current_rank;
+                  switch ($action) {
+                     case "up" :
+                        $sql3 .= " AND `ranking` > '$new_rank'
+                                 AND `ranking` <= '$current_rank'";
+                        $diff += 1;
+                        break;
+
+                     case "down" :
+                        $sql3 .= " AND `ranking` >= '$current_rank'
+                                 AND `ranking` < '$new_rank'";
+                        $diff -= 1;
+                        break;
+
+                     default :
+                        return false;
+                  }
+
+                  if ($diff != 0) {
+                     // Move several rules
+                     foreach ($DB->request($sql3) as $data) {
+                        $data['ranking'] += $diff;
+                        $result = $rule->update($data);
+                     }
+                  } else {
+                     // Only move one
+                     $result = $rule->update(array('id'      => $ID,
+                                                   'ranking' => $new_rank));
+                  }
+                  
+                  // Update reference
+                  if ($result) {
+                     $result = $rule->update(array('id'      => $other_ID,
+                                                   'ranking' => $current_rank));
+                  }
+                  return $result;
                }
             }
          }

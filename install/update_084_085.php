@@ -2592,6 +2592,17 @@ function update084to085() {
       $DB->queryOrDie($querys2, "0.85 update software");
    }
 
+   // Add condition to rules
+   $migration->addField('glpi_rules', 'condition', 'integer');
+   $migration->addKey('glpi_rules', 'condition');
+   $migration->migrationOneTable('glpi_rules');
+   
+   // Update condition for RuleTicket : only on add
+   $query = "UPDATE `glpi_rules`
+               SET `condition` = 1
+               WHERE `sub_type` = 'RuleTicket'";
+
+   $DB->queryOrDie($query, "0.85 update condition for RuleTicket");
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

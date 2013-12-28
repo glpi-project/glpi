@@ -716,7 +716,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(2)."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo __('Category')."&nbsp;";
+      echo __('Category')."</td><td>";
       SoftwareCategory::dropdown(array('value'      => $crit,
                                        'toadd'      => array('-1' =>  __('All categories')),
                                        'emptylabel' => __('Uncategorized software'),

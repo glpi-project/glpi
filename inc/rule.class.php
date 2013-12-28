@@ -122,7 +122,72 @@ class Rule extends CommonDBTM {
       return null;
    }
 
+   /**
+    *  Get condition array for rule. If empty array no condition used
+    *  maybe overridden to define conditions using binary combination :
+    *   example array(1 => Condition1,
+    *                 2 => Condition2,
+    *                 3 => Condition1&Condition2)
+    * 
+    *  @since version 0.85
+    *
+    *  @return array of conditions
+   **/
+   static function getConditionsArray() {
+      return array();
+   }
 
+   /**
+   * Is this rule use condition
+   *
+   **/
+   function useConditions() {
+      return (count($this->getConditionsArray()) > 0);
+   }
+
+   /**
+    * Display a dropdown with all the rule conditions
+    *
+    * @since version 0.85
+    *
+    * @param $options      array of parameters
+   **/
+   static function dropdownConditions($options=array()) {
+
+      $p['name']      = 'condition';
+      $p['value']     = 0;
+      $p['display']   = true;
+      $p['on_change'] = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      $elements = static::getConditionsArray();
+      if (count($elements)) {
+         return Dropdown::showFromArray($p['name'], $elements, $p);
+      }
+
+      return false;
+   }
+
+   /**
+    * Get rule condition type Name
+    *
+    * @param $value condition ID
+   **/
+   static function getConditionName($value) {
+
+      $cond = static::getConditionsArray();
+
+      if (isset($cond[$value])) {
+         return $cond[$value];
+      }
+
+      return NOT_AVAILABLE;
+   }
+   
    /**
     *  @see CommonGLPI::getMenuContent()
     *
@@ -537,16 +602,22 @@ class Rule extends CommonDBTM {
             Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
 
             if (isset($input['entity'])) {
-               $condition = $input['entity'];
+               $entity = $input['entity'];
             } else {
-               $condition = "";
+               $entity = "";
             }
 
+            if (isset($input['condition'])) {
+               $condition = $input['condition'];
+            } else {
+               $condition = 0;
+            }
             echo Html::hidden('rule_class_name', array('value' => $input['rule_class_name']));
 
             Rule::dropdown(array('sub_type'        => $input['rule_class_name'],
                                  'name'            => "ranking",
-                                 'entity'          => $condition,
+                                 'condition'       => $condition,
+                                 'entity'          => $entity,
                                  'width'           => '50%'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
@@ -770,7 +841,17 @@ class Rule extends CommonDBTM {
       echo "<td>".__('Active')."</td>";
       echo "<td>";
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
-      echo"</td></tr>\n";
+      echo "</td></tr>\n";
+
+      if ($this->useConditions()) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Use rule for')."</td>";
+         echo "<td>";
+         $this->dropdownConditions(array('value' => $this->fields["condition"]));
+         echo "</td>";
+         echo "<td colspan='2'>";
+         echo "</td></tr>\n";
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Comments')."</td>";
@@ -1620,8 +1701,9 @@ class Rule extends CommonDBTM {
     * @param $first              is it the first rule ?(false by default)
     * @param $last               is it the last rule ? (false by default)
     * @param $display_entities   display entities / make it read only display (false by default)
+    * @param $active_condition   active condition used (default 0)
    **/
-   function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
+   function showMinimalForm($target, $first=false, $last=false, $display_entities=false, $active_condition = 0) {
       global $CFG_GLPI;
 
       $canedit = (self::canUpdate() && !$display_entities);
@@ -1642,7 +1724,10 @@ class Rule extends CommonDBTM {
                          Html::showToolTip($this->fields["comment"], array('display' => false)));
       }
       echo "<td>".$link."</td>";
-      echo "<td>".$this->fields["description"]."</td>";
+      echo "<td>".$this->fields["description"].$this->fields["ranking"]."</td>";
+      if ($this->useConditions()) {
+         echo "<td>".$this->getConditionName($this->fields["condition"])."</td>";
+      }
       echo "<td>".Dropdown::getYesNo($this->fields["is_active"])."</td>";
 
       if ($display_entities) {
@@ -1660,9 +1745,10 @@ class Rule extends CommonDBTM {
              && !$first
              && $canedit) {
             echo "<td>";
-            Html::showSimpleForm($target, array('action' => 'up'), '',
+            Html::showSimpleForm($target, array('action' => 'up',
+                                                'condition' => $active_condition), '',
                                  array('type' => $this->fields["sub_type"],
-                                       'id'   => $this->fields["id"]),
+                                       'id'   => $this->fields["id"],),
                                  $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
             echo "</td>";
          } else {
@@ -1675,7 +1761,8 @@ class Rule extends CommonDBTM {
              && !$last
              && $canedit) {
             echo "<td>";
-            Html::showSimpleForm($target, array('action' => 'down'), '',
+            Html::showSimpleForm($target, array('action' => 'down',
+                                                'condition' => $active_condition), '',
                                  array('type' => $this->fields["sub_type"],
                                        'id'   => $this->fields["id"]),
                                  $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
@@ -2348,6 +2435,7 @@ class Rule extends CommonDBTM {
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
       $p['entity'] = '';
+      $p['condition'] = 0;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2358,8 +2446,13 @@ class Rule extends CommonDBTM {
       if ($p['sub_type'] == '') {
          return false;
       }
-
-      $p['condition'] = "`sub_type` = '".$p['sub_type']."'";
+      
+      $add_condition = '';
+      if ($p['condition'] > 0) {
+         $add_condition = ' AND `condition` & '.$p['condition'];
+      }
+      
+      $p['condition'] = "`sub_type` = '".$p['sub_type']."' $add_condition";
       return Dropdown::show($p['sub_type'],$p);
    }
 

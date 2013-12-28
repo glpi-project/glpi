@@ -68,7 +68,13 @@ class RuleTicket extends Rule {
       return count($this->getActions());
    }
 
+   static function getConditionsArray() {
+      return array(1 => __('Add'),
+                   2 => __('Update'),
+                   1|2 => sprintf(__('%1$s / %2$s'), __('Add'), __('Update')));
 
+   }
+   
    /**
     * display title for action form
     *
