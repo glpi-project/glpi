@@ -346,15 +346,16 @@ class Ajax {
 
          $js .=  "// force reload
             function reloadTab(add) {
+               
                var current_index = $('#tabs$rand').tabs('option','active');
-               if (current_index != 0) {
+//               if (current_index != 0) {
                   // Save tab
                   currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
                   $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
                   $('#tabs$rand').tabs( 'load' , current_index);
                   // Restore tab
                   $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
-               }
+//             }
             };";
          echo Html::scriptBlock($js);
       }

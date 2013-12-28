@@ -60,6 +60,10 @@ class SlaLevel extends RuleTicket {
       return 'glpi_slalevels';
    }
 
+   static function getConditionsArray() {
+      // Override ruleticket one
+      return array();
+   }
 
    /**
     * @since version 0.84
