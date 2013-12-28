@@ -848,13 +848,16 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
-      $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
-                                       Toolbox::stripslashes_deep($input),
-                                       array('recursive' => true),
-                                       array('condition'     => RuleTicket::ONUPDATE,
-                                             'only_criteria' => $changes));
-
+      
+      // Only process rules on changes
+      if (count($changes)) {
+         
+         $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
+                                          Toolbox::stripslashes_deep($input),
+                                          array('recursive' => true),
+                                          array('condition'     => RuleTicket::ONUPDATE,
+                                                'only_criteria' => $changes));
+      }
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
          if ($input[$key] == $val) {

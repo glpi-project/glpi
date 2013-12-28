@@ -1424,6 +1424,7 @@ class RuleCollection extends CommonDBTM {
     * @return the output array updated by actions (addslashes datas)
    **/
    function processAllRules($input=array() ,$output=array(), $params=array(), $options=array()) {
+
       $p['condition']     = 0;
       $p['only_criteria'] = NULL;
 
@@ -1432,7 +1433,7 @@ class RuleCollection extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-
+      
       // Get Collection datas
       $this->getCollectionDatas(1,1, $p['condition']);
       $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
@@ -1446,7 +1447,7 @@ class RuleCollection extends CommonDBTM {
 
             if ($rule->fields["is_active"]) {
                $output["_rule_process"] = false;
-               $rule->process($input, $output, $params);
+               $rule->process($input, $output, $params, $p);
 
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
