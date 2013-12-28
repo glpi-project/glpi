@@ -1222,7 +1222,8 @@ class Ticket extends CommonITILObject {
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                        Toolbox::stripslashes_deep($input),
-                                       array('recursive' => true));
+                                       array('recursive' => true),
+                                       array('condition' => RuleTicket::ONADD));
 
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
