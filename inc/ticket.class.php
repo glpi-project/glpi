@@ -687,6 +687,7 @@ class Ticket extends CommonITILObject {
           && !isset($input['priority'])) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
+      
       // Security checks
       if (!Session::isCron()
           && !Session::haveRight(self::$rightname, self::ASSIGN)) {
@@ -820,6 +821,18 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      $entity = $this->fields['entities_id'];
+      if (isset($input['entities_id'])) {
+         $entity = $input['entities_id'];
+      }
+      // Process Business Rules
+      $rules = new RuleTicketCollection($entity);
+
+      $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
+                                       Toolbox::stripslashes_deep($input),
+                                       array('recursive' => true),
+                                       array('condition' => RuleTicket::ONUPDATE));
+      
 
       // Manage fields from auto update : map rule actions to standard ones
       if (isset($input['_auto_update'])) {
