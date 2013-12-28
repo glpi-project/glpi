@@ -1355,13 +1355,16 @@ class Rule extends CommonDBTM {
     * @param &$input    the input data used to check criterias
     * @param &$output   the initial ouput array used to be manipulate by actions
     * @param &$params   parameters for all internal functions
+    * @param &options   options :
+    *                     - only_criteria : only react on specific criteria
     *
     * @return the output array updated by actions.
     *         If rule matched add field _rule_process to return value
    **/
-   function process(&$input, &$output, &$params) {
-
-      if (count($this->criterias)) {
+   function process(&$input, &$output, &$params, &$options) {
+      Toolbox::logDebug('process rule '.$this->getName());
+      Toolbox::logDebug($options);
+      if ($this->validateCriterias($options)) {
          $this->regex_results     = array();
          $this->criterias_results = array();
          $input = $this->prepareInputDataForProcess($input, $params);
@@ -1369,6 +1372,8 @@ class Rule extends CommonDBTM {
          if ($this->checkCriterias($input)) {
             unset($output["_no_rule_matches"]);
             $output = $this->executeActions($output, $params);
+            /// TODO populate only_criteria if changed done
+            
             //Hook
             $hook_params["sub_type"] = $this->getType();
             $hook_params["ruleid"]   = $this->fields["id"];
@@ -1379,7 +1384,25 @@ class Rule extends CommonDBTM {
          }
       }
    }
+   
+   /// Are criterias valid to be processed
+   function validateCriterias($options) {
+      if (count($this->criterias)) {
+         if (isset($options['only_criteria'])
+            && !is_null($options['only_criteria'])
+            && is_array($options['only_criteria'])) {
+            foreach ($this->criterias as $criteria) {
+               if (in_array($criteria->fields['criteria'], $options['only_criteria'])) {
+                  return true;
+               }
+            }
+            return false;
+         }
+         return true;
+      }
 
+      return false;
+   }
 
    /**
     * Check criterias
