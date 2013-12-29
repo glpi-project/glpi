@@ -584,7 +584,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($input["solvedate"]) && empty($input["solvedate"])) {
          unset($input["solvedate"]);
       }
-      
+
       if (isset($input['_itil_requester'])) {
          if (isset($input['_itil_requester']['_type'])) {
             $input['_itil_requester']['type']                      = CommonITILActor::REQUESTER;
@@ -1315,6 +1315,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * @since version 0.84
+    * @since version 0.85 must have param $input
    **/
    private function addAdditionalActors($input) {
 

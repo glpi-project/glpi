@@ -504,8 +504,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       $specificity_columns = array();
-      $link_column         = $table_group->addHeader('spec_link', '',
-                                                     $specific_column);
+      $link_column         = $table_group->addHeader('spec_link', '', $specific_column);
       $spec_column         = $link_column;
 
       foreach ($this->getSpecificities() as $field => $attributs) {
