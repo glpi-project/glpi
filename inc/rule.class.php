@@ -1361,7 +1361,7 @@ class Rule extends CommonDBTM {
     * @return the output array updated by actions.
     *         If rule matched add field _rule_process to return value
    **/
-   function process(&$input, &$output, &$params, &$options) {
+   function process(&$input, &$output, &$params, &$options = array()) {
       if ($this->validateCriterias($options)) {
          $this->regex_results     = array();
          $this->criterias_results = array();

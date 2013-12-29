@@ -546,7 +546,8 @@ class RuleCollection extends CommonDBTM {
                   __('Test rules engine')."</a>";
       Ajax::createIframeModalWindow('allruletest'.$rand,
                                     $url."/front/rulesengine.test.php?".
-                                          "sub_type=".$this->getRuleClassName(),
+                                          "sub_type=".$this->getRuleClassName().
+                                          "&condition=".$p['condition'],
                                     array('title' => __('Test rules engine')));
       echo "</div>";
 
@@ -1472,11 +1473,12 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $target       where to go
     * @param $values array of data
+    * @param $condition condition to limit rules
     **/
-   function showRulesEnginePreviewCriteriasForm($target, array $values) {
+   function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0) {
       global $DB;
 
-      $input = $this->prepareInputDataForTestProcess();
+      $input = $this->prepareInputDataForTestProcess($condition);
 
       if (count($input)) {
          $rule      = $this->getRuleClass();
@@ -1509,6 +1511,7 @@ class RuleCollection extends CommonDBTM {
          echo "<input type='submit' name='test_all_rules' value='". _sx('button','Test')."'
                 class='submit'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
+         echo "<input type='hidden' name='condition' value='$condition'>";
          echo "</td></tr>\n";
          echo "</table></div>";
          Html::closeForm();
@@ -1527,19 +1530,19 @@ class RuleCollection extends CommonDBTM {
     * @param input   array the input data used to check criterias
     * @param output  array the initial ouput array used to be manipulate by actions
     * @param params  array parameters for all internal functions
+    * @param $condition condition to limit rules
     *
     * @return the output array updated by actions
    **/
-   function testAllRules($input=array(), $output=array(), $params=array()) {
+   function testAllRules($input=array(), $output=array(), $params=array(), $condition = 0) {
 
       // Get Collection datas
-      $this->getCollectionDatas(1, 1);
+      $this->getCollectionDatas(1, 1, $condition);
 
       $output["_no_rule_matches"] = true;
 
       if (count($this->RuleList->list)) {
          foreach ($this->RuleList->list as $rule) {
-
             //If the rule is active, process it
             if ($rule->fields["is_active"]) {
                $output["_rule_process"]                     = false;
@@ -1624,16 +1627,22 @@ class RuleCollection extends CommonDBTM {
    /**
     * Prepare input datas for the rules collection
     *
+    * @param $condition condition to limit rules
     * @return the updated input datas
    **/
-   function prepareInputDataForTestProcess() {
+   function prepareInputDataForTestProcess($condition = 0) {
       global $DB;
 
+      $limit = '';
+      if ($condition > 0) {
+         $limit = " AND `glpi_rules`.`condition` & $condition ";
+      }
       $input = array();
       $res   = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`
                            FROM `glpi_rulecriterias`, `glpi_rules`
                            WHERE `glpi_rules`.`is_active` = '1'
                                  AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
+                                 $limit
                                  AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
 
       while ($data = $DB->fetch_assoc($res)) {
@@ -1648,8 +1657,9 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $target       where to go
     * @param $input  array of data
+    * @param $condition condition to limit rules
    **/
-   function showRulesEnginePreviewResultsForm($target, array $input) {
+   function showRulesEnginePreviewResultsForm($target, array $input, $condition = 0) {
 
       $output = array();
 
@@ -1657,7 +1667,7 @@ class RuleCollection extends CommonDBTM {
          $output = $input;
       }
 
-      $output = $this->testAllRules($input, $output, $input);
+      $output = $this->testAllRules($input, $output, $input, $condition);
 
       $rule   = $this->getRuleClass();
 
