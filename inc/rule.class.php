@@ -1362,8 +1362,6 @@ class Rule extends CommonDBTM {
     *         If rule matched add field _rule_process to return value
    **/
    function process(&$input, &$output, &$params, &$options) {
-      Toolbox::logDebug('process rule '.$this->getName());
-      Toolbox::logDebug($options);
       if ($this->validateCriterias($options)) {
          $this->regex_results     = array();
          $this->criterias_results = array();
@@ -1371,9 +1369,10 @@ class Rule extends CommonDBTM {
 
          if ($this->checkCriterias($input)) {
             unset($output["_no_rule_matches"]);
+            $refoutput = $output;
             $output = $this->executeActions($output, $params);
-            /// TODO populate only_criteria if changed done
-            
+
+            $this->updateOnlyCriteria($options, $refoutput, $output);
             //Hook
             $hook_params["sub_type"] = $this->getType();
             $hook_params["ruleid"]   = $this->fields["id"];
@@ -1381,6 +1380,31 @@ class Rule extends CommonDBTM {
             $hook_params["output"]   = $output;
             Plugin::doHook("rule_matched", $hook_params);
             $output["_rule_process"] = true;
+         }
+      }
+   }
+   /**
+    * Update Only criteria options if needed
+    *
+    * @param &options   options :
+    *                     - only_criteria : only react on specific criteria
+    * @param $refoutput   the initial ouput array used to be manipulate by actions
+    * @param $newoutput   the ouput array after actions process
+    *
+    * @return the options array updated.
+   **/
+   function updateOnlyCriteria(&$options, $refoutput, $newoutput) {
+      if (count($this->actions)) {
+         if (isset($options['only_criteria'])
+            && !is_null($options['only_criteria'])
+            && is_array($options['only_criteria'])) {
+            foreach ($this->actions as $action) {
+               if (!isset($refoutput[$action->fields["field"]])
+                  || ($refoutput[$action->fields["field"]] != $newoutput[$action->fields["field"]])) {
+                  if (!in_array($action->fields["field"], $options['only_criteria']))
+                  $options['only_criteria'][] = $action->fields["field"];
+               }
+            }
          }
       }
    }
