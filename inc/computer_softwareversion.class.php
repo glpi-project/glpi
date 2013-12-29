@@ -663,7 +663,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_states`.`name` AS state,
                        `glpi_softwareversions`.`id` AS verid,
                        `glpi_softwareversions`.`softwares_id`,
-                       `glpi_softwareversions`.`name` AS version
+                       `glpi_softwareversions`.`name` AS version,
+                       `glpi_softwares`.`valid` AS softvalid
                 FROM `glpi_computers_softwareversions`
                 LEFT JOIN `glpi_softwareversions`
                      ON (`glpi_computers_softwareversions`.`softwareversions_id`
@@ -761,6 +762,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "<th>".__('Automatic inventory')."</th>";
          }
          echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
+         echo "<th>".__('Valid license')."</th>";
          echo "</tr>\n";
 
          // TODO review it : do it in one request
@@ -998,7 +1000,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
                                                                   $data['softwarecategories_id']);
          echo "</td>";
-
+         echo "<td class='center'>" .Dropdown::getYesNo($data["softvalid"]) . "</td>";
          echo "</tr>\n";
       }
 
@@ -1068,6 +1070,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       Html::showToolTip($comment, array('link' => $link));
       echo "</td></tr>\n";
    }
+
 
    /**
     * Update version installed on a computer
