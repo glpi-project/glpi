@@ -2602,8 +2602,8 @@ function update084to085() {
 
    // Update condition for RuleTicket : only on add
    $query = "UPDATE `glpi_rules`
-               SET `condition` = 1
-               WHERE `sub_type` = 'RuleTicket'";
+             SET `condition` = 1
+             WHERE `sub_type` = 'RuleTicket'";
 
    $DB->queryOrDie($query, "0.85 update condition for RuleTicket");
 
