@@ -687,7 +687,7 @@ class Ticket extends CommonITILObject {
           && !isset($input['priority'])) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
-      
+
       // Security checks
       if (!Session::isCron()
           && !Session::haveRight(self::$rightname, self::ASSIGN)) {
@@ -823,38 +823,37 @@ class Ticket extends CommonITILObject {
 
       /// Process Business Rules
       // Add actors on standard input
-      $rules = new RuleTicketCollection($entid);
-      $rule = $rules->getRuleClass();
-      $changes = array();
-      $tocleanafterrules = array();
-      $usertypes = array('assign', 'requester', 'observer');
+      $rules               = new RuleTicketCollection($entid);
+      $rule                = $rules->getRuleClass();
+      $changes             = array();
+      $tocleanafterrules   = array();
+      $usertypes           = array('assign', 'requester', 'observer');
       foreach ($usertypes as $t) {
          if (isset($input['_itil_'.$t]) && isset($input['_itil_'.$t]['_type'])) {
             $field = $input['_itil_'.$t]['_type'].'s_id';
             if (isset($input['_itil_'.$t][$field])
-               && !isset($input[$field.'_'.$t])) {
-               $input['_'.$field.'_'.$t] = $input['_itil_'.$t][$field];
+                && !isset($input[$field.'_'.$t])) {
+               $input['_'.$field.'_'.$t]             = $input['_itil_'.$t][$field];
                $tocleanafterrules['_'.$field.'_'.$t] = $input['_itil_'.$t][$field];
             }
          }
 
       }
-      
+
       foreach ($rule->getCriterias() as $key => $val) {
          if (array_key_exists($key,$input)) {
             if (!isset($this->fields[$key])
-               || ($DB->escape($this->fields[$key]) != $input[$key])) {
+                || ($DB->escape($this->fields[$key]) != $input[$key])) {
                $changes[] = $key;
             }
          }
       }
-      
+
       // Only process rules on changes
       if (count($changes)) {
-         
          $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                           Toolbox::stripslashes_deep($input),
-                                          array('recursive' => true),
+                                          array('recursive'     => true),
                                           array('condition'     => RuleTicket::ONUPDATE,
                                                 'only_criteria' => $changes));
       }
@@ -865,17 +864,17 @@ class Ticket extends CommonITILObject {
          }
       }
       // Manage fields from auto update or rules : map rule actions to standard additional ones
-      $usertypes = array('assign', 'requester', 'observer');
+      $usertypes  = array('assign', 'requester', 'observer');
       $actortypes = array('user','group','supplier');
       foreach ($usertypes as $t) {
          foreach ($actortypes as $a) {
             if (isset($input['_'.$a.'s_id_'.$t])) {
                switch ($a) {
                   case 'user' :
-                     $additionalfield = '_additional_'.$t.'s';
-                     $input[$additionalfield][]=array('users_id' => $input['_'.$a.'s_id_'.$t]);
+                     $additionalfield           = '_additional_'.$t.'s';
+                     $input[$additionalfield][] = array('users_id' => $input['_'.$a.'s_id_'.$t]);
                      break;
-                     
+
                   default :
                      $additionalfield = '_additional_'.$a.'s_'.$t.'s';
                      break;
@@ -932,6 +931,7 @@ class Ticket extends CommonITILObject {
           && isset($input["itemtype"])) {
 
          /// TODO do not understand this : groups_id is not part of ticket
+         /// yllen: je pense qu'on se traine cette partie érronée depuis la 0.80 (vu qu'en 0.78 le champ existait)
          if (isset($this->fields['groups_id'])
              && ($this->fields['groups_id'] == 0)
              && (!isset($input['groups_id']) || ($input['groups_id'] == 0))) {

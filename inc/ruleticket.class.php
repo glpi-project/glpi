@@ -46,7 +46,7 @@ class RuleTicket extends Rule {
 
    const ONADD    = 1;
    const ONUPDATE = 2;
-   
+
    function getTitle() {
       return __('Business rules for tickets');
    }
@@ -71,13 +71,19 @@ class RuleTicket extends Rule {
       return count($this->getActions());
    }
 
-   static function getConditionsArray() {
-      return array(static::ONADD => __('Add'),
-                   static::ONUPDATE => __('Update'),
-                   static::ONADD|static::ONUPDATE => sprintf(__('%1$s / %2$s'), __('Add'), __('Update')));
 
+   /**
+    * @since version 0.85
+   **/
+   static function getConditionsArray() {
+
+      return array(static::ONADD                   => __('Add'),
+                   static::ONUPDATE                => __('Update'),
+                   static::ONADD|static::ONUPDATE  => sprintf(__('%1$s / %2$s'), __('Add'),
+                                                              __('Update')));
    }
-   
+
+
    /**
     * display title for action form
     *
