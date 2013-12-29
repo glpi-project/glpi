@@ -666,9 +666,11 @@ class SoftwareLicense extends CommonDBTM {
                echo "<td><a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'].
                           (empty($data['name']) ?"(".$data['id'].")" :"")."</a></td>";
 
+               echo "<td>";
                if ($software->isRecursive()) {
-                  echo "<td>".$data['entity']."</td>";
+                  echo $data['entity'];
                }
+               echo "</td>";
                echo "<td>".$data['serial']."</td>";
                echo "<td class='numeric'>".
                       (($data['number'] > 0) ?$data['number']:__('Unlimited'))."</td>";
