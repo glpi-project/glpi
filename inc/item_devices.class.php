@@ -599,7 +599,9 @@ class Item_Devices extends CommonDBRelation {
          } else {
             $mode = __s('View');
          }
+         // TODO yllen: for me this value is never used because overload in foreach or in if
          $content   = "<a href='".$this->getLinkURL()."'>$mode</a>";
+
          $spec_cell = $current_row->addCell($link_column, $content);
          foreach ($this->getSpecificities() as $field => $attributs) {
             if (!empty($link[$field])) {
