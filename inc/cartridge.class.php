@@ -366,8 +366,11 @@ class Cartridge extends CommonDBChild {
       return $out;
    }
 
+
    /**
     * Print the cartridge count HTML array for the printer $pID
+    *
+    * @since version 0.85
     *
     * @param $pID              integer: printer identifier.
     * @param $nohtml           integer: Return value without HTML tags (default 0)
@@ -402,8 +405,7 @@ class Cartridge extends CommonDBChild {
          } else {
             //TRANS : for display cartridges count : %1$d is the total number,
             //        %2$d the new one, %3$d the used one, %4$d worn one
-            $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'),
-                            $total , $used, $old);
+            $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total , $used, $old);
          }
 
       } else {
@@ -415,7 +417,8 @@ class Cartridge extends CommonDBChild {
       }
       return $out;
    }
-   
+
+
    /**
     * count how many cartbridge for the cartridge item $tID
     *
@@ -433,8 +436,11 @@ class Cartridge extends CommonDBChild {
       return $DB->numrows($result);
    }
 
+
    /**
     * count how many cartbridge for the printer $pID
+    *
+    * @since version 0.85
     *
     * @param $pID integer: printer identifier.
     *
@@ -449,7 +455,8 @@ class Cartridge extends CommonDBChild {
       $result = $DB->query($query);
       return $DB->numrows($result);
    }
-   
+
+
    /**
     * count how many cartridge used for the cartridge item $tID
     *
@@ -469,8 +476,11 @@ class Cartridge extends CommonDBChild {
       return $DB->numrows($result);
    }
 
+
    /**
     * count how many cartridge used for the printer $pID
+    *
+    * @since version 0.85
     *
     * @param $pID integer: printer identifier.
     *
@@ -487,7 +497,8 @@ class Cartridge extends CommonDBChild {
       $result = $DB->query($query);
       return $DB->numrows($result);
    }
-   
+
+
    /**
     * count how many old cartbridge for the cartridge item $tID
     *
@@ -506,8 +517,11 @@ class Cartridge extends CommonDBChild {
       return $DB->numrows($result);
    }
 
+
    /**
     * count how many old cartbridge for theprinter $pID
+    *
+    * @since version 0.85
     *
     * @param $pID integer: printer identifier.
     *
@@ -523,6 +537,7 @@ class Cartridge extends CommonDBChild {
       $result = $DB->query($query);
       return $DB->numrows($result);
    }
+
 
    /**
     * count how many cartbridge unused for the cartridge item $tID

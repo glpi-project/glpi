@@ -148,41 +148,41 @@ class ReservationItem extends CommonDBChild {
 
    function getSearchOptions() {
 
-      $tab                       = array();
+      $tab                          = array();
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'comment';
-      $tab[4]['name']            = __('Comments');
-      $tab[4]['datatype']        = 'text';
+      $tab[4]['table']              = $this->getTable();
+      $tab[4]['field']              = 'comment';
+      $tab[4]['name']               = __('Comments');
+      $tab[4]['datatype']           = 'text';
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'is_active';
-      $tab[5]['name']            = __('Active');
-      $tab[5]['datatype']        = 'bool';
+      $tab[5]['table']              = $this->getTable();
+      $tab[5]['field']              = 'is_active';
+      $tab[5]['name']               = __('Active');
+      $tab[5]['datatype']           = 'bool';
 
-      $tab['common']             = __('Characteristics');
+      $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = 'reservation_types';
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
-      $tab[1]['addobjectparams'] = array('forcetab' => 'Reservation$1');
+      $tab[1]['table']              = 'reservation_types';
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               = __('Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false;
+      $tab[1]['addobjectparams']    = array('forcetab' => 'Reservation$1');
 
-      $tab[2]['table']           = 'reservation_types';
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[2]['table']              = 'reservation_types';
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false;
+      $tab[2]['datatype']           = 'number';
 
-      $tab[9]['table']          = 'glpi_reservationitems';
-      $tab[9]['field']          = '_virtual';
-      $tab[9]['name']           = __('Planning');
-      $tab[9]['datatype']       = 'specific';
-      $tab[9]['massiveaction']  = false;
-      $tab[9]['nosearch']       = true;
-      $tab[9]['nosort']         = true;
-      $tab[9]['additionalfields'] = array('is_active');
+      $tab[9]['table']              = 'glpi_reservationitems';
+      $tab[9]['field']              = '_virtual';
+      $tab[9]['name']               = __('Planning');
+      $tab[9]['datatype']           = 'specific';
+      $tab[9]['massiveaction']      = false;
+      $tab[9]['nosearch']           = true;
+      $tab[9]['nosort']             = true;
+      $tab[9]['additionalfields']   = array('is_active');
 
       $loc = Location::getSearchOptionsToAdd();
       // Force massive actions to false
@@ -191,57 +191,56 @@ class ReservationItem extends CommonDBChild {
          $tab[$key]['massiveaction'] = false;
       }
 
-      $tab[6]['table']           = 'reservation_types';
-      $tab[6]['field']           = 'otherserial';
-      $tab[6]['name']            = __('Inventory number');
-      $tab[6]['datatype']        = 'string';
+      $tab[6]['table']              = 'reservation_types';
+      $tab[6]['field']              = 'otherserial';
+      $tab[6]['name']               = __('Inventory number');
+      $tab[6]['datatype']           = 'string';
 
+      $tab[16]['table']             = 'reservation_types';
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
+      $tab[16]['massiveaction']     = false;
 
-      $tab[16]['table']          = 'reservation_types';
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
-      $tab[16]['massiveaction']  = false;
+      $tab[70]['table']             = 'glpi_users';
+      $tab[70]['field']             = 'name';
+      $tab[70]['name']              = __('User');
+      $tab[70]['datatype']          = 'dropdown';
+      $tab[70]['right']             = 'all';
+      $tab[70]['massiveaction']     = false;
 
-      $tab[70]['table']          = 'glpi_users';
-      $tab[70]['field']          = 'name';
-      $tab[70]['name']           = __('User');
-      $tab[70]['datatype']       = 'dropdown';
-      $tab[70]['right']          = 'all';
-      $tab[70]['massiveaction']  = false;
+      $tab[71]['table']             = 'glpi_groups';
+      $tab[71]['field']             = 'completename';
+      $tab[71]['name']              = __('Group');
+      $tab[71]['datatype']          = 'dropdown';
+      $tab[71]['massiveaction']     = false;
 
-      $tab[71]['table']          = 'glpi_groups';
-      $tab[71]['field']          = 'completename';
-      $tab[71]['name']           = __('Group');
-      $tab[71]['datatype']       = 'dropdown';
-      $tab[71]['massiveaction']  = false;
+      $tab[19]['table']             = 'reservation_types';
+      $tab[19]['field']             = 'date_mod';
+      $tab[19]['name']              = __('Last update');
+      $tab[19]['datatype']          = 'datetime';
+      $tab[19]['massiveaction']     = false;
 
-      $tab[19]['table']          = 'reservation_types';
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[23]['table']             = 'glpi_manufacturers';
+      $tab[23]['field']             = 'name';
+      $tab[23]['name']              = __('Manufacturer');
+      $tab[23]['datatype']          = 'dropdown';
+      $tab[23]['massiveaction']     = false;
 
-      $tab[23]['table']          = 'glpi_manufacturers';
-      $tab[23]['field']          = 'name';
-      $tab[23]['name']           = __('Manufacturer');
-      $tab[23]['datatype']       = 'dropdown';
-      $tab[23]['massiveaction']  = false;
+      $tab[24]['table']             = 'glpi_users';
+      $tab[24]['field']             = 'name';
+      $tab[24]['linkfield']         = 'users_id_tech';
+      $tab[24]['name']              = __('Technician in charge of the hardware');
+      $tab[24]['datatype']          = 'dropdown';
+      $tab[24]['right']             = 'interface';
+      $tab[24]['massiveaction']     = false;
 
-      $tab[24]['table']          = 'glpi_users';
-      $tab[24]['field']          = 'name';
-      $tab[24]['linkfield']      = 'users_id_tech';
-      $tab[24]['name']           = __('Technician in charge of the hardware');
-      $tab[24]['datatype']       = 'dropdown';
-      $tab[24]['right']          = 'interface';
-      $tab[24]['massiveaction']  = false;
-
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
-      $tab[80]['massiveaction']  = false;
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['massiveaction']     = false;
+      $tab[80]['datatype']          = 'dropdown';
+      $tab[80]['massiveaction']     = false;
 
       return $tab;
    }
