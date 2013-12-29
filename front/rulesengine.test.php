@@ -45,6 +45,14 @@ if (isset($_POST["sub_type"])) {
    $sub_type = 0;
 }
 
+if (isset($_POST["condition"])) {
+   $condition = $_POST["condition"];
+} else if (isset($_GET["condition"])) {
+   $condition = $_GET["condition"];
+} else {
+   $condition = 0;
+}
+
 $rulecollection = RuleCollection::getClassByType($sub_type);
 if ($rulecollection->isRuleRecursive()) {
    $rulecollection->setEntity($_SESSION['glpiactive_entity']);
@@ -57,7 +65,7 @@ Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
 foreach ($_POST as $key => $val) {
    $_POST[$key] = stripslashes($_POST[$key]);
 }
-$input = $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST);
+$input = $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST, $condition);
 
 if (isset($_POST["test_all_rules"])) {
    //Unset values that must not be processed by the rule
@@ -65,7 +73,7 @@ if (isset($_POST["test_all_rules"])) {
    unset($_POST["test_all_rules"]);
 
    echo "<br>";
-   $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST);
+   $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST, $condition);
 }
 
 Html::popFooter();
