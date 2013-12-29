@@ -574,7 +574,7 @@ class Item_Devices extends CommonDBRelation {
             }
 
             $current_row  = $table_group->createRow();
-            $peer_group = $peer_type.'_'.$link[$fk].'_'.mt_rand();
+            $peer_group   = $peer_type.'_'.$link[$fk].'_'.mt_rand();
             $current_row->setHTMLID($peer_group);
 
             if ($options['canedit']) {
@@ -599,7 +599,7 @@ class Item_Devices extends CommonDBRelation {
          } else {
             $mode = __s('View');
          }
-         $content = "<a href='".$this->getLinkURL()."'>$mode</a>";
+         $content   = "<a href='".$this->getLinkURL()."'>$mode</a>";
          $spec_cell = $current_row->addCell($link_column, $content);
          foreach ($this->getSpecificities() as $field => $attributs) {
             if (!empty($link[$field])) {
@@ -624,8 +624,8 @@ class Item_Devices extends CommonDBRelation {
          $query = "SELECT `documents_id`
                    FROM `glpi_documents_items`
                    WHERE (`itemtype` = '".$this->getType()."' AND `items_id` = '".$link['id']."')
-                         OR (`itemtype` = '".$this->getDeviceType()."'
-                             AND `items_id` = '".$link[$this->getDeviceForeignKey()]."')
+                          OR (`itemtype` = '".$this->getDeviceType()."'
+                              AND `items_id` = '".$link[$this->getDeviceForeignKey()]."')
                    ORDER BY `itemtype` = '".$this->getDeviceType()."'";
          $document = new Document();
          foreach ($DB->request($query) as $document_link) {
@@ -898,6 +898,12 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonGLPI::defineTabs()
+   **/
    function defineTabs($options=array()) {
 
       $ong = array();
@@ -918,6 +924,9 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
@@ -965,5 +974,6 @@ class Item_Devices extends CommonDBRelation {
 
       return true;
    }
+
 }
 ?>

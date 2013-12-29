@@ -226,104 +226,104 @@ class ConsumableItem extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common']             = __('Characteristics');
+      $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'name';
+      $tab[1]['name']               = __('Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['massiveaction']      = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['datatype']        = 'number';
-      $tab[2]['massiveaction']   = false;
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['datatype']           = 'number';
+      $tab[2]['massiveaction']      = false;
 
-      $tab[34]['table']          = $this->getTable();
-      $tab[34]['field']          = 'ref';
-      $tab[34]['name']           = __('Reference');
-      $tab[34]['datatype']       = 'string';
+      $tab[34]['table']             = $this->getTable();
+      $tab[34]['field']             = 'ref';
+      $tab[34]['name']              = __('Reference');
+      $tab[34]['datatype']          = 'string';
 
-      $tab[4]['table']           = 'glpi_consumableitemtypes';
-      $tab[4]['field']           = 'name';
-      $tab[4]['name']            = __('Type');
-      $tab[4]['datatype']        = 'dropdown';
+      $tab[4]['table']              = 'glpi_consumableitemtypes';
+      $tab[4]['field']              = 'name';
+      $tab[4]['name']               = __('Type');
+      $tab[4]['datatype']           = 'dropdown';
 
-      $tab[23]['table']          = 'glpi_manufacturers';
-      $tab[23]['field']          = 'name';
-      $tab[23]['name']           = __('Manufacturer');
-      $tab[23]['datatype']       = 'dropdown';
+      $tab[23]['table']             = 'glpi_manufacturers';
+      $tab[23]['field']             = 'name';
+      $tab[23]['name']              = __('Manufacturer');
+      $tab[23]['datatype']          = 'dropdown';
 
-      $tab[9]['table']          = 'glpi_consumableitems';
-      $tab[9]['field']          = '_virtual';
-      $tab[9]['linkfield']      = '_virtual';
-      $tab[9]['name']           = _n('Consumable','Consumables',2);
-      $tab[9]['datatype']       = 'specific';
-      $tab[9]['massiveaction']  = false;
-      $tab[9]['nosearch']       = true;
-      $tab[9]['nosort']         = true;
-      $tab[9]['additionalfields'] = array('alarm_threshold');
+      $tab[9]['table']              = 'glpi_consumableitems';
+      $tab[9]['field']              = '_virtual';
+      $tab[9]['linkfield']          = '_virtual';
+      $tab[9]['name']               = _n('Consumable','Consumables',2);
+      $tab[9]['datatype']           = 'specific';
+      $tab[9]['massiveaction']      = false;
+      $tab[9]['nosearch']           = true;
+      $tab[9]['nosort']             = true;
+      $tab[9]['additionalfields']   = array('alarm_threshold');
 
-      $tab[17]['table']          = 'glpi_consumables';
-      $tab[17]['field']          = 'id';
-      $tab[17]['name']           = __('Number of used consumables');
-      $tab[17]['datatype']       = 'count';
-      $tab[17]['forcegroupby']   = true;
+      $tab[17]['table']             = 'glpi_consumables';
+      $tab[17]['field']             = 'id';
+      $tab[17]['name']              = __('Number of used consumables');
+      $tab[17]['datatype']          = 'count';
+      $tab[17]['forcegroupby']      = true;
       $tab[17]['usehaving']         = true;
-      $tab[17]['massiveaction']  = false;
-      $tab[17]['joinparams']     = array('jointype' => 'child',
-                                        'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
+      $tab[17]['massiveaction']     = false;
+      $tab[17]['joinparams']        = array('jointype' => 'child',
+                                            'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
 
-      $tab[19]['table']          = 'glpi_consumables';
-      $tab[19]['field']          = 'id';
-      $tab[19]['name']           = __('Number of new consumables');
-      $tab[19]['datatype']       = 'count';
-      $tab[19]['forcegroupby']   = true;
+      $tab[19]['table']             = 'glpi_consumables';
+      $tab[19]['field']             = 'id';
+      $tab[19]['name']              = __('Number of new consumables');
+      $tab[19]['datatype']          = 'count';
+      $tab[19]['forcegroupby']      = true;
       $tab[19]['usehaving']         = true;
-      $tab[19]['massiveaction']  = false;
-      $tab[19]['joinparams']     = array('jointype' => 'child',
-                                        'condition' => "AND NEWTABLE.`date_out` IS NULL");
-                                        
+      $tab[19]['massiveaction']     = false;
+      $tab[19]['joinparams']        = array('jointype' => 'child',
+                                            'condition' => "AND NEWTABLE.`date_out` IS NULL");
+
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[24]['table']          = 'glpi_users';
-      $tab[24]['field']          = 'name';
-      $tab[24]['linkfield']      = 'users_id_tech';
-      $tab[24]['name']           = __('Technician in charge of the hardware');
-      $tab[24]['datatype']       = 'dropdown';
-      $tab[24]['right']          = 'own_ticket';
+      $tab[24]['table']             = 'glpi_users';
+      $tab[24]['field']             = 'name';
+      $tab[24]['linkfield']         = 'users_id_tech';
+      $tab[24]['name']              = __('Technician in charge of the hardware');
+      $tab[24]['datatype']          = 'dropdown';
+      $tab[24]['right']             = 'own_ticket';
 
-      $tab[49]['table']          = 'glpi_groups';
-      $tab[49]['field']          = 'completename';
-      $tab[49]['linkfield']      = 'groups_id_tech';
-      $tab[49]['name']           = __('Group in charge of the hardware');
-      $tab[49]['condition']      = '`is_assign`';
-      $tab[49]['datatype']       = 'dropdown';
+      $tab[49]['table']             = 'glpi_groups';
+      $tab[49]['field']             = 'completename';
+      $tab[49]['linkfield']         = 'groups_id_tech';
+      $tab[49]['name']              = __('Group in charge of the hardware');
+      $tab[49]['condition']         = '`is_assign`';
+      $tab[49]['datatype']          = 'dropdown';
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'alarm_threshold';
-      $tab[8]['name']            = __('Alert threshold');
-      $tab[8]['datatype']        = 'number';
-      $tab[8]['toadd']           = array('-1' => __('Never'));
+      $tab[8]['table']              = $this->getTable();
+      $tab[8]['field']              = 'alarm_threshold';
+      $tab[8]['name']               = __('Alert threshold');
+      $tab[8]['datatype']           = 'number';
+      $tab[8]['toadd']              = array('-1' => __('Never'));
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'notepad';
-      $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']  = false;
-      $tab[90]['datatype']       = 'text';
+      $tab[90]['table']             = $this->getTable();
+      $tab[90]['field']             = 'notepad';
+      $tab[90]['name']              = __('Notes');
+      $tab[90]['massiveaction']     = false;
+      $tab[90]['datatype']          = 'text';
 
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['table']             = 'glpi_entities';
+      $tab[80]['field']             = 'completename';
+      $tab[80]['name']              = __('Entity');
+      $tab[80]['massiveaction']     = false;
+      $tab[80]['datatype']          = 'dropdown';
 
       return $tab;
    }
