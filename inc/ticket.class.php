@@ -851,6 +851,31 @@ class Ticket extends CommonITILObject {
 
       // Only process rules on changes
       if (count($changes)) {
+         // If itemtype changed : set items_locations
+         if (in_array('itemtype', $changes)) {
+            $item = NULL;
+            if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
+               if ($item = getItemForItemtype($input["itemtype"])) {
+                  if ($item->getFromDB($input["items_id"])) {
+                     if ($item->isField('locations_id')) {
+                        $input['items_locations'] = $item->fields['locations_id'];
+                        $changes[] = 'items_locations';
+                     }
+                  }
+               }
+            }
+         }
+
+         // If _users_id_requester changed : set users_locations
+         if (in_array('_users_id_requester', $changes)) {
+            $user = new User();
+            if (isset($input["_users_id_requester"])
+               && $user->getFromDB($input["_users_id_requester"])) {
+               $input['users_locations'] = $user->fields['locations_id'];
+               $changes[] = 'users_locations';
+            }
+         }
+         
          $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                           Toolbox::stripslashes_deep($input),
                                           array('recursive'     => true),
