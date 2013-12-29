@@ -2554,49 +2554,52 @@ function update084to085() {
 
 
    // for licence validity
-   /// TODO : MoYo think consider licenses as valid by default is a better choice.
-   /// On manual creation license is valid by default because no computer is linked to it.
-   $migration->addField("glpi_softwarelicenses", "valid", "bool", array("value" => 0));
-   $migration->migrationOneTable("glpi_softwarelicenses");
+   if ($migration->addField("glpi_softwarelicenses", "valid", "bool", array("value" => 1))) {
+      $migration->migrationOneTable("glpi_softwarelicenses");
 
-   $queryl = "SELECT `id`, `entities_id`, `number`
-              FROM `glpi_softwarelicenses`";
+      $queryl = "SELECT `id`, `entities_id`, `number`
+                 FROM `glpi_softwarelicenses`";
 
-   foreach ($DB->request($queryl) AS $datal) {
-      /// TODO : number may be -1 as unlimited so the valid tag will be wrong whit this condition
-      if ($datal['number'] >= Computer_SoftwareLicense::countForLicense($datal['id'],
-                                                                        $datal['entities_id'])) {
-         $queryl2 = "UPDATE `glpi_softwarelicenses`
-                     SET `valid` = 1
-                     WHERE `id` = '".$datal['id']."'";
+      foreach ($DB->request($queryl) AS $datal) {
+         toolbox::logdebug("id", $datal['id'], "number", $datal['number'], "compté", Computer_SoftwareLicense::countForLicense($datal['id'],
+                                                                           $datal['entities_id']));
+         if (($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'],
+                                                                           $datal['entities_id']))
+             && ($datal['number'] >= 0)) {
 
-         $DB->queryOrDie($queryl2, "0.85 update softwarelicense");
+            $queryl2 = "UPDATE `glpi_softwarelicenses`
+                        SET `valid` = 0
+                        WHERE `id` = '".$datal['id']."'";
+
+            $DB->queryOrDie($queryl2, "0.85 update softwarelicense");
+         }
       }
    }
 
-   $migration->addField("glpi_softwares", "valid", "bool", array("value" => 0));
-   $migration->migrationOneTable("glpi_softwares");
+   if ($migration->addField("glpi_softwares", "valid", "bool", array("value" => 1))) {
+      $migration->migrationOneTable("glpi_softwares");
 
-   $querys = "SELECT `glpi_softwares`.`id` AS id, `glpi_softwarelicenses`.`valid` AS licvalid,
-                     `glpi_softwarelicenses`.`softwares_id`
-              FROM `glpi_softwares`
-              LEFT JOIN `glpi_softwarelicenses`
-                  ON `glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`
-              WHERE `glpi_softwarelicenses`.`valid` = 1";
+      $querys = "SELECT `glpi_softwares`.`id` AS id, `glpi_softwarelicenses`.`valid` AS licvalid,
+                        `glpi_softwarelicenses`.`softwares_id`
+                 FROM `glpi_softwares`
+                 LEFT JOIN `glpi_softwarelicenses`
+                     ON `glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`
+                 WHERE `glpi_softwarelicenses`.`valid` = 0";
 
-   foreach ($DB->request($querys) AS $datas) {
-      $querys2 = "UPDATE `glpi_softwares`
-                  SET `valid` = 1
-                  WHERE `id` = '".$datas['id']."'";
+      foreach ($DB->request($querys) AS $datas) {
+         $querys2 = "UPDATE `glpi_softwares`
+                     SET `valid` = 0
+                     WHERE `id` = '".$datas['id']."'";
 
-      $DB->queryOrDie($querys2, "0.85 update software");
+         $DB->queryOrDie($querys2, "0.85 update software");
+      }
    }
 
    // Add condition to rules
    $migration->addField('glpi_rules', 'condition', 'integer');
    $migration->addKey('glpi_rules', 'condition');
    $migration->migrationOneTable('glpi_rules');
-   
+
    // Update condition for RuleTicket : only on add
    $query = "UPDATE `glpi_rules`
                SET `condition` = 1
@@ -2605,7 +2608,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 update condition for RuleTicket");
 
    /// TODO : force alternative_email fields to '' instead of NULL (trouble of unicity)
-   
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
