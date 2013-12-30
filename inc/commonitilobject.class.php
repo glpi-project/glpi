@@ -1664,7 +1664,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get ITIL object priority Name
     *
-    * @param $value status ID
+    * @param $value priority ID
    **/
    static function getPriorityName($value) {
 
@@ -1862,7 +1862,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get ITIL object Impact Name
     *
-    * @param $value status ID
+    * @param $value impact ID
    **/
    static function getImpactName($value) {
 

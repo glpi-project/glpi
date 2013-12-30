@@ -562,6 +562,7 @@ class Ticket extends CommonITILObject {
                         $_GET['load_kb_sol'] = 0;
                      }
                      $item->showSolutionForm($_GET['load_kb_sol']);
+
                      if ($item->canApprove()) {
                         $fup = new TicketFollowup();
                         $fup->showApprobationForm($item);
@@ -854,7 +855,8 @@ class Ticket extends CommonITILObject {
          // If itemtype changed : set items_locations
          if (in_array('itemtype', $changes)) {
             $item = NULL;
-            if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
+            if (isset($input["items_id"]) && ($input["items_id"] > 0)
+                  && !empty($input["itemtype"])) {
                if ($item = getItemForItemtype($input["itemtype"])) {
                   if ($item->getFromDB($input["items_id"])) {
                      if ($item->isField('locations_id')) {
@@ -878,7 +880,8 @@ class Ticket extends CommonITILObject {
          
          $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
                                           Toolbox::stripslashes_deep($input),
-                                          array('recursive'     => true),
+                                          array('recursive'     => true,
+                                                'entities_id'      => $entid),
                                           array('condition'     => RuleTicket::ONUPDATE,
                                                 'only_criteria' => $changes));
       }
