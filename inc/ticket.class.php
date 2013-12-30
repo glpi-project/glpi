@@ -3899,8 +3899,10 @@ class Ticket extends CommonITILObject {
             }
             Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
-               echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
-                            _sx('button', 'Delete permanently')."'>";
+               echo "&nbsp;";
+               Html::showSimpleForm($this->getFormURL(), 'sla_delete',
+                                    _x('button', 'Delete permanently'),
+                                    array('id'           => $this->getID()));
             }
             echo "</td>";
             echo "</tr></table>";
