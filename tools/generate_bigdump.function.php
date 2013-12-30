@@ -180,6 +180,7 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
       $refportname  = "link 'port to  $itemtype-$items_id";
       $newportname .= " link to 'NetworkEquipment' -".$NET_LOC[$locations_id];
       $newMAC2      = getNextMAC();
+      $newIP2      = getNextIP();
 
       // Create new port on ref item
       $param = toolbox::addslashes_deep(
@@ -192,8 +193,8 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
                      'mac'                      => $newMAC2,
                      'comment'                  => "comment '$refportname",
                      'netpoints_id'             => $netpointID,
-                     'NetworkName_name'         => "$itemtype-$items_id-$entities_id",
-                     'NetworkName__ipaddresses' => array(-100 => $newIP['ip']),
+                     'NetworkName_name'         => "NetworkEquipment$itemtype-$items_id-$entities_id",
+                     'NetworkName__ipaddresses' => array(-100 => $newIP2['ip']),
                      ));
 
                      $np->splitInputForElements($param);
