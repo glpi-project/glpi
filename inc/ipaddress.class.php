@@ -882,7 +882,6 @@ class IPAddress extends CommonDBChild {
       for ($i = $startIndex ; $i < 4 ; ++$i) {
          $query .= "AND `gip`.`binary_$i` = '".$binaryIP[$i]."'";
       }
-
       $addressesWithItems = array();
       foreach ($DB->request($query) as $result) {
          if ($address->getFromDB($result['id'])) {
@@ -906,9 +905,21 @@ class IPAddress extends CommonDBChild {
    static function getUniqueItemByIPAddress($value, $entity) {
 
       $addressesWithItems = self::getItemsByIPAddress($value);
-
+      
+      // Filter : Do not keep ip not linked to asset
+      if (count($addressesWithItems)) {
+         foreach ($addressesWithItems as $key => $tab) {
+            if (isset($tab[0])
+                  && (($tab[0] instanceof NetworkName)
+                  || ($tab[0] instanceof IPAddress)
+                  || ($tab[0] instanceof NetworkPort))) {
+               unset($addressesWithItems[$key]);
+            }
+         }
+      }
+      
       if (count($addressesWithItems) == 1) {
-         $addressWithItems = $addressesWithItems[0];
+         $addressWithItems = current($addressesWithItems);
          $item             = $addressWithItems[0];
          if ($item->getEntityID() == $entity) {
             $result = array("id"       => $item->getID(),
