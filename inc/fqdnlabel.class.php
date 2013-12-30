@@ -225,9 +225,20 @@ abstract class FQDNLabel extends CommonDBChild {
    static function getUniqueItemByFQDN($value, $entity) {
 
       $labels_with_items = self::getItemsByFQDN($value);
-
+      
+      // Filter : Do not keep ip not linked to asset
+      if (count($labels_with_items)) {
+         foreach ($labels_with_items as $key => $tab) {
+            if (isset($tab[0])
+                  && (($tab[0] instanceof NetworkName)
+                  || ($tab[0] instanceof NetworkPort))) {
+               unset($labels_with_items[$key]);
+            }
+         }
+      }
+      
       if (count($labels_with_items) == 1) {
-         $label_with_items = $labels_with_items[0];
+         $label_with_items = current($labels_with_items);
          $item             = $label_with_items[0];
          if ($item->getEntityID() == $entity) {
             $result = array("id"       => $item->getID(),
