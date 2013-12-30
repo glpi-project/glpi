@@ -342,7 +342,6 @@ class Ticket extends CommonITILObject {
          $data["slas_id"]              = 0;
          $data['sla_waiting_duration'] = 0;
       }
-
       return $data;
 
    }
@@ -850,6 +849,12 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Business Rules do not override manual SLA
+      $manual_slas_id = 0;
+      if (isset($input['slas_id']) && ($input['slas_id'] > 0)) {
+         $manual_slas_id = $input['slas_id'];
+      }
+      
       // Only process rules on changes
       if (count($changes)) {
          // If itemtype changed : set items_locations
@@ -884,13 +889,21 @@ class Ticket extends CommonITILObject {
                                                 'entities_id'      => $entid),
                                           array('condition'     => RuleTicket::ONUPDATE,
                                                 'only_criteria' => $changes));
+
       }
+
+      // Restore slas_id
+      if ($manual_slas_id > 0) {
+         $input['slas_id'] = $manual_slas_id;
+      }
+      
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
          if ($input[$key] == $val) {
             unset($input[$key]);
          }
       }
+
       // Manage fields from auto update or rules : map rule actions to standard additional ones
       $usertypes  = array('assign', 'requester', 'observer');
       $actortypes = array('user','group','supplier');
@@ -910,37 +923,6 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-//       print_r($input);exit();
-//       if (isset($input['_auto_update'])) {
-//          if (isset($input['_users_id_assign'])) {
-//             $input['_itil_assign']['_type']    = 'user';
-//             $input['_itil_assign']['users_id'] = $input['_users_id_assign'];
-//          }
-//          if (isset($input['_groups_id_assign'])) {
-//             $input['_itil_assign']['_type']     = 'group';
-//             $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
-//          }
-//          if (isset($input['_suppliers_id_assign'])) {
-//             $input['_itil_assign']['_type']        = 'supplier';
-//             $input['_itil_assign']['suppliers_id'] = $input['_suppliers_id_assign'];
-//          }
-//          if (isset($input['_users_id_requester'])) {
-//             $input['_itil_requester']['_type']    = 'user';
-//             $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
-//          }
-//          if (isset($input['_groups_id_requester'])) {
-//             $input['_itil_requester']['_type']     = 'group';
-//             $input['_itil_requester']['groups_id'] = $input['_groups_id_requester'];
-//          }
-//          if (isset($input['_users_id_observer'])) {
-//             $input['_itil_observer']['_type']    = 'user';
-//             $input['_itil_observer']['users_id'] = $input['_users_id_observer'];
-//          }
-//          if (isset($input['_groups_id_observer'])) {
-//             $input['_itil_observer']['_type']     = 'group';
-//             $input['_itil_observer']['groups_id'] = $input['_groups_id_observer'];
-//          }
-//       }
 
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
@@ -1004,8 +986,21 @@ class Ticket extends CommonITILObject {
       }
 
 
-       if (isset($input["slas_id"]) && ($input["slas_id"] > 0)
-           && ($this->fields['slas_id'] == 0)) {
+
+      //// SLA affect by rules : reset due_date
+      // Manual SLA defined : reset due date
+      // No manual SLA and due date defined : reset auto SLA
+      if (($manual_slas_id == 0) && isset($input["slas_id"]) && ($input['slas_id'] > 0)
+         && ($input['slas_id'] != $this->fields['slas_id'])) {
+         if (isset($input['due_date'])) {
+            // Unset due date
+            unset($input["due_date"]);
+         }
+      }
+
+
+     if (isset($input["slas_id"]) && ($input["slas_id"] > 0)
+         && ($input['slas_id'] != $this->fields['slas_id'])) {
 
          $date = $this->fields['date'];
          /// Use updated date if also done
@@ -1021,7 +1016,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      
       if (isset($input['content'])) {
          if (isset($input['_stock_image'])) {
             $this->addImagePaste();
@@ -1036,13 +1031,12 @@ class Ticket extends CommonITILObject {
       }
 
       $input = parent::prepareInputForUpdate($input);
-
       return $input;
    }
 
 
    function pre_updateInDB() {
-
+      
       // takeintoaccount :
       //     - update done by someone who have update right
       //       see also updatedatemod used by ticketfollowup updates
@@ -3797,8 +3791,10 @@ class Ticket extends CommonITILObject {
             }
             Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
-               echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
-                            _sx('button', 'Delete permanently')."'>";
+               echo "&nbsp;";
+               Html::showSimpleForm($this->getFormURL(), 'sla_delete',
+                                    _x('button', 'Delete permanently'),
+                                    array('id'           => $this->getID()));
             }
             echo "</td>";
             echo "</tr></table>";
