@@ -105,6 +105,13 @@ class RuleTicketCollection extends RuleCollection {
       if (isset($input['_head']['x-priority'])) {
          $input['_x-priority'] = $input['_head']['x-priority'];
       }
+      $input['_groups_id_of_requester'] = array();
+      // Get groups of users
+      if (isset($input['_users_id_requester'])) {
+         foreach (Group_User::getUserGroups($input['_users_id_requester']) as $g) {
+            $input['_groups_id_of_requester'][$g['id']] = $g['id'];
+         }
+      }
       return $input;
    }
 

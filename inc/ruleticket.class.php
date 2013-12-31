@@ -318,6 +318,12 @@ class RuleTicket extends Rule {
       $criterias['_users_id_requester']['linkfield']  = '_users_id_requester';
       $criterias['_users_id_requester']['type']       = 'dropdown_users';
 
+      $criterias['_groups_id_of_requester']['table']      = 'glpi_groups';
+      $criterias['_groups_id_of_requester']['field']      = 'completename';
+      $criterias['_groups_id_of_requester']['name']       = __('Requester in group');
+      $criterias['_groups_id_of_requester']['linkfield']  = '_groups_id_of_requester';
+      $criterias['_groups_id_of_requester']['type']       = 'dropdown';
+      
       $criterias['users_locations']['table']          = 'glpi_locations';
       $criterias['users_locations']['field']          = 'completename';
       $criterias['users_locations']['name']           = __('Requester location');
