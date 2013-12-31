@@ -575,7 +575,29 @@ abstract class CommonITILValidation  extends CommonDBChild {
       return false;
    }
 
+   /**
+    * Check if validation already exists
+    *
+    * @param $items_id   integer  item ID
+    * @param $users_id   integer  user ID
+    * @since version 0.85
+    * @return boolean
+   **/
+   static function alreadyExists($items_id, $users_id) {
+      global $DB;
 
+      $query = "SELECT *
+                FROM `".static::getTable()."`
+                WHERE `".static::$items_id."` = '$items_id'
+                      AND `users_id_validate` = '".$users_id."'";
+
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         return true;
+      }
+      return false;
+   }
+   
    /**
     * Form for Followup on Massive action
    **/
