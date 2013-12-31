@@ -110,6 +110,11 @@ class Item_Devices extends CommonDBRelation {
                         'massiveaction' => true);
       }
 
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['datatype']       = 'dropdown';
+
       return $tab;
    }
 
@@ -677,21 +682,24 @@ class Item_Devices extends CommonDBRelation {
          return;
       }
 
-      $input = array('itemtype'                    => $itemtype,
-                     'items_id'                    => $items_id,
-                     static::getDeviceForeignKey() => $devices_id);
-
-      $this->check(-1, CREATE, $input);
+      $input  = array('itemtype'                    => $itemtype,
+                      'items_id'                    => $items_id,
+                      static::getDeviceForeignKey() => $devices_id);
 
       $device_type = static::getDeviceType();
       $device      = new $device_type();
       $device->getFromDB($devices_id);
+
+      $input['entities_id']  = $device->getEntityID();
+      $input['is_recursive'] = $device->isRecursive();      
 
       foreach (static::getSpecificities() as $field => $attributs) {
          if (isset($device->fields[$field.'_default'])) {
             $input[$field] = $device->fields[$field.'_default'];
          }
       }
+
+      $this->check(-1, CREATE, $input);
 
       for ($i = 0 ; $i < $numberToAdd ; $i ++) {
          $this->add($input);
