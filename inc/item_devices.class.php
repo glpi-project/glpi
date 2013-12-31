@@ -134,7 +134,7 @@ class Item_Devices extends CommonDBRelation {
                          'size'       => 20);
 
          case 'busID' :
-            return array('long name'  => __('position of the device on its bus'),
+            return array('long name'  => __('Position of the device on its bus'),
                          'short name' => __('bus ID'),
                          'size'       => 10);
       }
