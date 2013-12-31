@@ -895,7 +895,10 @@ class Ticket extends CommonITILObject {
       if ($manual_slas_id > 0) {
          $input['slas_id'] = $manual_slas_id;
       }
-      
+
+      //Action for send_validation rule : do validation before clean
+      $this->manageValidationAdd($input);
+
       // Clean actors fields added for rules
       foreach ($tocleanafterrules as $key => $val) {
          if ($input[$key] == $val) {
@@ -941,9 +944,6 @@ class Ticket extends CommonITILObject {
          $input["items_id"] = 0;
 
       }
-
-      //Action for send_validation rule
-      $this->manageValidationAdd($input);
 
       //// SLA affect by rules : reset due_date
       // Manual SLA defined : reset due date
@@ -1569,6 +1569,8 @@ class Ticket extends CommonITILObject {
          if (!is_array($input["_add_validation"])) {
             $input["_add_validation"] = array($input["_add_validation"]);
          }
+
+         
          foreach ($input["_add_validation"] as $key => $validation) {
             switch ($validation) {
                case 'requester_supervisor' :
@@ -1580,12 +1582,28 @@ class Ticket extends CommonITILObject {
                         $validations_to_send[] = $data['id'];
                      }
                   }
+                  // Add to already set groups
+                  foreach ($this->getGroups(CommonITILActor::REQUESTER) as $d) {
+                     $users = Group_User::getGroupUsers($d['groups_id'],
+                                                        "is_manager='1'");
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                 
                   break;
 
                case 'assign_supervisor' :
                   if (isset($input['_groups_id_assign'])
                       && $input['_groups_id_assign']) {
                      $users = Group_User::getGroupUsers($input['_groups_id_assign'],
+                                                        "is_manager='1'");
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
+                     $users = Group_User::getGroupUsers($d['groups_id'],
                                                         "is_manager='1'");
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
