@@ -937,30 +937,9 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (isset($input["items_id"]) && ($input["items_id"] >= 0)
-          && isset($input["itemtype"])) {
-
-         /// TODO do not understand this : groups_id is not part of ticket
-         /// yllen: je pense qu'on se traine cette partie érronée depuis la 0.80 (vu qu'en 0.78 le champ existait)
-         if (isset($this->fields['groups_id'])
-             && ($this->fields['groups_id'] == 0)
-             && (!isset($input['groups_id']) || ($input['groups_id'] == 0))) {
-
-            if ($input["itemtype"]
-                && ($item = getItemForItemtype($input["itemtype"]))) {
-               $item->getFromDB($input["items_id"]);
-               if ($item->isField('groups_id')) {
-                  $input["groups_id"] = $item->getField('groups_id');
-               }
-            }
-         }
-
-      } else if (isset($input["itemtype"]) && empty($input["itemtype"])) {
+      if (isset($input["itemtype"]) && empty($input["itemtype"])) {
          $input["items_id"] = 0;
 
-      } else {
-         unset($input["items_id"]);
-         unset($input["itemtype"]);
       }
 
       //Action for send_validation rule
