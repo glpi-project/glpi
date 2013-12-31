@@ -943,28 +943,7 @@ class Ticket extends CommonITILObject {
       }
 
       //Action for send_validation rule
-      if (isset($input["_add_validation"]) && ($input["_add_validation"] > 0)) {
-         $validation = new TicketValidation();
-         // if auto_update, tranfert it for validation
-         if (isset($input['_auto_update'])) {
-            $values['_auto_update'] = $input['_auto_update'];
-         }
-         $values['tickets_id']        = $input['id'];
-         $values['users_id_validate'] = $input["_add_validation"];
-
-         if (Session::isCron()
-             || $validation->can(-1, CREATE, $values)) { // cron or allowed user
-            $validation->add($values);
-
-            Event::log($this->fields['id'], "ticket", 4, "tracking",
-                       sprintf(__('%1$s updates the item %2$s'),
-                               (is_numeric(Session::getLoginUserID(false))?$_SESSION["glpiname"]
-                                                                          :'cron'),
-                               $this->fields['id']));
-         }
-      }
-
-
+      $this->manageValidationAdd($input);
 
       //// SLA affect by rules : reset due_date
       // Manual SLA defined : reset due date
@@ -1541,129 +1520,9 @@ class Ticket extends CommonITILObject {
       }
 
       parent::post_addItem();
-      //Action for send_validation rule
-      if (isset($this->input["_add_validation"])) {
-         $validations_to_send = array();
-         if (!is_array($this->input["_add_validation"])) {
-            $this->input["_add_validation"] = array($this->input["_add_validation"]);
-         }
 
-         foreach ($this->input["_add_validation"] as $validation) {
-            switch ($validation) {
-               case 'requester_supervisor' :
-                  if (isset($this->input['_groups_id_requester'])
-                      && $this->input['_groups_id_requester']) {
-                     $users = Group_User::getGroupUsers($this->input['_groups_id_requester'],
-                                                        "is_manager='1'");
-                     foreach ($users as $data) {
-                        $validations_to_send[] = $data['id'];
-                     }
-                  }
-                  break;
-
-               case 'assign_supervisor' :
-                  if (isset($this->input['_groups_id_assign'])
-                      && $this->input['_groups_id_assign']) {
-                     $users = Group_User::getGroupUsers($this->input['_groups_id_assign'],
-                                                        "is_manager='1'");
-                     foreach ($users as $data) {
-                        $validations_to_send[] = $data['id'];
-                     }
-                  }
-                  break;
-
-               default :
-                  $validations_to_send[] = $validation;
-            }
-
-         }
-         // Keep only one
-         $validations_to_send = array_unique($validations_to_send);
-
-         $validation          = new TicketValidation();
-
-         // Validation user added on ticket form
-         if (isset($this->input['users_id_validate'])) {
-            if (array_key_exists('groups_id', $this->input['users_id_validate'])) {
-               foreach ($this->input['users_id_validate'] as $key => $validation_to_add){
-                  if (is_numeric($key)) {
-                     $validations_to_send['validation_users']['user'][] = $validation_to_add;
-                  }
-               }
-            } else {
-               foreach ($this->input['users_id_validate'] as $key => $validation_to_add) {
-                  if (is_numeric($key)) {
-                     $validations_to_send['validation_users']['user'][] = $validation_to_add;
-                  }
-               }
-            }
-         }
-
-         foreach ($validations_to_send as $validate_id) {
-            $values = array();
-            if (is_array($validate_id)) {
-               $values["users_id_validate"] = array();
-               foreach ($validate_id as $type => $array_id) {
-                  switch ($type) {
-                     case 'group' :
-                        foreach ($array_id as $groups_id) {
-                           $validation_right = 'validate_incident';
-                           if ($this->input['type'] == Ticket::DEMAND_TYPE) {
-                              $validation_right = 'validate_request';
-                           }
-                           $opt = array('groups_id' => $groups_id,
-                                        'right'     => $validation_right,
-                                        'entity'    => $this->input['entities_id']);
-
-                           $data_users = TicketValidation::getGroupUserHaveRights($opt);
-
-                           foreach ($data_users as $user) {
-                              $values["users_id_validate"][] = $user['id'];
-                           }
-                        }
-                        break;
-
-                     case 'user' :
-                        foreach ($array_id as $users_id) {
-                           $values["users_id_validate"][] = $users_id;
-                        }
-                        break;
-                  }
-               }
-               $values["users_id_validate"] = array_unique($values["users_id_validate"]);
-            }
-
-            if (!empty($validate_id)) {
-               $values['tickets_id']  = $this->fields['id'];
-               $values['_ticket_add'] = true;
-
-               // to know update by rules
-               if (isset($this->input["_rule_process"])) {
-                  $values['_rule_process'] = $this->input["_rule_process"];
-               }
-               // if auto_import, tranfert it for validation
-               if (isset($this->input['_auto_import'])) {
-                  $values['_auto_import'] = $this->input['_auto_import'];
-               }
-
-               // Cron or rule process of hability to do
-               if (Session::isCron()
-                   || isset($this->input["_auto_import"])
-                   || isset($this->input["_rule_process"])
-                   || $validation->can(-1, CREATE, $values)) { // cron or allowed user
-
-                  $users = $values["users_id_validate"];
-                  foreach ($users as $user) {
-                     $values["users_id_validate"] = $user;
-                     $validation->add($values);
-                  }
-                  Event::log($this->fields['id'], "ticket", 4, "tracking",
-                             sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
-                                     $this->fields['id']));
-               }
-            }
-         }
-      }
+      $this->manageValidationAdd($this->input);
+      
       // Processing Email
       if ($CFG_GLPI["use_mailing"]) {
          // Clean reload of the ticket
@@ -1687,9 +1546,151 @@ class Ticket extends CommonITILObject {
       }
 
    }
+   
+   /**
+    * Manage Validation add from input
+    *
+    * @param $input array : input array
+    *
+    * @return nothing
+   **/
+   function manageValidationAdd($input) {
+      //Action for send_validation rule
+      if (isset($input["_add_validation"])) {
+         if (isset($input['entities_id'])) {
+            $entid = $input['entities_id'];
+         } else if (isset($this->fields['entities_id'])){
+            $entid = $this->fields['entities_id'];
+         } else {
+            return false;
+         }
 
+         $validations_to_send = array();
+         if (!is_array($input["_add_validation"])) {
+            $input["_add_validation"] = array($input["_add_validation"]);
+         }
 
-   // SPECIFIC FUNCTIONS
+         foreach ($input["_add_validation"] as $validation) {
+            switch ($validation) {
+               case 'requester_supervisor' :
+                  if (isset($input['_groups_id_requester'])
+                      && $input['_groups_id_requester']) {
+                     $users = Group_User::getGroupUsers($input['_groups_id_requester'],
+                                                        "is_manager='1'");
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  break;
+
+               case 'assign_supervisor' :
+                  if (isset($input['_groups_id_assign'])
+                      && $input['_groups_id_assign']) {
+                     $users = Group_User::getGroupUsers($input['_groups_id_assign'],
+                                                        "is_manager='1'");
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  break;
+
+               default :
+                  $validations_to_send[] = $validation;
+            }
+
+         }
+         // Keep only one
+         $validations_to_send = array_unique($validations_to_send);
+
+         $validation          = new TicketValidation();
+         // Validation user added on ticket form
+         if (isset($input['users_id_validate'])) {
+            if (array_key_exists('groups_id', $input['users_id_validate'])) {
+               foreach ($input['users_id_validate'] as $key => $validation_to_add){
+                  if (is_numeric($key)) {
+                     $validations_to_send['validation_users']['user'][] = $validation_to_add;
+                  }
+               }
+            } else {
+               foreach ($input['users_id_validate'] as $key => $validation_to_add) {
+                  if (is_numeric($key)) {
+                     $validations_to_send['validation_users']['user'][] = $validation_to_add;
+                  }
+               }
+            }
+         }
+
+         foreach ($validations_to_send as $validate_id) {
+            $values = array();
+            if (is_array($validate_id)) {
+               $values["users_id_validate"] = array();
+               foreach ($validate_id as $type => $array_id) {
+                  switch ($type) {
+                     case 'group' :
+                        foreach ($array_id as $groups_id) {
+                           $validation_right = 'validate_incident';
+                           if (isset($input['type'])
+                              && $input['type'] == Ticket::DEMAND_TYPE) {
+                              $validation_right = 'validate_request';
+                           }
+                           $opt = array('groups_id' => $groups_id,
+                                        'right'     => $validation_right,
+                                        'entity'    => $entid);
+
+                           $data_users = TicketValidation::getGroupUserHaveRights($opt);
+
+                           foreach ($data_users as $user) {
+                              $values["users_id_validate"][] = $user['id'];
+                           }
+                        }
+                        break;
+
+                     case 'user' :
+                        foreach ($array_id as $users_id) {
+                           $values["users_id_validate"][] = $users_id;
+                        }
+                        break;
+                  }
+               }
+               $values["users_id_validate"] = array_unique($values["users_id_validate"]);
+            }
+
+            if (!empty($validate_id)) {
+               $values['tickets_id']  = $this->fields['id'];
+               if ($input['id'] != $this->fields['id']) {
+                  $values['_ticket_add'] = true;
+               }
+
+               // to know update by rules
+               if (isset($input["_rule_process"])) {
+                  $values['_rule_process'] = $input["_rule_process"];
+               }
+               // if auto_import, tranfert it for validation
+               if (isset($input['_auto_import'])) {
+                  $values['_auto_import'] = $input['_auto_import'];
+               }
+
+               // Cron or rule process of hability to do
+               if (Session::isCron()
+                   || isset($input["_auto_import"])
+                   || isset($input["_rule_process"])
+                   || $validation->can(-1, CREATE, $values)) { // cron or allowed user
+
+                  $users = $values["users_id_validate"];
+                  foreach ($users as $user) {
+                     $values["users_id_validate"] = $user;
+                     $validation->add($values);
+                  }
+                  Event::log($this->fields['id'], "ticket", 4, "tracking",
+                             sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                                     $this->fields['id']));
+               }
+            }
+         }
+      }
+      return true;
+   }
+
    /**
     * Number of followups of the ticket
     *
