@@ -59,7 +59,7 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
    static $rightname                    = 'device';
-
+   
    // This var is defined by CommonDBRelation ...
    var $no_form_page                    = false;
 
@@ -335,7 +335,6 @@ class Item_Devices extends CommonDBRelation {
       $table = new HTMLTableMain();
 
       $table->setTitle(_n('Component', 'Components', 2));
-
       if ($canedit) {
          $delete_all_column = $table->addHeader('delete all',
                                                 Html::getCheckAllAsCheckbox("form_device_add$rand",
@@ -372,9 +371,13 @@ class Item_Devices extends CommonDBRelation {
                              'rand'    => $rand);
 
       if ($is_device) {
+         Session::initNavigateListItems(static::getType(),
+                                          sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
          foreach (array_merge(array(''), self::getConcernedItems()) as $itemtype) {
             $table_options['itemtype'] = $itemtype;
             $link                      = getItemForItemtype(static::getType());
+            
             $link->getTableGroup($item, $table, $table_options, $delete_all_column,
                                  $common_column, $specific_column, $delete_column,
                                  $dynamic_column);
@@ -384,6 +387,10 @@ class Item_Devices extends CommonDBRelation {
          foreach (self::getItemAffinities($item->getType()) as $link_type) {
             $devtypes [] = $link_type::getDeviceType();
             $link        = getItemForItemtype($link_type);
+
+            Session::initNavigateListItems($link_type,
+                                             sprintf(__('%1$s = %2$s'),
+                                                   $item->getTypeName(1), $item->getName()));
             $link->getTableGroup($item, $table, $table_options, $delete_all_column,
                                  $common_column, $specific_column, $delete_column,
                                  $dynamic_column);
@@ -565,6 +572,8 @@ class Item_Devices extends CommonDBRelation {
          $peer = NULL;
       }
       foreach ($DB->request($query) as $link) {
+
+         Session::addToNavigateListItems(static::getType(), $link["id"]);
          $this->getFromDB($link['id']);
          if ((is_null($peer)) || ($link[$fk] != $peer->getID())) {
 
