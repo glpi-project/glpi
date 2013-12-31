@@ -1673,9 +1673,9 @@ class KnowbaseItem extends CommonDBTM {
       if ($interface == 'central') {
          $values = parent::getRights();
          $values[self::KNOWBASEADMIN] = __('Knowledge base administration');
+         $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
       }
       $values[self::READFAQ]       = __('Read the FAQ');
-      $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
       return $values;
    }
 
