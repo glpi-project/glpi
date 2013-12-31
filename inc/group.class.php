@@ -340,7 +340,7 @@ class Group extends CommonTreeDropdown {
       if ($isadmin) {
          $prefix                            = 'Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$prefix.'add']            = _x('button', 'Add a user');
-         $actions[$prefix.'add_supervisor'] = _x('button', 'Add a supervisor');
+         $actions[$prefix.'add_supervisor'] = _x('button', 'Add a manager');
          $actions[$prefix.'add_delegatee']  = _x('button', 'Add a delegatee');
          $actions[$prefix.'remove']         = _x('button', 'Remove a user');
       }

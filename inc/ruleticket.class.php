@@ -523,14 +523,14 @@ class RuleTicket extends Rule {
       $actions['validation_percent']['force_actions']       = array('add_validation');
 
       $actions['users_id_validate_requester_supervisor']['name']
-                                             = __('Approval request to requester group supervisor');
+                                             = __('Approval request to requester group manager');
       $actions['users_id_validate_requester_supervisor']['type']
                                              = 'yesno';
       $actions['users_id_validate_requester_supervisor']['force_actions']
                                              = array('add_validation');
 
       $actions['users_id_validate_assign_supervisor']['name']
-                                             = __('Approval request to technician group supervisor');
+                                             = __('Approval request to technician group manager');
       $actions['users_id_validate_assign_supervisor']['type']
                                              = 'yesno';
       $actions['users_id_validate_assign_supervisor']['force_actions']
