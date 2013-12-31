@@ -889,7 +889,6 @@ class Ticket extends CommonITILObject {
                                                 'entities_id'      => $entid),
                                           array('condition'     => RuleTicket::ONUPDATE,
                                                 'only_criteria' => $changes));
-
       }
 
       // Restore slas_id
@@ -918,12 +917,13 @@ class Ticket extends CommonITILObject {
 
                   default :
                      $additionalfield = '_additional_'.$a.'s_'.$t.'s';
+                     $input[$additionalfield][] = $input['_'.$a.'s_id_'.$t];
                      break;
                }
             }
          }
       }
-
+      
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
          if (!empty($input['_link']['tickets_id_2'])) {
