@@ -873,14 +873,16 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         // If _users_id_requester changed : set users_locations
          if (in_array('_users_id_requester', $changes)) {
+            // If _users_id_requester changed : set users_locations
             $user = new User();
             if (isset($input["_users_id_requester"])
                && $user->getFromDB($input["_users_id_requester"])) {
                $input['users_locations'] = $user->fields['locations_id'];
                $changes[] = 'users_locations';
             }
+            // If _users_id_requester changed : add _groups_id_of_requester to changes
+            $changes[] = '_groups_id_of_requester';
          }
          
          $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
