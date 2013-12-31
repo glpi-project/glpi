@@ -1403,6 +1403,20 @@ class Rule extends CommonDBTM {
                   || ($refoutput[$action->fields["field"]] != $newoutput[$action->fields["field"]])) {
                   if (!in_array($action->fields["field"], $options['only_criteria']))
                   $options['only_criteria'][] = $action->fields["field"];
+
+                  // Add linked criteria if available
+                  $crit = $this->getCriteria($action->fields["field"]);
+                  if (isset($crit['linked_criteria'])) {
+                     $tmp = $crit['linked_criteria'];
+                     if (!is_array($crit['linked_criteria'])) {
+                        $tmp = array($tmp);
+                     }
+                     foreach ($tmp as $toadd) {
+                        if (!in_array($toadd, $options['only_criteria'])) {
+                           $options['only_criteria'][] = $toadd;
+                        }
+                     }
+                  }
                }
             }
          }
@@ -1443,6 +1457,7 @@ class Rule extends CommonDBTM {
          $doactions = true;
 
          foreach ($this->criterias as $criteria) {
+            
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
             if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
                $doactions &= $this->checkCriteria($criteria, $input);
@@ -1504,13 +1519,12 @@ class Rule extends CommonDBTM {
     * @param &$input     the input data used to check criterias
    **/
    function checkCriteria(&$criteria, &$input) {
-
       $partial_regex_result = array();
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
          $input[$criteria->fields["criteria"]] = '';
       }
-
+      
       //If the value is not an array
       if (!is_array($input[$criteria->fields["criteria"]])) {
          $value = $this->getCriteriaValue($criteria->fields["criteria"],
@@ -1520,6 +1534,7 @@ class Rule extends CommonDBTM {
          $res   = RuleCriteria::match($criteria, $value, $this->criterias_results,
                                       $partial_regex_result);
       } else {
+      
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
          if (in_array($criteria->fields["condition"], array(self::PATTERN_IS_NOT,
@@ -1568,6 +1583,7 @@ class Rule extends CommonDBTM {
             $this->regex_results = $temp_result;
          }
       }
+
 
       return $res;
    }

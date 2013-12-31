@@ -193,6 +193,17 @@ class RuleTicket extends Rule {
 
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
+
+                  // Special case of users_id_requester
+                  if ($action->fields["field"] === '_users_id_requester') {
+                     // Add groups of requester
+                     if (!isset($output['_groups_id_of_requester'])) {
+                        $output['_groups_id_of_requester'] = array();
+                     }
+                     foreach (Group_User::getUserGroups($action->fields["value"]) as $g) {
+                        $output['_groups_id_of_requester'][$g['id']] = $g['id'];
+                     }
+                  }
                   break;
 
                case "append" :
@@ -205,6 +216,18 @@ class RuleTicket extends Rule {
                             = $action->fields["value"];
                   }
                   $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+                  
+                  // Special case of users_id_requester
+                  if ($action->fields["field"] === '_users_id_requester') {
+                     // Add groups of requester
+                     if (!isset($output['_groups_id_of_requester'])) {
+                        $output['_groups_id_of_requester'] = array();
+                     }
+                     foreach (Group_User::getUserGroups($action->fields["value"]) as $g) {
+                        $output['_groups_id_of_requester'][$g['id']] = $g['id'];
+                     }
+                  }
+                  
                   break;
 
                case 'fromuser' :
@@ -317,6 +340,7 @@ class RuleTicket extends Rule {
       $criterias['_users_id_requester']['name']       = __('Requester');
       $criterias['_users_id_requester']['linkfield']  = '_users_id_requester';
       $criterias['_users_id_requester']['type']       = 'dropdown_users';
+      $criterias['_users_id_requester']['linked_criteria'] = '_groups_id_of_requester';
 
       $criterias['_groups_id_of_requester']['table']      = 'glpi_groups';
       $criterias['_groups_id_of_requester']['field']      = 'completename';
