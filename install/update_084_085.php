@@ -2496,6 +2496,24 @@ function update084to085() {
    }
 
 
+   //////////////////////////////////////////////////
+   // Device update
+
+   foreach (array_merge(CommonDevice::getDeviceTypes(),
+                        Item_Devices::getDeviceTypes()) as $itemtype) {
+      $table = $itemtype::getTable();
+      if (!FieldExists($table, 'entities_id')) {
+         $migration->addField($table, 'entities_id', 'integer');
+         $migration->addKey($table, array('entities_id'), 'entities_id');
+      }
+      if (!FieldExists($table, 'is_recursive')) {
+         $migration->addField($table, 'is_recursive', 'bool', array('update' => '1',
+                                                                    'after'  => 'entities_id'));
+         $migration->addKey($table, array('is_recursive'), 'is_recursive');
+      }
+      
+   }
+
    // Adding the Registered ID class that contains PCI IDs and USB IDs for vendors
    // as well devices
    if (!TableExists('glpi_registeredids')) {
