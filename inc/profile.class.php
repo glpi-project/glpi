@@ -97,8 +97,9 @@ class Profile extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                if ($item->fields['interface'] == 'helpdesk') {
-                  $ong[1] = __('Simplified interface'); // Helpdesk
-
+                  $ong[4] = __('Assistance'); // Helpdesk
+                  $ong[5] = __('Life cycles');
+                  $ong[8] = __('Tools');
                } else {
                   /// TODO split it in 2 or 3 tabs
                   $ong[2] = __('Assets');
@@ -121,10 +122,6 @@ class Profile extends CommonDBTM {
       if ($item->getType() == __CLASS__) {
          $item->cleanProfile();
          switch ($tabnum) {
-            case 1 :
-               $item->showFormHelpdesk();
-               break;
-
             case 2 :
                $item->showFormAsset();
                break;
@@ -134,11 +131,19 @@ class Profile extends CommonDBTM {
                break;
 
             case 4 :
-               $item->showFormTracking();
+               if ($item->fields['interface'] == 'helpdesk') {
+                  $item->showFormTrackingHelpdesk();
+               } else {
+                  $item->showFormTracking();
+               }
                break;
 
             case 5 :
-               $item->showFormLifeCycle();
+               if ($item->fields['interface'] == 'helpdesk') {
+                  $item->showFormLifeCycleHelpdesk();
+               } else {
+                  $item->showFormLifeCycle();
+               }
                break;
 
             case 6 :
@@ -150,7 +155,11 @@ class Profile extends CommonDBTM {
                break;
 
             case 8 :
-               $item->showFormTools();
+               if ($item->fields['interface'] == 'helpdesk') {
+                  $item->showFormToolsHelpdesk();
+               } else {
+                  $item->showFormTools();
+               }
                break;
 
          }
@@ -221,11 +230,12 @@ class Profile extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       // Check for faq
-      if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
-         if (isset($input["faq"]) && ($input["faq"] == KnowbaseItem::PUBLISHFAQ)) {
-            $input["faq"] == KnowbaseItem::READFAQ;
-         }
-      }
+      /// TODO MoYo : do not understand this... Why PUBLISH_FAQ for post-only ?
+//       if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
+//          if (isset($input["faq"]) && ($input["faq"] == KnowbaseItem::PUBLISHFAQ)) {
+//             $input["faq"] == KnowbaseItem::READFAQ;
+//          }
+//       }
 
       if (isset($input["_helpdesk_item_types"])) {
          if ((!isset($input["helpdesk_item_type"])) || (!is_array($input["helpdesk_item_type"]))) {
@@ -288,6 +298,7 @@ class Profile extends CommonDBTM {
       }
 
       $this->profileRight = array();
+
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
          if (isset($input['_'.$right])) {
             if (!is_array($input['_'.$right])) {
@@ -322,7 +333,6 @@ class Profile extends CommonDBTM {
          Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
          unset($input["profile"]);
       }
-
       return $input;
    }
 
@@ -624,7 +634,7 @@ class Profile extends CommonDBTM {
    /**
     * Print the helpdesk right form for the current profile
    **/
-   function showFormHelpdesk() {
+   function showFormTrackingHelpdesk() {
       global $CFG_GLPI;
 
       if (!self::canView()) {
@@ -651,13 +661,13 @@ class Profile extends CommonDBTM {
                             'field'      => 'task'),
                       array('rights'     => Profile::getRightsFor('TicketValidation', 'helpdesk'),
                             'label'      => _n('Validation', 'Validations', 2),
-                            'field'      => 'validation'));
+                            'field'      => 'ticketvalidation'));
 
       $matrix_options['title'] = __('Assistance');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Association')."</th></tr>\n";
 
       // TODO : switch to matrix
       echo "<tr class='tab_bg_2'>";
@@ -713,6 +723,38 @@ class Profile extends CommonDBTM {
 
       echo "</table>\n";
 
+      if ($canedit) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='4' class='center'>";
+         echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table>\n";
+         Html::closeForm();
+      } else {
+         echo "</table>\n";
+      }
+   }
+
+   /**
+    * Print the helpdesk right form for the current profile
+   **/
+   function showFormToolsHelpdesk() {
+      global $CFG_GLPI;
+
+      if (!self::canView()) {
+         return false;
+      }
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
+      if ($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE))) {
+         echo "<form method='post' action='".$this->getFormURL()."'>";
+      }
+
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_2');
+
       if (($this->fields["interface"] == "helpdesk")
           && ($this->fields["knowbase"] == KnowbaseItem::PUBLISHFAQ)) {
          $this->fields["knowbase"] = KnowbaseItem::READFAQ;
@@ -746,7 +788,7 @@ class Profile extends CommonDBTM {
          echo "</table>\n";
       }
    }
-
+   
 
 
    /**
@@ -2400,7 +2442,12 @@ class Profile extends CommonDBTM {
             } else {
                $row['class'] = $param['default_class'];
             }
-            $profile_right = $this->fields[$info['field']];
+            if (isset($this->fields[$info['field']])) {
+               $profile_right = $this->fields[$info['field']];
+            } else {
+               $profile_right = 0;
+            }
+            
             if (isset($info['rights'])) {
                $rights = $info['rights'];
             } else {
