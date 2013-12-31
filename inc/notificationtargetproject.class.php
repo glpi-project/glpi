@@ -63,16 +63,16 @@ class NotificationTargetProject extends NotificationTarget {
 
       $this->addTarget(Notification::MANAGER_USER,  __('Manager'));
       $this->addTarget(Notification::MANAGER_GROUP, __('Manager group'));
-      $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager group supervisor'));
+      $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager of manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR,
-                        __('Manager group without supervisor'));
-      $this->addTarget(Notification::TEAM_USER, __('Project team user'));
-      $this->addTarget(Notification::TEAM_GROUP, __('Project team group'));
-      $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR,  __('Project team group supervisor'));
+                        __('Manager group without manager'));
+      $this->addTarget(Notification::TEAM_USER, __('User of project team'));
+      $this->addTarget(Notification::TEAM_GROUP, __('Group of project team'));
+      $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR,  __('Manager of group of project team'));
       $this->addTarget(Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,
-                        __('Project team group without supervisor'));
-      $this->addTarget(Notification::TEAM_CONTACT, __('Project team contact'));
-      $this->addTarget(Notification::TEAM_SUPPLIER, __('Project team supplier'));
+                        __('Group of project team without manager'));
+      $this->addTarget(Notification::TEAM_CONTACT, __('Contact of project team'));
+      $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
    }
 
 

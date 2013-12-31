@@ -155,7 +155,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[14]['table']              = $this->getTable();
       $tab[14]['field']              = 'cost';
-      $tab[14]['name']               = __('TCost');
+      $tab[14]['name']               = __('Cost');
       $tab[14]['datatype']           = 'decimal';
 
       $tab[18]['table']             = 'glpi_budgets';
