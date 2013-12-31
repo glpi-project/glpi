@@ -777,9 +777,12 @@ class CommonGLPI {
          if (isset($this->fields["entities_id"])
                && Session::isMultiEntitiesMode()
                && $this->isEntityAssign()) {
-            $name = sprintf(__('%1$s (%2$s)'), $name,
-                            Dropdown::getDropdownName("glpi_entities",
-                                                      $this->fields["entities_id"]));
+            $entname = Dropdown::getDropdownName("glpi_entities",
+                                                      $this->fields["entities_id"]);
+            if ($this->isRecursive()) {
+               $entname = sprintf(__('%1$s + %2$s'), $entname, __('Child entities'));
+            }
+            $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
 
          }
          echo "<td class='b big'>".$name."</td>";
