@@ -757,8 +757,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if (($ticket->fields["status"] == CommonITILObject::SOLVED)
           && $ticket->canApprove()
-          && ($ticket->isAllowedStatus($ticket->fields['status'], Ticket::CLOSED)
-               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
+          && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::CLOSED)) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";

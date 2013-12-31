@@ -5250,8 +5250,6 @@ class Html {
             $cb_options['checked']      = ($nb_cb_per_row['checked']
                                              > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
-         } else {
-            echo "\t\t<td class='center'>&nbsp;</td>\n";
          }
          echo "\t</tr>\n";
       }

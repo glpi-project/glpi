@@ -49,19 +49,11 @@ class Profile extends CommonDBTM {
                                           'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'task', 'ticket',
                                           'tickettemplates_id', 'ticket_cost',
-                                          'ticketvalidation');
+                                          'ticketvalidation', 'ticket_status');
 
 
    /// Common fields used for all profiles type
    static public $common_fields = array('id', 'interface', 'is_default', 'name');
-
-
-   //TODO right never used ?
-   /// Fields not related to a basic right
-//   static public $noright_fields = array('comment', 'change_status', 'date_mod',
-//                                         'helpdesk_hardware','helpdesk_item_type', 'own_ticket',
-//                                         'problem_status', 'show_group_hardware',
-//                                         'show_group_ticket', 'ticket_status');
 
    var $dohistory = true;
 
@@ -254,14 +246,15 @@ class Profile extends CommonDBTM {
          }
          $input['helpdesk_hardware'] = $helpdesk_hardware;
       }
-
+      
       if (isset($input["_cycle_ticket"])) {
          $tab   = Ticket::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
                if (($from != $dest)
-                   && ($input["_cycle_ticket"][$from][$dest] == 0)) {
+                   && (!isset($input["_cycle_ticket"][$from][$dest])
+                      || ($input["_cycle_ticket"][$from][$dest] == 0))) {
                   $cycle[$from][$dest] = 0;
                }
             }
@@ -1223,6 +1216,97 @@ class Profile extends CommonDBTM {
    }
 
 
+   /**
+    * Display the matrix of the elements lifecycle of the elements
+    *
+    * @since version 0.85
+    *
+    * @param $title          the kind of lifecycle
+    * @param $html_field     field that is sent to _POST
+    * @param $db_field       field inside the DB (to get current state)
+    * @param $canedit        can we edit the elements ?
+    *
+    * @return nothing
+   **/
+   function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit) {
+
+      $columns  = array();
+      $rows     = array();
+      $statuses = array();
+      $allstatuses = Ticket::getAllStatusArray();
+      foreach (array(Ticket::INCOMING, Ticket::SOLVED, Ticket::CLOSED) as $val) {
+         $statuses[$val] = $allstatuses[$val];
+      }
+      $alwaysok = array(Ticket::INCOMING => array(),
+                            Ticket::SOLVED   => array(Ticket::INCOMING),
+                            Ticket::CLOSED   => array());
+      
+      $allowactions = array(Ticket::INCOMING => array(),
+                            Ticket::SOLVED   => array(Ticket::CLOSED),
+                            Ticket::CLOSED   => array(Ticket::CLOSED));
+
+      foreach ($statuses as $index_1 => $status_1) {
+         $columns[$index_1] = $status_1;
+         $row               = array('label'      => $status_1,
+                                    'columns'    => array());
+
+         foreach ($statuses as $index_2 => $status_2) {
+            $content = array('checked' => true);
+            if (isset($this->fields[$db_field][$index_1][$index_2])) {
+               $content['checked'] = $this->fields[$db_field][$index_1][$index_2];
+            }
+            
+            if (in_array($index_2, $alwaysok[$index_1])) {
+               $content['checked'] = true;
+            }
+            
+            if (($index_1 == $index_2)
+               || (!$canedit)
+               || !in_array($index_2, $allowactions[$index_1])) {
+               $content['readonly'] = true;
+            }
+            $row['columns'][$index_2] = $content;
+         }
+         $rows[$html_field."[$index_1]"] = $row;
+      }
+      Html::showCheckboxMatrix($columns, $rows,
+                               array('title'      => $title,
+                                     'first_cell' => '<b>'.__("From \ To").'</b>'));
+   }   
+   /**
+   * Print the Life Cycles form for the current profile
+   *
+   * @param $openform   boolean  open the form (true by default)
+   * @param $closeform  boolean  close the form (true by default)
+   **/
+   function showFormLifeCycleHelpdesk($openform=true, $closeform=true) {
+
+      if (!self::canView()) {
+         return false;
+      }
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
+
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
+          && $openform) {
+         echo "<form method='post' action='".$this->getFormURL()."'>";
+      }
+
+      $this->displayLifeCycleMatrixTicketHelpdesk(__('Life cycle of tickets'), '_cycle_ticket', 'ticket_status', $canedit);
+
+      if ($canedit
+          && $closeform) {
+         echo "<div class='center'>";
+         echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "</div>\n";
+         Html::closeForm();
+      }
+      echo "</div>";
+   }
+
+   
    /**
     * Print the central form for a profile
     *
