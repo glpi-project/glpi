@@ -2607,8 +2607,19 @@ function update084to085() {
 
    $DB->queryOrDie($query, "0.85 update condition for RuleTicket");
 
-   /// TODO : force alternative_email fields to '' instead of NULL (trouble of unicity)
+   // Update ticket_status for helpdeks profiles
+   $newcycle = array ( 1 => array ( 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ),
+                       2 => array ( 1 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ),
+                       3 => array ( 1 => 0, 2 => 0, 4 => 0, 5 => 0, 6 => 0, ),
+                       4 => array ( 1 => 0, 2 => 0, 3 => 0, 5 => 0, 6 => 0, ),
+                       5 => array ( 1 => 0, 2 => 0, 3 => 0, 4 => 0, ),
+                       6 => array ( 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, ), );
+   $query = "UPDATE `glpi_profiles`
+             SET `ticket_status` = '".exportArrayToDB($newcycle)."'
+             WHERE `interface` = 'helpdesk'";
 
+   $DB->queryOrDie($query, "0.85 update default life cycle for helpdesk");
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
