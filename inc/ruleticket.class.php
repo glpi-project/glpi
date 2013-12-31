@@ -520,7 +520,6 @@ class RuleTicket extends Rule {
                                                                       __('Send an approval request'),
                                                                       __('Minimum validation required'));
       $actions['validation_percent']['type']                = 'dropdown_validation_percent';
-      $actions['validation_percent']['force_actions']       = array('add_validation');
 
       $actions['users_id_validate_requester_supervisor']['name']
                                              = __('Approval request to requester group manager');
