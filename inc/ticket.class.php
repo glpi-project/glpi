@@ -1677,13 +1677,20 @@ class Ticket extends CommonITILObject {
                    || $validation->can(-1, CREATE, $values)) { // cron or allowed user
 
                   $users = $values["users_id_validate"];
+                  $add_done = false;
                   foreach ($users as $user) {
-                     $values["users_id_validate"] = $user;
-                     $validation->add($values);
+                     // Do not auto add twice same validation
+                     if (!TicketValidation::alreadyExists($values['tickets_id'], $user)) {
+                        $values["users_id_validate"] = $user;
+                        $validation->add($values);
+                        $add_done = false;
+                     }
                   }
-                  Event::log($this->fields['id'], "ticket", 4, "tracking",
-                             sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
-                                     $this->fields['id']));
+                  if ($add_done) {
+                     Event::log($this->fields['id'], "ticket", 4, "tracking",
+                              sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                                       $this->fields['id']));
+                  }
                }
             }
          }
