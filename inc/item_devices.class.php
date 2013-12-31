@@ -917,17 +917,9 @@ class Item_Devices extends CommonDBRelation {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      /*
-      $this->addStandardTab('Profile_User', $ong, $options);
-      $this->addStandardTab('Group_User', $ong, $options);
-      $this->addStandardTab('Config', $ong, $options);
-      $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Reservation', $ong, $options);
-      $this->addStandardTab('Auth', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
-      */
 
       return $ong;
    }
