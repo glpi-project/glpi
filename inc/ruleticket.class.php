@@ -174,11 +174,11 @@ class RuleTicket extends Rule {
                         break;
 
                      case 'groups_id_validate' :
-                        $output['_add_validation']['validation_users']['group'][] = $action->fields["value"];
+                        $output['_add_validation']['group'][] = $action->fields["value"];
                         break;
 
                      case 'users_id_validate' :
-                        $output['_add_validation']['validation_users']['user'][] = $action->fields["value"];
+                        $output['_add_validation'][] = $action->fields["value"];
                         break;
 
                      case 'validation_percent' :
