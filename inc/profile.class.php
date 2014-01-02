@@ -1243,7 +1243,7 @@ class Profile extends CommonDBTM {
       
       $allowactions = array(Ticket::INCOMING => array(),
                             Ticket::SOLVED   => array(Ticket::CLOSED),
-                            Ticket::CLOSED   => array(Ticket::CLOSED));
+                            Ticket::CLOSED   => array(Ticket::CLOSED, Ticket::INCOMING));
 
       foreach ($statuses as $index_1 => $status_1) {
          $columns[$index_1] = $status_1;
