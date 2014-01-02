@@ -46,9 +46,9 @@ if (isset($_GET["globalsearch"])) {
       if (($item = getItemForItemtype($itemtype))
           && $item->canView()) {
          $_GET["reset"]        = 'reset';
-         $_GET["display_type"] = Search::GLOBAL_SEARCH;
 
          Search::manageGetValues($itemtype,false,true);
+         $_GET["display_type"] = Search::GLOBAL_SEARCH;
 
          $count = count($_GET["field"]);
 
