@@ -4707,7 +4707,6 @@ class Search {
       $default_values["start"]       = 0;
       $default_values["order"]       = "ASC";
       $default_values["is_deleted"]  = 0;
-      $default_values["distinct"]    = "N";
       $default_values["link"]        = array();
       $default_values["field"]       = array();
       $default_values["contains"]    = array(0 => "");
@@ -4718,6 +4717,18 @@ class Search {
       $default_values["itemtype2"]   = "";
       $default_values["searchtype2"] = "";
       $default_values["sort"]        = 1;
+
+      // Reorg search array
+      // start
+      // order
+      // sort
+      // is_deleted
+      // itemtype
+      // criteria : array (0 => array (itemtype => (meta if != central itemtype)
+      //                               link =>
+      //                               field =>
+      //                               condition =>   (searchtype)
+      //                               value =>   (contains)
 
       if (($itemtype != 'AllAssets')
           && class_exists($itemtype)
