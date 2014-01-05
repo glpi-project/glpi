@@ -59,17 +59,16 @@ foreach ($searchopt as $key => $val) {
       }
    }
 }
-$rand = Dropdown::showFromArray("field2[".$_POST["num"]."]", $values,
+$rand = Dropdown::showFromArray("metacriteria[".$_POST["num"]."][field]", $values,
                                 array('value' => $_POST["field"],
                                       'width' => '100%'));
-$field_id = Html::cleanId("dropdown_field2[".$_POST["num"]."]".$rand);
+$field_id = Html::cleanId("dropdown_metacriteria[".$_POST["num"]."][field]".$rand);
 
 echo "</td><td class='left'>";
 
 echo "<span id='Search2Span".$_POST["itemtype"].$_POST["num"]."'>\n";
 
 $_POST['meta']       = 1;
-$_POST['searchtype'] = $_POST["searchtype2"];
 
 include (GLPI_ROOT."/ajax/searchoption.php");
 echo "</span>\n";
@@ -78,7 +77,7 @@ $params = array('field'      => '__VALUE__',
                 'itemtype'   => $_POST["itemtype"],
                 'num'        => $_POST["num"],
                 'value'      => $_POST["value"],
-                'searchtype' => $_POST["searchtype2"],
+                'searchtype' => $_POST["searchtype"],
                 'meta'       => 1);
 
 Ajax::updateItemOnSelectEvent($field_id,

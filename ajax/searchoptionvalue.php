@@ -48,12 +48,12 @@ if (isset($_POST['searchtype'])) {
    $searchopt      = $_POST['searchopt'];
    $_POST['value'] = rawurldecode($_POST['value']);
 
-   $addmeta        = "";
+   $fieldname = 'criteria';
    if (isset($_POST['meta']) && $_POST['meta']) {
-      $addmeta = '2';
+      $fieldname = 'metacriteria';
    }
 
-   $inputname         = 'contains'.$addmeta.'['.$_POST['num'].']';
+   $inputname         = $fieldname.'['.$_POST['num'].'][value]';
    $display           = false;
    $item              = getItemForItemtype($_POST['itemtype']);
    $options2          = array();
