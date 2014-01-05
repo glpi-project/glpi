@@ -44,15 +44,15 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-   $addmeta = "";
-
 // Non define case
 if (isset($_POST["itemtype"])
-    && isset($_POST["field"]) ) {
+    && isset($_POST["field"])
+    && isset($_POST["num"]) ) {
 
    if (isset($_POST['meta']) && $_POST['meta']) {
-      $addmeta = '2';
+      $fieldname = 'metacriteria';
    } else {
+      $fieldname = 'criteria';
       $_POST['meta'] = 0;
    }
 
@@ -68,7 +68,7 @@ if (isset($_POST["itemtype"])
    }
 
    $randsearch   = -1;
-   $dropdownname = "searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
+   $dropdownname = "searchtype$fieldname".$_POST["itemtype"].$_POST["num"];
    $searchopt    = array();
 
    echo "<table width='100%'><tr><td width='20%'>";
@@ -81,11 +81,11 @@ if (isset($_POST["itemtype"])
          unset($searchopt['name']);
          unset($actions['searchopt']);
       }
-      $randsearch = Dropdown::showFromArray("searchtype".$addmeta."[".$_POST["num"]."]",
+      $randsearch = Dropdown::showFromArray($fieldname."[".$_POST["num"]."][searchtype]",
                                             $actions,
                                             array('value'  => $_POST["searchtype"],
                                                   'width'  => '100%'));
-      $fieldsearch_id = Html::cleanId("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
+      $fieldsearch_id = Html::cleanId("dropdown_".$fieldname."[".$_POST["num"]."][searchtype]$randsearch");
    }
    echo "</td><td width='80%'>";
    echo "<span id='span$dropdownname'>\n";

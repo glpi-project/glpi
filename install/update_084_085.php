@@ -2652,8 +2652,69 @@ function update084to085() {
             $options = array();
             parse_str($data["query"], $options);
 
-            
+            // Copy itemtype if not set
+            if (!isset($options['itemtype'])) {
+               $options['itemtype'] = $data['itemtype']
+            }
+            // Move criteria
+            if (isset($options['field']) && is_array($options['field'])) {
+               foreach ($options['field'] as $key => $val) {
+                  $options['criteria'][$key]['field'] = $val;
+                  
+                  //  other field
+                  if (isset($options['link'][$key])) {
+                     $options['criteria'][$key]['link'] = $options['link'][$key];
+                  }
+                  
+                  if (isset($options['searchtype'][$key])) {
+                     $options['criteria'][$key]['searchtype'] = $options['searchtype'][$key];
+                  } else {
+                     $options['criteria'][$key]['searchtype'] = 'contains';
+                  }
+                  
+                  if (isset($options['contains'][$key])) {
+                     $options['criteria'][$key]['value'] = $options['contains'][$key];
+                  } else {
+                     $options['criteria'][$key]['value'] = '';
+                  }
+               }
+               unset($options['field']);
+               unset($options['contains']);
+               unset($options['searchtype']);
+               unset($options['link']);
+            }
 
+            if (isset($options['field2']) && is_array($options['field2'])) {
+               foreach ($options['field2'] as $key => $val) {
+                  $options['metacriteria'][$key]['field2'] = $val;
+
+                  //  other field
+                  if (isset($options['itemtype2'][$key])) {
+                     $options['metacriteria'][$key]['itemtype'] = $options['itemtype2'][$key];
+                  }
+                  
+                  if (isset($options['link2'][$key])) {
+                     $options['metacriteria'][$key]['link'] = $options['link2'][$key];
+                  }
+                  
+                  if (isset($options['searchtype2'][$key])) {
+                     $options['metacriteria'][$key]['searchtype'] = $options['searchtype2'][$key];
+                  } else {
+                     $options['metacriteria'][$key]['searchtype'] = 'contains';
+                  }
+                  
+                  if (isset($options['contains2'][$key])) {
+                     $options['metacriteria'][$key]['value'] = $options['contains2'][$key];
+                  } else {
+                     $options['metacriteria'][$key]['value'] = '';
+                  }
+               }
+               unset($options['field2']);
+               unset($options['contains2']);
+               unset($options['searchtype2']);
+               unset($options['link2']);
+               unset($options['itemtype2']);
+            }
             
             $query2 = "UPDATE `glpi_bookmarks`
                        SET `query` = '".addslashes(Toolbox::append_params($options))."'
