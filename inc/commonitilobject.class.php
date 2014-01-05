@@ -3128,15 +3128,15 @@ abstract class CommonITILObject extends CommonDBTM {
              && ($options["_users_id_".$typename] > 0)
              && ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
 
-            $options2['field'][0]      = 4; // users_id
-            $options2['searchtype'][0] = 'equals';
-            $options2['contains'][0]   = $options["_users_id_".$typename];
-            $options2['link'][0]       = 'AND';
+            $options2['criteria'][0]['field']      = 4; // users_id
+            $options2['criteria'][0]['searchtype'] = 'equals';
+            $options2['criteria'][0]['value']      = $options["_users_id_".$typename];
+            $options2['criteria'][0]['link']       = 'AND';
 
-            $options2['field'][1]      = 12; // status
-            $options2['searchtype'][1] = 'equals';
-            $options2['contains'][1]   = 'notold';
-            $options2['link'][1]       = 'AND';
+            $options2['criteria'][1]['field']      = 12; // status
+            $options2['criteria'][1]['searchtype'] = 'equals';
+            $options2['criteria'][1]['value']      = 'notold';
+            $options2['criteria'][1]['link']       = 'AND';
 
             $options2['reset'] = 'reset';
 

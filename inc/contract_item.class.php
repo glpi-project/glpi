@@ -545,10 +545,18 @@ class Contract_Item extends CommonDBRelation{
             $nb            = $DB->numrows($result_linked);
 
             if ($nb > $_SESSION['glpilist_limit']) {
-               $link = "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
-                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
-                         rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
-                         "&amp;start=0". "'>" . __('Device list')."</a>";
+
+               $opt = array('order'      => 'ASC',
+                              'is_deleted' => 0,
+                              'reset'      => 'reset',
+                              'start'      => 0,
+                              'sort'       => 80,
+                              'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
+                                                               'searchtype' => 'contains',
+                                                               'field'      => 29)));
+
+               $link = "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .Toolbox::append_params($opt).
+                        "'>" . __('Device list')."</a>";
 
                $data[$itemtype] = array('longlist' => true,
                                         'name'     => sprintf(__('%1$s: %2$s'),

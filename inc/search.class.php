@@ -503,7 +503,7 @@ class Search {
       // Meta Search / Search All / Count tickets
       if (($_SESSION["glpisearchcount2"][$itemtype] > 0)
           || !empty($HAVING)
-          || in_array('all', $p['field'])) {
+          || $all_search) {
 
          $GROUPBY = " GROUP BY `$itemtable`.`id`";
       }

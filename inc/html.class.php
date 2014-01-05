@@ -2021,15 +2021,15 @@ class Html {
                                                     TicketValidation::VALIDATEINCIDENT))) {
          $opt                  = array();
          $opt['reset']         = 'reset';
-         $opt['field'][0]      = 55; // validation status
-         $opt['searchtype'][0] = 'equals';
-         $opt['contains'][0]   = "waiting";
-         $opt['link'][0]       = 'AND';
+         $opt['criteria'][0]['field']      = 55; // validation status
+         $opt['criteria'][0]['searchtype'] = 'equals';
+         $opt['criteria'][0]['value']      = "waiting";
+         $opt['criteria'][0]['link']       = 'AND';
 
-         $opt['field'][1]      = 59; // validation aprobator
-         $opt['searchtype'][1] = 'equals';
-         $opt['contains'][1]   = Session::getLoginUserID();
-         $opt['link'][1]       = 'AND';
+         $opt['criteria'][1]['field']      = 59; // validation aprobator
+         $opt['criteria'][1]['searchtype'] = 'equals';
+         $opt['criteria'][1]['value']      = Session::getLoginUserID();
+         $opt['criteria'][1]['link']       = 'AND';
 
 
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".

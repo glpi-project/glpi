@@ -395,9 +395,17 @@ class Budget extends CommonDropdown{
                   //TRANS: %1$s is a name, %2$s is a number
                   echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $name, $nb)."</td>";
                   echo "<td class='center' colspan='2'>";
-                  echo "<a href='". $item->getSearchURL() . "?" .
-                        rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
-                        rawurlencode("field[0]")."=50&sort=80&order=ASC&is_deleted=0&start=0". "'>".
+
+                  $opt = array('order'      => 'ASC',
+                               'is_deleted' => 0,
+                               'reset'      => 'reset',
+                               'start'      => 0,
+                               'sort'       => 80,
+                               'criteria'   => array(0 => array('value'      => '$$$$'.$budgets_id,
+                                                                'searchtype' => 'contains',
+                                                                'field'      => 50)));
+                  
+                  echo "<a href='". $item->getSearchURL() . "?" .Toolbox::append_params($opt). "'>".
                         __('Device list')."</a></td>";
                   echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-".
                        "</td></tr>";
