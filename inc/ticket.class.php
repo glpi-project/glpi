@@ -171,15 +171,15 @@ class Ticket extends CommonITILObject {
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt = array();
          $opt['reset']         = 'reset';
-         $opt['field'][0]      = 55; // validation status
-         $opt['searchtype'][0] = 'equals';
-         $opt['contains'][0]   = CommonITILValidation::WAITING;
-         $opt['link'][0]       = 'AND';
+         $opt['criteria'][0]['field']      = 55; // validation status
+         $opt['criteria'][0]['searchtype'] = 'equals';
+         $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
+         $opt['criteria'][0]['link']       = 'AND';
 
-         $opt['field'][1]      = 59; // validation aprobator
-         $opt['searchtype'][1] = 'equals';
-         $opt['contains'][1]   = Session::getLoginUserID();
-         $opt['link'][1]       = 'AND';
+         $opt['criteria'][1]['field']      = 59; // validation aprobator
+         $opt['criteria'][1]['searchtype'] = 'equals';
+         $opt['criteria'][1]['value']      = Session::getLoginUserID();
+         $opt['criteria'][1]['link']       = 'AND';
 
          $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
@@ -2953,15 +2953,15 @@ class Ticket extends CommonITILObject {
 
          $opt                  = array();
          $opt['reset']         = 'reset';
-         $opt['field'][0]      = 55; // validation status
-         $opt['searchtype'][0] = 'equals';
-         $opt['contains'][0]   = CommonITILValidation::WAITING;
-         $opt['link'][0]       = 'AND';
+         $opt['criteria'][0]['field']      = 55; // validation status
+         $opt['criteria'][0]['searchtype'] = 'equals';
+         $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
+         $opt['criteria'][0]['link']       = 'AND';
 
-         $opt['field'][1]      = 59; // validation aprobator
-         $opt['searchtype'][1] = 'equals';
-         $opt['contains'][1]   = Session::getLoginUserID();
-         $opt['link'][1]       = 'AND';
+         $opt['criteria'][1]['field']      = 59; // validation aprobator
+         $opt['criteria'][1]['searchtype'] = 'equals';
+         $opt['criteria'][1]['value']      = Session::getLoginUserID();
+         $opt['criteria'][1]['link']       = 'AND';
 
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt,
                                                                                            '&amp;');
@@ -4644,57 +4644,64 @@ class Ticket extends CommonITILObject {
          if ($showgrouptickets) {
             switch ($status) {
                case "toapprove" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = self::SOLVED;
-                  $options['link'][0]       = 'AND';
-                  $options['field'][1]      = 71; // groups_id
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'mygroups';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::SOLVED;
+                  $options['criteria'][0]['link']       = 'AND';
+                  
+                  $options['criteria'][1]['field']      = 71; // groups_id
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
                   $forcetab                 = 'Ticket$2';
+                  
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
                   break;
 
                case "waiting" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = self::WAITING;
-                  $options['link'][0]       = 'AND';
-                  $options['field'][1]      = 8; // groups_id_assign
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'mygroups';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
+                  
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+                  
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets on pending status'), $number, $numrows)."</a>";
                   break;
 
                case "process" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'process';
-                  $options['link'][0]       = 'AND';
-                  $options['field'][1]      = 8; // groups_id_assign
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'mygroups';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'process';
+                  $options['criteria'][0]['link']       = 'AND';
+                  
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+                  
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
                   break;
 
                case "observed":
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'notold';
-                  $options['link'][0]       = 'AND';
-                  $options['field'][1]      = 65; // groups_id
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'mygroups';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'notold';
+                  $options['criteria'][0]['link']       = 'AND';
+                  
+                  $options['criteria'][1]['field']      = 65; // groups_id
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
@@ -4703,14 +4710,15 @@ class Ticket extends CommonITILObject {
 
                case "requestbyself" :
                default :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'notold';
-                  $options['link'][0]       = 'AND';
-                  $options['field'][1]      = 71; // groups_id
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'mygroups';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'notold';
+                  $options['criteria'][0]['link']       = 'AND';
+                  
+                  $options['criteria'][1]['field']      = 71; // groups_id
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
@@ -4720,15 +4728,15 @@ class Ticket extends CommonITILObject {
          } else {
             switch ($status) {
                case "waiting" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = self::WAITING;
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 5; // users_id_assign
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = Session::getLoginUserID();
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 5; // users_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
@@ -4736,15 +4744,15 @@ class Ticket extends CommonITILObject {
                   break;
 
                case "process" :
-                  $options['field'][0]      = 5; // users_id_assign
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = Session::getLoginUserID();
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 5; // users_id_assign
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 12; // status
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'process';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'process';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
@@ -4752,20 +4760,20 @@ class Ticket extends CommonITILObject {
                   break;
 
                case "tovalidate" :
-                  $options['field'][0]      = 55; // validation status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = CommonITILValidation::WAITING;
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 55; // validation status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = CommonITILValidation::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 59; // validation aprobator
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = Session::getLoginUserID();
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 59; // validation aprobator
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
 
-                  $options['field'][2]      = 12; // validation aprobator
-                  $options['searchtype'][2] = 'equals';
-                  $options['contains'][2]   = 'old';
-                  $options['link'][2]       = 'AND NOT';
+                  $options['criteria'][2]['field']      = 12; // validation aprobator
+                  $options['criteria'][2]['searchtype'] = 'equals';
+                  $options['criteria'][2]['value']      = 'old';
+                  $options['criteria'][2]['link']       = 'AND NOT';
                   $forcetab                 = 'TicketValidation$1';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -4775,15 +4783,15 @@ class Ticket extends CommonITILObject {
                   break;
 
                case "rejected" :
-                  $options['field'][0]      = 52; // validation status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = CommonITILValidation::REFUSED;
-                  $options['link'][0]        = 'AND';
+                  $options['criteria'][0]['field']      = 52; // validation status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = CommonITILValidation::REFUSED;
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 5; // assign user
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = Session::getLoginUserID();
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 5; // assign user
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
@@ -4792,25 +4800,25 @@ class Ticket extends CommonITILObject {
                   break;
 
                case "toapprove" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = self::SOLVED;
-                  $options['link'][0]        = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::SOLVED;
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 4; // users_id_assign
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = Session::getLoginUserID();
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 4; // users_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
 
-                  $options['field'][2]      = 22; // users_id_recipient
-                  $options['searchtype'][2] = 'equals';
-                  $options['contains'][2]   = Session::getLoginUserID();
-                  $options['link'][2]       = 'OR';
+                  $options['criteria'][2]['field']      = 22; // users_id_recipient
+                  $options['criteria'][2]['searchtype'] = 'equals';
+                  $options['criteria'][2]['value']      = Session::getLoginUserID();
+                  $options['criteria'][2]['link']       = 'OR';
 
-                  $options['field'][3]      = 12; // status
-                  $options['searchtype'][3] = 'equals';
-                  $options['contains'][3]   = self::SOLVED;
-                  $options['link'][3]       = 'AND';
+                  $options['criteria'][3]['field']      = 12; // status
+                  $options['criteria'][3]['searchtype'] = 'equals';
+                  $options['criteria'][3]['value']      = self::SOLVED;
+                  $options['criteria'][3]['link']       = 'AND';
 
                   $forcetab                 = 'Ticket$2';
 
@@ -4820,15 +4828,15 @@ class Ticket extends CommonITILObject {
                   break;
 
                case "observed" :
-                  $options['field'][0]      = 66; // users_id
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = Session::getLoginUserID();
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 66; // users_id
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 12; // status
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'notold';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'notold';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
@@ -4837,15 +4845,15 @@ class Ticket extends CommonITILObject {
 
                case "requestbyself" :
                default :
-                  $options['field'][0]      = 4; // users_id
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = Session::getLoginUserID();
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 4; // users_id
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 12; // status
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'notold';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']   = 'notold';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
@@ -4942,10 +4950,10 @@ class Ticket extends CommonITILObject {
             $number_deleted += $data["COUNT"];
          }
       }
-      $options['field'][0]      = 12;
-      $options['searchtype'][0] = 'equals';
-      $options['contains'][0]   = 'process';
-      $options['link'][0]       = 'AND';
+      $options['criteria'][0]['field']      = 12;
+      $options['criteria'][0]['searchtype'] = 'equals';
+      $options['criteria'][0]['value']      = 'process';
+      $options['criteria'][0]['link']       = 'AND';
       $options['reset']         ='reset';
 
       echo "<table class='tab_cadrehov' >";
@@ -4963,14 +4971,14 @@ class Ticket extends CommonITILObject {
       echo "<tr><th>"._n('Ticket','Tickets',2)."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {
-         $options['contains'][0] = $key;
+         $options['criteria'][0]['value'] = $key;
          echo "<tr class='tab_bg_2'>";
          echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                     Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
          echo "<td class='numeric'>$val</td></tr>";
       }
 
-      $options['contains'][0] = 'all';
+      $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -5001,10 +5009,10 @@ class Ticket extends CommonITILObject {
       if ($number > 0) {
          Session::initNavigateListItems('Ticket');
 
-         $options['field'][0]      = 12;
-         $options['searchtype'][0] = 'equals';
-         $options['contains'][0]   = self::INCOMING;
-         $options['link'][0]       = 'AND';
+         $options['criteria'][0]['field']      = 12;
+         $options['criteria'][0]['searchtype'] = 'equals';
+         $options['criteria'][0]['value']   = self::INCOMING;
+         $options['criteria'][0]['link']       = 'AND';
          $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -5061,29 +5069,29 @@ class Ticket extends CommonITILObject {
                                        " AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
             $options['reset']         = 'reset';
-            $options['field'][0]      = 4; // status
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 4; // status
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']   = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'SLA' :
             $restrict                 = "(`slas_id` = '".$item->getID()."')";
             $order                    = '`glpi_tickets`.`due_date` DESC';
-            $options['field'][0]      = 30;
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 30;
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']   = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'Supplier' :
             $restrict                 = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
                                        "  AND `glpi_suppliers_tickets`.`type` = ".CommonITILActor::ASSIGN.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
-            $options['field'][0]      = 6;
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 6;
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']   = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'Group' :
@@ -5109,10 +5117,10 @@ class Ticket extends CommonITILObject {
             $restrict                 = "(`glpi_groups_tickets`.`groups_id` $restrict
                                           AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
-            $options['field'][0]      = 71;
-            $options['searchtype'][0] = ($tree ? 'under' : 'equals');
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 71;
+            $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          default :
@@ -5120,16 +5128,16 @@ class Ticket extends CommonITILObject {
                                           AND `itemtype` = '".$item->getType()."')";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
 
-            $options['field'][0]      = 12;
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = 'all';
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 12;
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']      = 'all';
+            $options['criteria'][0]['link']       = 'AND';
 
-            $options['itemtype2'][0]   = $item->getType();
-            $options['field2'][0]      = Search::getOptionNumber($item->getType(), 'id');
-            $options['searchtype2'][0] = 'equals';
-            $options['contains2'][0]   = $item->getID();
-            $options['link2'][0]       = 'AND';
+            $options['metacriteria'][0]['itemtype']   = $item->getType();
+            $options['metacriteria'][0]['field']      = Search::getOptionNumber($item->getType(), 'id');
+            $options['metacriteria'][0]['searchtype'] = 'equals';
+            $options['metacriteria'][0]['value']      = $item->getID();
+            $options['metacriteria'][0]['link']       = 'AND';
             break;
       }
 

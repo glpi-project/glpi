@@ -186,9 +186,14 @@ class State extends CommonTreeDropdown {
          while ($data = $DB->fetch_assoc($result)) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/allassets.php?reset=reset&amp;contains[0]=".
-                   "$$$$".$data["id"]."&amp;searchtype[0]=contains&amp;field[0]=31&amp;sort=".
-                   "1&amp;start=0'>".$data["completename"]."</a></td>";
+
+            $opt = array('reset'    => 'reset',
+                        'sort'     => 1,
+                        'start'    => 0,
+                        'criteria' => array('0' => array('value' => '$$$$'.$data['id'],
+                                                         'searchtype' => 'contains',
+                                                         'field' => 31)));
+            echo "<a href='".$CFG_GLPI['root_doc']."/front/allassets.php?".Toolbox::append_params($opt, '&amp;')."'>".$data["completename"]."</a></td>";
 
             foreach ($state_type as $itemtype) {
                echo "<td class='numeric'>";

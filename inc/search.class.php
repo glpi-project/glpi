@@ -3999,10 +3999,10 @@ class Search {
                if (($data[$NAME.$num] > 0)
                    && Session::haveRight("problem", Problem::READALL)) {
                   if ($itemtype == 'ITILCategory') {
-                     $options['field'][0]      = 7;
-                     $options['searchtype'][0] = 'equals';
-                     $options['contains'][0]   = $data['id'];
-                     $options['link'][0]       = 'AND';
+                     $options['criteria'][0]['field']      = 7;
+                     $options['criteria'][0]['searchtype'] = 'equals';
+                     $options['criteria'][0]['value']      = $data['id'];
+                     $options['criteria'][0]['link']       = 'AND';
                   }
 
                   $options['reset'] = 'reset';
@@ -4022,38 +4022,38 @@ class Search {
                    && Session::haveRight("ticket", Ticket::READALL)) {
 
                   if ($itemtype == 'User') {
-                     $options['field'][0]      = 4;
-                     $options['searchtype'][0] = 'equals';
-                     $options['contains'][0]   = $data['id'];
-                     $options['link'][0]       = 'AND';
+                     $options['criteria'][0]['field']      = 4;
+                     $options['criteria'][0]['searchtype']= 'equals';
+                     $options['criteria'][0]['value']      = $data['id'];
+                     $options['criteria'][0]['link']       = 'AND';
 
-                     $options['field'][1]      = 22;
-                     $options['searchtype'][1] = 'equals';
-                     $options['contains'][1]   = $data['id'];
-                     $options['link'][1]       = 'OR';
+                     $options['criteria'][1]['field']      = 22;
+                     $options['criteria'][1]['searchtype'] = 'equals';
+                     $options['criteria'][1]['value']      = $data['id'];
+                     $options['criteria'][1]['link']       = 'OR';
 
-                     $options['field'][2]      = 5;
-                     $options['searchtype'][2] = 'equals';
-                     $options['contains'][2]   = $data['id'];
-                     $options['link'][2]       = 'OR';
+                     $options['criteria'][2]['field']      = 5;
+                     $options['criteria'][2]['searchtype'] = 'equals';
+                     $options['criteria'][2]['value']      = $data['id'];
+                     $options['criteria'][2]['link']       = 'OR';
 
                   } else if ($itemtype == 'ITILCategory') {
-                     $options['field'][0]      = 7;
-                     $options['searchtype'][0] = 'equals';
-                     $options['contains'][0]   = $data['id'];
-                     $options['link'][0]       = 'AND';
+                     $options['criteria'][0]['field']      = 7;
+                     $options['criteria'][0]['searchtype'] = 'equals';
+                     $options['criteria'][0]['value']      = $data['id'];
+                     $options['criteria'][0]['link']       = 'AND';
 
                   } else {
-                     $options['field'][0]       = 12;
-                     $options['searchtype'][0]  = 'equals';
-                     $options['contains'][0]    = 'all';
-                     $options['link'][0]        = 'AND';
+                     $options['criteria'][0]['field']       = 12;
+                     $options['criteria'][0]['searchtype']  = 'equals';
+                     $options['criteria'][0]['value']       = 'all';
+                     $options['criteria'][0]['link']        = 'AND';
 
-                     $options['itemtype2'][0]   = $itemtype;
-                     $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
-                     $options['searchtype2'][0] = 'equals';
-                     $options['contains2'][0]   = $data['id'];
-                     $options['link2'][0]       = 'AND';
+                     $options['metacriteria'][0]['itemtype']   = $itemtype;
+                     $options['metacriteria'][0]['field']      = self::getOptionNumber($itemtype, 'name');
+                     $options['metacriteria'][0]['searchtype'] = 'equals';
+                     $options['metacriteria'][0]['value']      = $data['id'];
+                     $options['metacriteria'][0]['link']       = 'AND';
                   }
 
                   $options['reset'] = 'reset';
