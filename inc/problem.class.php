@@ -660,54 +660,48 @@ class Problem extends CommonITILObject {
             switch ($status) {
 
                case "waiting" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 8; // groups_id_assign
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = self::WAITING;
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
                   break;
 
                case "process" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 8; // groups_id_assign
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'process';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'process';
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 8; // groups_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+                  
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
                   break;
 
                default :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 71; // groups_id
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'process';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = 'notold';
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 71; // groups_id
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+                  
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
@@ -716,15 +710,15 @@ class Problem extends CommonITILObject {
          } else {
             switch ($status) {
                case "waiting" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = self::WAITING;
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::WAITING;
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 5; // users_id_assign
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = Session::getLoginUserID();
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 5; // users_id_assign
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
@@ -732,15 +726,15 @@ class Problem extends CommonITILObject {
                   break;
 
                case "process" :
-                  $options['field'][0]      = 5; // users_id_assign
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = Session::getLoginUserID();
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 5; // users_id_assign
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 12; // status
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'process';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'process';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                          Toolbox::append_params($options,'&amp;')."\">".
@@ -748,15 +742,15 @@ class Problem extends CommonITILObject {
                   break;
 
                default :
-                  $options['field'][0]      = 4; // users_id
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = Session::getLoginUserID();
-                  $options['link'][0]       = 'AND';
+                  $options['criteria'][0]['field']      = 4; // users_id
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = Session::getLoginUserID();
+                  $options['criteria'][0]['link']       = 'AND';
 
-                  $options['field'][1]      = 12; // status
-                  $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = 'notold';
-                  $options['link'][1]       = 'AND';
+                  $options['criteria'][1]['field']      = 12; // status
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'notold';
+                  $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
@@ -853,11 +847,11 @@ class Problem extends CommonITILObject {
             $number_deleted += $data["COUNT"];
          }
       }
-      $options['field'][0]      = 12;
-      $options['searchtype'][0] = 'equals';
-      $options['contains'][0]   = 'process';
-      $options['link'][0]       = 'AND';
-      $options['reset']         ='reset';
+      $options['criteria'][0]['field']      = 12;
+      $options['criteria'][0]['searchtype'] = 'equals';
+      $options['criteria'][0]['value']      = 'process';
+      $options['criteria'][0]['link']       = 'AND';
+      $options['reset']                     ='reset';
 
       echo "<table class='tab_cadrehov' >";
       echo "<tr><th colspan='2'>";
@@ -869,14 +863,14 @@ class Problem extends CommonITILObject {
       echo "<tr><th>"._n('Problem','Problems',2)."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {
-         $options['contains'][0] = $key;
+         $options['criteria'][0]['value'] = $key;
          echo "<tr class='tab_bg_2'>";
          echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                     Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
          echo "<td class='numeric'>$val</td></tr>";
       }
 
-      $options['contains'][0] = 'all';
+      $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
@@ -1297,11 +1291,10 @@ class Problem extends CommonITILObject {
                             AND `glpi_problems_users`.`type` = ".CommonITILActor::REQUESTER.")";
             $order      = '`glpi_problems`.`date_mod` DESC';
 
-            $options['reset']         = 'reset';
-            $options['field'][0]      = 4; // status
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 4; // status
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'Supplier' :
@@ -1309,10 +1302,10 @@ class Problem extends CommonITILObject {
                             AND `glpi_problems_suppliers`.`type` = ".CommonITILActor::REQUESTER.")";
             $order      = '`glpi_problems`.`date_mod` DESC';
 
-            $options['field'][0]      = 6;
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 6;
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'Group' :
@@ -1339,27 +1332,16 @@ class Problem extends CommonITILObject {
                             AND `glpi_groups_problems`.`type` = ".CommonITILActor::REQUESTER.")";
             $order      = '`glpi_problems`.`date_mod` DESC';
 
-            $options['field'][0]      = 71;
-            $options['searchtype'][0] = ($tree ? 'under' : 'equals');
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
+            $options['criteria'][0]['field']      = 71;
+            $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
             break;
 
          default :
             $restrict   = "(`items_id` = '".$item->getID()."'
                             AND `itemtype` = '".$item->getType()."')";
             $order      = '`glpi_problems`.`date_mod` DESC';
-
-//             $options['field'][0]      = 12;
-//             $options['searchtype'][0] = 'equals';
-//             $options['contains'][0]   = 'all';
-//             $options['link'][0]       = 'AND';
-//
-//             $options['itemtype2'][0]   = $item->getType();
-//             $options['field2'][0]      = Search::getOptionNumber($item->getType(), 'id');
-//             $options['searchtype2'][0] = 'equals';
-//             $options['contains2'][0]   = $item->getID();
-//             $options['link2'][0]       = 'AND';
             break;
       }
 
