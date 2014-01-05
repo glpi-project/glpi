@@ -1921,14 +1921,15 @@ class Ticket extends CommonITILObject {
    **/
    static function getDefaultSearchRequest() {
 
-      $search = array('field'      => array(0 => 12),
-                      'searchtype' => array(0 => 'equals'),
-                      'contains'   => array(0 => 'notclosed'),
+      $search = array('criteria' => array(0 => array('field' => 12,
+                                                     'searchtype' => 'equals',
+                                                     'value' => 'notclosed',
+                                         )),
                       'sort'       => 19,
                       'order'      => 'DESC');
 
       if (Session::haveRight(self::$rightname, self::READALL)) {
-         $search['contains'] = array(0 => 'notold');
+         $search['criteria'][0]['value'] = 'notold';
       }
      return $search;
    }

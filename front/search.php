@@ -50,11 +50,11 @@ if (isset($_GET["globalsearch"])) {
          Search::manageGetValues($itemtype,false,true);
          $_GET["display_type"] = Search::GLOBAL_SEARCH;
 
-         $count = count($_GET["field"]);
+         $count = count($_GET["criteria"]);
 
-         $_GET["field"][$count]                  = 'view';
-         $_GET["contains"][$count]               = $searchtext;
-         $_GET["searchtype"][$count]             = 'contains';
+         $_GET["criteria"][$count]["field"]      = 'view';
+         $_GET["criteria"][$count]["searchtype"] = 'contains';
+         $_GET["criteria"][$count]["value"]      = $searchtext;
          $_SESSION["glpisearchcount"][$itemtype] = $count+1;
          
          Search::showList($itemtype, $_GET);

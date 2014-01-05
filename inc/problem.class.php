@@ -379,9 +379,9 @@ class Problem extends CommonITILObject {
    **/
    static function getDefaultSearchRequest() {
 
-      $search = array('field'      => array(0 => 12),
-                      'searchtype' => array(0 => 'equals'),
-                      'contains'   => array(0 => 'notold'),
+      $search = array('criteria' => array(0=> array('field'      => 12,
+                                                    'searchtype' => 'equals',
+                                                    'value'      => 'notold')),
                       'sort'       => 19,
                       'order'      => 'DESC');
 

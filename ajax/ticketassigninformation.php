@@ -45,15 +45,15 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
-   $options2['field'][0]      = 5; // users_id assign
-   $options2['searchtype'][0] = 'equals';
-   $options2['contains'][0]   = $_POST['users_id_assign'];
-   $options2['link'][0]       = 'AND';
+   $options2['criteria'][0]['field']      = 5; // users_id assign
+   $options2['criteria'][0]['searchtype'] = 'equals';
+   $options2['criteria'][0]['value']      = $_POST['users_id_assign'];
+   $options2['criteria'][0]['link']       = 'AND';
 
-   $options2['field'][1]      = 12; // status
-   $options2['searchtype'][1] = 'equals';
-   $options2['contains'][1]   = 'notold';
-   $options2['link'][1]       = 'AND';
+   $options2['criteria'][1]['field']      = 12; // status
+   $options2['criteria'][1]['searchtype'] = 'equals';
+   $options2['criteria'][1]['value']      = 'notold';
+   $options2['criteria'][1]['link']       = 'AND';
 
    $options2['reset'] = 'reset';
 
@@ -68,15 +68,15 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 } else if (isset($_POST['groups_id_assign']) && ($_POST['groups_id_assign'] > 0)) {
    $ticket = new Ticket();
 
-   $options2['field'][0]      = 8; // groups_id assign
-   $options2['searchtype'][0] = 'equals';
-   $options2['contains'][0]   = $_POST['groups_id_assign'];
-   $options2['link'][0]       = 'AND';
+   $options2['criteria'][0]['field']      = 8; // groups_id assign
+   $options2['criteria'][0]['searchtype'] = 'equals';
+   $options2['criteria'][0]['value']      = $_POST['groups_id_assign'];
+   $options2['criteria'][0]['link']       = 'AND';
 
-   $options2['field'][1]      = 12; // status
-   $options2['searchtype'][1] = 'equals';
-   $options2['contains'][1]   = 'notold';
-   $options2['link'][1]       = 'AND';
+   $options2['criteria'][1]['field']      = 12; // status
+   $options2['criteria'][1]['searchtype'] = 'equals';
+   $options2['criteria'][1]['value']      = 'notold';
+   $options2['criteria'][1]['link']       = 'AND';
 
    $options2['reset']         = 'reset';
 
@@ -91,15 +91,15 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
-   $options2['field'][0]      = 6; // suppliers_id assign
-   $options2['searchtype'][0] = 'equals';
-   $options2['contains'][0]   = $_POST['suppliers_id_assign'];
-   $options2['link'][0]       = 'AND';
+   $options2['criteria'][0]['field']      = 6; // suppliers_id assign
+   $options2['criteria'][0]['searchtype'] = 'equals';
+   $options2['criteria'][0]['value']      = $_POST['suppliers_id_assign'];
+   $options2['criteria'][0]['link']       = 'AND';
 
-   $options2['field'][1]      = 12; // status
-   $options2['searchtype'][1] = 'equals';
-   $options2['contains'][1]   = 'notold';
-   $options2['link'][1]       = 'AND';
+   $options2['criteria'][1]['field']      = 12; // status
+   $options2['criteria'][1]['searchtype'] = 'equals';
+   $options2['criteria'][1]['value']      = 'notold';
+   $options2['criteria'][1]['link']       = 'AND';
 
    $options2['reset'] = 'reset';
 

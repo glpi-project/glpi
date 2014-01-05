@@ -874,38 +874,53 @@ class Contract extends CommonDBTM {
              self::getTypeName(1)."</a></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
-                 "glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;".
-                 "field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30".
-                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
+
+      $options['reset'] = 'reset';
+      $options['sort']  = 12;
+      $options['order'] = 'DESC';
+      $options['start'] = 0;
+
+      $options['criteria'][0] = array('field'      => 12,
+                                      'value'      => '<0',
+                                      'searchtype' => 'contains');
+      $options['criteria'][1] = array('field'      => 12,
+                                      'link'       => 'AND',
+                                      'value'      => '>-30',
+                                      'searchtype' => 'contains');
+                  
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
                  __('Contracts expired in the last 30 days')."</a> </td>";
       echo "<td class='numeric'>".$contract0."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
-                 "glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;".
-                 "contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0".
-                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
+
+      $options['criteria'][0]['value'] = 0;
+      $options['criteria'][1]['value'] = '<7';
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
                  __('Contracts expiring in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contract7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
-                 "glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;".
-                 "contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0".
-                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains&amp;start=0\">".
+      
+      $options['criteria'][0]['value'] = '>6';
+      $options['criteria'][1]['value'] = '<30';
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
                  __('Contracts expiring in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contract30."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
-                 "glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;".
-                 "contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;is_deleted=0".
-                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains&amp;start=0\">".
+      
+      $options['criteria'][0]['field'] = 13;
+      $options['criteria'][0]['value'] = '>0';
+      $options['criteria'][1]['field'] = 13;
+      $options['criteria'][1]['value'] = '<7';
+      
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
                  __('Contracts where notice begins in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
-                 "glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;".
-                 "field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30".
-                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
+
+      
+      $options['criteria'][0]['value'] = '>6';
+      $options['criteria'][1]['value'] = '<30';
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
                  __('Contracts where notice begins in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre30."</td></tr>";
       echo "</table>";
