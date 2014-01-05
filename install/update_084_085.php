@@ -2637,7 +2637,32 @@ function update084to085() {
              WHERE `interface` = 'helpdesk'";
 
    $DB->queryOrDie($query, "0.85 update default life cycle for helpdesk");
-   
+
+
+   // Upgrade ticket bookmarks
+   $query = "SELECT *
+             FROM `glpi_bookmarks`
+             WHERE `type` = '".Bookmark::SEARCH."'";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $num     = 0;
+            $num2    = 0;
+            $options = array();
+            parse_str($data["query"], $options);
+
+            
+
+            
+            $query2 = "UPDATE `glpi_bookmarks`
+                       SET `query` = '".addslashes(Toolbox::append_params($options))."'
+                       WHERE `id` = '".$data['id']."'";
+
+            $DB->queryOrDie($query2, "0.85 update bookmarks for reorg search");
+         }
+      }
+   }   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
