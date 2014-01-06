@@ -219,16 +219,6 @@ class Search2 {
          }
       }
 
-      // Add searchopt to criteria / metacriteria
-      $data['searchopt'][$itemtype] = &self::getOptions($itemtype);
-
-      if (count($p['metacriteria'])) {
-         foreach ($p['metacriteria'] as $key => $val) {
-            if (isset($val['itemtype']) && !isset($data['searchopt'][$val['itemtype']])) {
-               $data['searchopt'][$val['itemtype']] = &self::getOptions($val['itemtype']);
-            }
-         }
-      }
       
       return $data;
    }
@@ -252,14 +242,11 @@ class Search2 {
       if (!isset($data['itemtype'])) {
          return false;
       }
-      if (!isset($data['searchopt'][$data['itemtype']])) {
-         return false;
-      }
       
       $data['sql']['count']  = '';
       $data['sql']['search'] = '';
 
-      $searchopt = &$data['searchopt'][$data['itemtype']];
+      $searchopt = &self::getOptions($data['itemtype']);
       
       $blacklist_tables = array();
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
@@ -514,7 +501,7 @@ class Search2 {
                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
                // a - SELECT
                $SELECT .= self::addSelect($metacriteria['itemtype'], $metacriteria['field'],
-                                          $i, 1, $metacriteria['itemtype']);
+                                          $key, 1, $metacriteria['itemtype']);
 
                // b - ADD LEFT JOIN
                // Link reference tables
@@ -526,7 +513,8 @@ class Search2 {
                }
 
                // Link items tables
-               $sopt = &$data['searchopt'][$metacriteria['itemtype']][$metacriteria['field']];
+               $metaopt = &self::getOptions($metacriteria['itemtype']);
+               $sopt = $metaopt[$metacriteria['field']];
                if (!in_array($sopt["table"]."_".$metacriteria['itemtype'],
                              $already_link_tables2)) {
 
@@ -537,8 +525,7 @@ class Search2 {
                                              $sopt["linkfield"],
                                              1, $metacriteria['itemtype'],
                                              $sopt["joinparams"],
-                                             $searchopt[$metacriteria['itemtype']][$metacriteria['field']]
-                                                       ["field"]);
+                                             $sopt["field"]);
                }
             }
          }
