@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Generic class for Search Engine
 **/
-class Search {
+class Search2 {
 
    // Default number of items displayed in global search
    const GLOBAL_DISPLAY_COUNT = 10;
@@ -70,49 +70,86 @@ class Search {
 
       self::manageGetValues($itemtype);
       self::showGenericSearch($itemtype, $_GET);
-      self::showList($itemtype, $_GET);
+
+//       self::showList($itemtype, $_GET);
+      $data = self::prepareDatasForSearch($itemtype, $_GET);
+      self::constructSQL($data);
+      Html::printCleanArray($data['sql']);
+
+//       self::getDatas($data);
+//       self::displayDatas($data);
    }
 
-
    /**
-    * Generic Search and list function
-    *
-    * Build the query, make the search and list items after a search.
+    * Prepare search criteria to be used for a search
     *
     * @param $itemtype        item type
     * @param $params    array of parameters may include sort, order,
     *                         start, deleted, criteria, metacriteria
+    * @param $forcedisplay    array of columns to display (default empty = empty use display pref and search criterias)
     *
-    * @return Nothing (display)
+    * @return array prepare to be used for a search (include criterias and others needed informations)
    **/
-   static function showList($itemtype, array $params) {
-      global $DB, $CFG_GLPI;
-
-      // Instanciate an object to access method
-      $item = NULL;
-
-      if ($itemtype != 'AllAssets') {
-         $item = getItemForItemtype($itemtype);
-      }
-
+   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = array()) {
+      global $CFG_GLPI;
+      
       // Default values of parameters
-      $p['criteria']    = array();
-      $p['metacriteria']    = array();
-      $p['sort']        = '1'; //
-      $p['order']       = 'ASC';//
-      $p['start']       = 0;//
-      $p['is_deleted']  = 0;
-      $p['export_all']  = 0;
-      $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
+      $p['criteria']     = array();
+      $p['metacriteria'] = array();
+      $p['sort']         = '1'; //
+      $p['order']        = 'ASC';//
+      $p['start']        = 0;//
+      $p['is_deleted']   = 0;
+      $p['export_all']   = 0;
+      $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
+      $p['display_type'] = self::HTML_OUTPUT;
+      $p['list_limit']   = $_SESSION['glpilist_limit'];
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
+      }
+
+      // Set display type for export if define
+      if (isset($p['display_type'])) {
+         // Limit to 10 element
+         if ($p['display_type'] == self::GLOBAL_SEARCH) {
+            $p['list_limit'] = self::GLOBAL_DISPLAY_COUNT;
+         }
       }
 
       if ($p['export_all']) {
          $p['start'] = 0;
       }
 
+      // Clean criteria / metacriteria based on glpisearchcount / glpisearchcount2
+      if (isset($_SESSION["glpisearchcount"][$itemtype])) {
+         foreach ($p['criteria'] as $key => $val) {
+            if ($key >= $_SESSION["glpisearchcount"][$itemtype] ) {
+               unset($p['criteria'][$key]);
+            }
+         }      
+      }
+      if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
+         foreach ($p['metacriteria'] as $key => $val) {
+            if ($key >= $_SESSION["glpisearchcount2"][$itemtype] ) {
+               unset($p['metacriteria'][$key]);
+            }
+         }
+      }
+      
+      $data = array();
+      $data['search'] = $p;
+      $data['itemtype'] = $itemtype;
+
+      // Instanciate an object to access method
+      $data['item'] = NULL;
+
+      if ($itemtype != 'AllAssets') {
+         $data['item'] = getItemForItemtype($itemtype);
+      }
+      
+      $data['display_type'] = $data['search']['display_type'];      
+      
       if (!$CFG_GLPI['allow_search_all']) {
          foreach ($p['criteria'] as $val) {
             if ($val['field'] == 'all') {
@@ -128,94 +165,127 @@ class Search {
          }
       }
 
-      $limitsearchopt   = self::getCleanedOptions($itemtype);
-
-      $blacklist_tables = array();
-      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
-         $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
-         $blacklist_tables[] = getTableForItemType($itemtype);
+      /// Get the items to display
+      // Force item to display
+      if (is_array($forcedisplay) && count($forcedisplay)) {
+         $data['toview'] = $forcedisplay;
       } else {
-         $itemtable = getTableForItemType($itemtype);
-      }
+         $data['toview'] = self::addDefaultToView($itemtype);
 
-      $LIST_LIMIT = $_SESSION['glpilist_limit'];
-
-      // Set display type for export if define
-      if (isset($_GET['display_type'])) {
-         self::$output_type = $_GET['display_type'];
-         // Limit to 10 element
-         if ($_GET['display_type'] == self::GLOBAL_SEARCH) {
-            $LIST_LIMIT = self::GLOBAL_DISPLAY_COUNT;
+         // Add items to display depending of personal prefs
+         $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
+         if (count($displaypref)) {
+            foreach ($displaypref as $val) {
+               array_push($data['toview'],$val);
+            }
          }
-      }
-      // hack for AllAssets
-      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
-         $entity_restrict = true;
-      } else {
-         $entity_restrict = $item->isEntityAssign();
-      }
 
-      $metanames = array();
+         // Add searched items
+         $data['all_search']  = false;
+         $data['view_search'] = false;
 
-      // Get the items to display
-      $toview = self::addDefaultToView($itemtype);
-
-      // Add items to display depending of personal prefs
-      $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
-      if (count($displaypref)) {
-         foreach ($displaypref as $val) {
-            array_push($toview,$val);
-         }
-      }
-
-      // Add searched items
-      $all_search = false;
-      $view_search = false;
-
-      if (count($p['criteria'])  >0) {
-         foreach ($p['criteria'] as $key => $val) {
-            if (!in_array($val['field'], $toview)) {
-               if (($val['field'] != 'all') && ($val['field'] != 'view')) {
-                  array_push($toview, $val['field']);
-               } else if ($val['field'] == 'all'){
-                  $all_search = true;
-               } else if ($val['field'] == 'view'){
-                  $view_search = true;
+         if (count($p['criteria']) > 0) {
+            foreach ($p['criteria'] as $key => $val) {
+               if (!in_array($val['field'], $data['toview'])) {
+                  if (($val['field'] != 'all') && ($val['field'] != 'view')) {
+                     array_push($data['toview'], $val['field']);
+                  } else if ($val['field'] == 'all'){
+                     $data['all_search'] = true;
+                  } else if ($val['field'] == 'view'){
+                     $data['view_search'] = true;
+                  }
                }
             }
          }
-      }
 
-      // Add order item
-      if (!in_array($p['sort'],$toview)) {
-         array_push($toview, $p['sort']);
-      }
+         // Add order item
+         if (!in_array($p['sort'], $data['toview'])) {
+            array_push($data['toview'], $p['sort']);
+         }
 
-      // Special case for Ticket : put ID in front
-      if ($itemtype == 'Ticket') {
-         array_unshift($toview, 2);
-      }
-
-      // Clean toview array
-      $toview = array_unique($toview);
-      foreach ($toview as $key => $val) {
-         if (!isset($limitsearchopt[$val])) {
-            unset($toview[$key]);
+         // Special case for Ticket : put ID in front
+         if ($itemtype == 'Ticket') {
+            array_unshift($data['toview'], 2);
          }
       }
 
-      $toview_count = count($toview);
+      // Clean toview array
+      $data['toview'] = array_unique($data['toview']);
+
+      $limitsearchopt   = self::getCleanedOptions($itemtype);
+      foreach ($data['toview'] as $key => $val) {
+         if (!isset($limitsearchopt[$val])) {
+            unset($data['toview'][$key]);
+         }
+      }
+
+      // Add searchopt to criteria / metacriteria
+      $data['searchopt'][$itemtype] = &self::getOptions($itemtype);
+
+      if (count($p['metacriteria'])) {
+         foreach ($p['metacriteria'] as $key => $val) {
+            if (isset($val['itemtype']) && !isset($data['searchopt'][$val['itemtype']])) {
+               $data['searchopt'][$val['itemtype']] = &self::getOptions($val['itemtype']);
+            }
+         }
+      }
+      
+      return $data;
+   }
+
+
+   /**
+    * Construct SQL request depending of search parameters
+    *
+    * add to data array a field sql containing an array of requests :
+    *      search : request to get items limited to wanted ones
+    *      count : to count all items based on search criterias
+    *                    may be an array a request : need to add counts
+    *                    maybe empty : use search one to count
+    * @param $data array of search datas prepared to generate SQL
+    *
+    * @return nothing
+   **/
+   static function constructSQL(array &$data) {
+      global $CFG_GLPI;
+      
+      if (!isset($data['itemtype'])) {
+         return false;
+      }
+      if (!isset($data['searchopt'][$data['itemtype']])) {
+         return false;
+      }
+      
+      $data['sql']['count']  = '';
+      $data['sql']['search'] = '';
+
+      $searchopt = &$data['searchopt'][$data['itemtype']];
+      
+      $blacklist_tables = array();
+      if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
+         $itemtable = $CFG_GLPI['union_search_type'][$data['itemtype']];
+         $blacklist_tables[] = getTableForItemType($data['itemtype']);
+      } else {
+         $itemtable = getTableForItemType($data['itemtype']);
+      }
+
+      // hack for AllAssets
+      if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
+         $entity_restrict = true;
+      } else {
+         $entity_restrict = $data['item']->isEntityAssign();
+      }
 
       // Construct the request
 
       //// 1 - SELECT
       // request currentuser for SQL supervision, not displayed
       $SELECT = "SELECT '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
-                        ".self::addDefaultSelect($itemtype);
+                        ".self::addDefaultSelect($data['itemtype']);
 
       // Add select for all toview item
-      foreach ($toview as $key => $val) {
-         $SELECT .= self::addSelect($itemtype, $val, $key, 0);
+      foreach ($data['toview'] as $key => $val) {
+         $SELECT .= self::addSelect($data['itemtype'], $val, $key, 0);
       }
 
       //// 2 - FROM AND LEFT JOIN
@@ -228,33 +298,31 @@ class Search {
       array_push($already_link_tables, $itemtable);
 
       // Add default join
-      $COMMONLEFTJOIN = self::addDefaultJoin($itemtype, $itemtable, $already_link_tables);
+      $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
       $FROM          .= $COMMONLEFTJOIN;
 
-      $searchopt            = array();
-      $searchopt[$itemtype] = &self::getOptions($itemtype);
       // Add all table for toview items
-      foreach ($toview as $key => $val) {
-         if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
-            $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
-                                       $searchopt[$itemtype][$val]["table"],
-                                       $searchopt[$itemtype][$val]["linkfield"], 0, 0,
-                                       $searchopt[$itemtype][$val]["joinparams"],
-                                       $searchopt[$itemtype][$val]["field"]);
+      foreach ($data['toview'] as $key => $val) {
+         if (!in_array($searchopt[$val]["table"], $blacklist_tables)) {
+            $FROM .= self::addLeftJoin($data['itemtype'], $itemtable, $already_link_tables,
+                                       $searchopt[$val]["table"],
+                                       $searchopt[$val]["linkfield"], 0, 0,
+                                       $searchopt[$val]["joinparams"],
+                                       $searchopt[$val]["field"]);
          }
       }
 
       // Search all case :
-      if ($all_search) {
-         foreach ($searchopt[$itemtype] as $key => $val) {
+      if ($data['all_search']) {
+         foreach ($searchopt as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
-               if (!in_array($searchopt[$itemtype][$key]["table"], $blacklist_tables)) {
-                  $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
-                                             $searchopt[$itemtype][$key]["table"],
-                                             $searchopt[$itemtype][$key]["linkfield"], 0, 0,
-                                             $searchopt[$itemtype][$key]["joinparams"],
-                                             $searchopt[$itemtype][$key]["field"]);
+               if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
+                  $FROM .= self::addLeftJoin($data['itemtype'], $itemtable, $already_link_tables,
+                                             $searchopt[$key]["table"],
+                                             $searchopt[$key]["linkfield"], 0, 0,
+                                             $searchopt[$key]["joinparams"],
+                                             $searchopt[$key]["field"]);
                }
             }
          }
@@ -264,21 +332,21 @@ class Search {
       //// 3 - WHERE
 
       // default string
-      $COMMONWHERE = self::addDefaultWhere($itemtype);
+      $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
       $first       = empty($COMMONWHERE);
 
       // Add deleted if item have it
-      if ($item && $item->maybeDeleted()) {
+      if ($data['item'] && $data['item']->maybeDeleted()) {
          $LINK = " AND " ;
          if ($first) {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$p['is_deleted']."' ";
+         $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$data['search']['is_deleted']."' ";
       }
 
       // Remove template items
-      if ($item && $item->maybeTemplate()) {
+      if ($data['item'] && $data['item']->maybeTemplate()) {
          $LINK = " AND " ;
          if ($first) {
             $LINK  = " ";
@@ -295,15 +363,15 @@ class Search {
             $first = false;
          }
 
-         if ($itemtype == 'Entity') {
+         if ($data['itemtype'] == 'Entity') {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, 'id', '', true);
 
-         } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+         } else if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
          } else {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, '', '',
-                                                       $item->maybeRecursive());
+                                                       $data['item']->maybeRecursive());
          }
       }
       $WHERE  = "";
@@ -311,14 +379,8 @@ class Search {
 
       // Add search conditions
       // If there is search items
-      if (($_SESSION["glpisearchcount"][$itemtype] > 0)
-          && (count($p['criteria']) > 0)) {
-
-         for ($key=0 ; $key<$_SESSION["glpisearchcount"][$itemtype] ; $key++) {
-            $criteria = array();
-            if (isset($p['criteria'][$key])) {
-               $criteria = $p['criteria'][$key];
-            }
+      if (count($data['search']['criteria'])) {
+         foreach  ($data['search']['criteria'] as $key => $criteria) {
             // if real search (strlen >0) and not all and view search
             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
                // common search
@@ -337,14 +399,14 @@ class Search {
                      $tmplink = " AND ";
                   }
 
-                  if (isset($searchopt[$itemtype][$criteria['field']]["usehaving"])) {
+                  if (isset($searchopt[$criteria['field']]["usehaving"])) {
                      // Manage Link if not first item
                      if (!empty($HAVING)) {
                         $LINK = $tmplink;
                      }
                      // Find key
                      $item_num = array_search($criteria['field'], $toview);
-                     $HAVING  .= self::addHaving($LINK, $NOT,$itemtype, $criteria['field'],
+                     $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'], $criteria['field'],
                                                  $criteria['searchtype'], $criteria['value'], 0,
                                                  $item_num);
                   } else {
@@ -352,7 +414,7 @@ class Search {
                      if (!empty($WHERE)) {
                         $LINK = $tmplink;
                      }
-                     $WHERE .= self::addWhere($LINK, $NOT, $itemtype, $criteria['field'],
+                     $WHERE .= self::addWhere($LINK, $NOT, $data['itemtype'], $criteria['field'],
                                               $criteria['searchtype'], $criteria['value']);
                   }
 
@@ -401,11 +463,11 @@ class Search {
                   $items = array();
 
                   if ($criteria['field'] == "all") {
-                     $items = $searchopt[$itemtype];
+                     $items = $searchopt;
 
                   } else { // toview case : populate toview
-                     foreach ($toview as $key2 => $val2) {
-                        $items[$val2] = $searchopt[$itemtype][$val2];
+                     foreach ($data['toview'] as $key2 => $val2) {
+                        $items[$val2] = $searchopt[$val2];
                      }
                   }
 
@@ -421,7 +483,7 @@ class Search {
                               $tmplink = " ";
                               $first2  = false;
                            }
-                           $WHERE .= self::addWhere($tmplink, $NOT, $itemtype, $key2,
+                           $WHERE .= self::addWhere($tmplink, $NOT, $data['itemtype'], $key2,
                                                     $criteria['searchtype'], $criteria['value']);
                         }
                      }
@@ -435,24 +497,19 @@ class Search {
 
       //// 4 - ORDER
       $ORDER = " ORDER BY `id` ";
-      foreach ($toview as $key => $val) {
-         if ($p['sort'] == $val) {
-            $ORDER = self::addOrderBy($itemtype, $p['sort'], $p['order'], $key);
+      foreach ($data['toview'] as $key => $val) {
+         if ($data['search']['sort'] == $val) {
+            $ORDER = self::addOrderBy($data['itemtype'], $data['search']['sort'], $data['search']['order'], $key);
          }
       }
 
       //// 5 - META SEARCH
       // Preprocessing
-      if (($_SESSION["glpisearchcount2"][$itemtype] > 0)
-          && is_array($p['metacriteria'])) {
+      if (count($data['search']['metacriteria'])) {
 
          // Already link meta table in order not to linked a table several times
          $already_link_tables2 = array();
-         for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
-            $metacriteria = array();
-            if (isset($p['metacriteria'][$i])) {
-               $metacriteria = $p['metacriteria'][$i];
-            }
+         foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
             if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
                // a - SELECT
@@ -462,17 +519,14 @@ class Search {
                // b - ADD LEFT JOIN
                // Link reference tables
                if (!in_array(getTableForItemType($metacriteria['itemtype']), $already_link_tables2)) {
-                  $FROM .= self::addMetaLeftJoin($itemtype, $metacriteria['itemtype'],
+                  $FROM .= self::addMetaLeftJoin($data['itemtype'], $metacriteria['itemtype'],
                                                  $already_link_tables2,
                                                  (($metacriteria['value'] == "NULL")
                                                   || (strstr($metacriteria['link'], "NOT"))));
                }
-               
+
                // Link items tables
-               if (!isset($searchopt[$metacriteria['itemtype']])) {
-                  $searchopt[$metacriteria['itemtype']] = &self::getOptions($metacriteria['itemtype']);
-               }
-               $sopt = $searchopt[$metacriteria['itemtype']][$metacriteria['field']];
+               $sopt = &$data['searchopt'][$metacriteria['itemtype']][$metacriteria['field']];
                if (!in_array($sopt["table"]."_".$metacriteria['itemtype'],
                              $already_link_tables2)) {
 
@@ -490,7 +544,6 @@ class Search {
          }
       }
 
-
       //// 6 - Add item ID
       // Add ID to the select
       if (!empty($itemtable)) {
@@ -501,32 +554,27 @@ class Search {
       //// 7 - Manage GROUP BY
       $GROUPBY = "";
       // Meta Search / Search All / Count tickets
-      if (($_SESSION["glpisearchcount2"][$itemtype] > 0)
+      if ((count($data['search']['metacriteria']))
           || !empty($HAVING)
-          || $all_search) {
-
+          || $data['all_search']) {
          $GROUPBY = " GROUP BY `$itemtable`.`id`";
       }
 
       if (empty($GROUPBY)) {
-         foreach ($toview as $key2 => $val2) {
+         foreach ($data['toview'] as $key2 => $val2) {
             if (!empty($GROUPBY)) {
                break;
             }
-            if (isset($searchopt[$itemtype][$val2]["forcegroupby"])) {
+            if (isset($searchopt[$val2]["forcegroupby"])) {
                $GROUPBY = " GROUP BY `$itemtable`.`id`";
             }
          }
       }
 
+      
       // Specific search for others item linked  (META search)
-      if (is_array($p['metacriteria'])) {
-         for ($key=0 ; $key<$_SESSION["glpisearchcount2"][$itemtype] ; $key++) {
-            $metacriteria = array();
-            if (isset($p['metacriteria'][$key])) {
-               $metacriteria = $p['metacriteria'][$key];
-            }
-
+      if (count($data['search']['metacriteria'])) {
+         foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
             if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
 
@@ -534,7 +582,7 @@ class Search {
 
                // For AND NOT statement need to take into account all the group by items
                if (strstr($metacriteria['link'],"AND NOT")
-                   || isset($searchopt[$metacriteria['itemtype']][$metacriteria['field']]["usehaving"])) {
+                   || isset($data['searchopt'][$metacriteria['itemtype']][$metacriteria['field']]["usehaving"])) {
 
                   $NOT = 0;
                   if (strstr($metacriteria['link'],"NOT")) {
@@ -576,18 +624,15 @@ class Search {
          }
       }
 
-      // Use a ReadOnly connection if available and configured to be used
-      $DBread = DBConnection::getReadConnection();
-
       // If no research limit research to display item and compute number of item using simple request
       $nosearch = true;
-      for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         if (isset($p['criteria'][$i]['value']) && (strlen($p['criteria'][$i]['value']) > 0)) {
+      foreach ($data['search']['criteria'] as $key => $val) {
+         if (isset($val['value']) && (strlen($val['value']) > 0)) {
             $nosearch = false;
          }
       }
 
-      if ($_SESSION["glpisearchcount2"][$itemtype] > 0) {
+      if (count($data['search']['metacriteria'])) {
          $nosearch = false;
       }
 
@@ -595,10 +640,10 @@ class Search {
       $numrows = 0;
       //No search : count number of items using a simple count(ID) request and LIMIT search
       if ($nosearch) {
-         $LIMIT = " LIMIT ".$p['start'].", ".$LIST_LIMIT;
+         $LIMIT = " LIMIT ".$data['search']['start'].", ".$data['search']['list_limit'];
 
          // Force group by for all the type -> need to count only on table ID
-         if (!isset($searchopt[$itemtype][1]['forcegroupby'])) {
+         if (!isset($searchopt[1]['forcegroupby'])) {
             $count = "count(*)";
          } else {
             $count = "count(DISTINCT `$itemtable`.`id`)";
@@ -620,17 +665,17 @@ class Search {
             $query_num .= $LINK.$COMMONWHERE;
          }
          // Union Search :
-         if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             $tmpquery = $query_num;
             $numrows  = 0;
 
-            foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
+            foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
                $ctable = getTableForItemType($ctype);
                if (($citem = getItemForItemtype($ctype))
                    && $citem->canView()) {
                   // State case
                   if ($itemtype == 'AllAssets') {
-                     $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
+                     $query_num = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                               $ctable, $tmpquery);
                      $query_num = str_replace($itemtype, $ctype, $query_num);
                      $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
@@ -646,9 +691,9 @@ class Search {
                      }
 
                   } else {// Ref table case
-                     $reftable = getTableForItemType($itemtype);
+                     $reftable = getTableForItemType($data['itemtype']);
                      if ($item && $item->maybeDeleted()) {
-                        $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.
+                        $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
                                                    `is_deleted`",
                                                 "`$reftable`.`is_deleted`", $tmpquery);
                      }
@@ -657,9 +702,9 @@ class Search {
                                        ON (`$reftable`.`items_id` =`$ctable`.`id`
                                            AND `$reftable`.`itemtype` = '$ctype')";
 
-                     $query_num = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
+                     $query_num = str_replace("FROM `".$CFG_GLPI["union_search_type"][$data['itemtype']]."`",
                                               $replace, $tmpquery);
-                     $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype], $ctable,
+                     $query_num = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']], $ctable,
                                               $query_num);
 
                   }
@@ -667,19 +712,17 @@ class Search {
                                            getEntitiesRestrictRequest('', $ctable, '', '',
                                                                       $citem->maybeRecursive()),
                                            $query_num);
-                  $result_num = $DBread->query($query_num);
-                  $numrows   += $DBread->result($result_num, 0, 0);
+                  $data['sql']['count'][] = $query_num;
                }
             }
 
          } else {
-            $result_num = $DBread->query($query_num);
-            $numrows    = $DBread->result($result_num,0,0);
+            $data['sql']['count'] = $query_num;
          }
       }
 
       // If export_all reset LIMIT condition
-      if ($p['export_all']) {
+      if ($data['search']['export_all']) {
          $LIMIT = "";
       }
 
@@ -698,10 +741,10 @@ class Search {
 
 
       // Create QUERY
-      if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+      if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
          $first = true;
          $QUERY = "";
-         foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
+         foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
             $ctable = getTableForItemType($ctype);
             if (($citem = getItemForItemtype($ctype))
                 && $citem->canView()) {
@@ -712,14 +755,12 @@ class Search {
                }
                $tmpquery = "";
                // AllAssets case
-               if ($itemtype == 'AllAssets') {
+               if ($data['itemtype'] == 'AllAssets') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE;
 
-                  if ($itemtype == 'AllAssets') {
-                     $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
-                  }
+                  $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
@@ -734,12 +775,12 @@ class Search {
                   $tmpquery.= $GROUPBY.
                               $HAVING;
 
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
+                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                           $ctable, $tmpquery);
                   $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
 
                } else {// Ref table case
-                  $reftable = getTableForItemType($itemtype);
+                  $reftable = getTableForItemType($data['itemtype']);
 
                   $tmpquery = $SELECT.", '$ctype' AS TYPE,
                                       `$reftable`.`id` AS refID, "."
@@ -747,7 +788,7 @@ class Search {
                               $FROM.
                               $WHERE;
                   if ($item->maybeDeleted()) {
-                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.
+                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
                                                 `is_deleted`",
                                              "`$reftable`.`is_deleted`", $tmpquery);
                   }
@@ -757,7 +798,7 @@ class Search {
                               INNER JOIN `$ctable`"."
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
                                      AND `$reftable`.`itemtype` = '$ctype')";
-                  $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
+                  $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$data['itemtype']]."`",
                                           $replace, $tmpquery);
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype], $ctable,
                                           $tmpquery);
@@ -779,7 +820,7 @@ class Search {
             echo self::showError(self::$output_type);
             return;
          }
-         $QUERY .= str_replace($CFG_GLPI["union_search_type"][$itemtype].".", "", $ORDER) . $LIMIT;
+         $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']].".", "", $ORDER) . $LIMIT;
       } else {
          $QUERY = $SELECT.
                   $FROM.
@@ -789,6 +830,725 @@ class Search {
                   $ORDER.
                   $LIMIT;
       }
+      $data['sql']['search'] = $QUERY;
+   }
+   
+   /**
+    * Generic Search and list function
+    *
+    * Build the query, make the search and list items after a search.
+    *
+    * @param $itemtype        item type
+    * @param $params    array of parameters may include sort, order,
+    *                         start, deleted, criteria, metacriteria
+    *
+    * @return Nothing (display)
+   **/
+   static function showList($itemtype, array $params) {
+      global $DB, $CFG_GLPI;
+
+//       // Instanciate an object to access method
+//       $item = NULL;
+// 
+//       if ($itemtype != 'AllAssets') {
+//          $item = getItemForItemtype($itemtype);
+//       }
+
+//       // Default values of parameters
+//       $p['criteria']    = array();
+//       $p['metacriteria']    = array();
+//       $p['sort']        = '1'; //
+//       $p['order']       = 'ASC';//
+//       $p['start']       = 0;//
+//       $p['is_deleted']  = 0;
+//       $p['export_all']  = 0;
+//       $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
+// 
+//       foreach ($params as $key => $val) {
+//          $p[$key] = $val;
+//       }
+
+//       if ($p['export_all']) {
+//          $p['start'] = 0;
+//       }
+
+//       if (!$CFG_GLPI['allow_search_all']) {
+//          foreach ($p['criteria'] as $val) {
+//             if ($val['field'] == 'all') {
+//                Html::displayRightError();
+//             }
+//          }
+//       }
+//       if (!$CFG_GLPI['allow_search_view']) {
+//          foreach ($p['criteria'] as $val) {
+//             if ($val['field'] == 'view') {
+//                Html::displayRightError();
+//             }
+//          }
+//       }
+
+//       $limitsearchopt   = self::getCleanedOptions($itemtype);
+
+//       $blacklist_tables = array();
+//       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+//          $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
+//          $blacklist_tables[] = getTableForItemType($itemtype);
+//       } else {
+//          $itemtable = getTableForItemType($itemtype);
+//       }
+
+//       $LIST_LIMIT = $_SESSION['glpilist_limit'];
+// 
+//       // Set display type for export if define
+//       if (isset($_GET['display_type'])) {
+//          self::$output_type = $_GET['display_type'];
+//          // Limit to 10 element
+//          if ($_GET['display_type'] == self::GLOBAL_SEARCH) {
+//             $LIST_LIMIT = self::GLOBAL_DISPLAY_COUNT;
+//          }
+//       }
+      
+//       // hack for AllAssets
+//       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+//          $entity_restrict = true;
+//       } else {
+//          $entity_restrict = $item->isEntityAssign();
+//       }
+
+      $metanames = array();
+
+//       // Get the items to display
+//       $toview = self::addDefaultToView($itemtype);
+// 
+//       // Add items to display depending of personal prefs
+//       $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
+//       if (count($displaypref)) {
+//          foreach ($displaypref as $val) {
+//             array_push($toview,$val);
+//          }
+//       }
+// 
+//       // Add searched items
+//       $all_search = false;
+//       $view_search = false;
+// 
+//       if (count($p['criteria'])  >0) {
+//          foreach ($p['criteria'] as $key => $val) {
+//             if (!in_array($val['field'], $toview)) {
+//                if (($val['field'] != 'all') && ($val['field'] != 'view')) {
+//                   array_push($toview, $val['field']);
+//                } else if ($val['field'] == 'all'){
+//                   $all_search = true;
+//                } else if ($val['field'] == 'view'){
+//                   $view_search = true;
+//                }
+//             }
+//          }
+//       }
+// 
+//       // Add order item
+//       if (!in_array($p['sort'],$toview)) {
+//          array_push($toview, $p['sort']);
+//       }
+// 
+//       // Special case for Ticket : put ID in front
+//       if ($itemtype == 'Ticket') {
+//          array_unshift($toview, 2);
+//       }
+// 
+//       // Clean toview array
+//       $toview = array_unique($toview);
+//       foreach ($toview as $key => $val) {
+//          if (!isset($limitsearchopt[$val])) {
+//             unset($toview[$key]);
+//          }
+//       }
+
+      $toview_count = count($toview);
+
+//       // Construct the request
+// 
+//       //// 1 - SELECT
+//       // request currentuser for SQL supervision, not displayed
+//       $SELECT = "SELECT '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
+//                         ".self::addDefaultSelect($itemtype);
+// 
+//       // Add select for all toview item
+//       foreach ($toview as $key => $val) {
+//          $SELECT .= self::addSelect($itemtype, $val, $key, 0);
+//       }
+// 
+//       //// 2 - FROM AND LEFT JOIN
+//       // Set reference table
+//       $FROM = " FROM `$itemtable`";
+// 
+//       // Init already linked tables array in order not to link a table several times
+//       $already_link_tables = array();
+//       // Put reference table
+//       array_push($already_link_tables, $itemtable);
+// 
+//       // Add default join
+//       $COMMONLEFTJOIN = self::addDefaultJoin($itemtype, $itemtable, $already_link_tables);
+//       $FROM          .= $COMMONLEFTJOIN;
+// 
+//       $searchopt            = array();
+//       $searchopt[$itemtype] = &self::getOptions($itemtype);
+//       // Add all table for toview items
+//       foreach ($toview as $key => $val) {
+//          if (!in_array($searchopt[$itemtype][$val]["table"], $blacklist_tables)) {
+//             $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
+//                                        $searchopt[$itemtype][$val]["table"],
+//                                        $searchopt[$itemtype][$val]["linkfield"], 0, 0,
+//                                        $searchopt[$itemtype][$val]["joinparams"],
+//                                        $searchopt[$itemtype][$val]["field"]);
+//          }
+//       }
+// 
+//       // Search all case :
+//       if ($all_search) {
+//          foreach ($searchopt[$itemtype] as $key => $val) {
+//             // Do not search on Group Name
+//             if (is_array($val)) {
+//                if (!in_array($searchopt[$itemtype][$key]["table"], $blacklist_tables)) {
+//                   $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
+//                                              $searchopt[$itemtype][$key]["table"],
+//                                              $searchopt[$itemtype][$key]["linkfield"], 0, 0,
+//                                              $searchopt[$itemtype][$key]["joinparams"],
+//                                              $searchopt[$itemtype][$key]["field"]);
+//                }
+//             }
+//          }
+//       }
+// 
+// 
+//       //// 3 - WHERE
+// 
+//       // default string
+//       $COMMONWHERE = self::addDefaultWhere($itemtype);
+//       $first       = empty($COMMONWHERE);
+// 
+//       // Add deleted if item have it
+//       if ($item && $item->maybeDeleted()) {
+//          $LINK = " AND " ;
+//          if ($first) {
+//             $LINK  = " ";
+//             $first = false;
+//          }
+//          $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$p['is_deleted']."' ";
+//       }
+// 
+//       // Remove template items
+//       if ($item && $item->maybeTemplate()) {
+//          $LINK = " AND " ;
+//          if ($first) {
+//             $LINK  = " ";
+//             $first = false;
+//          }
+//          $COMMONWHERE .= $LINK."`$itemtable`.`is_template` = '0' ";
+//       }
+// 
+//       // Add Restrict to current entities
+//       if ($entity_restrict) {
+//          $LINK = " AND " ;
+//          if ($first) {
+//             $LINK  = " ";
+//             $first = false;
+//          }
+// 
+//          if ($itemtype == 'Entity') {
+//             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, 'id', '', true);
+// 
+//          } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+//             // Will be replace below in Union/Recursivity Hack
+//             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
+//          } else {
+//             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, '', '',
+//                                                        $item->maybeRecursive());
+//          }
+//       }
+//       $WHERE  = "";
+//       $HAVING = "";
+// 
+//       // Add search conditions
+//       // If there is search items
+//       if (($_SESSION["glpisearchcount"][$itemtype] > 0)
+//           && (count($p['criteria']) > 0)) {
+// 
+//          for ($key=0 ; $key<$_SESSION["glpisearchcount"][$itemtype] ; $key++) {
+//             $criteria = array();
+//             if (isset($p['criteria'][$key])) {
+//                $criteria = $p['criteria'][$key];
+//             }
+//             // if real search (strlen >0) and not all and view search
+//             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
+//                // common search
+//                if (($criteria['field'] != "all") && ($criteria['field'] != "view")) {
+//                   $LINK    = " ";
+//                   $NOT     = 0;
+//                   $tmplink = "";
+//                   if (isset($criteria['link'])) {
+//                      if (strstr($criteria['link'],"NOT")) {
+//                         $tmplink = " ".str_replace(" NOT","",$criteria['link']);
+//                         $NOT     = 1;
+//                      } else {
+//                         $tmplink = " ".$criteria['link'];
+//                      }
+//                   } else {
+//                      $tmplink = " AND ";
+//                   }
+// 
+//                   if (isset($searchopt[$itemtype][$criteria['field']]["usehaving"])) {
+//                      // Manage Link if not first item
+//                      if (!empty($HAVING)) {
+//                         $LINK = $tmplink;
+//                      }
+//                      // Find key
+//                      $item_num = array_search($criteria['field'], $toview);
+//                      $HAVING  .= self::addHaving($LINK, $NOT,$itemtype, $criteria['field'],
+//                                                  $criteria['searchtype'], $criteria['value'], 0,
+//                                                  $item_num);
+//                   } else {
+//                      // Manage Link if not first item
+//                      if (!empty($WHERE)) {
+//                         $LINK = $tmplink;
+//                      }
+//                      $WHERE .= self::addWhere($LINK, $NOT, $itemtype, $criteria['field'],
+//                                               $criteria['searchtype'], $criteria['value']);
+//                   }
+// 
+//                // view and all search
+//                } else {
+//                   $LINK       = " OR ";
+//                   $NOT        = 0;
+//                   $globallink = " AND ";
+// 
+//                   if (isset($criteria['link'])) {
+//                      switch ($criteria['link']) {
+//                         case "AND" :
+//                            $LINK       = " OR ";
+//                            $globallink = " AND ";
+//                            break;
+// 
+//                         case "AND NOT" :
+//                            $LINK       = " AND ";
+//                            $NOT        = 1;
+//                            $globallink = " AND ";
+//                            break;
+// 
+//                         case "OR" :
+//                            $LINK       = " OR ";
+//                            $globallink = " OR ";
+//                            break;
+// 
+//                         case "OR NOT" :
+//                            $LINK       = " AND ";
+//                            $NOT        = 1;
+//                            $globallink = " OR ";
+//                            break;
+//                      }
+// 
+//                   } else {
+//                      $tmplink =" AND ";
+//                   }
+// 
+//                   // Manage Link if not first item
+//                   if (!empty($WHERE)) {
+//                      $WHERE .= $globallink;
+//                   }
+//                   $WHERE .= " ( ";
+//                   $first2 = true;
+// 
+//                   $items = array();
+// 
+//                   if ($criteria['field'] == "all") {
+//                      $items = $searchopt[$itemtype];
+// 
+//                   } else { // toview case : populate toview
+//                      foreach ($toview as $key2 => $val2) {
+//                         $items[$val2] = $searchopt[$itemtype][$val2];
+//                      }
+//                   }
+// 
+//                   foreach ($items as $key2 => $val2) {
+//                      if (isset($val2['nosearch']) && $val2['nosearch']) {
+//                         continue;
+//                      }
+//                      if (is_array($val2)) {
+//                         // Add Where clause if not to be done in HAVING CLAUSE
+//                         if (!isset($val2["usehaving"])) {
+//                            $tmplink = $LINK;
+//                            if ($first2) {
+//                               $tmplink = " ";
+//                               $first2  = false;
+//                            }
+//                            $WHERE .= self::addWhere($tmplink, $NOT, $itemtype, $key2,
+//                                                     $criteria['searchtype'], $criteria['value']);
+//                         }
+//                      }
+//                   }
+//                   $WHERE .= " ) ";
+//                }
+//             }
+//          }
+//       }
+// 
+// 
+//       //// 4 - ORDER
+//       $ORDER = " ORDER BY `id` ";
+//       foreach ($toview as $key => $val) {
+//          if ($p['sort'] == $val) {
+//             $ORDER = self::addOrderBy($itemtype, $p['sort'], $p['order'], $key);
+//          }
+//       }
+// 
+//       //// 5 - META SEARCH
+//       // Preprocessing
+//       if (($_SESSION["glpisearchcount2"][$itemtype] > 0)
+//           && is_array($p['metacriteria'])) {
+// 
+//          // Already link meta table in order not to linked a table several times
+//          $already_link_tables2 = array();
+//          for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
+//             $metacriteria = array();
+//             if (isset($p['metacriteria'][$i])) {
+//                $metacriteria = $p['metacriteria'][$i];
+//             }
+//             if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
+//                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
+//                // a - SELECT
+//                $SELECT .= self::addSelect($metacriteria['itemtype'], $metacriteria['field'],
+//                                           $i, 1, $metacriteria['itemtype']);
+// 
+//                // b - ADD LEFT JOIN
+//                // Link reference tables
+//                if (!in_array(getTableForItemType($metacriteria['itemtype']), $already_link_tables2)) {
+//                   $FROM .= self::addMetaLeftJoin($itemtype, $metacriteria['itemtype'],
+//                                                  $already_link_tables2,
+//                                                  (($metacriteria['value'] == "NULL")
+//                                                   || (strstr($metacriteria['link'], "NOT"))));
+//                }
+//                
+//                // Link items tables
+//                if (!isset($searchopt[$metacriteria['itemtype']])) {
+//                   $searchopt[$metacriteria['itemtype']] = &self::getOptions($metacriteria['itemtype']);
+//                }
+//                $sopt = $searchopt[$metacriteria['itemtype']][$metacriteria['field']];
+//                if (!in_array($sopt["table"]."_".$metacriteria['itemtype'],
+//                              $already_link_tables2)) {
+// 
+//                   $FROM .= self::addLeftJoin($metacriteria['itemtype'],
+//                                              getTableForItemType($metacriteria['itemtype']),
+//                                              $already_link_tables2,
+//                                              $sopt["table"],
+//                                              $sopt["linkfield"],
+//                                              1, $metacriteria['itemtype'],
+//                                              $sopt["joinparams"],
+//                                              $searchopt[$metacriteria['itemtype']][$metacriteria['field']]
+//                                                        ["field"]);
+//                }
+//             }
+//          }
+//       }
+// 
+// 
+//       //// 6 - Add item ID
+//       // Add ID to the select
+//       if (!empty($itemtable)) {
+//          $SELECT .= "`$itemtable`.`id` AS id ";
+//       }
+// 
+// 
+//       //// 7 - Manage GROUP BY
+//       $GROUPBY = "";
+//       // Meta Search / Search All / Count tickets
+//       if (($_SESSION["glpisearchcount2"][$itemtype] > 0)
+//           || !empty($HAVING)
+//           || $all_search) {
+// 
+//          $GROUPBY = " GROUP BY `$itemtable`.`id`";
+//       }
+// 
+//       if (empty($GROUPBY)) {
+//          foreach ($toview as $key2 => $val2) {
+//             if (!empty($GROUPBY)) {
+//                break;
+//             }
+//             if (isset($searchopt[$itemtype][$val2]["forcegroupby"])) {
+//                $GROUPBY = " GROUP BY `$itemtable`.`id`";
+//             }
+//          }
+//       }
+// 
+//       // Specific search for others item linked  (META search)
+//       if (is_array($p['metacriteria'])) {
+//          for ($key=0 ; $key<$_SESSION["glpisearchcount2"][$itemtype] ; $key++) {
+//             $metacriteria = array();
+//             if (isset($p['metacriteria'][$key])) {
+//                $metacriteria = $p['metacriteria'][$key];
+//             }
+// 
+//             if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
+//                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
+// 
+//                $LINK = "";
+// 
+//                // For AND NOT statement need to take into account all the group by items
+//                if (strstr($metacriteria['link'],"AND NOT")
+//                    || isset($searchopt[$metacriteria['itemtype']][$metacriteria['field']]["usehaving"])) {
+// 
+//                   $NOT = 0;
+//                   if (strstr($metacriteria['link'],"NOT")) {
+//                      $tmplink = " ".str_replace(" NOT","",$metacriteria['link']);
+//                      $NOT     = 1;
+//                   } else {
+//                      $tmplink = " ".$metacriteria['link'];
+//                   }
+//                   if (!empty($HAVING)) {
+//                      $LINK = $tmplink;
+//                   }
+//                   $HAVING .= self::addHaving($LINK, $NOT, $metacriteria['itemtype'],
+//                                              $metacriteria['field'], $metacriteria['searchtype'],
+//                                              $metacriteria['value'], 1, $key);
+//                } else { // Meta Where Search
+//                   $LINK = " ";
+//                   $NOT  = 0;
+//                   // Manage Link if not first item
+//                   if (isset($metacriteria['link'])
+//                       && strstr($metacriteria['link'],"NOT")) {
+// 
+//                      $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
+//                      $NOT     = 1;
+// 
+//                   } else if (isset($metacriteria['link'])) {
+//                      $tmplink = " ".$metacriteria['link'];
+// 
+//                   } else {
+//                      $tmplink = " AND ";
+//                   }
+// 
+//                   if (!empty($WHERE)) {
+//                      $LINK = $tmplink;
+//                   }
+//                   $WHERE .= self::addWhere($LINK, $NOT, $metacriteria['itemtype'], $metacriteria['field'],
+//                                            $metacriteria['searchtype'], $metacriteria['value'], 1);
+//                }
+//             }
+//          }
+//       }
+// 
+//       // Use a ReadOnly connection if available and configured to be used
+//       $DBread = DBConnection::getReadConnection();
+// 
+//       // If no research limit research to display item and compute number of item using simple request
+//       $nosearch = true;
+//       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
+//          if (isset($p['criteria'][$i]['value']) && (strlen($p['criteria'][$i]['value']) > 0)) {
+//             $nosearch = false;
+//          }
+//       }
+// 
+//       if ($_SESSION["glpisearchcount2"][$itemtype] > 0) {
+//          $nosearch = false;
+//       }
+// 
+//       $LIMIT   = "";
+//       $numrows = 0;
+//       //No search : count number of items using a simple count(ID) request and LIMIT search
+//       if ($nosearch) {
+//          $LIMIT = " LIMIT ".$p['start'].", ".$LIST_LIMIT;
+// 
+//          // Force group by for all the type -> need to count only on table ID
+//          if (!isset($searchopt[$itemtype][1]['forcegroupby'])) {
+//             $count = "count(*)";
+//          } else {
+//             $count = "count(DISTINCT `$itemtable`.`id`)";
+//          }
+//          // request currentuser for SQL supervision, not displayed
+//          $query_num = "SELECT $count,
+//                               '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser
+//                        FROM `$itemtable`".
+//                        $COMMONLEFTJOIN;
+// 
+//          $first     = true;
+// 
+//          if (!empty($COMMONWHERE)) {
+//             $LINK = " AND " ;
+//             if ($first) {
+//                $LINK  = " WHERE ";
+//                $first = false;
+//             }
+//             $query_num .= $LINK.$COMMONWHERE;
+//          }
+//          // Union Search :
+//          if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+//             $tmpquery = $query_num;
+//             $numrows  = 0;
+// 
+//             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
+//                $ctable = getTableForItemType($ctype);
+//                if (($citem = getItemForItemtype($ctype))
+//                    && $citem->canView()) {
+//                   // State case
+//                   if ($itemtype == 'AllAssets') {
+//                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
+//                                               $ctable, $tmpquery);
+//                      $query_num = str_replace($itemtype, $ctype, $query_num);
+//                      $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
+// 
+//                      // Add deleted if item have it
+//                      if ($citem && $citem->maybeDeleted()) {
+//                         $query_num .= " AND `$ctable`.`is_deleted` = '0' ";
+//                      }
+// 
+//                      // Remove template items
+//                      if ($citem && $citem->maybeTemplate()) {
+//                         $query_num .= " AND `$ctable`.`is_template` = '0' ";
+//                      }
+// 
+//                   } else {// Ref table case
+//                      $reftable = getTableForItemType($itemtype);
+//                      if ($item && $item->maybeDeleted()) {
+//                         $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.
+//                                                    `is_deleted`",
+//                                                 "`$reftable`.`is_deleted`", $tmpquery);
+//                      }
+//                      $replace  = "FROM `$reftable`
+//                                   INNER JOIN `$ctable`
+//                                        ON (`$reftable`.`items_id` =`$ctable`.`id`
+//                                            AND `$reftable`.`itemtype` = '$ctype')";
+// 
+//                      $query_num = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
+//                                               $replace, $tmpquery);
+//                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype], $ctable,
+//                                               $query_num);
+// 
+//                   }
+//                   $query_num = str_replace("ENTITYRESTRICT",
+//                                            getEntitiesRestrictRequest('', $ctable, '', '',
+//                                                                       $citem->maybeRecursive()),
+//                                            $query_num);
+//                   $result_num = $DBread->query($query_num);
+//                   $numrows   += $DBread->result($result_num, 0, 0);
+//                }
+//             }
+// 
+//          } else {
+//             $result_num = $DBread->query($query_num);
+//             $numrows    = $DBread->result($result_num,0,0);
+//          }
+//       }
+// 
+//       // If export_all reset LIMIT condition
+//       if ($p['export_all']) {
+//          $LIMIT = "";
+//       }
+// 
+//       if (!empty($WHERE) || !empty($COMMONWHERE)) {
+//          if (!empty($COMMONWHERE)) {
+//             $WHERE = ' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+//          } else {
+//             $WHERE = ' WHERE '.$WHERE.' ';
+//          }
+//          $first = false;
+//       }
+// 
+//       if (!empty($HAVING)) {
+//          $HAVING = ' HAVING '.$HAVING;
+//       }
+// 
+// 
+//       // Create QUERY
+//       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+//          $first = true;
+//          $QUERY = "";
+//          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
+//             $ctable = getTableForItemType($ctype);
+//             if (($citem = getItemForItemtype($ctype))
+//                 && $citem->canView()) {
+//                if ($first) {
+//                   $first = false;
+//                } else {
+//                   $QUERY .= " UNION ";
+//                }
+//                $tmpquery = "";
+//                // AllAssets case
+//                if ($itemtype == 'AllAssets') {
+//                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
+//                               $FROM.
+//                               $WHERE;
+// 
+//                   if ($itemtype == 'AllAssets') {
+//                      $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+//                   }
+// 
+//                   // Add deleted if item have it
+//                   if ($citem && $citem->maybeDeleted()) {
+//                      $tmpquery .= " AND `$ctable`.`is_deleted` = '0' ";
+//                   }
+// 
+//                   // Remove template items
+//                   if ($citem && $citem->maybeTemplate()) {
+//                      $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
+//                   }
+// 
+//                   $tmpquery.= $GROUPBY.
+//                               $HAVING;
+// 
+//                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
+//                                           $ctable, $tmpquery);
+//                   $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
+// 
+//                } else {// Ref table case
+//                   $reftable = getTableForItemType($itemtype);
+// 
+//                   $tmpquery = $SELECT.", '$ctype' AS TYPE,
+//                                       `$reftable`.`id` AS refID, "."
+//                                       `$ctable`.`entities_id` AS ENTITY ".
+//                               $FROM.
+//                               $WHERE;
+//                   if ($item->maybeDeleted()) {
+//                      $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.
+//                                                 `is_deleted`",
+//                                              "`$reftable`.`is_deleted`", $tmpquery);
+//                   }
+// 
+// 
+//                   $replace = "FROM `$reftable`"."
+//                               INNER JOIN `$ctable`"."
+//                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
+//                                      AND `$reftable`.`itemtype` = '$ctype')";
+//                   $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
+//                                           $replace, $tmpquery);
+//                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype], $ctable,
+//                                           $tmpquery);
+//                }
+//                $tmpquery = str_replace("ENTITYRESTRICT",
+//                                        getEntitiesRestrictRequest('', $ctable, '', '',
+//                                                                   $citem->maybeRecursive()),
+//                                        $tmpquery);
+// 
+//                // SOFTWARE HACK
+//                if ($ctype == 'Software') {
+//                   $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
+//                   $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
+//                }
+//                $QUERY .= $tmpquery;
+//             }
+//          }
+//          if (empty($QUERY)) {
+//             echo self::showError(self::$output_type);
+//             return;
+//          }
+//          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$itemtype].".", "", $ORDER) . $LIMIT;
+//       } else {
+//          $QUERY = $SELECT.
+//                   $FROM.
+//                   $WHERE.
+//                   $GROUPBY.
+//                   $HAVING.
+//                   $ORDER.
+//                   $LIMIT;
+//       }
 
 
       $DBread->query("SET SESSION group_concat_max_len = 4096;");
@@ -3323,7 +4083,7 @@ class Search {
       }
       if (!empty($linkfield)) {
          $before = '';
-//          Html::printCleanArray($joinparams);
+
          if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin']) ) {
 
             if (isset($joinparams['beforejoin']['table'])) {
@@ -4818,7 +5578,7 @@ class Search {
             $_SESSION["glpisearchcount2"][$itemtype] = 0;
          }
       }
-//       Html::printCleanArray($_GET);
+
    }
 
 
@@ -5742,7 +6502,7 @@ class Search {
    static function computeComplexJoinID(array $joinparams) {
 
       $complexjoin = '';
-//      Html::printCleanArray($joinparams);
+
       if (isset($joinparams['condition'])) {
          $complexjoin .= $joinparams['condition'];
       }
