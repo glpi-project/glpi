@@ -700,8 +700,8 @@ class TicketFollowup  extends CommonDBTM {
          if (!in_array($ticket->fields["status"], array_merge($ticket->getSolvedStatusArray(),
                                                              $ticket->getClosedStatusArray()))
              || $reopen_case) {
-            if (isset($ticket->_displayoptions['_openform'])
-                  && $ticket->_displayoptions['_openform']) {
+
+            if (isset($_GET['_openfollowup']) && $_GET['_openfollowup']) {
                echo Html::scriptBlock("viewAddFollowup".$ticket->fields['id']."$rand()");
             } else {
                echo "<div class='center firstbloc'>".

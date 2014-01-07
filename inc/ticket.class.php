@@ -4002,7 +4002,7 @@ class Ticket extends CommonITILObject {
       if (in_array($this->fields["status"], $this->getClosedStatusArray())
             && $this->isAllowedStatus($this->fields['status'], Ticket::INCOMING)) {
             echo "&nbsp;<a class='vsubmit' href='".$this->getLinkURL().
-                  "&amp;forcetab=TicketFollowup$1&amp;_openform=1'>".
+                  "&amp;forcetab=TicketFollowup$1&amp;_openfollowup=1'>".
                   __('Reopen')."</a>";
          }
       }
