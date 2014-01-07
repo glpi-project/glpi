@@ -449,8 +449,6 @@ class CommonGLPI {
 
             if (!is_integer($itemtype) && ($itemtype != 'empty')
                 && ($obj = getItemForItemtype($itemtype))) {
-
-               $item->_displayoptions = $options;
                return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
             break;
