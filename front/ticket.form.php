@@ -147,7 +147,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
       Html::header(Ticket::getTypeName(2), '', "helpdesk", "ticket");
    }
 
-   $available_options = array('load_kb_sol');
+   $available_options = array('load_kb_sol', '_openform');
    $options           = array();
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
