@@ -319,7 +319,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($input["content"] == '') {
             if (isset($input["_add"])) {
                // Reopen using add form
-               Session::addMessageAfterRedirect(__('If you want to reopen the solution, you must specify a reason'),
+               Session::addMessageAfterRedirect(__('If you want to reopen the ticket, you must specify a reason'),
                                                 false, ERROR);
             } else {
                // Refuse solution
@@ -576,6 +576,13 @@ class TicketFollowup  extends CommonDBTM {
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
 
+      $reopen_case = false;
+      if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
+            && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+         $reopen_case = true;
+      }
+
+      echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
       if ($tech) {
          $this->showFormHeader($options);
 
@@ -591,8 +598,7 @@ class TicketFollowup  extends CommonDBTM {
          }
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
          // Reopen case
-         if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-               && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+         if ($reopen_case) {
             echo "<input type='hidden' name='add_reopen' value='1'>";
          }
          
@@ -612,9 +618,8 @@ class TicketFollowup  extends CommonDBTM {
 
       } else {
          $options['colspan'] = 1;
+
          $this->showFormHeader($options);
-
-
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='middle right'>".__('Description')."</td>";
@@ -624,8 +629,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<input type='hidden' name='requesttypes_id' value='".
                 RequestType::getDefault('helpdesk')."'>";
          // Reopen case
-         if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-               && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+         if ($reopen_case) {
             echo "<input type='hidden' name='add_reopen' value='1'>";
          }
                 
@@ -680,6 +684,7 @@ class TicketFollowup  extends CommonDBTM {
       if ($caneditall || $canadd) {
          echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
       }
+
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand() {\n";
@@ -695,15 +700,20 @@ class TicketFollowup  extends CommonDBTM {
          if (!in_array($ticket->fields["status"], array_merge($ticket->getSolvedStatusArray(),
                                                              $ticket->getClosedStatusArray()))
              || $reopen_case) {
-
-            echo "<div class='center firstbloc'>".
-                 "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
-            if ($reopen_case) {
-               _e('Reopen the ticket');
+            if (isset($ticket->_displayoptions['_openform'])
+                  && $ticket->_displayoptions['_openform']) {
+               echo Html::scriptBlock("viewAddFollowup".$ticket->fields['id']."$rand()");
             } else {
-               _e('Add a new followup');
+               echo "<div class='center firstbloc'>".
+                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+               if ($reopen_case) {
+                  _e('Reopen the ticket');
+               } else {
+                  _e('Add a new followup');
+               }
+               echo "</a></div>\n";
             }
-            echo "</a></div>\n";
+            
          }
       }
 
