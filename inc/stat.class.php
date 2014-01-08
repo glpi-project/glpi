@@ -1508,9 +1508,6 @@ class Stat extends CommonGLPI {
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
 
-      $show_problem = Session::haveRightsOr("problem", array(CREATE, UPDATE, DELETE,
-                                                             Problem::READALL));
-
       $opt_list["Ticket"]                             = __('Tickets');
 
       $stat_list["Ticket"]["Ticket_Global"]["name"]   = __('Global');
@@ -1522,7 +1519,7 @@ class Stat extends CommonGLPI {
       $stat_list["Ticket"]["Ticket_Item"]["name"]     = __('By hardware');
       $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
 
-      if ($show_problem) {
+      if (Problem::canView()) {
          $opt_list["Problem"]                               = _n('Problem', 'Problems', 2);
 
          $stat_list["Problem"]["Problem_Global"]["name"]    = __('Global');
@@ -1531,6 +1528,15 @@ class Stat extends CommonGLPI {
          $stat_list["Problem"]["Problem_Problem"]["file"]   = "stat.tracking.php?itemtype=Problem";
       }
 
+      if (Change::canView()) {
+         $opt_list["Change"]                               = _n('Change', 'Changes', 2);
+
+         $stat_list["Change"]["Change_Global"]["name"]    = __('Global');
+         $stat_list["Change"]["Change_Global"]["file"]    = "stat.global.php?itemtype=Change";
+         $stat_list["Change"]["Change_Change"]["name"]   = __('By change');
+         $stat_list["Change"]["Change_Change"]["file"]   = "stat.tracking.php?itemtype=Change";
+      }
+      
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
