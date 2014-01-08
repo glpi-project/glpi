@@ -3295,16 +3295,43 @@ class Ticket extends CommonITILObject {
                 $values['content']."</textarea></div>";
          echo "</td></tr>";
       }
-
+      
+      // File upload system
+      $width = '100%';
+      if ($CFG_GLPI['use_rich_text']) {
+         $width = '50%';
+      }
       echo "<tr class='tab_bg_1'>";
       echo "<td class='top'>".sprintf(__('%1$s (%2$s)'), __('File'), Document::getMaxUploadSize());
       DocumentType::showAvailableTypesLink();
       echo "</td>";
-      echo "<td>";
+      echo "<td class='top'>";
+      echo "<div id='fileupload_info'></div>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4'>";
+      echo "<table width='100%'><tr>";
+      echo "<td width='$width '>";
       echo Html::file(array('multiple' => true));
 //       "<div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
-      echo "</td></tr>";
-
+      echo "</td>";
+      if ($CFG_GLPI['use_rich_text']) {
+         echo "<td width='$width '>";
+         if (!isset($rand)) {
+            $rand = mt_rand();
+         }
+         echo Html::imagePaste(array('rand' => $rand));
+         echo "</td>";
+      }
+      echo "</tr></table>";
+      
+      echo "</td>";
+      echo "</tr>";
+      
+      
+      
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
@@ -4466,17 +4493,17 @@ class Ticket extends CommonITILObject {
       }
 
       // File upload system
-      $coslpan = 2;
+      $colspan = 2;
       if (!$CFG_GLPI['use_rich_text']) {
-         $coslpan = 4;
+         $colspan = 4;
       }
       echo "<tr>";
-      echo "<td colspan='$coslpan'>";
+      echo "<td colspan='$colspan'>";
       echo $tt->getBeginHiddenFieldValue('_documents_id');
       echo Html::file(array('multiple' => true, 'showfilecontainer' => 'fileupload_info'));
       echo "</td>";
       if ($CFG_GLPI['use_rich_text']) {
-         echo "<td colspan='$coslpan'>";
+         echo "<td colspan='$colspan'>";
          if (!isset($rand)) {
             $rand = mt_rand();
          }
@@ -5687,6 +5714,7 @@ class Ticket extends CommonITILObject {
     * @return nothing
    **/
    function addImagePaste() {
+
       if (count($this->input['_stock_image']) > 0) {
          $count_files = 0;
          // Filename
