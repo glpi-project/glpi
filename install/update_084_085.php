@@ -2638,7 +2638,9 @@ function update084to085() {
 
    $DB->queryOrDie($query, "0.85 update default life cycle for helpdesk");
 
-
+   //Add comment field to a virtualmachine
+   $migration->addField('glpi_computervirtualmachines','comment', 'text');
+   
    // Upgrade ticket bookmarks
    $query = "SELECT *
              FROM `glpi_bookmarks`

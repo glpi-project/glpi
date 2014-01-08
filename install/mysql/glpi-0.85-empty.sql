@@ -777,6 +777,7 @@ CREATE TABLE `glpi_computervirtualmachines` (
   `ram` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `computers_id` (`computers_id`),
   KEY `entities_id` (`entities_id`),
