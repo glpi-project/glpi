@@ -2157,6 +2157,15 @@ class Ticket extends CommonITILObject {
                                             'condition' => $followup_condition);
       $tab[25]['datatype']          = 'text';
 
+      $tab[36]['table']                = 'glpi_ticketfollowups';
+      $tab[36]['field']                = 'date';
+      $tab[36]['name']                 = __('Date');
+      $tab[36]['datatype']             = 'datetime';
+      $tab[36]['massiveaction']        = false;
+      $tab[36]['forcegroupby']         = true;
+      $tab[36]['joinparams']           = array('jointype'  => 'child',
+                                               'condition' => $followup_condition);
+
       $tab[27]['table']             = 'glpi_ticketfollowups';
       $tab[27]['field']             = 'count';
       $tab[27]['name']              = __('Number of followups');
