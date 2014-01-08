@@ -999,19 +999,23 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td>";
       switch ($this->fields['state']) {
          case Planning::INFO :
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/faqedit.png'>";
+            echo Html::image($CFG_GLPI['root_doc']."/pics/faqedit.png",
+                           array('title' =>_n('Information', 'Information', 1)));
             break;
 
          case Planning::TODO :
             if (empty($this->fields['begin'])) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>";
+               echo Html::image($CFG_GLPI['root_doc']."/pics/redbutton.png",
+                              array('title' => __('To do')));
             } else {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/rdv.png'>";
+               echo Html::image($CFG_GLPI['root_doc']."/pics/rdv.png",
+                              array('title' => __('Planned')));
             }
             break;
 
          case Planning::DONE :
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>";
+            echo Html::image($CFG_GLPI['root_doc']."/pics/greenbutton.png",
+                            array('title' => __('Done')));
             break;
       }
       echo "</td>";
