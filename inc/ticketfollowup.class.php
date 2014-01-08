@@ -580,9 +580,9 @@ class TicketFollowup  extends CommonDBTM {
       if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
             && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
          $reopen_case = true;
+         echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
       }
 
-      echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
       if ($tech) {
          $this->showFormHeader($options);
 
