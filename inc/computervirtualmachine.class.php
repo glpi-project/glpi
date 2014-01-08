@@ -164,6 +164,12 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
+      echo "</td><td rowspan='4'>".__('Comments')."</td>";
+      echo "<td rowspan='4'>";
+      echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "</td><td>".__('Virtualization system')."</td>";
       echo "<td>";
       VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
@@ -173,7 +179,9 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".__('Virtualization model')."</td>";
       echo "<td>";
       VirtualMachineSystem::dropdown(array('value' => $this->fields['virtualmachinesystems_id']));
-      echo "</td><td>".__('State of the virtual machine')."</td>";
+      echo "</td></tr>";
+      
+      echo "<tr><td>".__('State of the virtual machine')."</td>";
       echo "<td>";
       VirtualMachineState::dropdown(array('value' => $this->fields['virtualmachinestates_id']));
       echo "</td></tr>";
@@ -182,17 +190,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".__('UUID')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "uuid");
-      echo "</td>";
-
-      echo "<td>"._x('quantity', 'Processors number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "vcpu");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'))."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "ram");
       echo "</td>";
 
       echo "<td>".__('Machine')."</td>";
@@ -206,8 +203,19 @@ class ComputerVirtualMachine extends CommonDBChild {
          }
       }
       echo "</td>";
-
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'))."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "ram");
+      echo "</td>";
+
+      echo "<td>"._x('quantity', 'Processors number')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "vcpu");
+      echo "</td></tr>";
+
 
       $this->showFormButtons($options);
 
