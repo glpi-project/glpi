@@ -5780,7 +5780,7 @@ class Ticket extends CommonITILObject {
          preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
                         $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
-            $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[1]))."')");
+            $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."') AND `tickets_id`=".$this->fields['id']);
          }
       }
 
