@@ -678,7 +678,13 @@ class Ticket extends CommonITILObject {
 
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
-
+      
+      // Clean new lines before passing to rules
+      if ($CFG_GLPI["use_rich_text"] && isset($input["content"])) {
+         $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
+         $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
+      }
+         
       // automatic recalculate if user changes urgence or technician change impact
       if (isset($input['urgency'])
           && isset($input['impact'])

@@ -3654,7 +3654,7 @@ class Html {
          mode : 'exact',
          elements: '$name',
          valid_elements: '*[*]',
-         plugins : 'table,directionality,searchreplace,paste,tabfocus',
+         plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
          paste_use_dialog : false,
          paste_auto_cleanup_on_paste : true,
          paste_convert_headers_to_strong : false,
@@ -3685,6 +3685,11 @@ class Html {
          ed.onInit.add(function(ed) {";
       echo (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
       echo "
+            // wake up the autoresize plugin
+            setTimeout(
+               function(){
+                  ed.execCommand('mceAutoResize');
+               }, 1);
             if (tinymce.isIE) {
                tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
                   return tinymce.dom.Event.cancel(e);
