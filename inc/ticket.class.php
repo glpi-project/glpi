@@ -3692,7 +3692,7 @@ class Ticket extends CommonITILObject {
       $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       $canstatus                 = $canupdate;
 
-      if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+      if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
          $canupdate = false;
          // No update for actors
          $values['_noupdate'] = true;
