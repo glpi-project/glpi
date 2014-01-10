@@ -5780,7 +5780,7 @@ class Ticket extends CommonITILObject {
          preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
                         $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
-            $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."') AND `tickets_id`=".$this->fields['id']);
+            $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
          }
       }
 
@@ -5818,6 +5818,17 @@ class Ticket extends CommonITILObject {
                // Replace <br> TinyMce bug
                $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
                                            '&gt;&lt;', $content_text);
+               
+               // If the tag is from another ticket : link document to ticket
+               if($image['tickets_id'] != $this->fields['id']){
+                  $docitem = new Document_Item();
+                  $docitem->add(array('documents_id'  => $image['id'],
+                                      '_do_notif'     => false,
+                                      '_disablenotif' => true,
+                                      'itemtype'      => $this->getType(),
+                                      'items_id'      => $this->fields['id']));
+               }
+               
             } else {
                // Remove tag
                $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
