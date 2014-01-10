@@ -3727,8 +3727,10 @@ class Html {
       $params = array('name'     => $name,
                       'root_doc' => $CFG_GLPI['root_doc'],
                       'rand'     => $rand,
-                      'lang'     => array('pasteimage'      => _sx('button', 'Paste image'),
+                      'maxsize'  => 500,
+                      'lang'     => array('pasteimage'      => _sx('button', sprintf(__('%s px max'), __('Paste image')." - 500")),
                                           'itemnotfound'    => __('Item not found'),
+                                          'toolarge'        => __('Item is too large'),
                                           'save'            => _sx('button', 'Save'),
                                           'cancel'          => _sx('button', 'Cancel')));
 
