@@ -231,6 +231,7 @@ class Search2 {
          }
       }
 
+      // 
       
       return $data;
    }
@@ -283,8 +284,12 @@ class Search2 {
                         ".self::addDefaultSelect($data['itemtype']);
 
       // Add select for all toview item
+      $maxviewkey = 0;
       foreach ($data['toview'] as $key => $val) {
          $SELECT .= self::addSelect($data['itemtype'], $val, $key, 0);
+         if ($key>$maxviewkey) {
+            $maxviewkey = $key;
+         }
       }
 
       //// 2 - FROM AND LEFT JOIN
@@ -508,12 +513,19 @@ class Search2 {
 
          // Already link meta table in order not to linked a table several times
          $already_link_tables2 = array();
+         $already_selected     = array();
+         $metanum = $maxviewkey+1;
+         
          foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
             if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
                // a - SELECT
-               $SELECT .= self::addSelect($metacriteria['itemtype'], $metacriteria['field'],
-                                          $key, 1, $metacriteria['itemtype']);
+               if (!in_array($metacriteria['itemtype'].$metacriteria['field'], $already_selected)) {
+                  $SELECT .= self::addSelect($metacriteria['itemtype'], $metacriteria['field'],
+                                             $metanum, 1, $metacriteria['itemtype']);
+                  $metanum++;
+                  $already_selected[] = $metacriteria['itemtype'].$metacriteria['field'];
+               }
 
                // b - ADD LEFT JOIN
                // Link reference tables
@@ -901,9 +913,11 @@ class Search2 {
          
          foreach ($data['toview'] as $key => $val) {
             $data['data']['cols'][$num] = array();
-            $data['data']['cols'][$num]['itemtype']     = $data['itemtype'];
-            $data['data']['cols'][$num]['id'] = $val;
-            $data['data']['cols'][$num]['name']         = $searchopt[$val]["name"];
+            
+            $data['data']['cols'][$num]['itemtype']  = $data['itemtype'];
+            $data['data']['cols'][$num]['id']        = $val;
+            $data['data']['cols'][$num]['name']      = $searchopt[$val]["name"];
+            $data['data']['cols'][$num]['meta']      = 0;
             $num++;
          }
 
@@ -911,7 +925,6 @@ class Search2 {
          $already_printed = array();
          $metanames       = array();
          if (count($data['search']['metacriteria'])) {
-
             foreach ($data['search']['metacriteria'] as $metacriteria) {
                if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
                      && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
@@ -923,9 +936,10 @@ class Search2 {
                            $metanames[$metacriteria['itemtype']] = $metaitem->getTypeName();
                         }
                      }
-                     $data['data']['cols'][$num]['itemtype']     = $metacriteria['itemtype'];
-                     $data['data']['cols'][$num]['id'] = $metacriteria['field'];
-                     $data['data']['cols'][$num]['name']         = $searchopt[$metacriteria['field']]["name"];
+                     $data['data']['cols'][$num]['itemtype']  = $metacriteria['itemtype'];
+                     $data['data']['cols'][$num]['id']        = $metacriteria['field'];
+                     $data['data']['cols'][$num]['name']      = $searchopt[$metacriteria['field']]["name"];
+                     $data['data']['cols'][$num]['meta']      = 1;
                      $num++;
 
                      $already_printed[$metacriteria['itemtype'].$metacriteria['field']] = 1;
@@ -943,7 +957,77 @@ class Search2 {
          }
          
          // Get rows
+
+         // if real search seek to begin of items to display (because of complete search)
+         if (!$data['search']['no_search']) {
+            $DBread->data_seek($result, $data['search']['start']);
+         }
+
+         $i = $data['data']['begin'];
+         $data['data']['warning'] = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
          
+         while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
+            $row = $DBread->fetch_assoc($result);
+
+            $newrow = array();
+            $newrow['raw'] = $row;
+
+            // Parse datas
+            foreach ($newrow['raw'] as $key => $val) {
+               // For compatibility keep data at the top for the moment
+               $newrow[$key] = $val;
+               
+               $keysplit = explode('_', $key);
+               
+               if (isset($keysplit[1])
+                  && $keysplit[0] == 'ITEM') {
+                  $j = $keysplit[1];
+                  $fieldname = 'rawname';
+                  if (isset($keysplit[2])) {
+                     $fieldname = $keysplit[2];
+                  }
+
+                  // No Group_concat case
+                  if (strpos($val,"$$$$") === false) {
+                     $newrow[$j]['count'] = 1;
+                     
+                     if (strpos($val,"$$") === false) {
+                        $newrow[$j][0][$fieldname] = $val;
+                     } else {
+                        $split2 = self::explodeWithID("$$", $val);
+                        $newrow[$j][0][$fieldname] = $split2[0];
+                        $newrow[$j][0]['id']       = $split2[1];
+                     }
+                  } else {
+                     $newrow[$j] = array();
+                     $split = explode("$$$$", $val);
+                     $newrow[$j]['count'] = count($split);
+
+                     foreach ($split as $key2 => $val2) {
+                        if (strpos($val2,"$$") === false) {
+                           $newrow[$j][$key2][$fieldname] = $val2;
+                        } else {
+                           $split2 = self::explodeWithID("$$", $val2);
+                           $newrow[$j][$key2][$fieldname] = $split2[0];
+                           $newrow[$j][$key2]['id']      = $split2[1];
+                        }
+                     }
+                  }
+               } else {
+                  $newrow[$key] = $val;
+               }
+            }
+
+            foreach ($data['data']['cols'] as $key => $val) {
+               if (!empty($val['itemtype'])) {
+                  $newrow[$key]['name'] = self::giveItem($val['itemtype'], $val['id'], $newrow, $key);
+               }
+            }
+            
+            $data['data']['rows'][$i] = $newrow;
+            $i++;
+         }
+
       } else {
          echo $DBread->error();
       }
@@ -2292,7 +2376,7 @@ class Search2 {
       }
 
       if ($meta) {
-         $NAME = "META";
+//          $NAME = "META";
          if (getTableForItemType($meta_type)!=$table) {
             $addtable .= "_".$meta_type;
          }
@@ -3916,9 +4000,9 @@ class Search2 {
       }
 
       $NAME = "ITEM_";
-      if ($meta) {
-         $NAME = "META_";
-      }
+//       if ($meta) {
+//          $NAME = "META_";
+//       }
       if (isset($searchopt[$ID]["table"])) {
          $table     = $searchopt[$ID]["table"];
          $field     = $searchopt[$ID]["field"];
@@ -5097,7 +5181,8 @@ class Search2 {
       global $CFG_GLPI;
 
       static $search = array();
-
+      $item = NULL;
+      
       if (!isset($search[$itemtype])) {
          // standard type first
          switch ($itemtype) {
@@ -5263,8 +5348,9 @@ class Search2 {
                $search[$itemtype] += $plugsearch;
             }
          }
+
          // Complete linkfield if not define
-         if (!isset($item)) { // Special union type
+         if (is_null($item)) { // Special union type
             $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
          } else {
             $itemtable = $item->getTable();
