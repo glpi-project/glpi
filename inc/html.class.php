@@ -3864,7 +3864,19 @@ class Html {
                self::printCleanArray($val,$pad+1);
                echo "</div>";
             } else {
-               echo $val;
+               if (is_bool($val)) {
+                  if ($val) {
+                     echo 'true';
+                  } else {
+                     echo 'false';
+                  }
+               } else {
+                  if (is_object($val)) {
+                     print_r($val);
+                  } else {
+                     echo $val;
+                  }
+               }
             }
             echo "</td></tr>";
          }
