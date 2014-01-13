@@ -2656,7 +2656,7 @@ function update084to085() {
 
             // Copy itemtype if not set
             if (!isset($options['itemtype'])) {
-               $options['itemtype'] = $data['itemtype']
+               $options['itemtype'] = $data['itemtype'];
             }
             // Move criteria
             if (isset($options['field']) && is_array($options['field'])) {
