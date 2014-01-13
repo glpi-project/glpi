@@ -82,21 +82,20 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["test_ldap_replicate"])) {
-   foreach ($_POST["test_ldap_replicate"] as $replicate_id => $value) {
-      $replicate = new AuthLdapReplicate();
-      $replicate->getFromDB($replicate_id);
 
-      if (AuthLdap::testLDAPConnection($_POST["id"],$replicate_id)) {
-                                          //TRANS: %s is the description of the test
-         $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
-                                                  //TRANS: %s is the name of the LDAP main server
-                                                  sprintf(__('Replicate %s'), $ldap->fields["name"]));
-      } else {
-                                           //TRANS: %s is the description of the test
-         $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'),
-                                                  //TRANS: %s is the name of the LDAP main server
-                                                  sprintf(__('Replicate %s'), $ldap->fields["name"]));
-      }
+   $replicate = new AuthLdapReplicate();
+   $replicate->getFromDB($_POST["ldap_replicate_id"]);
+
+   if (AuthLdap::testLDAPConnection($_POST["id"],$_POST["ldap_replicate_id"])) {
+                                       //TRANS: %s is the description of the test
+      $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
+                                               //TRANS: %s is the name of the LDAP replica server
+                                               sprintf(__('Replicate %s'), $replicate->fields["name"]));
+   } else {
+                                        //TRANS: %s is the description of the test
+      $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'),
+                                               //TRANS: %s is the name of the LDAP replica server
+                                               sprintf(__('Replicate %s'), $replicate->fields["name"]));
    }
    Html::back();
 

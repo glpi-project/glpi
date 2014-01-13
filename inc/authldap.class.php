@@ -600,8 +600,12 @@ class AuthLDAP extends CommonDBTM {
             echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $ldap_replicate["host"],
                                                $ldap_replicate["port"]);
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='test_ldap_replicate[".$ldap_replicate["id"]."]'
-                  class='submit' value='" . __s('Test') . "'></td>";
+            Html::showSimpleForm(Toolbox::getItemTypeFormURL(self::getType()),
+                                       'test_ldap_replicate',
+                                       __s('Test'),
+                                       array('id' => $ID,
+                                             'ldap_replicate_id' => $ldap_replicate["id"]));
+            echo "</td>";
             echo"</tr>";
          }
          echo "</table>";
