@@ -2460,7 +2460,37 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 value in glpi_tickettemplatepredefinedfields $old to $new");
    }
 
+   // Migrate templates 
+   $query = "SELECT `glpi_notificationtemplatetranslations`.*
+               FROM `glpi_notificationtemplatetranslations`
+               INNER JOIN `glpi_notificationtemplates`
+                  ON (`glpi_notificationtemplates`.`id`
+                        = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
+               WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%validation.storestatus=%'
+                     OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%validation.storestatus=%'
+                     OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%validation.storestatus=%'";
 
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $subject = $data['subject'];
+            $text = $data['content_text'];
+            $html = $data['content_html'];
+            foreach ($status as $old => $new) {
+               $subject = str_replace("validation.storestatus=$old","validation.storestatus=$new",$subject);
+               $text    = str_replace("validation.storestatus=$old","validation.storestatus=$new",$text);
+               $html    = str_replace("validation.storestatus=$old","validation.storestatus=$new",$html);
+            }
+            $query = "UPDATE `glpi_notificationtemplatetranslations`
+                        SET `subject` = '".addslashes($subject)."',
+                           `content_text` = '".addslashes($text)."',
+                           `content_html` = '".addslashes($html)."'
+                        WHERE `id` = ".$data['id']."";
+            $DB->queryOrDie($query, "0.85 fix tags usage for storestatus");
+         }
+      }
+   }
+   
    // Upgrade ticket bookmarks
    $query = "SELECT *
              FROM `glpi_bookmarks`";
