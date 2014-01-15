@@ -342,7 +342,7 @@ class Item_Devices extends CommonDBRelation {
       $table->setTitle(_n('Component', 'Components', 2));
       if ($canedit) {
          $delete_all_column = $table->addHeader('delete all',
-                                                Html::getCheckAllAsCheckbox("form_device_add$rand",
+                                                Html::getCheckAllAsCheckbox("form_device_action$rand",
                                                 '__RAND__'));
          $delete_all_column->setHTMLClass('center');
       } else {
@@ -361,7 +361,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         $massiveactionparams = array('container'     => 'form_device_add'.$rand,
+         $massiveactionparams = array('container'     => "form_device_action$rand",
                                       'fixed'         => false,
                                       'display_arrow' => false);
          $content = array(array('function'   => 'Html::showMassiveActions',
