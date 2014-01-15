@@ -1171,6 +1171,8 @@ class Profile extends CommonDBTM {
       }
       Html::showCheckboxMatrix($columns, $rows,
                                array('title'      => $title,
+                                     'row_check_all' => true,
+                                     'col_check_all' => true,
                                      'first_cell' => '<b>'.__("From \ To").'</b>'));
    }
 
@@ -1270,8 +1272,8 @@ class Profile extends CommonDBTM {
          $rows[$html_field."[$index_1]"] = $row;
       }
       Html::showCheckboxMatrix($columns, $rows,
-                               array('title'      => $title,
-                                     'first_cell' => '<b>'.__("From \ To").'</b>'));
+                               array('title'         => $title,
+                                     'first_cell'    => '<b>'.__("From \ To").'</b>'));
    }   
    /**
    * Print the Life Cycles form for the current profile
