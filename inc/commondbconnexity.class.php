@@ -554,7 +554,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             $peertypes = array_unique($peertypes);
             if (count($peertypes) == 0) {
-               echo __('Cannot reaffect given elements !');
+               echo __('Unable to reaffect given elements !');
                exit();
             }
             $options = array();

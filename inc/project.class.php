@@ -1286,7 +1286,7 @@ class Project extends CommonDBTM {
                            });";
          echo Html::scriptBlock($js);
       } else {
-         _e('Nothing to display');
+         _e('No item to display');
       }
    }
 
