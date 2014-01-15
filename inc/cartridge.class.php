@@ -404,7 +404,7 @@ class Cartridge extends CommonDBChild {
 
          } else {
             //TRANS : for display cartridges count : %1$d is the total number,
-            //        %2$d the new one, %3$d the used one, %4$d worn one
+            //        %2$d the used one, %3$d the worn one
             $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total , $used, $old);
          }
 
