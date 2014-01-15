@@ -1372,6 +1372,7 @@ class User extends CommonDBTM {
       }
 
       //Perform the search
+      $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
       $sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
       //Get the result of the search as an array

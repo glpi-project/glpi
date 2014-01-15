@@ -1396,6 +1396,7 @@ class AuthLDAP extends CommonDBTM {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
          }
+         $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
          $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
          if ($sr) {
             if (in_array(ldap_errno($ds),array(4,11))) {
@@ -1873,7 +1874,7 @@ class AuthLDAP extends CommonDBTM {
             ldap_control_paged_result($ldap_connection, $config_ldap->fields['pagesize'],
                                       true, $cookie);
          }
-
+         $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
          $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter , $attrs);
 
          if ($sr) {
@@ -2457,7 +2458,7 @@ class AuthLDAP extends CommonDBTM {
       if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
       }
-
+      $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
       if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
          $info = self::get_entries_clean($ds, $result);
 
