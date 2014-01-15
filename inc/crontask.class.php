@@ -1371,7 +1371,7 @@ class CronTask extends CommonDBTM{
             if ( $match[1] < $firstdate ) {
                $task->addVolume(1);
                if ( unlink($file) ) {
-                  $task->log( sprintf(__('Delete archived log file: %s'), $shortfile)) ;
+                  $task->log( sprintf(__('Deletion of archived log file: %s'), $shortfile)) ;
                   $actionCode = 1 ;
                } else {
                   $task->log( sprintf(__('Unable to delete archived log file: %s'), $shortfile)) ;
@@ -1392,7 +1392,7 @@ class CronTask extends CommonDBTM{
 
          $task->addVolume(1);
          if (!file_exists($newfilename) && rename($file, $newfilename )) {
-            $task->log( sprintf(__('Archive log file: %1$s to %2$s'), $shortfile, $shortnewfile));
+            $task->log( sprintf(__('Archiving log file: %1$s to %2$s'), $shortfile, $shortnewfile));
             $actionCode = 1 ;
          } else {
             $task->log(sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),
