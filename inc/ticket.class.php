@@ -5687,13 +5687,13 @@ class Ticket extends CommonITILObject {
       unset($values[READ]);
       $values[self::READMY]    = __('See my ticket');
                                                   //TRANS: short for : See tickets created by my groups
-      $values[self::READGROUP] = array('short' => __('See owned'),
+      $values[self::READGROUP] = array('short' => __('See group ticket'),
                                        'long'  => __('See tickets created by my groups'));
       if ($interface == 'central') {
          $values[self::READALL]        = __('See all tickets');
                                                 //TRANS: short for : See assigned tickets (group associated)
          $values[self::READASSIGN]     = array('short' => __('See assigned'),
-                                               'long'  => __('See assigned tickets (group associated)'));
+                                               'long'  => __('See assigned tickets'));
                                                //TRANS: short for : Assign a ticket
          $values[self::ASSIGN]         = array('short' => __('Assign'),
                                                'long'  => __('Assign a ticket'));
