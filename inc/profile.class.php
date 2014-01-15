@@ -1947,7 +1947,7 @@ class Profile extends CommonDBTM {
 
       $tab[79]['table']          = 'glpi_profilerights';
       $tab[79]['field']          = 'rights';
-      $tab[79]['name']           = __('Plannings');
+      $tab[79]['name']           = __('Planning');
       $tab[79]['datatype']       = 'right';
       $tab[79]['rightclass']     = 'Planning';
       $tab[79]['rightname']      = 'planning';

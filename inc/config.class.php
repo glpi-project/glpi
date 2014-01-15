@@ -957,7 +957,7 @@ class Config extends CommonDBTM {
                           $data['keep_devices_when_purging_item']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Back to created item after create')."</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Go to created item after creation')."</td>";
       echo "<td>";
       Dropdown::showYesNo("backcreated", $data["backcreated"]);
       echo "</td></tr>";
