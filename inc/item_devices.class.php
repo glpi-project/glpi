@@ -104,10 +104,10 @@ class Item_Devices extends CommonDBRelation {
       $tab = parent::getSearchOptions();
 
       foreach (static::getSpecificities() as $field => $attributs) {
-         $tab[] = array('table'         => $this->getTable(),
-                        'field'         => $field,
-                        'name'          => $attributs['long name'],
-                        'massiveaction' => true);
+         $tab[$attributs['id']] = array('table'         => $this->getTable(),
+                                        'field'         => $field,
+                                        'name'          => $attributs['long name'],
+                                        'massiveaction' => true);
       }
 
       $tab[80]['table']          = 'glpi_entities';
@@ -136,12 +136,14 @@ class Item_Devices extends CommonDBRelation {
          case 'serial' :
             return array('long name'  => __('Serial number'),
                          'short name' => __('Serial number'),
-                         'size'       => 20);
+                         'size'       => 20,
+                         'id'         => 10);
 
          case 'busID' :
             return array('long name'  => __('Position of the device on its bus'),
                          'short name' => __('bus ID'),
-                         'size'       => 10);
+                         'size'       => 10,
+                         'id'         => 11);
       }
       return array();
    }
