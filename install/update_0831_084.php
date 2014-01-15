@@ -197,9 +197,12 @@ function update0831to084() {
             $text = $data['content_text'];
             $html = $data['content_html'];
             foreach ($status as $old => $new) {
-               $subject = str_replace("storestatus=$old","storestatus=$new",$subject);
-               $text = str_replace("storestatus=$old","storestatus=$new",$text);
-               $html = str_replace("storestatus=$old","storestatus=$new",$html);
+               $subject = str_replace("ticket.storestatus=$old","ticket.storestatus=$new",$subject);
+               $text    = str_replace("ticket.storestatus=$old","ticket.storestatus=$new",$text);
+               $html    = str_replace("ticket.storestatus=$old","ticket.storestatus=$new",$html);
+               $subject = str_replace("problem.storestatus=$old","problem.storestatus=$new",$subject);
+               $text    = str_replace("problem.storestatus=$old","problem.storestatus=$new",$text);
+               $html    = str_replace("problem.storestatus=$old","problem.storestatus=$new",$html);
             }
             $query = "UPDATE `glpi_notificationtemplatetranslations`
                         SET `subject` = '".addslashes($subject)."',
