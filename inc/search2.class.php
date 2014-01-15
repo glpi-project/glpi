@@ -1245,7 +1245,7 @@ class Search2 {
 
                   $linkto = $p['target']."?itemtype=$itemtype&amp;sort=".$val."&amp;order=".
                              (($p['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$p['start'].
-                             $globallinkto;
+                             "&amp;".$globallinkto;
                }
                $headers_line .= self::showHeaderItem(self::$output_type,
                                                      $searchopt[$itemtype][$val]["name"],
