@@ -697,7 +697,7 @@ class Group_User extends CommonDBRelation{
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
-               = __("Change users's group");
+               = __("Move to group");
       }
 
       return $actions;
