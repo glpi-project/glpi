@@ -2476,81 +2476,68 @@ function generate_entity($ID_entity) {
       addInfocoms('Computer', $compID, $ID_entity);
 
       // ADD DEVICE
+      $cdevmb->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15)));
 
-      $cdevmb->add(array('itemtype'              => 'Computer',
-                         'items_id'              => $compID,
-                         'devicemotherboards_id' => mt_rand(1,$MAX['device']),
-                         'serial'            => Toolbox::getRandomString(15)));
-
-      $cdevproc->add(array('itemtype'              => 'Computer',
-                           'items_id'              => $compID,
-                           'serial'            => Toolbox::getRandomString(15),
-                           'deviceprocessors_id'   => mt_rand(1,$MAX['device']),
-                           'frequency'           => (1000+200*mt_rand(0,20))));
-
-      $cdevmem->add(array('itemtype'            => 'Computer',
-                          'items_id'            => $compID,
-                          'serial'            => Toolbox::getRandomString(15),
-                          'devicememories_id'   => mt_rand(1,$MAX['device']),
-                          'size'         => (512*mt_rand(1,20))));
-
-      $cdevhd->add(array('itemtype'              => 'Computer',
-                         'items_id'              => $compID,
-                         'serial'            => Toolbox::getRandomString(15),
-                         'deviceharddrives_id'   => mt_rand(1,$MAX['device']),
-                         'capacity'           => (102400*mt_rand(1,20))));
-
-      $cdevnc->add(array('itemtype'              => 'Computer',
-                         'items_id'              => $compID,
-                         'serial'            => Toolbox::getRandomString(15),
-                         'devicenetworkcards_id' => mt_rand(1,$MAX['device']),
-                         'mac'           => getNextMAC()));
-
-      $cdevdr->add(array('itemtype'         => 'Computer',
-                         'items_id'         => $compID,
-                         'serial'            => Toolbox::getRandomString(15),
-                         'devicedrives_id'  => mt_rand(1,$MAX['device'])));
-
-      $cdevcon->add(array('itemtype'              => 'Computer',
-                          'items_id'              => $compID,
-                          'serial'            => Toolbox::getRandomString(15),
-                          'devicecontrols_id'     => mt_rand(1,$MAX['device'])));
-
-      $cdevgc->add(array('itemtype'              => 'Computer',
-                         'items_id'              => $compID,
-                         'serial'            => Toolbox::getRandomString(15),
-                         'devicegraphiccards_id' => mt_rand(1,$MAX['device']),
-                         'memory'           => (128*mt_rand(1,20))));
-
-      $cdevsc->add(array('itemtype'              => 'Computer',
-                         'items_id'              => $compID,
-                         'serial'            => Toolbox::getRandomString(15),
-                         'devicesoundcards_id'   => mt_rand(1,$MAX['device'])));
-
-      if (mt_rand(0,100)<20) {
-         $cdevpci->add(array('itemtype'         => 'Computer',
-                             'items_id'         => $compID,
-                             'serial'            => Toolbox::getRandomString(15),
-                             'devicepcis_id'    => mt_rand(1,$MAX['device'])));
+      $max = mt_rand(1,4);
+      $devid = mt_rand(1,$MAX['device']);
+      for($nb = 0; $nb<$max; $nb++) {
+         $cdevproc->addDevices(1, 'Computer', $compID, $devid,
+                           array('serial'            => Toolbox::getRandomString(15)));
+      }
+      $max = mt_rand(1,4);
+      $devid = mt_rand(1,$MAX['device']);
+      for($nb = 0; $nb<$max; $nb++) {
+         $cdevmem->addDevices(1, 'Computer', $compID, $devid,
+                           array('serial'            => Toolbox::getRandomString(15)));
       }
 
-      $cdevcase->add(array('itemtype'         => 'Computer',
-                           'items_id'         => $compID,
-                           'serial'            => Toolbox::getRandomString(15),
-                           'devicecases_id'   => mt_rand(1,$MAX['device'])));
+      $max = mt_rand(1,2);
+      $devid = mt_rand(1,$MAX['device']);
+      for($nb = 0; $nb<$max; $nb++) {
+         $cdevhd->addDevices(1, 'Computer', $compID, $devid,
+                           array('serial'            => Toolbox::getRandomString(15)));
+      }
 
-      $cdevps->add(array('itemtype'                 => 'Computer',
-                         'items_id'                 => $compID,
-                         'serial'            => Toolbox::getRandomString(15),
-                         'devicepowersupplies_id'   => mt_rand(1,$MAX['device'])));
+      $cdevnc->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15),
+                               'mac'  => getNextMAC()));
 
+      $cdevdr->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15)));
+
+      $cdevcon->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15)));
+
+      $cdevgc->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15)));
+
+      $cdevsc->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15)));
+
+      $max = mt_rand(1,4);
+      for($nb = 0; $nb<$max; $nb++) {
+         $cdevpci->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                           array('serial'            => Toolbox::getRandomString(15)));
+      }
+
+      $cdevcase->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
+                         array('serial'            => Toolbox::getRandomString(15)));
+
+      $max = mt_rand(1,2);
+      $devid = mt_rand(1,$MAX['device']);
+      for($nb = 0; $nb<$max; $nb++) {
+         $cdevps->addDevices(1, 'Computer', $compID, $devid,
+                           array('serial'            => Toolbox::getRandomString(15)));
+      }
+                         
       // insert disk
       $nb_disk = mt_rand(1,$MAX_DISK);
       for ($j=1 ; $j<=$nb_disk ; $j++) {
          $totalsize = mt_rand(10000,1000000);
          $freesize  = mt_rand(0,$totalsize);
 
-         $cdisk-> add(toolbox::addslashes_deep(
+         $cdisk->add(toolbox::addslashes_deep(
                       array('entities_id'     => $ID_entity,
                             'computers_id'    => $compID,
                             'name'            => "disk '$j",

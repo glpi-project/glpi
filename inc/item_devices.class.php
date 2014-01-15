@@ -674,24 +674,25 @@ class Item_Devices extends CommonDBRelation {
     * @param $itemtype
     * @param $items_id
     * @param $devices_id
+    * @param $input array to complete (permit to define values)
    **/
-   function addDevices($numberToAdd, $itemtype, $items_id, $devices_id) {
+   function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = array()) {
       global $DB;
 
       if ($numberToAdd == 0) {
          return;
       }
 
-      $input  = array('itemtype'                    => $itemtype,
-                      'items_id'                    => $items_id,
-                      static::getDeviceForeignKey() => $devices_id);
+      $input['itemtype'] = $itemtype;
+      $input['items_id'] = $items_id;
+      $input[static::getDeviceForeignKey()] = $devices_id;
 
       $device_type = static::getDeviceType();
       $device      = new $device_type();
       $device->getFromDB($devices_id);
 
       $input['entities_id']  = $device->getEntityID();
-      $input['is_recursive'] = $device->isRecursive();      
+      $input['is_recursive'] = $device->isRecursive();
 
       foreach (static::getSpecificities() as $field => $attributs) {
          if (isset($device->fields[$field.'_default'])) {
@@ -705,7 +706,6 @@ class Item_Devices extends CommonDBRelation {
          $this->add($input);
       }
    }
-
 
    /**
     * Add one or several device(s) from front/item_devices.form.php.
