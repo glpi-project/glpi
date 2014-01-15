@@ -53,7 +53,14 @@ class DeviceProcessor extends CommonDevice {
                                array('name'  => 'frequence',
                                      'label' => __('Frequency'),
                                      'type'  => 'text',
-                                     'unit'  => __('MHz'))));
+                                     'unit'  => __('MHz')),
+                               array('name'  => 'nbcores_default',
+                                     'label' => __('Number of cores'),
+                                     'type'  => 'integer'),
+                               array('name'  => 'nbthreads_default',
+                                     'label' => __('Number of threads'),
+                                     'type'  => 'integer')
+                           ));
    }
 
 
@@ -71,6 +78,18 @@ class DeviceProcessor extends CommonDevice {
       $tab[12]['name']     = __('Frequency');
       $tab[12]['datatype'] = 'string';
 
+
+
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'nbcores_default';
+      $tab[13]['name']     = __('Number of cores');
+      $tab[13]['datatype'] = 'integer';
+
+      $tab[14]['table']    = $this->getTable();
+      $tab[14]['field']    = 'nbthreads_default';
+      $tab[14]['name']     = __('Number of threads');
+      $tab[14]['datatype'] = 'integer';      
+
       return $tab;
    }
 
@@ -83,7 +102,7 @@ class DeviceProcessor extends CommonDevice {
    **/
    function prepareInputForAddOrUpdate($input) {
 
-      foreach (array('frequence', 'frequency_default') as $field) {
+      foreach (array('frequence', 'frequency_default', 'nbcores_default', 'nbthreads_default') as $field) {
          if (isset($input[$field]) && !is_numeric($input[$field])) {
             $input[$field] = 0;
          }

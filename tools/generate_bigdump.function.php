@@ -1223,7 +1223,7 @@ function generateGlobalDropdowns() {
                      'comment'            => "comment ' $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
-                     'specif_default'     => 256*mt_rand(0,8))));
+                     'memory_default'     => 256*mt_rand(0,8))));
    }
 
 
@@ -1241,7 +1241,7 @@ function generateGlobalDropdowns() {
                      'comment'            => "comment' $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
-                     'specif_default'     => mt_rand(0,300),
+                     'capacity_default'     => mt_rand(0,300),
                      'rpm'                => mt_rand(0,15000),
                      'cache'              => 51200*mt_rand(0,10))));
    }
@@ -1332,7 +1332,10 @@ function generateGlobalDropdowns() {
                      'comment'            => "comment' $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'frequence'          => mt_rand(1000,3000),
-                     'specif_default'     => 1000+200*mt_rand(0,10))));
+                     'frequency_default'     => 1000+200*mt_rand(0,10),
+                     'nbcores_default'     => mt_rand(1,8),
+                     'nbthreads_default'     => mt_rand(1,4),
+                     )));
    }
 
 
@@ -1351,7 +1354,7 @@ function generateGlobalDropdowns() {
                      'comment'              => "comment' $val",
                      'manufacturers_id'     => mt_rand(1,$MAX['manufacturer']),
                      'frequence'            => 100*mt_rand(0,10),
-                     'specif_default'       => 1024*mt_rand(0,6),
+                     'size_default'         => 1024*mt_rand(0,6),
                      'devicememorytypes_id' => mt_rand(1,$MAX['ram_type']))));
    }
 
