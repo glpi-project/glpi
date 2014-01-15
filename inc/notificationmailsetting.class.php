@@ -130,7 +130,7 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . __('Enable followup via email') . "</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
       echo "</td>";
-      echo "<td>" . __('Add documents links into ticket notifications') . "</td><td>";
+      echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
       Dropdown::showYesNo("attach_ticket_documents_to_mail",
                           $CFG_GLPI["attach_ticket_documents_to_mail"]);
       echo "</td>";
