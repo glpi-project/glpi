@@ -54,7 +54,8 @@ class Item_DeviceHardDrive extends Item_Devices {
       return array('capacity' => array('long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'),
                                                                __('Mio')),
                                        'short name' => __('Capacity'),
-                                       'size'       => 10),
+                                       'size'       => 10,
+                                       'id'         => 20),
                    'serial'   => parent::getSpecificities('serial'),
                    'busID'    => parent::getSpecificities('busID'));
    }

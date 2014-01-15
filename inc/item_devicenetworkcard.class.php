@@ -54,7 +54,8 @@ class Item_DeviceNetworkCard extends Item_Devices {
 
       return array('mac'    => array('long name'  => __('MAC address'),
                                      'short name' => __('MAC address'),
-                                     'size'       => 18),
+                                     'size'       => 18,
+                                     'id'         => 20),
                    'serial' => parent::getSpecificities('serial'),
                    'busID'  => parent::getSpecificities('busID'));
    }

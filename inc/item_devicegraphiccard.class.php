@@ -53,7 +53,8 @@ class Item_DeviceGraphicCard extends Item_Devices {
       return array('memory' => array('long name'  => sprintf(__('%1$s (%2$s)'), __('Memory'),
                                                             __('Mio')),
                                      'short name' => __('Memory'),
-                                     'size'       => 10),
+                                     'size'       => 10,
+                                     'id'         => 20),
                    'serial' => parent::getSpecificities('serial'),
                    'busID'  => parent::getSpecificities('busID'));
    }

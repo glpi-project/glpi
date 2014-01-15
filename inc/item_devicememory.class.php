@@ -55,7 +55,8 @@ class Item_DeviceMemory extends Item_Devices {
       return array('size'   => array('long name'  => sprintf(__('%1$s (%2$s)'), __('Size'),
                                                              __('Mio')),
                                      'short name' => __('Size'),
-                                     'size'       => 10),
+                                     'size'       => 10,
+                                     'id'         => 20),
                    'serial' => parent::getSpecificities('serial'),
                    'busID'  => parent::getSpecificities('busID'));
    }

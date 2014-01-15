@@ -681,7 +681,8 @@ class MassiveAction {
                   $group                       = '';
                   $show_all                    = true;
                   $show_infocoms               = true;
-
+                  $itemtable                   = getTableForItemType($itemtype);
+                  
                   if (InfoCom::canApplyOn($itemtype)
                       && (!$itemtype::canUpdate()
                           || !Infocom::canUpdate())) {
@@ -689,6 +690,7 @@ class MassiveAction {
                      $show_infocoms = Infocom::canUpdate();
                   }
                   foreach (Search::getCleanedOptions($itemtype, UPDATE) as $index => $option) {
+                     
                      if (!is_array($option)) {
                         $group                               = $option;
                         $options_per_type[$itemtype][$group] = array();
@@ -707,8 +709,11 @@ class MassiveAction {
                                           && !Search::isInfocomOption($itemtype, $index)))) {
                                  $options_per_type[$itemtype][$group][$itemtype.':'.$index]
                                              = $option['name'];
-
-                                 $field_key = $option['table'].':'.$option['field'];
+                                 if ($itemtable == $option['table']) {
+                                    $field_key = 'MAIN:'.$option['field'].':'.$index;
+                                 } else {
+                                    $field_key = $option['table'].':'.$option['field'].':'.$index;
+                                 }
                                  if (!isset($options_count[$field_key])) {
                                     $options_count[$field_key] = array();
                                  }
