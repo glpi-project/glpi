@@ -58,7 +58,7 @@ class RegisteredID  extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      return _n('Registered ID (issued by PCI-SIG)', 'Registered IDs', $nb);
+      return _n('Registered ID (issued by PCI-SIG)', 'Registered IDs (issued by PCI-SIG)', $nb);
    }
 
 
@@ -110,7 +110,7 @@ class RegisteredID  extends CommonDBChild {
       } else {
          echo "<input type='hidden' name='$main_field' value='$value'>";
          if (!empty($this->fields['device_type'])) {
-            printf(__('%1%s: %2$s'), $registeredIDTypes[$this->fields['device_type']],
+            printf(__('%1$s: %2$s'), $registeredIDTypes[$this->fields['device_type']],
                    $value);
          } else {
             echo $value;
