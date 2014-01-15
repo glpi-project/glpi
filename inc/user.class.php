@@ -4023,8 +4023,8 @@ class User extends CommonDBTM {
       $values[self::IMPORTEXTAUTHUSERS] = array('short' => __('Add external'),
                                                 'long'  => __('Add users from an external source'));
        //TRANS: short for : Read method for user authentication and synchronization                                 
-      $values[self::READAUTHENT]        = array('short' => __('Read auth and sync'),
-                                                'long'  => __('Read method for user authentication and synchronization'));
+      $values[self::READAUTHENT]        = array('short' => __('Read auth'),
+                                                'long'  => __('Read user authentication and synchronization method'));
       //TRANS: short for : Update method for user authentication and synchronization                                        
       $values[self::UPDATEAUTHENT]      = array('short' => __('Update auth and sync'),
                                                 'long'  => __('Update method for user authentication and synchronization'));
