@@ -2416,6 +2416,14 @@ function update084to085() {
       }
    }
 
+   $migration->addField('glpi_deviceprocessors', 'nbcores_default', 'int');
+   $migration->addField('glpi_deviceprocessors', 'nbthreads_default', 'int');
+
+   $migration->addField('glpi_items_deviceprocessors', 'nbcores', 'int');
+   $migration->addField('glpi_items_deviceprocessors', 'nbthreads', 'int');
+   $migration->addKey('glpi_items_deviceprocessors', 'nbcores');
+   $migration->addKey('glpi_items_deviceprocessors', 'nbthreads');
+   
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'ticketvalidations status'));
 
    $status  = array('none'     => CommonITILValidation::NONE,
