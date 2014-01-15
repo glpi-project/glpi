@@ -2372,7 +2372,8 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since version 0.85
    **/
    function getSearchOptionsMain() {
-
+      global $CFG_GLPI;
+      
       $tab                            = array();
       $tab['common']                  = __('Characteristics');
 
@@ -2389,6 +2390,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[21]['name']                = __('Description');
       $tab[21]['massiveaction']       = false;
       $tab[21]['datatype']            = 'text';
+      if ($this->getType() == 'Ticket'
+          && $CFG_GLPI["use_rich_text"]) {
+         $tab[21]['htmltext'] = true;
+      }
 
       $tab[2]['table']                = $this->getTable();
       $tab[2]['field']                = 'id';

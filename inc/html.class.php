@@ -3623,15 +3623,16 @@ class Html {
     * Init the Editor System to a textarea
     *
     * @param $name          name of the html textarea to use
-    * @param $rand          rand of the html textarea to use
+    * @param $rand          rand of the html textarea to use (if empty no image paste system)
+    * @param $display       boolean display or get js script
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='') {
+   static function initEditorSystem($name, $rand='', $display = true) {
       global $CFG_GLPI;
 
       Html::scriptStart();
-      echo "function waitforpastedata(elem){
+      $js = "function waitforpastedata(elem){
          var _html = elem.innerHTML;
          if(_html != undefined) {
             if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
@@ -3648,7 +3649,7 @@ class Html {
             }
          }
       }";
-      echo "
+      $js .= "
          tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
@@ -3673,18 +3674,18 @@ class Html {
          theme : 'advanced',
          entity_encoding : 'raw', ";
          // directionality + search replace plugin
-      echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-      echo "theme_advanced_toolbar_location : 'top',
+      $js .= "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
+      $js .= "theme_advanced_toolbar_location : 'top',
             theme_advanced_toolbar_align : 'left',
             theme_advanced_statusbar_location : 'none',
             theme_advanced_resizing : 'true',
             theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
             theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
             theme_advanced_buttons3 : '',";
-      echo "setup : function(ed) {
+      $js .= "setup : function(ed) {
          ed.onInit.add(function(ed) {";
-      echo (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
-      echo "
+      $js .= (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
+      $js .= "
             // wake up the autoresize plugin
             setTimeout(
                function(){
@@ -3705,10 +3706,14 @@ class Html {
             }
          });
       }";
-      echo "});";
+      $js .= "});";
 
 //         invalid_elements : 'script',
-      echo Html::scriptEnd();
+      if ($display) {
+         echo  Html::scriptBlock($js);
+      } else {
+         return  Html::scriptBlock($js);
+      }
    }
 
    /**
