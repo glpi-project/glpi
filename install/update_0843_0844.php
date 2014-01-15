@@ -86,9 +86,9 @@ function update0843to0844() {
                INNER JOIN `glpi_notificationtemplates`
                   ON (`glpi_notificationtemplates`.`id`
                         = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
-               WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%storestatus=%'
-                     OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%storestatus=%'
-                     OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%storestatus=%'";
+               WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%validation.storestatus=%'
+                     OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%validation.storestatus=%'
+                     OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%validation.storestatus=%'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
