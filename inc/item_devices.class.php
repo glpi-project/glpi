@@ -701,11 +701,11 @@ class Item_Devices extends CommonDBRelation {
             $input[$field] = $device->fields[$field.'_default'];
          }
       }
-
-      $this->check(-1, CREATE, $input);
-
-      for ($i = 0 ; $i < $numberToAdd ; $i ++) {
-         $this->add($input);
+      
+      if ($this->can(-1, CREATE, $input)) {
+         for ($i = 0 ; $i < $numberToAdd ; $i ++) {
+            $this->add($input);
+         }
       }
    }
 

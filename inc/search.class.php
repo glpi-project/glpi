@@ -1247,7 +1247,6 @@ class Search {
 
          // Display Loop
          foreach ($data['data']['rows'] as $rowkey => $row) {
-//             Html::printCleanArray($val);
             // Column num
             $item_num = 1;
             $row_num++;
@@ -1289,13 +1288,11 @@ class Search {
             // Print other toview items
             foreach ($data['data']['cols'] as $colkey => $col) {
                if (!$col['meta']) {
-                  echo self::showItem($data['display_type'], self::giveItem($data['itemtype'], $col['id'], $row, $colkey),
+                  echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
                                        $item_num, $row_num,
                                        self::displayConfigItem($data['itemtype'], $col['id'], $row, $colkey));
                } else { // META case
-                  $out = self::giveItem($col['itemtype'], $col['id'], $row,
-                                          $colkey, 1);
-                  echo self::showItem($data['display_type'], $out, $item_num, $row_num);
+                  echo self::showItem($data['display_type'], $row[$colkey]['displayname'], $item_num, $row_num);
                }
             }
 
