@@ -74,6 +74,15 @@ class Search {
       self::showList($itemtype, $_GET);
    }
 
+
+   /**
+    * Display result table for search engine for an type
+    *
+    * @param $itemtype item type to manage
+    * @param $params search params passed to prepareDatasForSearch function
+    *
+    * @return nothing
+   **/
    static function showList($itemtype, $params) {
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
@@ -81,6 +90,23 @@ class Search {
       self::constructDatas($data);
 
       self::displayDatas($data);
+   }
+
+   /**
+    * Get datas based on search parameters
+    *
+    * @param $itemtype item type to manage
+    * @param $params search params passed to prepareDatasForSearch function
+    *
+    * @return data array
+   **/
+   static function getDatas($itemtype, $params) {
+      $data = self::prepareDatasForSearch($itemtype, $params);
+      self::constructSQL($data);
+
+      self::constructDatas($data);
+
+      return $data;
    }
    
    /**
