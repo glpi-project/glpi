@@ -746,7 +746,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $uid           = $tmp['suppliers_id'];
             $supplier_tmp  = new Supplier();
             if ($supplier_tmp->getFromDB($uid)) {
-               $suppliers[$uid] = $user_tmp->getName();
+               $suppliers[$uid] = $supplier_tmp->getName();
             }
          }
          $datas["##$objettype.assigntosupplier##"] = implode(', ',$suppliers);
