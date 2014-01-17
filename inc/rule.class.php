@@ -128,7 +128,7 @@ class Rule extends CommonDBTM {
     *   example array(1 => Condition1,
     *                 2 => Condition2,
     *                 3 => Condition1&Condition2)
-    * 
+    *
     *  @since version 0.85
     *
     *  @return array of conditions
@@ -187,7 +187,7 @@ class Rule extends CommonDBTM {
 
       return NOT_AVAILABLE;
    }
-   
+
    /**
     *  @see CommonGLPI::getMenuContent()
     *
@@ -1422,7 +1422,7 @@ class Rule extends CommonDBTM {
          }
       }
    }
-   
+
    /// Are criterias valid to be processed
    function validateCriterias($options) {
       if (count($this->criterias)) {
@@ -1457,7 +1457,7 @@ class Rule extends CommonDBTM {
          $doactions = true;
 
          foreach ($this->criterias as $criteria) {
-            
+
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
             if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
                $doactions &= $this->checkCriteria($criteria, $input);
@@ -1524,7 +1524,7 @@ class Rule extends CommonDBTM {
       if (!isset($input[$criteria->fields["criteria"]])) {
          $input[$criteria->fields["criteria"]] = '';
       }
-      
+
       //If the value is not an array
       if (!is_array($input[$criteria->fields["criteria"]])) {
          $value = $this->getCriteriaValue($criteria->fields["criteria"],
@@ -1534,7 +1534,7 @@ class Rule extends CommonDBTM {
          $res   = RuleCriteria::match($criteria, $value, $this->criterias_results,
                                       $partial_regex_result);
       } else {
-      
+
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
          if (in_array($criteria->fields["condition"], array(self::PATTERN_IS_NOT,
@@ -2509,12 +2509,12 @@ class Rule extends CommonDBTM {
       if ($p['sub_type'] == '') {
          return false;
       }
-      
+
       $add_condition = '';
       if ($p['condition'] > 0) {
          $add_condition = ' AND `condition` & '.$p['condition'];
       }
-      
+
       $p['condition'] = "`sub_type` = '".$p['sub_type']."' $add_condition";
       return Dropdown::show($p['sub_type'],$p);
    }
@@ -2665,7 +2665,7 @@ class Rule extends CommonDBTM {
     * @param $item
    **/
    function showAndAddRuleForm($item) {
-
+toolbox::logdebug("this", $this, "item", $item);
       $rand    = mt_rand();
       $canedit = self::canUpdate();
 
@@ -2698,9 +2698,9 @@ class Rule extends CommonDBTM {
                            => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update'
                                        => _x('button', 'Update'),
                                     'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                       => _x('button', 'Delete permanently')),
-                       'extraparams'
-                           => array('rule_class_name' => $this->getRuleClassName()));
+                                       => _x('button', 'Delete permanently')));
+                  //     'extraparams'
+                //           => array('rule_class_name' => $this->getRuleClassName()));
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
