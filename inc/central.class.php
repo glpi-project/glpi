@@ -184,11 +184,13 @@ class Central extends CommonGLPI {
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          Ticket::showCentralList(0,"tovalidate",false);
       }
-      Ticket::showCentralList(0, "toapprove", false);
+      if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+         Ticket::showCentralList(0, "toapprove", false);
+      }
       Ticket::showCentralList(0, "rejected", false);
       Ticket::showCentralList(0, "requestbyself", false);
       Ticket::showCentralList(0, "observed", false);
-      
+
       if ($showticket) {
          Ticket::showCentralList(0, "process", false);
          Ticket::showCentralList(0, "waiting", false);
