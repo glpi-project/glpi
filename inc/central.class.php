@@ -170,7 +170,7 @@ class Central extends CommonGLPI {
                                "install/install.php");
             Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             echo "</th></tr>";
-         }         
+         }
       }
 
       if ($DB->isSlave()
@@ -186,7 +186,9 @@ class Central extends CommonGLPI {
          || Session::haveRight('validate_incident',1)) {
          Ticket::showCentralList(0,"tovalidate",false);
       }
-      Ticket::showCentralList(0, "toapprove", false);
+      if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+         Ticket::showCentralList(0, "toapprove", false);
+      }
       Ticket::showCentralList(0, "rejected", false);
       Ticket::showCentralList(0, "requestbyself", false);
       Ticket::showCentralList(0, "observed", false);
