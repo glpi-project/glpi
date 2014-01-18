@@ -715,7 +715,7 @@ function generateGlobalDropdowns() {
       $dp->add(toolbox::addslashes_deep(array('name'    => $val,
                                               'comment' => "comment $val")));
    }
-   
+
 
    $items = array("Fournisseur", "Transporteur", "SSII", "Revendeur d'", "Assembleur", "SSLL",
                   "Financeur", "Assureur");
@@ -2477,60 +2477,60 @@ function generate_entity($ID_entity) {
 
       // ADD DEVICE
       $cdevmb->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15)));
+                          array('serial' => Toolbox::getRandomString(15)));
 
-      $max = mt_rand(1,4);
+      $max   = mt_rand(1,4);
       $devid = mt_rand(1,$MAX['device']);
       for($nb = 0; $nb<$max; $nb++) {
          $cdevproc->addDevices(1, 'Computer', $compID, $devid,
-                           array('serial'            => Toolbox::getRandomString(15)));
+                               array('serial' => Toolbox::getRandomString(15)));
       }
-      $max = mt_rand(1,4);
+      $max   = mt_rand(1,4);
       $devid = mt_rand(1,$MAX['device']);
       for($nb = 0; $nb<$max; $nb++) {
          $cdevmem->addDevices(1, 'Computer', $compID, $devid,
-                           array('serial'            => Toolbox::getRandomString(15)));
+                              array('serial' => Toolbox::getRandomString(15)));
       }
 
       $max = mt_rand(1,2);
       $devid = mt_rand(1,$MAX['device']);
       for($nb = 0; $nb<$max; $nb++) {
          $cdevhd->addDevices(1, 'Computer', $compID, $devid,
-                           array('serial'            => Toolbox::getRandomString(15)));
+                             array('serial' => Toolbox::getRandomString(15)));
       }
 
       $cdevnc->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15),
-                               'mac'  => getNextMAC()));
+                          array('serial' => Toolbox::getRandomString(15),
+                                'mac'    => getNextMAC()));
 
       $cdevdr->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15)));
+                          array('serial' => Toolbox::getRandomString(15)));
 
       $cdevcon->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15)));
+                           array('serial' => Toolbox::getRandomString(15)));
 
       $cdevgc->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15)));
+                          array('serial' => Toolbox::getRandomString(15)));
 
       $cdevsc->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15)));
+                          array('serial' => Toolbox::getRandomString(15)));
 
       $max = mt_rand(1,4);
       for($nb = 0; $nb<$max; $nb++) {
          $cdevpci->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                           array('serial'            => Toolbox::getRandomString(15)));
+                              array('serial' => Toolbox::getRandomString(15)));
       }
 
       $cdevcase->addDevices(1, 'Computer', $compID, mt_rand(1,$MAX['device']),
-                         array('serial'            => Toolbox::getRandomString(15)));
+                            array('serial'=> Toolbox::getRandomString(15)));
 
-      $max = mt_rand(1,2);
+      $max   = mt_rand(1,2);
       $devid = mt_rand(1,$MAX['device']);
       for($nb = 0; $nb<$max; $nb++) {
          $cdevps->addDevices(1, 'Computer', $compID, $devid,
-                           array('serial'            => Toolbox::getRandomString(15)));
+                             array('serial' => Toolbox::getRandomString(15)));
       }
-                         
+
       // insert disk
       $nb_disk = mt_rand(1,$MAX_DISK);
       for ($j=1 ; $j<=$nb_disk ; $j++) {

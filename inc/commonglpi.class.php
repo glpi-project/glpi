@@ -778,8 +778,7 @@ class CommonGLPI {
          if (isset($this->fields["entities_id"])
                && Session::isMultiEntitiesMode()
                && $this->isEntityAssign()) {
-            $entname = Dropdown::getDropdownName("glpi_entities",
-                                                      $this->fields["entities_id"]);
+            $entname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
             if ($this->isRecursive()) {
                $entname = sprintf(__('%1$s + %2$s'), $entname, __('Child entities'));
             }

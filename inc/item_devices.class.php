@@ -379,7 +379,7 @@ class Item_Devices extends CommonDBRelation {
 
       if ($is_device) {
          Session::initNavigateListItems(static::getType(),
-                                          sprintf(__('%1$s = %2$s'),
+                                        sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
          foreach (array_merge(array(''), self::getConcernedItems()) as $itemtype) {
             $table_options['itemtype'] = $itemtype;
@@ -396,7 +396,7 @@ class Item_Devices extends CommonDBRelation {
             $link        = getItemForItemtype($link_type);
 
             Session::initNavigateListItems($link_type,
-                                             sprintf(__('%1$s = %2$s'),
+                                           sprintf(__('%1$s = %2$s'),
                                                    $item->getTypeName(1), $item->getName()));
             $link->getTableGroup($item, $table, $table_options, $delete_all_column,
                                  $common_column, $specific_column, $delete_column,

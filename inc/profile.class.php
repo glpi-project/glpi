@@ -1237,14 +1237,14 @@ class Profile extends CommonDBTM {
    **/
    function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit) {
 
-      $columns  = array();
-      $rows     = array();
-      $statuses = array();
+      $columns     = array();
+      $rows        = array();
+      $statuses    = array();
       $allstatuses = Ticket::getAllStatusArray();
       foreach (array(Ticket::INCOMING, Ticket::SOLVED, Ticket::CLOSED) as $val) {
          $statuses[$val] = $allstatuses[$val];
       }
-      $alwaysok = array(Ticket::INCOMING => array(),
+      $alwaysok     = array(Ticket::INCOMING => array(),
                             Ticket::SOLVED   => array(Ticket::INCOMING),
                             Ticket::CLOSED   => array());
 
@@ -1268,8 +1268,8 @@ class Profile extends CommonDBTM {
             }
 
             if (($index_1 == $index_2)
-               || (!$canedit)
-               || !in_array($index_2, $allowactions[$index_1])) {
+                || (!$canedit)
+                || !in_array($index_2, $allowactions[$index_1])) {
                $content['readonly'] = true;
             }
             $row['columns'][$index_2] = $content;
@@ -1280,8 +1280,12 @@ class Profile extends CommonDBTM {
                                array('title'         => $title,
                                      'first_cell'    => '<b>'.__("From \ To").'</b>'));
    }
+
+
    /**
    * Print the Life Cycles form for the current profile
+   *
+   *  @since version 0.85
    *
    * @param $openform   boolean  open the form (true by default)
    * @param $closeform  boolean  close the form (true by default)
@@ -1300,7 +1304,8 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      $this->displayLifeCycleMatrixTicketHelpdesk(__('Life cycle of tickets'), '_cycle_ticket', 'ticket_status', $canedit);
+      $this->displayLifeCycleMatrixTicketHelpdesk(__('Life cycle of tickets'), '_cycle_ticket',
+                                                  'ticket_status', $canedit);
 
       if ($canedit
           && $closeform) {
