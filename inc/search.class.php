@@ -248,17 +248,15 @@ class Search {
          }
       }
 
-      // Clean toview array
-      $data['toview'] = array_unique($data['toview']);
-
       $limitsearchopt   = self::getCleanedOptions($itemtype);
+      // Clean and reorder toview
+      $tmpview = array();
       foreach ($data['toview'] as $key => $val) {
-         if (!isset($limitsearchopt[$val])) {
-            unset($data['toview'][$key]);
+         if (isset($limitsearchopt[$val]) && !in_array($val, $tmpview)) {
+            $tmpview[] = $val;
          }
       }
-
-      // 
+      $data['toview'] = $tmpview;
       
       return $data;
    }
@@ -314,7 +312,7 @@ class Search {
       $maxviewkey = 0;
       foreach ($data['toview'] as $key => $val) {
          $SELECT .= self::addSelect($data['itemtype'], $val, $key, 0);
-         if ($key>$maxviewkey) {
+         if ($key > $maxviewkey) {
             $maxviewkey = $key;
          }
       }
