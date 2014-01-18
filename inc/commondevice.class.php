@@ -166,10 +166,10 @@ abstract class CommonDevice extends CommonDropdown {
       $tab[16]['name']         = __('Comments');
       $tab[16]['datatype']     = 'text';
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[80]['table']        = 'glpi_entities';
+      $tab[80]['field']        = 'completename';
+      $tab[80]['name']         = __('Entity');
+      $tab[80]['datatype']     = 'dropdown';
 
       return $tab;
    }

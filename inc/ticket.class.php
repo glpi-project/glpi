@@ -1931,12 +1931,11 @@ class Ticket extends CommonITILObject {
    **/
    static function getDefaultSearchRequest() {
 
-      $search = array('criteria' => array(0 => array('field' => 12,
+      $search = array('criteria' => array(0 => array('field'      => 12,
                                                      'searchtype' => 'equals',
-                                                     'value' => 'notclosed',
-                                         )),
-                      'sort'       => 19,
-                      'order'      => 'DESC');
+                                                     'value'      => 'notclosed')),
+                      'sort'     => 19,
+                      'order'    => 'DESC');
 
       if (Session::haveRight(self::$rightname, self::READALL)) {
          $search['criteria'][0]['value'] = 'notold';
@@ -4905,7 +4904,7 @@ class Ticket extends CommonITILObject {
 
                   $options['criteria'][1]['field']      = 12; // status
                   $options['criteria'][1]['searchtype'] = 'equals';
-                  $options['criteria'][1]['value']   = 'notold';
+                  $options['criteria'][1]['value']      = 'notold';
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -5118,32 +5117,36 @@ class Ticket extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict                 = "(`glpi_tickets_users`.`users_id` = '".$item->getID()."' ".
-                                       " AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order                    = '`glpi_tickets`.`date_mod` DESC';
-            $options['reset']         = 'reset';
+            $restrict = "(`glpi_tickets_users`.`users_id` = '".$item->getID()."' ".
+                        " AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order    = '`glpi_tickets`.`date_mod` DESC';
+
+            $options['reset'] = 'reset';
+
             $options['criteria'][0]['field']      = 4; // status
             $options['criteria'][0]['searchtype'] = 'equals';
-            $options['criteria'][0]['value']   = $item->getID();
+            $options['criteria'][0]['value']      = $item->getID();
             $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'SLA' :
-            $restrict                 = "(`slas_id` = '".$item->getID()."')";
-            $order                    = '`glpi_tickets`.`due_date` DESC';
+            $restrict  = "(`slas_id` = '".$item->getID()."')";
+            $order     = '`glpi_tickets`.`due_date` DESC';
+
             $options['criteria'][0]['field']      = 30;
             $options['criteria'][0]['searchtype'] = 'equals';
-            $options['criteria'][0]['value']   = $item->getID();
+            $options['criteria'][0]['value']      = $item->getID();
             $options['criteria'][0]['link']       = 'AND';
             break;
 
          case 'Supplier' :
-            $restrict                 = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
-                                       "  AND `glpi_suppliers_tickets`.`type` = ".CommonITILActor::ASSIGN.")";
-            $order                    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
+                        "  AND `glpi_suppliers_tickets`.`type` = ".CommonITILActor::ASSIGN.")";
+            $order    = '`glpi_tickets`.`date_mod` DESC';
+
             $options['criteria'][0]['field']      = 6;
             $options['criteria'][0]['searchtype'] = 'equals';
-            $options['criteria'][0]['value']   = $item->getID();
+            $options['criteria'][0]['value']      = $item->getID();
             $options['criteria'][0]['link']       = 'AND';
             break;
 
@@ -5167,9 +5170,10 @@ class Ticket extends CommonITILObject {
             } else {
                $restrict = "='".$item->getID()."'";
             }
-            $restrict                 = "(`glpi_groups_tickets`.`groups_id` $restrict
-                                          AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order                    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict = "(`glpi_groups_tickets`.`groups_id` $restrict".
+                         " AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order    = '`glpi_tickets`.`date_mod` DESC';
+
             $options['criteria'][0]['field']      = 71;
             $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
             $options['criteria'][0]['value']      = $item->getID();
@@ -5177,9 +5181,9 @@ class Ticket extends CommonITILObject {
             break;
 
          default :
-            $restrict                 = "(`items_id` = '".$item->getID()."'
-                                          AND `itemtype` = '".$item->getType()."')";
-            $order                    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict = "(`items_id` = '".$item->getID()."' ".
+                        " AND `itemtype` = '".$item->getType()."')";
+            $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -5187,7 +5191,8 @@ class Ticket extends CommonITILObject {
             $options['criteria'][0]['link']       = 'AND';
 
             $options['metacriteria'][0]['itemtype']   = $item->getType();
-            $options['metacriteria'][0]['field']      = Search::getOptionNumber($item->getType(), 'id');
+            $options['metacriteria'][0]['field']      = Search::getOptionNumber($item->getType(),
+                                                                                'id');
             $options['metacriteria'][0]['searchtype'] = 'equals';
             $options['metacriteria'][0]['value']      = $item->getID();
             $options['metacriteria'][0]['link']       = 'AND';
