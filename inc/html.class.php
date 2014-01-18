@@ -3733,11 +3733,13 @@ class Html {
                       'root_doc' => $CFG_GLPI['root_doc'],
                       'rand'     => $rand,
                       'maxsize'  => 500,
-                      'lang'     => array('pasteimage'      => sprintf('%1$s - %2$s', _sx('button', 'Paste image'), __('500 pixels max')),
-                                          'itemnotfound'    => __('Item not found'),
-                                          'toolarge'        => __('Item is too large'),
-                                          'save'            => _sx('button', 'Save'),
-                                          'cancel'          => _sx('button', 'Cancel')));
+                      'lang'     => array('pasteimage'   => sprintf(__('%1$s - %2$s'),
+                                                                    _sx('button', 'Paste image'),
+                                                                    __('500 pixels max')),
+                                          'itemnotfound' => __('Item not found'),
+                                          'toolarge'     => __('Item is too large'),
+                                          'save'         => _sx('button', 'Save'),
+                                          'cancel'       => _sx('button', 'Cancel')));
 
       return "if (!tinyMCE.isIE) { // Chrome, Firefox plugin
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");
