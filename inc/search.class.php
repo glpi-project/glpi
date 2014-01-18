@@ -57,7 +57,7 @@ class Search {
 
    const NULLVALUE = '__NULL__';
 
-//    static $output_type = self::HTML_OUTPUT;
+   static $output_type = self::HTML_OUTPUT;
 
    /**
     * Display search engine for an type
@@ -1020,6 +1020,7 @@ class Search {
                }
             }
 
+            self::$output_type = $data['display_type'];
             foreach ($data['data']['cols'] as $key => $val) {
                $newrow[$key]['displayname'] = self::giveItem($val['itemtype'], $val['id'], $newrow, $key);
             }
