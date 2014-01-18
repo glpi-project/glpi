@@ -45,7 +45,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 }
 
 $res = new ReservationItem();
-$res->display();
+$res->display($_GET);
 
 if (isset($_POST['submit'])) {
    $_SESSION['glpi_saved']['ReservationItem'] = $_POST;
