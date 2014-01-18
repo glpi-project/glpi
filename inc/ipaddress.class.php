@@ -905,19 +905,19 @@ class IPAddress extends CommonDBChild {
    static function getUniqueItemByIPAddress($value, $entity) {
 
       $addressesWithItems = self::getItemsByIPAddress($value);
-      
+
       // Filter : Do not keep ip not linked to asset
       if (count($addressesWithItems)) {
          foreach ($addressesWithItems as $key => $tab) {
             if (isset($tab[0])
-                  && (($tab[0] instanceof NetworkName)
-                  || ($tab[0] instanceof IPAddress)
-                  || ($tab[0] instanceof NetworkPort))) {
+                && (($tab[0] instanceof NetworkName)
+                    || ($tab[0] instanceof IPAddress)
+                    || ($tab[0] instanceof NetworkPort))) {
                unset($addressesWithItems[$key]);
             }
          }
       }
-      
+
       if (count($addressesWithItems) == 1) {
          $addressWithItems = current($addressesWithItems);
          $item             = $addressWithItems[0];

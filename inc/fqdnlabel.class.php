@@ -229,13 +229,13 @@ abstract class FQDNLabel extends CommonDBChild {
       if (count($labels_with_items)) {
          foreach ($labels_with_items as $key => $tab) {
             if (isset($tab[0])
-                  && (($tab[0] instanceof NetworkName)
-                  || ($tab[0] instanceof NetworkPort))) {
+                && (($tab[0] instanceof NetworkName)
+                    || ($tab[0] instanceof NetworkPort))) {
                unset($labels_with_items[$key]);
             }
          }
       }
-      
+
       if (count($labels_with_items) == 1) {
          $label_with_items = current($labels_with_items);
          $item             = $label_with_items[0];

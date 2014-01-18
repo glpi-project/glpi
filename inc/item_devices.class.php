@@ -59,7 +59,7 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
    static $rightname                    = 'device';
-   
+
    // This var is defined by CommonDBRelation ...
    var $no_form_page                    = false;
 
@@ -384,7 +384,7 @@ class Item_Devices extends CommonDBRelation {
          foreach (array_merge(array(''), self::getConcernedItems()) as $itemtype) {
             $table_options['itemtype'] = $itemtype;
             $link                      = getItemForItemtype(static::getType());
-            
+
             $link->getTableGroup($item, $table, $table_options, $delete_all_column,
                                  $common_column, $specific_column, $delete_column,
                                  $dynamic_column);
@@ -614,8 +614,8 @@ class Item_Devices extends CommonDBRelation {
          } else {
             $mode = __s('View');
          }
-         $spec_cell = $current_row->addCell($link_column, "<a href='" . $this->getLinkURL() .
-                                                          "'>$mode</a>");
+         $spec_cell = $current_row->addCell($link_column,
+                                            "<a href='" . $this->getLinkURL() . "'>$mode</a>");
 
          foreach ($this->getSpecificities() as $field => $attributs) {
             if (!empty($link[$field])) {
@@ -701,7 +701,7 @@ class Item_Devices extends CommonDBRelation {
             $input[$field] = $device->fields[$field.'_default'];
          }
       }
-      
+
       if ($this->can(-1, CREATE, $input)) {
          for ($i = 0 ; $i < $numberToAdd ; $i ++) {
             $this->add($input);
