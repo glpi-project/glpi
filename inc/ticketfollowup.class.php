@@ -570,8 +570,7 @@ class TicketFollowup  extends CommonDBTM {
          $options['tickets_id'] = $ticket->getField('id');
          $this->check(-1, CREATE, $options);
       }
-      $tech = (Session::haveRightsOr(self::$rightname,
-                                     array(self::ADDALLTICKET))
+      $tech = (Session::haveRight(self::$rightname, self::ADDALLTICKET)
                || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -601,7 +600,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($reopen_case) {
             echo "<input type='hidden' name='add_reopen' value='1'>";
          }
-         
+
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
@@ -632,7 +631,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($reopen_case) {
             echo "<input type='hidden' name='add_reopen' value='1'>";
          }
-                
+
          echo "</td></tr>\n";
 
          $this->showFormButtons($options);
@@ -665,7 +664,7 @@ class TicketFollowup  extends CommonDBTM {
             && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
          $reopen_case = true;
       }
-      
+
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
@@ -696,7 +695,7 @@ class TicketFollowup  extends CommonDBTM {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         // Not closed ticket or closed 
+         // Not closed ticket or closed
          if (!in_array($ticket->fields["status"], array_merge($ticket->getSolvedStatusArray(),
                                                              $ticket->getClosedStatusArray()))
              || $reopen_case) {
@@ -713,7 +712,7 @@ class TicketFollowup  extends CommonDBTM {
                }
                echo "</a></div>\n";
             }
-            
+
          }
       }
 
