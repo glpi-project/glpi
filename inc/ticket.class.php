@@ -1696,12 +1696,11 @@ class Ticket extends CommonITILObject {
                   // Do not auto add twice same validation
                   if (!TicketValidation::alreadyExists($values['tickets_id'], $user)) {
                      $values["users_id_validate"] = $user;
-                     $validation->add($values);
-                     $add_done                    = false;
+                     if ($validation->add($values)) {
+                        $add_done = true;
+                     }
                   }
                }
-               // TODO (r22388)
-               // yllen: pour moi on ne rentrera jamais dans ce cas vu que $add_done est toujours défini à false
                if ($add_done) {
                   Event::log($this->fields['id'], "ticket", 4, "tracking",
                              sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
