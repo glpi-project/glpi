@@ -799,7 +799,7 @@ class Search {
                                       `$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
                               $WHERE;
-                  if ($item->maybeDeleted()) {
+                  if ($data['item']->maybeDeleted()) {
                      $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
                                                 `is_deleted`",
                                              "`$reftable`.`is_deleted`", $tmpquery);
@@ -812,7 +812,7 @@ class Search {
                                      AND `$reftable`.`itemtype` = '$ctype')";
                   $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$data['itemtype']]."`",
                                           $replace, $tmpquery);
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype], $ctable,
+                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']], $ctable,
                                           $tmpquery);
                }
                $tmpquery = str_replace("ENTITYRESTRICT",
@@ -955,14 +955,6 @@ class Search {
                }
             }
          }
-
-         // Add specific column Header
-         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-            $data['data']['cols'][$num]['itemtype']     = '';
-            $data['data']['cols'][$num]['id'] = 0;
-            $data['data']['cols'][$num]['name']         = __('Item type');
-            $num++;
-         }
          
          // Get rows
 
@@ -1029,9 +1021,7 @@ class Search {
             }
 
             foreach ($data['data']['cols'] as $key => $val) {
-               if (!empty($val['itemtype'])) {
-                  $newrow[$key]['displayname'] = self::giveItem($val['itemtype'], $val['id'], $newrow, $key);
-               }
+               $newrow[$key]['displayname'] = self::giveItem($val['itemtype'], $val['id'], $newrow, $key);
             }
             
             $data['data']['rows'][$i] = $newrow;
@@ -1079,7 +1069,7 @@ class Search {
             return false;
          }
       }
-//       Html::printCleanArray($data);
+
       // If the begin of the view is before the number of items
       if ($data['data']['count'] > 0) {
          // Display pager only for HTML
@@ -1133,7 +1123,7 @@ class Search {
          // Form to massive actions
          $isadmin = ($data['item'] && $data['item']->canUpdate());
          if (!$isadmin
-               && InfoCom::canApplyOn($itemtype)) {
+               && InfoCom::canApplyOn($data['itemtype'])) {
             $isadmin = (Infocom::canUpdate() || Infocom::canCreate());
          }
          if ($data['itemtype'] != 'AllAssets') {
@@ -1245,6 +1235,7 @@ class Search {
             $massiveaction_field = 'refID';
          }
 
+         $typenames = array();
          // Display Loop
          foreach ($data['data']['rows'] as $rowkey => $row) {
             // Column num
@@ -1401,11 +1392,13 @@ class Search {
 //             }
 
             if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-               $typename = $data["TYPE"];
-               if ($itemtmp = getItemForItemtype($data["TYPE"])) {
-                  $typename = $itemtmp->getTypeName();
+               if (!isset($typenames[$row["TYPE"]])) {
+                  if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                     $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+                  }
                }
-               echo self::showItem($data['display_type'], $typename, $item_num, $row_num);
+               echo self::showItem($data['display_type'], $typenames[$row["TYPE"]],
+                                   $item_num, $row_num);
             }
             // End Line
             echo self::showEndLine($data['display_type']);
