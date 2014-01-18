@@ -96,12 +96,15 @@ class Search {
    /**
     * Get datas based on search parameters
     *
-    * @param $itemtype item type to manage
-    * @param $params search params passed to prepareDatasForSearch function
+    * @since version 0.85
+    *
+    * @param $itemtype    item type to manage
+    * @param $params      search params passed to prepareDatasForSearch function
     *
     * @return data array
    **/
    static function getDatas($itemtype, $params) {
+
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
 
@@ -110,17 +113,20 @@ class Search {
       return $data;
    }
 
+
    /**
     * Prepare search criteria to be used for a search
     *
-    * @param $itemtype        item type
-    * @param $params    array of parameters may include sort, order,
-    *                         start, deleted, criteria, metacriteria
-    * @param $forcedisplay    array of columns to display (default empty = empty use display pref and search criterias)
+    * @since version 0.85
+    *
+    * @param $itemtype            item type
+    * @param $params        array of parameters
+    *                             may include sort, order, start, deleted, criteria, metacriteria
+    * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
    **/
-   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = array()) {
+   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay=array()) {
       global $CFG_GLPI;
 
       // Default values of parameters
@@ -271,7 +277,10 @@ class Search {
     *      count : to count all items based on search criterias
     *                    may be an array a request : need to add counts
     *                    maybe empty : use search one to count
-    * @param $data array of search datas prepared to generate SQL
+    *
+    * @since version 0.85
+    *
+    * @param $data    array of search datas prepared to generate SQL
     *
     * @return nothing
    **/
@@ -285,7 +294,7 @@ class Search {
       $data['sql']['count']  = array();
       $data['sql']['search'] = '';
 
-      $searchopt = &self::getOptions($data['itemtype']);
+      $searchopt        = &self::getOptions($data['itemtype']);
 
       $blacklist_tables = array();
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
@@ -432,9 +441,9 @@ class Search {
                      }
                      // Find key
                      $item_num = array_search($criteria['field'], $data['toview']);
-                     $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'], $criteria['field'],
-                                                 $criteria['searchtype'], $criteria['value'], 0,
-                                                 $item_num);
+                     $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'],
+                                                 $criteria['field'], $criteria['searchtype'],
+                                                 $criteria['value'], 0, $item_num);
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
@@ -542,7 +551,7 @@ class Search {
                 && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
 
                $metaopt = &self::getOptions($metacriteria['itemtype']);
-               $sopt = $metaopt[$metacriteria['field']];
+               $sopt    = $metaopt[$metacriteria['field']];
                $metanum++;
 
                 // a - SELECT
@@ -565,12 +574,9 @@ class Search {
 
                   $FROM .= self::addLeftJoin($metacriteria['itemtype'],
                                              getTableForItemType($metacriteria['itemtype']),
-                                             $already_link_tables2,
-                                             $sopt["table"],
-                                             $sopt["linkfield"],
-                                             1, $metacriteria['itemtype'],
-                                             $sopt["joinparams"],
-                                             $sopt["field"]);
+                                             $already_link_tables2, $sopt["table"],
+                                             $sopt["linkfield"], 1, $metacriteria['itemtype'],
+                                             $sopt["joinparams"], $sopt["field"]);
                }
                // Where
                $LINK = "";
@@ -685,9 +691,9 @@ class Search {
                    && $citem->canView()) {
                   // State case
                   if ($data['itemtype'] == 'AllAssets') {
-                     $query_num = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                              $ctable, $tmpquery);
-                     $query_num = str_replace($data['itemtype'], $ctype, $query_num);
+                     $query_num  = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
+                                               $ctable, $tmpquery);
+                     $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
                      $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
                      // Add deleted if item have it
@@ -853,7 +859,9 @@ class Search {
     * add to data array a field data containing :
     *      cols : columns definition
     *      rows : rows data
-
+    *
+    * @since version 0.85
+    *
     * @param $data array of search datas prepared to get datas
     *
     * @return nothing
@@ -902,13 +910,13 @@ class Search {
          // Search case
          $data['data']['begin'] = $data['search']['start'];
          $data['data']['end']   = min($data['data']['totalcount'],
-                                       $data['search']['start']+$data['search']['list_limit'])-1;
+                                      $data['search']['start']+$data['search']['list_limit'])-1;
 
          // No search Case
          if ($data['search']['no_search']) {
             $data['data']['begin'] = 0;
             $data['data']['end']   = min($data['data']['totalcount']-$data['search']['start'],
-                                          $data['search']['list_limit'])-1;
+                                         $data['search']['list_limit'])-1;
          }
          // Export All case
          if ($data['search']['export_all']) {
@@ -919,7 +927,7 @@ class Search {
          // Get columns
          $data['data']['cols'] = array();
 
-         $num = 0;
+         $num       = 0;
          $searchopt = &self::getOptions($data['itemtype']);
 
          foreach ($data['toview'] as $key => $val) {
@@ -967,7 +975,8 @@ class Search {
          }
 
          $i = $data['data']['begin'];
-         $data['data']['warning'] = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
+         $data['data']['warning']
+            = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
 
          $data['data']['rows'] = array();
 
@@ -976,7 +985,7 @@ class Search {
          while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
             $row = $DBread->fetch_assoc($result);
 
-            $newrow = array();
+            $newrow        = array();
             $newrow['raw'] = $row;
 
             // Parse datas
@@ -986,9 +995,8 @@ class Search {
 
                $keysplit = explode('_', $key);
 
-               if (isset($keysplit[1])
-                  && $keysplit[0] == 'ITEM') {
-                  $j = $keysplit[1];
+               if (isset($keysplit[1])  && $keysplit[0] == 'ITEM') {
+                  $j         = $keysplit[1];
                   $fieldname = 'name';
                   if (isset($keysplit[2])) {
                      $fieldname = $keysplit[2];
@@ -1001,22 +1009,22 @@ class Search {
                      if (strpos($val,"$$") === false) {
                         $newrow[$j][0][$fieldname] = $val;
                      } else {
-                        $split2 = self::explodeWithID("$$", $val);
+                        $split2                    = self::explodeWithID("$$", $val);
                         $newrow[$j][0][$fieldname] = $split2[0];
                         $newrow[$j][0]['id']       = $split2[1];
                      }
                   } else {
-                     $newrow[$j] = array();
-                     $split = explode("$$$$", $val);
+                     $newrow[$j]          = array();
+                     $split               = explode("$$$$", $val);
                      $newrow[$j]['count'] = count($split);
 
                      foreach ($split as $key2 => $val2) {
                         if (strpos($val2,"$$") === false) {
                            $newrow[$j][$key2][$fieldname] = $val2;
                         } else {
-                           $split2 = self::explodeWithID("$$", $val2);
+                           $split2                        = self::explodeWithID("$$", $val2);
                            $newrow[$j][$key2][$fieldname] = $split2[0];
-                           $newrow[$j][$key2]['id']      = $split2[1];
+                           $newrow[$j][$key2]['id']       = $split2[1];
                         }
                      }
                   }

@@ -1529,14 +1529,14 @@ class Stat extends CommonGLPI {
       }
 
       if (Change::canView()) {
-         $opt_list["Change"]                               = _n('Change', 'Changes', 2);
+         $opt_list["Change"]                             = _n('Change', 'Changes', 2);
 
-         $stat_list["Change"]["Change_Global"]["name"]    = __('Global');
-         $stat_list["Change"]["Change_Global"]["file"]    = "stat.global.php?itemtype=Change";
+         $stat_list["Change"]["Change_Global"]["name"]   = __('Global');
+         $stat_list["Change"]["Change_Global"]["file"]   = "stat.global.php?itemtype=Change";
          $stat_list["Change"]["Change_Change"]["name"]   = __('By change');
          $stat_list["Change"]["Change_Change"]["file"]   = "stat.tracking.php?itemtype=Change";
       }
-      
+
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
