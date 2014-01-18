@@ -420,7 +420,8 @@ class Bookmark extends CommonDBTM {
                foreach ($query_tab_save['criteria'] as $key => $val) {
                   if (($val['field'] != 'view') && ($val['field'] != 'all')
                       && (!isset($opt[$val['field']])
-                          || (isset($opt[$val['field']]['nosearch']) && $opt[$val['field']]['nosearch']))) {
+                          || (isset($opt[$val['field']]['nosearch'])
+                              && $opt[$val['field']]['nosearch']))) {
                      $query_tab['glpisearchcount']--;
                      $partial_load = true;
                   } else {

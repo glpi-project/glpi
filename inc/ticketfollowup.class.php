@@ -577,7 +577,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $reopen_case = false;
       if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-            && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+          && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
          $reopen_case = true;
          echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
       }
@@ -696,8 +696,8 @@ class TicketFollowup  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          // Not closed ticket or closed
-         if (!in_array($ticket->fields["status"], array_merge($ticket->getSolvedStatusArray(),
-                                                             $ticket->getClosedStatusArray()))
+         if (!in_array($ticket->fields["status"],
+                       array_merge($ticket->getSolvedStatusArray(), $ticket->getClosedStatusArray()))
              || $reopen_case) {
 
             if (isset($_GET['_openfollowup']) && $_GET['_openfollowup']) {

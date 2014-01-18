@@ -381,11 +381,11 @@ class Change extends CommonITILObject {
    **/
    static function getDefaultSearchRequest() {
 
-      $search = array('criteria' => array(0=> array('field'      => 12,
-                                                    'searchtype' => 'equals',
-                                                    'value'      => 'notold')),
-                      'sort'       => 19,
-                      'order'      => 'DESC');
+      $search = array('criteria' => array( 0 => array('field'      => 12,
+                                                      'searchtype' => 'equals',
+                                                      'value'      => 'notold')),
+                      'sort'     => 19,
+                      'order'    => 'DESC');
 
       return $search;
    }

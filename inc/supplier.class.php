@@ -468,17 +468,16 @@ class Supplier extends CommonDBTM {
                echo "<td class='center'>".$title."</td>";
                echo "<td class='center' colspan='2'>";
                $opt = array('order'      => 'ASC',
-                           'is_deleted' => 0,
-                           'reset'      => 'reset',
-                           'start'      => 0,
-                           'sort'       => 80,
-                           'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
-                                                            'searchtype' => 'contains',
-                                                            'field'      => 53)));
+                            'is_deleted' => 0,
+                            'reset'      => 'reset',
+                            'start'      => 0,
+                            'sort'       => 80,
+                            'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
+                                                             'searchtype' => 'contains',
+                                                             'field'      => 53)));
 
                echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
-                     Toolbox::append_params($opt). "'>" .
-                      __('Device list')."</a></td>";
+                     Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";
 
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
