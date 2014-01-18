@@ -406,7 +406,7 @@ class RuleCollection extends CommonDBTM {
             $p[$param] = $options[$param];
          }
       }
-      
+
       $rule             = $this->getRuleClass();
       $display_entities = ($this->isRuleRecursive()
                            && ($p['inherited'] || $p['childrens']));
@@ -595,7 +595,7 @@ class RuleCollection extends CommonDBTM {
          $add_condition = ' AND `condition` & '.$condition;
 
       }
-              
+
       if ($result = $DB->query($sql)) {
          if ($DB->numrows($result) == 1) {
             $current_rank = $DB->result($result, 0, 0);
@@ -663,7 +663,7 @@ class RuleCollection extends CommonDBTM {
                      $result = $rule->update(array('id'      => $ID,
                                                    'ranking' => $new_rank));
                   }
-                  
+
                   // Update reference
                   if ($result) {
                      $result = $rule->update(array('id'      => $other_ID,
@@ -1434,7 +1434,7 @@ class RuleCollection extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-      
+
       // Get Collection datas
       $this->getCollectionDatas(1,1, $p['condition']);
       $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
@@ -1471,11 +1471,11 @@ class RuleCollection extends CommonDBTM {
    /**
     * Show form displaying results for rule collection preview
     *
-    * @param $target       where to go
-    * @param $values array of data
-    * @param $condition condition to limit rules
+    * @param $target          where to go
+    * @param $values    array of data
+    * @param $condition       condition to limit rules (default 0)
     **/
-   function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0) {
+   function showRulesEnginePreviewCriteriasForm($target, array $values, $condition=0) {
       global $DB;
 
       $input = $this->prepareInputDataForTestProcess($condition);
@@ -1527,14 +1527,14 @@ class RuleCollection extends CommonDBTM {
    /**
     * Test all the rules collection
     *
-    * @param input   array the input data used to check criterias
-    * @param output  array the initial ouput array used to be manipulate by actions
-    * @param params  array parameters for all internal functions
-    * @param $condition condition to limit rules
+    * @param input      array the input data used to check criterias
+    * @param output     array the initial ouput array used to be manipulate by actions
+    * @param params     array parameters for all internal functions
+    * @param $condition       condition to limit rules (DEFAULT 0)
     *
     * @return the output array updated by actions
    **/
-   function testAllRules($input=array(), $output=array(), $params=array(), $condition = 0) {
+   function testAllRules($input=array(), $output=array(), $params=array(), $condition=0) {
 
       // Get Collection datas
       $this->getCollectionDatas(1, 1, $condition);
@@ -1627,10 +1627,11 @@ class RuleCollection extends CommonDBTM {
    /**
     * Prepare input datas for the rules collection
     *
-    * @param $condition condition to limit rules
+    * @param $condition condition to limit rules (DEFAULT 0)
+    *
     * @return the updated input datas
    **/
-   function prepareInputDataForTestProcess($condition = 0) {
+   function prepareInputDataForTestProcess($condition=0) {
       global $DB;
 
       $limit = '';
@@ -1655,11 +1656,11 @@ class RuleCollection extends CommonDBTM {
    /**
     * Show form displaying results for rule engine preview
     *
-    * @param $target       where to go
-    * @param $input  array of data
-    * @param $condition condition to limit rules
+    * @param $target          where to go
+    * @param $input     array of data
+    * @param $condition       condition to limit rules (DEFAULT 0)
    **/
-   function showRulesEnginePreviewResultsForm($target, array $input, $condition = 0) {
+   function showRulesEnginePreviewResultsForm($target, array $input, $condition=0) {
 
       $output = array();
 
