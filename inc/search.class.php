@@ -967,6 +967,8 @@ class Search {
          $data['data']['warning'] = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
 
          $data['data']['rows'] = array();
+
+         self::$output_type = $data['display_type'];
          
          while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
             $row = $DBread->fetch_assoc($result);
@@ -1020,7 +1022,6 @@ class Search {
                }
             }
 
-            self::$output_type = $data['display_type'];
             foreach ($data['data']['cols'] as $key => $val) {
                $newrow[$key]['displayname'] = self::giveItem($val['itemtype'], $val['id'], $newrow, $key);
             }
