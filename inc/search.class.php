@@ -934,7 +934,7 @@ class Search {
 
          // Display columns Headers for meta items
          $already_printed = array();
-
+         
          if (count($data['search']['metacriteria'])) {
             foreach ($data['search']['metacriteria'] as $metacriteria) {
                if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
@@ -942,7 +942,7 @@ class Search {
 
                   if (!isset($already_printed[$metacriteria['itemtype'].$metacriteria['field']])) {
                      $searchopt = &self::getOptions($metacriteria['itemtype']);
-
+            
                      $data['data']['cols'][$num]['itemtype']  = $metacriteria['itemtype'];
                      $data['data']['cols'][$num]['id']        = $metacriteria['field'];
                      $data['data']['cols'][$num]['name']      = $searchopt[$metacriteria['field']]["name"];
@@ -1183,8 +1183,9 @@ class Search {
                                        Html::getCheckAllAsCheckbox($massformid),
                                        $header_num, "", 0, $data['search']['order']);
          }
-//          Html::printCleanArray($data['data']['cols']);
+
          // Display column Headers for toview items
+         $metanames = array();
          foreach ($data['data']['cols'] as $key => $val) {
             $linkto = '';
             if (!$val['meta']
@@ -1195,8 +1196,22 @@ class Search {
                            (($data['search']['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$data['search']['start'].
                            "&amp;".$globallinkto;
             }
+
+            $name = $val["name"];
+            // Not main itemtype add itemtype to display
+            if ($data['itemtype'] != $val['itemtype']) {
+               if (!isset($metanames[$val['itemtype']])) {
+                  if ($metaitem = getItemForItemtype($val['itemtype'])) {
+                     $metanames[$val['itemtype']] = $metaitem->getTypeName();
+                  }
+               }
+               $name = sprintf(__('%1$s - %2$s'), $metanames[$val['itemtype']],
+                              $val["name"]);
+            }
+
+            
             $headers_line .= self::showHeaderItem($data['display_type'],
-                                                   $val["name"],
+                                                   $name,
                                                    $header_num, $linkto,
                                                    (!$val['meta'] && $data['search']['sort'] == $val['id']),
                                                    $data['search']['order']);
