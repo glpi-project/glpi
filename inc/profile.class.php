@@ -221,18 +221,6 @@ class Profile extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      // Check for faq
-      /// TODO MoYo : do not understand this... Why PUBLISH_FAQ for post-only ?
-      // Yllen : je suis partie des données de la 0.83 (if (isset($input["faq"]) && $input["faq"]=='w'))
-      // L'idée c'était si il y avait bascule d'un profile de central à post-only on supprimait le droit faq = w
-      // Pas sur que ca soit encore nécessaire.
-      // il y a la meme chose ligne 753.
-//       if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
-//          if (isset($input["faq"]) && ($input["faq"] == KnowbaseItem::PUBLISHFAQ)) {
-//             $input["faq"] == KnowbaseItem::READFAQ;
-//          }
-//       }
-
       if (isset($input["_helpdesk_item_types"])) {
          if ((!isset($input["helpdesk_item_type"])) || (!is_array($input["helpdesk_item_type"]))) {
             $input["helpdesk_item_type"] = array();
@@ -752,11 +740,6 @@ class Profile extends CommonDBTM {
 
       $matrix_options = array('canedit'       => $canedit,
                               'default_class' => 'tab_bg_2');
-
-      if (($this->fields["interface"] == "helpdesk")
-          && ($this->fields["knowbase"] == KnowbaseItem::PUBLISHFAQ)) {
-         $this->fields["knowbase"] = KnowbaseItem::READFAQ;
-      }
 
       $rights = array(array('rights'    => Profile::getRightsFor('KnowbaseItem', 'helpdesk'),
                             'label'     => __('FAQ'),
