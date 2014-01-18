@@ -223,6 +223,8 @@ class Profile extends CommonDBTM {
 
       // Check for faq
       /// TODO MoYo : do not understand this... Why PUBLISH_FAQ for post-only ?
+      // Yllen : je suis partie des données de la 0.83 (if (isset($input["faq"]) && $input["faq"]=='w'))
+      // il y a la meme chose ligne 753.
 //       if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
 //          if (isset($input["faq"]) && ($input["faq"] == KnowbaseItem::PUBLISHFAQ)) {
 //             $input["faq"] == KnowbaseItem::READFAQ;
@@ -246,7 +248,7 @@ class Profile extends CommonDBTM {
          }
          $input['helpdesk_hardware'] = $helpdesk_hardware;
       }
-      
+
       if (isset($input["_cycle_ticket"])) {
          $tab   = Ticket::getAllStatusArray();
          $cycle = array();
@@ -626,6 +628,8 @@ class Profile extends CommonDBTM {
 
    /**
     * Print the helpdesk right form for the current profile
+    *
+    * @since version 0.85
    **/
    function showFormTrackingHelpdesk() {
       global $CFG_GLPI;
@@ -689,7 +693,6 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
@@ -702,7 +705,6 @@ class Profile extends CommonDBTM {
       if (!isset($_SESSION['glpiactiveentities'][0])) {
          $options['addicon'] = false;
       }
-
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;";
@@ -713,8 +715,6 @@ class Profile extends CommonDBTM {
       Html::showCheckbox(array('name' => '_show_group_hardware',
                                'checked' => $this->fields['show_group_hardware']));
       echo "</td></tr>\n";
-
-      echo "</table>\n";
 
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
@@ -729,8 +729,11 @@ class Profile extends CommonDBTM {
       }
    }
 
+
    /**
     * Print the helpdesk right form for the current profile
+    *
+    * @since version 0.85
    **/
    function showFormToolsHelpdesk() {
       global $CFG_GLPI;
@@ -781,7 +784,7 @@ class Profile extends CommonDBTM {
          echo "</table>\n";
       }
    }
-   
+
 
 
    /**
@@ -1242,7 +1245,7 @@ class Profile extends CommonDBTM {
       $alwaysok = array(Ticket::INCOMING => array(),
                             Ticket::SOLVED   => array(Ticket::INCOMING),
                             Ticket::CLOSED   => array());
-      
+
       $allowactions = array(Ticket::INCOMING => array(),
                             Ticket::SOLVED   => array(Ticket::CLOSED),
                             Ticket::CLOSED   => array(Ticket::CLOSED, Ticket::INCOMING));
@@ -1257,11 +1260,11 @@ class Profile extends CommonDBTM {
             if (isset($this->fields[$db_field][$index_1][$index_2])) {
                $content['checked'] = $this->fields[$db_field][$index_1][$index_2];
             }
-            
+
             if (in_array($index_2, $alwaysok[$index_1])) {
                $content['checked'] = true;
             }
-            
+
             if (($index_1 == $index_2)
                || (!$canedit)
                || !in_array($index_2, $allowactions[$index_1])) {
@@ -1274,7 +1277,7 @@ class Profile extends CommonDBTM {
       Html::showCheckboxMatrix($columns, $rows,
                                array('title'         => $title,
                                      'first_cell'    => '<b>'.__("From \ To").'</b>'));
-   }   
+   }
    /**
    * Print the Life Cycles form for the current profile
    *
@@ -1308,7 +1311,7 @@ class Profile extends CommonDBTM {
       echo "</div>";
    }
 
-   
+
    /**
     * Print the central form for a profile
     *
@@ -2533,7 +2536,7 @@ class Profile extends CommonDBTM {
             } else {
                $profile_right = 0;
             }
-            
+
             if (isset($info['rights'])) {
                $rights = $info['rights'];
             } else {
