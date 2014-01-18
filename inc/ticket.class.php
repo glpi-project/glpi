@@ -2186,14 +2186,14 @@ class Ticket extends CommonITILObject {
       $tab[25]['datatype']          = 'text';
 
 
-      $tab[36]['table']                = 'glpi_ticketfollowups';
-      $tab[36]['field']                = 'date';
-      $tab[36]['name']                 = __('Date');
-      $tab[36]['datatype']             = 'datetime';
-      $tab[36]['massiveaction']        = false;
-      $tab[36]['forcegroupby']         = true;
-      $tab[36]['joinparams']           = array('jointype'  => 'child',
-                                               'condition' => $followup_condition);
+      $tab[36]['table']             = 'glpi_ticketfollowups';
+      $tab[36]['field']             = 'date';
+      $tab[36]['name']              = __('Date');
+      $tab[36]['datatype']          = 'datetime';
+      $tab[36]['massiveaction']     = false;
+      $tab[36]['forcegroupby']      = true;
+      $tab[36]['joinparams']        = array('jointype'  => 'child',
+                                            'condition' => $followup_condition);
 
       $tab[27]['table']             = 'glpi_ticketfollowups';
       $tab[27]['field']             = 'id';
@@ -4046,10 +4046,9 @@ class Ticket extends CommonITILObject {
       } else {
          echo self::getStatus($this->fields["status"]);
          if (in_array($this->fields["status"], $this->getClosedStatusArray())
-            && $this->isAllowedStatus($this->fields['status'], Ticket::INCOMING)) {
+             && $this->isAllowedStatus($this->fields['status'], Ticket::INCOMING)) {
             echo "&nbsp;<a class='vsubmit' href='".$this->getLinkURL().
-                  "&amp;forcetab=TicketFollowup$1&amp;_openfollowup=1'>".
-                  __('Reopen')."</a>";
+                  "&amp;forcetab=TicketFollowup$1&amp;_openfollowup=1'>". __('Reopen')."</a>";
          }
       }
       echo $tt->getEndHiddenFieldValue('status',$this);

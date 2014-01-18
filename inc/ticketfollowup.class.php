@@ -661,7 +661,7 @@ class TicketFollowup  extends CommonDBTM {
       $canadd        = $this->can(-1, CREATE, $tmp);
       $reopen_case = false;
       if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-            && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+          && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
          $reopen_case = true;
       }
 
@@ -704,7 +704,8 @@ class TicketFollowup  extends CommonDBTM {
                echo Html::scriptBlock("viewAddFollowup".$ticket->fields['id']."$rand()");
             } else {
                echo "<div class='center firstbloc'>".
-                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id'].
+                                            "$rand();'>";
                if ($reopen_case) {
                   _e('Reopen the ticket');
                } else {

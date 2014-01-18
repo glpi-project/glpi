@@ -3622,13 +3622,13 @@ class Html {
    /**
     * Init the Editor System to a textarea
     *
-    * @param $name          name of the html textarea to use
-    * @param $rand          rand of the html textarea to use (if empty no image paste system)
-    * @param $display       boolean display or get js script
+    * @param $name               name of the html textarea to use
+    * @param $rand       rand    of the html textarea to use (if empty no image paste system)(default '')
+    * @param $display    boolean display or get js script (true by default)
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display = true) {
+   static function initEditorSystem($name, $rand='', $display=true) {
       global $CFG_GLPI;
 
       Html::scriptStart();
