@@ -1700,6 +1700,8 @@ class Ticket extends CommonITILObject {
                      $add_done                    = false;
                   }
                }
+               // TODO (r22388)
+               // yllen: pour moi on ne rentrera jamais dans ce cas vu que $add_done est toujours défini à false
                if ($add_done) {
                   Event::log($this->fields['id'], "ticket", 4, "tracking",
                              sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
