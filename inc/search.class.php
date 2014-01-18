@@ -309,12 +309,8 @@ class Search {
                         ".self::addDefaultSelect($data['itemtype']);
 
       // Add select for all toview item
-      $maxviewkey = 0;
       foreach ($data['toview'] as $key => $val) {
          $SELECT .= self::addSelect($data['itemtype'], $val, $key, 0);
-         if ($key > $maxviewkey) {
-            $maxviewkey = $key;
-         }
       }
 
       //// 2 - FROM AND LEFT JOIN
@@ -537,7 +533,7 @@ class Search {
       if (count($data['search']['metacriteria'])) {
          // Already link meta table in order not to linked a table several times
          $already_link_tables2 = array();
-         $metanum = $maxviewkey;
+         $metanum = count($data['toview']);
          
          foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
             if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
