@@ -676,17 +676,17 @@ class Item_Devices extends CommonDBRelation {
     * @param $itemtype
     * @param $items_id
     * @param $devices_id
-    * @param $input array to complete (permit to define values)
+    * @param $input          array to complete (permit to define values)
    **/
-   function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = array()) {
+   function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input=array()) {
       global $DB;
 
       if ($numberToAdd == 0) {
          return;
       }
 
-      $input['itemtype'] = $itemtype;
-      $input['items_id'] = $items_id;
+      $input['itemtype']                    = $itemtype;
+      $input['items_id']                    = $items_id;
       $input[static::getDeviceForeignKey()] = $devices_id;
 
       $device_type = static::getDeviceType();
@@ -708,6 +708,7 @@ class Item_Devices extends CommonDBRelation {
          }
       }
    }
+
 
    /**
     * Add one or several device(s) from front/item_devices.form.php.

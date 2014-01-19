@@ -1158,10 +1158,10 @@ class Profile extends CommonDBTM {
          $rows[$html_field."[$index_1]"] = $row;
       }
       Html::showCheckboxMatrix($columns, $rows,
-                               array('title'      => $title,
+                               array('title'         => $title,
                                      'row_check_all' => true,
                                      'col_check_all' => true,
-                                     'first_cell' => '<b>'.__("From \ To").'</b>'));
+                                     'first_cell'    => '<b>'.__("From \ To").'</b>'));
    }
 
 

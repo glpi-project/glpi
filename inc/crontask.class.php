@@ -1367,14 +1367,14 @@ class CronTask extends CommonDBTM{
          $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
          // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
-         if ( preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0 ) {
-            if ( $match[1] < $firstdate ) {
+         if (preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0) {
+            if ($match[1] < $firstdate ) {
                $task->addVolume(1);
-               if ( unlink($file) ) {
-                  $task->log( sprintf(__('Deletion of archived log file: %s'), $shortfile)) ;
+               if (unlink($file)) {
+                  $task->log(sprintf(__('Deletion of archived log file: %s'), $shortfile));
                   $actionCode = 1 ;
                } else {
-                  $task->log( sprintf(__('Unable to delete archived log file: %s'), $shortfile)) ;
+                  $task->log(sprintf(__('Unable to delete archived log file: %s'), $shortfile));
                   $error = true ;
                }
             }
@@ -1385,14 +1385,14 @@ class CronTask extends CommonDBTM{
       $dir       = GLPI_LOG_DIR."/*.log" ;
       $findfiles = glob( $dir ) ;
       foreach ($findfiles as $file) {
-         $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
+         $shortfile    = str_replace(GLPI_LOG_DIR.'/','',$file);
          // rename the file
          $newfilename  = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
          $shortnewfile = str_replace(GLPI_LOG_DIR.'/','',$newfilename);
 
          $task->addVolume(1);
-         if (!file_exists($newfilename) && rename($file, $newfilename )) {
-            $task->log( sprintf(__('Archiving log file: %1$s to %2$s'), $shortfile, $shortnewfile));
+         if (!file_exists($newfilename) && rename($file, $newfilename)) {
+            $task->log(sprintf(__('Archiving log file: %1$s to %2$s'), $shortfile, $shortnewfile));
             $actionCode = 1 ;
          } else {
             $task->log(sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),

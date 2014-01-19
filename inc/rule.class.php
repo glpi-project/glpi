@@ -2683,7 +2683,7 @@ class Rule extends CommonDBTM {
     * @param $item
    **/
    function showAndAddRuleForm($item) {
-toolbox::logdebug("this", $this, "item", $item);
+
       $rand    = mt_rand();
       $canedit = self::canUpdate();
 

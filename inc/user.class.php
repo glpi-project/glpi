@@ -1538,7 +1538,7 @@ class User extends CommonDBTM {
 
       //Perform the search
       $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
-      $sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+      $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
       //Get the result of the search as an array
       $info = AuthLDAP::get_entries_clean($ds, $sr);
@@ -4022,10 +4022,10 @@ class User extends CommonDBTM {
       //TRANS: short for : Add users from an external source
       $values[self::IMPORTEXTAUTHUSERS] = array('short' => __('Add external'),
                                                 'long'  => __('Add users from an external source'));
-       //TRANS: short for : Read method for user authentication and synchronization                                 
+       //TRANS: short for : Read method for user authentication and synchronization
       $values[self::READAUTHENT]        = array('short' => __('Read auth'),
                                                 'long'  => __('Read user authentication and synchronization method'));
-      //TRANS: short for : Update method for user authentication and synchronization                                        
+      //TRANS: short for : Update method for user authentication and synchronization
       $values[self::UPDATEAUTHENT]      = array('short' => __('Update auth and sync'),
                                                 'long'  => __('Update method for user authentication and synchronization'));
 
