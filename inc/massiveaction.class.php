@@ -535,6 +535,11 @@ class MassiveAction {
          }
 
       } else {
+         if ($item instanceof CommonDropdown) {
+            $actions[$self_pref.'purge_but_item_linked'] = _x('button',
+                                                              'Delete permamently even if linked items');;
+         }
+
          if ($canupdate
              || (InfoCom::canApplyOn($itemtype)
                  && Infocom::canUpdate())) {
@@ -682,7 +687,7 @@ class MassiveAction {
                   $show_all                    = true;
                   $show_infocoms               = true;
                   $itemtable                   = getTableForItemType($itemtype);
-                  
+
                   if (InfoCom::canApplyOn($itemtype)
                       && (!$itemtype::canUpdate()
                           || !Infocom::canUpdate())) {
@@ -690,7 +695,7 @@ class MassiveAction {
                      $show_infocoms = Infocom::canUpdate();
                   }
                   foreach (Search::getCleanedOptions($itemtype, UPDATE) as $index => $option) {
-                     
+
                      if (!is_array($option)) {
                         $group                               = $option;
                         $options_per_type[$itemtype][$group] = array();
@@ -1127,6 +1132,7 @@ class MassiveAction {
             break;
 
          case 'purge_item_but_devices' :
+         case 'purge_but_item_linked' :
          case 'purge' :
             foreach ($ids as $id) {
                if ($item->can($id, PURGE)) {
@@ -1144,17 +1150,22 @@ class MassiveAction {
 
                   if ($item instanceof CommonDropdown) {
                      if ($item->haveChildren()) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage(__("You can't delete that item by massive actions, because it has sub-items"));
-                        $ma->addMessage(__("but you can do it by the form of the item"));
-
-                        continue;
+                        if ($action != 'purge_but_item_linked') {
+                           $force = 0;
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage(__("You can't delete that item by massive actions, because it has sub-items"));
+                           $ma->addMessage(__("but you can do it by the form of the item"));
+                           continue;
+                        }
                      }
                      if ($item->isUsed()) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
-                        $ma->addMessage(__("but you can do it by the form of the item"));
-                        continue;
+                        if ($action != 'purge_but_item_linked') {
+                           $force = 0;
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
+                           $ma->addMessage(__("but you can do it by the form of the item"));
+                           continue;
+                        }
                      }
                   }
                   if ($item->delete($delete_array, $force)) {
