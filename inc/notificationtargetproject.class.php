@@ -65,12 +65,12 @@ class NotificationTargetProject extends NotificationTarget {
       $this->addTarget(Notification::MANAGER_GROUP, __('Manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager of manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR,
-                        __('Manager group except manager users'));
+                        __("Manager group except users's manager"));
       $this->addTarget(Notification::TEAM_USER, __('User of project team'));
       $this->addTarget(Notification::TEAM_GROUP, __('Group of project team'));
       $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR,  __('Manager of group of project team'));
       $this->addTarget(Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,
-                        __('Group of project team except manager users'));
+                        __("Group of project team except users's manager"));
       $this->addTarget(Notification::TEAM_CONTACT, __('Contact of project team'));
       $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
    }
