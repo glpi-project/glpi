@@ -1241,7 +1241,7 @@ function generateGlobalDropdowns() {
                      'comment'            => "comment' $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
-                     'capacity_default'     => mt_rand(0,300),
+                     'capacity_default'   => mt_rand(0,300),
                      'rpm'                => mt_rand(0,15000),
                      'cache'              => 51200*mt_rand(0,10))));
    }
@@ -1332,9 +1332,9 @@ function generateGlobalDropdowns() {
                      'comment'            => "comment' $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'frequence'          => mt_rand(1000,3000),
-                     'frequency_default'     => 1000+200*mt_rand(0,10),
-                     'nbcores_default'     => mt_rand(1,8),
-                     'nbthreads_default'     => mt_rand(1,4),
+                     'frequency_default'  => 1000+200*mt_rand(0,10),
+                     'nbcores_default'    => mt_rand(1,8),
+                     'nbthreads_default'  => mt_rand(1,4),
                      )));
    }
 
