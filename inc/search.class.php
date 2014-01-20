@@ -100,12 +100,13 @@ class Search {
     *
     * @param $itemtype    item type to manage
     * @param $params      search params passed to prepareDatasForSearch function
+    * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
     *
     * @return data array
    **/
-   static function getDatas($itemtype, $params) {
+   static function getDatas($itemtype, $params, array $forcedisplay=array()) {
 
-      $data = self::prepareDatasForSearch($itemtype, $params);
+      $data = self::prepareDatasForSearch($itemtype, $params, $forcedisplay);
       self::constructSQL($data);
 
       self::constructDatas($data);
