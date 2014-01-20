@@ -88,6 +88,7 @@ class Search {
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
       self::constructDatas($data);
+
       self::displayDatas($data);
    }
 
@@ -2447,9 +2448,9 @@ class Search {
                         GROUP_CONCAT(`glpi_profiles_users`.`entities_id` SEPARATOR '$$$$')
                                     AS ".$NAME."_".$num."_entities_id,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_id_recursive,
+                                    AS ".$NAME."_".$num."_is_recursive,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_id_dynamic,
+                                    AS ".$NAME."_".$num."_is_dynamic,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2460,7 +2461,7 @@ class Search {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
                                     AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_profiles_users`.`profiles_id` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_profile_id,
+                                    AS ".$NAME."_".$num."_profiles_id,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
                                     AS ".$NAME."_".$num."_is_recursive,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
@@ -4527,7 +4528,7 @@ class Search {
                }
 
                for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                  if (isset($data[$num][$k]['id']) && ($data[$num][$k]['id'] > 0)) {
+                  if (isset($data[$num][$k]['id'])) {
                      if ($count_display) {
                         $out .= $separate;
                      }
