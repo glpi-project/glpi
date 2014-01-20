@@ -405,7 +405,7 @@ class DropdownTranslation extends CommonDBChild {
             }
             echo Dropdown::getLanguageName($data['language']);
             echo "</td><td $onhover>";
-            $searchOption = $item->getSearchOptionByField('name', $data['field']);
+            $searchOption = $item->getSearchOptionByField('field', $data['field']);
             echo $searchOption['name']."</td>";
             echo "<td $onhover>".$data['value']."</td>";
             echo "</tr>";

@@ -87,9 +87,7 @@ class Search {
 
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
-
       self::constructDatas($data);
-
       self::displayDatas($data);
    }
 
@@ -992,7 +990,7 @@ class Search {
             // Parse datas
             foreach ($newrow['raw'] as $key => $val) {
                // For compatibility keep data at the top for the moment
-               $newrow[$key] = $val;
+//                $newrow[$key] = $val;
 
                $keysplit = explode('_', $key);
 
@@ -1001,6 +999,11 @@ class Search {
                   $fieldname = 'name';
                   if (isset($keysplit[2])) {
                      $fieldname = $keysplit[2];
+                     $fkey = 3;
+                     while (isset($keysplit[$fkey])) {
+                        $fieldname.= '_'.$keysplit[$fkey];
+                        $fkey++;
+                     }
                   }
 
                   // No Group_concat case
@@ -1008,24 +1011,33 @@ class Search {
                      $newrow[$j]['count'] = 1;
 
                      if (strpos($val,"$$") === false) {
-                        $newrow[$j][0][$fieldname] = $val;
+                        if ($val == self::NULLVALUE) {
+                           $newrow[$j][0][$fieldname] = NULL;
+                        } else {
+                           $newrow[$j][0][$fieldname] = $val;
+                        }
                      } else {
                         $split2                    = self::explodeWithID("$$", $val);
                         $newrow[$j][0][$fieldname] = $split2[0];
                         $newrow[$j][0]['id']       = $split2[1];
                      }
                   } else {
-                     $newrow[$j]          = array();
+                     if (!isset($newrow[$j])) {
+                        $newrow[$j]          = array();
+                     }
                      $split               = explode("$$$$", $val);
                      $newrow[$j]['count'] = count($split);
-
                      foreach ($split as $key2 => $val2) {
                         if (strpos($val2,"$$") === false) {
                            $newrow[$j][$key2][$fieldname] = $val2;
                         } else {
                            $split2                        = self::explodeWithID("$$", $val2);
-                           $newrow[$j][$key2][$fieldname] = $split2[0];
-                           $newrow[$j][$key2]['id']       = $split2[1];
+                           $newrow[$j][$key2]['id']    = $split2[1];
+                           if ($split2[0] == self::NULLVALUE) {
+                              $newrow[$j][$key2][$fieldname] = NULL;
+                           } else {
+                              $newrow[$j][$key2][$fieldname] = $split2[0];
+                           }
                         }
                      }
                   }
@@ -2349,7 +2361,8 @@ class Search {
 
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
-      $tocomputetrans = "`$table".$addtable."_trans`.`value`";
+
+      $tocomputetrans = "IFNULL(`$table".$addtable."_trans`.`value`,'".self::NULLVALUE."') ";
 
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
@@ -2404,9 +2417,9 @@ class Search {
 
                }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                        `$table$addtable`.`realname` AS ".$NAME."_".$num."_2,
-                        `$table$addtable`.`id`  AS ".$NAME."_".$num."_3,
-                        `$table$addtable`.`firstname` AS ".$NAME."_".$num."_4,
+                        `$table$addtable`.`realname` AS ".$NAME."_".$num."_realname,
+                        `$table$addtable`.`id`  AS ".$NAME."_".$num."_id,
+                        `$table$addtable`.`firstname` AS ".$NAME."_".$num."_firstname,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2415,7 +2428,7 @@ class Search {
             return " FLOOR(SUM(`$table$addtable`.`$field`)
                            * COUNT(DISTINCT `$table$addtable`.`id`)
                            / COUNT(`$table$addtable`.`id`)) AS ".$NAME."_".$num.",
-                     MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2,
+                     MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_min,
                       $ADDITONALFIELDS";
 
          case "glpi_networkports.mac" :
@@ -2423,7 +2436,7 @@ class Search {
                                   AS ".$NAME."_$num, ";
             if ($itemtype == 'Computer') {
                $port .= " GROUP_CONCAT(`glpi_items_devicenetworkcards`.`mac` SEPARATOR '$$$$')
-                                      AS ".$NAME."_".$num."_2, ";
+                                      AS ".$NAME."_".$num."_macdev, ";
             }
             return $port.$ADDITONALFIELDS;
 
@@ -2432,11 +2445,11 @@ class Search {
                 && ($ID == 20)) {
                return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_profiles_users`.`entities_id` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_2,
+                                    AS ".$NAME."_".$num."_entities_id,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_3,
+                                    AS ".$NAME."_".$num."_id_recursive,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_4,
+                                    AS ".$NAME."_".$num."_id_dynamic,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2447,11 +2460,11 @@ class Search {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
                                     AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_profiles_users`.`profiles_id` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_2,
+                                    AS ".$NAME."_".$num."_profile_id,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_3,
+                                    AS ".$NAME."_".$num."_is_recursive,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_4,
+                                    AS ".$NAME."_".$num."_is_dynamic,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2459,13 +2472,13 @@ class Search {
          case "glpi_auth_tables.name":
             $user_searchopt = self::getOptions('User');
             return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
-                     `glpi_users`.`auths_id` AS ".$NAME."_".$num."_2,
+                     `glpi_users`.`auths_id` AS ".$NAME."_".$num."_auths_id,
                      `glpi_authldaps".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field`
-                              AS ".$NAME."_".$num."_3,
+                              AS ".$NAME."_".$num."_ldapname,
                      `glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field`
-                              AS ".$NAME."_".$num."_4,
+                              AS ".$NAME."_".$num."_mailname,
                      $ADDITONALFIELDS";
 
          case "glpi_softwarelicenses.name" :
@@ -2575,7 +2588,7 @@ class Search {
                            $ADDITONALFIELDS";
                }
                return " $tocompute AS ".$NAME."_$num,
-                        `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
+                        `$table$addtable`.`id` AS ".$NAME."_".$num."_id,
                         $ADDITONALFIELDS";
          }
       }
@@ -2585,12 +2598,15 @@ class Search {
               && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $TRANS = ", '$$', $tocomputetrans";
+            $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                               '$$',$tocomputeid) SEPARATOR '$$$$')
+                              AS ".$NAME."_".$num."_trans, ";
 
          }
-         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."') $TRANS,
+         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
                                                '$$',$tocomputeid) SEPARATOR '$$$$')
                               AS ".$NAME."_$num,
+                  $TRANS
                   $ADDITONALFIELDS";
       }
       $TRANS = '';
@@ -3889,19 +3905,19 @@ class Search {
 
          case "glpi_tickets.priority" :
          case "glpi_problems.priority" :
-            return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
+            return " style=\"background-color:".$_SESSION["glpipriority_".$data[$num][0]['name']].";\" ";
 
          case "glpi_tickets.due_date" :
          case "glpi_problems.due_date" :
          case "glpi_changes.due_date" :
-            if (($ID <> 151) && !empty($data[$NAME.$num])
-                && ($data[$NAME.$num.'_status'] != CommonITILObject::WAITING)
-                && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
+            if (($ID <> 151) && !empty($data[$num][0]['name'])
+                && ($data[$num][0]['status'] != CommonITILObject::WAITING)
+                && ($data[$num][0]['name'] < $_SESSION['glpi_currenttime'])) {
                return " style=\"background-color: #cf9b9b\" ";
             }
 
          case "glpi_projectstates.color" :
-            return " style=\"background-color:".$data[$NAME.$num].";\" ";
+            return " style=\"background-color:".$data[$num][0]['name'].";\" ";
 
          default :
             return "";
@@ -3969,9 +3985,7 @@ class Search {
                // USER search case
                if (($itemtype != 'User')
                    && isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
-
                   $out           = "";
-                  $split         = explode("$$$$",$data[$NAME.$num]);
                   $count_display = 0;
                   $added         = array();
 
@@ -3980,14 +3994,14 @@ class Search {
                      $showuserlink = 1;
                   }
 
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if ($split[$k] > 0) {
+                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                     if ($data[$num][$k]['name'] > 0) {
                         if ($count_display) {
                            $out .= self::LBBR;
                         }
                         $count_display++;
                         if ($itemtype == 'Ticket') {
-                           $userdata = getUserName($split[$k],2);
+                           $userdata = getUserName($data[$num][$k]['name'],2);
                            $tooltip = "";
                            if (Session::haveRight('user', READ)) {
                               $tooltip = Html::showToolTip($userdata["comment"],
@@ -3996,15 +4010,15 @@ class Search {
                            }
                            $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
                         } else {
-                           $out .= getUserName($split[$k], $showuserlink);
+                           $out .= getUserName($data[$num][$k]['name'], $showuserlink);
                         }
                      }
                   }
 
                   // Manage alternative_email for tickets_users
                   if (($itemtype == 'Ticket')
-                      && isset($data[$NAME.$num.'_2'])) {
-                     $split = explode("$$$$",$data[$NAME.$num.'_2']);
+                      && isset($data[$num][$k][2])) {
+                     $split = explode("$$$$", $data[$num][$k][2]);
                      for ($k=0 ; $k<count($split) ; $k++) {
                         $split2 = explode(" ",$split[$k]);
                         if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
@@ -4022,14 +4036,14 @@ class Search {
                if ($itemtype != 'User') {
                   $toadd = '';
                   if (($itemtype == 'Ticket')
-                      && ($data[$NAME.$num."_3"] > 0)) {
-                     $userdata = getUserName($data[$NAME.$num."_3"], 2);
+                      && ($data[$num][0]['id'] > 0)) {
+                     $userdata = getUserName($data[$num][0]['id'], 2);
                      $toadd    = Html::showToolTip($userdata["comment"],
                                                    array('link'    => $userdata["link"],
                                                          'display' => false));
                   }
-                  $usernameformat = formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
-                                                   $data[$NAME.$num."_2"], $data[$NAME.$num."_4"],
+                  $usernameformat = formatUserName($data[$num][0]['id'], $data[$num][0]['name'],
+                                                   $data[$num][0]['realname'], $data[$num][0]['firstname'],
                                                    1);
                   return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
                }
@@ -4039,25 +4053,21 @@ class Search {
                if (($itemtype == 'User')
                    && ($ID == 20)) {
                   $out           = "";
-                  $split         = explode("$$$$",$data[$NAME.$num]);
-                  $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
-                  $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
-                  $split4        = explode("$$$$",$data[$NAME.$num."_4"]);
 
                   $count_display = 0;
                   $added         = array();
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k])) > 0) {
-                        $text = sprintf(__('%1$s - %2$s'), $split[$k],
-                                        Dropdown::getDropdownName('glpi_entities', $split2[$k]));
+                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                        $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
+                                        Dropdown::getDropdownName('glpi_entities', $data[$num][$k]['entities_id']));
                         $comp = '';
-                        if ($split3[$k]) {
+                        if ($data[$num][$k]['is_recursive']) {
                            $comp = __('R');
-                           if ($split4[$k]) {
+                           if ($data[$num][$k]['is_dynamic']) {
                               $comp = sprintf(__('%1$s%2$s'), $comp, ", ");
                            }
                         }
-                        if ($split4[$k]) {
+                        if ($data[$num][$k]['is_dynamic']) {
                            $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
                         }
                         if (!empty($comp)) {
@@ -4079,25 +4089,22 @@ class Search {
 
             case "glpi_entities.completename" :
                if ($itemtype == 'User') {
+
                   $out           = "";
-                  $split         = explode("$$$$",$data[$NAME.$num]);
-                  $split2        = explode("$$$$",$data[$NAME.$num."_2"]);
-                  $split3        = explode("$$$$",$data[$NAME.$num."_3"]);
-                  $split4        = explode("$$$$",$data[$NAME.$num."_4"]);
                   $added         = array();
                   $count_display = 0;
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k])) > 0) {
-                        $text = sprintf(__('%1$s - %2$s'), $split[$k],
-                                        Dropdown::getDropdownName('glpi_profiles', $split2[$k]));
+                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                        $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
+                                        Dropdown::getDropdownName('glpi_profiles', $data[$num][$k]['profiles_id']));
                         $comp = '';
-                        if ($split3[$k]) {
+                        if ($data[$num][$k]['is_recursive']) {
                            $comp = __('R');
-                           if ($split4[$k]) {
+                           if ($data[$num][$k]['is_dynamic']) {
                               $comp = sprintf(__('%1$s%2$s'), $comp, ", ");
                            }
                         }
-                        if ($split4[$k]) {
+                        if ($data[$num][$k]['is_dynamic']) {
                            $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
                         }
                         if (!empty($comp)) {
@@ -4118,9 +4125,9 @@ class Search {
                break;
 
             case "glpi_documenttypes.icon" :
-               if (!empty($data[$NAME.$num])) {
+               if (!empty($data[$num][0]['name'])) {
                   return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".
-                           $data[$NAME.$num]."'>";
+                           $data[$num][0]['name']."'>";
                }
                return "&nbsp;";
 
@@ -4135,65 +4142,45 @@ class Search {
                $out = "";
                if ($itemtype == 'Computer') {
                   $displayed = array();
-                  if (!empty($data[$NAME.$num."_2"])) {
-                     $split         = explode("$$$$",$data[$NAME.$num."_2"]);
-                     $count_display = 0;
-                     for ($k=0 ; $k<count($split) ; $k++) {
-                        $lowstr = Toolbox::strtolower($split[$k]);
-                        if ((strlen(trim($split[$k])) > 0)
-                            && !in_array($lowstr, $displayed)) {
-                           if ($count_display) {
-                              $out .= self::LBBR;
+                  $count_display = 0;
+                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                     foreach (array('name', 'macdev') as $field) {
+                        if (isset($data[$num][$k][$field])) {
+                           $lowstr = Toolbox::strtolower($data[$num][$k][$field]);
+                           if ((strlen(trim($data[$num][$k][$field])) > 0)
+                              && !in_array($lowstr, $displayed)) {
+                              if ($count_display) {
+                                 $out .= self::LBBR;
+                              }
+                              $count_display++;
+                              $out        .= $data[$num][$k][$field];
+                              $displayed[] = $lowstr;
                            }
-                           $count_display++;
-                           $out        .= $split[$k];
-                           $displayed[] = $lowstr;
-                        }
-                     }
-                     if (!empty($data[$NAME.$num])) {
-                        $out .= self::LBBR;
-                     }
-                  }
-                  if (!empty($data[$NAME.$num])) {
-                     $split         = explode("$$$$",$data[$NAME.$num]);
-                     $count_display = 0;
-                     for ($k=0 ; $k<count($split) ; $k++) {
-                        $lowstr = Toolbox::strtolower($split[$k]);
-                        if ((strlen(trim($split[$k])) > 0)
-                            && !in_array($lowstr, $displayed)) {
-                           if ($count_display) {
-                              $out .= self::LBBR;
-                           }
-                           $count_display++;
-                           $out        .= $split[$k];
-                           $displayed[] = $lowstr;
                         }
                      }
                   }
-                  return $out;
+                 return $out;
                }
                break;
 
             case "glpi_contracts.end_date" :
-               if ($data[$NAME.$num."_renewal"] > 0) {
-                  return Contract::getContractEndDate($data['id'], $data[$NAME.$num."_begin_date"],
-                                                      $data[$NAME.$num."_duration"],
-                                                      $data[$NAME.$num."_periodicity"],
-                                                      $data[$NAME.$num."_renewal"]);
+               if ($data[$num][0]["renewal"] > 0) {
+                  return Contract::getContractEndDate($data['id'], $data[$num][0]["begin_date"],
+                                                      $data[$num][0]["duration"],
+                                                      $data[$num][0]["periodicity"],
+                                                      $data[$num][0]["renewal"]);
                }
-               return Infocom::getWarrantyExpir($data[$NAME.$num."_begin_date"],
-                                                $data[$NAME.$num."_duration"]);
+               return Infocom::getWarrantyExpir($data[$num][0]["begin_date"],
+                                                $data[$num][0]["duration"]);
 
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
-               $split      = explode("$$$$",$data[$NAME.$num]);
-               $split2     = explode("$$$$",$data[$NAME.$num."_tickets_id_2"]);
                $displayed  = array();
-               for ($k=0 ; $k<count($split) ; $k++) {
-                  $split3 = self::explodeWithID("$$", $split[$k]);
-                  $split4 = self::explodeWithID("$$", $split2[$k]);
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
 
-                  $linkid = ($split4[0] == $data['id']) ? $split4[0] : $split4[0];
+                  $linkid = ($data[$num][$k]['tickets_id_2'] == $data['id'])
+                                 ? $data[$num][$k]['name']
+                                 : $data[$num][$k]['tickets_id_2'];
                   if (($linkid > 0) && !isset($displayed[$linkid])) {
                      $text  = "<a ";
                      $text .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$linkid\">";
@@ -4207,96 +4194,96 @@ class Search {
                }
                return $out;
 
-            case "glpi_problems.count" :
-               if (($data[$NAME.$num] > 0)
-                   && Session::haveRight("problem", Problem::READALL)) {
-                  if ($itemtype == 'ITILCategory') {
-                     $options['criteria'][0]['field']      = 7;
-                     $options['criteria'][0]['searchtype'] = 'equals';
-                     $options['criteria'][0]['value']      = $data['id'];
-                     $options['criteria'][0]['link']       = 'AND';
+            case "glpi_problems.id" :
+               if ($searchopt[$ID]["datatype"] == 'count') {
+                  if (($data[$num][0]['name'] > 0)
+                     && Session::haveRight("problem", Problem::READALL)) {
+                     if ($itemtype == 'ITILCategory') {
+                        $options['criteria'][0]['field']      = 7;
+                        $options['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][0]['value']      = $data['id'];
+                        $options['criteria'][0]['link']       = 'AND';
+                     }
+
+                     $options['reset'] = 'reset';
+
+                     $out  = "<a id='problem$itemtype".$data['id']."' ";
+                     $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                              Toolbox::append_params($options, '&amp;')."\">";
+                     $out .= $data[$num][0]['name']."</a>";
+                     return $out;
                   }
-
-                  $options['reset'] = 'reset';
-
-                  $out  = "<a id='problem$itemtype".$data['id']."' ";
-                  $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                             Toolbox::append_params($options, '&amp;')."\">";
-                  $out .= $data[$NAME.$num]."</a>";
-
-               } else {
-                  $out = $data[$NAME.$num];
                }
-               return $out;
+               break;
+               
+            case "glpi_tickets.id" :
+               if ($searchopt[$ID]["datatype"] == 'count') {
+                  if (($data[$num][0]['name'] > 0)
+                     && Session::haveRight("ticket", Ticket::READALL)) {
 
-            case "glpi_tickets.count" :
-               if (($data[$NAME.$num] > 0)
-                   && Session::haveRight("ticket", Ticket::READALL)) {
+                     if ($itemtype == 'User') {
+                        $options['criteria'][0]['field']      = 4;
+                        $options['criteria'][0]['searchtype']= 'equals';
+                        $options['criteria'][0]['value']      = $data['id'];
+                        $options['criteria'][0]['link']       = 'AND';
 
-                  if ($itemtype == 'User') {
-                     $options['criteria'][0]['field']      = 4;
-                     $options['criteria'][0]['searchtype']= 'equals';
-                     $options['criteria'][0]['value']      = $data['id'];
-                     $options['criteria'][0]['link']       = 'AND';
+                        $options['criteria'][1]['field']      = 22;
+                        $options['criteria'][1]['searchtype'] = 'equals';
+                        $options['criteria'][1]['value']      = $data['id'];
+                        $options['criteria'][1]['link']       = 'OR';
 
-                     $options['criteria'][1]['field']      = 22;
-                     $options['criteria'][1]['searchtype'] = 'equals';
-                     $options['criteria'][1]['value']      = $data['id'];
-                     $options['criteria'][1]['link']       = 'OR';
+                        $options['criteria'][2]['field']      = 5;
+                        $options['criteria'][2]['searchtype'] = 'equals';
+                        $options['criteria'][2]['value']      = $data['id'];
+                        $options['criteria'][2]['link']       = 'OR';
 
-                     $options['criteria'][2]['field']      = 5;
-                     $options['criteria'][2]['searchtype'] = 'equals';
-                     $options['criteria'][2]['value']      = $data['id'];
-                     $options['criteria'][2]['link']       = 'OR';
+                     } else if ($itemtype == 'ITILCategory') {
+                        $options['criteria'][0]['field']      = 7;
+                        $options['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][0]['value']      = $data['id'];
+                        $options['criteria'][0]['link']       = 'AND';
 
-                  } else if ($itemtype == 'ITILCategory') {
-                     $options['criteria'][0]['field']      = 7;
-                     $options['criteria'][0]['searchtype'] = 'equals';
-                     $options['criteria'][0]['value']      = $data['id'];
-                     $options['criteria'][0]['link']       = 'AND';
+                     } else {
+                        $options['criteria'][0]['field']       = 12;
+                        $options['criteria'][0]['searchtype']  = 'equals';
+                        $options['criteria'][0]['value']       = 'all';
+                        $options['criteria'][0]['link']        = 'AND';
 
-                  } else {
-                     $options['criteria'][0]['field']       = 12;
-                     $options['criteria'][0]['searchtype']  = 'equals';
-                     $options['criteria'][0]['value']       = 'all';
-                     $options['criteria'][0]['link']        = 'AND';
+                        $options['metacriteria'][0]['itemtype']   = $itemtype;
+                        $options['metacriteria'][0]['field']      = self::getOptionNumber($itemtype, 'name');
+                        $options['metacriteria'][0]['searchtype'] = 'equals';
+                        $options['metacriteria'][0]['value']      = $data['id'];
+                        $options['metacriteria'][0]['link']       = 'AND';
+                     }
 
-                     $options['metacriteria'][0]['itemtype']   = $itemtype;
-                     $options['metacriteria'][0]['field']      = self::getOptionNumber($itemtype, 'name');
-                     $options['metacriteria'][0]['searchtype'] = 'equals';
-                     $options['metacriteria'][0]['value']      = $data['id'];
-                     $options['metacriteria'][0]['link']       = 'AND';
+                     $options['reset'] = 'reset';
+
+                     $out  = "<a id='ticket$itemtype".$data['id']."' ";
+                     $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                              Toolbox::append_params($options, '&amp;')."\">";
+                     $out .= $data[$num][0]['name']."</a>";
+                     return $out;
                   }
-
-                  $options['reset'] = 'reset';
-
-                  $out  = "<a id='ticket$itemtype".$data['id']."' ";
-                  $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                             Toolbox::append_params($options, '&amp;')."\">";
-                  $out .= $data[$NAME.$num]."</a>";
-
-               } else {
-                  $out = $data[$NAME.$num];
                }
-               return $out;
-
+               break;
+               
             case "glpi_tickets.due_date" :
             case "glpi_problems.due_date" :
             case "glpi_changes.due_date" :
                // Due date + progress
                if ($ID == 151) {
-                  $out = Html::convDate($data[$NAME.$num]);
+                  $out = Html::convDate($data[$num][0]['name']);
 
                   // No due date in waiting status
-                  if ($data[$NAME.$num.'_status'] == CommonITILObject::WAITING) {
+                  if ($data[$num][0]['status'] == CommonITILObject::WAITING) {
                      return '';
                   }
-                  if (empty($data[$NAME.$num])) {
+                  if (empty($data[$num][0]['name'])) {
                      return '';
                   }
-                  if (($data[$NAME.$num.'_status'] == Ticket::SOLVED)
-                      || ($data[$NAME.$num.'_status'] == Ticket::CLOSED)) {
-                     return $data[$NAME.$num];
+                  if (($data[$num][0]['status'] == Ticket::SOLVED)
+                      || ($data[$num][0]['status'] == Ticket::CLOSED)) {
+                     return $data[$num][0]['name'];
                   }
                   $itemtype = getItemTypeForTable($table);
                   $item = new $itemtype();
@@ -4310,7 +4297,7 @@ class Search {
                      $currenttime = $sla->getActiveTimeBetween($item->fields['date'],
                                                                date('Y-m-d H:i:s'));
                      $totaltime   = $sla->getActiveTimeBetween($item->fields['date'],
-                                                               $data[$NAME.$num]);
+                                                               $data[$num][0]['name']);
                   } else {
                      $calendars_id = Entity::getUsedConfig('calendars_id',
                                                            $item->fields['entities_id']);
@@ -4320,11 +4307,11 @@ class Search {
                         $currenttime = $calendar->getActiveTimeBetween($item->fields['date'],
                                                                        date('Y-m-d H:i:s'));
                         $totaltime   = $calendar->getActiveTimeBetween($item->fields['date'],
-                                                                       $data[$NAME.$num]);
+                                                                       $data[$num][0]['name']);
                      } else { // No calendar
                         $currenttime = strtotime(date('Y-m-d H:i:s'))
                                                  - strtotime($item->fields['date']);
-                        $totaltime   = strtotime($data[$NAME.$num])
+                        $totaltime   = strtotime($data[$num][0]['name'])
                                                  - strtotime($item->fields['date']);
                      }
                   }
@@ -4380,51 +4367,51 @@ class Search {
                break;
 
             case "glpi_softwarelicenses.number" :
-               if ($data[$NAME.$num."_2"] == -1) {
+               if ($data[$num][0]['min'] == -1) {
                   return __('Unlimited');
                }
-               if (empty($data[$NAME.$num])) {
+               if (empty($data[$num][0]['name'])) {
                   return 0;
                }
-               return $data[$NAME.$num];
+               return $data[$num][0]['name'];
 
             case "glpi_auth_tables.name" :
-               return Auth::getMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
-                                          $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
+               return Auth::getMethodName($data[$num][0]['name'], $data[$num][0]['auths_id'], 1,
+                                          $data[$num][0]['ldapname'].$data[$num][0]['mailname']);
 
             case "glpi_reservationitems.comment" :
-               if (empty($data[$NAME.$num])) {
+               if (empty($data[$num][0]['name'])) {
                   return "<a title=\"".__s('Modify the comment')."\"
                            href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
                            $data["refID"]."' >".__('None')."</a>";
                }
                return "<a title=\"".__s('Modify the comment')."\"
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                        $data['refID']."' >".Html::resume_text($data[$NAME.$num])."</a>";
+                        $data['refID']."' >".Html::resume_text($data[$num][0]['name'])."</a>";
 
             case 'glpi_crontasks.description' :
                $tmp = new CronTask();
-               return $tmp->getDescription($data[$NAME.$num]);
+               return $tmp->getDescription($data[$num][0]['name']);
 
             case 'glpi_changes.status':
-               $status = Change::getStatus($data[$NAME.$num]);
-               return "<img src=\"".Change::getStatusIconURL($data[$NAME.$num])."\"
+               $status = Change::getStatus($data[$num][0]['name']);
+               return "<img src=\"".Change::getStatusIconURL($data[$num][0]['name'])."\"
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
             case 'glpi_problems.status':
-               $status = Problem::getStatus($data[$NAME.$num]);
-               return "<img src=\"".Problem::getStatusIconURL($data[$NAME.$num])."\"
+               $status = Problem::getStatus($data[$num][0]['name']);
+               return "<img src=\"".Problem::getStatusIconURL($data[$num][0]['name'])."\"
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
             case 'glpi_tickets.status':
-               $status = Ticket::getStatus($data[$NAME.$num]);
-               return "<img src=\"".Ticket::getStatusIconURL($data[$NAME.$num])."\"
+               $status = Ticket::getStatus($data[$num][0]['name']);
+               return "<img src=\"".Ticket::getStatusIconURL($data[$num][0]['name'])."\"
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
             case 'glpi_tickets.items_id' :
-               if (!empty($data[$NAME.$num."_itemtype"])
-                   && ($item = getItemForItemtype($data[$NAME.$num."_itemtype"]))) {
-                  if ($item->getFromDB($data[$NAME.$num])) {
+               if (!empty($data[$num][0]['itemtype'])
+                   && ($item = getItemForItemtype($data[$num][0]['itemtype']))) {
+                  if ($item->getFromDB($data[$num][0]['name'])) {
                      return $item->getLink(array('comments' => true));
                   }
                }
@@ -4433,44 +4420,42 @@ class Search {
             case 'glpi_tickets.name' :
             case 'glpi_problems.name' :
             case 'glpi_changes.name' :
-               if (isset($data[$NAME.$num."_content"])
-                   && isset($data[$NAME.$num."_id"])
-                   && isset($data[$NAME.$num."_status"])) {
+               if (isset($data[$num][0]['content'])
+                   && isset($data[$num][0]['id'])
+                   && isset($data[$num][0]['status'])) {
                   $link = Toolbox::getItemTypeFormURL($itemtype);
-                  $out  = "<a id='$itemtype".$data[$NAME.$num."_id"]."' href=\"".$link;
+                  $out  = "<a id='$itemtype".$data[$num][0]['id']."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
-                  $out .= 'id='.$data[$NAME.$num."_id"];
+                  $out .= 'id='.$data[$num][0]['id'];
                   // Force solution tab if solved
                   if ($item = getItemForItemtype($itemtype)) {
-                     if (in_array($data[$NAME.$num."_status"], $item->getSolvedStatusArray())) {
+                     if (in_array($data[$num][0]['status'], $item->getSolvedStatusArray())) {
                         $out .= "&amp;forcetab=$itemtype$2";
                      }
                   }
                   $out .= "\">";
-                  $name = $data[$NAME.$num];
+                  $name = $data[$num][0]['name'];
                   if ($_SESSION["glpiis_ids_visible"]
-                      || empty($data[$NAME.$num])) {
-                     $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_id"]);
+                      || empty($data[$num][0]['name'])) {
+                     $name = sprintf(__('%1$s (%2$s)'), $name, $data[$num][0]['id']);
                   }
                   $out    .= $name."</a>";
-                  $hdecode = Html::entity_decode_deep($data[$NAME.$num."_content"]);
+                  $hdecode = Html::entity_decode_deep($data[$num][0]['content']);
                   $content = Toolbox::unclean_cross_side_scripting_deep($hdecode);
                   $out     = sprintf(__('%1$s %2$s'), $out,
                                      Html::showToolTip(nl2br(Html::Clean($content)),
                                                              array('applyto' => $itemtype.
-                                                                                $data[$NAME.$num."_id"],
+                                                                                $data[$num][0]['id'],
                                                                    'display' => false)));
                   return $out;
                }
 
             case 'glpi_ticketvalidations.status' :
-               $split = explode("$$$$",$data[$NAME.$num]);
                $out   = '';
-               foreach ($split as $val) {
-                  if (!empty($val)) {
-                     $split2  = self::explodeWithID("$$", $val);
-                     $status  = TicketValidation::getStatus($split2[0]);
-                     $bgcolor = TicketValidation::getStatusColor($split2[0]);
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if ($data[$num][$k]['name']) {
+                     $status  = TicketValidation::getStatus($data[$num][$k]['name']);
+                     $bgcolor = TicketValidation::getStatusColor($data[$num][$k]['name']);
                      $out    .= (empty($out)?'':self::LBBR).
                                  "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
                   }
@@ -4478,10 +4463,10 @@ class Search {
                return $out;
 
             case 'glpi_ticketsatisfactions.satisfaction' :
-               return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);
+               return TicketSatisfaction::displaySatisfaction($data[$num][0]['name']);
 
             case 'glpi_cartridgeitems._virtual' :
-               return Cartridge::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
+               return Cartridge::getCount($data["id"], $data[$num][0]['alarm_threshold'],
                                           self::$output_type != self::HTML_OUTPUT);
 
             case 'glpi_printers._virtual' :
@@ -4489,11 +4474,11 @@ class Search {
                                                     self::$output_type != self::HTML_OUTPUT);
 
             case 'glpi_consumableitems._virtual' :
-               return Consumable::getCount($data["id"], $data[$NAME.$num.'_alarm_threshold'],
+               return Consumable::getCount($data["id"], $data[$num][0]['alarm_threshold'],
                                            self::$output_type != self::HTML_OUTPUT);
 
             case 'glpi_reservationitems._virtual' :
-               if ($data[$NAME.$num.'_is_active']) {
+               if ($data[$num][0]['is_active']) {
                   return "<a href='reservation.php?reservationitems_id=".
                                           $data["refID"]."' title=\"".__s('See planning')."\">".
                                           "<img src=\"".$CFG_GLPI["root_doc"].
@@ -4533,50 +4518,28 @@ class Search {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
                $linkitemtype = getItemTypeForTable($searchopt[$ID]["table"]);
-               if (isset($data[$NAME.$num."_2"]) && strlen($data[$NAME.$num."_2"])) {
-                  $link = Toolbox::getItemTypeFormURL($linkitemtype);
-
-                  $out  = "<a id='".$itemtype."_".$data[$NAME.$num."_2"]."' href=\"".$link;
-                  $out .= (strstr($link,'?') ?'&amp;' :  '?');
-                  $out .= 'id='.$data[$NAME.$num."_2"];
-
-                  if (isset($searchopt[$ID]['forcetab'])) {
-                  $out .= "&amp;forcetab=".$searchopt[$ID]['forcetab'];
-                  }
-                  $out .= "\">";
-                  $name = Dropdown::getValueWithUnit($data[$NAME.$num],$unit);
-                  if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
-                     $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
-                  }
-                  $out .= $name."</a>";
-                  return $out;
-               }
 
                $out           = "";
-               $split         = explode("$$$$", $data[$NAME.$num]);
                $count_display = 0;
                $separate      = self::LBBR;
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
                   $separate = self::LBHR;
                }
 
-               for ($k=0 ; $k<count($split) ; $k++) {
-                  if (strlen(trim($split[$k])) > 0) {
-                     $split2 = self::explodeWithID("$$", $split[$k]);
-                     if (isset($split2[1]) && ($split2[1] > 0)) {
-                        if ($count_display) {
-                           $out .= $separate;
-                        }
-                        $count_display++;
-                        $page  = Toolbox::getItemTypeFormURL($linkitemtype);
-                        $page .= (strpos($page,'?') ? '&id' : '?id');
-                        $name  = Dropdown::getValueWithUnit($split2[0],$unit);
-                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                           $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
-                        }
-                        $out  .= "<a id='".$linkitemtype."_".$data['id']."_".
-                                    $split2[1]."' href='$page=".$split2[1]."'>".$name."</a>";
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (isset($data[$num][$k]['id']) && ($data[$num][$k]['id'] > 0)) {
+                     if ($count_display) {
+                        $out .= $separate;
                      }
+                     $count_display++;
+                     $page  = Toolbox::getItemTypeFormURL($linkitemtype);
+                     $page .= (strpos($page,'?') ? '&id' : '?id');
+                     $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'],$unit);
+                     if ($_SESSION["glpiis_ids_visible"] || empty($data[$num][$k]['name'])) {
+                        $name = sprintf(__('%1$s (%2$s)'), $name, $data[$num][$k]['id']);
+                     }
+                     $out  .= "<a id='".$linkitemtype."_".$data['id']."_".
+                                 $data[$num][$k]['id']."' href='$page=".$data[$num][$k]['id']."'>".$name."</a>";
                   }
                }
                return $out;
@@ -4586,20 +4549,19 @@ class Search {
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
                   $separate = self::LBHR;
                }
-               $split         = explode("$$$$", $data[$NAME.$num]);
+
                $out           = '';
                $count_display = 0;
-               foreach ($split as $val) {
-                  if (strlen(trim($val)) > 0) {
-                     $split2 = self::explodeWithID("$$", $val);
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (strlen(trim($data[$num][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= $separate;
                      }
                      $count_display++;
                      if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
-                        $out .= Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($split2[0])));
+                        $out .= Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($data[$num][$k]['name'])));
                      } else {
-                        $out .= nl2br($split2[0]);
+                        $out .= nl2br($data[$num][$k]['name']);
                      }
                   }
                }
@@ -4607,29 +4569,25 @@ class Search {
 
             case "date" :
             case "date_delay" :
-               $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach ($split as $val) {
-                  $split2 = self::explodeWithID("$$", $val);
-                  if (is_null($split2[0])
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (is_null($data[$num][$k]['name'])
                       && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
                   } else {
-                     $out .= (empty($out)?'':self::LBBR).Html::convDate($split2[0]);
+                     $out .= (empty($out)?'':self::LBBR).Html::convDate($data[$num][$k]['name']);
                   }
                }
                return $out;
 
             case "datetime" :
-               $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach ($split as $val) {
-                  $split2 = self::explodeWithID("$$", $val);
-                  if (is_null($split2[0])
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (is_null($data[$num][$k]['name'])
                       && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
                   } else {
-                     $out .= (empty($out)?'':self::LBBR).Html::convDateTime($split2[0]);
+                     $out .= (empty($out)?'':self::LBBR).Html::convDateTime($data[$num][$k]['name']);
                   }
                }
                return $out;
@@ -4644,33 +4602,30 @@ class Search {
                   $withdays = $searchopt[$ID]['withdays'];
                }
 
-               $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach ($split as $val) {
-                   $out .= (empty($out)?'':'<br>').Html::timestampToString($val, $withseconds,
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                   $out .= (empty($out)?'':'<br>').Html::timestampToString($data[$num][$k]['name'], $withseconds,
                                                                            $withdays);
                }
                return $out;
 
             case "email" :
-               $split         = explode('$$$$', $data[$NAME.$num]);
                $out           = '';
                $count_display = 0;
-               foreach ($split as $val) {
-                  $split2 = self::explodeWithID("$$", $val);
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
                   if ($count_display) {
                      $out .= self::LBBR;
                   }
                   $count_display++;
-                  if (!empty($val)) {
+                  if (!empty($data[$num][$k]['name'])) {
                      $out .= (empty($out)?'':self::LBBR);
-                     $out .= "<a href='mailto:$split2[0]'>$split2[0]</a>";
+                     $out .= "<a href='mailto:".$data[$num][$k]['name']."'>".$data[$num][$k]['name']."</a>";
                   }
                }
                return (empty($out) ? "&nbsp;" : $out);
 
             case "weblink" :
-               $orig_link = trim($data[$NAME.$num]);
+               $orig_link = trim($data[$num][0]['name']);
                if (!empty($orig_link)) {
                   // strip begin of link
                   $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
@@ -4684,165 +4639,123 @@ class Search {
 
             case "count" :
             case "number" :
-               if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
-                  $out           = "";
-                  $split         = explode("$$$$", $data[$NAME.$num]);
-                  $count_display = 0;
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k])) > 0) {
-                        $split2 = self::explodeWithID("$$", $split[$k]);
-                        if ($count_display) {
-                           $out .= self::LBBR;
-                        }
-                        $count_display++;
-                        if (isset($searchopt[$ID]['toadd'])
-                            && isset($searchopt[$ID]['toadd'][$split2[0]])) {
-                           $out .= $searchopt[$ID]['toadd'][$split2[0]];
-                        } else {
-                           $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0],
-                                                 false, 0));
-                           $out .= Dropdown::getValueWithUnit($number, $unit);
-                        }
+               $out           = "";
+               $count_display = 0;
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if ($count_display) {
+                        $out .= self::LBBR;
+                     }
+                     $count_display++;
+                     if (isset($searchopt[$ID]['toadd'])
+                           && isset($searchopt[$ID]['toadd'][$data[$num][$k]['name']])) {
+                        $out .= $searchopt[$ID]['toadd'][$data[$num][$k]['name']];
+                     } else {
+                        $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$num][$k]['name'],
+                                                false, 0));
+                        $out .= Dropdown::getValueWithUnit($number, $unit);
                      }
                   }
-                  return $out;
                }
-               if (isset($searchopt[$ID]['toadd'])
-                   && isset($searchopt[$ID]['toadd'][$data[$NAME.$num]])) {
-                  return $searchopt[$ID]['toadd'][$data[$NAME.$num]];
-               }
-               $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0));
-               return Dropdown::getValueWithUnit($number, $unit);
-
+               return $out;
 
             case "decimal" :
-               if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
-                  $out           = "";
-                  $split         = explode("$$$$" ,$data[$NAME.$num]);
-                  $count_display = 0;
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k])) > 0) {
-                        $split2 = self::explodeWithID("$$", $split[$k]);
+               $out           = "";
+               $count_display = 0;
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (strlen(trim($data[$num][$k]['name'])) > 0) {
 
-                        if ($count_display) {
-                           $out .= self::LBBR;
-                        }
-                        $count_display++;
-                        if (isset($searchopt[$ID]['toadd'])
-                            && isset($searchopt[$ID]['toadd'][$split2[0]])) {
-                           $out .= $searchopt[$ID]['toadd'][$split2[0]];
-                        } else {
-                           $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0]));
-                           $out   .= Dropdown::getValueWithUnit($number, $unit);
-                        }
+                     if ($count_display) {
+                        $out .= self::LBBR;
+                     }
+                     $count_display++;
+                     if (isset($searchopt[$ID]['toadd'])
+                           && isset($searchopt[$ID]['toadd'][$data[$num][$k]['name']])) {
+                        $out .= $searchopt[$ID]['toadd'][$data[$num][$k]['name']];
+                     } else {
+                        $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$num][$k]['name']));
+                        $out   .= Dropdown::getValueWithUnit($number, $unit);
                      }
                   }
-                  return $out;
                }
-               $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num]));
-               return Dropdown::getValueWithUnit($number, $unit);
+               return $out;
 
             case "bool" :
-               if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
-                  $out           = "";
-                  $split         = explode("$$$$", $data[$NAME.$num]);
-                  $count_display = 0;
-                  for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k])) > 0) {
-                        $split2 = self::explodeWithID("$$", $split[$k]);
-                        if ($count_display) {
-                           $out .= self::LBBR;
-                        }
-                        $count_display++;
-                        $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split2[0]),$unit);
+               $out           = "";
+               $count_display = 0;
+               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if ($count_display) {
+                        $out .= self::LBBR;
                      }
+                     $count_display++;
+                     $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$num][$k]['name']),$unit);
                   }
-                  return $out;
                }
-               return Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$NAME.$num]),$unit);
+               return $out;
 
             case "itemtypename":
-               if ($obj = getItemForItemtype($data[$NAME.$num])) {
+               if ($obj = getItemForItemtype($data[$num][0]['name'])) {
                   return $obj->getTypeName();
                }
                return "";
 
             case "language":
-               if (isset($CFG_GLPI['languages'][$data[$NAME.$num]])) {
-                  return $CFG_GLPI['languages'][$data[$NAME.$num]][0];
+               if (isset($CFG_GLPI['languages'][$data[$num][0]['name']])) {
+                  return $CFG_GLPI['languages'][$data[$num][0]['name']][0];
                }
                return __('Default value');
          }
       }
       // Manage items with need group by / group_concat
-      if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
-         $out           = "";
-         $split         = explode("$$$$", $data[$NAME.$num]);
-         $count_display = 0;
-         $separate      = self::LBBR;
-         if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-            $separate = self::LBHR;
-         }
-         for ($k=0 ; $k<count($split) ; $k++) {
-            if (strlen(trim($split[$k])) > 0) {
-               if ($count_display) {
-                  $out .= $separate;
-               }
-               $withoutid = self::explodeWithID("$$", $split[$k]);
-               $count_display++;
-               // Get specific display if available
-               $itemtype = getItemTypeForTable($table);
-               if ($item = getItemForItemtype($itemtype)) {
-                  $tmpdata  = array($field => $withoutid[0]);
-                  $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
-                                                               array('html' => true));
-               }
-               if (!empty($specific)) {
-                  $out .= $specific;
-               } else {
-                  $out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
-               }
-            }
-         }
-         return $out;
+      $out           = "";
+      $count_display = 0;
+      $separate      = self::LBBR;
+      if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
+         $separate = self::LBHR;
       }
-
-      // Get specific display if available
-      if (isset($table)) {
-         $itemtype = getItemTypeForTable($table);
-         if ($item = getItemForItemtype($itemtype)) {
-            $tmpdata  = array($field => $data[$NAME.$num]);
-            if (isset($searchopt[$ID]['additionalfields'])
-                && count($searchopt[$ID]['additionalfields'])) {
-
-               foreach ($searchopt[$ID]['additionalfields'] as $key) {
-                  $tmpdata[$key] = $data[$NAME.$num.'_'.$key];
-               }
+      for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+         if (strlen(trim($data[$num][$k]['name'])) > 0) {
+            if ($count_display) {
+               $out .= $separate;
             }
-            $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
-                                                         array('html'      => true,
-                                                               'searchopt' => $searchopt[$ID]));
+            $count_display++;
+            // Get specific display if available
+            $itemtype = getItemTypeForTable($table);
+            if ($item = getItemForItemtype($itemtype)) {
+               $tmpdata  = $data[$num][$k];
+               // Copy name to real field
+               $tmpdata[$field] = $data[$num][$k]['name'];
 
+               $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
+                                                            array('html'      => true,
+                                                                  'searchopt' => $searchopt[$ID]));
+            }
             if (!empty($specific)) {
-               return $specific;
+               $out .= $specific;
+            } else {
+               if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$data[$num][$k]['name']])) {
+                  $out .= $searchopt[$ID]['toadd'][$data[$num][$k]['name']];
+               } else {
+                  // Empty is 0 or empty
+                  if (empty($split[0])&& isset($searchopt[$ID]['emptylabel'])) {
+                     $out .= $searchopt[$ID]['emptylabel'];
+                  } else {
+                     // Trans field exists
+                     if (isset($data[$num][$k]['trans']) && !empty($data[$num][$k]['trans'])) {
+                        $out .=  Dropdown::getValueWithUnit($data[$num][$k]['trans'], $unit);
+                     } else {
+                        $out .= Dropdown::getValueWithUnit($data[$num][$k]['name'], $unit);
+                     }
+                  }
+               }
             }
          }
       }
+      return $out;
 
-      // Manage auto CONCAT id
-      $split = self::explodeWithID('$$', $data[$NAME.$num]);
-      $split[0] = trim($split[0]);
-      if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split[0]])) {
-         return $searchopt[$ID]['toadd'][$split[0]];
-      }
-      // Empty is 0 or empty
-      if (empty($split[0])&& isset($searchopt[$ID]['emptylabel'])) {
-         return $searchopt[$ID]['emptylabel'];
-      }
-      // Trans field exists
-      if (isset($data[$NAME.$num.'_trans']) && !empty($data[$NAME.$num.'_trans'])) {
-         return Dropdown::getValueWithUnit($data[$NAME.$num.'_trans'], $unit);
-      }
+
+
       // Trans in group concat
       if (count($split) == 3 && !empty($split[1])) {
          return Dropdown::getValueWithUnit($split[1], $unit);
