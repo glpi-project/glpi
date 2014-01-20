@@ -1030,7 +1030,13 @@ class Search {
                      }
                   }
                } else {
-                  $newrow[$key] = $val;
+                  if ($key == 'currentuser') {
+                     if (!isset($data['data']['currentuser'])) {
+                        $data['data']['currentuser'] = $val;
+                     }
+                  } else {
+                     $newrow[$key] = $val;
+                  }
                }
             }
 
