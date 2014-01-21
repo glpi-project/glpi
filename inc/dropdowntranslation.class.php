@@ -367,7 +367,7 @@ class DropdownTranslation extends CommonDBChild {
          }
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixehov'><tr class='tab_bg_2'>";
-         echo "<th colspan='4'>".__("List of translations")."</th>";
+         echo "<th colspan='4'>".__("List of translations")."</th></tr><tr>";
          if ($canedit) {
             echo "<th width='10'>";
             Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -473,7 +473,7 @@ class DropdownTranslation extends CommonDBChild {
       echo "<td>";
       if ($ID > 0) {
          echo "<input type='hidden' name='field' value='".$this->fields['field']."'>";
-         $searchOption = $item->getSearchOptionByField('name', $this->fields['field']);
+         $searchOption = $item->getSearchOptionByField('field', $this->fields['field']);
          echo $searchOption['name'];
       } else {
          echo "<span id='span_fields' name='span_fields'>";
