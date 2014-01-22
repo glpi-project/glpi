@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# pexy <pexyyy@gmail.com>, 2013
+# pexy <pexyyy@gmail.com>, 2013-2014
 # pexy <pexyyy@gmail.com>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-18 09:21+0100\n"
-"PO-Revision-Date: 2013-12-18 08:21+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-01-15 00:10+0000\n"
+"Last-Translator: pexy <pexyyy@gmail.com>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/GLPI/language/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: index.php:69
 msgid "GLPI - Authentication"
-msgstr ""
+msgstr "GLPI - Kasutajatuvastus"
 
 #: index.php:109 front/helpdesk.faq.php:53 front/knowbaseitem.form.php:157
 #: inc/config.class.php:470 inc/html.class.php:1951 inc/user.class.php:1711
@@ -77,7 +77,7 @@ msgstr "Kirjutamise õigus sessiooni failidele"
 
 #: index.php:163
 msgid "Access to the Frequently Asked Questions"
-msgstr ""
+msgstr "Korduma kippuvad küsimused"
 
 #: login.php:96
 msgid "Log in again"
@@ -1113,7 +1113,7 @@ msgstr "%s kustutas kassette"
 #: front/cartridge.form.php:69
 #, php-format
 msgid "%s installs a cartridge"
-msgstr ""
+msgstr "%s paigaldas kasseti"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:80
@@ -3116,7 +3116,7 @@ msgstr "Jah"
 #: inc/alert.class.php:256
 #, php-format
 msgid "Alert sent on %s"
-msgstr ""
+msgstr "Teavitus saadetud %s"
 
 #: inc/auth.class.php:107 inc/auth.class.php:202 inc/auth.class.php:247
 #: inc/auth.class.php:274
@@ -4118,7 +4118,7 @@ msgstr[1] "Kassetid"
 
 #: inc/cartridge.class.php:250
 msgid "Installing a cartridge"
-msgstr ""
+msgstr "Paigalda kassett"
 
 #: inc/cartridge.class.php:256
 msgid "No free cartridge"
@@ -4126,7 +4126,7 @@ msgstr "Vabu kassette pole"
 
 #: inc/cartridge.class.php:290
 msgid "Uninstalling a cartridge"
-msgstr ""
+msgstr "Eemalda kassett"
 
 #: inc/cartridge.class.php:330 inc/cartridge.class.php:443
 msgctxt "cartridge"
@@ -10852,7 +10852,7 @@ msgstr ""
 #: inc/plugin.class.php:385
 msgctxt "plugin"
 msgid "New"
-msgstr "Uusi"
+msgstr "Uus"
 
 #: inc/plugin.class.php:389
 msgctxt "plugin"

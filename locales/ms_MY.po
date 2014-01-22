@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-18 09:21+0100\n"
-"PO-Revision-Date: 2013-12-18 08:21+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-12-20 02:20+0000\n"
+"Last-Translator: Fattah Heisenberg <punkrock@outlook.com>\n"
 "Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/GLPI/language/ms_MY/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3608,7 +3608,7 @@ msgstr "Tiada kumpulan boleh diimport"
 
 #: inc/authldap.class.php:1977
 msgid "Please choose LDAP directory to import users from"
-msgstr ""
+msgstr "Sila pilih direktori LDAP untuk menjemput pengguna dari"
 
 #: inc/authldap.class.php:1979 inc/authldap.class.php:2681
 msgid "LDAP directory choice"
@@ -3616,11 +3616,11 @@ msgstr "pilihan direktori LDAP"
 
 #: inc/authldap.class.php:1998
 msgid "No LDAP directory defined in GLPI"
-msgstr ""
+msgstr "Tiada direktori LDAP ditentukan dalam GLPI"
 
 #: inc/authldap.class.php:2316
 msgid "User not found or several users found"
-msgstr ""
+msgstr "Pengguna tidak dijumpai atau sebilangan pengguna dijumpai"
 
 #: inc/authldap.class.php:2319
 msgid "Unable to add. The user already exist."
@@ -3628,11 +3628,11 @@ msgstr ""
 
 #: inc/authldap.class.php:2663
 msgid "Expert mode"
-msgstr ""
+msgstr "Mod Pakar"
 
 #: inc/authldap.class.php:2665
 msgid "Simple mode"
-msgstr ""
+msgstr "Mod Ringkas"
 
 #: inc/authldap.class.php:2689
 msgctxt "button"
@@ -3642,7 +3642,7 @@ msgstr ""
 #: inc/authldap.class.php:2711 inc/entity.class.php:802
 #: inc/html.class.php:3864
 msgid "Select the desired entity"
-msgstr ""
+msgstr "Pilih entiti dimaksudkan"
 
 #: inc/authldap.class.php:2760
 msgid "Search criteria for users"
@@ -3650,32 +3650,32 @@ msgstr ""
 
 #: inc/authldap.class.php:2798
 msgid "No directory selected"
-msgstr ""
+msgstr "Tiada direktori yang dipilih"
 
 #: inc/authldap.class.php:2803
 msgid "No directory associated to entity: impossible search"
-msgstr ""
+msgstr "Tiada direktori berkaitan dengan entiti:carian mustahil"
 
 #: inc/authldap.class.php:2968 inc/transfer.class.php:3061
 #: inc/transfer.class.php:3063
 msgid "Preserve"
-msgstr ""
+msgstr "Diasingkan"
 
 #: inc/authldap.class.php:2969
 msgid "Put in dustbin"
-msgstr ""
+msgstr "Letak dalam bakul sampah"
 
 #: inc/authldap.class.php:2970
 msgid "Withdraw dynamic authorizations and groups"
-msgstr ""
+msgstr "Buang pengesahan dinamik dan kumpulan"
 
 #: inc/authldap.class.php:2971
 msgid "Disable"
-msgstr ""
+msgstr "Gagalkan"
 
 #: inc/authldap.class.php:3013
 msgid "Enable filtering by date"
-msgstr ""
+msgstr "Aktifkan penapisan melalui tarikh"
 
 #: inc/authldap.class.php:3017
 msgid "View updated users"
@@ -3692,31 +3692,31 @@ msgstr ""
 
 #: inc/authldap.class.php:3032
 msgid "Disable filtering by date"
-msgstr ""
+msgstr "Nyahaktifkan penapisan melalui tarikh"
 
 #: inc/authldap.class.php:3049 inc/authmail.class.php:330
 #: inc/budget.class.php:80 inc/user.class.php:200
 msgid "Main"
-msgstr ""
+msgstr "Utama"
 
 #: inc/authldap.class.php:3054
 msgid "Replicate"
 msgid_plural "Replicates"
-msgstr[0] ""
+msgstr[0] "Pendua-an"
 
 #: inc/authldapreplicate.class.php:91
 msgid "Add a LDAP directory replica"
-msgstr ""
+msgstr "Tambah satu replik direktori LDAP"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:111 inc/mailcollector.class.php:331
 #: inc/toolbox.class.php:2015
 msgid "Connection string"
-msgstr ""
+msgstr "Tali penyambungan"
 
 #: inc/authmail.class.php:175
 msgid "Email domain Name (users email will be login@domain)"
-msgstr ""
+msgstr "Domain nama email (email pengguna menjadi login@domain)"
 
 #. TRANS: %s is the datetime of update
 #. TRANS: %s is the datetime of insertion
@@ -3730,21 +3730,21 @@ msgstr ""
 #: inc/software.class.php:278 inc/user.class.php:1818
 #, php-format
 msgid "Last update on %s"
-msgstr ""
+msgstr "Kemaskini terakhir pada %s"
 
 #: inc/authmail.class.php:197
 msgid "Email server configuration"
-msgstr ""
+msgstr "konfigurasi email server"
 
 #: inc/authmail.class.php:214
 msgid "Test connection to email server"
-msgstr ""
+msgstr "Cuba capaian ke server email"
 
 #: inc/autoupdatesystem.class.php:43 inc/computer.class.php:595
 #: inc/computer.class.php:769
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
+msgstr[0] "Kemaskini sumber"
 
 #: inc/blacklist.class.php:213 inc/networkname.class.php:264
 msgid "IP"
@@ -3771,12 +3771,12 @@ msgstr ""
 #: inc/commondbtm.class.php:1149 inc/commondbtm.class.php:2069
 #, php-format
 msgid "%1$s - ID %2$d"
-msgstr ""
+msgstr "%1$s - ID %2$d"
 
 #: inc/bookmark.class.php:233 inc/commondbtm.class.php:2066
 #: inc/knowbaseitem.class.php:497 inc/knowbaseitem.class.php:519
 msgid "New item"
-msgstr ""
+msgstr "Item baru"
 
 #: inc/bookmark.class.php:251 inc/commonitiltask.class.php:464
 #: inc/commonitiltask.class.php:993 inc/commonitiltask.class.php:1163
@@ -3787,11 +3787,11 @@ msgstr ""
 #: inc/ticketfollowup.class.php:549 inc/ticketfollowup.class.php:641
 #: inc/ticketfollowup.class.php:769
 msgid "Private"
-msgstr ""
+msgstr "Peribadi"
 
 #: inc/bookmark.class.php:403
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Bebas separa daripada penanda buku"
 
 #: inc/bookmark.class.php:575
 msgid "Bookmarks"
@@ -3799,7 +3799,7 @@ msgstr "Tandabuku"
 
 #: inc/bookmark.class.php:577
 msgid "Default view"
-msgstr ""
+msgstr "Pandangan lalai"
 
 #: inc/bookmark.class.php:607 inc/supplier.class.php:383
 #: inc/ticket.class.php:4213
@@ -3820,11 +3820,11 @@ msgstr ""
 
 #: inc/bookmark.class.php:642
 msgid "You have not recorded any bookmarks yet"
-msgstr ""
+msgstr "Tiada sebarang penanda yang direkod lagi"
 
 #: inc/bookmark.class.php:664
 msgid "Save as bookmark"
-msgstr ""
+msgstr "Simpan sebagai penanda buku"
 
 #: inc/budget.class.php:48 inc/contract.class.php:746
 #: inc/contractcost.class.php:234 inc/contractcost.class.php:298
@@ -3835,7 +3835,7 @@ msgstr ""
 #: inc/ticketcost.class.php:377
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] ""
+msgstr[0] "Bujet"
 
 #: inc/budget.class.php:81 inc/change_item.class.php:249
 #: inc/contract_item.class.php:263 inc/contract_item.class.php:265
@@ -3861,11 +3861,11 @@ msgstr[0] ""
 #: inc/profile.class.php:1500 inc/software.class.php:443
 #: inc/supplier.class.php:330
 msgid "Notes"
-msgstr ""
+msgstr "Nota"
 
 #: inc/budget.class.php:282 inc/supplier.class.php:417
 msgid "No associated item"
-msgstr ""
+msgstr "Tiada item berkaitan"
 
 #: inc/budget.class.php:284 inc/document_item.class.php:171
 #: inc/document_item.class.php:174 inc/notificationtargetinfocom.class.php:89
@@ -3875,7 +3875,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:603 inc/supplier.class.php:419
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] ""
+msgstr[0] "Item berkaitan"
 
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
@@ -3954,15 +3954,15 @@ msgstr ""
 #: inc/stat.class.php:464 inc/state.class.php:123 inc/state.class.php:171
 #: inc/supplier.class.php:529 inc/ticketcost.class.php:439
 msgid "Total"
-msgstr ""
+msgstr "Jumlah"
 
 #: inc/budget.class.php:570 inc/budget.class.php:616
 msgid "Total spent on the budget"
-msgstr ""
+msgstr "Jumlah dibelanjakan dalam bujet"
 
 #: inc/budget.class.php:620
 msgid "Total remaining on the budget"
-msgstr ""
+msgstr "Jumlah baki dalam bujet"
 
 #: inc/calendar.class.php:59 inc/dropdown.class.php:731
 #: inc/dropdown.class.php:732 inc/entity.class.php:671
@@ -3972,7 +3972,7 @@ msgstr ""
 #: inc/ticketrecurrent.class.php:272
 msgid "Calendar"
 msgid_plural "Calendars"
-msgstr[0] ""
+msgstr[0] "Kalendar"
 
 #: inc/calendar.class.php:92 inc/calendar.class.php:107
 msgctxt "button"
@@ -3991,7 +3991,7 @@ msgstr ""
 #: inc/html.class.php:4182 inc/html.class.php:4307 inc/html.class.php:4308
 #: inc/planning.class.php:416
 msgid "Start"
-msgstr ""
+msgstr "Mula"
 
 #: inc/calendar_holiday.class.php:133 inc/calendarsegment.class.php:319
 #: inc/calendarsegment.class.php:345 inc/commonitiltask.class.php:909
@@ -4003,31 +4003,31 @@ msgstr ""
 #: inc/planning.class.php:420 inc/reminder.class.php:705
 #: inc/search.class.php:4236
 msgid "End"
-msgstr ""
+msgstr "Tamat"
 
 #: inc/calendar_holiday.class.php:134 inc/holiday.class.php:65
 #: inc/holiday.class.php:91
 msgid "Recurrent"
-msgstr ""
+msgstr "Berulang"
 
 #: inc/calendar_holiday.class.php:203 inc/calendar_holiday.class.php:208
 #: inc/dropdown.class.php:733 inc/holiday.class.php:42
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] ""
+msgstr[0] "Masa tutup"
 
 #: inc/calendarsegment.class.php:61
 msgid "Time range"
 msgid_plural "Time ranges"
-msgstr[0] ""
+msgstr[0] "Ukur masa"
 
 #: inc/calendarsegment.class.php:70
 msgid "Can not add a range riding an existing period"
-msgstr ""
+msgstr "Tidak boleh menambah jarak dengan tempoh sedia ada"
 
 #: inc/calendarsegment.class.php:312
 msgid "Add a schedule"
-msgstr ""
+msgstr "Tambah jadual"
 
 #: inc/calendarsegment.class.php:314 inc/calendarsegment.class.php:343
 #: inc/config.class.php:943 inc/config.class.php:961
@@ -4035,7 +4035,7 @@ msgstr ""
 #: inc/planning.class.php:327 inc/reservation.class.php:1002
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] ""
+msgstr[0] "Hari"
 
 #. TRANS: select action 'update' (before doing it)
 #: inc/cartridge.class.php:77 inc/commondbtm.class.php:3429
@@ -4050,7 +4050,7 @@ msgstr ""
 #: inc/profile.class.php:1485 inc/search.class.php:1014
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] ""
+msgstr[0] "katrij"
 
 #: inc/cartridge.class.php:250
 msgid "Installing a cartridge"
@@ -4058,7 +4058,7 @@ msgstr ""
 
 #: inc/cartridge.class.php:256
 msgid "No free cartridge"
-msgstr ""
+msgstr "Tiada katrij kosong"
 
 #: inc/cartridge.class.php:290
 msgid "Uninstalling a cartridge"
@@ -4068,30 +4068,30 @@ msgstr ""
 msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
+msgstr[0] "Baru"
 
 #: inc/cartridge.class.php:333 inc/cartridge.class.php:446
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
+msgstr[0] "Terpakai"
 
 #: inc/cartridge.class.php:335 inc/cartridge.class.php:448
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] ""
+msgstr[0] "Dipakai"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
 #: inc/cartridge.class.php:341
 #, php-format
 msgid "Total: %1$d (%2$d new, %3$d used, %4$d worn)"
-msgstr ""
+msgstr "Total:%1$d (%2$d baru, %3$d terpakai, %4$d dipakai)"
 
 #: inc/cartridge.class.php:347 inc/cartridge.class.php:349
 msgid "No cartridge"
-msgstr ""
+msgstr "Tiada katrij"
 
 #: inc/cartridge.class.php:515 inc/commondbtm.class.php:3434
 #: inc/consumable.class.php:470 inc/infocom.class.php:933
@@ -4100,36 +4100,36 @@ msgstr ""
 
 #: inc/cartridge.class.php:516 inc/consumable.class.php:472
 msgid "Back to stock"
-msgstr ""
+msgstr "Kembali pada stok"
 
 #: inc/cartridge.class.php:527 inc/cartridge.class.php:767
 msgid "Worn cartridges"
-msgstr ""
+msgstr "Katrij dipakai"
 
 #: inc/cartridge.class.php:538 inc/commonitiltask.class.php:904
 #: inc/consumable.class.php:501 inc/ticketvalidation.class.php:648
 msgctxt "item"
 msgid "State"
-msgstr ""
+msgstr "Keadaan"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:776
 #: inc/cartridge.class.php:924 inc/consumable.class.php:502
 msgid "Add date"
-msgstr ""
+msgstr "tambah tarikh"
 
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:777
 #: inc/cartridge.class.php:927 inc/consumable.class.php:504
 msgid "Use date"
-msgstr ""
+msgstr "Guna tarikh"
 
 #: inc/cartridge.class.php:540
 msgid "Used on"
-msgstr ""
+msgstr "Dipakai pada"
 
 #: inc/cartridge.class.php:545 inc/cartridge.class.php:780
 #: inc/cartridge.class.php:942
 msgid "Printer counter"
-msgstr ""
+msgstr "Kira pencetak"
 
 #. TRANS: Always plural
 #: inc/cartridge.class.php:548 inc/consumable.class.php:507
@@ -4137,13 +4137,13 @@ msgstr ""
 #: inc/infocom.class.php:949 inc/infocom.class.php:1220
 #: inc/transfer.class.php:3132 install/update_0723_078.php:4823
 msgid "Financial and administrative information"
-msgstr ""
+msgstr "Informasi kewangan dan pentadbiran"
 
 #: inc/cartridge.class.php:612
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] ""
+msgstr[0] "%d helaian dicetak"
 
 #: inc/cartridge.class.php:615
 msgid "Counter error"
@@ -4151,25 +4151,25 @@ msgstr ""
 
 #: inc/cartridge.class.php:630 inc/cartridge.class.php:861
 msgid "Average time in stock"
-msgstr ""
+msgstr "Purata masa dalam stok"
 
 #: inc/cartridge.class.php:631 inc/cartridge.class.php:634
 #: inc/contract_item.class.php:459
 msgid "month"
 msgid_plural "months"
-msgstr[0] ""
+msgstr[0] "Bulan"
 
 #: inc/cartridge.class.php:633 inc/cartridge.class.php:864
 msgid "Average time in use"
-msgstr ""
+msgstr "Purata masa dalam penggunaan"
 
 #: inc/cartridge.class.php:635 inc/cartridge.class.php:867
 msgid "Average number of printed pages"
-msgstr ""
+msgstr "Purata nombor helaian yang dicetak"
 
 #: inc/cartridge.class.php:671
 msgid "Add cartridges"
-msgstr ""
+msgstr "Tambah katrij"
 
 #: inc/cartridge.class.php:734
 msgid "No cartridge available"
@@ -4192,14 +4192,14 @@ msgstr ""
 
 #: inc/cartridge.class.php:765
 msgid "Used cartridges"
-msgstr ""
+msgstr "Katrij terpakai"
 
 #: inc/cartridge.class.php:775 inc/cartridge.class.php:920
 #: inc/cartridgeitem.class.php:52
 #: inc/notificationtargetcartridgeitem.class.php:84
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] ""
+msgstr[0] "Model katrij"
 
 #: inc/cartridge.class.php:781
 msgid "Printed pages"
@@ -4225,14 +4225,14 @@ msgstr ""
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
+msgstr[0] "%d bulan"
 
 #: inc/cartridgeitem.class.php:192 inc/cartridgeitem.class.php:281
 #: inc/consumableitem.class.php:138 inc/consumableitem.class.php:228
 #: inc/notificationtargetcartridgeitem.class.php:83
 #: inc/notificationtargetconsumableitem.class.php:85
 msgid "Reference"
-msgstr ""
+msgstr "Rujukan"
 
 #: inc/cartridgeitem.class.php:202 inc/cartridgeitem.class.php:299
 #: inc/commondbtm.class.php:2642 inc/computer.class.php:433
@@ -4250,7 +4250,7 @@ msgstr ""
 #: inc/search.class.php:5266 inc/software.class.php:224
 #: inc/software.class.php:466
 msgid "Technician in charge of the hardware"
-msgstr ""
+msgstr "Juruteknik ditugaskan menjaga perkakasan"
 
 #: inc/cartridgeitem.class.php:215 inc/cartridgeitem.class.php:306
 #: inc/computer.class.php:446 inc/computer.class.php:861
@@ -4264,16 +4264,16 @@ msgstr ""
 #: inc/phone.class.php:556 inc/printer.class.php:316 inc/printer.class.php:719
 #: inc/software.class.php:235 inc/software.class.php:473
 msgid "Group in charge of the hardware"
-msgstr ""
+msgstr "Kumpulan bertugas untuk perkakasan"
 
 #: inc/cartridgeitem.class.php:224 inc/consumableitem.class.php:170
 msgid "Stock location"
-msgstr ""
+msgstr "Lokasi stok"
 
 #: inc/cartridgeitem.class.php:231 inc/cartridgeitem.class.php:312
 #: inc/consumableitem.class.php:177 inc/consumableitem.class.php:259
 msgid "Alert threshold"
-msgstr ""
+msgstr "Amaran tetapan"
 
 #: inc/cartridgeitem.class.php:256 inc/computer.class.php:643
 #: inc/consumableitem.class.php:203 inc/contact.class.php:284
@@ -4289,7 +4289,7 @@ msgstr ""
 
 #: inc/cartridgeitem.class.php:347 inc/cartridgeitem.class.php:491
 msgid "Send alarms on cartridges"
-msgstr ""
+msgstr "Hantar amaran untuk katrij"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -4298,13 +4298,13 @@ msgstr ""
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr ""
+msgstr "Tetapan amaran tercapai bagi jenis katrij: %1$s - Rujukan %2$s - Baki %3$d"
 
 #. TRANS: %s is entity name
 #: inc/cartridgeitem.class.php:429
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr ""
+msgstr "%s: hantar amaran katrij gagal"
 
 #: inc/cartridgeitem_printermodel.class.php:153
 msgid "Add a compatible printer model"
@@ -4337,7 +4337,7 @@ msgstr "tiada item dijumpai"
 #: inc/cartridgeitemtype.class.php:42 inc/dropdown.class.php:689
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
+msgstr[0] "Jenis katrij"
 
 #: inc/central.class.php:45 inc/profile.class.php:2194
 #: inc/tickettemplate.class.php:304
@@ -4345,20 +4345,20 @@ msgstr[0] ""
 #: inc/tickettemplatemandatoryfield.class.php:219
 #: inc/tickettemplatemandatoryfield.class.php:263
 msgid "Standard interface"
-msgstr ""
+msgstr "Pengantara biasa"
 
 #: inc/central.class.php:61 inc/displaypreference.class.php:664
 #: inc/displaypreference.class.php:672 inc/planning.class.php:57
 msgid "Personal View"
-msgstr ""
+msgstr "Pandangan sendiri"
 
 #: inc/central.class.php:62 inc/planning.class.php:59
 msgid "Group View"
-msgstr ""
+msgstr "Pandangan kumpulan"
 
 #: inc/central.class.php:63 inc/displaypreference.class.php:670
 msgid "Global View"
-msgstr ""
+msgstr "Pandangan global"
 
 #: inc/central.class.php:64 inc/html.class.php:1330 inc/rssfeed.class.php:70
 msgid "RSS feed"
@@ -4369,7 +4369,7 @@ msgstr[0] ""
 #, php-format
 msgid ""
 "For security reasons, please change the password for the default users: %s"
-msgstr ""
+msgstr "Bagi sebab sekuriti, sila tukar kata laluan bagi pengguna lalai: %s"
 
 #: inc/central.class.php:169
 #, php-format
@@ -4378,21 +4378,21 @@ msgstr ""
 
 #: inc/central.class.php:179 inc/central.class.php:180 inc/html.class.php:2391
 msgid "MySQL replica: read only"
-msgstr ""
+msgstr "MySQL replik: Bacaan sahaja"
 
 #: inc/change.class.php:62 inc/change_problem.class.php:146
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] ""
+msgstr[0] "Tukar"
 
 #: inc/change.class.php:186 inc/problem.class.php:213
 #: inc/problem.class.php:224 inc/problem.class.php:572
 msgid "Analysis"
-msgstr ""
+msgstr "Analisis"
 
 #: inc/change.class.php:187
 msgid "Plans"
-msgstr ""
+msgstr "Pelan"
 
 #: inc/change.class.php:188 inc/change.class.php:565 inc/change.class.php:575
 #: inc/notificationtargetcommonitilobject.class.php:914
@@ -4402,7 +4402,7 @@ msgstr ""
 #: inc/ticket.class.php:2358
 msgid "Solution"
 msgid_plural "Solutions"
-msgstr[0] ""
+msgstr[0] "Penyelesaian"
 
 #: inc/change.class.php:393 inc/change.class.php:883
 #: inc/change_ticket.class.php:143 inc/change_ticket.class.php:255
@@ -4449,7 +4449,7 @@ msgstr "Tajuk"
 #: inc/ticketfollowup.class.php:560 inc/ticketfollowup.class.php:638
 #: inc/ticketfollowup.class.php:687 inc/ticketfollowup.class.php:753
 msgid "Description"
-msgstr ""
+msgstr "Deskripsi"
 
 #: inc/change.class.php:412 inc/change.class.php:836
 #: inc/commondbtm.class.php:2609 inc/commonitiltask.class.php:515
@@ -4481,7 +4481,7 @@ msgstr ""
 #: inc/user.class.php:3095 inc/user.class.php:3170
 msgid "Status"
 msgid_plural "Statuses"
-msgstr[0] ""
+msgstr[0] "Status"
 
 #: inc/change.class.php:436 inc/change.class.php:767
 #: inc/commonitilobject.class.php:3712
@@ -4492,14 +4492,14 @@ msgstr[0] ""
 #: inc/problem.class.php:1266 inc/ticket.class.php:1909
 #: inc/ticket.class.php:3841 inc/ticket.class.php:3843
 msgid "Opening date"
-msgstr ""
+msgstr "Tarikh dibuka"
 
 #: inc/change.class.php:442 inc/commonitilobject.class.php:3725
 #: inc/notificationtargetcommonitilobject.class.php:893
 #: inc/problem.class.php:512 inc/problem.class.php:1314
 #: inc/ticket.class.php:1915
 msgid "Closing date"
-msgstr ""
+msgstr "Tarikh ditutup"
 
 #: inc/change.class.php:448 inc/change.class.php:803
 #: inc/commonitilobject.class.php:3715
@@ -4510,13 +4510,13 @@ msgstr ""
 #: inc/ticket.class.php:3862 inc/ticket.class.php:3864
 #: inc/ticket.class.php:5444
 msgid "Due date"
-msgstr ""
+msgstr "Tarikh luput"
 
 #: inc/change.class.php:455 inc/change.class.php:824
 #: inc/commonitilobject.class.php:3720 inc/problem.class.php:525
 #: inc/ticket.class.php:1940 inc/ticket.class.php:3993
 msgid "Resolution date"
-msgstr ""
+msgstr "Tarikh penyelesaian"
 
 #: inc/change.class.php:479 inc/change.class.php:862
 #: inc/commonitiltask.class.php:509 inc/crontask.class.php:933
@@ -4527,15 +4527,15 @@ msgstr ""
 #: inc/problem.class.php:1353 inc/ticket.class.php:1996
 #: inc/ticket.class.php:4319
 msgid "Total duration"
-msgstr ""
+msgstr "Jumlah tempoh"
 
 #: inc/change.class.php:487 inc/problem.class.php:556
 msgid "Last edit by"
-msgstr ""
+msgstr "Edit terakhir pada"
 
 #: inc/change.class.php:495 inc/change.class.php:505 inc/change.class.php:976
 msgid "Control list"
-msgstr ""
+msgstr "Senaral kawalan"
 
 #: inc/change.class.php:511 inc/change.class.php:1005
 msgid "Deployment plan"
@@ -4552,7 +4552,7 @@ msgstr ""
 #: inc/change.class.php:600
 msgctxt "change"
 msgid "New"
-msgstr ""
+msgstr "Baru"
 
 #: inc/change.class.php:601
 msgid "Evaluation"
@@ -4769,7 +4769,7 @@ msgstr ""
 #: inc/ticket.class.php:4530 inc/transfer.class.php:3064
 msgctxt "button"
 msgid "Put in dustbin"
-msgstr ""
+msgstr "Letak dalam bakul sampah"
 
 #. TRANS: %s is the template name
 #: inc/commondbtm.class.php:2059 inc/computer.class.php:579
@@ -6441,13 +6441,13 @@ msgstr ""
 msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
+msgstr[0] "Baru"
 
 #: inc/consumable.class.php:395
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
+msgstr[0] "Terpakai"
 
 #: inc/consumable.class.php:423
 msgctxt "button"
@@ -6544,7 +6544,7 @@ msgstr ""
 #: inc/entity.class.php:503 inc/entity.class.php:999
 #: inc/supplier.class.php:169 inc/supplier.class.php:285
 msgid "State"
-msgstr ""
+msgstr "Keadaan"
 
 #: inc/contact.class.php:210 inc/contact.class.php:359
 #: inc/entity.class.php:509 inc/entity.class.php:1005
@@ -7117,7 +7117,7 @@ msgstr[0] ""
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
+msgstr[0] "%d hari"
 
 #: inc/crontasklog.class.php:80 inc/crontasklog.class.php:85
 #: inc/event.class.php:43 inc/html.class.php:1817 inc/profile.class.php:1235
@@ -9610,7 +9610,7 @@ msgstr ""
 #: inc/networkport.class.php:544
 #, php-format
 msgid "%1$s: %2$d"
-msgstr ""
+msgstr "%1$s: %2$d"
 
 #: inc/networkport.class.php:592 inc/networkport.class.php:681
 msgid "Network ports waiting for manual migration"
@@ -10615,7 +10615,7 @@ msgstr[0] ""
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] ""
+msgstr[0] "%d minggu"
 
 #: inc/planningrecall.class.php:332
 msgid "Send planning recalls"
@@ -10637,7 +10637,7 @@ msgstr ""
 #: inc/plugin.class.php:385
 msgctxt "plugin"
 msgid "New"
-msgstr ""
+msgstr "Baru"
 
 #: inc/plugin.class.php:389
 msgctxt "plugin"
@@ -10674,7 +10674,7 @@ msgstr ""
 #: inc/plugin.class.php:441
 msgctxt "button"
 msgid "Disable"
-msgstr ""
+msgstr "Gagalkan"
 
 #: inc/plugin.class.php:446 inc/plugin.class.php:493 inc/plugin.class.php:521
 #: inc/plugin.class.php:543
@@ -10748,7 +10748,7 @@ msgstr ""
 #: inc/problem.class.php:720
 msgctxt "problem"
 msgid "New"
-msgstr ""
+msgstr "Baru"
 
 #: inc/problem.class.php:721
 msgctxt "problem"
@@ -12525,7 +12525,7 @@ msgstr ""
 #: inc/ticket.class.php:2605
 msgctxt "ticket"
 msgid "New"
-msgstr ""
+msgstr "Baru"
 
 #: inc/ticket.class.php:2606
 msgid "Processing (assigned)"
@@ -13312,7 +13312,7 @@ msgstr ""
 
 #: inc/user.class.php:477
 msgid "Unable to add. The user already exists."
-msgstr ""
+msgstr "Gagal untuk menambah. Pengguna telah wujud"
 
 #: inc/user.class.php:496 inc/user.class.php:623
 msgid "Error: the two passwords do not match"

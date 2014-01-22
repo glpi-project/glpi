@@ -5,14 +5,15 @@
 # Translators:
 # Hassen Houssein <hassen.houssein@smce.org>, 2012-2013
 # Hassen Houssein <hassen.houssein@smce.org>, 2013
+# Zouggagh <h.zouggagh@gmail.com>, 2013
 # omartech <omar.technologies@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-18 09:21+0100\n"
-"PO-Revision-Date: 2013-12-18 08:21+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2013-12-19 15:20+0000\n"
+"Last-Translator: Zouggagh <h.zouggagh@gmail.com>\n"
 "Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/GLPI/language/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -617,7 +618,7 @@ msgstr ""
 
 #: ajax/searchoptionvalue.php:81
 msgid "My groups"
-msgstr ""
+msgstr "مجموعاتي"
 
 #: ajax/subvisibility.php:52
 msgid "No restriction"
@@ -4650,12 +4651,12 @@ msgstr[1] "موافقات"
 #: inc/change.class.php:603
 msgctxt "change"
 msgid "Accepted"
-msgstr ""
+msgstr "مقبول"
 
 #: inc/change.class.php:604 inc/commonitilobject.class.php:3763
 #: inc/problem.class.php:724 inc/ticket.class.php:2608
 msgid "Pending"
-msgstr ""
+msgstr "في الإنتظار"
 
 #: inc/change.class.php:608
 msgid "Qualification"
@@ -4663,7 +4664,7 @@ msgstr "كفاءة"
 
 #: inc/change.class.php:609
 msgid "Applied"
-msgstr ""
+msgstr "تم التطبيق"
 
 #: inc/change.class.php:610
 msgid "Review"
@@ -4677,17 +4678,17 @@ msgstr "مغلقة"
 #: inc/change.class.php:616
 msgctxt "change"
 msgid "Not solved"
-msgstr ""
+msgstr "لم يتم حله"
 
 #: inc/change.class.php:617
 msgctxt "change"
 msgid "Not closed"
-msgstr ""
+msgstr "لم يتم غلقه"
 
 #: inc/change.class.php:619
 msgctxt "change"
 msgid "Solved + Closed"
-msgstr ""
+msgstr "تم حله و إغلاقه"
 
 #. TRANS: %s is the user name
 #. TRANS: %s is user name
@@ -4710,7 +4711,7 @@ msgstr "بدون عنوان"
 #: inc/change.class.php:931 inc/problem.class.php:1420
 #: inc/ticket.class.php:4423
 msgid "Empty description"
-msgstr ""
+msgstr "وصف فارغ"
 
 #: inc/change.class.php:965 inc/notificationtargetproblem.class.php:212
 #: inc/problem.class.php:576 inc/problem.class.php:1465
@@ -5104,27 +5105,27 @@ msgstr ""
 #: inc/commonitilobject.class.php:1560 inc/commonitilobject.class.php:1592
 msgctxt "priority"
 msgid "Very high"
-msgstr ""
+msgstr "جد مرتفع"
 
 #: inc/commonitilobject.class.php:1562 inc/commonitilobject.class.php:1595
 msgctxt "priority"
 msgid "High"
-msgstr ""
+msgstr "مرتفع"
 
 #: inc/commonitilobject.class.php:1564 inc/commonitilobject.class.php:1598
 msgctxt "priority"
 msgid "Medium"
-msgstr ""
+msgstr "متوسط"
 
 #: inc/commonitilobject.class.php:1566 inc/commonitilobject.class.php:1601
 msgctxt "priority"
 msgid "Low"
-msgstr ""
+msgstr "منخفض"
 
 #: inc/commonitilobject.class.php:1568 inc/commonitilobject.class.php:1604
 msgctxt "priority"
 msgid "Very low"
-msgstr ""
+msgstr "جد منخفض"
 
 #: inc/commonitilobject.class.php:1646
 msgctxt "urgency"
@@ -5159,27 +5160,27 @@ msgstr ""
 #: inc/commonitilobject.class.php:1663 inc/commonitilobject.class.php:1707
 msgctxt "urgency"
 msgid "Very high"
-msgstr ""
+msgstr "جد مرتفع"
 
 #: inc/commonitilobject.class.php:1669 inc/commonitilobject.class.php:1710
 msgctxt "urgency"
 msgid "High"
-msgstr ""
+msgstr "مرتفع"
 
 #: inc/commonitilobject.class.php:1673 inc/commonitilobject.class.php:1713
 msgctxt "urgency"
 msgid "Medium"
-msgstr ""
+msgstr "متوسط"
 
 #: inc/commonitilobject.class.php:1678 inc/commonitilobject.class.php:1716
 msgctxt "urgency"
 msgid "Low"
-msgstr ""
+msgstr "منخفض"
 
 #: inc/commonitilobject.class.php:1684 inc/commonitilobject.class.php:1719
 msgctxt "urgency"
 msgid "Very low"
-msgstr ""
+msgstr "جد منخفض"
 
 #: inc/commonitilobject.class.php:1762
 msgctxt "impact"
@@ -5214,27 +5215,27 @@ msgstr ""
 #: inc/commonitilobject.class.php:1779 inc/commonitilobject.class.php:1823
 msgctxt "impact"
 msgid "Very high"
-msgstr ""
+msgstr "جد مرتفع"
 
 #: inc/commonitilobject.class.php:1785 inc/commonitilobject.class.php:1826
 msgctxt "impact"
 msgid "High"
-msgstr ""
+msgstr "مرتفع"
 
 #: inc/commonitilobject.class.php:1789 inc/commonitilobject.class.php:1829
 msgctxt "impact"
 msgid "Medium"
-msgstr ""
+msgstr "متوسط"
 
 #: inc/commonitilobject.class.php:1794 inc/commonitilobject.class.php:1832
 msgctxt "impact"
 msgid "Low"
-msgstr ""
+msgstr "منخفض"
 
 #: inc/commonitilobject.class.php:1800 inc/commonitilobject.class.php:1835
 msgctxt "impact"
 msgid "Very low"
-msgstr ""
+msgstr "جد منخفض"
 
 #: inc/commonitilobject.class.php:2210 inc/commonitilobject.class.php:2391
 #: inc/commonitilobject.class.php:2397 inc/commonitilobject.class.php:3005
@@ -5248,15 +5249,15 @@ msgstr[1] ""
 
 #: inc/commonitilobject.class.php:2306
 msgid "Resolution time"
-msgstr ""
+msgstr "زمن الحل"
 
 #: inc/commonitilobject.class.php:2313
 msgid "Closing time"
-msgstr ""
+msgstr "زمن الإغلاق"
 
 #: inc/commonitilobject.class.php:2320
 msgid "Waiting time"
-msgstr ""
+msgstr "زمن الإنتظار"
 
 #: inc/commonitilobject.class.php:2360 inc/commonitilobject.class.php:2591
 #: inc/notificationtargetcommonitilobject.class.php:417
@@ -5363,7 +5364,7 @@ msgstr ""
 #: inc/commonitiltask.class.php:484 inc/problem.class.php:621
 #: inc/ticket.class.php:2284
 msgid "Task category"
-msgstr ""
+msgstr "صنف المهمة"
 
 #: inc/commonitiltask.class.php:496
 msgid "Public followup"
@@ -5435,7 +5436,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:1071
 msgid "Plan this task"
-msgstr ""
+msgstr "برمجة هذه المهمة"
 
 #: inc/commonitiltask.class.php:1150 inc/problem.class.php:441
 #: inc/ticket.class.php:1719
@@ -5534,8 +5535,8 @@ msgstr ""
 #: inc/ruleimportcomputer.class.php:98
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "نطاق"
+msgstr[1] "النطاقات"
 
 #: inc/computer.class.php:542 inc/computer.class.php:759
 #: inc/dropdown.class.php:739 inc/html.class.php:1771
@@ -8506,7 +8507,7 @@ msgstr ""
 
 #: inc/group_user.class.php:456
 msgid "Change group"
-msgstr ""
+msgstr "تغيير المجموعة"
 
 #. TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
 #. %4$d number of seconds
@@ -10038,7 +10039,7 @@ msgstr "واجهة غير معروفة"
 
 #: inc/networkportwifi.class.php:45
 msgid "Wifi port"
-msgstr ""
+msgstr "منفذ الشبكات اللاسلكية"
 
 #: inc/networkportwifi.class.php:68 inc/networkportwifi.class.php:101
 #: inc/networkportwifi.class.php:143
@@ -10969,7 +10970,7 @@ msgstr "جديد"
 #: inc/problem.class.php:721
 msgctxt "problem"
 msgid "Accepted"
-msgstr ""
+msgstr "مقبول"
 
 #: inc/problem.class.php:722
 msgctxt "problem"
@@ -10998,17 +10999,17 @@ msgstr "مغلقة"
 #: inc/problem.class.php:730
 msgctxt "problem"
 msgid "Not solved"
-msgstr ""
+msgstr "لم يتم حله"
 
 #: inc/problem.class.php:731
 msgctxt "problem"
 msgid "Not closed"
-msgstr ""
+msgstr "لم يتم غلقه"
 
 #: inc/problem.class.php:733
 msgctxt "problem"
 msgid "Solved + Closed"
-msgstr ""
+msgstr "تم حله و إغلاقه"
 
 #: inc/problem.class.php:908 inc/problem.class.php:962
 msgid "Problems on pending status"
@@ -12772,15 +12773,15 @@ msgstr ""
 
 #: inc/ticket.class.php:2613
 msgid "Not solved"
-msgstr ""
+msgstr "لم يتم حله"
 
 #: inc/ticket.class.php:2614
 msgid "Not closed"
-msgstr ""
+msgstr "لم يتم غلقه"
 
 #: inc/ticket.class.php:2616
 msgid "Solved + Closed"
-msgstr ""
+msgstr "تم حله و إغلاقه"
 
 #: inc/ticket.class.php:2831
 msgid "Devices own by my groups"

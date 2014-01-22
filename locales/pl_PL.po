@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Colicab <mojagdynia@interia.pl>, 2013
+# archi23 <gsliwinski@wi.zut.edu.pl>, 2014
 # jacbob77 <jacbob77@tlen.pl>, 2012
 # jacbob77 <jacbob77@tlen.pl>, 2012
 # sardyna12 <sardyna12@gmail.com>, 2013
@@ -18,8 +19,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-18 09:21+0100\n"
-"PO-Revision-Date: 2013-12-18 08:21+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-01-21 23:10+0000\n"
+"Last-Translator: archi23 <gsliwinski@wi.zut.edu.pl>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/GLPI/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -505,9 +506,9 @@ msgstr "Pokaż wszystko"
 #: inc/rule.class.php:652 inc/rule.class.php:2454
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Akcja"
+msgstr[1] "Akcje"
+msgstr[2] "Akcje"
 
 #: ajax/planningcheck.php:51 front/planning.php:55 inc/planning.class.php:412
 msgid "Availability"
@@ -626,7 +627,7 @@ msgstr "Co miesiąc, tego samego dnia tygodnia"
 
 #: ajax/searchoptionvalue.php:81
 msgid "My groups"
-msgstr ""
+msgstr "Moje grupy"
 
 #: ajax/subvisibility.php:52
 msgid "No restriction"
@@ -1154,19 +1155,19 @@ msgstr ""
 #: front/commonitiltask.form.php:56
 #, php-format
 msgid "%s adds a task"
-msgstr ""
+msgstr "%s dodał zadanie"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:65
 #, php-format
 msgid "%s deletes a task"
-msgstr ""
+msgstr "%s usunął zadanie"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:74
 #, php-format
 msgid "%s updates a task"
-msgstr ""
+msgstr "%s zaktualizował zadanie"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:53
@@ -4284,9 +4285,9 @@ msgstr "Informacje finansowe i administracyjne"
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d strona wydrukowana"
+msgstr[1] "%d stron wydrukowanych"
+msgstr[2] "%d stron wydrukowanych"
 
 #: inc/cartridge.class.php:615
 msgid "Counter error"
@@ -5506,7 +5507,7 @@ msgstr "Brak"
 
 #: inc/commonitiltask.class.php:907 inc/reminder.class.php:702
 msgid "Begin"
-msgstr ""
+msgstr "Początek"
 
 #: inc/commonitiltask.class.php:1001 inc/commonitiltask.class.php:1160
 #: inc/contract.class.php:358 inc/contract.class.php:567
@@ -8686,7 +8687,7 @@ msgstr ""
 
 #: inc/group_user.class.php:456
 msgid "Change group"
-msgstr ""
+msgstr "Zmień grupę"
 
 #. TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
 #. %4$d number of seconds
@@ -9824,7 +9825,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1596
 msgid "No import"
-msgstr ""
+msgstr "Nie importuj"
 
 #: inc/migration.class.php:194
 msgid "default_value must be 0 or 1"
@@ -10037,9 +10038,9 @@ msgstr "Nie znaleziono portu sieciowego"
 #: inc/networkport.class.php:1090
 msgid "Port number"
 msgid_plural "Ports number"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Numer portu"
+msgstr[1] "Numery portów"
+msgstr[2] "Numery portów"
 
 #: inc/networkport.class.php:897 inc/networkport.class.php:1100
 msgid "Network port type"
@@ -10069,7 +10070,7 @@ msgstr "Podłączone do"
 
 #: inc/networkportethernet.class.php:43
 msgid "Ethernet port"
-msgstr ""
+msgstr "Port Ethernet"
 
 #: inc/networkportethernet.class.php:87 inc/networkportethernet.class.php:132
 #: inc/networkportethernet.class.php:191
@@ -10283,9 +10284,9 @@ msgstr "Metoda powiadomienia"
 #: inc/notificationtemplatetranslation.class.php:336
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Zdarzenie"
+msgstr[1] "Zdarzenia"
+msgstr[2] "Zdarzenia"
 
 #: inc/notificationmail.class.php:175
 msgid "Mail test"
@@ -10448,7 +10449,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:435
 msgid "Task author"
-msgstr ""
+msgstr "Autor zadania"
 
 #: inc/notificationtargetcommonitilobject.class.php:441
 msgid "Followup author"
@@ -10471,7 +10472,7 @@ msgstr "Lokalizacja zgłaszającego"
 #: inc/notificationtargetcommonitilobject.class.php:906
 #: inc/ticket.class.php:2005
 msgid "Last updater"
-msgstr ""
+msgstr "Ostatnio zaktualizował"
 
 #: inc/notificationtargetcommonitilobject.class.php:907
 msgid "Assigned to technicians"
@@ -11511,7 +11512,7 @@ msgstr "Edytuj wszystkie komentarze"
 
 #: inc/profile.class.php:913
 msgid "Deletion"
-msgstr ""
+msgstr "Usuwanie"
 
 #: inc/profile.class.php:917 inc/profile.class.php:1740
 msgid "Ticket's deletion"
@@ -12469,7 +12470,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:136
 msgid "Received email header"
-msgstr ""
+msgstr "Otrzymany nagłówek wiadomości email"
 
 #: inc/rulemailcollector.class.php:150
 msgid "Known mail domain"
@@ -12724,7 +12725,7 @@ msgstr "Liczba instalacji"
 
 #: inc/software.class.php:529
 msgid "Version name"
-msgstr ""
+msgstr "Nazwa wersji"
 
 #: inc/software.class.php:547
 msgid "Version comments"
@@ -12732,7 +12733,7 @@ msgstr ""
 
 #: inc/software.class.php:581
 msgid "License name"
-msgstr ""
+msgstr "Nazwa licencji"
 
 #: inc/software.class.php:590
 msgid "License serial number"
@@ -12826,7 +12827,7 @@ msgstr ""
 
 #: inc/stat.class.php:429
 msgid "Average satisfaction"
-msgstr ""
+msgstr "Średnie zadowolenie"
 
 #: inc/stat.class.php:435 inc/stat.class.php:463
 msgid "Average"
@@ -13105,7 +13106,7 @@ msgstr "Zgłoszenia oczekujące"
 
 #: inc/ticket.class.php:4784 inc/ticket.class.php:4917
 msgid "Your observed tickets"
-msgstr ""
+msgstr "Twoje obserwowane zgłoszenia"
 
 #: inc/ticket.class.php:4799 inc/ticket.class.php:4934
 msgid "Your tickets in progress"
@@ -13189,7 +13190,7 @@ msgstr "Czas trwania zgłoszenia"
 #: inc/ticketfollowup.class.php:279
 #, php-format
 msgid "Added document: %s"
-msgstr ""
+msgstr "Dodany dokument: %s"
 
 #: inc/ticketfollowup.class.php:315
 msgid "If you reject the solution, you must specify a reason"
@@ -13213,11 +13214,11 @@ msgstr "Opcjonalne jeżeli zaakceptowane"
 
 #: inc/ticketfollowup.class.php:732
 msgid "Approve the solution"
-msgstr ""
+msgstr "Zatwierdź rozwiązanie"
 
 #: inc/ticketfollowup.class.php:736
 msgid "Refuse the solution"
-msgstr ""
+msgstr "Odrzuć rozwiązanie"
 
 #: inc/ticketrecurrent.class.php:160 inc/ticketrecurrent.class.php:267
 msgid "Preliminary creation"
@@ -14146,7 +14147,7 @@ msgstr "Rozpoczynanie instalacji"
 #: install/install.php:576 install/install.php:588
 #, php-format
 msgid "Step %d"
-msgstr ""
+msgstr "Krok %d"
 
 #: install/update_05_051.php:78
 msgid "Commercial"
