@@ -202,12 +202,8 @@ class Contract extends CommonDBTM {
       Dropdown::showInteger("duration", $this->fields["duration"], 1, 120, 1,
                             array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"])) {
-         echo " -> ".self::getContractEndDate($this->fields['id'], $this->fields["begin_date"],
-                                              $this->fields["duration"],
-                                              $this->fields["periodicity"],
-                                              $this->fields["renewal"]);
-               //Infocom::getWarrantyExpir($this->fields["begin_date"],
-          //                                     $this->fields["duration"], 0, true);
+         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
+                                              $this->fields["duration"], 0, true);
       }
       echo "</td>";
       echo "</tr>";
@@ -580,7 +576,6 @@ class Contract extends CommonDBTM {
       $tab[20]['delayunit']      = 'MONTH';
       $tab[20]['maybefuture']    = true;
       $tab[20]['massiveaction']  = false;
-      $tab[20]['additionalfields'] = array('duration', 'renewal', 'periodicity', 'begin_date');
 
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'notice';
@@ -1372,38 +1367,6 @@ class Contract extends CommonDBTM {
                          array('begin_date', 'duration', 'entities_id', 'monday_begin_hour',
                                'monday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
                                'week_begin_hour', 'week_end_hour'));
-   }
-
-
-   /**
-    * Get the valid end date for a renewaled contract
-    *
-    * @param $id            integer   id
-    * @param $begin         date      begin_date
-    * @param $duration      integer   duration
-    * @param $periodicity   integer
-    * @param $renewal       integer   1=tacite, 2 express
-    *
-    * @since version 0.84.4
-    *
-    * @return date
-    **/
-   static function getContractEndDate($id, $begin, $duration, $periodicity, $renewal) {
-      global $DB;
-
-      $date = new DateTime($begin);
-      $now  = new DateTime("now");
-      $date->add(new DateInterval('P'.$duration.'M'));
-      If ($renewal == 1) {
-         while ($date < $now) {
-            $date->add(new DateInterval('P'.$periodicity.'M'));
-         }
-      }
-      if ($date < $now) {
-         return "<span class='red'>".Html::convDate($date->format('Y-m-d'))."</span>";
-      }
-
-      return Html::convDate($date->format('Y-m-d'));
    }
 
 }
