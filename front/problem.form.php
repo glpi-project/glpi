@@ -95,6 +95,18 @@ if (isset($_POST["add"])) {
       Html::back();
    }
 
+} else if (isset($_POST['addme_assign'])) {
+   $problem_user = new Problem_User();
+   $problem->check($_POST['problems_id'], READ);
+   $input = array('problems_id'       => $_POST['problems_id'],
+                  'users_id'         => Session::getLoginUserID(),
+                  'use_notification' => 1,
+                  'type'             => CommonITILActor::ASSIGN);
+   $problem_user->add($input);
+   Event::log($_POST['problems_id'], "problem", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
 } else {
    Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_GET);

@@ -90,6 +90,19 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
+} else if (isset($_POST['addme_assign'])) {
+   $change_user = new Change_User();
+
+   $change->check($_POST['changes_id'], READ);
+   $input = array('changes_id'       => $_POST['changes_id'],
+                  'users_id'         => Session::getLoginUserID(),
+                  'use_notification' => 1,
+                  'type'             => CommonITILActor::ASSIGN);
+   $change_user->add($input);
+   Event::log($_POST['changes_id'], "change", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
 } else {
    Html::header(Change::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "change");
    $change->display($_GET);
