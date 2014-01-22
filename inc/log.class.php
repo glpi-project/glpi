@@ -280,11 +280,13 @@ class Log extends CommonDBTM {
 
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
-      echo "<th>".__('User')."</th><th>".__('Field')."</th>";
+      
+      $header = "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
+      $header .= "<th>".__('User')."</th><th>".__('Field')."</th>";
       //TRANS: a noun, modification, change
-      echo "<th>"._x('name', 'Update')."</th></tr>";
-
+      $header .= "<th>"._x('name', 'Update')."</th></tr>";
+      echo $header;
+      
       foreach (self::getHistoryData($item,$start, $_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line
@@ -294,6 +296,7 @@ class Log extends CommonDBTM {
             echo "<td width='60%'>".$data['change']."</td></tr>";
          }
       }
+      echo $header;
       echo "</table></div>";
       Html::printAjaxPager(self::getTypeName(1), $start, $number);
 

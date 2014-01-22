@@ -5229,7 +5229,7 @@ class Ticket extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
-         echo "<tr><th colspan='12'>";
+         echo "<tr class='noHover'><th colspan='12'>";
          $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
          $link = "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
@@ -5258,8 +5258,9 @@ class Ticket extends CommonITILObject {
             Session::addToNavigateListItems('Ticket',$data["id"]);
             self::showShort($data["id"]);
          }
+         self::commonListHeader(Search::HTML_OUTPUT);
       }
-
+         
       echo "</table></div>";
 
       // Tickets for linked items
