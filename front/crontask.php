@@ -49,6 +49,10 @@ if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
    Html::displayTitle($CFG_GLPI['root_doc'].'/pics/ok.png', __('No action pending'), __('No action pending'));
 }
 
+if ($CFG_GLPI['cron_limit'] < countElementsInTable('glpi_crontasks', "frequency = '".MINUTE_TIMESTAMP."'") ){
+   Html::displayTitle('', '', __('Your have more automatic actions which need to run each minute than the number allow each run. Increase this config.'));
+}
+
 Search::show('CronTask');
 
 Html::footer();
