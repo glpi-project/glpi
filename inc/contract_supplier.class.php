@@ -203,17 +203,18 @@ class Contract_Supplier extends CommonDBRelation {
       }
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr>";
+      $header = "<tr>";
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>"._x('phone', 'Number')."</th>";
-      echo "<th>".__('Contract type')."</th>";
-      echo "<th>".__('Start date')."</th>";
-      echo "<th>".__('Initial contract period')."</th>";
-      echo "</tr>";
+      $header .= "<th>".__('Name')."</th>";
+      $header .= "<th>".__('Entity')."</th>";
+      $header .= "<th>"._x('phone', 'Number')."</th>";
+      $header .= "<th>".__('Contract type')."</th>";
+      $header .= "<th>".__('Start date')."</th>";
+      $header .= "<th>".__('Initial contract period')."</th>";
+      $header .= "</tr>";
+      echo $header;
 
       $used = array();
       foreach ($contracts as $data) {
@@ -249,7 +250,9 @@ class Contract_Supplier extends CommonDBRelation {
          echo "</td>";
          echo "</tr>";
       }
-
+      if ($number) {
+         echo $header;
+      }
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] =false;
@@ -336,16 +339,17 @@ class Contract_Supplier extends CommonDBRelation {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr>";
+      $header = "<tr>";
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Supplier')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Third party type')."</th>";
-      echo "<th>".__('Phone')."</th>";
-      echo "<th>".__('Website')."</th>";
-      echo "</tr>";
+      $header .= "<th>".__('Supplier')."</th>";
+      $header .= "<th>".__('Entity')."</th>";
+      $header .= "<th>".__('Third party type')."</th>";
+      $header .= "<th>".__('Phone')."</th>";
+      $header .= "<th>".__('Website')."</th>";
+      $header .= "</tr>";
+      echo $header;
 
       $used = array();
       foreach ($suppliers as $data) {
@@ -380,6 +384,9 @@ class Contract_Supplier extends CommonDBRelation {
          echo "<td class='center'>".$data['phone']."</td>";
          echo "<td class='center'>".$website."</td>";
          echo "</tr>";
+      }
+      if ($number) {
+         echo $header;
       }
       echo "</table>";
       if ($canedit && $number) {
