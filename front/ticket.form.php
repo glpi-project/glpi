@@ -138,6 +138,19 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 
+} else if (isset($_POST['addme_assign'])) {
+   $ticket_user = new Ticket_User();
+   
+   $track->check($_POST['tickets_id'], READ);
+   $input = array('tickets_id'       => $_POST['tickets_id'],
+                  'users_id'         => Session::getLoginUserID(),
+                  'use_notification' => 1,
+                  'type'             => CommonITILActor::ASSIGN);
+   $ticket_user->add($input);
+   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 }
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
