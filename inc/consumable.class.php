@@ -499,26 +499,25 @@ class Consumable extends CommonDBChild {
 
       if ($number) {
          $i = 0;
-         echo "<tr>";
+         $header = "<tr>";
          if ($canedit) {
-            echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-            echo "</th>";
+            $header .= "<th width='10'>";
+            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header .= "</th>";
          }
-         echo "<th>".__('ID')."</th>";
-         echo "<th>"._x('item', 'State')."</th>";
-         echo "<th>".__('Add date')."</th>";
+         $header .= "<th>".__('ID')."</th>";
+         $header .= "<th>"._x('item', 'State')."</th>";
+         $header .= "<th>".__('Add date')."</th>";
          if ($show_old) {
-            echo "<th>".__('Use date')."</th>";
-            echo "<th>".__('Given to')."</th>";
+            $header .= "<th>".__('Use date')."</th>";
+            $header .= "<th>".__('Given to')."</th>";
          }
-         echo "<th width='200px'>".__('Financial and administrative information')."</th>";
-         echo "</tr>";
-
+         $header .= "<th width='200px'>".__('Financial and administrative information')."</th>";
+         $header .= "</tr>";
+         echo $header;
       }
 
-      if ($result = $DB->query($query)) {
-         $number = $DB->numrows($result);
+      if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
@@ -547,6 +546,7 @@ class Consumable extends CommonDBChild {
             echo "</td>";
             echo "</tr>";
          }
+         echo $header;
       }
       echo "</table>";
       if ($canedit && $number) {
