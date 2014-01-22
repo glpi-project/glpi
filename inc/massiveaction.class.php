@@ -418,7 +418,7 @@ class MassiveAction {
 
         foreach ($common_fields as $field) {
             if (isset($this->POST[$field])) {
-               echo Html::recursiveHidden($field, array('value' => $this->POST[$field]));
+               echo Html::hidden($field, array('value' => $this->POST[$field]));
             }
          }
       }
@@ -920,7 +920,7 @@ class MassiveAction {
                $search_option = explode(':', $search_option);
                $items_index[$search_option[0]] = $search_option[1];
             }
-            echo Html::recursiveHidden('search_options', array('value' => $items_index));
+            echo Html::hidden('search_options', array('value' => $items_index));
             echo Html::hidden('field', array('value' => $fieldname));
             echo "<br>\n";
 

@@ -4586,6 +4586,9 @@ class Html {
    /**
     * Creates a hidden input field.
     *
+    * If value of options is an array then recursively parse it
+    * to generate as many hidden input as necessary
+    *
     * @since version 0.85
     *
     * @param $fieldName          Name of a field
@@ -4594,7 +4597,15 @@ class Html {
     * @return string A generated hidden input
    **/
    static function hidden($fieldName, $options=array()) {
-
+      if ((isset($options['value'])) && (is_array($options['value']))) {
+         $result = '';
+         foreach ($options['value'] as $key => $value) {
+            $options2          = $options;
+            $options2['value'] = $value;
+            $result           .= static::hidden($fieldName.'['.$key.']', $options2)."\n";
+         }
+         return $result;
+      }
       return sprintf('<input type="hidden" name="%1$s" %2$s>',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
@@ -4614,32 +4625,6 @@ class Html {
       return sprintf('<input type="text" name="%1$s" %2$s>',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
-
-   /**
-    * Recursively creates a hidden input field. If the value is an array, then recursively parse it
-    * to generate as many hidden input as necessary
-    *
-    * @since version 0.85
-    *
-    * @param $fieldName          Name of a field
-    * @param $options    Array   of HTML attributes.
-    *
-    * @return string A generated hidden input
-   **/
-   static function recursiveHidden($fieldName, array $options=array()) {
-
-      if ((isset($options['value'])) && (is_array($options['value']))) {
-         $result = '';
-         foreach ($options['value'] as $key => $value) {
-            $options2          = $options;
-            $options2['value'] = $value;
-            $result           .= static::recursiveHidden($fieldName.'['.$key.']', $options2)."\n";
-         }
-         return $result;
-      }
-      return static::hidden($fieldName, $options);
-   }
-
 
    /**
     * Creates a submit button element. This method will generate `<input />` elements that
