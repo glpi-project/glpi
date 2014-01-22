@@ -537,7 +537,7 @@ class MassiveAction {
       } else {
          if ($item instanceof CommonDropdown) {
             $actions[$self_pref.'purge_but_item_linked'] = _x('button',
-                                                              'Delete permamently even if linked items');;
+                                                              'Delete permanently even if linked items');;
          }
 
          if ($canupdate
