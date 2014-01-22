@@ -741,7 +741,7 @@ $(function(){
                            $(this).parent().addClass("rowHover");
 //                            $(this).parent().children().addClass("columnHover");
 
-                           $(this).closest('table').find('tr:not(.noHover) th').eq($(this).index()).addClass("headHover");
+                           $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
 //                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("columnHover");
 //                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("headHover");
                   }
@@ -751,7 +751,7 @@ $(function(){
                            $(this).parent().removeClass("rowHover");
 //                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("columnHover");
 //                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("headHover");
-                           $(this).closest('table').find('tr:not(.noHover) th').eq($(this).index()).removeClass("headHover");
+                           $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
                   }
                 }
         });

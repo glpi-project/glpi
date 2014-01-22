@@ -650,7 +650,7 @@ class Problem extends CommonITILObject {
       }
 
       if ($numrows > 0) {
-         echo "<table class='tab_cadrehov' style='width:420px'>";
+         echo "<table class='tab_cadre_report'>";
          echo "<tr><th colspan='5'>";
 
          $options['reset'] = 'reset';
