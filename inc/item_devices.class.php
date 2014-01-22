@@ -226,7 +226,7 @@ class Item_Devices extends CommonDBRelation {
     * @return array of the available items
    **/
    static function getConcernedItems() {
-      return array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
+      return array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
    }
 
 
