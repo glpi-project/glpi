@@ -206,18 +206,19 @@ class Contact_Supplier extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
+      $header = "<tr>";
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Supplier')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Third party type')."</th>";
-      echo "<th>". __('Phone')."</th>";
-      echo "<th>".__('Fax')."</th>";
-      echo "<th>".__('Website')."</th>";
-      echo "</tr>";
-
+      $header .= "<th>".__('Supplier')."</th>";
+      $header .= "<th>".__('Entity')."</th>";
+      $header .= "<th>".__('Third party type')."</th>";
+      $header .= "<th>". __('Phone')."</th>";
+      $header .= "<th>".__('Fax')."</th>";
+      $header .= "<th>".__('Website')."</th>";
+      $header .= "</tr>";
+      echo $header;
+      
       $used = array();
       if ($number > 0) {
          Session::initNavigateListItems('Supplier',
@@ -258,6 +259,7 @@ class Contact_Supplier extends CommonDBRelation{
             echo "</tr>";
 
          }
+         echo $header;
       }
 
 
@@ -335,19 +337,20 @@ class Contact_Supplier extends CommonDBRelation{
       }
       echo "<table class='tab_cadre_fixehov'>";
 
-      echo "<tr>";
+      $header = "<tr>";
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>". __('Phone')."</th>";
-      echo "<th>". __('Phone 2')."</th>";
-      echo "<th>".__('Mobile phone')."</th>";
-      echo "<th>".__('Fax')."</th>";
-      echo "<th>"._n('Email', 'Emails', 1)."</th>";
-      echo "<th>".__('Type')."</th>";
-      echo "</tr>";
+      $header .= "<th>".__('Name')."</th>";
+      $header .= "<th>".__('Entity')."</th>";
+      $header .= "<th>". __('Phone')."</th>";
+      $header .= "<th>". __('Phone 2')."</th>";
+      $header .= "<th>".__('Mobile phone')."</th>";
+      $header .= "<th>".__('Fax')."</th>";
+      $header .= "<th>"._n('Email', 'Emails', 1)."</th>";
+      $header .= "<th>".__('Type')."</th>";
+      $header .= "</tr>";
+      echo $header;
 
       $used = array();
       if ($number) {
@@ -380,6 +383,7 @@ class Contact_Supplier extends CommonDBRelation{
                                                                  $data["contacttypes_id"])."</td>";
             echo "</tr>";
          }
+         echo $header;
       }
 
       echo "</table>";
