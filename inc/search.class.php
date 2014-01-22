@@ -4164,16 +4164,6 @@ class Search {
                }
                break;
 
-            case "glpi_contracts.end_date" :
-               if ($data[$num][0]["renewal"] > 0) {
-                  return Contract::getContractEndDate($data['id'], $data[$num][0]["begin_date"],
-                                                      $data[$num][0]["duration"],
-                                                      $data[$num][0]["periodicity"],
-                                                      $data[$num][0]["renewal"]);
-               }
-               return Infocom::getWarrantyExpir($data[$num][0]["begin_date"],
-                                                $data[$num][0]["duration"]);
-
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
                $displayed  = array();
