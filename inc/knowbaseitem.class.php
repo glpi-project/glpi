@@ -1379,7 +1379,7 @@ class KnowbaseItem extends CommonDBTM {
       $number = $DB->numrows($result);
 
       if ($number > 0) {
-         echo "<table class='tab_cadrehov'>";
+         echo "<table class='tab_cadre_report'>";
          echo "<tr><th>".$title."</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
             $name = $data['name'];
