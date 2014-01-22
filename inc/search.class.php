@@ -4559,10 +4559,26 @@ class Search {
                         $out .= $separate;
                      }
                      $count_display++;
+                     $text = "";
                      if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
-                        $out .= Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($data[$num][$k]['name'])));
+                        $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($data[$num][$k]['name'])));
                      } else {
-                        $out .= nl2br($data[$num][$k]['name']);
+                        $text = nl2br($data[$num][$k]['name']);
+                     }
+                     
+                     
+                     if (self::$output_type == self::HTML_OUTPUT
+                           && (Toolbox::strlen($text) > $CFG_GLPI['cut'])) {
+                        $rand = mt_rand();
+                        $out .= sprintf(__('%1$s %2$s'), "<span id='text$rand'>".
+                                                         Html::resume_text($text, $CFG_GLPI['cut']).
+                                                        '</span>',
+                                                         Html::showToolTip($text,
+                                                                  array('applyto' => "text$rand",
+                                                                        'display' => false)));
+
+                     } else {
+                        $out = $text;
                      }
                   }
                }
