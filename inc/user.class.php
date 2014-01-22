@@ -2696,6 +2696,22 @@ class User extends CommonDBTM {
       $tab[61]['joinparams']           = array('jointype'  => 'child',
                                                'linkfield' => 'users_id_recipient');
 
+      $tab[64]['table']                = 'glpi_tickets';
+      $tab[64]['field']                = 'id';
+      $tab[64]['name']                 = __('Number of assigned tickets');
+      $tab[64]['forcegroupby']         = true;
+      $tab[64]['usehaving']            = true;
+      $tab[64]['datatype']             = 'count';
+      $tab[64]['massiveaction']        = false;
+      $tab[64]['joinparams']           = array('beforejoin'
+                                               => array('table'
+                                                         => 'glpi_tickets_users',
+                                                        'joinparams'
+                                                         => array('jointype'
+                                                                   => 'child',
+                                                                  'condition'
+                                                                   => 'AND NEWTABLE.`type`
+                                                                        = '.CommonITILActor::ASSIGN)));
       return $tab;
    }
 
