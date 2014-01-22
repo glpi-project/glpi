@@ -1667,7 +1667,7 @@ function update084to085() {
       $migration->addKey('glpi_states', $field);
    }
 
-
+   
    // glpi_domains by entity
    $migration->addField('glpi_domains', 'entities_id', 'integer', array('after' => 'name'));
    $migration->addField('glpi_domains', 'is_recursive', 'bool', array('update' => '1',
@@ -2606,6 +2606,11 @@ function update084to085() {
    $migration->addField("glpi_changes_suppliers", "use_notification", "bool");
    $migration->addField("glpi_changes_suppliers", "alternative_email", "string");
 
+   // Add field for locations
+   $migration->addField("glpi_locations", "latitude", "string");
+   $migration->addField("glpi_locations", "longitude", "string");
+   $migration->addField("glpi_locations", "altitude", "string");
+   
    // Add fixed columns as variables :
    $ADDTODISPLAYPREF['CartridgeItem']   = array(9);
    $ADDTODISPLAYPREF['ConsumableItem']  = array(9);
