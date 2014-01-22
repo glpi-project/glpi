@@ -738,15 +738,20 @@ $(function(){
 
                   if (e.type == 'mouseover') {
    //                         $(this).addClass("hover");
-   //                         $(this).parent().addClass("rowHover");
-                           $(this).parent().children().addClass("columnHover");
-                           $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("columnHover");
+                           $(this).parent().addClass("rowHover");
+//                            $(this).parent().children().addClass("columnHover");
+
+                           $(this).closest('table').find('th').eq($(this).index()).addClass("headHover");
+//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("columnHover");
+//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("headHover");
                   }
                   else {
    //                         $(this).removeClass("hover");
-                           $(this).parent().children().removeClass("columnHover");
-   //                         $(this).parent().removeClass("rowHover");
-                           $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("columnHover");
+//                            $(this).parent().children().removeClass("columnHover");
+                           $(this).parent().removeClass("rowHover");
+//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("columnHover");
+//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("headHover");
+                           $(this).closest('table').find('th').eq($(this).index()).removeClass("headHover");
                   }
                 }
         });
