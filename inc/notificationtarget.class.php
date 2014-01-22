@@ -738,7 +738,7 @@ class NotificationTarget extends CommonDBChild {
                                                $data["name"]),
                           Notification::SUPERVISOR_GROUP_TYPE);
          //Add group without supervisor
-         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __("Group except users's manager"),
+         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __("Group except manager users"),
                                                $data["name"]),
                           Notification::GROUP_WITHOUT_SUPERVISOR_TYPE);
       }
