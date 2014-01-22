@@ -415,6 +415,7 @@ class Item_Devices extends CommonDBRelation {
             Dropdown::showSelectItemFromItemtypes(array('itemtype_name'       => 'devicetype',
                                                         'items_id_name'       => 'devices_id',
                                                         'itemtypes'           => $devtypes,
+                                                        'entity_restrict'     => $item->getEntityID(),
                                                         'showItemSpecificity' => $CFG_GLPI['root_doc']
                                                                  .'/ajax/selectUnaffectedOrNewItem_Device.php'));
          }
@@ -718,7 +719,6 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
    **/
    static function addDevicesFromPOST($input) {
-
       if (!isset($input['itemtype'])
           || !isset($input['items_id'])) {
          Html::displayNotFoundError();
