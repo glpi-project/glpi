@@ -653,34 +653,35 @@ class Cartridge extends CommonDBChild {
          }
          echo "<table class='tab_cadre_fixehov'>";
          if (!$show_old) {
-            echo "<tr><th colspan='".($canedit?'7':'6')."'>".self::getCount($tID,-1)."</th>";
+            echo "<tr class='noHover'><th colspan='".($canedit?'7':'6')."'>".self::getCount($tID,-1)."</th>";
             echo "</tr>";
          } else { // Old
-            echo "<tr><th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges')."</th>";
+            echo "<tr class='noHover'><th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges')."</th>";
             echo "</tr>";
          }
          $i = 0;
-         echo "<tr>";
+         
+         $header = "<tr>";
          if ($canedit && $number) {
-            echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-            echo "</th>";
+            $header .= "<th width='10'>";
+            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header .= "</th>";
          }
-         echo "<th>".__('ID')."</th>";
-         echo "<th>"._x('item', 'State')."</th>";
-         echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
-         echo "<th>".__('Used on')."</th>";
+         $header .= "<th>".__('ID')."</th>";
+         $header .= "<th>"._x('item', 'State')."</th>";
+         $header .= "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
+         $header .= "<th>".__('Used on')."</th>";
 
 
          if ($show_old) {
-            echo "<th>".__('End date')."</th>";
-            echo "<th>".__('Printer counter')."</th>";
+            $header .= "<th>".__('End date')."</th>";
+            $header .= "<th>".__('Printer counter')."</th>";
          }
 
-         echo "<th width='18%'>".__('Financial and administrative information')."</th>";
-         echo "</tr>";
+         $header .= "<th width='18%'>".__('Financial and administrative information')."</th>";
+         $header .= "</tr>";
+         echo $header;
       }
-
 
       $pages = array();
 
@@ -767,8 +768,11 @@ class Cartridge extends CommonDBChild {
             echo "<td class='center b'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='".($canedit?'3':'1')."'>&nbsp;</td></tr>";
+         } else {
+            echo $header;
          }
       }
+
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;
