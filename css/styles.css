@@ -556,20 +556,30 @@ td { }
 }
 
 /* Table Hover Effects */
-.tab_cadrehov td.columnHead, .tab_cadrehov tr.rowHover, .tab_cadrehov td.columnHover,
-.tab_cadrehov_pointer td.columnHead, .tab_cadrehov_pointer tr.rowHover, .tab_cadrehov_pointer td.columnHover,
-.tab_cadre_fixehov td.columnHead, .tab_cadre_fixehov tr.rowHover, .tab_cadre_fixehov td.columnHover{
-   background:#E1D39E;
-   opacity: 0.5;
-   filter : alpha(opacity=10);
+.tab_cadrehov th.headHover,
+.tab_cadrehov_pointer th.headHover, 
+.tab_cadre_fixehov th.headHover{
+   background-color:#ccc;
+/*   opacity: 0.5;
+   filter : alpha(opacity=10);*/
 }
-.tab_cadrehov tr.rowHover td.columnHead, .tab_cadrehov td.hover,
-.tab_cadrehov_pointer tr.rowHover td.columnHead, .tab_cadrehov_pointer td.hover,
-.tab_cadre_fixehov tr.rowHover td.columnHead, .tab_cadre_fixehov td.hover {
-   background:#E1D39E;
-   opacity: 0.5;
-   filter : alpha(opacity=10);
+
+.tab_cadrehov td.columnHover,
+.tab_cadrehov_pointer td.columnHover,
+.tab_cadre_fixehov td.columnHover{
+   background-color:#ccc;
+/*   opacity: 0.5;
+   filter : alpha(opacity=10);*/
 }
+
+.tab_cadrehov tr.rowHover, 
+.tab_cadrehov_pointer tr.rowHover,
+.tab_cadre_fixehov tr.rowHover{
+   background-color:#E1D39E;
+/*   opacity: 0.5;
+   filter : alpha(opacity=10);*/
+}
+
 
 .tab_check {
    text-align:center;
@@ -1128,7 +1138,7 @@ a.icon_nav_move:hover img {
    font-size:9px;
 }
 
-.planing:hover {
+.planning:hover {
    border: 1px solid #999999;
    background-color: white;
 }
