@@ -59,7 +59,20 @@ class Location extends CommonTreeDropdown {
                    array('name'  => 'room',
                          'label' => __('Room number'),
                          'type'  => 'text',
-                         'list'  => true));
+                         'list'  => true),
+                   array('name'  => 'longitude',
+                         'label' => __('Longitude'),
+                         'type'  => 'text',
+                         'list'  => true),
+                   array('name'  => 'latitude',
+                         'label' => __('Latitude'),
+                         'type'  => 'text',
+                         'list'  => true),
+                   array('name'  => 'altitude',
+                         'label' => __('Altitude'),
+                         'type'  => 'text',
+                         'list'  => true),
+                         );
    }
 
 
@@ -82,7 +95,6 @@ class Location extends CommonTreeDropdown {
       $tab[91]['name']          = __('Building number');
       $tab[91]['massiveaction'] = false;
       $tab[91]['datatype']      = 'string';
-
 
       $tab[92]['table']         = 'glpi_locations';
       $tab[92]['field']         = 'room';
@@ -119,6 +131,24 @@ class Location extends CommonTreeDropdown {
       $tab[12]['name']     = __('Room number');
       $tab[12]['datatype'] = 'text';
 
+      $tab[20]['table']         = 'glpi_locations';
+      $tab[20]['field']         = 'longitude';
+      $tab[20]['name']          = __('Longitude');
+      $tab[20]['massiveaction'] = false;
+      $tab[20]['datatype']      = 'string';
+
+      $tab[21]['table']         = 'glpi_locations';
+      $tab[21]['field']         = 'latitude';
+      $tab[21]['name']          = __('Latitude');
+      $tab[21]['massiveaction'] = false;
+      $tab[21]['datatype']      = 'string';
+
+      $tab[22]['table']         = 'glpi_locations';
+      $tab[22]['field']         = 'altitude';
+      $tab[22]['name']          = __('Altitude');
+      $tab[22]['massiveaction'] = false;
+      $tab[22]['datatype']      = 'string';
+      
       return $tab;
    }
 
