@@ -884,7 +884,7 @@ class Search {
             $res = $DBread->fetch_assoc($result2);
             if ($res['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 4194304;");
-               $result = $DBread->query($res['sql']['search']);
+               $result = $DBread->query($data['sql']['search']);
             }
          }
       }
@@ -4213,21 +4213,28 @@ class Search {
                      && Session::haveRight("ticket", Ticket::READALL)) {
 
                      if ($itemtype == 'User') {
-                        $options['criteria'][0]['field']      = 4;
-                        $options['criteria'][0]['searchtype']= 'equals';
-                        $options['criteria'][0]['value']      = $data['id'];
-                        $options['criteria'][0]['link']       = 'AND';
+                        // Requester
+                        if ($ID == 60) {
+                           $options['criteria'][0]['field']      = 4;
+                           $options['criteria'][0]['searchtype']= 'equals';
+                           $options['criteria'][0]['value']      = $data['id'];
+                           $options['criteria'][0]['link']       = 'AND';
+                        }
 
-                        $options['criteria'][1]['field']      = 22;
-                        $options['criteria'][1]['searchtype'] = 'equals';
-                        $options['criteria'][1]['value']      = $data['id'];
-                        $options['criteria'][1]['link']       = 'OR';
-
-                        $options['criteria'][2]['field']      = 5;
-                        $options['criteria'][2]['searchtype'] = 'equals';
-                        $options['criteria'][2]['value']      = $data['id'];
-                        $options['criteria'][2]['link']       = 'OR';
-
+                        // Writer
+                        if ($ID == 61) {
+                           $options['criteria'][0]['field']      = 22;
+                           $options['criteria'][0]['searchtype']= 'equals';
+                           $options['criteria'][0]['value']      = $data['id'];
+                           $options['criteria'][0]['link']       = 'AND';
+                        }
+                        // Assign
+                        if ($ID == 64) {
+                           $options['criteria'][0]['field']      = 5;
+                           $options['criteria'][0]['searchtype']= 'equals';
+                           $options['criteria'][0]['value']      = $data['id'];
+                           $options['criteria'][0]['link']       = 'AND';
+                        }                        
                      } else if ($itemtype == 'ITILCategory') {
                         $options['criteria'][0]['field']      = 7;
                         $options['criteria'][0]['searchtype'] = 'equals';
