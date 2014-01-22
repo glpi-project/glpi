@@ -65,7 +65,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->addTarget(Notification::TEAM_GROUP,  __('Project team group'));
       $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR, __('Manager of group of project team'));
       $this->addTarget(Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,
-                        __("Group of project team except users's manager"));
+                        __("Group of project team except manager users"));
       $this->addTarget(Notification::TEAM_CONTACT, __('Contact of project team'));
       $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
    }
