@@ -47,7 +47,7 @@ class Search {
    const PDF_OUTPUT_LANDSCAPE = 2;
    const CSV_OUTPUT           = 3;
    const PDF_OUTPUT_PORTRAIT  = 4;
-
+   static $output_type = self::HTML_OUTPUT;
 
    /**
     * Display search engine for an type
@@ -163,7 +163,9 @@ class Search {
       } else {
          $entity_restrict = $item->isEntityAssign();
       }
-
+      
+      self::$output_type = $output_type;
+      
       $metanames = array();
 
       // Get the items to display
@@ -4677,10 +4679,25 @@ class Search {
                      }
                      $count_display++;
                      if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
-                        $out .= Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($split2[0])));
+                        $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($split2[0])));
                      } else {
-                        $out .= nl2br($split2[0]);
+                        $text = nl2br($split2[0]);
                      }
+
+                     if (self::$output_type == self::HTML_OUTPUT
+                           && (Toolbox::strlen($text) > $CFG_GLPI['cut'])) {
+                        $rand = mt_rand();
+                        $out .= sprintf(__('%1$s %2$s'), "<span id='text$rand'>".
+                                                         Html::resume_text($text, $CFG_GLPI['cut']).
+                                                        '</span>',
+                                                         Html::showToolTip($text,
+                                                                  array('applyto' => "text$rand",
+                                                                        'display' => false)));
+
+                     } else {
+                        $out = $text;
+                     }
+
                   }
                }
 
