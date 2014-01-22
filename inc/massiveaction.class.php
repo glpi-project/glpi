@@ -535,11 +535,6 @@ class MassiveAction {
          }
 
       } else {
-         if ($item instanceof CommonDropdown) {
-            $actions[$self_pref.'purge_but_item_linked'] = _x('button',
-                                                              'Delete permanently even if linked items');;
-         }
-
          if ($canupdate
              || (InfoCom::canApplyOn($itemtype)
                  && Infocom::canUpdate())) {
@@ -561,6 +556,10 @@ class MassiveAction {
             }
          } else if ($canpurge) {
             $actions[$self_pref.'purge'] = _x('button', 'Delete permanently');
+            if ($item instanceof CommonDropdown) {
+               $actions[$self_pref.'purge_but_item_linked'] = _x('button',
+                                                               'Delete permanently even if linked items');;
+            }
          }
 
          Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
