@@ -296,7 +296,8 @@ class Event extends CommonDBTM {
       list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
-      $items = array("items_id" => array(__('Source'), "colspan='2'"),
+      $items = array("type" => array(__('Source'), ""),
+                     "items_id" => array(__('ID'), ""),
                      "date"     => array(__('Date'), ""),
                      "service"  => array(__('Service'), "width='8%'"),
                      "level"    => array(__('Level'), "width='8%'"),
@@ -335,7 +336,7 @@ class Event extends CommonDBTM {
       $parameters = "sort=$sort&amp;order=$order";
       Html::printPager($start, $numrows, $target, $parameters);
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
 
       foreach ($items as $field => $args) {
