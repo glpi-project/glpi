@@ -214,6 +214,10 @@ class Ticket extends CommonITILObject {
 
    static function canUpdate() {
 
+      // To allow update of urgency and category for post-only
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         return Session::haveRight(self::$rightname, CREATE);
+      }
       return Session::haveRightsOr(self::$rightname,
                                    array(UPDATE, self::ASSIGN, self::STEAL, self::OWN));
    }
@@ -404,6 +408,16 @@ class Ticket extends CommonITILObject {
    }
 
 
+   static function canDelete() {
+
+      // to allow delete for self-service only if no action on the ticket
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         return Session::haveRight(self::$rightname, CREATE);
+      }
+      return Session::haveRight(self::$rightname, DELETE);
+   }
+
+
    /**
     * Is the current user have right to delete the current ticket ?
     *
@@ -424,7 +438,7 @@ class Ticket extends CommonITILObject {
          return true;
       }
 
-      return self::canDelete();
+      return static::canDelete();
    }
 
 
@@ -4453,7 +4467,9 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
 
          if ($ID) {
-            if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))) {
+            if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))
+                || $this->canDeleteItem()
+                || $this->canUpdateItem) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
@@ -4461,7 +4477,8 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'></td>";
                   }
                } else {
-                  if (Session::haveRight(self::$rightname, UPDATE)) {
+                  if (Session::haveRight(self::$rightname, UPDATE)
+                      || self::canUpdate()) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'></td>";
                   }
@@ -4474,7 +4491,8 @@ class Ticket extends CommonITILObject {
                             Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                   }
                } else {
-                  if (self::canDelete()) {
+                  if (self::canDelete()
+                      || self::canDelete()) {
                      echo "<input type='submit' class='submit' name='delete' value='".
                             _sx('button', 'Put in dustbin')."'></td>";
                   }
