@@ -1710,27 +1710,28 @@ class Ticket extends CommonITILObject {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (TicketFollowup::canCreate()
-          && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-         $actions['add_followup'] = __('Add a new followup');
-      }
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (TicketFollowup::canCreate()) {
+            $actions['add_followup'] = __('Add a new followup');
+         }
 
-      if (TicketTask::canCreate()) {
-         $actions['add_task'] = __('Add a new task');
-      }
+         if (TicketTask::canCreate()) {
+            $actions['add_task'] = __('Add a new task');
+         }
 
-      if (TicketValidation::canCreate()) {
-         $actions['submit_validation'] = __('Approval request');
-      }
+         if (TicketValidation::canCreate()) {
+            $actions['submit_validation'] = __('Approval request');
+         }
 
-      if (Session::haveRight("update_ticket","1")) {
-         $actions['add_actor']   = __('Add an actor');
-         $actions['link_ticket'] = _x('button', 'Link tickets');
-      }
-      if (Session::haveRight('transfer','r')
-            && Session::isMultiEntitiesMode()
-            && Session::haveRight("update_ticket","1")) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+         if (Session::haveRight("update_ticket","1")) {
+            $actions['add_actor']   = __('Add an actor');
+            $actions['link_ticket'] = _x('button', 'Link tickets');
+         }
+         if (Session::haveRight('transfer','r')
+               && Session::isMultiEntitiesMode()
+               && Session::haveRight("update_ticket","1")) {
+            $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+         }
       }
       return $actions;
    }
