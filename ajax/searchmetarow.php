@@ -52,11 +52,12 @@ if (isset($_POST["itemtype"])
       $metacriteria = $_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]];
    }
    $linked =  Search::getMetaItemtypeAvailable($_POST["itemtype"]);
-   $rowid = 'metasearchrow'.$_POST['itemtype'].$randrow;
+   $rand = mt_rand();
+   
+   $rowid = 'metasearchrow'.$_POST['itemtype'].$rand;
 
    echo "<tr id='$rowid'><td class='left' colspan='2'>";
                
-   $rand = mt_rand();
 
    echo "<table class='tab_format'><tr class='left'>";
    echo "<td width='30%'>";
