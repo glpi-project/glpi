@@ -3425,7 +3425,7 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $values = $_REQUEST;
       }
- 
+
       // Restore saved value or override with page parameter
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
@@ -4222,7 +4222,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
 
          if ($ID) {
-            if (Session::haveRight('delete_ticket',1)) {
+            if ($this->canDeleteItem()) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='restore' value='".
