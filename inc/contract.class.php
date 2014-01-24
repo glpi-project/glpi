@@ -324,6 +324,10 @@ class Contract extends CommonDBTM {
                                          'beforejoin' => array('table'      => 'glpi_contracts',
                                                                'joinparams' => $joinparams));
 
+      $joinparamstype            = array('beforejoin' => array('table'      => 'glpi_contracts',
+                  'joinparams' => $joinparams));
+
+
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
       $tab[139]['name']          = _x('quantity', 'Number of contracts');
@@ -348,6 +352,14 @@ class Contract extends CommonDBTM {
       $tab[30]['massiveaction']  = false;
       $tab[30]['joinparams']     = $joinparams;
       $tab[30]['datatype']       = 'string';
+
+      $tab[129]['table']          = 'glpi_contracttypes';
+      $tab[129]['field']          = 'name';
+      $tab[129]['name']           = sprintf(__('%1$s - %2$s'), __('Contract'), __('Type'));
+      $tab[129]['datatype']       = 'dropdown';
+      $tab[129]['massiveaction']  = false;
+      $tab[129]['joinparams']     = array('beforejoin' => array('table'      => 'glpi_contracts',
+                                          'joinparams' => $joinparams));
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
