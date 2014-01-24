@@ -535,9 +535,10 @@ class MassiveAction {
          }
 
       } else {
-         if ($canupdate
-             || (InfoCom::canApplyOn($itemtype)
-                 && Infocom::canUpdate())) {
+         if (($_SESSION['glpiactiveprofile']['interface'] == 'central')
+             && ($canupdate
+                 || (InfoCom::canApplyOn($itemtype)
+                     && Infocom::canUpdate()))) {
 
             //TRANS: select action 'update' (before doing it)
             $actions[$self_pref.'update'] = _x('button', 'Update');
