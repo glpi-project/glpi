@@ -4469,7 +4469,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))
                 || $this->canDeleteItem()
-                || $this->canUpdateItem) {
+                || $this->canUpdateItem()) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
@@ -4477,8 +4477,7 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'></td>";
                   }
                } else {
-                  if (Session::haveRight(self::$rightname, UPDATE)
-                      || self::canUpdate()) {
+                  if (self::canUpdate()) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'></td>";
                   }
@@ -4491,18 +4490,10 @@ class Ticket extends CommonITILObject {
                             Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                   }
                } else {
-                  if (self::canDelete()
-                      || self::canDelete()) {
+                  if (self::canDelete()) {
                      echo "<input type='submit' class='submit' name='delete' value='".
                             _sx('button', 'Put in dustbin')."'></td>";
                   }
-               }
-
-            } else {
-               if (Session::haveRight(self::$rightname, UPDATE)) {
-                  echo "<td class='tab_bg_2 center' colspan='4'>";
-                  echo "<input type='submit' class='submit' name='update' value='".
-                         _sx('button', 'Save')."'>";
                }
             }
             echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
@@ -5278,7 +5269,7 @@ class Ticket extends CommonITILObject {
          }
          self::commonListHeader(Search::HTML_OUTPUT);
       }
-         
+
       echo "</table></div>";
 
       // Tickets for linked items
