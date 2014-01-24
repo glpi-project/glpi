@@ -1703,6 +1703,12 @@ class Search {
       return $linked;
    }
 
+   static function getLogicalOperators() {
+      return array('AND'     => 'AND',
+                  'OR'      => 'OR',
+                  'AND NOT' => 'AND NOT',
+                  'OR NOT'  => 'OR NOT',);
+   }
 
    /**
     * Print generic search form
@@ -1727,19 +1733,17 @@ class Search {
          $p[$key] = $val;
       }
 
-      $options = self::getCleanedOptions($itemtype);
-
-      // Instanciate an object to access method
-      $item = NULL;
-      if ($itemtype != 'AllAssets') {
-         $item = getItemForItemtype($itemtype);
-      }
-
-      $linked =  self::getMetaItemtypeAvailable($itemtype);
-
       echo "<form name='searchform$itemtype' method='get' action=\"".$p['target']."\">";
       echo "<div id='searchcriterias'>";
-      echo "<table class='tab_cadre_fixe'>";
+      $nbsearchcountvar = 'nbcriteria'.strtolower($itemtype).mt_rand();
+      $nbmetasearchcountvar = 'nbmetacriteria'.strtolower($itemtype).mt_rand();
+      $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
+      // init criteria count
+      $js = "var $nbsearchcountvar=".$_SESSION["glpisearchcount"][$itemtype].";";
+      $js .= "var $nbmetasearchcountvar=".$_SESSION["glpisearchcount2"][$itemtype].";";
+      echo Html::scriptBlock($js);
+
+      echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_1'>";
 
       if (($_SESSION["glpisearchcount"][$itemtype] + $_SESSION["glpisearchcount2"][$itemtype]) > 1) {
@@ -1753,225 +1757,29 @@ class Search {
                                                             "/pics/deplier_up.png\">";
          echo "</td>";
       }
+      
+
+
       echo "<td>";
 
-      echo "<table id='searchcriteriastable' width='100%'>";
-
-      $logicaloperators = array('AND'     => 'AND',
-                                'OR'      => 'OR',
-                                'AND NOT' => 'AND NOT',
-                                'OR NOT'  => 'OR NOT',);
+      echo "<table class='tab_format' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='45%'>";
-         // First line display add / delete images for normal and meta search items
-         if ($i == 0) {
-            echo "<input type='hidden' disabled id='add_search_count' name='add_search_count'
-                   value='1'>";
-            echo "<a href='#' onClick = \"".Html::jsEnable('add_search_count')."
-                   document.forms['searchform$itemtype'].submit();\">";
-            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
-                   __s('Add a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-            if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
-               echo "<input type='hidden' disabled id='delete_search_count'
-                      name='delete_search_count' value='1'>";
-               echo "<a href='#' onClick = \"".Html::jsEnable('delete_search_count')."
-                      document.forms['searchform$itemtype'].submit();\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
-                      __s('Delete a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-            }
-            if (is_array($linked) && (count($linked) > 0)) {
-               echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
-                      value='1'>";
-               echo "<a href='#' onClick=\"".Html::jsEnable('add_search_count2')."
-                      document.forms['searchform$itemtype'].submit();\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
-                      __s('Add a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-
-               if ($_SESSION["glpisearchcount2"][$itemtype] > 0) {
-                  echo "<input type='hidden' disabled id='delete_search_count2'
-                         name='delete_search_count2' value='1'>";
-                  echo "<a href='#' onClick=\"".Html::jsEnable('delete_search_count2')."
-                         document.forms['searchform$itemtype'].submit();\">";
-                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
-                         __s('Delete a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-               }
-            }
-
-            $itemtable = getTableForItemType($itemtype);
-            if ($item && $item->maybeDeleted()) {
-               echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".
-                      $p['is_deleted']."'>";
-               echo "<a href='#' onClick = \"toogle('is_deleted','','','');
-                      document.forms['searchform$itemtype'].submit();\">
-                      <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
-                       (!$p['is_deleted']?'_no':'').".png\" name='img_deleted' alt=\"".
-                       (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                      "\" title=\"".
-                       (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                      "\"></a>";
-               echo '&nbsp;&nbsp;';
-            }
-         }
-
-         $criteria = array();
-
-         if (isset($p['criteria'][$i])
-               && is_array($p['criteria'][$i])) {
-            $criteria = $p['criteria'][$i];
-         }
-
-         // Display link item
-         if ($i > 0) {
-            $value = '';
-            if (isset($criteria["link"])) {
-               $value = $criteria["link"];
-            }
-            Dropdown::showFromArray("criteria[$i][link]",$logicaloperators,
-                                    array('value' => $value,
-                                          'width' => '30%'));
-         }
-
-
-         $selected = $first = '';
-         $values   = array();
-         // display select box to define search item
-         if ($CFG_GLPI['allow_search_view'] == 2) {
-            $values['view'] = __('Items seen');
-         }
-
-         reset($options);
-         $group = '';
-
-         foreach ($options as $key => $val) {
-            // print groups
-            if (!is_array($val)) {
-               $group = $val;
-            } else {
-               if (!isset($val['nosearch']) || ($val['nosearch'] == false)) {
-                  $values[$group][$key] = $val["name"];
-               }
-            }
-         }
-         if ($CFG_GLPI['allow_search_view'] == 1) {
-            $values['view'] = __('Items seen');
-         }
-         if ($CFG_GLPI['allow_search_all']) {
-            $values['all'] = __('All');
-         }
-         $value = '';
-         if (isset($criteria['field'])) {
-            $value = $criteria['field'];
-         }
-
-         $rand     = Dropdown::showFromArray("criteria[$i][field]", $values,
-                                             array('value' => $value,
-                                                   'width' => '60%'));
-         $field_id = Html::cleanId("dropdown_criteria[$i][field]$rand");
-         echo "</td><td class='left'>";
-         echo "<div id='SearchSpan$itemtype$i'>\n";
-
-         $used_itemtype = $itemtype;
-
-         // Force Computer itemtype for AllAssets to permit to show specific items
-         if ($itemtype == 'AllAssets') {
-            $used_itemtype = 'Computer';
-         }
-
-         $_POST['itemtype']   = $used_itemtype;
-         $_POST['num']        = $i;
-         $_POST['field']      = $value;
-         $_POST['searchtype'] = (isset($criteria['searchtype'])?$criteria['searchtype']:"" );
-         $_POST['value']      = (isset($criteria['value'])?stripslashes($criteria['value']):"" );
-         include (GLPI_ROOT."/ajax/searchoption.php");
-         echo "</div>\n";
-
-         $params = array('field'      => '__VALUE__',
-                         'itemtype'   => $used_itemtype,
-                         'num'        => $i,
-                         'value'      => $_POST["value"],
-                         'searchtype' => $_POST["searchtype"]);
-         Ajax::updateItemOnSelectEvent($field_id, "SearchSpan$itemtype$i",
-                                       $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
-
-         echo "</td></tr>\n";
+         $_POST['itemtype'] = $itemtype;
+         $_POST['num'] = $i ;
+         include(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
-
       $metanames = array();
-
+      $linked =  self::getMetaItemtypeAvailable($itemtype);
+      
       if (is_array($linked) && (count($linked) > 0)) {
          for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
 
-            $metacriteria = array();
-
-            if (isset($p['metacriteria'][$i])
-                  && is_array($p['metacriteria'][$i])) {
-               $metacriteria = $p['metacriteria'][$i];
-            }
-
-            echo "<tr><td class='left' colspan='2'>";
-            $rand = mt_rand();
-
-            echo "<table width='100%'><tr class='left'><td width='30%'>";
-            // Display link item (not for the first item)
-            $value = '';
-            if (isset($metacriteria["link"])) {
-               $value = $metacriteria["link"];
-            }
-            Dropdown::showFromArray("metacriteria[$i][link]",$logicaloperators,
-                                    array('value' => $value,
-                                          'width' => '45%'));
-
-            // Display select of the linked item type available
-            foreach ($linked as $key) {
-               if (!isset($metanames[$key])) {
-                  if ($linkitem = getItemForItemtype($key)) {
-                     $metanames[$key] = $linkitem->getTypeName();
-                  }
-               }
-            }
-            $value = '';
-            if (isset($metacriteria['itemtype'])
-                && !empty($metacriteria['itemtype'])) {
-               $value = $metacriteria['itemtype'];
-            }
-
-            $rand = Dropdown::showItemTypes("metacriteria[$i][itemtype]", $linked,
-                                            array('width' => '50%',
-                                                  'value' => $value));
-            $field_id = Html::cleanId("dropdown_metacriteria[$i][itemtype]$rand");
-            echo "</td><td>";
-            // Ajax script for display search met& item
-            echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
-
-            $params = array('itemtype'   => '__VALUE__',
-                            'num'        => $i,
-                            'field'      => (isset($metacriteria['field'])
-                                              ? $metacriteria['field'] : ""),
-                            'value'      => (isset($metacriteria['value'])
-                                              ? stripslashes($metacriteria['value']) : ""),
-                            'searchtype' => (isset($metacriteria['searchtype'])
-                                              ? $metacriteria['searchtype'] : ""));
-
-            Ajax::updateItemOnSelectEvent($field_id,
-                                          "show_".$itemtype."_".$i."_$rand",
-                                          $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",
-                                          $params);
-
-            if (isset($metacriteria['itemtype'])
-                && !empty($metacriteria['itemtype'])) {
-
-               $params['itemtype'] = $metacriteria['itemtype'];
-
-               Ajax::updateItem("show_".$itemtype."_".$i."_$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);
-
-            }
-            echo "</td></tr></table>";
-
-            echo "</td></tr>\n";
+            $_POST['itemtype'] = $itemtype;
+            $_POST['num'] = $i ;
+            include(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
       echo "</table>\n";
@@ -4810,29 +4618,30 @@ class Search {
 
       $redirect = false;
 
-      if (isset($_GET["add_search_count"]) && $_GET["add_search_count"]) {
-         $_SESSION["glpisearchcount"][$itemtype]++;
-         Html::redirect(str_replace("add_search_count=1&", "", $_SERVER['REQUEST_URI']));
-      }
+      
+//       if (isset($_GET["add_search_count"]) && $_GET["add_search_count"]) {
+//          $_SESSION["glpisearchcount"][$itemtype]++;
+//          Html::redirect(str_replace("add_search_count=1&", "", $_SERVER['REQUEST_URI']));
+//       }
 
-      if (isset($_GET["delete_search_count"]) && $_GET["delete_search_count"]) {
-         if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
-            $_SESSION["glpisearchcount"][$itemtype]--;
-         }
-         Html::redirect(str_replace("delete_search_count=1&", "", $_SERVER['REQUEST_URI']));
-      }
+//       if (isset($_GET["delete_search_count"]) && $_GET["delete_search_count"]) {
+//          if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
+//             $_SESSION["glpisearchcount"][$itemtype]--;
+//          }
+//          Html::redirect(str_replace("delete_search_count=1&", "", $_SERVER['REQUEST_URI']));
+//       }
 
-      if (isset($_GET["add_search_count2"]) && $_GET["add_search_count2"]) {
-         $_SESSION["glpisearchcount2"][$itemtype]++;
-         Html::redirect(str_replace("add_search_count2=1&", "", $_SERVER['REQUEST_URI']));
-      }
+//       if (isset($_GET["add_search_count2"]) && $_GET["add_search_count2"]) {
+//          $_SESSION["glpisearchcount2"][$itemtype]++;
+//          Html::redirect(str_replace("add_search_count2=1&", "", $_SERVER['REQUEST_URI']));
+//       }
 
-      if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
-         if ($_SESSION["glpisearchcount2"][$itemtype] >= 1) {
-            $_SESSION["glpisearchcount2"][$itemtype]--;
-         }
-         Html::redirect(str_replace("delete_search_count2=1&", "", $_SERVER['REQUEST_URI']));
-      }
+//       if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
+//          if ($_SESSION["glpisearchcount2"][$itemtype] >= 1) {
+//             $_SESSION["glpisearchcount2"][$itemtype]--;
+//          }
+//          Html::redirect(str_replace("delete_search_count2=1&", "", $_SERVER['REQUEST_URI']));
+//       }
 
       $default_values = array();
 
@@ -4895,6 +4704,24 @@ class Search {
          }
       }
 
+      // Force reorder criterias
+      if (isset($_GET["criteria"]) && is_array($_GET["criteria"])
+            && count($_GET["criteria"])) {
+         $tmp = $_GET["criteria"];
+         $_GET["criteria"] = array();
+         foreach ($tmp as $val) {
+            $_GET["criteria"][] = $val;
+         }
+      }
+      if (isset($_GET["metacriteria"]) && is_array($_GET["metacriteria"])
+            && count($_GET["metacriteria"])) {
+         $tmp = $_GET["metacriteria"];
+         $_GET["metacriteria"] = array();
+         foreach ($tmp as $val) {
+            $_GET["metacriteria"][] = $val;
+         }
+      }
+
       if ($usesession
           && isset($_GET["reset"])) {
          if (isset($_SESSION['glpisearch'][$itemtype])) {
@@ -4906,7 +4733,8 @@ class Search {
          if (isset($_SESSION['glpisearchcount2'][$itemtype])) {
             unset($_SESSION['glpisearchcount2'][$itemtype]);
          }
-
+      }
+      if ($usesession) {
          // Bookmark use
          if (isset($_GET["glpisearchcount"])) {
             $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
