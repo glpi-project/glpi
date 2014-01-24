@@ -49,7 +49,7 @@ if (isset($_POST["itemtype"])
    $randrow = mt_rand();
    $rowid = 'searchrow'.$_POST['itemtype'].$randrow;
    
-   echo "<tr id='$rowid' ".($_POST["num"]==0?"class='headerRow'":'')."><td class='left' width='45%'>";
+   echo "<tr class='normalcriteria' id='$rowid' ".($_POST["num"]==0?"class='headerRow'":'')."><td class='left' width='45%'>";
    // First line display add / delete images for normal and meta search items
    if ($_POST["num"] == 0) {
       $linked =  Search::getMetaItemtypeAvailable($_POST["itemtype"]);
@@ -60,7 +60,7 @@ if (isset($_POST["itemtype"])
                $.post( '".$CFG_GLPI['root_doc']."/ajax/searchrow.php',
                      { itemtype: '".$_POST["itemtype"]."', num: $nbsearchcountvar })
                         .done(function( data ) {
-                        $('#".$searchcriteriatableid."').append(data);
+                        $('#".$searchcriteriatableid." .normalcriteria:last').after(data);
                         });
             $nbsearchcountvar = $nbsearchcountvar +1;});";
       echo Html::scriptBlock($js);

@@ -56,7 +56,7 @@ if (isset($_POST["itemtype"])
    
    $rowid = 'metasearchrow'.$_POST['itemtype'].$rand;
 
-   echo "<tr id='$rowid'><td class='left' colspan='2'>";
+   echo "<tr class='metacriteria' id='$rowid'><td class='left' colspan='2'>";
                
 
    echo "<table class='tab_format'><tr class='left'>";
