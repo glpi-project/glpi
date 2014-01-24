@@ -1146,7 +1146,7 @@ class Ticket extends CommonITILObject {
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
 
-      
+
       if (isset($input['_users_id_requester'])
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector
@@ -3723,7 +3723,7 @@ class Ticket extends CommonITILObject {
          $tt = $this->getTicketTemplateToUse($options['template_preview'], $values['type'],
                                              $values['itilcategories_id'], $values['entities_id']);
       }
-      
+
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
          $values['_predefined_fields']
@@ -4522,7 +4522,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
 
          if ($ID) {
-            if (Session::haveRight('delete_ticket',1)) {
+            if ($this->canDeleteItem()) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='restore' value='".
@@ -5331,7 +5331,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "</table></div>";
-      
+
       // Tickets for linked items
       $linkeditems = $item->getLinkedItems();
       $restrict = array();
