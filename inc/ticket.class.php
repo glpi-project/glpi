@@ -1966,32 +1966,32 @@ class Ticket extends CommonITILObject {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (TicketFollowup::canCreate()
-          && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-         $actions['TicketFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
-            = __('Add a new followup');
-      }
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (TicketFollowup::canCreate()) {
+            $actions['TicketFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
+               = __('Add a new followup');
+         }
 
-      if (TicketTask::canCreate()) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
-      }
+         if (TicketTask::canCreate()) {
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
+         }
 
-      if (TicketValidation::canCreate()) {
-         $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
-            = __('Approval request');
-      }
+         if (TicketValidation::canCreate()) {
+            $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
+               = __('Approval request');
+         }
 
-      if (Session::haveRight(self::$rightname, UPDATE)) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
-            = __('Add an actor');
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'link_ticket']
-            = _x('button', 'Link tickets');
-      }
+         if (Session::haveRight(self::$rightname, UPDATE)) {
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
+               = __('Add an actor');
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'link_ticket']
+               = _x('button', 'Link tickets');
+         }
 
-      if (Session::haveRight(self::$rightname, UPDATE)) {
-         MassiveAction::getAddTransferList($actions);
+         if (Session::haveRight(self::$rightname, UPDATE)) {
+            MassiveAction::getAddTransferList($actions);
+         }
       }
-
       return $actions;
    }
 
