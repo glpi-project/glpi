@@ -562,14 +562,16 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_users_validate" :
-                     $rule_data = getAllDatasFromTable('glpi_ruleactions',
-                                                       "action_type = 'add_validation'
-                                                        AND field = 'users_id_validate'");
                      $used = array();
-                     /// TODO think used is populate using all rules.
-                     /// Need to limit to select rule or do not set used.
-                     foreach ($rule_data as $data) {
-                        $used[] = $data['value'];
+                     if ($item = getItemForItemtype($options["sub_type"])) {
+                        $rule_data = getAllDatasFromTable('glpi_ruleactions',
+                                                         "`action_type` = 'add_validation'
+                                                         AND `field` = 'users_id_validate'
+                                                         AND `".$item->getRuleIdField()."` = '".$options[$item->getRuleIdField()]."'");
+                        
+                        foreach ($rule_data as $data) {
+                           $used[] = $data['value'];
+                        }
                      }
                      $param['name']  = 'value';
                      $param['right'] = array('validate_incident', 'validate_request');
@@ -579,18 +581,21 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_groups_validate" :
+                     $used = array();
+                     if ($item = getItemForItemtype($options["sub_type"])) {
+                        $rule_data = getAllDatasFromTable('glpi_ruleactions',
+                                                         "`action_type` = 'add_validation'
+                                                         AND `field` = 'groups_id_validate'
+                                                         AND `".$item->getRuleIdField()."` = '".$options[$item->getRuleIdField()]."'");
+
+                        foreach ($rule_data as $data) {
+                           $used[] = $data['value'];
+                        }
+                     }
+
                      $condition = "(SELECT count(`users_id`)
                                     FROM `glpi_groups_users`
                                     WHERE `groups_id` = `glpi_groups`.`id`)";
-                     $used = array();
-                     /// TODO think used is populate using all rules.
-                     /// Need to limit to select rule or do not set used.
-                     $rule_data = getAllDatasFromTable('glpi_ruleactions',
-                                                       "action_type = 'add_validation'
-                                                        AND field = 'groups_id_validate'");
-                     foreach ($rule_data as $data) {
-                        $used[] = $data['value'];
-                     }
                      $param['name']      = 'value';
                      $param['condition'] = $condition;
                      $param['right']     = array('validate_incident', 'validate_request');

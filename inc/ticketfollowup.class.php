@@ -399,20 +399,6 @@ class TicketFollowup  extends CommonDBTM {
 
 
    // SPECIFIC FUNCTIONS
-
-   /**
-    * Get the users_id name of the followup
-    *
-    * @param $link insert link ? (default 0)
-    *
-    *@return string of the users_id name
-   **/
-   //TODO function never used
-   function getAuthorName($link=0) {
-      return getUserName($this->fields["users_id"], $link);
-   }
-
-
    /**
     * @see CommonDBTM::getRawName()
     *

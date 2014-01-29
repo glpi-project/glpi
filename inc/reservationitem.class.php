@@ -127,25 +127,6 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
-   function prepareInputForAdd($input) {
-
-      // TODO : I don't understand ! If the reservationitem is not found, then is_active == 1 ?
-      // We should define $mustBeAttached to false, otherwise, any further update will fail
-      // if the ReservationItem is not attached (ie: getFromDBByItem(...) == false)
-
-      if (!$this->getFromDBbyItem($input['itemtype'], $input['items_id'])) {
-         if (!isset($input['is_active'])) {
-            $input['is_active'] = 1;
-         }
-         return $input;
-      }
-      return false;
-   }
-
-
    function getSearchOptions() {
 
       $tab                          = array();
