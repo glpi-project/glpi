@@ -610,56 +610,11 @@ class MassiveAction {
    function showSubForm() {
       global $CFG_GLPI;
 
-      if (!empty($this->processor)) {
-         $processor = $this->processor;
-         if (!$processor::showMassiveActionsSubForm($this)) {
-            $this->showDefaultSubForm();
-         }
-
-      } else {
-         // TODO: this part is only provided for compatibility with old system
-         // Actually, only plugins uses that: all core actions have been converted
-         // Do we have to keep it ?
-         $input             = $this->POST;
-         unset($input['items']);
-         unset($input['initial_items']);
-         unset($input['processor']);
-         unset($input['action_name']);
-         $input['itemtype'] = $this->getItemtype(true);
-         $input['action']   = $this->action;
-         $input['item']     = array_fill_keys(array_keys($this->items[$input['itemtype']]), 1);
-
-         $split             = explode('_', $input['action']);
-
-         if (($split[0] == 'plugin')
-             && isset($split[1])) {
-            // Normalized name plugin_name_action
-            // Allow hook from any plugin on any (core or plugin) type
-            $plugin_input = array('action'   => $input['action'],
-                                  'itemtype' => $input['itemtype']);
-            Plugin::doOneHook($split[1], 'MassiveActionsDisplay', $plugin_input);
-
-            /*
-         } else if ($plug=isPluginItemType($_POST["itemtype"])) {
-            // non-normalized name
-            // hook from the plugin defining the type
-            Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
-                              $_POST["action"]);
-            */
-         } else {
-            if (!($item = getItemForItemtype($input['itemtype']))) {
-               exit();
-            }
-            // TODO webmyster method not exist (replace r22139)
-            if (method_exists($item, 'showSpecificMassiveActionsParameters')) {
-               if (!$item->showSpecificMassiveActionsParameters($input)) {
-                  self::showDefaultSubForm();
-               }
-            } else {
-               self::showDefaultSubForm();
-            }
-         }
+      $processor = $this->processor;
+      if (!$processor::showMassiveActionsSubForm($this)) {
+         $this->showDefaultSubForm();
       }
+
       $this->addHiddenFields();
    }
 
@@ -997,77 +952,17 @@ class MassiveAction {
 
       if (!empty($this->remainings)) {
 
-         if (!empty($this->processor)) {
-            $this->updateProgressBars();
+         $this->updateProgressBars();
 
-            if (isset($this->messaget_after_redirect)) {
-               $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->messaget_after_redirect;
-               Html::displayMessageAfterRedirect();
-               unset($this->messaget_after_redirect);
-            }
-
-            $processor = $this->processor;
-            // TODO function processMassiveActionsForSeveralItemtype deleted r21497
-            if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
-               $processor::processMassiveActionsForSeveralItemtype($this);
-            }
-            $this->processForSeveralItemtypes();
-
-         } else {
-            // TODO: this part is only provided for compatibility with old system
-            // Actually, only plugins uses that: all core actions have been converted
-            // Do we have to keep it ?
-            $input             = $this->POST;
-            $itemtype          = $this->getItemtype(false);
-            $input['itemtype'] = $itemtype;
-            $input['action']   = $this->action;
-            $input['item']     = array_fill_keys(array_keys($this->items[$itemtype]), 1);
-
-            if ($item = getItemForItemtype($itemtype)) {
-               $split = explode('_', $input["action"]);
-               if (($split[0] == 'plugin')
-                   && isset($split[1])) {
-                  // Normalized name plugin_name_action
-                  // Allow hook from any plugin on any (core or plugin) type
-                  $res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $input);
-
-                  //} else if ($plug=isPluginItemType($inputs["itemtype"])) {
-                  // non-normalized name
-                  // hook from the plugin defining the type
-                  //$res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
-               } else {
-                  // TODO webmyster method not exist (replace r22139)
-                  if (method_exists($item, 'doSpecificMassiveActions')) {
-                     $res = $item->doSpecificMassiveActions($input);
-                  } else {
-                     $res = false;
-                  }
-               }
-
-               if (is_array($res)) {
-                  foreach (array('ok', 'ko', 'noright') as $element) {
-                     if (isset($res[$element])) {
-                        $this->results[$element] += $res[$element];
-                     }
-                  }
-
-                  if (isset($res['messages'])) {
-                     foreach ($res['messages'] as $message) {
-                        $this->addMessage($message);
-                     }
-                  }
-
-                  if (isset($res['REDIRECT'])) {
-                     $this->setRedirect($res['REDIRECT']);
-                  }
-
-                  $this->itemDone($itemtype, $input['item'], self::NO_ACTION);
-               }
-
-            } else {
-               $ma->itemDone($itemtype, $input['item'], MassiveAction::ACTION_KO);
-            }
+         if (isset($this->messaget_after_redirect)) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->messaget_after_redirect;
+            Html::displayMessageAfterRedirect();
+            unset($this->messaget_after_redirect);
          }
+
+         $processor = $this->processor;
+
+         $this->processForSeveralItemtypes();
       }
 
       $this->results['redirect'] = $this->redirect;
