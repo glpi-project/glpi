@@ -52,7 +52,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
+      $forbidden[] = 'update';
       return $forbidden;
    }
 
@@ -127,12 +127,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                 ORDER BY `glpi_printermodels`.`name`";
 
       $result = $DB->query($query);
-      $i      = 0;   function getForbiddenStandardMassiveAction() {
-
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
-      return $forbidden;
-   }
+      $i      = 0;
 
       $used  = array();
       $datas = array();

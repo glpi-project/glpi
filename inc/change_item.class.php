@@ -56,7 +56,7 @@ class Change_Item extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
+      $forbidden[] = 'update';
       return $forbidden;
    }
 
@@ -260,7 +260,13 @@ class Change_Item extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Change' :
-               return _n('Item', 'Items', 2);
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_changes_items',
+                                             "`changes_id` = '".$item->getID()."'");
+               }
+
+               return self::createTabEntry(_n('Item', 'Items', 2), $nb);            
          }
       }
       return '';

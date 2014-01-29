@@ -59,7 +59,7 @@ class Item_Problem extends CommonDBRelation{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
+      $forbidden[] = 'update';
       return $forbidden;
    }
 
@@ -264,7 +264,13 @@ class Item_Problem extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Problem' :
-               return _n('Item', 'Items', 2);
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_items_problems',
+                                             "`problems_id` = '".$item->getID()."'");
+               }
+
+               return self::createTabEntry(_n('Item', 'Items', 2), $nb);
 
             default :
                if (Session::haveRight("problem", Problem::READALL)) {

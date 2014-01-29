@@ -583,13 +583,18 @@ class MassiveAction {
 
       Lock::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
-      // Manage forbidden actions
-      // TODO: can we delete an action on its name (ie. update instead of MassiveAction::update) ?
+      // Manage forbidden actions : try complete action name or MassiveAction:action_name
       $forbidden_actions = $item->getForbiddenStandardMassiveAction();
       if (is_array($forbidden_actions) && count($forbidden_actions)) {
          foreach ($forbidden_actions as $actiontodel) {
             if (isset($actions[$actiontodel])) {
                unset($actions[$actiontodel]);
+            } else {
+               // Not found search adding MassiveAction prefix
+               $actiontodel = $self_pref.$actiontodel;
+               if (isset($actions[$actiontodel])) {
+                  unset($actions[$actiontodel]);
+               }
             }
          }
       }

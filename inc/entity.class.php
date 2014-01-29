@@ -104,11 +104,10 @@ class Entity extends CommonTreeDropdown {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete';
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge';
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore';
-      // TODO : update when merge will have migrated to new system
-      $forbidden[] = 'merge';
+      $forbidden[] = 'delete';
+      $forbidden[] = 'purge';
+      $forbidden[] = 'restore';
+      $forbidden[] = 'CommonDropdown'.MassiveAction::CLASS_ACTION_SEPARATOR.'merge';
       return $forbidden;
    }
 

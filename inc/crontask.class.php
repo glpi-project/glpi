@@ -71,9 +71,9 @@ class CronTask extends CommonDBTM{
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete';
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge';
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore';
+      $forbidden[] = 'delete';
+      $forbidden[] = 'purge';
+      $forbidden[] = 'restore';
       return $forbidden;
    }
 
