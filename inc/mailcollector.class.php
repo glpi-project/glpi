@@ -958,12 +958,15 @@ class MailCollector  extends CommonDBTM {
    function mb_list_lowerencodings() {
 
       // Encoding not listed
-      $enc = array('gb2312', 'gb18030');
-      foreach (mb_list_encodings() as $encoding) {
-         $enc[] = Toolbox::strtolower($encoding);
-         $aliases = mb_encoding_aliases($encoding);
-         foreach ($aliases as $e) {
-            $enc[] = Toolbox::strtolower($e);
+      static $enc = array('gb2312', 'gb18030');
+
+      if (count($enc) == 2) {
+         foreach (mb_list_encodings() as $encoding) {
+            $enc[] = Toolbox::strtolower($encoding);
+            $aliases = mb_encoding_aliases($encoding);
+            foreach ($aliases as $e) {
+               $enc[] = Toolbox::strtolower($e);
+            }
          }
       }
       return $enc;
