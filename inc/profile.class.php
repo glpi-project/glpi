@@ -93,7 +93,6 @@ class Profile extends CommonDBTM {
                   $ong[5] = __('Life cycles');
                   $ong[8] = __('Tools');
                } else {
-                  /// TODO split it in 2 or 3 tabs
                   $ong[2] = __('Assets');
                   $ong[3] = __('Management');
                   $ong[4] = __('Assistance');
@@ -283,12 +282,9 @@ class Profile extends CommonDBTM {
       }
 
       $this->profileRight = array();
-
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
          if (isset($input['_'.$right])) {
             if (!is_array($input['_'.$right])) {
-               // TODO: what about changing password_update => UPDATE and show_group_hardware => READ ?
-               // If there is only one element, then, the right is 0 or 1 (ie.: password_update, show_group_hardware)
                $input['_'.$right] = array('1' => $input['_'.$right]);
             }
             $newvalue = 0;
@@ -628,7 +624,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
       if ($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE))) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
@@ -656,7 +651,6 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Association')."</th></tr>\n";
 
-      // TODO : switch to matrix
       echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Link with items for the creation of tickets')."</td>";
       echo "<td colspan='5'>";
@@ -669,17 +663,7 @@ class Profile extends CommonDBTM {
       echo "<td width='20%'>".__('Associable items to a ticket')."</td>";
       echo "<td colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
-      // Linear_HIT
-//      self::getLinearRightChoice(self::getHelpdeskItemtypes(),
-//                                 array('field'         => 'helpdesk_item_type',
-//                                       'value'         => $this->fields['helpdesk_item_type'],
-//                                      'check_all'     => true,
-//                                       'zero_on_empty' => false,
-//                                       'max_per_line'  => 4,
-//                                       'check_method'  =>
-//                                       function ($element, $field) {
-//                                          return in_array($element,$field);
-//                                       }));
+
       echo "</td>";
       echo "</tr>\n";
 
@@ -732,7 +716,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
       if ($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE))) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
@@ -787,8 +770,7 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
-      echo "<div class='firstbloc'>";
+      echo "<div class='spaced'>";
       if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
@@ -856,7 +838,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
 
       if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
@@ -914,7 +895,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
 
       if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
@@ -982,8 +962,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
@@ -1177,7 +1155,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
 
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
@@ -1279,7 +1256,6 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
       echo "<div class='spaced'>";
 
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
@@ -1315,8 +1291,7 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
-      echo "<div class='firstbloc'>";
+      echo "<div class='spaced'>";
 
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
@@ -1410,8 +1385,7 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      // TODO: uniformize the class of forms ?
-      echo "<div class='firstbloc'>";
+      echo "<div class='spaced'>";
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
@@ -2125,17 +2099,6 @@ class Profile extends CommonDBTM {
             $options['values'] = explode(',', $values[$field]);
             $options['name']   = $name;
             return self::dropdownHelpdeskItemtypes($options);
-            // Linear_HIT
-            // TODO: check if it is working ! I didn't find where it is used ...
-//            return self::getLinearRightChoice(self::getHelpdeskItemtypes(),
-//                                              array('field'         => $name,
-//                                                    'value'         => explode(',', $values[$field]),
-//                                                    'check_all'     => true,
-//                                                    'zero_on_empty' => false,
-//                                                    'check_method'  =>
-//                                                    function ($element, $field) {
-//                                                       return in_array($element,$field);
-//                                                    }));
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
