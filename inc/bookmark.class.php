@@ -678,9 +678,8 @@ class Bookmark extends CommonDBTM {
                                     'height'           => 200,
                                     'specific_actions' => $maactions);
 
-      // TODO : is it normal that it is commented ?
-//          Html::showMassiveActions($massiveactionparams);
-
+      // No massive action on bottom
+      
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";

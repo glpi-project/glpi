@@ -605,30 +605,96 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Form for Followup on Massive action
    **/
-//    static function showFormMassiveAction() {
-//
-//       global $CFG_GLPI;
-//
-//       $types            = array(0       => Dropdown::EMPTY_VALUE,
-//                                 'user'  => __('User'),
-//                                 'group' => __('Group'));
-//
-//       $rand             = Dropdown::showFromArray("validatortype", $types);
-//
-//       $paramsmassaction = array('validatortype' => '__VALUE__',
-//                                 'entity'        => $_SESSION['glpiactive_entity'],
-//                                 'right'         => array('validate_request', 'validate_incident'));
-//
-//       Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", "show_massiveaction_field",
-//                                     $CFG_GLPI["root_doc"].
-//                                        "/ajax/dropdownMassiveActionAddValidator.php",
-//                                     $paramsmassaction);
-//
-//       echo "<br><span id='show_massiveaction_field'>&nbsp;</span>\n";
-//
-//    }
+   static function showFormMassiveAction() {
+
+      global $CFG_GLPI;
+
+      $types            = array(0       => Dropdown::EMPTY_VALUE,
+                                'user'  => __('User'),
+                                'group' => __('Group'));
+
+      $rand             = Dropdown::showFromArray("validatortype", $types);
+
+      $paramsmassaction = array('validatortype' => '__VALUE__',
+                                'entity'        => $_SESSION['glpiactive_entity'],
+                                'right'         => array('validate_request', 'validate_incident'));
+
+      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", "show_massiveaction_field",
+                                    $CFG_GLPI["root_doc"].
+                                       "/ajax/dropdownMassiveActionAddValidator.php",
+                                    $paramsmassaction);
+
+      echo "<br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'submit_validation' :
+            static::showFormMassiveAction();
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'submit_validation' :
+            $input = $ma->getInput();
+//             print_r($input);exit();
+            $valid = new static();
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $input2 = array(static::$items_id            => $id,
+                                  'comment_submission'    => $input['comment_submission']);
+                  if ($valid->can(-1, CREATE, $input2)) {
+                     $users = $input['users_id_validate'];
+                     if (!is_array($users)) {
+                        $users = array($users);
+                     }
+                     $ok = true;
+                     foreach ($users as $user) {
+                        $input2["users_id_validate"] = $user;
+                        if (!$valid->add($input2)) {
+                           $ok = false;
+                        }
+                     }
+                     if ($ok) {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+   
    /**
     * Print the validation list into item
     *
@@ -947,13 +1013,13 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $tab[5]['field']           = 'validation_date';
       $tab[5]['name']            = __('Approval date');
       $tab[5]['datatype']        = 'datetime';
-/*
+
       $tab[6]['table']           = 'glpi_users';
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Approval requester');
       $tab[6]['datatype']        = 'itemlink';
       $tab[6]['right']           = array('create_incident_validation', 'create_request_validation');
-*/
+
       $tab[7]['table']           = 'glpi_users';
       $tab[7]['field']           = 'name';
       $tab[7]['linkfield']       = 'users_id_validate';
