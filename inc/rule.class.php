@@ -1007,11 +1007,11 @@ class Rule extends CommonDBTM {
       }
 
       $canedit = $this->canEdit($rules_id);
-      $style   = "class='tab_cadre_fixe'";
+      $style   = "class='tab_cadre_fixehov'";
 
       if ($p['readonly']) {
          $canedit = false;
-         $style   = "class='tab_cadre'";
+         $style   = "class='tab_cadrehov'";
       }
       $this->getTitleAction();
 
@@ -1051,22 +1051,30 @@ class Rule extends CommonDBTM {
       }
 
       echo "<table $style>";
-      echo "<tr>";
+      echo "<tr class='noHover'>";
       echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions',2) . "</th></tr>";
-      echo "<tr class='tab_bg_2'>";
 
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
+      
       if ($canedit && $nb) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
       }
 
-      echo "<th class='center b'>"._n('Field', 'Fields', 2)."</th>";
-      echo "<th class='center b'>".__('Action type')."</th>";
-      echo "<th class='center b'>".__('Value')."</th>";
-      echo "</tr>\n";
-
+      $header_end .= "<th class='center b'>"._n('Field', 'Fields', 2)."</th>";
+      $header_end .= "<th class='center b'>".__('Action type')."</th>";
+      $header_end .= "<th class='center b'>".__('Value')."</th>";
+      $header_end .= "</tr>\n";
+      echo $header_begin.$header_top.$header_end;
 
       foreach ($this->actions as $action) {
          $this->showMinimalActionForm($action->fields, $canedit, $rand);
+      }
+      if ($nb) {
+         echo $header_begin.$header_bottom.$header_end;
       }
       echo "</table>\n";
 
@@ -1103,11 +1111,11 @@ class Rule extends CommonDBTM {
       }
 
       $canedit = $this->canEdit($rules_id);
-      $style   = "class='tab_cadre_fixe'";
+      $style   = "class='tab_cadre_fixehov'";
 
       if ($p['readonly']) {
          $canedit = false;
-         $style   = "class='tab_cadre'";
+         $style   = "class='tab_cadrehov'";
       }
 
       if ($canedit) {
@@ -1144,21 +1152,30 @@ class Rule extends CommonDBTM {
       }
 
       echo "<table $style>";
-      echo "<tr><th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2).
+      echo "<tr class='noHover'><th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2).
            "</th></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
+      
       if ($canedit && $nb) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand)."</th>";
       }
-      echo "<th class='center b'>"._n('Criterion', 'Criteria', 1)."</th>\n";
-      echo "<th class='center b'>".__('Condition')."</th>\n";
-      echo "<th class='center b'>".__('Reason')."</th>\n";
-      echo "</tr>\n";
-
+      $header_end .= "<th class='center b'>"._n('Criterion', 'Criteria', 1)."</th>\n";
+      $header_end .= "<th class='center b'>".__('Condition')."</th>\n";
+      $header_end .= "<th class='center b'>".__('Reason')."</th>\n";
+      $header_end .= "</tr>\n";
+      echo $header_begin.$header_top.$header_end;
 
       foreach ($this->criterias as $criteria) {
          $this->showMinimalCriteriaForm($criteria->fields, $canedit, $rand);
+      }
+      
+      if ($nb) {
+         echo $header_begin.$header_bottom.$header_end;
       }
       echo "</table>\n";
 
@@ -2721,18 +2738,23 @@ class Rule extends CommonDBTM {
                 //           => array('rule_class_name' => $this->getRuleClassName()));
             Html::showMassiveActions($massiveactionparams);
          }
-         echo "<table class='tab_cadre_fixehov'><tr>";
-
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
          if ($canedit) {
-            echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.get_called_class().$rand);
-            echo "</th>";
+            $header_begin .= "<th width='10'>";
+            $header_top .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+            $header_end .= "</th>";
          }
-         echo "<th>" . $this->getTitle() . "</th>";
-         echo "<th>" . __('Description') . "</th>";
-         echo "<th>" . __('Active') . "</th>";
-         echo "</tr>\n";
-
+         $header_end .= "<th>" . $this->getTitle() . "</th>";
+         $header_end .= "<th>" . __('Description') . "</th>";
+         $header_end .= "<th>" . __('Active') . "</th>";
+         $header_end .= "</tr>\n";
+         echo $header_begin.$header_top.$header_end;
+         
          Session::initNavigateListItems(get_class($this),
                               //TRANS: %1$s is the itemtype name,
                               //       %2$s is the name of the item (used for headings of a list)
@@ -2758,6 +2780,7 @@ class Rule extends CommonDBTM {
             echo "<td>" . Dropdown::getYesNo($rule->fields["is_active"]) . "</td>";
             echo "</tr>\n";
          }
+         echo $header_begin.$header_bottom.$header_end;
          echo "</table>\n";
 
          if ($canedit) {
