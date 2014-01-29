@@ -572,8 +572,6 @@ class Project extends CommonDBTM {
 
       $rand = mt_rand();
 
-      /// TODO to be cleaned. Get datas and clean display links
-
       // Prints a job in short form
       // Should be called in a <table>-segment
       // Print links or not in case of user view
