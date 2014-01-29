@@ -99,8 +99,6 @@ class NotImportedEmail extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @TODO: check because I (webmyster) don't have all elements to check
-    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,

@@ -107,7 +107,6 @@ class Peripheral extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
-         // TODO : manage templates for item_devices
          // ADD Devices
          Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
