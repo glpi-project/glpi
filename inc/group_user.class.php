@@ -192,18 +192,25 @@ class Group_User extends CommonDBRelation{
                            'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
-      echo "<table class='tab_cadre_fixehov'><tr>";
-      if ($canedit && count($used)) {
-         echo "<th width='10'>";
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-         echo "</th>";
-      }
-      echo "<th>".Group::getTypeName(1)."</th>";
-      echo "<th>".__('Dynamic')."</th>";
-      echo "<th>".__('Manager')."</th>";
-      echo "<th>".__('Delegatee')."</th></tr>";
-      echo "</tr>";
+      echo "<table class='tab_cadre_fixehov'>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
 
+      if ($canedit && count($used)) {
+         $header_begin .= "<th width='10'>";
+         $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_end .= "</th>";
+      }
+      $header_end .= "<th>".Group::getTypeName(1)."</th>";
+      $header_end .= "<th>".__('Dynamic')."</th>";
+      $header_end .= "<th>".__('Manager')."</th>";
+      $header_end .= "<th>".__('Delegatee')."</th></tr>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       $group = new Group();
       if (!empty($groups)) {
          Session::initNavigateListItems('Group',
@@ -248,7 +255,7 @@ class Group_User extends CommonDBRelation{
             }
             echo "</td></tr>";
          }
-
+         echo $header_begin.$header_bottom.$header_end;
 
       } else {
          echo "<tr class='tab_bg_1'>";
@@ -463,20 +470,28 @@ class Group_User extends CommonDBRelation{
             Html::showMassiveActions($massiveactionparams);
          }
 
-         echo "<table class='tab_cadre_fixehov'><tr>";
-         if ($canedit) {
-            echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-            echo "</th>";
-         }
-         echo "<th>".User::getTypeName(1)."</th>";
-         if ($tree) {
-           echo "<th>".Group::getTypeName(1)."</th>";
-         }
-         echo "<th>".__('Dynamic')."</th>";
-         echo "<th>".__('Manager')."</th>";
-         echo "<th>".__('Delegatee')."</th></tr>";
+         echo "<table class='tab_cadre_fixehov'>";
 
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
+
+         if ($canedit) {
+            $header_begin .= "<th width='10'>";
+            $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end .= "</th>";
+         }
+         $header_end .= "<th>".User::getTypeName(1)."</th>";
+         if ($tree) {
+           $header_end .= "<th>".Group::getTypeName(1)."</th>";
+         }
+         $header_end .= "<th>".__('Dynamic')."</th>";
+         $header_end .= "<th>".__('Manager')."</th>";
+         $header_end .= "<th>".__('Delegatee')."</th></tr>";
+         echo $header_begin.$header_top.$header_end;
+         
          $tmpgrp = new Group();
 
          for ($i=$start, $j=0 ; ($i < $number) && ($j < $_SESSION['glpilist_limit']) ; $i++, $j++) {
@@ -511,6 +526,7 @@ class Group_User extends CommonDBRelation{
             }
             echo "</tr>";
          }
+         echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
          if ($canedit) {
             $massiveactionparams['ontop'] = false;
