@@ -1025,13 +1025,15 @@ class CronTask extends CommonDBTM{
 
       if ($result = $DB->query($query)) {
          if ($data = $DB->fetch_assoc($result)) {
-            echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".__('Date')."</th>";
-            echo "<th>".__('Total duration')."</th>";
-            echo "<th>"._x('quantity', 'Number')."</th>";
-            echo "<th>".__('Description')."</th>";
-            echo "</tr>\n";
-
+            echo "<table class='tab_cadrehov'>";
+            $header = "<tr>";
+            $header .= "<th>".__('Date')."</th>";
+            $header .= "<th>".__('Total duration')."</th>";
+            $header .= "<th>"._x('quantity', 'Number')."</th>";
+            $header .= "<th>".__('Description')."</th>";
+            $header .= "</tr>\n";
+            echo $header;
+            
             do {
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
@@ -1045,7 +1047,7 @@ class CronTask extends CommonDBTM{
                echo "<td>".$data['content']."</td>";
                echo "</tr>\n";
             } while ($data = $DB->fetch_assoc($result));
-
+            echo $header;
             echo "</table>";
 
          } else { // Not found

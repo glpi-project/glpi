@@ -131,7 +131,7 @@ class Item_Project extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='right'>";
+         echo "<tr class='tab_bg_1'><td>";
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
                                                       => $CFG_GLPI["asset_types"],
                                                      'entity_restrict'
@@ -139,7 +139,7 @@ class Item_Project extends CommonDBRelation{
                                                           ?getSonsOf('glpi_entities',
                                                                      $project->fields['entities_id'])
                                                           :$project->fields['entities_id'])));
-         echo "</td><td class='center'>";
+         echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='projects_id' value='$instID'>";
          echo "</td></tr>";
