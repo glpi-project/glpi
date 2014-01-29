@@ -575,7 +575,7 @@ td { }
 .tab_cadrehov tr.rowHover, 
 .tab_cadrehov_pointer tr.rowHover,
 .tab_cadre_fixehov tr.rowHover{
-   background-color:#E1D39E;
+   background-color:#e7e7e2;
 /*   opacity: 0.5;
    filter : alpha(opacity=10);*/
 }

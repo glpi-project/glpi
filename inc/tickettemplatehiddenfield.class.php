@@ -228,18 +228,23 @@ class TicketTemplateHiddenField extends CommonDBChild {
                                          'container'     => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>";
+         echo "<table class='tab_cadre_fixehov'>";
+         echo "<tr class='noHover'><th colspan='2'>";
          echo self::getTypeName($DB->numrows($result));
          echo "</th></tr>";
          if ($numrows) {
-            echo "<tr>";
+            $header_begin = "<tr>";
+            $header_top = '';
+            $header_bottom = '';
+            $header_end = '';
             if ($canedit) {
-               echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+               $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+               $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
             }
-            echo "<th>".__('Name')."</th>";
-            echo "</tr>";
-
+            $header_end .= "<th>".__('Name')."</th>";
+            $header_end .= "</tr>";
+            echo $header_begin.$header_top.$header_end;
+            
             foreach ($hiddenfields as $data) {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
@@ -248,6 +253,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
                echo "<td>".$fields[$data['num']]."</td>";
                echo "</tr>";
             }
+            echo $header_begin.$header_bottom.$header_end;
          } else {
             echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
          }
