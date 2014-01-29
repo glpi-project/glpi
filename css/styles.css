@@ -559,7 +559,7 @@ td { }
 .tab_cadrehov th.headHover,
 .tab_cadrehov_pointer th.headHover, 
 .tab_cadre_fixehov th.headHover{
-   background-color:#ccc;
+   background-color:#ddd;
 /*   opacity: 0.5;
    filter : alpha(opacity=10);*/
 }
@@ -567,7 +567,7 @@ td { }
 .tab_cadrehov td.columnHover,
 .tab_cadrehov_pointer td.columnHover,
 .tab_cadre_fixehov td.columnHover{
-   background-color:#ccc;
+   background-color:#ddd;
 /*   opacity: 0.5;
    filter : alpha(opacity=10);*/
 }
