@@ -291,16 +291,21 @@ class NetworkAlias extends FQDNLabel {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
 
-      echo "<tr>";
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Name')."</th>";
-      echo "<th>"._n('Internet domain', 'Internet domains', 1)."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "</tr>";
-
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>"._n('Internet domain', 'Internet domains', 1)."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       $used = array();
       foreach ($aliases as $data) {
          $showviewjs = ($canedit
@@ -337,7 +342,9 @@ class NetworkAlias extends FQDNLabel {
                                                                           $data["entities_id"]);
          echo "</tr>";
       }
-
+      if ($number) {
+         echo $header_begin.$header_bottom.$header_end;
+      }
       echo "</table>";
       if ($canedit && $number) {
          // TODO check because we switched from $paramsma to $massiveactionparams
