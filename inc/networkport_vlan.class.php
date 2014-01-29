@@ -156,18 +156,23 @@ class NetworkPort_Vlan extends CommonDBRelation {
                                       'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
 
-      echo "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Tagged')."</th>";
-      echo "<th>".__('ID TAG')."</th>";
-      echo "</tr>";
-
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".__('Tagged')."</th>";
+      $header_end .= "<th>".__('ID TAG')."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       $used = array();
       foreach ($vlans as $data) {
          echo "<tr class='tab_bg_1'>";
@@ -189,7 +194,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "<td class='numeric'>".$data["tag"]."</td>";
          echo "</tr>";
       }
-
+      if ($number) {
+         echo $header_begin.$header_top.$header_end;
+      }
       echo "</table>";
       if ($canedit && $number) {
          // TODO check because we switched from $paramsma to $massiveactionparams
