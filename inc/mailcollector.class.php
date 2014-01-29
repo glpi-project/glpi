@@ -849,11 +849,19 @@ class MailCollector  extends CommonDBTM {
    ///return supported encodings in lowercase.
    function mb_list_lowerencodings() {
 
-      $r = mb_list_encodings();
-      for ($n=sizeOf($r) ; $n-- ; ) {
-         $r[$n] = Toolbox::strtolower($r[$n]);
+      // Encoding not listed
+      static $enc = array('gb2312', 'gb18030');
+
+      if (count($enc) == 2) {
+         foreach (mb_list_encodings() as $encoding) {
+            $enc[] = Toolbox::strtolower($encoding);
+            $aliases = mb_encoding_aliases($encoding);
+            foreach ($aliases as $e) {
+               $enc[] = Toolbox::strtolower($e);
+            }
+         }
       }
-      return $r;
+      return $enc;
    }
 
 
@@ -896,11 +904,9 @@ class MailCollector  extends CommonDBTM {
                   $this->charset = $mimeStr->charset;
                }
 
-//                $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
-//                                                   (in_array($mimeStr->charset, $encodings)
-//                                                       ? $mimeStr->charset : $fallbackCharset));
-               // Try not to use fallback charset in order to manage encodings not listed by mbstring
-               $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset);
+               $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
+                                                  (in_array($mimeStr->charset, $encodings)
+                                                      ? $mimeStr->charset : $fallbackCharset));
 
             }
          }
