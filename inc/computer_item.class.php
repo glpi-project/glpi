@@ -565,20 +565,22 @@ class Computer_Item extends CommonDBRelation{
       echo "<table class='tab_cadre_fixehov'>";
 
       if ($number > 0) {
-         echo "<tr>";
+         $header = "<tr>";
 
          if ($canedit) {
-            echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
          }
 
-         echo "<th>".__('Name')."</th>";
+         $header .= "<th>".__('Name')."</th>";
          if (Plugin::haveImport()) {
-            echo "<th>".__('Automatic inventory')."</th>";
+            $header .= "<th>".__('Automatic inventory')."</th>";
          }
-         echo "<th>".__('Entity')."</th>";
-         echo "<th>".__('Serial number')."</th>";
-         echo "<th>".__('Inventory number')."</th>";
-         echo "</tr>";
+         $header .= "<th>".__('Entity')."</th>";
+         $header .= "<th>".__('Serial number')."</th>";
+         $header .= "<th>".__('Inventory number')."</th>";
+         $header .= "</tr>";
+         echo $header;
+         
          foreach ($compids as $key => $compid) {
             $comp->getFromDB($compid);
 
@@ -602,6 +604,7 @@ class Computer_Item extends CommonDBRelation{
             echo "<td class='center'>".$comp->getField('otherserial')."</td>";
             echo "</tr>";
          }
+         echo $header;
       } else {
          echo "<tr><td class='tab_bg_1 b'><i>".__('Not connected')."</i>";
          echo "</td></tr>";
