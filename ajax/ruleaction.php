@@ -84,8 +84,9 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
 
    $paramsaction = array('action_type' => '__VALUE__',
                          'field'       => $_POST["field"],
-                         'sub_type'    => $_POST["sub_type"]);
-
+                         'sub_type'    => $_POST["sub_type"],
+                         $item->getForeignKeyField()    => $_POST[$item->getForeignKeyField()],);
+   
    Ajax::updateItemOnSelectEvent("dropdown_action_type$randaction", "action_type_span$randaction",
                                  $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php", $paramsaction);
 

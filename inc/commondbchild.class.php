@@ -400,6 +400,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if (!is_array($input)) {
          return false;
       }
+
+      // Check item exists
+      if (static::$mustBeAttached
+         && !$this->getItemFromArray(static::$itemtype, static::$items_id,$input)) {
+         return false;
+      }
+
       return $this->addNeededInfoToInput($input);
    }
 
