@@ -247,8 +247,8 @@ class ComputerVirtualMachine extends CommonDBChild {
          $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
 
          if (!empty($hosts)) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo  "<tr><th colspan='2'>".__('List of host machines')."</th></tr>";
+            echo "<table class='tab_cadre_fixehov'>";
+            echo  "<tr class='noHover'><th colspan='2' >".__('List of host machines')."</th></tr>";
 
             $header = "<tr><th>".__('Name')."</th>";
             $header .= "<th>".__('Entity')."</th>";
@@ -321,7 +321,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
                                               "`computers_id` = '$ID' AND `is_deleted` = '0'");
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
 
       Session::initNavigateListItems('ComputerVirtualMachine',
                                      sprintf(__('%1$s = %2$s'), __('Computer'),
@@ -331,7 +331,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if (empty($virtualmachines)) {
          echo "<tr><th>".__('No virtual machine associated with the computer')."</th></tr>";
       } else {
-         echo "<tr><th colspan='10'>".__('List of virtual machines')."</th></tr>";
+         echo "<tr class='noHover'><th colspan='10'>".__('List of virtual machines')."</th></tr>";
 
          $header = "<tr><th>".__('Name')."</th>";
          if (Plugin::haveImport()) {

@@ -635,7 +635,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForLicense($item->getID());
                }
-               return array(1 => SoftwareLicense::getTypeName(1),
+               return array(1 => __('Summary'),
                             2 => self::createTabEntry(Computer::getTypeName(2), $nb));
             }
             break;

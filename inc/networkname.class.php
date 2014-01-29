@@ -740,7 +740,8 @@ class NetworkName extends FQDNLabel {
 
          $table->display(array('display_title_for_each_group' => false,
                                'display_thead'                => false,
-                               'display_tfoot'                => false));
+                               'display_tfoot'                => false,
+                               'display_header_on_foot_for_each_group' => true));
 
          if ($canedit && $number) {
             $massiveactionparams['ontop'] = false;
