@@ -178,7 +178,23 @@ class Cartridge extends CommonDBChild {
                }
             }
             return;
-
+            
+         case 'backtostock' :
+            foreach ($ids as $id) {
+               if ($item->can($id, UPDATE)) {
+                  if ($item->backToStock(array("id" => $id))) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+            
          case 'updatepages' :
             $input = $ma->getInput();
             if (isset($input['pages'])) {
@@ -206,12 +222,10 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @see CommonDBTM::restore()
+    * send back to stock
     */
-   function restore(array $input, $history=1) {
+   function backToStock(array $input, $history=1) {
       global $DB;
-
-      // TODO: restore is not what we expect ! We should rename this method !
 
       $query = "UPDATE `".$this->getTable()."`
                 SET `date_out` = NULL,
@@ -640,9 +654,11 @@ class Cartridge extends CommonDBChild {
             $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                        => _x('button', 'Delete permanently'),
                              'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
-                                       => __('Enable the financial and administrative information'),
-                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore'
-                                       => __('Back to stock'));
+                                       => __('Enable the financial and administrative information')
+                             );
+            if ($show_old) {
+               $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock'] = __('Back to stock');
+            }
             $massiveactionparams = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
                               'container'        => 'mass'.__CLASS__.$rand,
@@ -897,9 +913,11 @@ class Cartridge extends CommonDBChild {
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          if (!$old) {
-            // TODO : add 'back to store' and 'update printer counter' here ?
             $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'
-                                       => __('End of life'));
+                                       => __('End of life'),
+                             __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock'
+                                       => __('Back to stock')
+                            );
          } else {
             $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'updatepages'
                                       => __('Update printer counter'),
@@ -1203,5 +1221,8 @@ class Cartridge extends CommonDBChild {
             return true;
       }
    }
+
+
+   
 }
 ?>
