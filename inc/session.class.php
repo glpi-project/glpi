@@ -669,7 +669,7 @@ class Session {
 
       if (!isset($_SESSION['valid_id'])
           || ($_SESSION['valid_id'] !== session_id())) {
-         die(__('Invalid use of session ID'));
+         Html::redirectToLogin('error=3');
       }
       return true;
    }

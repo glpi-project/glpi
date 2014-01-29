@@ -458,18 +458,22 @@ class Html {
    /**
     * Redirection to Login page
     *
+    * @param $params : param to add to URL
     * @since version 0.85
     *
     * @return nothing
    **/
-   static function redirectToLogin() {
+   static function redirectToLogin($params='') {
       global $CFG_GLPI;
 
       $dest     = $CFG_GLPI["root_doc"] . "/index.php";
       $url_dest = str_replace($CFG_GLPI["root_doc"],'',$_SERVER['REQUEST_URI']);
       $dest    .= "?redirect=".rawurlencode($url_dest);
 
-      $toadd    = '';
+      if (!empty($params)) {
+         $dest .= '&'.$params;
+      }
+      $toadd = '';
       if (!strpos($dest,"?")) {
          $toadd = '&tokonq='.Toolbox::getRandomString(5);
       }
