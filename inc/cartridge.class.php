@@ -324,7 +324,6 @@ class Cartridge extends CommonDBChild {
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
       global $DB;
 
-      /// TODO to be more useful permit to have several columns and display number in it
       // Get total
       $total = self::getTotalNumber($tID);
       $out   = "";
@@ -380,7 +379,6 @@ class Cartridge extends CommonDBChild {
    static function getCountForPrinter($pID, $nohtml=0) {
       global $DB;
 
-      /// TODO to be more useful permit to have several columns and display number in it
       // Get total
       $total = self::getTotalNumberForPrinter($pID);
       $out   = "";
