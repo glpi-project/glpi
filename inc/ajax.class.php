@@ -318,21 +318,15 @@ class Ajax {
             $current ++;
          }
          echo "</ul>";
-         /// TODO loading indicator not working
-//          echo "<div class='loadingindicator' id='loadingindicator$rand'>".__('Loading...')."</div>";
-
          echo "</div>";
 
          $js = "$('#tabs$rand').tabs({ active: $selected_tab,
-         ajaxOptions: {type: 'POST',
-          // Show loading indicator
-//                   beforeSend: function() {
-//                      $('#loadingindicator$rand').show()
-//                   },
-//                   complete: function() {
-//                      $('#loadingindicator$rand').hide()
-//                   }
-            },
+         // Loading indicator
+         beforeLoad: function (event, ui) {
+                    ui.panel.html(\"<div class='loadingindicator'>".__s('Loading...')."</div>\");
+                },
+         ajaxOptions: {type: 'POST'},
+         
          activate : function( event, ui ){
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
@@ -348,14 +342,12 @@ class Ajax {
             function reloadTab(add) {
                
                var current_index = $('#tabs$rand').tabs('option','active');
-//               if (current_index != 0) {
-                  // Save tab
-                  currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
-                  $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
-                  $('#tabs$rand').tabs( 'load' , current_index);
-                  // Restore tab
-                  $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
-//             }
+               // Save tab
+               currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
+               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
+               $('#tabs$rand').tabs( 'load' , current_index);
+               // Restore tab
+               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
             };";
          echo Html::scriptBlock($js);
       }
