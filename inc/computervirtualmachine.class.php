@@ -248,11 +248,12 @@ class ComputerVirtualMachine extends CommonDBChild {
 
          if (!empty($hosts)) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='2'>".__('List of host machines')."</th></tr>";
+            echo  "<tr><th colspan='2'>".__('List of host machines')."</th></tr>";
 
-            echo "<tr><th>".__('Name')."</th>";
-            echo "<th>".__('Entity')."</th>";
-            echo "</tr>";
+            $header = "<tr><th>".__('Name')."</th>";
+            $header .= "<th>".__('Entity')."</th>";
+            $header .= "</tr>";
+            echo $header;
 
             $computer = new Computer();
             foreach ($hosts as $host) {
@@ -279,7 +280,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                echo "</td></tr>";
 
             }
-
+            echo $header;
             echo "</table>";
          }
       }
@@ -308,7 +309,14 @@ class ComputerVirtualMachine extends CommonDBChild {
       }
       $canedit = $comp->canEdit($ID);
 
-      echo "<div class='spaced center'>";
+      if ($canedit) {
+         echo "<div class='center firstbloc'>".
+            "<a class='vsubmit' href='computervirtualmachine.form.php?computers_id=$ID'>";
+         _e('Add a virtual machine');
+         echo "</a></div>\n";
+      }
+      
+      echo "<div class='center'>";
 
       $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
                                               "`computers_id` = '$ID' AND `is_deleted` = '0'");
@@ -325,19 +333,20 @@ class ComputerVirtualMachine extends CommonDBChild {
       } else {
          echo "<tr><th colspan='10'>".__('List of virtual machines')."</th></tr>";
 
-         echo "<tr><th>".__('Name')."</th>";
+         $header = "<tr><th>".__('Name')."</th>";
          if (Plugin::haveImport()) {
-            echo "<th>".__('Automatic inventory')."</th>";
+            $header .= "<th>".__('Automatic inventory')."</th>";
          }
-         echo "<th>".__('Virtualization system')."</th>";
-         echo "<th>".__('Virtualization model')."</th>";
-         echo "<th>".__('State of the virtual machine')."</th>";
-         echo "<th>".__('UUID')."</th>";
-         echo "<th>"._x('quantity', 'Processors number')."</th>";
-         echo "<th>".sprintf(__('%1$s (%2$s)'), __('Memory'),__('Mio'))."</th>";
-         echo "<th>".__('Machine')."</th>";
-         echo "</tr>";
-
+         $header .= "<th>".__('Virtualization system')."</th>";
+         $header .= "<th>".__('Virtualization model')."</th>";
+         $header .= "<th>".__('State of the virtual machine')."</th>";
+         $header .= "<th>".__('UUID')."</th>";
+         $header .= "<th>"._x('quantity', 'Processors number')."</th>";
+         $header .= "<th>".sprintf(__('%1$s (%2$s)'), __('Memory'),__('Mio'))."</th>";
+         $header .= "<th>".__('Machine')."</th>";
+         $header .= "</tr>";
+         echo $header;
+         
          $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $vm->getFromDB($virtualmachine['id']);
@@ -386,13 +395,10 @@ class ComputerVirtualMachine extends CommonDBChild {
             Session::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
 
          }
+         echo $header;
       }
 
-      if ($canedit) {
-         echo "<tr class='tab_bg_1'><td colspan='8' class='center'>";
-         echo "<a class='vsubmit' href='computervirtualmachine.form.php?computers_id=$ID'>".
-                __('Add a virtual machine')."</a></td></tr>";
-      }
+
 
       echo "</table>";
       echo "</div>";

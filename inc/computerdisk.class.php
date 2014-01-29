@@ -232,6 +232,16 @@ class ComputerDisk extends CommonDBChild {
       }
       $canedit = $comp->canEdit($ID);
 
+
+      if ($canedit
+            && !(!empty($withtemplate) && ($withtemplate == 2))) {
+         echo "<div class='center firstbloc'>".
+            "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
+                  $withtemplate."'>";
+         _e('Add a volume');
+         echo "</a></div>\n";
+      }
+
       echo "<div class='center'>";
 
       $query = "SELECT `glpi_filesystems`.`name` AS fsname,
@@ -251,17 +261,19 @@ class ComputerDisk extends CommonDBChild {
          echo "<tr><th colspan='$colspan'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
          if ($DB->numrows($result)) {
-            echo "<tr><th>".__('Name')."</th>";
+         
+            $header = "<tr><th>".__('Name')."</th>";
             if (Plugin::haveImport()) {
-               echo "<th>".__('Automatic inventory')."</th>";
+               $header .= "<th>".__('Automatic inventory')."</th>";
             }
-            echo "<th>".__('Partition')."</th>";
-            echo "<th>".__('Mount point')."</th>";
-            echo "<th>".__('File system')."</th>";
-            echo "<th>".__('Global size')."</th>";
-            echo "<th>".__('Free size')."</th>";
-            echo "<th>".__('Free percentage')."</th>";
-            echo "</tr>";
+            $header .= "<th>".__('Partition')."</th>";
+            $header .= "<th>".__('Mount point')."</th>";
+            $header .= "<th>".__('File system')."</th>";
+            $header .= "<th>".__('Global size')."</th>";
+            $header .= "<th>".__('Free size')."</th>";
+            $header .= "<th>".__('Free percentage')."</th>";
+            $header .= "</tr>";
+            echo $header;
 
             Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
@@ -296,17 +308,11 @@ class ComputerDisk extends CommonDBChild {
                echo "</tr>";
                Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
-
+            echo $header;
          } else {
             echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
          }
 
-         if ($canedit
-             && !(!empty($withtemplate) && ($withtemplate == 2))) {
-            echo "<tr class='tab_bg_2'><td colspan='$colspan' class='center'>";
-            echo "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
-                   $withtemplate."'>".__('Add a volume')."</a></td></tr>";
-         }
          echo "</table>";
       }
       echo "</div><br>";
