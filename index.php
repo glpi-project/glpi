@@ -151,6 +151,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             _e('Checking write permissions for session files');
             echo "<br>".GLPI_SESSION_DIR;
             break;
+         case 3 :
+            _e('Invalid use of session ID');
+            break;
       }
    }
    echo "</div>";
