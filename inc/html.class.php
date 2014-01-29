@@ -52,14 +52,14 @@ class Html {
       $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
 
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
+      $value         = preg_replace($specialfilter, '', $value);
 
       $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
                              '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
                              '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
                              '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
 
-      $value = preg_replace($search, ' ', $value);
+      $value = preg_replace($search, '', $value);
 
       $value = preg_replace("/(&nbsp;| )+/", " ", $value);
       // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
