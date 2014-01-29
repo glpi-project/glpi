@@ -957,11 +957,16 @@ class MailCollector  extends CommonDBTM {
    ///return supported encodings in lowercase.
    function mb_list_lowerencodings() {
 
-      $r = mb_list_encodings();
-      for ($n=sizeOf($r) ; $n-- ; ) {
-         $r[$n] = Toolbox::strtolower($r[$n]);
+      // Encoding not listed
+      $enc = array('gb2312', 'gb18030');
+      foreach (mb_list_encodings() as $encoding) {
+         $enc[] = Toolbox::strtolower($encoding);
+         $aliases = mb_encoding_aliases($encoding);
+         foreach ($aliases as $e) {
+            $enc[] = Toolbox::strtolower($e);
+         }
       }
-      return $r;
+      return $enc;
    }
 
 
@@ -1003,12 +1008,10 @@ class MailCollector  extends CommonDBTM {
                if (in_array($mimeStr->charset, $encodings)) {
                   $this->charset = $mimeStr->charset;
                }
-
-//                $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
-//                                                   (in_array($mimeStr->charset, $encodings)
-//                                                       ? $mimeStr->charset : $fallbackCharset));
-               // Try not to use fallback charset in order to manage encodings not listed by mbstring
-               $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset);
+      
+               $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
+                                                  (in_array($mimeStr->charset, $encodings)
+                                                      ? $mimeStr->charset : $fallbackCharset));
             }
          }
          return $decodedStr;
@@ -1451,7 +1454,6 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
-
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
