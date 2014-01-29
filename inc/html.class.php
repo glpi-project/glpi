@@ -52,13 +52,13 @@ class Html {
    static function clean($value) {
 
       $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
+      $value         = preg_replace($specialfilter, '', $value);
       $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
+      $value         = preg_replace($specialfilter, '', $value);
       $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
+      $value         = preg_replace($specialfilter, '', $value);
       $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
+      $value         = preg_replace($specialfilter, '', $value);
 
       $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
       $value = preg_replace("/(&nbsp;| )+/", " ", $value);
@@ -67,7 +67,7 @@ class Html {
       $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
                               );
 
-      $value = preg_replace($search, ' ', $value);
+      $value = preg_replace($search, '', $value);
 
       include_once(GLPI_HTMLAWED);
 
