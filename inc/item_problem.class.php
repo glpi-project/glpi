@@ -131,7 +131,7 @@ class Item_Problem extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='right'>";
+         echo "<tr class='tab_bg_1'><td>";
          $types = array();
          foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
@@ -143,7 +143,7 @@ class Item_Problem extends CommonDBRelation{
                                                           ?getSonsOf('glpi_entities',
                                                                      $problem->fields['entities_id'])
                                                           :$problem->fields['entities_id'])));
-         echo "</td><td class='center'>";
+         echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";
          echo "</td></tr>";

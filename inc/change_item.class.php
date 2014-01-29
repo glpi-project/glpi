@@ -127,7 +127,7 @@ class Change_Item extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='right'>";
+         echo "<tr class='tab_bg_1'><td>";
          $types = array();
          foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
@@ -139,7 +139,7 @@ class Change_Item extends CommonDBRelation{
                                                           ?getSonsOf('glpi_entities',
                                                                      $change->fields['entities_id'])
                                                           :$change->fields['entities_id'])));
-         echo "</td><td class='center'>";
+         echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
          echo "</td></tr>";
@@ -155,17 +155,22 @@ class Change_Item extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
 
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr>";
+      echo "<table class='tab_cadre_fixehov'>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Type')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Serial number')."</th>";
-      echo "<th>".__('Inventory number')."</th></tr>";
-
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".__('Serial number')."</th>";
+      $header_end .= "<th>".__('Inventory number')."</th></tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
@@ -234,10 +239,10 @@ class Change_Item extends CommonDBRelation{
             $totalnb += $nb;
          }
       }
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>".
-             (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
-      echo "</td><td colspan='4'>&nbsp;</td></tr> ";
+
+      if ($number) {
+         echo $header_begin.$header_bottom.$header_end;
+      }
 
       echo "</table>";
       if ($canedit && $number) {

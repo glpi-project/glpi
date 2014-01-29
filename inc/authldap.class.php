@@ -513,10 +513,10 @@ class AuthLDAP extends CommonDBTM {
          $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'massAuthLdapReplicate'.$rand);
          Html::showMassiveActions($massiveactionparams);
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixehov'>";
 
          echo "<input type='hidden' name='id' value='$ID'>";
-         echo "<tr><th colspan='4'>".__('List of LDAP directory replicates') . "</th></tr>";
+         echo "<tr class='noHover'><th colspan='4'>".__('List of LDAP directory replicates') . "</th></tr>";
 
          if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
             echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
@@ -524,13 +524,14 @@ class AuthLDAP extends CommonDBTM {
             echo"</td></tr>";
             unset($_SESSION["LDAP_TEST_MESSAGE"]);
          }
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
-         echo "<th class='center b'>".__('Name')."</th>";
-         echo "<th class='center b'>".__('List of LDAP directory replicates')."</th>".
+         $header_begin = "<tr>";
+         $header_top = "<th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
+         $header_bottom = "<th>".Html::getCheckAllAsCheckbox('massAuthLdapReplicate'.$rand)."</th>";
+         $header_end = "<th class='center b'>".__('Name')."</th>";
+         $header_end .= "<th class='center b'>"._n('Replicate', 'Replicates', 1)."</th>".
               "<th class='center'></th></tr>";
-
+         echo $header_begin.$header_top.$header_end;
+         
          while ($ldap_replicate = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
             Html::showMassiveActionCheckBox('AuthLdapReplicate', $ldap_replicate["id"]);
@@ -546,6 +547,7 @@ class AuthLDAP extends CommonDBTM {
                                        'ldap_replicate_id' => $ldap_replicate["id"]));
             echo "</td></tr>";
          }
+         echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions($massiveactionparams);
