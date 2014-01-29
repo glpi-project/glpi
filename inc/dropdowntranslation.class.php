@@ -474,7 +474,7 @@ class DropdownTranslation extends CommonDBChild {
       if ($ID > 0) {
          echo "<input type='hidden' name='field' value='".$this->fields['field']."'>";
          $searchOption = $item->getSearchOptionByField('field', $this->fields['field']);
-         echo $searchOption['name'];getForbiddenStandardMassiveAction
+         echo $searchOption['name'];
       } else {
          echo "<span id='span_fields' name='span_fields'>";
          self::dropdownFields($item, $_SESSION['glpilanguage']);
