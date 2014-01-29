@@ -409,21 +409,22 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
 
       echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'), $this->getTreeLink());
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'), $this->getTreeLink());
       echo "</th></tr>";
 
-      echo "<tr><th>".__('Name')."</th>";
+      $header = "<tr><th>".__('Name')."</th>";
       if ($entity_assign) {
-         echo "<th>".__('Entity')."</th>";
+         $header .= "<th>".__('Entity')."</th>";
       }
       foreach ($fields as $field) {
          if ($field['list']) {
-            echo "<th>".$field['label']."</th>";
+            $header .= "<th>".$field['label']."</th>";
          }
       }
-      echo "<th>".__('Comments')."</th>";
-      echo "</tr>\n";
+      $header .= "<th>".__('Comments')."</th>";
+      $header .= "</tr>\n";
+      echo $header;
 
       $fk   = $this->getForeignKeyField();
       $crit = array($fk     => $ID,
@@ -437,8 +438,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $crit['entities_id'] = $_SESSION['glpiactiveentities'];
          }
       }
-
+      $nb = 0;
       foreach ($DB->request($this->getTable(), $crit) as $data) {
+         $nb++;
          echo "<tr class='tab_bg_1'>";
          echo "<td><a href='".$this->getFormURL();
          echo '?id='.$data['id']."'>".$data['name']."</a></td>";
@@ -471,6 +473,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
          echo "<td>".$data['comment']."</td>";
          echo "</tr>\n";
+      }
+      if ($nb) {
+         echo $header;
       }
       echo "</table></div>\n";
    }

@@ -725,14 +725,19 @@ class Group extends CommonTreeDropdown {
                                                        'changegroup' => __('Move')) );
          Html::showMassiveActions($massiveactionparams);
 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         echo "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin = "<tr><th width='10'>";
+         $header_top = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_end = '</th>';
+
+         $header_end .= "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
-            echo "<th>".sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
+            $header_end .= "<th>".sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
                  "</th>";
          }
-         echo "</tr>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
 
          $tuser = new User();
          $group = new Group();
@@ -763,6 +768,7 @@ class Group extends CommonTreeDropdown {
             }
             echo "</td></tr>";
          }
+         echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";

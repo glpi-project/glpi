@@ -179,15 +179,21 @@ class Profile_User extends CommonDBRelation {
 
       if ($num > 0) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr>";
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
          if ($canedit) {
-            echo "<th>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-            echo "</th>";
+            $header_begin .= "<th>";
+            $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end .= "</th>";
          }
-         echo "<th>"._n('Entity', 'Entities', 2)."</th>";
-         echo "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2), __('D=Dynamic, R=Recursive'));
-         echo "</th></tr>";
+         $header_end .= "<th>"._n('Entity', 'Entities', 2)."</th>";
+         $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2), __('D=Dynamic, R=Recursive'));
+         $header_end .= "</th></tr>";
+         echo $header_begin.$header_top.$header_end;
+         
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -238,6 +244,7 @@ class Profile_User extends CommonDBRelation {
              echo "<td>".$entname."</td>";
          echo "</tr>";
          }
+         echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
       } else {
          echo "<table class='tab_cadre_fixe'>";
@@ -325,7 +332,7 @@ class Profile_User extends CommonDBRelation {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
 
-      echo "<th colspan='$headerspan'>";
+      echo "<th class='noHover' colspan='$headerspan'>";
       printf(__('%1$s (%2$s)'), _n('User', 'Users', 2), __('D=Dynamic, R=Recursive'));
       echo "</th></tr>";
 
@@ -337,7 +344,7 @@ class Profile_User extends CommonDBRelation {
                                                 $entity->getName()));
 
          while ($data = $DB->fetch_assoc($result)) {
-            echo "<tr>";
+            echo "<tr class='noHover' >";
             $reduce_header = 0;
             if ($canedit && $nb) {
                echo "<th width='10'>";

@@ -3344,14 +3344,15 @@ class User extends CommonDBTM {
       }
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th>".__('Type')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Serial number')."</th>";
-      echo "<th>".__('Inventory number')."</th>";
-      echo "<th>".__('Status')."</th>";
-      echo "<th>&nbsp;</th></tr>";
-
+      $header = "<tr><th>".__('Type')."</th>";
+      $header .= "<th>".__('Entity')."</th>";
+      $header .= "<th>".__('Name')."</th>";
+      $header .= "<th>".__('Serial number')."</th>";
+      $header .= "<th>".__('Inventory number')."</th>";
+      $header .= "<th>".__('Status')."</th>";
+      $header .= "<th>&nbsp;</th></tr>";
+      echo $header;
+      
       foreach ($type_user as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -3415,10 +3416,14 @@ class User extends CommonDBTM {
             }
          }
       }
+      if ($number) {
+         echo $header;
+      }
       echo "</table></div>";
 
       if (!empty($group_where)) {
-         echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr>".
+         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+         $header = "<tr>".
                "<th>".__('Type')."</th>".
                "<th>".__('Entity')."</th>".
                "<th>".__('Name')."</th>".
@@ -3426,7 +3431,8 @@ class User extends CommonDBTM {
                "<th>".__('Inventory number')."</th>".
                "<th>".__('Status')."</th>".
                "<th>&nbsp;</th></tr>";
-
+         echo $header;
+         $nb = 0;
          foreach ($type_group as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                continue;
@@ -3450,6 +3456,7 @@ class User extends CommonDBTM {
 
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_assoc($result)) {
+                     $nb++;
                      $cansee = $item->can($data["id"], READ);
                      $link   = $data["name"];
                      if ($cansee) {
@@ -3491,6 +3498,9 @@ class User extends CommonDBTM {
                   }
                }
             }
+         }
+         if ($nb) {
+            echo $header;
          }
          echo "</table></div>";
       }
