@@ -59,7 +59,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
+      $forbidden[] = 'update';
       return $forbidden;
    }
 

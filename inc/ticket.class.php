@@ -89,12 +89,12 @@ class Ticket extends CommonITILObject {
 
       // TODO: why not trying to do that inside MassiveAction::getAllMassiveActions ?
       if (!self::canUpdate()) {
-         $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
+         $forbidden[] = 'update';
       }
       if (!Session::haveRightsOr(self::$rightname, array(DELETE, PURGE))) {
-         $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete';
-         $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge';
-         $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore';
+         $forbidden[] = 'delete';
+         $forbidden[] = 'purge';
+         $forbidden[] = 'restore';
       }
 
       return $forbidden;

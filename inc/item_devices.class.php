@@ -87,7 +87,7 @@ class Item_Devices extends CommonDBRelation {
 
       if ((count(static::getSpecificities()) == 0)
           && !InfoCom::canApplyOn($this)) {
-         $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
+         $forbidden[] = 'update';
       }
 
       return $forbidden;
