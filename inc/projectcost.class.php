@@ -348,7 +348,7 @@ class ProjectCost extends CommonDBChild {
       $total = 0;
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='5'>".self::getTypeName($DB->numrows($result))."</th></tr>";
+         echo "<tr class='noHover'><th colspan='5'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
          if ($DB->numrows($result)) {
             echo "<tr><th>".__('Name')."</th>";

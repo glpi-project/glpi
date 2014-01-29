@@ -304,7 +304,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
+      echo "<tr class='noHover'><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -323,6 +323,7 @@ class Problem_Ticket extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
+         Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
       }
       echo "</table>";
       if ($canedit && $numrows) {
@@ -406,7 +407,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
+      echo "<tr class='noHover'><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -424,6 +425,7 @@ class Problem_Ticket extends CommonDBRelation{
                                                   'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
+         Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
       }
 
       echo "</table>";

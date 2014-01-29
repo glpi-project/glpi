@@ -1534,15 +1534,20 @@ class KnowbaseItem extends CommonDBTM {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $nb) {
-         echo "<th width='10'>";
-         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-         echo "</th>";
+         $header_begin .= "<th width='10'>";
+         $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_end .= "</th>";
       }
-      echo "<th>".__('Type')."</th>";
-      echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
-      echo "</tr>";
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
 
       // Users
       if (count($this->users)) {
@@ -1648,7 +1653,10 @@ class KnowbaseItem extends CommonDBTM {
             }
          }
       }
-
+      if ($nb) {
+         echo $header_begin.$header_bottom.$header_end;
+      }
+      
       echo "</table>";
       if ($canedit && $nb) {
          $massiveactionparams['ontop'] =false;

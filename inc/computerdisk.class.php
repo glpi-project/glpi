@@ -258,7 +258,7 @@ class ComputerDisk extends CommonDBChild {
          if (Plugin::haveImport()) {
             $colspan++;
          }
-         echo "<tr><th colspan='$colspan'>".self::getTypeName($DB->numrows($result))."</th></tr>";
+         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
          if ($DB->numrows($result)) {
          

@@ -630,23 +630,25 @@ class SoftwareLicense extends CommonDBTM {
 
             echo "<table class='tab_cadre_fixehov'>";
 
-            $header = "<tr><th>";
-            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header .= "</th>";
+
+            $header_begin = "<tr><th>";
+            $header_top = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end = '';
 
             foreach ($columns as $key => $val) {
                // Non order column
                if ($key[0] == '_') {
-                  $header .= "<th>$val</th>";
+                  $header_end .= "<th>$val</th>";
                } else {
-                  $header .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+                  $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                            (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
             }
 
-            $header .= "</tr>\n";
-            echo $header;
+            $header_end .= "</tr>\n";
+            echo $header_begin.$header_top.$header_end;
 
             $tot_assoc = 0;
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {

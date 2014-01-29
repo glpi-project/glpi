@@ -748,7 +748,7 @@ class Project extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
+      echo "<tr class='noHover'><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
       if ($numrows) {
          Project::commonListHeader();
          Session::initNavigateListItems('Project',
@@ -763,6 +763,7 @@ class Project extends CommonDBTM {
             Project::showShort($data['id'], array('row_num' => $i));
             $i++;
          }
+         Project::commonListHeader();
       }
       echo "</table>";
       echo "</div>\n";
@@ -1030,15 +1031,20 @@ class Project extends CommonDBTM {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $nb) {
-         echo "<th width='10'>";
-         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-         echo "</th>";
+         $header_top .= "<th width='10'>";
+         $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_end .= "</th>";
       }
-      echo "<th>".__('Type')."</th>";
-      echo "<th>"._n('Member', 'Members', 2)."</th>";
-      echo "</tr>";
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Member', 'Members', 2)."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
 
       foreach (ProjectTeam::$available_types as $type) {
          if (isset($project->team[$type]) && count($project->team[$type])) {
@@ -1057,6 +1063,9 @@ class Project extends CommonDBTM {
                }
             }
          }
+      }
+      if ($nb) {
+         echo $header_begin.$header_bottom.$header_end;
       }
 
       echo "</table>";

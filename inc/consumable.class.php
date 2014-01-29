@@ -499,25 +499,27 @@ class Consumable extends CommonDBChild {
 
       if ($number) {
          $i = 0;
-         $header = "<tr>";
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
          if ($canedit) {
-            $header .= "<th width='10'>";
-            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header .= "</th>";
+            $header_begin .= "<th width='10'>";
+            $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end .= "</th>";
          }
-         $header .= "<th>".__('ID')."</th>";
-         $header .= "<th>"._x('item', 'State')."</th>";
-         $header .= "<th>".__('Add date')."</th>";
+         $header_end .= "<th>".__('ID')."</th>";
+         $header_end .= "<th>"._x('item', 'State')."</th>";
+         $header_end .= "<th>".__('Add date')."</th>";
          if ($show_old) {
-            $header .= "<th>".__('Use date')."</th>";
-            $header .= "<th>".__('Given to')."</th>";
+            $header_end .= "<th>".__('Use date')."</th>";
+            $header_end .= "<th>".__('Given to')."</th>";
          }
-         $header .= "<th width='200px'>".__('Financial and administrative information')."</th>";
-         $header .= "</tr>";
-         echo $header;
-      }
+         $header_end .= "<th width='200px'>".__('Financial and administrative information')."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
 
-      if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
@@ -546,7 +548,7 @@ class Consumable extends CommonDBChild {
             echo "</td>";
             echo "</tr>";
          }
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       }
       echo "</table>";
       if ($canedit && $number) {
