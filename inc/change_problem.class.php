@@ -188,7 +188,7 @@ class Change_Problem extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Change::getTypeName($numrows)."</th>";
+      echo "<tr class='noHover'><th colspan='12'>".Change::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -206,6 +206,7 @@ class Change_Problem extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
+         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 
@@ -283,7 +284,7 @@ class Change_Problem extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
+      echo "<tr class='noHover'><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -301,6 +302,7 @@ class Change_Problem extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
+         Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 

@@ -339,19 +339,23 @@ class Document_Item extends CommonDBRelation{
       }
       echo "<table class='tab_cadre_fixehov'>";
       
-      $header = "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
 
       if ($canedit && $number) {
-         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
 
-      $header .= "<th>".__('Type')."</th>";
-      $header .= "<th>".__('Name')."</th>";
-      $header .= "<th>".__('Entity')."</th>";
-      $header .= "<th>".__('Serial number')."</th>";
-      $header .= "<th>".__('Inventory number')."</th>";
-      $header .= "</tr>";
-      echo $header;
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".__('Serial number')."</th>";
+      $header_end .= "<th>".__('Inventory number')."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
 
       for ($i=0 ; $i < $number ; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
@@ -464,7 +468,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       if ($number) {
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       }
       echo "</table>";
       if ($canedit && $number) {
@@ -699,9 +703,13 @@ class Document_Item extends CommonDBRelation{
 
       echo "<table class='tab_cadre_fixehov'>";
 
-      $header = "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number && ($withtemplate < 2)) {
-         $header .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       $columns = array('name'      => __('Name'),
                        'entity'    => __('Entity'),
@@ -715,13 +723,14 @@ class Document_Item extends CommonDBRelation{
       $columns['assocdate'] = __('Date');
 
       foreach ($columns as $key => $val) {
-         $header .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+         $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
                "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
       }
 
-      $header .= "</tr>";
-      echo $header;
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       $used = array();
 
       if ($number) {
@@ -782,7 +791,7 @@ class Document_Item extends CommonDBRelation{
             echo "</tr>";
             $i++;
          }
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       }
 
 

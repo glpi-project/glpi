@@ -737,13 +737,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $nb_colonnes = count($colonnes);
 
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket')."</th></tr>";
+         echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket')."</th></tr>";
 
-         echo "<tr>";
+         $header = "<tr>";
          foreach ($colonnes as $colonne) {
-            echo "<th>".$colonne."</th>";
+            $header .= "<th>".$colonne."</th>";
          }
-         echo "</tr>";
+         $header .= "</tr>";
+         echo $header;
 
          Session::initNavigateListItems($this->getType(),
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
@@ -788,6 +789,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td>".$row["comment_validation"]."</td>";
             echo "</tr>";
          }
+         echo $header;
          echo "</table>";
       } else {
          echo "<div class='center b'>".__('No item found')."</div>";

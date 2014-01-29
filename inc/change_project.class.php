@@ -182,7 +182,7 @@ class Change_Project extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Change::getTypeName($numrows)."</th></tr>";
+      echo "<tr class='noHover'><th colspan='12'>".Change::getTypeName($numrows)."</th></tr>";
       if ($numrows) {
          Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Change',
@@ -199,6 +199,7 @@ class Change_Project extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
+         Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 
@@ -276,7 +277,7 @@ class Change_Project extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
+      echo "<tr class='noHover'><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
       if ($numrows) {
          Project::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Project',
@@ -293,6 +294,7 @@ class Change_Project extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
+         Project::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 

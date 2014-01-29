@@ -777,7 +777,7 @@ class ProjectTask extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            echo "<table class='tab_cadre_fixehov'><tr>";
+            echo "<table class='tab_cadre_fixehov'>";
 
             $columns = array('name'             => self::getTypeName(2),
                              'tname'            => __('Type'),
@@ -791,19 +791,21 @@ class ProjectTask extends CommonDBChild {
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
+            $header = '<tr>';
             foreach ($columns as $key => $val) {
                // Non order column
                if ($key[0] == '_') {
-                  echo "<th>$val</th>";
+                  $header .= "<th>$val</th>";
                } else {
-                  echo "<th>".(($sort == "`$key`") ?$sort_img:"").
+                  $header .= "<th>".(($sort == "`$key`") ?$sort_img:"").
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                            (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
             }
-
-            echo "</tr>\n";
-            for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
+            $header .= "</tr>\n";
+            echo $header;
+            
+            while ($data=$DB->fetch_assoc($result)) {
                Session::addToNavigateListItems('ProjectTask',$data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
@@ -829,9 +831,7 @@ class ProjectTask extends CommonDBChild {
                echo "<td>".Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']).
                     "</td></tr>";
             }
-
-            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='1'>".__('Total')."</td>";
-            echo "<td class='numeric b'>$tot</td></tr>";
+            echo $header;
             echo "</table>\n";
 
          } else {
@@ -949,14 +949,19 @@ class ProjectTask extends CommonDBChild {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $nb) {
-         echo "<th width='10'>".Html::checkAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Type')."</th>";
-      echo "<th>"._n('Member', 'Members', 2)."</th>";
-      echo "</tr>";
-
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>"._n('Member', 'Members', 2)."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       foreach (ProjectTaskTeam::$available_types as $type) {
          if (isset($task->team[$type]) && count($task->team[$type])) {
             if ($item = getItemForItemtype($type)) {
@@ -975,7 +980,9 @@ class ProjectTask extends CommonDBChild {
             }
          }
       }
-
+      if ($nb) {
+         echo $header_begin.$header_bottom.$header_end;
+      }
       echo "</table>";
       if ($canedit && $nb) {
          $massiveactionparams['ontop'] =false;

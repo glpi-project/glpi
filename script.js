@@ -472,6 +472,7 @@ function checkAsCheckboxes( reference_id, container_id ) {
 
    var ref        =  document.getElementById(reference_id);
    var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
+
    for (var j=0 ; j<checkboxes.length ; j++ ) {
       checkbox = checkboxes[j];
       if (checkbox && (checkbox.type == 'checkbox')) {

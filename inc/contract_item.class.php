@@ -411,20 +411,24 @@ class Contract_Item extends CommonDBRelation{
       }
       echo "<table class='tab_cadre_fixehov'>";
 
-      $header = "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number && ($withtemplate != 2)) {
-         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
 
-      $header .= "<th>".__('Name')."</th>";
-      $header .= "<th>".__('Entity')."</th>";
-      $header .= "<th>"._x('phone', 'Number')."</th>";
-      $header .= "<th>".__('Contract type')."</th>";
-      $header .= "<th>".__('Supplier')."</th>";
-      $header .= "<th>".__('Start date')."</th>";
-      $header .= "<th>".__('Initial contract period')."</th>";
-      $header .= "</tr>";
-      echo $header;
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>"._x('phone', 'Number')."</th>";
+      $header_end .= "<th>".__('Contract type')."</th>";
+      $header_end .= "<th>".__('Supplier')."</th>";
+      $header_end .= "<th>".__('Start date')."</th>";
+      $header_end .= "<th>".__('Initial contract period')."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
       
       if ($number > 0) {
          Session::initNavigateListItems(__CLASS__,
@@ -472,7 +476,7 @@ class Contract_Item extends CommonDBRelation{
             echo "</td>";
             echo "</tr>";
          }
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       }
 
       echo "</table>";

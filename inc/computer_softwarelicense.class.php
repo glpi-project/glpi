@@ -461,40 +461,44 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                           ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
             echo "<table class='tab_cadre_fixehov'>";
 
-            $columns = array('compname'      => __('Name'),
-                             'entity'    => __('Entity'),
-                             'serial'    => __('Serial number'),
-                             'otherserial'    => __('Inventory number'),
+            $columns = array('compname'          => __('Name'),
+                             'entity'            => __('Entity'),
+                             'serial'            => __('Serial number'),
+                             'otherserial'       => __('Inventory number'),
                              'location,compname' => __('Location'),
-                             'state,compname'  => __('Status'),
+                             'state,compname'    => __('Status'),
                              'groupe,compname'   => __('Group'),
-                             'username,compname'   => __('User'));
+                             'username,compname' => __('User'));
             if (!$showEntity) {
                unset($columns['entity']);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
-            $header = "<tr>";
+            $header_begin = "<tr>";
+            $header_top = '';
+            $header_bottom = '';
+            $header_end = '';
             if ($canedit) {
-               $header .= "<th width='10'>";
-               $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-               $header .= "</th>";
+               $header_begin .= "<th width='10'>";
+               $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+               $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+               $header_end .= "</th>";
             }
 
             foreach ($columns as $key => $val) {
                // Non order column
                if ($key[0] == '_') {
-                  $header .= "<th>$val</th>";
+                  $header_end .= "<th>$val</th>";
                } else {
-                  $header .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+                  $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                            (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
             }
 
-            $header .= "</tr>\n";
-            echo $header;
+            $header_end .= "</tr>\n";
+            echo $header_begin.$header_top.$header_end;
             
             do {
                Session::addToNavigateListItems('Computer',$data["cID"]);
@@ -528,7 +532,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                echo "</tr>\n";
 
             } while ($data=$DB->fetch_assoc($result));
-            echo $header;
+            echo $header_begin.$header_bottom.$header_end;
             echo "</table>\n";
             if ($canedit) {
                $massiveactionparams['ontop'] = false;

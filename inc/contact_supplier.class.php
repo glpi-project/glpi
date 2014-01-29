@@ -206,18 +206,22 @@ class Contact_Supplier extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      $header = "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number) {
-         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      $header .= "<th>".__('Supplier')."</th>";
-      $header .= "<th>".__('Entity')."</th>";
-      $header .= "<th>".__('Third party type')."</th>";
-      $header .= "<th>". __('Phone')."</th>";
-      $header .= "<th>".__('Fax')."</th>";
-      $header .= "<th>".__('Website')."</th>";
-      $header .= "</tr>";
-      echo $header;
+      $header_end .= "<th>".__('Supplier')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".__('Third party type')."</th>";
+      $header_end .= "<th>". __('Phone')."</th>";
+      $header_end .= "<th>".__('Fax')."</th>";
+      $header_end .= "<th>".__('Website')."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
       
       $used = array();
       if ($number > 0) {
@@ -259,7 +263,7 @@ class Contact_Supplier extends CommonDBRelation{
             echo "</tr>";
 
          }
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       }
 
 
@@ -337,20 +341,24 @@ class Contact_Supplier extends CommonDBRelation{
       }
       echo "<table class='tab_cadre_fixehov'>";
 
-      $header = "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number) {
-         $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      $header .= "<th>".__('Name')."</th>";
-      $header .= "<th>".__('Entity')."</th>";
-      $header .= "<th>". __('Phone')."</th>";
-      $header .= "<th>". __('Phone 2')."</th>";
-      $header .= "<th>".__('Mobile phone')."</th>";
-      $header .= "<th>".__('Fax')."</th>";
-      $header .= "<th>"._n('Email', 'Emails', 1)."</th>";
-      $header .= "<th>".__('Type')."</th>";
-      $header .= "</tr>";
-      echo $header;
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>". __('Phone')."</th>";
+      $header_end .= "<th>". __('Phone 2')."</th>";
+      $header_end .= "<th>".__('Mobile phone')."</th>";
+      $header_end .= "<th>".__('Fax')."</th>";
+      $header_end .= "<th>"._n('Email', 'Emails', 1)."</th>";
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
 
       $used = array();
       if ($number) {
@@ -383,7 +391,7 @@ class Contact_Supplier extends CommonDBRelation{
                                                                  $data["contacttypes_id"])."</td>";
             echo "</tr>";
          }
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       }
 
       echo "</table>";

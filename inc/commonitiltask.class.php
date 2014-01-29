@@ -1353,19 +1353,22 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>&nbsp;</th><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         echo "<th>" . __('Description') . "</th><th>" .  __('Duration') . "</th>";
-         echo "<th>" . __('Writer') . "</th>";
+         
+         $header = "<tr><th>&nbsp;</th><th>".__('Type')."</th><th>" . __('Date') . "</th>";
+         $header .= "<th>" . __('Description') . "</th><th>" .  __('Duration') . "</th>";
+         $header .= "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
-            echo "<th>" . __('Private') . "</th>";
+            $header .= "<th>" . __('Private') . "</th>";
          }
-         echo "<th>" . __('Planning') . "</th></tr>\n";
+         $header .= "<th>" . __('Planning') . "</th></tr>\n";
+         echo $header;
 
          while ($data = $DB->fetch_assoc($result)) {
             if ($this->getFromDB($data['id'])) {
                $this->showInObjectSumnary($item, $rand, $showprivate);
             }
          }
+         echo $header;
          echo "</table>";
       }
    }

@@ -661,26 +661,30 @@ class Cartridge extends CommonDBChild {
          }
          $i = 0;
          
-         $header = "<tr>";
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
+         
          if ($canedit && $number) {
-            $header .= "<th width='10'>";
-            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header .= "</th>";
+            $header_begin .= "<th width='10'>";
+            $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end .= "</th>";
          }
-         $header .= "<th>".__('ID')."</th>";
-         $header .= "<th>"._x('item', 'State')."</th>";
-         $header .= "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
-         $header .= "<th>".__('Used on')."</th>";
-
+         $header_end .= "<th>".__('ID')."</th>";
+         $header_end .= "<th>"._x('item', 'State')."</th>";
+         $header_end .= "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
+         $header_end .= "<th>".__('Used on')."</th>";
 
          if ($show_old) {
-            $header .= "<th>".__('End date')."</th>";
-            $header .= "<th>".__('Printer counter')."</th>";
+            $header_end .= "<th>".__('End date')."</th>";
+            $header_end .= "<th>".__('Printer counter')."</th>";
          }
 
-         $header .= "<th width='18%'>".__('Financial and administrative information')."</th>";
-         $header .= "</tr>";
-         echo $header;
+         $header_end .= "<th width='18%'>".__('Financial and administrative information')."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
       }
 
       $pages = array();
@@ -769,7 +773,7 @@ class Cartridge extends CommonDBChild {
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='".($canedit?'3':'1')."'>&nbsp;</td></tr>";
          } else {
-            echo $header;
+            echo $header_begin.$header_bottom.$header_end;
          }
       }
 
@@ -914,25 +918,33 @@ class Cartridge extends CommonDBChild {
       }
       echo "<table class='tab_cadre_fixehov'>";
       if ($old == 0) {
-         echo "<tr><th colspan='".($canedit?'5':'4')."'>".__('Used cartridges')."</th></tr>";
+         echo "<tr class='noHover'><th colspan='".($canedit?'5':'4')."'>".__('Used cartridges')."</th></tr>";
       } else {
-         echo "<tr><th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th></tr>";
+         echo "<tr class='noHover'><th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th></tr>";
       }
-      echo "<tr>";
+      
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
+
       if ($canedit) {
-         echo "<th width='10'>";
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-         echo "</th>";
+         $header_begin .= "<th width='10'>";
+         $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_end .= "</th>";
       }
-      echo "<th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
-      echo "<th>".__('Add date')."</th>";
-      echo "<th>".__('Use date')."</th>";
+      $header_end .= "<th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
+      $header_end .= "<th>".__('Add date')."</th>";
+      $header_end .= "<th>".__('Use date')."</th>";
       if ($old != 0) {
-         echo "<th>".__('End date')."</th>";
-         echo "<th>".__('Printer counter')."</th>";
-         echo "<th>".__('Printed pages')."</th>";
+         $header_end .= "<th>".__('End date')."</th>";
+         $header_end .= "<th>".__('Printer counter')."</th>";
+         $header_end .= "<th>".__('Printed pages')."</th>";
       }
-      echo "</tr>";
+      $header_end .= "</tr>";
+      echo $header_begin.$header_top.$header_end;
+      
       $stock_time       = 0;
       $use_time         = 0;
       $pages_printed    = 0;
@@ -1004,6 +1016,7 @@ class Cartridge extends CommonDBChild {
          }
          echo "</tr>";
       }
+
       if ($old) { // Print average
          if ($number > 0) {
             if ($nb_pages_printed == 0) {
@@ -1021,6 +1034,7 @@ class Cartridge extends CommonDBChild {
             echo "</tr>";
          }
       }
+      
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;

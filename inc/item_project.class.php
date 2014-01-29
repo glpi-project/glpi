@@ -155,15 +155,20 @@ class Item_Project extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr>";
+      $header_begin = "<tr>";
+      $header_top = '';
+      $header_bottom = '';
+      $header_end = '';
       if ($canedit && $number) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
-      echo "<th>".__('Type')."</th>";
-      echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Serial number')."</th>";
-      echo "<th>".__('Inventory number')."</th></tr>";
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>".__('Entity')."</th>";
+      $header_end .= "<th>".__('Name')."</th>";
+      $header_end .= "<th>".__('Serial number')."</th>";
+      $header_end .= "<th>".__('Inventory number')."</th></tr>";
+      echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {
@@ -234,11 +239,12 @@ class Item_Project extends CommonDBRelation{
             $totalnb += $nb;
          }
       }
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>".
-             (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) :"&nbsp;");
-      echo "</td><td colspan='4'>&nbsp;</td></tr> ";
-
+      if ($totalnb > 0) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' colspan='2'>".
+               (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) :"&nbsp;");
+         echo "</td><td colspan='4'>&nbsp;</td></tr> ";
+      }
       echo "</table>";
       if ($canedit && $number) {
          // TODO check because we switched from $paramsma to $massiveactionparams

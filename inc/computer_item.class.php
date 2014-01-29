@@ -424,22 +424,26 @@ class Computer_Item extends CommonDBRelation{
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr>";
-
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
+         
          if ($canedit) {
-            echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
          }
 
-         echo "<th>".__('Type')."</th>";
-         echo "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Name')."</th>";
          if (Plugin::haveImport()) {
-            echo "<th>".__('Automatic inventory')."</th>";
+            $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
-         echo "<th>".__('Entity')."</th>";
-         echo "<th>".__('Serial number')."</th>";
-         echo "<th>".__('Inventory number')."</th>";
-         echo "</tr>";
-
+         $header_end .= "<th>".__('Entity')."</th>";
+         $header_end .= "<th>".__('Serial number')."</th>";
+         $header_end .= "<th>".__('Inventory number')."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
 
          foreach ($datas as $data) {
             $linkname = $data["name"];
@@ -473,10 +477,10 @@ class Computer_Item extends CommonDBRelation{
                    (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
             echo "</tr>";
          }
-
+         echo $header_begin.$header_bottom.$header_end;
+         
          echo "</table>";
          if ($canedit && $number) {
-            // TODO check because we switched from $paramsma to $massiveactionparams
             $massiveactionparams['ontop'] = false;
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
@@ -565,21 +569,25 @@ class Computer_Item extends CommonDBRelation{
       echo "<table class='tab_cadre_fixehov'>";
 
       if ($number > 0) {
-         $header = "<tr>";
+         $header_begin = "<tr>";
+         $header_top = '';
+         $header_bottom = '';
+         $header_end = '';
 
          if ($canedit) {
-            $header .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
          }
 
-         $header .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Name')."</th>";
          if (Plugin::haveImport()) {
-            $header .= "<th>".__('Automatic inventory')."</th>";
+            $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
-         $header .= "<th>".__('Entity')."</th>";
-         $header .= "<th>".__('Serial number')."</th>";
-         $header .= "<th>".__('Inventory number')."</th>";
-         $header .= "</tr>";
-         echo $header;
+         $header_end .= "<th>".__('Entity')."</th>";
+         $header_end .= "<th>".__('Serial number')."</th>";
+         $header_end .= "<th>".__('Inventory number')."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
          
          foreach ($compids as $key => $compid) {
             $comp->getFromDB($compid);
@@ -604,7 +612,7 @@ class Computer_Item extends CommonDBRelation{
             echo "<td class='center'>".$comp->getField('otherserial')."</td>";
             echo "</tr>";
          }
-         echo $header;
+         echo $header_begin.$header_bottom.$header_end;
       } else {
          echo "<tr><td class='tab_bg_1 b'><i>".__('Not connected')."</i>";
          echo "</td></tr>";
