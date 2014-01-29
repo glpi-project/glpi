@@ -380,12 +380,6 @@ class Infocom extends CommonDBChild {
    **/
    function prepareInputForUpdate($input) {
 
-      // TODO: Check because I replaced creation of a cloned infocom by $this
-      if (isset($input['warranty_duration'])) {
-         $input['_warranty_duration'] = $this->fields['warranty_duration'];
-      }
-
-
       //Check if one or more dates needs to be updated
       foreach (self::getAutoManagemendDatesFields() as $key => $field) {
          $result = Entity::getUsedConfig($key, $this->fields['entities_id']);
