@@ -71,9 +71,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["restore"])) {
+} else if (isset($_POST["backToStock"])) {
    $ri->check($_POST["id"], PURGE);
-   $ri->restore($_POST);
+   $ri->backToStock($_POST);
 
    Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login

@@ -193,7 +193,6 @@ class IPNetwork_Vlan extends CommonDBRelation {
       }
       echo "</table>";
       if ($canedit && $number) {
-         // TODO check because we switched from $paramsma to $massiveactionparams
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
