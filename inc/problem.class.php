@@ -1361,7 +1361,10 @@ class Problem extends CommonITILObject {
       // Ticket for the item
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
 
-      $colspan = 10;
+      $colspan = 11;
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $colspan++;
+      }
       if ($number > 0) {
 
          Session::initNavigateListItems('Problem',
@@ -1370,9 +1373,6 @@ class Problem extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
-         if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $colspan++;
-         }
          echo "<tr><th colspan='$colspan'>";
 
          //TRANS : %d is the number of problems
@@ -1385,7 +1385,6 @@ class Problem extends CommonITILObject {
       } else {
          echo "<tr><th>".__('No problem found.')."</th></tr>";
       }
-
       // Ticket list
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
@@ -1436,6 +1435,7 @@ class Problem extends CommonITILObject {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
+            self::commonListHeader(Search::HTML_OUTPUT);
          } else {
             echo "<tr><th>".__('No problem found.')."</th></tr>";
          }

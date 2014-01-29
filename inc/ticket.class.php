@@ -5217,6 +5217,12 @@ class Ticket extends CommonITILObject {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
+
+      $colspan = 11;
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $colspan++;
+      }
+      
       // Ticket for the item
       echo "<div class='firstbloc'>";
       // Link to open a new ticket
@@ -5238,7 +5244,7 @@ class Ticket extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
-         echo "<tr class='noHover'><th colspan='12'>";
+         echo "<tr class='noHover'><th colspan='$colspan'>";
          $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
          $link = "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
@@ -5252,7 +5258,7 @@ class Ticket extends CommonITILObject {
       if ($item->getID()
           && ($item->getType() == 'User')
           && self::canCreate()) {
-         echo "<tr><td class='tab_bg_2 center b' colspan='11'>";
+         echo "<tr><td class='tab_bg_2 center b' colspan='$colspan'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               array('_users_id_requester' => $item->getID()));
@@ -5303,6 +5309,7 @@ class Ticket extends CommonITILObject {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
+            self::commonListHeader(Search::HTML_OUTPUT);
          } else {
             echo "<tr><th>".__('No ticket found.')."</th></tr>";
          }
