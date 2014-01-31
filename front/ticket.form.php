@@ -138,7 +138,14 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
+
+   if ($track->can($_POST["id"],'r')) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
+   }
+   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
+                                    true, ERROR);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
+
 
 } else if (isset($_POST['delete_supplier'])) {
    $supplier_ticket = new Supplier_Ticket();
