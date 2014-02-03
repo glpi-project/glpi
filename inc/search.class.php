@@ -1078,6 +1078,10 @@ class Search {
       $parameters = "sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
                      $globallinkto;
 
+      if (isset($_GET['_in_modal'])) {
+         $parameters .= "&amp;_in_modal=1";
+      }
+                     
       // Global search header
       if ($data['display_type'] == self::GLOBAL_SEARCH) {
          if ($data['item']) {
@@ -1108,7 +1112,8 @@ class Search {
                }
             }
             $search_config = "";
-            if (Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
+            if (!isset($_GET['_in_modal'])
+                  && Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
                                                              DisplayPreference::GENERAL))) {
 
                $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".
