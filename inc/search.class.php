@@ -158,20 +158,20 @@ class Search {
       }
 
       // Clean criteria / metacriteria based on glpisearchcount / glpisearchcount2
-      if (isset($_SESSION["glpisearchcount"][$itemtype])) {
-         foreach ($p['criteria'] as $key => $val) {
-            if ($key >= $_SESSION["glpisearchcount"][$itemtype] ) {
-               unset($p['criteria'][$key]);
-            }
-         }
-      }
-      if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
-         foreach ($p['metacriteria'] as $key => $val) {
-            if ($key >= $_SESSION["glpisearchcount2"][$itemtype] ) {
-               unset($p['metacriteria'][$key]);
-            }
-         }
-      }
+//       if (isset($_SESSION["glpisearchcount"][$itemtype])) {
+//          foreach ($p['criteria'] as $key => $val) {
+//             if ($key >= $_SESSION["glpisearchcount"][$itemtype] ) {
+//                unset($p['criteria'][$key]);
+//             }
+//          }
+//       }
+//       if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
+//          foreach ($p['metacriteria'] as $key => $val) {
+//             if ($key >= $_SESSION["glpisearchcount2"][$itemtype] ) {
+//                unset($p['metacriteria'][$key]);
+//             }
+//          }
+//       }
 
       $data             = array();
       $data['search']   = $p;
@@ -1739,14 +1739,14 @@ class Search {
       $nbmetasearchcountvar = 'nbmetacriteria'.strtolower($itemtype).mt_rand();
       $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
       // init criteria count
-      $js = "var $nbsearchcountvar=".$_SESSION["glpisearchcount"][$itemtype].";";
-      $js .= "var $nbmetasearchcountvar=".$_SESSION["glpisearchcount2"][$itemtype].";";
+      $js = "var $nbsearchcountvar=".count($p['criteria']).";";
+      $js .= "var $nbmetasearchcountvar=".count($p['metacriteria']).";";
       echo Html::scriptBlock($js);
 
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_1'>";
 
-      if (($_SESSION["glpisearchcount"][$itemtype] + $_SESSION["glpisearchcount2"][$itemtype]) > 1) {
+      if ((count($p['criteria']) + count($p['metacriteria'])) > 1) {
          echo "<td width='10' class='center'>";
          echo "<a href=\"javascript:toggleTableDisplay('searchcriteriastable','searchcriteriasimg',
                                                        '".$CFG_GLPI["root_doc"].
@@ -1765,7 +1765,7 @@ class Search {
       echo "<table class='tab_format' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
-      for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
+      for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
          $_POST['num'] = $i ;
          include(GLPI_ROOT.'/ajax/searchrow.php');
@@ -1775,7 +1775,7 @@ class Search {
       $linked =  self::getMetaItemtypeAvailable($itemtype);
       
       if (is_array($linked) && (count($linked) > 0)) {
-         for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
+         for ($i=0 ; $i<count($p['metacriteria']) ; $i++) {
 
             $_POST['itemtype'] = $itemtype;
             $_POST['num'] = $i ;
@@ -4596,10 +4596,10 @@ class Search {
 
       unset($_SESSION['glpisearch']);
       $_SESSION['glpisearch']       = array();
-      unset($_SESSION['glpisearchcount']);
-      $_SESSION['glpisearchcount']  = array();
-      unset($_SESSION['glpisearchcount2']);
-      $_SESSION['glpisearchcount2'] = array();
+//       unset($_SESSION['glpisearchcount']);
+//       $_SESSION['glpisearchcount']  = array();
+//       unset($_SESSION['glpisearchcount2']);
+//       $_SESSION['glpisearchcount2'] = array();
    }
 
 
@@ -4727,28 +4727,28 @@ class Search {
          if (isset($_SESSION['glpisearch'][$itemtype])) {
             unset($_SESSION['glpisearch'][$itemtype]);
          }
-         if (isset($_SESSION['glpisearchcount'][$itemtype])) {
-            unset($_SESSION['glpisearchcount'][$itemtype]);
-         }
-         if (isset($_SESSION['glpisearchcount2'][$itemtype])) {
-            unset($_SESSION['glpisearchcount2'][$itemtype]);
-         }
+//          if (isset($_SESSION['glpisearchcount'][$itemtype])) {
+//             unset($_SESSION['glpisearchcount'][$itemtype]);
+//          }
+//          if (isset($_SESSION['glpisearchcount2'][$itemtype])) {
+//             unset($_SESSION['glpisearchcount2'][$itemtype]);
+//          }
       }
-      if ($usesession) {
-         // Bookmark use
-         if (isset($_GET["glpisearchcount"])) {
-            $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
-         } else if (isset($_GET["criteria"])) {
-            $_SESSION["glpisearchcount"][$itemtype] = count($_GET["criteria"]);
-         }
-
-         // Bookmark use
-         if (isset($_GET["glpisearchcount2"])) {
-            $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
-         } else if (isset($_GET["metacriteria"])) {
-            $_SESSION["glpisearchcount2"][$itemtype] = count($_GET["metacriteria"]);
-         }
-      }
+//       if ($usesession) {
+//          // Bookmark use
+//          if (isset($_GET["glpisearchcount"])) {
+//             $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
+//          } else if (isset($_GET["criteria"])) {
+//             $_SESSION["glpisearchcount"][$itemtype] = count($_GET["criteria"]);
+//          }
+// 
+//          // Bookmark use
+//          if (isset($_GET["glpisearchcount2"])) {
+//             $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
+//          } else if (isset($_GET["metacriteria"])) {
+//             $_SESSION["glpisearchcount2"][$itemtype] = count($_GET["metacriteria"]);
+//          }
+//       }
 
       if (isset($_GET)
           && is_array($_GET)
@@ -4770,21 +4770,21 @@ class Search {
          }
       }
 
-      if (!isset($_SESSION["glpisearchcount"][$itemtype])) {
-         if (isset($_GET["glpisearchcount"])) {
-            $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
-         } else {
-            $_SESSION["glpisearchcount"][$itemtype] = 1;
-         }
-      }
-      if (!isset($_SESSION["glpisearchcount2"][$itemtype])) {
-         // Set in URL for bookmark
-         if (isset($_GET["glpisearchcount2"])) {
-            $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
-         } else {
-            $_SESSION["glpisearchcount2"][$itemtype] = 0;
-         }
-      }
+//       if (!isset($_SESSION["glpisearchcount"][$itemtype])) {
+//          if (isset($_GET["glpisearchcount"])) {
+//             $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
+//          } else {
+//             $_SESSION["glpisearchcount"][$itemtype] = 1;
+//          }
+//       }
+//       if (!isset($_SESSION["glpisearchcount2"][$itemtype])) {
+//          // Set in URL for bookmark
+//          if (isset($_GET["glpisearchcount2"])) {
+//             $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
+//          } else {
+//             $_SESSION["glpisearchcount2"][$itemtype] = 0;
+//          }
+//       }
 
    }
 

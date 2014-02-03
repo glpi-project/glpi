@@ -370,7 +370,7 @@ class Bookmark extends CommonDBTM {
       switch ($type) {
          case self::SEARCH :
             $fields_toclean = array('add_search_count', 'add_search_count2', 'delete_search_count',
-                                    'delete_search_count2', 'glpisearchcount', 'glpisearchcount2',
+                                    'delete_search_count2', /*'glpisearchcount', 'glpisearchcount2',*/
                                     'start', '_glpi_csrf_token');
             foreach ($fields_toclean as $field) {
                if (isset($query_tab[$field])) {
@@ -379,17 +379,17 @@ class Bookmark extends CommonDBTM {
             }
 
             // Manage glpisearchcount / dclean if needed + store
-            if (isset($_SESSION["glpisearchcount"][$itemtype])) {
-               $query_tab['glpisearchcount'] = $_SESSION["glpisearchcount"][$itemtype];
-            } else {
-               $query_tab['glpisearchcount'] = 1;
-            }
-            // Manage glpisearchcount2 / dclean if needed + store
-            if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
-               $query_tab['glpisearchcount2'] = $_SESSION["glpisearchcount2"][$itemtype];
-            } else {
-               $query_tab['glpisearchcount2'] = 0;
-            }
+//             if (isset($_SESSION["glpisearchcount"][$itemtype])) {
+//                $query_tab['glpisearchcount'] = $_SESSION["glpisearchcount"][$itemtype];
+//             } else {
+//                $query_tab['glpisearchcount'] = 1;
+//             }
+//             // Manage glpisearchcount2 / dclean if needed + store
+//             if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
+//                $query_tab['glpisearchcount2'] = $_SESSION["glpisearchcount2"][$itemtype];
+//             } else {
+//                $query_tab['glpisearchcount2'] = 0;
+//             }
             break;
       }
       return $query_tab;
@@ -422,7 +422,7 @@ class Bookmark extends CommonDBTM {
                       && (!isset($opt[$val['field']])
                           || (isset($opt[$val['field']]['nosearch'])
                               && $opt[$val['field']]['nosearch']))) {
-                     $query_tab['glpisearchcount']--;
+//                      $query_tab['glpisearchcount']--;
                      $partial_load = true;
                   } else {
                      $query_tab['criteria'][$new_key] = $val;
@@ -430,9 +430,9 @@ class Bookmark extends CommonDBTM {
                   }
                }
             }
-            if ($query_tab['glpisearchcount'] == 0) {
-               $query_tab['glpisearchcount'] = 1;
-            }
+//             if ($query_tab['glpisearchcount'] == 0) {
+//                $query_tab['glpisearchcount'] = 1;
+//             }
 
             // Meta search
             if (isset($query_tab_save['metacriteria']) && count($query_tab_save['metacriteria'])) {
@@ -446,7 +446,7 @@ class Bookmark extends CommonDBTM {
                   // Use if meta type is valid and option available
                   if (!in_array($val['itemtype'], $meta_ok)
                       || !isset($opt[$val['field']])) {
-                     $query_tab['glpisearchcount2']--;
+//                      $query_tab['glpisearchcount2']--;
                      $partial_load = true;
                   } else {
                      $query_tab['metacriteria'][$new_key] = $val;

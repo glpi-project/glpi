@@ -111,8 +111,8 @@ class Session {
                $_SESSION["glpiusers_idisation"] = true;
                $_SESSION["glpiextauth"]         = $auth->extauth;
                $_SESSION["glpiauthtype"]        = $auth->user->fields['authtype'];
-               $_SESSION["glpisearchcount"]     = array();
-               $_SESSION["glpisearchcount2"]    = array();
+//                $_SESSION["glpisearchcount"]     = array();
+//                $_SESSION["glpisearchcount2"]    = array();
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                $_SESSION["glpicrontimer"]       = time();
