@@ -38,10 +38,10 @@ Session::checkLoginUser();
 
 Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
 
-Search::manageGetValues('DocumentType');
+$params = Search::manageParams('DocumentType', $_GET);
 
-$_GET['target'] = $_SERVER['PHP_SELF'];
-Search::showList('DocumentType',$_GET);
+$params['target'] = $_SERVER['PHP_SELF'];
+Search::showList('DocumentType',$params);
 
 Html::popFooter();
 ?>

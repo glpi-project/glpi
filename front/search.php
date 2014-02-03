@@ -47,20 +47,19 @@ if (isset($_GET["globalsearch"])) {
           && $item->canView()) {
          $_GET["reset"]        = 'reset';
 
-         Search::manageGetValues($itemtype,false,true);
-         $_GET["display_type"] = Search::GLOBAL_SEARCH;
+         $params = Search::manageParams($itemtype,$_GET, false,true);
+         $params["display_type"] = Search::GLOBAL_SEARCH;
 
-         $count = count($_GET["criteria"]);
+         $count = count($params["criteria"]);
 
-         $_GET["criteria"][$count]["field"]       = 'view';
-         $_GET["criteria"][$count]["searchtype"]  = 'contains';
-         $_GET["criteria"][$count]["value"]       = $searchtext;
+         $params["criteria"][$count]["field"]       = 'view';
+         $params["criteria"][$count]["searchtype"]  = 'contains';
+         $params["criteria"][$count]["value"]       = $searchtext;
 //          $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
 //          $_SESSION["glpisearchcount2"][$itemtype] = 0;
          
-         Search::showList($itemtype, $_GET);
+         Search::showList($itemtype, $params);
          echo "<hr>";
-         $_GET = array();
       }
    }
 }
