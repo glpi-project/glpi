@@ -988,7 +988,7 @@ class Html {
       echo "<meta http-equiv='Expires' content='Fri, Jun 12 1981 08:20:00 GMT'>\n";
       echo "<meta http-equiv='Pragma' content='no-cache'>\n";
       echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
-      echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />";
+      echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 

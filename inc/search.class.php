@@ -1064,6 +1064,7 @@ class Search {
    static function displayDatas(array &$data) {
       global $CFG_GLPI;
 
+      $rand = mt_rand();
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
          return false;
       }
@@ -1182,8 +1183,13 @@ class Search {
          $headers_line        = '';
          $headers_line_top    = '';
          $headers_line_bottom = '';
-         echo self::showBeginHeader($data['display_type']);
-         echo self::showNewLine($data['display_type']);
+         
+         $headers_line_top .= self::showBeginHeader($data['display_type']);
+         $headers_line_top .= self::showNewLine($data['display_type']);
+         
+//          $headers_line_bottom .= self::showBeginHeader($data['display_type']);
+         $headers_line_bottom .= self::showNewLine($data['display_type']);
+
          $header_num = 1;
          if (($data['display_type'] == self::HTML_OUTPUT)
                && $showmassiveactions) { // HTML display - massive modif
@@ -1243,8 +1249,10 @@ class Search {
          $headers_line_top    .= $headers_line;
          $headers_line_bottom .= $headers_line;
 
+         $headers_line_top    .= self::showEndHeader($data['display_type']);
+//          $headers_line_bottom .= self::showEndHeader($data['display_type']);
+
          echo $headers_line_top;
-         echo self::showEndHeader($data['display_type']);
 
          // Init list of items displayed
          if ($data['display_type'] == self::HTML_OUTPUT) {
