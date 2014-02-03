@@ -40,7 +40,6 @@ if (strpos($_SERVER['PHP_SELF'],"searchmetarow.php")) {
 
 Session::checkLoginUser();
 
-Toolbox::logDebug($_POST);
 // Non define case
 if (isset($_POST["itemtype"])
     && isset($_POST["num"]) ) {
