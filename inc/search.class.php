@@ -1593,6 +1593,8 @@ class Search {
    /**
     * Print generic search form
     *
+    * Params need to parsed before using Search::manageParams function
+    * 
     * @param $itemtype        type to display the form
     * @param $params    array of parameters may include sort, is_deleted, criteria, metacriteria
     *
