@@ -55,8 +55,8 @@ if (isset($_GET["globalsearch"])) {
          $_GET["criteria"][$count]["field"]       = 'view';
          $_GET["criteria"][$count]["searchtype"]  = 'contains';
          $_GET["criteria"][$count]["value"]       = $searchtext;
-         $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
-         $_SESSION["glpisearchcount2"][$itemtype] = 0;
+//          $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
+//          $_SESSION["glpisearchcount2"][$itemtype] = 0;
          
          Search::showList($itemtype, $_GET);
          echo "<hr>";
