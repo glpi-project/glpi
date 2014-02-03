@@ -4356,7 +4356,6 @@ class Ticket extends CommonITILObject {
       if (!$ID
           || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldValue('content');
-         echo "<div></div>";
          $rand       = mt_rand();
          $rand_text  = mt_rand();
          $cols       = 90;
