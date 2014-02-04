@@ -143,11 +143,6 @@ class Search {
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
-
-      // If limit not valid set it to all : permit to set list_limit = -1 to get all datas
-      if ($p['list_limit'] <= 0) {
-         $p['list_limit'] = 9999999999;
-      }
       
       // Set display type for export if define
       if (isset($p['display_type'])) {
@@ -199,7 +194,7 @@ class Search {
       $data['search']['all_search']  = false;
       $data['search']['view_search'] = false;
       // If no research limit research to display item and compute number of item using simple request
-      $data['search']['no_search'] = false;
+      $data['search']['no_search'] = true;
 
       $data['toview'] = array();
       
