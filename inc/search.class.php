@@ -88,7 +88,6 @@ class Search {
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
       self::constructDatas($data);
-
       self::displayDatas($data);
    }
 
@@ -981,6 +980,7 @@ class Search {
             = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
 
          $data['data']['rows'] = array();
+         $data['data']['items'] = array();
 
          self::$output_type = $data['display_type'];
 
@@ -1051,6 +1051,10 @@ class Search {
                      }
                   } else {
                      $newrow[$key] = $val;
+                     // Add id to items list
+                     if ($key=='id') {
+                        $data['data']['items'][$val] = $i;
+                     }
                   }
                }
             }
