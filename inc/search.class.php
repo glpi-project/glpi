@@ -330,7 +330,7 @@ class Search {
                                        $searchopt[$val]["field"]);
          }
       }
-
+      
       // Search all case :
       if ($data['search']['all_search']) {
          foreach ($searchopt as $key => $val) {
@@ -346,7 +346,6 @@ class Search {
             }
          }
       }
-
 
       //// 3 - WHERE
 
@@ -861,6 +860,7 @@ class Search {
       // Use a ReadOnly connection if available and configured to be used
       $DBread = DBConnection::getReadConnection();
       $DBread->query("SET SESSION group_concat_max_len = 4096;");
+
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
@@ -4506,7 +4506,7 @@ class Search {
     * @return parsed params array
    **/
    static function manageParams($itemtype, $params = array(), $usesession=true, $forcebookmark=false) {
-      global $_GET, $DB;
+      global $CFG_GLPI, $DB;
 
       $redirect = false;
 
@@ -4516,7 +4516,21 @@ class Search {
       $default_values["order"]       = "ASC";
       $default_values["sort"]        = 1;
       $default_values["is_deleted"]  = 0;
-      $default_values["criteria"]    = array(0 => array('field' => 0,
+      
+      if ($CFG_GLPI['allow_search_view'] == 2) {
+         $default_criteria = 'view';
+      } else {
+         $options = self::getCleanedOptions($itemtype);
+         foreach ($options as $key => $val) {
+            if (is_array($val)) {
+               $default_criteria = $key;
+               break;
+            }
+         }
+         
+      }
+      
+      $default_values["criteria"]    = array(0 => array('field' => $default_criteria,
                                                         'link'  => 'contains',
                                                         'value' => ''));
       $default_values["metacriteria"]    = array();
