@@ -120,7 +120,7 @@ class Search {
     *
     * @param $itemtype            item type
     * @param $params        array of parameters
-    *                             may include sort, order, start, deleted, criteria, metacriteria
+    *                             may include sort, order, start, list_limit, deleted, criteria, metacriteria
     * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
@@ -144,6 +144,11 @@ class Search {
          $p[$key] = $val;
       }
 
+      // If limit not valid set it to all : permit to set list_limit = -1 to get all datas
+      if ($p['list_limit'] <= 0) {
+         $p['list_limit'] = 9999999999;
+      }
+      
       // Set display type for export if define
       if (isset($p['display_type'])) {
          // Limit to 10 element
@@ -155,7 +160,7 @@ class Search {
       if ($p['export_all']) {
          $p['start'] = 0;
       }
-
+      
       $data             = array();
       $data['search']   = $p;
       $data['itemtype'] = $itemtype;
