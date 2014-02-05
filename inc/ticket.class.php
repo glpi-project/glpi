@@ -3580,7 +3580,6 @@ class Ticket extends CommonITILObject {
 
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
-
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
             if (isset($saved[$name])) {
@@ -3609,6 +3608,30 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Check category / type validity
+      if ($values['itilcategories_id']) {
+         $cat = new ITILCategory();
+         if ($cat->getFromDB($values['itilcategories_id'])) {
+            switch ($values['type']) {
+               case self::INCIDENT_TYPE :
+                  if (!$cat->getField('is_incident')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               case self::DEMAND_TYPE :
+                  if (!$cat->getField('is_request')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               default :
+                  break;
+            }
+         }
+      }
+
+      
       // Default check
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -3646,7 +3669,7 @@ class Ticket extends CommonITILObject {
          $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'], '',
                                                  Ticket::INCIDENT_TYPE);
       }
-
+      
       if (!isset($options['template_preview'])) {
          $options['template_preview'] = 0;
       }
