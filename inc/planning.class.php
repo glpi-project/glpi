@@ -345,7 +345,6 @@ class Planning extends CommonGLPI {
             break;
       }
 
-      echo "</td>";
 
       echo "<td>";
       Dropdown::showItemTypes('limititemtype', $CFG_GLPI['planning_types'],
@@ -355,7 +354,8 @@ class Planning extends CommonGLPI {
       echo "<td>";
       Html::showDateField("date", array('value'      => $date,
                                         'maybeempty' => false));
-      echo '</td><td>';
+      echo '</td>';
+      echo "<td>";
 
       $values = array('day'   => __('Day'),
                       'week'  => __('Week'),
