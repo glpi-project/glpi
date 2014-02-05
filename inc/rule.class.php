@@ -2972,8 +2972,18 @@ class Rule extends CommonDBTM {
             default:
                if ($item instanceof Rule) {
                   $ong    = array();
-                  $ong[1] = _n('Criterion', 'Criteria', 2);
-                  $ong[2] = _n('Action', 'Actions', 2);
+                  $nbcriteria = 0;
+                  $nbaction   = 0;
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nbcriteria = countElementsInTable(getTableForItemType($item->getRuleCriteriaClass()),
+                                                                        "`".$item->getRuleIdField()."` = '".$item->getID()."'");
+                        $nbaction   = countElementsInTable(getTableForItemType($item->getRuleActionClass()),
+                                                                        "`".$item->getRuleIdField()."` = '".$item->getID()."'");
+                                                                              
+                     }
+
+                  $ong[1] = self::createTabEntry(_n('Criterion', 'Criteria', $nbcriteria), $nbcriteria);
+                  $ong[2] = self::createTabEntry(_n('Action', 'Actions', $nbaction), $nbaction);
                   return $ong;
                }
          }
