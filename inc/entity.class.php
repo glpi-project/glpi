@@ -137,7 +137,7 @@ class Entity extends CommonTreeDropdown {
 
 
   /**
-   * @Since version 0.84
+   * @since version 0.84
    **/
    static function canUpdate() {
 

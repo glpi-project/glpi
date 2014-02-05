@@ -1473,7 +1473,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * create link from document to ITIL object
     *
     * @param $donotif   Boolean  if we want to raise notification (default 1)
-    * @param $disable
+    * @param $disablenotif
     *
     * @return array of doc added name
    **/

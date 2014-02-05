@@ -416,7 +416,7 @@ class Planning extends CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $param   array of param
+    * @param $params   array of param
     *    must contain :
     *          - begin: begin date to check (default '')
     *          - end: end date to check (default '')
