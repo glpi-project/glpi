@@ -926,7 +926,7 @@ class Dropdown {
       }
       $step = ($nb > 15 ? ($nb/3) : $nb);
 
-      echo "<table class='tab_glpi'><tr class='top'><td width='33% class='center'>";
+      echo "<table class='tab_glpi'><tr class='top'><td width='33%' class='center'>";
       echo "<table class='tab_cadre'>";
       $i = 1;
 
