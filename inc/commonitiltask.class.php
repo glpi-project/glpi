@@ -950,8 +950,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             $content .= Planning::getState($val["state"])."<br>";
          }
          $content .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])).
-                    "<br>".__('Description')."</span><br>".$val["content"].$recall.
-                    "</div>";
+                    "<br>".__('Description')."</span><br>".$val["content"].$recall;
          Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
       }
    }
@@ -976,7 +975,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($canedit) {
-         echo "style='cursor:pointer' onClick=\"viewEditFollowup".$item->fields['id'].
+         echo "style='cursor:pointer' onClick=\"viewEditTask".$item->fields['id'].
                $this->fields['id']."$rand();\"";
       }
 
@@ -1021,7 +1020,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          echo "\n<script type='text/javascript' >\n";
-         echo "function viewEditFollowup" . $item->fields['id'] . $this->fields["id"] . "$rand() {\n";
+         echo "function viewEditTask" . $item->fields['id'] . $this->fields["id"] . "$rand() {\n";
          $params = array('type'       => $this->getType(),
                          'parenttype' => $item->getType(),
                          $item->getForeignKeyField()
@@ -1318,7 +1317,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
-         echo "function viewAddFollowup" . $item->fields['id'] . "$rand() {\n";
+         echo "function viewAddTask" . $item->fields['id'] . "$rand() {\n";
          $params = array('type'                      => $this->getType(),
                          'parenttype'                => $item->getType(),
                          $item->getForeignKeyField() => $item->fields['id'],
@@ -1330,8 +1329,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (($item->fields["status"] != CommonITILObject::SOLVED)
              && ($item->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div class='center'>".
-                 "<a class='vsubmit' href='javascript:viewAddFollowup".$item->fields['id']."$rand();'>";
-            echo __('Add a new task')."</a></div></p><br>\n";
+                 "<a class='vsubmit' href='javascript:viewAddTask".$item->fields['id']."$rand();'>";
+            echo __('Add a new task')."</a></div><br>\n";
          }
       }
 

@@ -750,7 +750,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          if (!empty($tID)) {
             echo "<input type='hidden' name='id' value='$tID'>";
          }
-         echo "</td></tr>";
+         echo "</td>";
       } else {
          echo "<td colspan='2'>";
          echo Dropdown::getValueWithUnit($item->fields["validation_percent"],"%");

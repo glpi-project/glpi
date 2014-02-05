@@ -3833,11 +3833,11 @@ class Ticket extends CommonITILObject {
                                                     "cleanhide('sla_action');cleandisplay('sla_choice');").
                      ">".__('Assign a SLA').'</a>';
                echo "</span>";
-               echo "<span id='sla_choice' style='display:none'>";
+               echo "<div id='sla_choice' style='display:none'>";
                echo "<span  class='b'>".__('SLA')."</span>&nbsp;";
                Sla::dropdown(array('entity' => $this->fields["entities_id"],
                                    'value'  => $this->fields["slas_id"]));
-               echo "</span>";
+               echo "</div>";
                echo $tt->getEndHiddenFieldText('slas_id');
                echo "</td>";
             }
@@ -4450,11 +4450,13 @@ class Ticket extends CommonITILObject {
                } else {
                   if (self::canDelete()) {
                      echo "<input type='submit' class='submit' name='delete' value='".
-                            _sx('button', 'Put in dustbin')."'></td>";
+                            _sx('button', 'Put in dustbin')."'>";
                   }
                }
+               echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+               echo "</td>";
             }
-            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+            
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";

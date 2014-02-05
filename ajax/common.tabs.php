@@ -92,8 +92,6 @@ if (isset($_GET['full_page_tab'])) {
    echo "<a href='".htmlentities($_SERVER['REQUEST_URI'])."' class='vsubmit'>Reload</a>";
    echo "</div>";
 
-   Html::footer();
-
    // I think that we should display this warning, because tabs are not prepare
    // for being used full space ...
    if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
@@ -105,6 +103,9 @@ if (isset($_GET['full_page_tab'])) {
       echo "</script>";
       $_SESSION['glpi_warned_about_full_page_tab'] = true;
    }
+   
+   Html::footer();
+
 
 } else {
    Html::ajaxFooter();
