@@ -1561,18 +1561,6 @@ class Toolbox {
 
       $filename = "/ajax/common.tabs.php";
 
-      /// To keep for plugins
-      /// TODO drop also for plugins.
-      /// MoYo : test to drop it : plugin dev ?
-//       if ($plug = isPluginItemType($itemtype)) {
-//          $dir      = "/plugins/".strtolower($plug['plugin']);
-//          $item     = strtolower($plug['class']);
-//          $tempname = $dir."/ajax/$item.tabs.php";
-//          if (file_exists(GLPI_ROOT.$tempname)) {
-//             $filename = $tempname;
-//          }
-//       }
-
       return ($full ? $CFG_GLPI['root_doc'] : '').$filename;
    }
 

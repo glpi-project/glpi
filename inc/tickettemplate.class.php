@@ -213,8 +213,6 @@ class TicketTemplate extends CommonDropdown {
       }
 
       return $allowed_fields[$withtypeandcategory][$with_items_id];
-
-     /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
    }
 
 
