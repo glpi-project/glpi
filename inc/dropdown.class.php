@@ -1775,16 +1775,17 @@ class Dropdown {
          // Hack for All / None because select2 does not provide it
          $select   = __('All');
          $deselect = __('None');
-         $output  .= "<div class='invisible' id='selectall_$field_id'>";
+         $output  .= "<div class='invisible' id='selectallbuttons_$field_id'>";
+         $output  .= "<div class='select2-actionable-menu'>";
          $output  .= "<a class='vsubmit floatleft' ".
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select".
                      "</a> ";
          $output  .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect".
-                     "</a></div>";
+                     "</a>";
+         $output  .= "</div></div>";
 
          $js = "$('#$field_id').on('select2-open', function() {
-            $('.select2-actionable-menu').remove();
-            $('.select2-drop-multi').append('<div class=select2-actionable-menu>'+$('#selectall_$field_id').html()+'</div>');
+            $('.select2-drop-multi').html($('#selectallbuttons_$field_id').html());
          });";
          $output .= Html::scriptBlock($js);
       }
