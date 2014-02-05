@@ -123,7 +123,7 @@ class Notepad extends CommonDBChild {
 
 
    /**
-    * @param$item    CommonDBTM object
+    * @param $item    CommonDBTM object
     *
     * @return number
    **/

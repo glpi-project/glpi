@@ -2420,7 +2420,7 @@ class Toolbox {
     * Check if the given object is of the type $class_name. Can be identical or a subclass.
     * This method emulates PHP 5.3.9: is_a with allow_string == true
     *
-    * @TODO: remove when prerequisite > 5.3.9 !
+    * @todo: remove when prerequisite > 5.3.9 !
     *
     * @since version 0.85
     *

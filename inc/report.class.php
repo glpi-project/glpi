@@ -281,7 +281,7 @@ class Report extends CommonGLPI{
     * @param $networkport_prefix
     * @param $networkport_crit
     * @param $where_crit
-    * @param$order                  (default '')
+    * @param $order                  (default '')
     * @param $field                 (default '')
     * @param $extra                 (default '')
    **/
