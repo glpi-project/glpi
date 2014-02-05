@@ -1980,7 +1980,7 @@ class Ticket extends CommonITILObject {
          if (Session::haveRight(self::$rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
                = __('Add an actor');
-            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'link_ticket']
+            $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = _x('button', 'Link tickets');
          }
 
@@ -1992,67 +1992,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($ma->getAction()) {
-         case 'link_ticket' :
-          // TODO: move to Ticket_Ticket ?
-            $rand = Ticket_Ticket::dropdownLinks('link');
-            printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
-            echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
-            echo "<br><br>";
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button','Post')."'>";
-            return true;
-      }
-      return parent::showMassiveActionsSubForm($ma);
-   }
-
-
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
-
-      switch ($ma->getAction()) {
-         case 'link_ticket' :
-            $input = $ma->getInput();
-            if (isset($input['link'])
-                && isset($input['tickets_id_1'])) {
-               if ($item->getFromDB($input['tickets_id_1'])) {
-                  foreach ($ids as $id) {
-                     $input2                          = array();
-                     $input2['id']                    = $input['tickets_id_1'];
-                     $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
-                     $input2['_link']['link']         = $input['link'];
-                     $input2['_link']['tickets_id_2'] = $id;
-                     if ($item->can($input['tickets_id_1'], UPDATE)) {
-                        if ($this->update($input2)) {
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                        } else {
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                        }
-                     } else {
-                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                     }
-                  }
-               }
-            }
-            return;
-      }
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-
-   }
 
 
    function getSearchOptions() {
