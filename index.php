@@ -94,30 +94,30 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<div id='boxlogin'>";
    echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
 
+
+   echo "<fieldset>";
    // Other CAS
    if (isset($_GET["noAUTO"])) {
-      echo "<input type='hidden' name='noAUTO' value='1'/>";
+      echo "<input type='hidden' name='noAUTO' value='1' />";
    }
-
    // redirect to ticket
    if (isset($_GET["redirect"])) {
       Toolbox::manageRedirect($_GET["redirect"]);
-      echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
+      echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }
-   echo "<fieldset>";
    echo '<legend>'.__('Authentication').'</legend>';
    echo '<div class="loginrow"><span class="loginlabel"><label>'.__('Login').'</label></span>';
-   echo '<span class="loginformw"><input type="text" name="login_name" id="login_name" required="required">';
+   echo '<span class="loginformw"><input type="text" name="login_name" id="login_name" required="required" />';
    echo '</span></div>';
 
    echo '<div class="loginrow"><span class="loginlabel"><label>'.__('Password').'</label></span>';
    echo '<span class="loginformw">';
-   echo '<input type="password" name="login_password" id="login_password" required="required"></span>'.
+   echo '<input type="password" name="login_password" id="login_password" required="required" /></span>'.
         '</div>';
 
    echo "</fieldset>";
    echo '<p><span>';
-   echo '<input type="submit" name="submit" value="'._sx('button','Post').'" class="submit"/>';
+   echo '<input type="submit" name="submit" value="'._sx('button','Post').'" class="submit" />';
    echo '</span></p>';
     if ($CFG_GLPI["use_mailing"]
        && countElementsInTable('glpi_notifications',
