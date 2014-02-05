@@ -318,7 +318,6 @@ class Monitor extends CommonDBTM {
       // hdmi?
       echo "<tr><td>".__('HDMI')."</td><td>";
       Dropdown::showYesNo("have_hdmi", $this->fields["have_hdmi"]);
-      echo "</td>";
       //Displayport
       echo "</td><td>".__('DisplayPort')."</td><td>";
       Dropdown::showYesNo("have_displayport", $this->fields["have_displayport"]);

@@ -355,12 +355,12 @@ class Cartridge extends CommonDBChild {
             $out .= __('Total')."</td><td>$total";
             $out .= "</td><td class='b'>";
             $out .= _nx('cartridge','New','New',$unused);
-            $out .= "</td><td class='b'>$unused</td><tr>";
+            $out .= "</td><td class='b'>$unused</td></tr>";
             $out .= "<tr><td>";
             $out .= _nx('cartridge','Used','Used',$used);
-            $out .= "</td><td>$used</span></td><td>";
+            $out .= "</td><td>$used</td><td>";
             $out .= _nx('cartridge','Worn','Worn',$old);
-            $out .= "</td><td>$old</span></td></tr></table>";
+            $out .= "</td><td>$old</td></tr></table>";
 
          } else {
             //TRANS : for display cartridges count : %1$d is the total number,
