@@ -47,6 +47,10 @@ if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromt
 
 $fromitem->checkGlobal(UPDATE);
 
+$used = array();
+if (isset($_POST["used"])) {
+   $used = $_POST["used"];
+}
 Computer_Item::dropdownConnect($_POST["itemtype"], $_POST['fromtype'], $_POST['myname'],
-                               $_POST["entity_restrict"], $_POST["onlyglobal"], $_POST["used"]);
+                               $_POST["entity_restrict"], $_POST["onlyglobal"], $used);
 ?>

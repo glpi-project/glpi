@@ -2814,24 +2814,24 @@ class Html {
          }
       }
 
-      $output = "<input id='_showdate".$p['rand']."' type='text' size='10' name='_$name' ".
+      $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
-                                           'id'    => "showdate".$p['rand'],
+                                           'id'    => "hiddendate".$p['rand'],
                                            'size'  => 10));
       if ($p['maybeempty']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear')."\" id='resetdate".$p['rand']."'>";
       }
 
       $js = '';
       if ($p['maybeempty']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
-                  $('#_showdate".$p['rand']."').val('');
                   $('#showdate".$p['rand']."').val('');
+                  $('#hiddendate".$p['rand']."').val('');
                   });";
       }
-      $js .= "$( '#_showdate".$p['rand']."' ).datepicker({
-                  altField: '#showdate".$p['rand']."',
+      $js .= "$( '#showdate".$p['rand']."' ).datepicker({
+                  altField: '#hiddendate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
                   firstDay: 1,
                   showOtherMonths: true,
@@ -3024,23 +3024,23 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output  = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".
+      $output  = "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
                    self::convDateTime($p['value'])."'>";
-      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand']));
+      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
       if ($p['maybeempty']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear')."\" id='resetdate".$p['rand']."'>";
       }
 
       $js = "";
       if ($p['maybeempty']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
-                  $('#_showdate".$p['rand']."').val('');
                   $('#showdate".$p['rand']."').val('');
+                  $('#hiddendate".$p['rand']."').val('');
                   });";
       }
 
-      $js .= "$( '#_showdate".$p['rand']."' ).datetimepicker({
-                  altField: '#showdate".$p['rand']."',
+      $js .= "$( '#showdate".$p['rand']."' ).datetimepicker({
+                  altField: '#hiddendate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
                   altTimeFormat: 'HH:mm',
                   pickerTimeFormat : 'HH:mm',
@@ -4861,7 +4861,7 @@ class Html {
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       $out .= "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
                 $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name'].
-                "&showfilesize=".$p['showfilesize']."'>";
+                "&amp;showfilesize=".$p['showfilesize']."'>";
 
       $script  = self::fileScript($p)."\n uploadFile();";
       $out    .= Html::scriptBlock($script);

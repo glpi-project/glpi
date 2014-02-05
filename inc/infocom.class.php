@@ -1053,7 +1053,6 @@ class Infocom extends CommonDBChild {
             echo "<td>".__('Value')."</td>";
             echo "<td><input type='text' name='value' $option value='".
                    Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
-            echo "</td>";
             echo "<td>".__('Date of last physical inventory')."</td><td>";
             Html::showDateField("inventory_date",
                                 array('value'      => $ic->fields["inventory_date"],
@@ -1172,7 +1171,6 @@ class Infocom extends CommonDBChild {
                self::dropdownAlert(array('name'    => "alert",
                                          'value'   => $ic->fields["alert"]));
                Alert::displayLastAlert('Infocom', $ic->fields['id']);
-               echo "</td>";
             } else {
                echo "</td><td colspan='2'>";
             }

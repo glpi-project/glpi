@@ -170,7 +170,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "</td><td>".__('Virtualization system')."</td>";
+      echo "<td>".__('Virtualization system')."</td>";
       echo "<td>";
       VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
       echo "</td></tr>";
@@ -367,7 +367,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo Dropdown::getDropdownName('glpi_virtualmachinestates',
                                            $virtualmachine['virtualmachinestates_id']);
             echo "</td>";
-            echo "<td>".$virtualmachine['uuid']."</a></td>";
+            echo "<td>".$virtualmachine['uuid']."</td>";
             echo "<td>".$virtualmachine['vcpu']."</td>";
             echo "<td>".$virtualmachine['ram']."</td>";
             echo "<td>";
