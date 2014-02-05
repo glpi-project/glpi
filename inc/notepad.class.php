@@ -192,11 +192,9 @@ class Notepad extends CommonDBChild {
             Html::closeForm();
            echo "</div>";
           echo "</div>";
-         echo "</div>";
       }
 
       if (count($notes)) {
-//          echo "<div>";
          foreach ($notes as $note) {
             $id = 'note'.$note['id'].$rand;
             echo "<div>";
@@ -233,10 +231,9 @@ class Notepad extends CommonDBChild {
                 $create = sprintf(__('Create by %1$s on %2$s'), $username,
                                   Html::convDateTime($note['date']));
                 printf(__('%1$s / %2$s'), $update, $create);
-               echo "</div>";
+              echo "</div>"; // floatright
 
-              echo "</div>";
-             echo "</div>";
+             echo "</div>"; // boxnotecontent
 
              if ($canedit) {
                 echo "<div class='boxnote starthidden' id='edit$id'>";
@@ -253,12 +250,12 @@ class Notepad extends CommonDBChild {
 
                    Html::closeForm();
                   echo "</div>";
-                 echo "</div>";
                 echo "</div>";
              }
             echo "</div>";
+            echo "</div>";
+
          }
-//          echo "</div>";
       }
 
       return true;

@@ -340,7 +340,7 @@ class Consumable extends CommonDBChild {
          if ($nohtml) {
             $out = $tmptxt;
          } else {
-            $out = "<div $highlight>".$tmptxt."</div";
+            $out = "<div $highlight>".$tmptxt."</div>";
          }
       } else {
          if ($nohtml) {
@@ -475,7 +475,8 @@ class Consumable extends CommonDBChild {
                       $where";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-
+      
+      echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $actions = array('delete' => _x('button', 'Delete permanently'),
@@ -499,7 +500,7 @@ class Consumable extends CommonDBChild {
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
       }
 
-      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+      echo "<table class='tab_cadre_fixehov'>";
       if (!$show_old) {
          echo "<tr><th colspan=".($canedit?'5':'4').">";
          echo self::getCount($tID, -1);

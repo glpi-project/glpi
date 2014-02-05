@@ -748,7 +748,8 @@ class NetworkPort extends CommonDBChild {
           && $showmassiveactions) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions($massiveactionparams);
-
+      }
+      if ($showmassiveactions) {
          Html::closeForm();
       }
 
