@@ -832,8 +832,8 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
-      echo "<tr class='tab_bg_2'  width='30%'>";
-      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='30%'>" . ($userpref?__('Language'):__('Default language')) . "</td>";
       echo "<td width='20%'>";
       if (Config::canUpdate()
           || !GLPI_DEMO_MODE) {

@@ -1818,13 +1818,13 @@ class User extends CommonDBTM {
          echo "<td rowspan='3'>" . __('Picture') . "</td>";
          echo "<td rowspan='3'>";
          echo "<div class='user_picture_border_small' id='picture$rand'>";
-         echo "<img class='user_picture_small' src='".
-                User::getThumbnailURLForPicture($this->fields['picture'])."' />";
+         echo "<img class='user_picture_small' alt=\"".__('Picture')."\" src='".
+                User::getThumbnailURLForPicture($this->fields['picture'])."'>";
 //         echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
          echo "</div>";
          $full_picture = "<div class='user_picture_border'>";
-         $full_picture .= "<img class='user_picture' src='".
-                            User::getURLForPicture($this->fields['picture'])."' />";
+         $full_picture .= "<img class='user_picture' alt=\"".__('Picture')."\" src='".
+                            User::getURLForPicture($this->fields['picture'])."'>";
          $full_picture .= "</div>";
 
          Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
@@ -2128,12 +2128,12 @@ class User extends CommonDBTM {
             echo "<td rowspan='3'>" . __('Picture') . "</td>";
             echo "<td rowspan='3'>";
             echo "<div class='user_picture_border_small' id='picture$rand'>";
-            echo "<img class='user_picture_small' src='".
-                   User::getThumbnailURLForPicture($this->fields['picture'])."' />";
+            echo "<img class='user_picture_small' alt=\"".__('Picture')."\" src='".
+                   User::getThumbnailURLForPicture($this->fields['picture'])."'>";
             echo "</div>";
             $full_picture  = "<div class='user_picture_border'>";
-            $full_picture .= "<img class='user_picture' src='".
-                              User::getURLForPicture($this->fields['picture'])."' />";
+            $full_picture .= "<img class='user_picture' alt=\"".__('Picture')."\" src='".
+                              User::getURLForPicture($this->fields['picture'])."'>";
             $full_picture .= "</div>";
 
             Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
