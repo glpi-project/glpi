@@ -2813,7 +2813,8 @@ class Ticket extends CommonITILObject {
          echo "<input type='hidden' name='items_id' value='0'>";
 
       } else {
-         echo "<div id='tracking_all_devices'>";
+         $rand = mt_rand();
+         echo "<div id='tracking_all_devices$rand'>";
          if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,
                                                                      self::HELPDESK_ALL_HARDWARE)) {
 
