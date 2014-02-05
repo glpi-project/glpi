@@ -4849,7 +4849,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $sixth_col .= $object->getTypeName();
                      $sixth_col .= "<br><span class='b'>";
                      if ($item->canView()) {
-                        $sixth_col .= $object->getLink(array('linkoption' => $p['output_type']==Search::HTML_OUTPUT));
+                        $sixth_col .= $object->getLink();
                      } else {
                         $sixth_col .= $object->getNameID();
                      }
@@ -4908,7 +4908,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          echo Search::showItem($p['output_type'], $eigth_column, $item_num, $p['row_num'],
-                               $align_desc."width='200'");
+                               $align_desc." width='200'");
 
 
          //tenth column
@@ -4954,7 +4954,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          unset($i, $j);
          echo Search::showItem($p['output_type'], $tenth_column, $item_num, $p['row_num'],
-                               $align_desc."width='150'");
+                               $align_desc." width='150'");
 
          // Finish Line
          echo Search::showEndLine($p['output_type']);
