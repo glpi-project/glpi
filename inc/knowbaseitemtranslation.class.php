@@ -329,5 +329,5 @@ class KnowbaseItemTranslation extends CommonDBChild {
       }
       return $tab;
    }
-
 }
+?>
