@@ -2516,6 +2516,7 @@ class Html {
     *
     * @param $itemtype    Massive action itemtype
     * @param $id          ID of the item
+    * @param $options
     *
     * @return get checkbox
    **/
@@ -2539,6 +2540,7 @@ class Html {
     *
     * @param $itemtype    Massive action itemtype
     * @param $id          ID of the item
+    * @param $options
     *
     * @return show checkbox
    **/
@@ -2587,7 +2589,7 @@ class Html {
     * @since 0.84 (before Search::displayMassiveActions)
     * @since version 0.85 only 1 parameter (in 0.84 $itemtype required)
     *
-    * @TODO: replace 'hidden' by data-glpicore-ma-tags ?
+    * @todo replace 'hidden' by data-glpicore-ma-tags ?
     *
     * @param $options   array    of parameters
     * must contains :
@@ -4553,12 +4555,12 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $text               The content to be wrapped by <a> tags.
+    * @param $text               The content to be wrapped by a tags.
     * @param $url                URL parameter
     * @param $options   Array    of HTML attributes:
     *     - `confirm` JavaScript confirmation message.
     *     - `confirmaction` optional action to do on confirmation
-    * @return string An `<a />` element.
+    * @return string An a` element.
    **/
    static function link($text, $url, $options=array()) {
 
@@ -4631,7 +4633,7 @@ class Html {
    }
 
    /**
-    * Creates a submit button element. This method will generate `<input />` elements that
+    * Creates a submit button element. This method will generate input elements that
     * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
     * image option
     *
@@ -4778,13 +4780,13 @@ class Html {
 
 
    /**
-    * Returns one or many `<script>` tags depending on the number of scripts given.
+    * Returns one or many script tags depending on the number of scripts given.
     *
     * @since version 0.85
     *
     * @param $url String of javascript file to include
     *
-    * @return String of `<script />` tags
+    * @return String of script tags
    **/
    static function script($url) {
       return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
@@ -4799,7 +4801,7 @@ class Html {
     * @param $url       String   of javascript file to include
     * @param $options   Array    of HTML attributes.
     *
-    * @return string CSS <link /> tag
+    * @return string CSS link tag
    **/
    static function css($url, $options=array()) {
 

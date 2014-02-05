@@ -863,6 +863,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * @param $itemtype
     * @param $items_id
+    * @param $unaffect
    **/
    static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect) {
       global $DB;

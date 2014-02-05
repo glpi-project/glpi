@@ -44,11 +44,8 @@ require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 class GLPIMailer extends PHPMailer {
 
    /**
-    * Send mai lin queue
+    * Constructor
     *
-    * @param $ID        integer ID of the item
-    *
-    * @return true if send false if not
    **/
    function __construct() {
       global $CFG_GLPI;

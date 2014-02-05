@@ -70,7 +70,7 @@ class ProfileRight extends CommonDBChild {
 
    /**
     * @param $profiles_id
-    * @param$rights         array
+    * @param $rights         array
    **/
    static function getProfileRights($profiles_id, array $rights=array()) {
       global $DB;
