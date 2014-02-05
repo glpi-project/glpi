@@ -122,7 +122,7 @@ class ProjectTeam extends CommonDBChild {
    /**
     * Get team for a project
     *
-    * @param u$projects_id
+    * @param $projects_id
    **/
    static function getTeamFor($projects_id) {
       global $DB;

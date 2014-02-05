@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class that manages all the massive actions
  *
- * @TODO: all documentation !
+ * @todo all documentation !
  *
  * @since version 0.85
 **/

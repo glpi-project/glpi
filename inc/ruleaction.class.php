@@ -63,7 +63,7 @@ class RuleAction extends CommonDBChild {
    /**
     * @since version 0.84.3
     *
-    * @see inc/CommonDBTM::post_getFromDB()
+    * @see CommonDBTM::post_getFromDB()
     */
    function post_getFromDB() {
 
