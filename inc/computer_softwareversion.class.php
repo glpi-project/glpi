@@ -724,7 +724,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                        'toadd'      => array('-1' =>  __('All categories')),
                                        'emptylabel' => __('Uncategorized software'),
                                        'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
-      echo "</td></tr></table>";
+      echo "</td></tr></table></div>";
       $number = $DB->numrows($result);
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
       if ($start >= $number) {
@@ -971,8 +971,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $link      = $link_item."?id=".$licdata['id'];
             $comment   = "<table><tr><td>".__('Name')."</td><td>".$licdata['name']."</td></tr>".
                          "<tr><td>".__('Serial number')."</td><td>".$licdata['serial']."</td></tr>".
-                         "<tr><td>". __('Comments').'</td><td>'.$licdata['comment'].'</td></tr>".
-                         "</table>';
+                         "<tr><td>". __('Comments').'</td><td>'.$licdata['comment']."</td></tr>".
+                         "</table>";
 
             Html::showToolTip($comment, array('link' => $link));
             echo "<br>";
@@ -986,7 +986,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo "</td>";
 
-         echo "</td>";
          if (isset($data['is_dynamic'])) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
          }
@@ -1055,7 +1054,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            Dropdown::getDropdownName("glpi_softwarelicensetypes",
                                                      $data["softwarelicensetypes_id"]));
       }
-      echo "</td></td><td class='b'>" .$data["name"]." - ". $serial;
+      echo "</td><td class='b'>" .$data["name"]." - ". $serial;
 
       $comment = "<table><tr><td>".__('Name')."</td>"."<td>".$data['name']."</td></tr>".
                  "<tr><td>".__('Serial number')."</td><td>".$data['serial']."</td></tr>".

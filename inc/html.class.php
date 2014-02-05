@@ -3832,7 +3832,7 @@ class Html {
                 "\" title=\"".__s('Next')."\"></a></th>";
          echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\"></th>";
+                "\" title=\"".__s('End')."\"></a></th>";
       }
 
       // End pager
