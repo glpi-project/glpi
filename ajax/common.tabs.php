@@ -89,7 +89,7 @@ CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], 
 
 if (isset($_GET['full_page_tab'])) {
    echo "<div class='center' id='debugajax'>";
-   echo "<a href='".$_SERVER['REQUEST_URI']."' class='vsubmit'>Display only tab for debug</a>";
+   echo "<a href='".htmlentities($_SERVER['REQUEST_URI'])."' class='vsubmit'>Reload</a>";
    echo "</div>";
 
    Html::footer();
