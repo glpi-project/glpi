@@ -912,22 +912,21 @@ class IPAddress extends CommonDBChild {
             if (isset($tab[0])
                 && (($tab[0] instanceof NetworkName)
                     || ($tab[0] instanceof IPAddress)
-                    || ($tab[0] instanceof NetworkPort))) {
+                    || ($tab[0] instanceof NetworkPort)
+                    || $tab[0]->isDeleted()
+                    || $tab[0]->isTemplate()
+                    || ($tab[0]->getEntityID() != $entity))) {
                unset($addressesWithItems[$key]);
             }
          }
       }
-
       if (count($addressesWithItems) == 1) {
          $addressWithItems = current($addressesWithItems);
          $item             = $addressWithItems[0];
-         if ($item->getEntityID() == $entity) {
-            $result = array("id"       => $item->getID(),
-                            "itemtype" => $item->getType());
-            unset($addressesWithItems);
-            return $result;
-         }
-
+         $result = array("id"       => $item->getID(),
+                           "itemtype" => $item->getType());
+         unset($addressesWithItems);
+         return $result;
       }
 
       return array();

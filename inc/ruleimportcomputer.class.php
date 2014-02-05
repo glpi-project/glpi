@@ -116,11 +116,7 @@ class RuleImportComputer extends Rule {
    function getActions() {
 
       $actions                           = array();
-// TODO OCS
-/*
-      $actions['_fusion']['name']        = __('OCSNG link');
-      $actions['_fusion']['type']        = 'fusion_type';
-*/
+
       $actions['_ignore_import']['name'] = __('To be unaware of import');
       $actions['_ignore_import']['type'] = 'yesonly';
 

@@ -773,7 +773,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
          
-         // TODO review it : do it in one request
          for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
@@ -790,20 +789,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
-/*         echo "<tr>";
-         if ($canedit) {
-            echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
-            echo "</th>";
-         }
-         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
-         if (isset($data['is_dynamic'])) {
-            echo "<th>".__('Automatic inventory')."</th>";
-         }
-         echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
-         echo "</tr>\n";
-*/
+
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
          if ($canedit) {
