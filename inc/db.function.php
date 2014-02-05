@@ -1298,7 +1298,7 @@ function getUserName($ID, $link=0) {
                foreach ($comments as $datas) {
                   // Do not use SPAN here
                   $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                              "<strong'>".$datas['name']."</strong>",
+                                              "<strong>".$datas['name']."</strong>",
                                               $datas['value']);
                }
             }

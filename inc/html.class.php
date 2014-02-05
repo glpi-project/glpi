@@ -686,7 +686,7 @@ class Html {
                               active: false
                               });");
 
-         echo "</div>";
+         echo "</div></div>";
       }
    }
 
@@ -4093,7 +4093,7 @@ class Html {
    **/
    static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
                                  $btoption='', $confirm='') {
-
+   
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }

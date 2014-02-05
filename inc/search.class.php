@@ -1133,22 +1133,34 @@ class Search {
                   }
                }
             }
-            $search_config = "";
+            $search_config_top = "";
+            $search_config_bottom = "";
             if (!isset($_GET['_in_modal'])
                   && Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
                                                              DisplayPreference::GENERAL))) {
 
-               $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".
-                                                      dialog('open');\"";
-
-               $search_config
-                  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
+               $search_config_top = $search_config_bottom =
+                   "<img alt=\"".__s('Select default items to show')."\" title=\"".
                         __s('Select default items to show')."\" src='".
                         $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-               $search_config
-                  .= $tmp.">";
-               $search_config
-                  .= Ajax::createIframeModalWindow('search_config',
+
+               $search_config_top .= " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config_top').
+                                                      ".dialog('open');\">";
+               $search_config_bottom .= " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config_bottom').
+                                                      ".dialog('open');\">";
+               $search_config_top
+                  .= Ajax::createIframeModalWindow('search_config_top',
+                                                   $CFG_GLPI["root_doc"].
+                                                      "/front/displaypreference.form.php?itemtype=".
+                                                      $data['itemtype'],
+                                                   array('title'
+                                                            => __('Select default items to show'),
+                                                         'reloadonclose'
+                                                            => true,
+                                                         'display'
+                                                            => false));
+               $search_config_bottom
+                  .= Ajax::createIframeModalWindow('search_config_bottom',
                                                    $CFG_GLPI["root_doc"].
                                                       "/front/displaypreference.form.php?itemtype=".
                                                       $data['itemtype'],
@@ -1162,7 +1174,7 @@ class Search {
 
             Html::printPager($data['search']['start'], $data['data']['totalcount'],
                              $data['search']['target'], $parameters, $data['itemtype'], 0,
-                              $search_config);
+                              $search_config_top);
          }
 
          // Define begin and end var for loop
@@ -1391,7 +1403,7 @@ class Search {
          if ($data['display_type'] == self::HTML_OUTPUT) { // In case of HTML display
             Html::printPager($data['search']['start'], $data['data']['totalcount'],
                              $data['search']['target'], $parameters, '', 0,
-                              $search_config);
+                              $search_config_bottom);
 
          }
       } else {
