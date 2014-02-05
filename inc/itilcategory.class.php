@@ -310,7 +310,7 @@ class ITILCategory extends CommonTreeDropdown {
                echo "<td>".$itilcategory->getLink(array('comments' => true))."</td>";
                if ($data['tickettemplates_id_incident'] == $ID) {
                   echo "<td class='center'>
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>
+                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK')."\" width='14' height='14'>
                         </td>";
                   $used_incident[] = $data["id"];
                } else {
@@ -318,7 +318,7 @@ class ITILCategory extends CommonTreeDropdown {
                }
                if ($data['tickettemplates_id_demand'] == $ID) {
                   echo "<td class='center'>
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>
+                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK')."\" width='14' height='14'>
                         </td>";
                   $used_demand[] = $data["id"];
                } else {
