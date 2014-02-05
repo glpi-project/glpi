@@ -1772,6 +1772,7 @@ class Dropdown {
       $output .= Html::jsAdaptDropdown($field_id, array('width' => $param["width"]));
 
       if ($param["multiple"]) {
+         // Hack for All / None because select2 does not provide it
          $select   = __('All');
          $deselect = __('None');
          $output  .= "<div class='invisible' id='selectall_$field_id'>";
