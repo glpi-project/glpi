@@ -87,10 +87,6 @@ class Ticket extends CommonITILObject {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
 
-      // TODO: why not trying to do that inside MassiveAction::getAllMassiveActions ?
-      if (!self::canUpdate()) {
-         $forbidden[] = 'update';
-      }
       if (!Session::haveRightsOr(self::$rightname, array(DELETE, PURGE))) {
          $forbidden[] = 'delete';
          $forbidden[] = 'purge';

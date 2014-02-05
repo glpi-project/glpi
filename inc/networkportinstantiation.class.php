@@ -476,7 +476,6 @@ class NetworkPortInstantiation extends CommonDBChild {
                         WHERE link.`items_id` = '".$lastItem->getID()."'
                               AND link.`itemtype` = '".$lastItem->getType()."'
                               AND device.`id` = link.`devicenetworkcards_id`";
-            // TODO : add checking the type of network card !
 
             // Add the javascript to update each field
             echo "\n<script type=\"text/javascript\">

@@ -132,21 +132,8 @@ class Peripheral extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_computers_items`
-                WHERE `itemtype` = '".$this->getType()."'
-                      AND `items_id` = '".$this->fields['id']."'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $conn = new Computer_Item();
-
-            while ($data = $DB->fetch_assoc($result)) {
-               $data['_no_auto_action'] = true;
-               $conn->delete($data);
-            }
-         }
-      }
+      $ci = new Computer_Item();
+      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
