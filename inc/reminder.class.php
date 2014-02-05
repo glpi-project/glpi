@@ -1128,8 +1128,6 @@ class Reminder extends CommonDBTM {
       $ID      = $this->fields['id'];
       $canedit = $this->canEdit($ID);
 
-      echo "<div class='center'>";
-
       $rand = mt_rand();
 
       $nb = count($this->users) + count($this->groups) + count($this->profiles)

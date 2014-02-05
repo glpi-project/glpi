@@ -901,8 +901,6 @@ class ProjectTask extends CommonDBChild {
       $ID      = $task->fields['id'];
       $canedit = $task->canEdit($ID);
 
-      echo "<div class='center'>";
-
       $rand = mt_rand();
       $nb   = 0;
       $nb   = $task->getTeamCount();

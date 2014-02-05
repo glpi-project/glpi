@@ -447,7 +447,7 @@ class Reservation extends CommonDBChild {
       echo "<div class='center'><table class='tab_glpi'><tr><td>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' title=''></td>";
       echo "<td class ='b'>".$name."</td></tr>";
-      echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div></br>\n";
+      echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div><br>\n";
 
       // Check bisextile years
       if (($annee_courante%4) == 0) {

@@ -891,21 +891,21 @@ class Contract extends CommonDBTM {
                                       'value'      => '>-30',
                                       'searchtype' => 'contains');
 
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts expired in the last 30 days')."</a> </td>";
       echo "<td class='numeric'>".$contract0."</td></tr>";
       echo "<tr class='tab_bg_2'>";
 
       $options['criteria'][0]['value'] = 0;
       $options['criteria'][1]['value'] = '<7';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts expiring in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contract7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
 
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts expiring in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contract30."</td></tr>";
       echo "<tr class='tab_bg_2'>";
@@ -915,7 +915,7 @@ class Contract extends CommonDBTM {
       $options['criteria'][1]['field'] = 13;
       $options['criteria'][1]['value'] = '<7';
 
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts where notice begins in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
@@ -923,7 +923,7 @@ class Contract extends CommonDBTM {
 
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options)."\">".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts where notice begins in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre30."</td></tr>";
       echo "</table>";
