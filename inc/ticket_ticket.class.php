@@ -51,6 +51,66 @@ class Ticket_Ticket extends CommonDBRelation {
    const LINK_TO        = 1;
    const DUPLICATE_WITH = 2;
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'add' :
+            $rand = Ticket_Ticket::dropdownLinks('link');
+            printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
+            echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
+            echo "<br><br>";
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button','Post')."'>";
+            return true;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'add' :
+            $input = $ma->getInput();
+            $ticket = new Ticket();
+            if (isset($input['link'])
+                && isset($input['tickets_id_1'])) {
+               if ($item->getFromDB($input['tickets_id_1'])) {
+                  foreach ($ids as $id) {
+                     $input2                          = array();
+                     $input2['id']                    = $input['tickets_id_1'];
+                     $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
+                     $input2['_link']['link']         = $input['link'];
+                     $input2['_link']['tickets_id_2'] = $id;
+                     if ($item->can($input['tickets_id_1'], UPDATE)) {
+                        if ($ticket->update($input2)) {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                     } else {
+                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                     }
+                  }
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }   
    /**
     * Get linked tickets to a ticket
     *
