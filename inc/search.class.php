@@ -3482,7 +3482,6 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
                case 'Software' :
-                  /// TODO: link licenses via installed software OR by affected/computers_id ???
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   array_push($already_link_tables2,"glpi_softwarelicenses_$to_type");
@@ -3617,18 +3616,6 @@ class Search {
 
 
       switch ($table.".".$field) {
-//          case "glpi_computers.date_mod" :
-//          case "glpi_printers.date_mod" :
-//          case "glpi_networkequipments.date_mod" :
-//          case "glpi_peripherals.date_mod" :
-//          case "glpi_phones.date_mod" :
-//          case "glpi_softwares.date_mod" :
-//          case "glpi_monitors.date_mod" :
-//          case "glpi_documents.date_mod" :
-//          case "glpi_users.last_login" :
-//          case "glpi_users.date_mod" :
-//             return " class='center'";
-
          case "glpi_tickets.priority" :
          case "glpi_problems.priority" :
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$num][0]['name']].";\" ";
@@ -4234,9 +4221,8 @@ class Search {
       if (isset($searchopt[$ID]['unit'])) {
          $unit = $searchopt[$ID]['unit'];
       }
-      /// TODO try to use getvalueToDisplay instead of redefine display system
-      // Preformat items
 
+      // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
@@ -5228,7 +5214,6 @@ class Search {
             break;
 
          default :
-            //TODO supprimer valign pour mettre class mais conflit avec $extraparam
             $out = "<td $extraparam valign='top'>";
 
             if (!preg_match('/'.self::LBHR.'/',$value)) {
