@@ -661,7 +661,7 @@ class NetworkName extends FQDNLabel {
          echo "</td>";
          if (static::canCreate()) {
             echo "<td class='right' width='30%'>";
-            echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
+            echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&amp;itemtype=$itemtype\">";
             echo __('Create a new network name')."</a>";
             echo "</td>";
          }

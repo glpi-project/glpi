@@ -450,7 +450,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    function showNetworkCardField(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $DB;
 
-      echo "<td>" . __('Network card') . "</td>\n</td>";
+      echo "<td>" . __('Network card') . "</td>\n";
       echo "<td>";
 
       if (count($recursiveItems)  > 0) {
