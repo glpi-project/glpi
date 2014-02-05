@@ -1774,20 +1774,20 @@ class Dropdown {
       if ($param["multiple"]) {
          $select   = __('All');
          $deselect = __('None');
-         $output  .= "<div class='invisible' id='selectall_$field_id'>";
+         $output  .= $field_id."<div class='invisible' id='selectall_$field_id'>";
          $output  .= "<a class='vsubmit floatleft' ".
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select".
                      "</a> ";
          $output  .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect".
                      "</a></div>";
-         $output  .= "<script type='text/javascript'>\n";
 
-         /// TODO : try to find a cleaner solution : remove / add each time is not so good
-         $output .= "$('#$field_id').on('open', function() {
-            $('.select2-actionable-menu').remove();
-            $('.select2-drop-multi').append('<div class=select2-actionable-menu>'+$('#selectall_$field_id').html()+'</div>');
+         /// TODO : Not working... Find a solution
+         $js = "$('#$field_id').on('open', function() {
+//             $('.select2-actionable-menu').remove();
+            alert('uu');
+//             $('.select2-drop-multi').append('<div class=select2-actionable-menu>'+$('#selectall_$field_id').html()+'</div>');
          });";
-         $output .= "</script>\n";
+         $output .= Html::scriptBlock($js);
       }
       $output .= Ajax::commonDropdownUpdateItem($param, false);
 

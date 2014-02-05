@@ -433,7 +433,6 @@ class Entity extends CommonTreeDropdown {
 
 
    function getSearchOptions() {
-      /// TODO lots of specific values may be passed to standard ones.
 
       $tab                     = array();
       $tab['common']           = __('Characteristics');
