@@ -325,8 +325,7 @@ class Profile_User extends CommonDBRelation {
             = array('container'
                         => 'mass'.__CLASS__.$rand,
                     'specific_actions'
-                        => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                    => _x('button', 'Delete permanently')));
+                        => array('purge' => _x('button', 'Delete permanently')));
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";

@@ -1019,8 +1019,7 @@ class Project extends CommonDBTM {
          $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'mass'.__CLASS__.$rand);
 //                     'specific_actions'
-//                         => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete'
-//                                     => _x('button', 'Delete permanently')) );
+//                         => array('delete' => _x('button', 'Delete permanently')) );
 //
 //          if ($this->fields['users_id'] != Session::getLoginUserID()) {
 //             $massiveactionparams['confirm']

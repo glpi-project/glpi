@@ -293,8 +293,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'    => $numrows,
                                       'container'        => 'mass'.__CLASS__.$rand,
-                                      'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                                                    => _x('button',
+                                      'specific_actions' => array('purge' => _x('button',
                                                                           'Delete permanently'),
                                                                   __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                                     => __('Solve tickets')),
