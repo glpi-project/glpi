@@ -319,11 +319,11 @@ class Ajax {
          }
          echo "</ul>";
          echo "</div>";
-
+         echo "<div id='loadingtabs$rand' class='invisible'><div class='loadingindicator'>".__s('Loading...')."</div></div>";
          $js = "$('#tabs$rand').tabs({ active: $selected_tab,
          // Loading indicator
          beforeLoad: function (event, ui) {
-                    ui.panel.html(\"<div class='loadingindicator'>".__s('Loading...')."</div>\");
+                  ui.panel.html($('#loadingtabs$rand').html());
                 },
          ajaxOptions: {type: 'POST'},
          

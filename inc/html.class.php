@@ -3865,8 +3865,8 @@ class Html {
             $rand     = mt_rand();
             echo "</td><td class='top'>";
             if ($jsexpand && $is_array) {
-               echo "<a class='pointer' onclick=\"javafile:showHideDiv('content$key$rand','','','')\">";
-                    "=></a>";
+               echo "<a class='pointer' href=\"javascript:showHideDiv('content$key$rand','','','')\">";
+               echo "=></a>";
             } else {
                echo "=>";
             }
