@@ -2730,10 +2730,8 @@ class Rule extends CommonDBTM {
                = array('num_displayed'
                            => $nb,
                        'specific_actions'
-                           => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update'
-                                       => _x('button', 'Update'),
-                                    'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                       => _x('button', 'Delete permanently')));
+                           => array('update' => _x('button', 'Update'),
+                                    'purge'  => _x('button', 'Delete permanently')));
                   //     'extraparams'
                 //           => array('rule_class_name' => $this->getRuleClassName()));
             Html::showMassiveActions($massiveactionparams);

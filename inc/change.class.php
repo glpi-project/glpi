@@ -314,9 +314,6 @@ class Change extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
       }
-
-      /// TODO auto solve tickets / changes ?
-
    }
 
 
@@ -459,25 +456,16 @@ class Change extends CommonITILObject {
    **/
    static function getAllStatusArray($withmetaforsearch=false) {
 
-      // new, evaluation, approbation, process (sub status : test, qualification, applied), review, closed, abandoned
-
-      /// TODO to be done : try to keep closed. Is abandonned usable ?
-      /// TODO define standard function to check solved / closed status
-
-      // To be overridden by class
       $tab = array(self::INCOMING      => _x('change', 'New'),
                    self::EVALUATION    => __('Evaluation'),
                    self::APPROVAL      => __('Approval'),
                    self::ACCEPTED      => _x('change', 'Accepted'),
                    self::WAITING       => __('Pending'),
-//                   self::ACCEPTED      => __('Processing (assigned)'),
-//                   self::PLANNED        => __('Processing (planned)'),
                    self::TEST          => __('Test'),
                    self::QUALIFICATION => __('Qualification'),
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
                    self::CLOSED        => _x('change', 'Closed'),
-//                   'abandoned'     => __('Abandonned'), // managed using dustbin ?
    );
 
       if ($withmetaforsearch) {
@@ -502,7 +490,7 @@ class Change extends CommonITILObject {
    static function getClosedStatusArray() {
 
       // To be overridden by class
-      $tab = array(self::CLOSED/*, 'abandoned'*/);
+      $tab = array(self::CLOSED);
       return $tab;
    }
 

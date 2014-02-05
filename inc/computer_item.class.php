@@ -417,8 +417,7 @@ class Computer_Item extends CommonDBRelation{
                = array('num_displayed'
                            => $number,
                        'specific_actions'
-                           => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                      => _x('button', 'Disconnect')),
+                           => array('purge' => _x('button', 'Disconnect')),
                        'container'
                            => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
@@ -560,8 +559,7 @@ class Computer_Item extends CommonDBRelation{
             = array('num_displayed'
                         => $number,
                     'specific_actions'
-                        => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                    => _x('button', 'Disconnect')),
+                        => array('purge' => _x('button', 'Disconnect')),
                     'container'
                         => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);

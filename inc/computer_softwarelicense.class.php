@@ -437,8 +437,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                           'specific_actions'
                            => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_license'
                                           => _x('button', 'Move'),
-                                    'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete'
-                                          => _x('button', 'Delete permanently')));
+                                    'delete' => _x('button', 'Delete permanently')));
                // Options to update license
                $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
                $massiveactionparams['extraparams']['options']['move']['softwares_id']

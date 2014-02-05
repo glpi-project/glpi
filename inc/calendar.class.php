@@ -110,8 +110,6 @@ class Calendar extends CommonDropdown {
    /**
     * @since version 0.85
     *
-    * @TODO: why not transfering duplicate to MassiveAction ?
-    *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,

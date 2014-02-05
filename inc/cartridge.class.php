@@ -651,8 +651,7 @@ class Cartridge extends CommonDBChild {
          if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                       => _x('button', 'Delete permanently'),
+            $actions = array('purge' => _x('button', 'Delete permanently'),
                              'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                                        => __('Enable the financial and administrative information')
                              );
@@ -921,8 +920,7 @@ class Cartridge extends CommonDBChild {
          } else {
             $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'updatepages'
                                       => __('Update printer counter'),
-                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
-                                      => _x('button', 'Delete permanently'));
+                             'purge' => _x('button', 'Delete permanently'));
          }
          $massiveactionparams = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
