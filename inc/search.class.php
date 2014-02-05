@@ -708,7 +708,7 @@ class Search {
 
                   } else {// Ref table case
                      $reftable = getTableForItemType($data['itemtype']);
-                     if ($item && $item->maybeDeleted()) {
+                     if ($data['item'] && $data['item']->maybeDeleted()) {
                         $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
                                                    `is_deleted`",
                                                 "`$reftable`.`is_deleted`", $tmpquery);

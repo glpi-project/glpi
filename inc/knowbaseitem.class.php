@@ -1172,6 +1172,7 @@ class KnowbaseItem extends CommonDBTM {
             // Display List Header
             echo Search::showHeader($output_type, $numrows_limit+1, $nbcols);
 
+            echo Search::showNewLine($output_type);
             $header_num = 1;
             echo Search::showHeaderItem($output_type, __('Subject'), $header_num);
 
