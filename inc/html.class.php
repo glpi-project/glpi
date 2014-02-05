@@ -1786,11 +1786,10 @@ class Html {
          echo "<div class='center' id='debugajax'>";
          echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\">
                 AJAX DEBUG</a>";
-         if (!isset($_POST['full_page_tab'])
+         if (!isset($_GET['full_page_tab'])
              && strstr($_SERVER['REQUEST_URI'], '/ajax/common.tabs.php')) {
             echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-            Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab',
-                                 'Display only tab for debug', $_POST);
+            echo "<a href='".$_SERVER['REQUEST_URI']."&full_page_tab=1' class='vsubmit'>Display only tab for debug</a>";
          }
          echo "</div>";
          echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
@@ -3887,7 +3886,7 @@ class Html {
                   if (is_object($val)) {
                      print_r($val);
                   } else {
-                     echo $val;
+                     echo htmlentities($val);
                   }
                }
             }

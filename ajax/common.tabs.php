@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-if (isset($_POST['full_page_tab'])) {
+if (isset($_GET['full_page_tab'])) {
    Html::header('Only tab for debug', $_SERVER['PHP_SELF']);
 } else {
    header("Content-Type: text/html; charset=UTF-8");
@@ -87,9 +87,9 @@ foreach ($notvalidoptions as $key) {
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], $options);
 
 
-if (isset($_POST['full_page_tab'])) {
+if (isset($_GET['full_page_tab'])) {
    echo "<div class='center' id='debugajax'>";
-   Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab', 'Reload this tab', $_POST);
+   echo "<a href='".$_SERVER['REQUEST_URI']."' class='vsubmit'>Display only tab for debug</a>";
    echo "</div>";
 
    Html::footer();
