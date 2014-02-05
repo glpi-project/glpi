@@ -262,7 +262,7 @@ class RuleTicket extends Rule {
                   } else {
                      $regexvalue = $action->fields["value"];
                   }
-                  /// TODO : check, because, previous version also propose deleted and template items
+                  
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
                         $result = IPAddress::getUniqueItemByIPAddress($regexvalue,

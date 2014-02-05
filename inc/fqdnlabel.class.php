@@ -230,7 +230,10 @@ abstract class FQDNLabel extends CommonDBChild {
          foreach ($labels_with_items as $key => $tab) {
             if (isset($tab[0])
                 && (($tab[0] instanceof NetworkName)
-                    || ($tab[0] instanceof NetworkPort))) {
+                    || ($tab[0] instanceof NetworkPort)
+                    || $tab[0]->isDeleted()
+                    || $tab[0]->isTemplate()
+                    || ($tab[0]->getEntityID() != $entity))) {
                unset($labels_with_items[$key]);
             }
          }
@@ -239,13 +242,10 @@ abstract class FQDNLabel extends CommonDBChild {
       if (count($labels_with_items) == 1) {
          $label_with_items = current($labels_with_items);
          $item             = $label_with_items[0];
-         if ($item->getEntityID() == $entity) {
-            $result = array("id"       => $item->getID(),
-                            "itemtype" => $item->getType());
-            unset($labels_with_items);
-            return $result;
-         }
-
+         $result = array("id"       => $item->getID(),
+                           "itemtype" => $item->getType());
+         unset($labels_with_items);
+         return $result;
       }
 
       return array();

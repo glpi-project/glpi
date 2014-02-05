@@ -351,9 +351,6 @@ class Change extends CommonITILObject {
             $cp = new Change_Problem();
             $cp->add(array('problems_id' => $this->input['_problems_id'],
                            'changes_id'  => $this->fields['id']));
-
-            /// TODO add linked tickets and linked hardware (to problem and tickets)
-            /// create standard function
          }
       }
 

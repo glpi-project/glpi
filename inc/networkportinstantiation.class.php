@@ -402,16 +402,24 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $macs_with_items = self::getItemsByMac($value);
 
+      if (count($macs_with_items)) {
+         foreach ($macs_with_items as $key => $tab) {
+            if (isset($tab[0])
+                && ($tab[0]->getEntityID() != $entity
+                    || $tab[0]->isDeleted()
+                    || $tab[0]->isTemplate())) {
+               unset($macs_with_items[$key]);
+            }
+         }
+      }
+      
       if (count($macs_with_items) == 1) {
          $mac_with_items = $macs_with_items[0];
          $item           = $mac_with_items[0];
-
-         if ($item->getEntityID() == $entity) {
-            $result = array("id"       => $item->getID(),
-                            "itemtype" => $item->getType());
-            unset($macs_with_items);
-            return $result;
-         }
+         $result = array("id"       => $item->getID(),
+                           "itemtype" => $item->getType());
+         unset($macs_with_items);
+         return $result;
       }
 
       return array();
