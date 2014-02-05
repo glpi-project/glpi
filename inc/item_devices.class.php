@@ -250,7 +250,6 @@ class Item_Devices extends CommonDBRelation {
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
 
-      // TODO: check what to do regarding templates
       foreach (self::getItemAffinities($itemtype) as $link_type) {
          $query = "SELECT *
                    FROM `".$link_type::getTable()."`

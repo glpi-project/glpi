@@ -130,23 +130,11 @@ class Phone extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      // TODO: add Computer_Item::cleanDBOnItemDelete ?
-      $query = "SELECT `id`
-                FROM `glpi_computers_items`
-                WHERE `itemtype` = '".$this->getType()."'
-                      AND `items_id` = '".$this->fields['id']."'";
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $conn = new Computer_Item();
+      $ci = new Computer_Item();
+      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
-            while ($data = $DB->fetch_assoc($result)) {
-               $data['_no_auto_action'] = true;
-               $conn->delete($data);
-            }
-         }
-      }
-
+      
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
