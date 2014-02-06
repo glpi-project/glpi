@@ -936,7 +936,7 @@ class Plugin extends CommonDBTM {
 
       // No need to translate, this part always display in english (for copy/paste to forum)
 
-      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>Plugins list</th></tr>";
+      echo "\n<tr class='tab_bg_2'><th>Plugins list</th></tr>";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $plug     = new Plugin();

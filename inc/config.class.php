@@ -411,13 +411,13 @@ class Config extends CommonDBTM {
       echo "<td>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",
                                        $CFG_GLPI["monitors_management_restrict"]);
-      echo "</td</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
            "</td><td>";
       SoftwareCategory::dropdown(array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
                                        'name'  => "softwarecategories_id_ondelete"));
-      echo "</td></td><td> " . __('Restrict device management') . "</td><td>";
+      echo "</td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
@@ -458,7 +458,7 @@ class Config extends CommonDBTM {
          Transfer::dropdown(array('value'      => $CFG_GLPI["transfers_id_auto"],
                                   'name'       => "transfers_id_auto",
                                   'emptylabel' => __('No automatic transfer')));
-         echo "</td></td></tr>";
+         echo "</td></tr>";
          echo "</table>";
       }
 
@@ -1715,7 +1715,7 @@ class Config extends CommonDBTM {
             $error = 2;
          } else {
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>$dir : OK\n";
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">$dir : OK\n";
             } else {
                echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\"
@@ -1734,7 +1734,7 @@ class Config extends CommonDBTM {
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
          if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">".GLPI_LOG_DIR." : OK\n";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                        __s('A file was created - Perfect!')."\" title=\"".
