@@ -380,7 +380,7 @@ class Contract extends CommonDBTM {
       $tab[129]['name']           = sprintf(__('%1$s - %2$s'), __('Contract'), __('Type'));
       $tab[129]['datatype']       = 'dropdown';
       $tab[129]['massiveaction']  = false;
-      $tab[129]['joinparams']     = array('beforejoin' => array('table'      => 'glpi_contracts',
+      $tab[129]['joinparams']     = array('beforejoin' => array('table' => 'glpi_contracts',
                                           'joinparams' => $joinparams));
 
       $tab[130]['table']         = 'glpi_contracts';
