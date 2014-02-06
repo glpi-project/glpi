@@ -127,7 +127,7 @@ class Link extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='3'>";
       Html::autocompletionTextField($this, "link", array('size' => 84));
-      echo "</td></td></tr>";
+      echo "</td></tr>";
 
       echo "<tr><td>".__('Open in a new window')."</td><td>";
       Dropdown::showYesNo('open_window', $this->fields['open_window']);
