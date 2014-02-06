@@ -560,7 +560,6 @@ class QueuedMail extends CommonDBTM {
       $this->check($ID, READ);
       $options['canedit'] = false;
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Type')."</td>";
@@ -647,15 +646,18 @@ class QueuedMail extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>".$this->fields['body_html']."</td>";
+      echo "<td colspan='2'><code>".self::cleanHtml($this->fields['body_html'])."</code></td>";
       echo "<td colspan='2'>".nl2br($this->fields['body_text'])."</td>";
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
 
+   }
+
+   static function cleanHtml($string) {
+      return $string;
    }
 
 }

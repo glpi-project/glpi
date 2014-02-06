@@ -249,7 +249,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='subheader' colspan='2'>".__('Visible in a ticket')."</td>";
+      echo "<td class='subheader' colspan='2'>".__('Visible in a ticket');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -276,7 +276,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='subheader' colspan='2'>".__('Can contain')."</td>";
+      echo "<td class='subheader' colspan='2'>".__('Can contain');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

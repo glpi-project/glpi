@@ -208,7 +208,6 @@ class Group_User extends CommonDBRelation{
       $header_end .= "<th>".__('Dynamic')."</th>";
       $header_end .= "<th>".__('Manager')."</th>";
       $header_end .= "<th>".__('Delegatee')."</th></tr>";
-      $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
       
       $group = new Group();
@@ -243,15 +242,15 @@ class Group_User extends CommonDBRelation{
             echo "<td>".$group->getLink()."</td>";
             echo "<td class='center'>";
             if ($data['is_dynamic']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Dynamic')."\">";
             }
             echo "<td class='center'>";
             if ($data['is_manager']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Manager')."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Delegatee')."\">";
             }
             echo "</td></tr>";
          }
@@ -296,7 +295,7 @@ class Group_User extends CommonDBRelation{
 
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add a user')."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add a user')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
 
          User::dropdown(array('right'  => "all",
@@ -514,15 +513,15 @@ class Group_User extends CommonDBRelation{
             }
             echo "</td><td class='center'>";
             if ($data['is_dynamic']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Dynamic')."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_manager']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Manager')."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Delegatee')."\">";
             }
             echo "</tr>";
          }

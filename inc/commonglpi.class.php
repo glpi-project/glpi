@@ -126,7 +126,9 @@ class CommonGLPI {
     * @return array containing the onglets
    **/
    function defineTabs($options=array()) {
-      return array();
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+      return $ong;
    }
 
 
