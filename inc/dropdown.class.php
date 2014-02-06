@@ -1783,8 +1783,13 @@ class Dropdown {
                      "</a>";
          $output  .= "</div></div>";
 
-         $js = "$('#$field_id').on('select2-open', function() {
-            $('.select2-drop-multi').html($('#selectallbuttons_$field_id').html());
+         $js = "
+         var multichecksappend$field_id = false;
+         $('#$field_id').on('select2-open', function() {
+            if (!multichecksappend$field_id) {
+               $('#select2-drop').append($('#selectallbuttons_$field_id').html());
+               multichecksappend$field_id = true;
+            }
          });";
          $output .= Html::scriptBlock($js);
       }
