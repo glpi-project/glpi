@@ -94,8 +94,8 @@ class FieldUnicity extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong          = array();
-      $ong['empty'] = $this->getTypeName(1);
-      $this->addStandardTab($this->getType(), $ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -156,9 +156,9 @@ class FieldUnicity extends CommonDropdown {
       //Criteria already added : only display the selected itemtype
       if ($ID > 0) {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
-            echo $item->getTypeName().'--';
+            echo $item->getTypeName();
          }
-         echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'";
+         echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'>";
 
       } else {
          //Add criteria : display dropdown
