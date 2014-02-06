@@ -4092,7 +4092,7 @@ class Html {
    **/
    static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
                                  $btoption='', $confirm='') {
-   
+
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
       }
@@ -4602,6 +4602,7 @@ class Html {
     * @return string A generated hidden input
    **/
    static function hidden($fieldName, $options=array()) {
+
       if ((isset($options['value'])) && (is_array($options['value']))) {
          $result = '';
          foreach ($options['value'] as $key => $value) {
@@ -4614,6 +4615,7 @@ class Html {
       return sprintf('<input type="hidden" name="%1$s" %2$s>',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
+
 
    /**
     * Creates a text input field.

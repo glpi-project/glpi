@@ -197,7 +197,7 @@ class Contract extends CommonDBTM {
                                              'unit'  => 'month'));
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                 $this->fields["duration"], 0, true);
+                                               $this->fields["duration"], 0, true);
       }
       echo "</td>";
       echo "</tr>";

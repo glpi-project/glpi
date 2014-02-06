@@ -179,7 +179,8 @@ class Contact_Supplier extends CommonDBRelation{
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
-         echo "<form name='contactsupplier_form$rand' id='contactsupplier_form$rand' method='post' action='";
+         echo "<form name='contactsupplier_form$rand' id='contactsupplier_form$rand'
+                method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a supplier')."</tr>";
@@ -211,8 +212,10 @@ class Contact_Supplier extends CommonDBRelation{
       $header_bottom = '';
       $header_end = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Supplier')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";
@@ -222,7 +225,7 @@ class Contact_Supplier extends CommonDBRelation{
       $header_end .= "<th>".__('Website')."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $used = array();
       if ($number > 0) {
          Session::initNavigateListItems('Supplier',
@@ -311,7 +314,8 @@ class Contact_Supplier extends CommonDBRelation{
       }
       if ($canedit) {
          echo "<div class='firstbloc'>";
-         echo "<form name='contactsupplier_form$rand' id='contactsupplier_form$rand' method='post' action='";
+         echo "<form name='contactsupplier_form$rand' id='contactsupplier_form$rand'
+                method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a contact')."</tr>";
@@ -346,8 +350,10 @@ class Contact_Supplier extends CommonDBRelation{
       $header_bottom = '';
       $header_end = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";
@@ -380,7 +386,8 @@ class Contact_Supplier extends CommonDBRelation{
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
                    sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])."</a></td>";
             echo "<td class='center' width='100'>".Dropdown::getDropdownName("glpi_entities",
-                                                                             $data["entity"])."</td>";
+                                                                             $data["entity"]);
+            echo "</td>";
             echo "<td class='center' width='100'>".$data["phone"]."</td>";
             echo "<td class='center' width='100'>".$data["phone2"]."</td>";
             echo "<td class='center' width='100'>".$data["mobile"]."</td>";

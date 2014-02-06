@@ -718,6 +718,7 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
    **/
    static function addDevicesFromPOST($input) {
+
       if (!isset($input['itemtype'])
           || !isset($input['items_id'])) {
          Html::displayNotFoundError();

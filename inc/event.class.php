@@ -297,7 +297,7 @@ class Event extends CommonDBTM {
       list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
-      $items = array("type" => array(__('Source'), ""),
+      $items = array("type"     => array(__('Source'), ""),
                      "items_id" => array(__('ID'), ""),
                      "date"     => array(__('Date'), ""),
                      "service"  => array(__('Service'), "width='8%'"),

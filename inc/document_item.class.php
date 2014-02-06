@@ -338,15 +338,17 @@ class Document_Item extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      
+
       $header_begin = "<tr>";
       $header_top = '';
       $header_bottom = '';
       $header_end = '';
 
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
 
       $header_end .= "<th>".__('Type')."</th>";
@@ -565,11 +567,11 @@ class Document_Item extends CommonDBRelation{
                            `glpi_documents`.*
                     FROM `glpi_documents_items`
                     LEFT JOIN `glpi_documents`
-                              ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
+                        ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
                     LEFT JOIN `glpi_entities`
-                              ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                        ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
                     LEFT JOIN `glpi_documentcategories`
-                              ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
+                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
                     WHERE `glpi_documents_items`.`documents_id` = '$ID'
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
@@ -628,7 +630,7 @@ class Document_Item extends CommonDBRelation{
 
          echo "<div class='firstbloc'>";
          echo "<form name='documentitem_form$rand' id='documentitem_form$rand' method='post'
-                action='".Toolbox::getItemTypeFormURL('Document')."'  enctype=\"multipart/form-data\">";
+                action='".Toolbox::getItemTypeFormURL('Document')."' enctype=\"multipart/form-data\">";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='5'>".__('Add a document')."</th></tr>";
@@ -707,8 +709,10 @@ class Document_Item extends CommonDBRelation{
       $header_bottom = '';
       $header_end = '';
       if ($canedit && $number && ($withtemplate < 2)) {
-         $header_top .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $columns = array('name'      => __('Name'),
                        'entity'    => __('Entity'),
@@ -729,7 +733,7 @@ class Document_Item extends CommonDBRelation{
 
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $used = array();
 
       if ($number) {
