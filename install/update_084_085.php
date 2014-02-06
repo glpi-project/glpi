@@ -2734,7 +2734,7 @@ function update084to085() {
                unset($options['link']);
             }
             if (isset($options['glpisearchcount'])) {
-               unset($options['glpisearchcount']):
+               unset($options['glpisearchcount']);
             }
 
             if (isset($options['field2']) && is_array($options['field2'])) {
@@ -2771,7 +2771,7 @@ function update084to085() {
                unset($options['itemtype2']);
             }
             if (isset($options['glpisearchcount2'])) {
-               unset($options['glpisearchcount2']):
+               unset($options['glpisearchcount2']);
             }
             
 
