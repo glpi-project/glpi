@@ -2373,7 +2373,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function getSearchOptionsMain() {
       global $CFG_GLPI;
-      
+
       $tab                            = array();
       $tab['common']                  = __('Characteristics');
 
@@ -3380,12 +3380,12 @@ abstract class CommonITILObject extends CommonDBTM {
                 onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }
-      if ($ID && $can_assigntome
-            && !in_array($this->fields['status'], $this->getClosedStatusArray())
-            && !$is_hidden['_users_id_assign']
-            && !$this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())) {
-         Html::showSimpleForm($this->getFormURL(), 'addme_assign',
-                              __('Associate myself'),
+      if ($ID
+          && $can_assigntome
+          && !in_array($this->fields['status'], $this->getClosedStatusArray())
+          && !$is_hidden['_users_id_assign']
+          && !$this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())) {
+         Html::showSimpleForm($this->getFormURL(), 'addme_assign', __('Associate myself'),
                               array($this->getForeignKeyField() => $this->fields['id']),
                               $CFG_GLPI["root_doc"]."/pics/addme.png");
       }

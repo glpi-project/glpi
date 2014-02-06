@@ -416,8 +416,10 @@ class Contract_Item extends CommonDBRelation{
       $header_bottom = '';
       $header_end = '';
       if ($canedit && $number && ($withtemplate != 2)) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
 
       $header_end .= "<th>".__('Name')."</th>";
@@ -429,7 +431,7 @@ class Contract_Item extends CommonDBRelation{
       $header_end .= "<th>".__('Initial contract period')."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       if ($number > 0) {
          Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
@@ -618,8 +620,10 @@ class Contract_Item extends CommonDBRelation{
       $header_end = '';
 
       if ($canedit && $totalnb) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";
@@ -629,7 +633,7 @@ class Contract_Item extends CommonDBRelation{
       $header_end .= "<th>".__('Status')."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $totalnb = 0;
       foreach ($data as $itemtype => $datas) {
 

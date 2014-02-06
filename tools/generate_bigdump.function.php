@@ -1166,7 +1166,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment '$val",
                      'devicecasetypes_id' => mt_rand(0,$MAX["case_type"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']))));
@@ -1184,7 +1184,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment ' $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']))));
@@ -1202,7 +1202,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment '$val",
                      'is_writer'          => mt_rand(0,1),
                      'speed'              => mt_rand(0,60),
@@ -1223,7 +1223,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment ' $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
@@ -1242,7 +1242,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment' $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
@@ -1263,7 +1263,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment' $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'bandwidth'          => mt_rand(0,1000))));
@@ -1283,7 +1283,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment' $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'chipset'            => 'chipset '.mt_rand(0,1000))));
@@ -1301,7 +1301,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment '$val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']))));
    }
@@ -1318,7 +1318,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment '$val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'power'              => mt_rand(0,500).'W',
@@ -1338,7 +1338,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'        => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'       => 1,
                      'comment'            => "comment' $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'frequence'          => mt_rand(1000,3000),
@@ -1361,7 +1361,7 @@ function generateGlobalDropdowns() {
       }
       $dp->add(toolbox::addslashes_deep(
                array('designation'          => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'         => 1,
                      'comment'              => "comment' $val",
                      'manufacturers_id'     => mt_rand(1,$MAX['manufacturer']),
                      'frequence'            => 100*mt_rand(0,10),
@@ -1382,7 +1382,7 @@ function generateGlobalDropdowns() {
       }
        $dp->add(toolbox::addslashes_deep(
                 array('designation'         => $val,
-                     'is_recursive' => 1,
+                     'is_recursive'         => 1,
                      'comment'              => "comment '$val",
                      'manufacturers_id'     => mt_rand(1,$MAX['manufacturer']),
                      'type'                 => 'type '.mt_rand(0,100))));
@@ -1449,9 +1449,9 @@ function generate_entity($ID_entity) {
          $val = "State $ID_entity '$i";
       }
       $state_id = $dp->add(toolbox::addslashes_deep(array('name'         => $val,
-                                              'entities_id'  => $ID_entity,
-                                              'is_recursive' => 1,
-                                              'comment'      => "comment $val")));
+                                                          'entities_id'  => $ID_entity,
+                                                          'is_recursive' => 1,
+                                                          'comment'      => "comment $val")));
 
       // generate sub status
       for ($j=0 ; $j<$MAX['state'] ; $j++) {

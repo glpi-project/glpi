@@ -208,8 +208,10 @@ class Contract_Supplier extends CommonDBRelation {
       $header_bottom = '';
       $header_end = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";
@@ -348,8 +350,10 @@ class Contract_Supplier extends CommonDBRelation {
       $header_bottom = '';
       $header_end = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Supplier')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";

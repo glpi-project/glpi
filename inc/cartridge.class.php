@@ -178,7 +178,7 @@ class Cartridge extends CommonDBChild {
                }
             }
             return;
-            
+
          case 'backtostock' :
             foreach ($ids as $id) {
                if ($item->can($id, UPDATE)) {
@@ -194,7 +194,7 @@ class Cartridge extends CommonDBChild {
                }
             }
             return;
-            
+
          case 'updatepages' :
             $input = $ma->getInput();
             if (isset($input['pages'])) {
@@ -656,29 +656,31 @@ class Cartridge extends CommonDBChild {
                                        => __('Enable the financial and administrative information')
                              );
             if ($show_old) {
-               $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock'] = __('Back to stock');
+               $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock']
+                     = __('Back to stock');
             }
             $massiveactionparams = array('num_displayed'    => $number,
-                              'specific_actions' => $actions,
-                              'container'        => 'mass'.__CLASS__.$rand,
-                              'rand'             => $rand);
+                                         'specific_actions' => $actions,
+                                         'container'        => 'mass'.__CLASS__.$rand,
+                                         'rand'             => $rand);
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
          if (!$show_old) {
-            echo "<tr class='noHover'><th colspan='".($canedit?'7':'6')."'>".self::getCount($tID,-1)."</th>";
+            echo "<tr class='noHover'><th colspan='".($canedit?'7':'6')."'>".
+                  self::getCount($tID,-1)."</th>";
             echo "</tr>";
          } else { // Old
-            echo "<tr class='noHover'><th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges')."</th>";
-            echo "</tr>";
+            echo "<tr class='noHover'><th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges');
+            echo "</th></tr>";
          }
          $i = 0;
-         
+
          $header_begin = "<tr>";
          $header_top = '';
          $header_bottom = '';
          $header_end = '';
-         
+
          if ($canedit && $number) {
             $header_begin .= "<th width='10'>";
             $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -936,7 +938,7 @@ class Cartridge extends CommonDBChild {
       } else {
          echo "<tr class='noHover'><th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th></tr>";
       }
-      
+
       $header_begin = "<tr>";
       $header_top = '';
       $header_bottom = '';
@@ -958,7 +960,7 @@ class Cartridge extends CommonDBChild {
       }
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $stock_time       = 0;
       $use_time         = 0;
       $pages_printed    = 0;
@@ -1048,7 +1050,7 @@ class Cartridge extends CommonDBChild {
             echo "</tr>";
          }
       }
-      
+
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;
@@ -1221,6 +1223,6 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   
+
 }
 ?>
