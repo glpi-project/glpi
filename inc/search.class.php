@@ -1318,6 +1318,12 @@ class Search {
                                    $data['search']['is_deleted']);
 
             $current_type       = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
+            $massiveaction_type = $current_type;
+
+            if (($data['itemtype'] != 'AllAssets')
+                  && isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+               $massiveaction_type = $data['itemtype'];
+            }
 
             // Add item in item list
             Session::addToNavigateListItems($current_type, $row["id"]);
@@ -1336,7 +1342,7 @@ class Search {
                   $tmpcheck = "&nbsp;";
 
                } else {
-                  $tmpcheck = Html::getMassiveActionCheckBox($current_type, $row[$massiveaction_field]);
+                  $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type, $row[$massiveaction_field]);
                }
                echo self::showItem($data['display_type'], $tmpcheck, $item_num, $row_num,
                                     "width='10'");
