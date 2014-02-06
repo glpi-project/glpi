@@ -122,9 +122,8 @@ class NotificationMailSetting extends CommonDBTM {
 
       echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<div>";
-      echo "<table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='1'>";
-
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Notification', 'Notifications',2)."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Enable followup via email') . "</td><td>";
