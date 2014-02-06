@@ -404,6 +404,9 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    static function canDelete() {
 
       // to allow delete for self-service only if no action on the ticket
@@ -3568,7 +3571,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      
+
       // Default check
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -3606,7 +3609,7 @@ class Ticket extends CommonITILObject {
          $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'], '',
                                                  Ticket::INCIDENT_TYPE);
       }
-      
+
       if (!isset($options['template_preview'])) {
          $options['template_preview'] = 0;
       }
@@ -4457,7 +4460,7 @@ class Ticket extends CommonITILObject {
                echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
                echo "</td>";
             }
-            
+
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";
@@ -5183,7 +5186,7 @@ class Ticket extends CommonITILObject {
       if (count($_SESSION["glpiactiveentities"]) > 1) {
          $colspan++;
       }
-      
+
       // Ticket for the item
       echo "<div class='firstbloc'>";
       // Link to open a new ticket

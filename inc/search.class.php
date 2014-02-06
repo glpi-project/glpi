@@ -1630,12 +1630,18 @@ class Search {
       return $linked;
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function getLogicalOperators() {
+
       return array('AND'     => 'AND',
-                  'OR'      => 'OR',
-                  'AND NOT' => 'AND NOT',
-                  'OR NOT'  => 'OR NOT',);
+                   'OR'      => 'OR',
+                   'AND NOT' => 'AND NOT',
+                   'OR NOT'  => 'OR NOT',);
    }
+
 
    /**
     * Print generic search form
@@ -1664,11 +1670,11 @@ class Search {
 
       echo "<form name='searchform$itemtype' method='get' action=\"".$p['target']."\">";
       echo "<div id='searchcriterias'>";
-      $nbsearchcountvar = 'nbcriteria'.strtolower($itemtype).mt_rand();
-      $nbmetasearchcountvar = 'nbmetacriteria'.strtolower($itemtype).mt_rand();
+      $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
+      $nbmetasearchcountvar  = 'nbmetacriteria'.strtolower($itemtype).mt_rand();
       $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
       // init criteria count
-      $js = "var $nbsearchcountvar=".count($p['criteria']).";";
+      $js  = "var $nbsearchcountvar=".count($p['criteria']).";";
       $js .= "var $nbmetasearchcountvar=".count($p['metacriteria']).";";
       echo Html::scriptBlock($js);
 
@@ -1687,8 +1693,6 @@ class Search {
          echo "</td>";
       }
 
-
-
       echo "<td>";
 
       echo "<table class='tab_format' id='$searchcriteriatableid'>";
@@ -1696,7 +1700,7 @@ class Search {
       // Display normal search parameters
       for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
-         $_POST['num'] = $i ;
+         $_POST['num']      = $i ;
          include(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
@@ -4617,17 +4621,22 @@ class Search {
          }
       }
       // Force reorder criterias
-      if (isset($params["criteria"]) && is_array($params["criteria"])
-            && count($params["criteria"])) {
-         $tmp = $params["criteria"];
+      if (isset($params["criteria"])
+          && is_array($params["criteria"])
+          && count($params["criteria"])) {
+
+         $tmp                = $params["criteria"];
          $params["criteria"] = array();
          foreach ($tmp as $val) {
             $params["criteria"][] = $val;
          }
       }
-      if (isset($params["metacriteria"]) && is_array($params["metacriteria"])
-            && count($params["metacriteria"])) {
-         $tmp = $params["metacriteria"];
+
+      if (isset($params["metacriteria"])
+          && is_array($params["metacriteria"])
+          && count($params["metacriteria"])) {
+
+         $tmp                    = $params["metacriteria"];
          $params["metacriteria"] = array();
          foreach ($tmp as $val) {
             $params["metacriteria"][] = $val;
@@ -4641,8 +4650,7 @@ class Search {
          }
       }
 
-      if (isset($params)
-          && is_array($params)
+      if (isset($params) && is_array($params)
           && $usesession) {
          foreach ($params as $key => $val) {
             $_SESSION['glpisearch'][$itemtype][$key] = $val;

@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 // Direct access to file
@@ -43,27 +44,27 @@ Session::checkLoginUser();
 // Non define case
 if (isset($_POST["itemtype"])
     && isset($_POST["num"]) ) {
-    
+
    $metacriteria = array();
 
    if (isset($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])
-         && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])) {
+       && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])) {
       $metacriteria = $_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]];
    }
    $linked =  Search::getMetaItemtypeAvailable($_POST["itemtype"]);
-   $rand = mt_rand();
-   
-   $rowid = 'metasearchrow'.$_POST['itemtype'].$rand;
+   $rand   = mt_rand();
+
+   $rowid  = 'metasearchrow'.$_POST['itemtype'].$rand;
 
    echo "<tr class='metacriteria' id='$rowid'><td class='left' colspan='2'>";
-               
 
    echo "<table class='tab_format'><tr class='left'>";
    echo "<td width='30%'>";
    echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
-               __s('Delete a global search criterion')."\" onclick=\"".Html::jsGetElementbyID($rowid).".remove();\">";
+          __s('Delete a global search criterion')."\" onclick=\"".
+          Html::jsGetElementbyID($rowid).".remove();\">";
    echo "&nbsp;&nbsp;";
-   
+
    // Display link item (not for the first item)
    $value = '';
    if (isset($metacriteria["link"])) {
@@ -84,7 +85,7 @@ if (isset($_POST["itemtype"])
    }
    $value = '';
    if (isset($metacriteria['itemtype'])
-         && !empty($metacriteria['itemtype'])) {
+       && !empty($metacriteria['itemtype'])) {
       $value = $metacriteria['itemtype'];
    }
 
@@ -97,13 +98,12 @@ if (isset($_POST["itemtype"])
    echo "<span id='show_".$_POST["itemtype"]."_".$_POST["num"]."_$rand'>&nbsp;</span>\n";
 
    $params = array('itemtype'   => '__VALUE__',
-                     'num'        => $_POST["num"],
-                     'field'      => (isset($metacriteria['field'])
-                                       ? $metacriteria['field'] : ""),
-                     'value'      => (isset($metacriteria['value'])
-                                       ? stripslashes($metacriteria['value']) : ""),
-                     'searchtype' => (isset($metacriteria['searchtype'])
-                                       ? $metacriteria['searchtype'] : ""));
+                   'num'        => $_POST["num"],
+                   'field'      => (isset($metacriteria['field']) ? $metacriteria['field'] : ""),
+                   'value'      => (isset($metacriteria['value'])
+                                    ? stripslashes($metacriteria['value']) : ""),
+                   'searchtype' => (isset($metacriteria['searchtype'])
+                                    ? $metacriteria['searchtype'] : ""));
 
    Ajax::updateItemOnSelectEvent($field_id,
                                  "show_".$_POST["itemtype"]."_".$_POST["num"]."_$rand",
@@ -111,12 +111,12 @@ if (isset($_POST["itemtype"])
                                  $params);
 
    if (isset($metacriteria['itemtype'])
-         && !empty($metacriteria['itemtype'])) {
+       && !empty($metacriteria['itemtype'])) {
 
       $params['itemtype'] = $metacriteria['itemtype'];
 
       Ajax::updateItem("show_".$_POST["itemtype"]."_".$_POST["num"]."_$rand",
-                        $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);
+                       $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);
 
    }
    echo "</td></tr></table>";

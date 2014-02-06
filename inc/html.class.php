@@ -458,7 +458,7 @@ class Html {
    /**
     * Redirection to Login page
     *
-    * @param $params : param to add to URL
+    * @param $params       param to add to URL (default '')
     * @since version 0.85
     *
     * @return nothing

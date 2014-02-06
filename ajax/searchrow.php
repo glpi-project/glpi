@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 // Direct access to file
@@ -44,22 +45,22 @@ Session::checkLoginUser();
 if (isset($_POST["itemtype"])
     && isset($_POST["num"]) ) {
 
-   $options = Search::getCleanedOptions($_POST["itemtype"]);
+   $options  = Search::getCleanedOptions($_POST["itemtype"]);
 
-   $randrow = mt_rand();
-   $rowid = 'searchrow'.$_POST['itemtype'].$randrow;
+   $randrow  = mt_rand();
+   $rowid    = 'searchrow'.$_POST['itemtype'].$randrow;
 
    $addclass = '';
-   if ($_POST["num"]==0) {
+   if ($_POST["num"] == 0) {
       $addclass = ' headerRow';
    }
-   
+
    echo "<tr class='normalcriteria$addclass' id='$rowid'><td class='left' width='45%'>";
    // First line display add / delete images for normal and meta search items
    if ($_POST["num"] == 0) {
-      $linked =  Search::getMetaItemtypeAvailable($_POST["itemtype"]);
+      $linked = Search::getMetaItemtypeAvailable($_POST["itemtype"]);
       echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
-               __s('Add a search criterion')."\" id='addsearchcriteria$randrow'>";
+             __s('Add a search criterion')."\" id='addsearchcriteria$randrow'>";
 
       $js = Html::jsGetElementbyID("addsearchcriteria$randrow").".on('click', function(e) {
                $.post( '".$CFG_GLPI['root_doc']."/ajax/searchrow.php',
@@ -70,13 +71,12 @@ if (isset($_POST["itemtype"])
             $nbsearchcountvar = $nbsearchcountvar +1;});";
       echo Html::scriptBlock($js);
 
-//
-
       echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 
       if (is_array($linked) && (count($linked) > 0)) {
-         echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
-                  __s('Add a global search criterion')."\" id='addmetasearchcriteria$randrow'>";
+         echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" .
+                alt='+' title=\"". __s('Add a global search criterion').
+                "\" id='addmetasearchcriteria$randrow'>";
 
          $js = Html::jsGetElementbyID("addmetasearchcriteria$randrow").".on('click', function(e) {
                   $.post( '".$CFG_GLPI['root_doc']."/ajax/searchmetarow.php',
@@ -87,7 +87,7 @@ if (isset($_POST["itemtype"])
                $nbmetasearchcountvar = $nbmetasearchcountvar +1;});";
          echo Html::scriptBlock($js);
          echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-      } 
+      }
 
       // Instanciate an object to access method
       $item = NULL;
@@ -96,8 +96,7 @@ if (isset($_POST["itemtype"])
       }
 
       if ($item && $item->maybeDeleted()) {
-         echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".
-                  $p['is_deleted']."'>";
+         echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
          echo "<a href='#' onClick = \"toogle('is_deleted','','','');
                   document.forms['searchform".$_POST["itemtype"]."'].submit();\">
                   <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
@@ -110,16 +109,16 @@ if (isset($_POST["itemtype"])
       }
    } else {
       echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
-               __s('Delete a search criterion')."\" onclick=\"".Html::jsGetElementbyID($rowid).".remove();\">&nbsp;&nbsp;";
+             __s('Delete a search criterion')."\" onclick=\"".
+             Html::jsGetElementbyID($rowid).".remove();\">&nbsp;&nbsp;";
    }
 
    $criteria = array();
 
    if (isset($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])
-         && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])) {
+       && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])) {
       $criteria = $_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]];
    }
-
 
    // Display link item
    if ($_POST["num"] > 0) {
@@ -132,7 +131,6 @@ if (isset($_POST["itemtype"])
                               array('value' => $value,
                                     'width' => '30%'));
    }
-
 
    $selected = $first = '';
    $values   = array();
@@ -187,10 +185,10 @@ if (isset($_POST["itemtype"])
    echo "</div>\n";
 
    $params = array('field'      => '__VALUE__',
-                     'itemtype'   => $used_itemtype,
-                     'num'        => $_POST["num"],
-                     'value'      => $_POST["value"],
-                     'searchtype' => $_POST["searchtype"]);
+                   'itemtype'   => $used_itemtype,
+                   'num'        => $_POST["num"],
+                   'value'      => $_POST["value"],
+                   'searchtype' => $_POST["searchtype"]);
    Ajax::updateItemOnSelectEvent($field_id, "SearchSpan".$_POST["itemtype"].$_POST["num"],
                                  $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 

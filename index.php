@@ -107,13 +107,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    echo '<legend>'.__('Authentication').'</legend>';
    echo '<div class="loginrow"><span class="loginlabel"><label>'.__('Login').'</label></span>';
-   echo '<span class="loginformw"><input type="text" name="login_name" id="login_name" required="required" />';
+   echo '<span class="loginformw">';
+   echo '<input type="text" name="login_name" id="login_name" required="required" />';
    echo '</span></div>';
 
    echo '<div class="loginrow"><span class="loginlabel"><label>'.__('Password').'</label></span>';
    echo '<span class="loginformw">';
-   echo '<input type="password" name="login_password" id="login_password" required="required" /></span>'.
-        '</div>';
+   echo '<input type="password" name="login_password" id="login_password" required="required" />';
+   echo '</span></div>';
 
    echo "</fieldset>";
    echo '<p><span>';
@@ -151,6 +152,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             _e('Checking write permissions for session files');
             echo "<br>".GLPI_SESSION_DIR;
             break;
+
          case 3 :
             _e('Invalid use of session ID');
             break;
@@ -159,7 +161,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "</div>";
 
 
-     echo "</div>"; // end contenu login
+   echo "</div>"; // end contenu login
 
       // Display FAQ is enable
    if ($CFG_GLPI["use_public_faq"]) {

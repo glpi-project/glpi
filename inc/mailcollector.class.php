@@ -918,7 +918,7 @@ class MailCollector  extends CommonDBTM {
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep(Html::clean($string));
-      
+
       $rand   = mt_rand();
       // Move line breaks to special CHARS
       $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
@@ -962,7 +962,7 @@ class MailCollector  extends CommonDBTM {
 
       if (count($enc) == 2) {
          foreach (mb_list_encodings() as $encoding) {
-            $enc[] = Toolbox::strtolower($encoding);
+            $enc[]   = Toolbox::strtolower($encoding);
             $aliases = mb_encoding_aliases($encoding);
             foreach ($aliases as $e) {
                $enc[] = Toolbox::strtolower($e);
@@ -1011,7 +1011,7 @@ class MailCollector  extends CommonDBTM {
                if (in_array($mimeStr->charset, $encodings)) {
                   $this->charset = $mimeStr->charset;
                }
-      
+
                $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
                                                   (in_array($mimeStr->charset, $encodings)
                                                       ? $mimeStr->charset : $fallbackCharset));
@@ -1457,6 +1457,7 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
+
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
