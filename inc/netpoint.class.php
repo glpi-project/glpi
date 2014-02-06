@@ -294,7 +294,7 @@ class Netpoint extends CommonDropdown {
                                            'max'   => 400));
          echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
+         echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
          echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\"
                     class='submit'>";
