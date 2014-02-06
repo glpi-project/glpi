@@ -645,9 +645,9 @@ class QueuedMail extends CommonDBTM {
       echo "<th colspan='2'>".__('Email text body')."</th>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'><code>".self::cleanHtml($this->fields['body_html'])."</code></td>";
-      echo "<td colspan='2'>".nl2br($this->fields['body_text'])."</td>";
+      echo "<tr class='tab_bg_1 top' >";
+      echo "<td colspan='2'>".self::cleanHtml($this->fields['body_html'])."</td>";
+      echo "<td colspan='2'>".nl2br($this->fields['body_text'], false)."</td>";
       echo "</tr>";
 
       $this->showFormButtons($options);
@@ -657,7 +657,32 @@ class QueuedMail extends CommonDBTM {
    }
 
    static function cleanHtml($string) {
-      return $string;
+      $begin_strip     = -1;
+      $end_strip       = -1;
+      $begin_match     = "/<body>/";
+      $end_match       = "/<\/body>/";
+      $content        = explode("\n", $string);
+      $newstring = '';
+      foreach ($content as $ID => $val) {
+         // Get last tag for end
+         if ($begin_strip >= 0) {
+            if (preg_match($end_match,$val)) {
+               $end_strip = $ID;
+               continue;
+            }
+         }
+         if ($begin_strip >= 0 && $end_strip < 0) {
+            $newstring .= $val;
+         }
+         // Get first tag for begin
+         if ($begin_strip < 0) {
+            if (preg_match($begin_match,$val)) {
+               $begin_strip = $ID;
+            }
+         }
+      }
+      return nl2br($newstring,false);
+      return preg_replace($patterns, $replacements, $string);
    }
 
 }
