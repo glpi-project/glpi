@@ -1526,7 +1526,9 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_rules'));
 
    $migration->addField("glpi_rules", 'uuid', "string");
+   $migration->addField("glpi_slalevels", 'uuid', "string");
    $migration->migrationOneTable('glpi_rules');
+   $migration->migrationOneTable('glpi_slalevels');
 
    // Dropdown translations
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_knowbaseitemtranslations'));
@@ -1629,6 +1631,14 @@ function update084to085() {
                 SET `uuid` = '$uuid'
                 WHERE `id` = '".$data['id']."'";
       $DB->queryOrDie($query, "0.85 add uuid to existing rules");
+   }
+
+   foreach ($DB->request('glpi_slalevels', array('uuid' => NULL)) as $data) {
+      $uuid  = Rule::getUuid();
+      $query = "UPDATE `glpi_slalevels`
+                SET `uuid` = '$uuid'
+                WHERE `id` = '".$data['id']."'";
+      $DB->queryOrDie($query, "0.85 add uuid to existing slalevels");
    }
 
    $migration->addField('glpi_users', 'is_deleted_ldap', 'bool');

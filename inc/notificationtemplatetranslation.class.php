@@ -218,7 +218,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
             }
             echo "<td class='center'>";
             echo "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
-                  "?id=".$data['id']."&notificationtemplates_id=".$nID."'>";
+                  "?id=".$data['id']."&amp;notificationtemplates_id=".$nID."'>";
 
             if ($data['language'] != '') {
                echo $CFG_GLPI['languages'][$data['language']][0];

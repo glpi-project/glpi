@@ -125,6 +125,7 @@ class SlaLevel extends RuleTicket {
          echo "<input type='hidden' name='slas_id' value='$ID'>";
          echo "<input type='hidden' name='entities_id' value='".$sla->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$sla->isRecursive()."'>";
+         echo "<input type='hidden' name='match' value='AND'>";
          echo "</td><td><input  name='name' value=''>";
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
