@@ -329,11 +329,11 @@ class Profile_User extends CommonDBRelation {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
+      echo "<thead><tr>";
 
       echo "<th class='noHover' colspan='$headerspan'>";
       printf(__('%1$s (%2$s)'), _n('User', 'Users', 2), __('D=Dynamic, R=Recursive'));
-      echo "</th></tr>";
+      echo "</th></tr></thead>";
 
 
       if ($nb) {
@@ -343,7 +343,7 @@ class Profile_User extends CommonDBRelation {
                                                 $entity->getName()));
 
          while ($data = $DB->fetch_assoc($result)) {
-            echo "<tr class='noHover' >";
+            echo "<tbody><tr class='noHover'>";
             $reduce_header = 0;
             if ($canedit && $nb) {
                echo "<th width='10'>";
@@ -353,7 +353,7 @@ class Profile_User extends CommonDBRelation {
             }
             echo "<th colspan='".($headerspan-$reduce_header)."'>";
             printf(__('%1$s: %2$s'), __('Profile'), $data["name"]);
-            echo "</th></tr>";
+            echo "</th></tr></tbody>";
             echo "<tbody id='profile".$data['id']."_$rand'>";
 
             $query = "SELECT `glpi_users`.*,

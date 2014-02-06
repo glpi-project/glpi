@@ -864,12 +864,13 @@ class Rule extends CommonDBTM {
             printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
          }
       }
-      echo"</td></tr>\n";
-
       if ($canedit) {
          echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
          echo "<input type='hidden' name='sub_type' value='".get_class($this)."'>";
+      }
+      echo "</td></tr>\n";
 
+      if ($canedit) {
          if ($ID > 0) {
             if ($plugin = isPluginItemType($this->getType())) {
                $url = $CFG_GLPI["root_doc"]."/plugins/".strtolower($plugin['plugin']);

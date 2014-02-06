@@ -45,6 +45,6 @@ if (!isset($_GET["id"])) {
 $mail = new QueuedMail();
 
 Html::header(QueuedMail::getTypeName(), $_SERVER['PHP_SELF'], "admin", "queuedmail");
-$mail->showForm($_GET["id"]);
+$mail->display($_GET);
 Html::footer();
 ?>
