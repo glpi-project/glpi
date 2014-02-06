@@ -237,7 +237,7 @@ class FieldUnicity extends CommonDropdown {
       global $DB;
 
 
-      echo "<span id='span_fields' name='span_fields'>";
+      echo "<span id='span_fields'>";
 
       if (!isset($unicity->fields['itemtype']) || !$unicity->fields['itemtype']) {
          echo  "</span>";
@@ -249,7 +249,7 @@ class FieldUnicity extends CommonDropdown {
       }
 
       $unicity_fields = explode(',', $unicity->fields['fields']);
-      echo "<span id='span_fields' name='span_fields'>";
+
       self::dropdownFields($unicity->fields['itemtype'],
                            array('values' => $unicity_fields,
                                  'name'   => '_fields'));
@@ -297,8 +297,9 @@ class FieldUnicity extends CommonDropdown {
                $values[$field['Field']] = $searchOption['name'];
             }
          }
-         $p['multiple'] = true;
+         $p['multiple'] = 1;
          $p['size']     = 15;
+
          return Dropdown::showFromArray($p['name'], $values, $p);
       }
       return false;
