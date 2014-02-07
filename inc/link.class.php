@@ -117,7 +117,8 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td height='23'>".__('Valid tags')."</td>";
       echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
-                            [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td></tr>";
+                            [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP], [REALNAME],
+                            [FIRSTNAME]</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
@@ -256,6 +257,15 @@ class Link extends CommonDBTM {
                                 Dropdown::getDropdownName("glpi_groups",
                                                           $item->getField('groups_id')), $link);
       }
+      if (strstr($link,"[REALNAME]")
+            && $item->isField('realname')) {
+         $link = str_replace("[REALNAME]",$item->getField('realname'),$link);
+      }
+      if (strstr($link,"[FIRSTNAME]")
+            && $item->isField('firstname')) {
+         $link = str_replace("[FIRSTNAME]",$item->getField('firstname'),$link);
+      }
+
 
       $replace_IP  = strstr($link,"[IP]");
       $replace_MAC = strstr($link,"[MAC]");
