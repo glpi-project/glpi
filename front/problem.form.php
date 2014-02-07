@@ -98,7 +98,13 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST['problems_id'], "problem", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
+
+   if ($problem->can($_POST["id"],'r')) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST["problems_id"]);
+   }
+   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),
+                                    true, ERROR);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.php");
 
 } else if (isset($_POST['delete_group'])) {
    $group_problem = new Group_Problem();
