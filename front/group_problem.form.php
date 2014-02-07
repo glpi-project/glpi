@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 $link = new Group_Problem();
+$item = new Problem();
 
 Session ::checkLoginUser();
 
@@ -46,7 +47,14 @@ if (isset($_POST['delete'])) {
 
    Event::log($link->fields['problems_id'], "problem", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$link->fields['problems_id']);
+
+   if ($item->can($link->fields["problems_id"],'r')) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$link->fields['problems_id']);
+   }
+   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),
+                                    true, ERROR);
+
+   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.php");
 
 }
 
