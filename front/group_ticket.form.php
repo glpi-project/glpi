@@ -35,7 +35,7 @@
 if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
-toolbox::logdebug("post", $_POST);
+
 $link = new Group_Ticket();
 $item = new Ticket();
 
