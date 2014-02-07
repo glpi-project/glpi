@@ -246,6 +246,7 @@ class User extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
       $this->addStandardTab('Auth', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -3352,7 +3353,7 @@ class User extends CommonDBTM {
       $header .= "<th>".__('Status')."</th>";
       $header .= "<th>&nbsp;</th></tr>";
       echo $header;
-      
+
       foreach ($type_user as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
             continue;

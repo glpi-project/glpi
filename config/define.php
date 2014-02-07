@@ -208,7 +208,7 @@ $CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["link_types"]                   = array('Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier');
+                                                  'Printer', 'Software', 'Supplier', 'User');
 
 $CFG_GLPI["dictionnary_types"]            = array('ComputerModel', 'ComputerType', 'Manufacturer',
                                                   'MonitorModel', 'MonitorType',

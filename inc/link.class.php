@@ -382,6 +382,10 @@ class Link extends CommonDBTM {
          return false;
       }
 
+      $restrict = $item->getEntityID();
+      if ($item->getType() == 'User') {
+         $restrict = $item->fields['entities_id'];
+      }
       $query = "SELECT `glpi_links`.`id`,
                        `glpi_links`.`link` AS link,
                        `glpi_links`.`name` AS name ,
@@ -392,7 +396,7 @@ class Link extends CommonDBTM {
                      ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
                 WHERE `glpi_links_itemtypes`.`itemtype`='".$item->getType()."' " .
                       getEntitiesRestrictRequest(" AND", "glpi_links", "entities_id",
-                                                 $item->getEntityID(), true)."
+                                                 $restrict, true)."
                 ORDER BY name";
 
       $result = $DB->query($query);
