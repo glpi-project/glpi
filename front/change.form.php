@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
    if ($change->can($_POST["id"],'r')) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST["changes_id"]);
    }
-   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
+   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),
                                     true, ERROR);
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.php");
 
