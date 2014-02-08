@@ -2513,13 +2513,13 @@ class Html {
     *
     * @since version 0.84
     *
-    * @param $itemtype    Massive action itemtype
-    * @param $id          ID of the item
-    * @param $options
+    * @param $itemtype             Massive action itemtype
+    * @param $id                   ID of the item
+    * @param $options      array
     *
     * @return get checkbox
    **/
-   static function getMassiveActionCheckBox($itemtype, $id, array $options = array()) {
+   static function getMassiveActionCheckBox($itemtype, $id, array $options=array()) {
 
       $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
       if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
@@ -2537,13 +2537,13 @@ class Html {
     *
     * @since version 0.84
     *
-    * @param $itemtype    Massive action itemtype
-    * @param $id          ID of the item
-    * @param $options
+    * @param $itemtype             Massive action itemtype
+    * @param $id                   ID of the item
+    * @param $options      array
     *
     * @return show checkbox
    **/
-   static function showMassiveActionCheckBox($itemtype, $id, array $options = array()) {
+   static function showMassiveActionCheckBox($itemtype, $id, array $options=array()) {
       echo Html::getMassiveActionCheckBox($itemtype, $id, $options);
    }
 
@@ -2820,7 +2820,8 @@ class Html {
                                            'id'    => "hiddendate".$p['rand'],
                                            'size'  => 10));
       if ($p['maybeempty']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear')."\" id='resetdate".$p['rand']."'>";
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
+                      "\" id='resetdate".$p['rand']."'>";
       }
 
       $js = '';
@@ -3028,7 +3029,8 @@ class Html {
                    self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
       if ($p['maybeempty']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear')."\" id='resetdate".$p['rand']."'>";
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
+                      "\" id='resetdate".$p['rand']."'>";
       }
 
       $js = "";
@@ -4559,7 +4561,7 @@ class Html {
     * @param $options   Array    of HTML attributes:
     *     - `confirm` JavaScript confirmation message.
     *     - `confirmaction` optional action to do on confirmation
-    * @return string An a` element.
+    * @return string an `a` element.
    **/
    static function link($text, $url, $options=array()) {
 

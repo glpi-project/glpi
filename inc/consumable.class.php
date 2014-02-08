@@ -481,7 +481,7 @@ class Consumable extends CommonDBChild {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $actions = array('delete' => _x('button', 'Delete permanently'),
                           'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
-                              => __('Enable the financial and administrative information'));
+                                   => __('Enable the financial and administrative information'));
          if ($show_old) {
             $actions['Consumable'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock']
                      = __('Back to stock');

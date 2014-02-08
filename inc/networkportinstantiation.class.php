@@ -412,12 +412,12 @@ class NetworkPortInstantiation extends CommonDBChild {
             }
          }
       }
-      
+
       if (count($macs_with_items) == 1) {
          $mac_with_items = $macs_with_items[0];
          $item           = $mac_with_items[0];
-         $result = array("id"       => $item->getID(),
-                           "itemtype" => $item->getType());
+         $result         = array("id"       => $item->getID(),
+                                 "itemtype" => $item->getType());
          unset($macs_with_items);
          return $result;
       }

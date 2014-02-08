@@ -77,7 +77,7 @@ class HTMLTableGroup extends HTMLTableBase {
    **/
    function haveHeader(HTMLTableHeader $header) {
 
-      $header_name = '';
+      $header_name    = '';
       $subHeader_name = '';
       $header->getHeaderAndSubHeaderName($header_name, $subheader_name);
       try {

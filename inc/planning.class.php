@@ -35,8 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASS Planning
-
+/**
+ * Planning Class
+**/
 class Planning extends CommonGLPI {
 
    static $rightname = 'planning';
@@ -416,7 +417,7 @@ class Planning extends CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $params   array of param
+    * @param $params   array of params
     *    must contain :
     *          - begin: begin date to check (default '')
     *          - end: end date to check (default '')

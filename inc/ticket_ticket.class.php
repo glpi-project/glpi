@@ -72,6 +72,7 @@ class Ticket_Ticket extends CommonDBRelation {
       return parent::showMassiveActionsSubForm($ma);
    }
 
+
    /**
     * @since version 0.85
     *
@@ -110,7 +111,9 @@ class Ticket_Ticket extends CommonDBRelation {
             return;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }   
+   }
+
+
    /**
     * Get linked tickets to a ticket
     *
