@@ -1055,14 +1055,16 @@ class Rule extends CommonDBTM {
       echo "<tr class='noHover'>";
       echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions',2) . "</th></tr>";
 
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
-      
+      $header_end    = '';
+
       if ($canedit && $nb) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
+         $header_top    .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
+         $header_bottom .= "<th width='10'>";
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
       }
 
       $header_end .= "<th class='center b'>"._n('Field', 'Fields', 2)."</th>";
@@ -1147,23 +1149,28 @@ class Rule extends CommonDBTM {
                                       'check_itemtype' => get_class($this),
                                       'check_items_id' => $rules_id,
                                       'container'      => 'mass'.$this->rulecriteriaclass.$rand,
-                                      'extraparams'   => array('rule_class_name' =>
-                                                                        $this->getType()));
+                                      'extraparams'    => array('rule_class_name'
+                                                                    => $this->getType()));
          Html::showMassiveActions($massiveactionparams);
       }
 
       echo "<table $style>";
-      echo "<tr class='noHover'><th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2).
-           "</th></tr>\n";
+      echo "<tr class='noHover'>".
+           "<th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2)."</th>".
+           "</tr>\n";
 
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
-      
+      $header_end    = '';
+
       if ($canedit && $nb) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand)."</th>";
+         $header_top    .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>";
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.$this->rulecriteriaclass.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th class='center b'>"._n('Criterion', 'Criteria', 1)."</th>\n";
       $header_end .= "<th class='center b'>".__('Condition')."</th>\n";
@@ -1174,7 +1181,7 @@ class Rule extends CommonDBTM {
       foreach ($this->criterias as $criteria) {
          $this->showMinimalCriteriaForm($criteria->fields, $canedit, $rand);
       }
-      
+
       if ($nb) {
          echo $header_begin.$header_bottom.$header_end;
       }
@@ -2738,22 +2745,22 @@ class Rule extends CommonDBTM {
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
-         $header_begin = "<tr>";
-         $header_top = '';
+         $header_begin  = "<tr>";
+         $header_top    = '';
          $header_bottom = '';
-         $header_end = '';
+         $header_end    = '';
          if ($canedit) {
-            $header_begin .= "<th width='10'>";
-            $header_top .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
             $header_bottom .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
-            $header_end .= "</th>";
+            $header_end    .= "</th>";
          }
          $header_end .= "<th>" . $this->getTitle() . "</th>";
          $header_end .= "<th>" . __('Description') . "</th>";
          $header_end .= "<th>" . __('Active') . "</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
-         
+
          Session::initNavigateListItems(get_class($this),
                               //TRANS: %1$s is the itemtype name,
                               //       %2$s is the name of the item (used for headings of a list)
@@ -2980,7 +2987,7 @@ class Rule extends CommonDBTM {
                                                                         "`".$item->getRuleIdField()."` = '".$item->getID()."'");
                         $nbaction   = countElementsInTable(getTableForItemType($item->getRuleActionClass()),
                                                                         "`".$item->getRuleIdField()."` = '".$item->getID()."'");
-                                                                              
+
                      }
 
                   $ong[1] = self::createTabEntry(_n('Criterion', 'Criteria', $nbcriteria), $nbcriteria);

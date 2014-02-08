@@ -234,9 +234,9 @@ class ComputerDisk extends CommonDBChild {
 
 
       if ($canedit
-            && !(!empty($withtemplate) && ($withtemplate == 2))) {
+          && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-            "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          _e('Add a volume');
          echo "</a></div>\n";
@@ -258,10 +258,11 @@ class ComputerDisk extends CommonDBChild {
          if (Plugin::haveImport()) {
             $colspan++;
          }
-         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($DB->numrows($result))."</th></tr>";
+         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($DB->numrows($result)).
+              "</th></tr>";
 
          if ($DB->numrows($result)) {
-         
+
             $header = "<tr><th>".__('Name')."</th>";
             if (Plugin::haveImport()) {
                $header .= "<th>".__('Automatic inventory')."</th>";

@@ -179,21 +179,22 @@ class Profile_User extends CommonDBRelation {
 
       if ($num > 0) {
          echo "<table class='tab_cadre_fixehov'>";
-         $header_begin = "<tr>";
-         $header_top = '';
+         $header_begin  = "<tr>";
+         $header_top    = '';
          $header_bottom = '';
-         $header_end = '';
+         $header_end    = '';
          if ($canedit) {
-            $header_begin .= "<th>";
-            $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_begin  .= "<th>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_end .= "</th>";
+            $header_end    .= "</th>";
          }
          $header_end .= "<th>"._n('Entity', 'Entities', 2)."</th>";
-         $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2), __('D=Dynamic, R=Recursive'));
+         $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2),
+                                       __('D=Dynamic, R=Recursive'));
          $header_end .= "</th></tr>";
          echo $header_begin.$header_top.$header_end;
-         
+
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {

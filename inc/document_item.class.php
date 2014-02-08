@@ -339,10 +339,10 @@ class Document_Item extends CommonDBRelation{
       }
       echo "<table class='tab_cadre_fixehov'>";
 
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
 
       if ($canedit && $number) {
          $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -704,10 +704,10 @@ class Document_Item extends CommonDBRelation{
 
       echo "<table class='tab_cadre_fixehov'>";
 
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
       if ($canedit && $number && ($withtemplate < 2)) {
          $header_top    .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_top    .= "</th>";
@@ -727,8 +727,8 @@ class Document_Item extends CommonDBRelation{
 
       foreach ($columns as $key => $val) {
          $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
-               "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                  (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                          (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
       }
 
       $header_end .= "</tr>";

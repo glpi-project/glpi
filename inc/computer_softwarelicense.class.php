@@ -436,7 +436,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                            => 'mass'.__CLASS__.$rand,
                           'specific_actions'
                            => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_license'
-                                          => _x('button', 'Move'),
+                                             => _x('button', 'Move'),
                                     'delete' => _x('button', 'Delete permanently')));
                // Options to update license
                $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
@@ -446,7 +446,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                Html::showMassiveActions($massiveactionparams);
             }
 
-            $soft = new Software();
+            $soft       = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
             $linkUser   = User::canView();
@@ -474,15 +474,15 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
-            $header_begin = "<tr>";
-            $header_top = '';
+            $header_begin  = "<tr>";
+            $header_top    = '';
             $header_bottom = '';
-            $header_end = '';
+            $header_end    = '';
             if ($canedit) {
-               $header_begin .= "<th width='10'>";
-               $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+               $header_begin  .= "<th width='10'>";
+               $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
                $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-               $header_end .= "</th>";
+               $header_end    .= "</th>";
             }
 
             foreach ($columns as $key => $val) {
@@ -491,14 +491,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                   $header_end .= "<th>$val</th>";
                } else {
                   $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
-                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+                                 "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                                 (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
             }
 
             $header_end .= "</tr>\n";
             echo $header_begin.$header_top.$header_end;
-            
+
             do {
                Session::addToNavigateListItems('Computer',$data["cID"]);
 

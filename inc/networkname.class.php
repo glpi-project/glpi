@@ -738,9 +738,9 @@ class NetworkName extends FQDNLabel {
             Html::showMassiveActions($massiveactionparams);
          }
 
-         $table->display(array('display_title_for_each_group' => false,
-                               'display_thead'                => false,
-                               'display_tfoot'                => false,
+         $table->display(array('display_title_for_each_group'          => false,
+                               'display_thead'                         => false,
+                               'display_tfoot'                         => false,
                                'display_header_on_foot_for_each_group' => true));
 
          if ($canedit && $number) {

@@ -155,13 +155,15 @@ class Item_Project extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";

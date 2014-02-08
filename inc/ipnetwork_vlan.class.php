@@ -154,20 +154,22 @@ class IPNetwork_Vlan extends CommonDBRelation {
       }
       echo "<table class='tab_cadre_fixehov'>";
 
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";
       $header_end .= "<th>".__('ID TAG')."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $used = array();
       foreach ($vlans as $data) {
          echo "<tr class='tab_bg_1'>";

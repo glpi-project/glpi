@@ -628,6 +628,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    }
 
+
    /**
     * @since version 0.85
     *
@@ -656,12 +657,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
       switch ($ma->getAction()) {
          case 'submit_validation' :
             $input = $ma->getInput();
-//             print_r($input);exit();
             $valid = new static();
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
-                  $input2 = array(static::$items_id            => $id,
-                                  'comment_submission'    => $input['comment_submission']);
+                  $input2 = array(static::$items_id      => $id,
+                                  'comment_submission'   => $input['comment_submission']);
                   if ($valid->can(-1, CREATE, $input2)) {
                      $users = $input['users_id_validate'];
                      if (!is_array($users)) {
@@ -675,7 +675,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                         }
                      }
                      if ($ok) {
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -694,7 +694,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
-   
+
+
    /**
     * Print the validation list into item
     *
@@ -803,7 +804,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $nb_colonnes = count($colonnes);
 
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket')."</th></tr>";
+         echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
+              "</th></tr>";
 
          $header = "<tr>";
          foreach ($colonnes as $colonne) {

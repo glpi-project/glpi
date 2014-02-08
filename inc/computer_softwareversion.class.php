@@ -454,7 +454,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             echo "<table class='tab_cadre_fixehov'>";
 
-
             $columns = array('vername'           => _n('Version', 'Versions',2),
                              'compname'          => __('Name'),
                              'entity'            => __('Entity'),
@@ -474,15 +473,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
-            $header_begin = "<tr>";
-            $header_top = '';
+            $header_begin  = "<tr>";
+            $header_top    = '';
             $header_bottom = '';
-            $header_end = '';
+            $header_end    = '';
             if ($canedit) {
-               $header_begin .= "<th width='10'>";
-               $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+               $header_begin  .= "<th width='10'>";
+               $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
                $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-               $header_end .= "</th>";
+               $header_end    .= "</th>";
             }
 
             foreach ($columns as $key => $val) {
@@ -558,9 +557,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "</tr>\n";
 
             } while ($data = $DB->fetch_assoc($result));
-            
+
             echo $header_begin.$header_bottom.$header_end;
-            
+
             echo "</table>\n";
             if ($canedit) {
                $massiveactionparams['ontop'] =false;
@@ -752,16 +751,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          echo "<table class='tab_cadre_fixehov'>";
 
-         
-         $header_begin = "<tr>";
-         $header_top = '';
+
+         $header_begin  = "<tr>";
+         $header_top    = '';
          $header_bottom = '';
-         $header_end = '';
+         $header_end    = '';
          if ($canedit) {
-            $header_begin .= "<th width='10'>";
-            $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_end .= "</th>";
+            $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
@@ -772,7 +771,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $header_end .= "<th>".__('Valid license')."</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
-         
+
          for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
@@ -865,30 +864,30 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
-         
-         $header_begin = "<tr>";
-         $header_top = '';
+
+         $header_begin  = "<tr>";
+         $header_top    = '';
          $header_bottom = '';
-         $header_end = '';
+         $header_end    = '';
          if ($canedit) {
-            $header_begin .= "<th width='10'>";
-            $header_top .= Html::getCheckAllAsCheckbox('massSoftwareLicense'.$rand);
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('massSoftwareLicense'.$rand);
             $header_bottom .= Html::getCheckAllAsCheckbox('massSoftwareLicense'.$rand);
-            $header_end .= "</th>";
+            $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
-         
+
          $cat = true;
          foreach ($req as $data) {
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
          }
-         
+
          echo $header_begin.$header_bottom.$header_end;
-         
+
          echo "</table>";
          if ($canedit) {
             $massiveactionparams['ontop'] = false;

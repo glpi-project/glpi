@@ -193,23 +193,23 @@ class Group_User extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
 
       if ($canedit && count($used)) {
-         $header_begin .= "<th width='10'>";
-         $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_begin  .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_end .= "</th>";
+         $header_end    .= "</th>";
       }
       $header_end .= "<th>".Group::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Dynamic')."</th>";
       $header_end .= "<th>".__('Manager')."</th>";
       $header_end .= "<th>".__('Delegatee')."</th></tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $group = new Group();
       if (!empty($groups)) {
          Session::initNavigateListItems('Group',
@@ -471,16 +471,16 @@ class Group_User extends CommonDBRelation{
 
          echo "<table class='tab_cadre_fixehov'>";
 
-         $header_begin = "<tr>";
-         $header_top = '';
+         $header_begin  = "<tr>";
+         $header_top    = '';
          $header_bottom = '';
-         $header_end = '';
+         $header_end    = '';
 
          if ($canedit) {
-            $header_begin .= "<th width='10'>";
-            $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_end .= "</th>";
+            $header_end    .= "</th>";
          }
          $header_end .= "<th>".User::getTypeName(1)."</th>";
          if ($tree) {
@@ -490,7 +490,7 @@ class Group_User extends CommonDBRelation{
          $header_end .= "<th>".__('Manager')."</th>";
          $header_end .= "<th>".__('Delegatee')."</th></tr>";
          echo $header_begin.$header_top.$header_end;
-         
+
          $tmpgrp = new Group();
 
          for ($i=$start, $j=0 ; ($i < $number) && ($j < $_SESSION['glpilist_limit']) ; $i++, $j++) {

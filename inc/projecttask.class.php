@@ -804,7 +804,7 @@ class ProjectTask extends CommonDBChild {
             }
             $header .= "</tr>\n";
             echo $header;
-            
+
             while ($data=$DB->fetch_assoc($result)) {
                Session::addToNavigateListItems('ProjectTask',$data['id']);
                $rand = mt_rand();
@@ -946,19 +946,21 @@ class ProjectTask extends CommonDBChild {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
       if ($canedit && $nb) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
       $header_end .= "<th>"._n('Member', 'Members', 2)."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       foreach (ProjectTaskTeam::$available_types as $type) {
          if (isset($task->team[$type]) && count($task->team[$type])) {
             if ($item = getItemForItemtype($type)) {

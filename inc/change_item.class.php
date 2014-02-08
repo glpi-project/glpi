@@ -156,13 +156,15 @@ class Change_Item extends CommonDBRelation{
       }
 
       echo "<table class='tab_cadre_fixehov'>";
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
       if ($canedit && $number) {
-         $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "</th>";
+         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
       $header_end .= "<th>".__('Entity')."</th>";
@@ -170,7 +172,7 @@ class Change_Item extends CommonDBRelation{
       $header_end .= "<th>".__('Serial number')."</th>";
       $header_end .= "<th>".__('Inventory number')."</th></tr>";
       echo $header_begin.$header_top.$header_end;
-      
+
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
@@ -265,7 +267,7 @@ class Change_Item extends CommonDBRelation{
                                              "`changes_id` = '".$item->getID()."'");
                }
 
-               return self::createTabEntry(_n('Item', 'Items', 2), $nb);            
+               return self::createTabEntry(_n('Item', 'Items', 2), $nb);
          }
       }
       return '';

@@ -631,10 +631,10 @@ class SoftwareLicense extends CommonDBTM {
             echo "<table class='tab_cadre_fixehov'>";
 
 
-            $header_begin = "<tr><th>";
-            $header_top = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_begin  = "<tr><th>";
+            $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_end = '';
+            $header_end    = '';
 
             foreach ($columns as $key => $val) {
                // Non order column

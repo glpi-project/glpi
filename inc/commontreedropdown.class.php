@@ -410,7 +410,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr class='noHover'><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'), $this->getTreeLink());
+      echo "<tr class='noHover'><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'),
+                                                                    $this->getTreeLink());
       echo "</th></tr>";
 
       $header = "<tr><th>".__('Name')."</th>";
@@ -606,7 +607,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $tab[13]['massiveaction']     = false;
       // Add virtual condition to relink table
       $tab[13]['joinparams']        = array('condition' => "AND 1=1");
-      
+
       $tab[16]['table']             = $this->getTable();
       $tab[16]['field']             = 'comment';
       $tab[16]['name']              = __('Comments');
