@@ -319,14 +319,15 @@ class Ajax {
          }
          echo "</ul>";
          echo "</div>";
-         echo "<div id='loadingtabs$rand' class='invisible'><div class='loadingindicator'>".__s('Loading...')."</div></div>";
+         echo "<div id='loadingtabs$rand' class='invisible'>".
+              "<div class='loadingindicator'>".__s('Loading...')."</div></div>";
          $js = "$('#tabs$rand').tabs({ active: $selected_tab,
          // Loading indicator
          beforeLoad: function (event, ui) {
                   ui.panel.html($('#loadingtabs$rand').html());
                 },
          ajaxOptions: {type: 'POST'},
-         
+
          activate : function( event, ui ){
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
@@ -340,7 +341,7 @@ class Ajax {
 
          $js .=  "// force reload
             function reloadTab(add) {
-               
+
                var current_index = $('#tabs$rand').tabs('option','active');
                // Save tab
                currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');

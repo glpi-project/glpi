@@ -943,7 +943,7 @@ class Dropdown {
             $i++;
          }
 
-         if ($i >= $step && $i < $nb) {
+         if (($i >= $step) && ($i < $nb)) {
             echo "</table></td><td width='25'>&nbsp;</td><td><table class='tab_cadre'>";
             $step += $step;
          }
@@ -1319,7 +1319,7 @@ class Dropdown {
    /**
     * Get value with unit / Automatic management of standar unit (year, month, %, ...)
     *
-    * @since v ersion 0.84
+    * @since version 0.84
     *
     * @param $value   integer   number of item
     * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)

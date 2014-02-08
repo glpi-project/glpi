@@ -923,8 +923,8 @@ class IPAddress extends CommonDBChild {
       if (count($addressesWithItems) == 1) {
          $addressWithItems = current($addressesWithItems);
          $item             = $addressWithItems[0];
-         $result = array("id"       => $item->getID(),
-                           "itemtype" => $item->getType());
+         $result           = array("id"       => $item->getID(),
+                                   "itemtype" => $item->getType());
          unset($addressesWithItems);
          return $result;
       }

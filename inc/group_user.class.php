@@ -242,15 +242,18 @@ class Group_User extends CommonDBRelation{
             echo "<td>".$group->getLink()."</td>";
             echo "<td class='center'>";
             if ($data['is_dynamic']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Dynamic')."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+                      __('Dynamic')."\">";
             }
             echo "<td class='center'>";
             if ($data['is_manager']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Manager')."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+                      __('Manager')."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Delegatee')."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+                      __('Delegatee')."\">";
             }
             echo "</td></tr>";
          }
@@ -513,15 +516,18 @@ class Group_User extends CommonDBRelation{
             }
             echo "</td><td class='center'>";
             if ($data['is_dynamic']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Dynamic')."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+                      __('Dynamic')."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_manager']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Manager')."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+                      __('Manager')."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".__('Delegatee')."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+                      __('Delegatee')."\">";
             }
             echo "</tr>";
          }

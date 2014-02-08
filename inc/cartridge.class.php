@@ -223,6 +223,8 @@ class Cartridge extends CommonDBChild {
 
    /**
     * send back to stock
+    *
+    * @since version 0.85 (before name was restore)
     */
    function backToStock(array $input, $history=1) {
       global $DB;
@@ -653,7 +655,7 @@ class Cartridge extends CommonDBChild {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $actions = array('purge' => _x('button', 'Delete permanently'),
                              'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
-                                       => __('Enable the financial and administrative information')
+                                     => __('Enable the financial and administrative information')
                              );
             if ($show_old) {
                $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock']

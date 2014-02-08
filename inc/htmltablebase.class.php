@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -67,7 +67,7 @@ abstract class HTMLTableBase  {
       if (!$header_object instanceof HTMLTableHeader) {
          throw new Exception('Implementation error: appendHeader requires HTMLTableHeader as parameter');
       }
-      $header_name = '';
+      $header_name    = '';
       $subHeader_name = '';
       $header_object->getHeaderAndSubHeaderName($header_name, $subHeader_name);
       if ($header_object->isSuperHeader()

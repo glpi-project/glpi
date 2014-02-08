@@ -551,7 +551,7 @@ abstract class CommonDropdown extends CommonDBTM {
                               'entity' => $this->getEntityID(),
                               'used'   => array($ID)));
       }
-      echo "<input type='hidden' name='id' value='$ID'/>";
+      echo "<input type='hidden' name='id' value='$ID' />";
       echo "</td><td>";
       echo "<input class='submit' type='submit' name='replace' value=\""._sx('button','Replace')."\">";
       echo "</td><td>";

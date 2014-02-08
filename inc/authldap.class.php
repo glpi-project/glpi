@@ -766,7 +766,8 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th class='center' colspan='4'>". __('Import entities from LDAP directory')."</th></tr>";
+      echo "<tr><th class='center' colspan='4'>". __('Import entities from LDAP directory').
+           "</th></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Attribute representing entity') . "</td>";
       echo "<td colspan='3'>";

@@ -1677,7 +1677,7 @@ function update084to085() {
       $migration->addKey('glpi_states', $field);
    }
 
-   
+
    // glpi_domains by entity
    $migration->addField('glpi_domains', 'entities_id', 'integer', array('after' => 'name'));
    $migration->addField('glpi_domains', 'is_recursive', 'bool', array('update' => '1',
@@ -2000,7 +2000,8 @@ function update084to085() {
                                                      AND `rights` & ".Change::READALL);
       ProfileRight::updateProfileRightAsOtherRight('project',
                                                     CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ." | ".READNOTE ." | ".UPDATENOTE,
-                                                    "`name` = 'change' AND `rights` & (".CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE.')');
+                                                    "`name` = 'change'
+                                                      AND `rights` & (".CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE.')');
    }
    if (countElementsInTable("glpi_profilerights", "`name` = 'projecttask'") == 0) {
       ProfileRight::addProfileRights(array('projecttask'));
@@ -2620,7 +2621,7 @@ function update084to085() {
    $migration->addField("glpi_locations", "latitude", "string");
    $migration->addField("glpi_locations", "longitude", "string");
    $migration->addField("glpi_locations", "altitude", "string");
-   
+
    // Add fixed columns as variables :
    $ADDTODISPLAYPREF['CartridgeItem']   = array(9);
    $ADDTODISPLAYPREF['ConsumableItem']  = array(9);
@@ -2635,8 +2636,9 @@ function update084to085() {
                  FROM `glpi_softwarelicenses`";
 
       foreach ($DB->request($queryl) AS $datal) {
-         toolbox::logdebug("id", $datal['id'], "number", $datal['number'], "compté", Computer_SoftwareLicense::countForLicense($datal['id'],
-                                                                           $datal['entities_id']));
+         toolbox::logdebug("id", $datal['id'], "number", $datal['number'], "compté",
+                           Computer_SoftwareLicense::countForLicense($datal['id'],
+                                                                     $datal['entities_id']));
          if (($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'],
                                                                            $datal['entities_id']))
              && ($datal['number'] >= 0)) {
@@ -2783,7 +2785,7 @@ function update084to085() {
             if (isset($options['glpisearchcount2'])) {
                unset($options['glpisearchcount2']);
             }
-            
+
 
             $query2 = "UPDATE `glpi_bookmarks`
                        SET `query` = '".addslashes(Toolbox::append_params($options))."'

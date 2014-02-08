@@ -271,9 +271,9 @@ class Problem_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         $condition = "`glpi_tickets`.`status` NOT IN ('".implode("', '",
-                                                                  array_merge(Ticket::getSolvedStatusArray(),
-                                                                              Ticket::getClosedStatusArray()))."')";
+         $condition = "`glpi_tickets`.`status`
+                        NOT IN ('".implode("', '", array_merge(Ticket::getSolvedStatusArray(),
+                                                               Ticket::getClosedStatusArray()))."')";
          Ticket::dropdown(array('used'        => $used,
                                 'entity'      => $problem->getEntityID(),
                                 'entity_sons' => $problem->isRecursive(),
@@ -293,7 +293,8 @@ class Problem_Ticket extends CommonDBRelation{
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'    => $numrows,
                                       'container'        => 'mass'.__CLASS__.$rand,
-                                      'specific_actions' => array('purge' => _x('button',
+                                      'specific_actions' => array('purge'
+                                                                    => _x('button',
                                                                           'Delete permanently'),
                                                                   __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                                     => __('Solve tickets')),

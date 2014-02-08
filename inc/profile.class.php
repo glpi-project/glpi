@@ -2131,7 +2131,7 @@ class Profile extends CommonDBTM {
     * @param $values    array    of values to display
     * @param $name      integer  name of the dropdown
     * @param $current   integer  value in database (sum of rights)
-    * @param $options
+    * @param $options   array
    **/
    static function dropdownRights(array $values, $name, $current, $options=array()) {
 

@@ -652,7 +652,7 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
 
 
 /**
- * @since v ersion 0.84
+ * @since version 0.84
  * 
  * @param target
  * @param fields

@@ -1715,7 +1715,8 @@ class Config extends CommonDBTM {
             $error = 2;
          } else {
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">$dir : OK\n";
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK').
+                    "\">$dir : OK\n";
             } else {
                echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\"
@@ -1734,7 +1735,8 @@ class Config extends CommonDBTM {
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
          if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">".GLPI_LOG_DIR." : OK\n";
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">".
+                   GLPI_LOG_DIR." : OK\n";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                        __s('A file was created - Perfect!')."\" title=\"".

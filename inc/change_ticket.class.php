@@ -185,6 +185,7 @@ class Change_Ticket extends CommonDBRelation{
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
+
    /**
     * Show tickets for a change
     *

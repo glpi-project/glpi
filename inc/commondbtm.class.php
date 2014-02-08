@@ -4007,7 +4007,7 @@ class CommonDBTM extends CommonGLPI {
                $out = '';
                if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
                   $out = Html::initEditorSystem($name, '', false);
-               } 
+               }
                return $out."<textarea cols='45' rows='5' name='$name'>$value</textarea>";
 
             case "bool" :
