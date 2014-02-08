@@ -176,13 +176,12 @@ class HTMLTableGroup extends HTMLTableBase {
     *
     * @param $totalNumberOfColumn         Total number of columns : to span correctly the title
     * @param $params                array of possible options:
-    *     'display_super_for_each_group' display the super header (ie.: big header of the table)
-    *                                    before the group specific headers
-    *     'display_title_for_each_group' display the title of the header before the group
-    *                                    specific headers
-    *     'display_header_for_each_group' display the header of each group
-    *     'display_header_on_foot_for_each_group' repeat group header on foot of group
-
+    *     'display_super_for_each_group'           display the super header (ie.: big header of the table)
+    *                                              before the group specific headers
+    *     'display_title_for_each_group'           display the title of the header before the group
+    *                                              specific headers
+    *     'display_header_for_each_group'          display the header of each group
+    *     'display_header_on_foot_for_each_group'  repeat group header on foot of group
     *
     * @return nothing (display only)
    **/
@@ -257,7 +256,7 @@ class HTMLTableGroup extends HTMLTableBase {
                echo "\n";
             }
             echo "\t</tr></tbody>\n";
-         }         
+         }
       }
    }
 

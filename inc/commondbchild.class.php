@@ -403,7 +403,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       // Check item exists
       if (static::$mustBeAttached
-         && !$this->getItemFromArray(static::$itemtype, static::$items_id,$input)) {
+          && !$this->getItemFromArray(static::$itemtype, static::$items_id,$input)) {
          return false;
       }
 

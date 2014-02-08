@@ -726,15 +726,16 @@ class Group extends CommonTreeDropdown {
          Html::showMassiveActions($massiveactionparams);
 
          echo "<table class='tab_cadre_fixehov'>";
-         $header_begin = "<tr><th width='10'>";
-         $header_top = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_begin  = "<tr><th width='10'>";
+         $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_end = '</th>';
+         $header_end    = '</th>';
 
          $header_end .= "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
-            $header_end .= "<th>".sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
-                 "</th>";
+            $header_end .= "<th>".
+                             sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
+                           "</th>";
          }
          $header_end .= "</tr>";
          echo $header_begin.$header_top.$header_end;

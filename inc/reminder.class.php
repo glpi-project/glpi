@@ -1176,15 +1176,15 @@ class Reminder extends CommonDBTM {
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      $header_begin = "<tr>";
-      $header_top = '';
+      $header_begin  = "<tr>";
+      $header_top    = '';
       $header_bottom = '';
-      $header_end = '';
+      $header_end    = '';
       if ($canedit && $nb) {
-         $header_begin .= "<th width='10'>";
-         $header_top .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_begin  .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_end .= "</th>";
+         $header_end    .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
       $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
