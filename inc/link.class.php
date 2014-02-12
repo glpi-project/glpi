@@ -394,14 +394,9 @@ class Link extends CommonDBTM {
 
       $restrict = $item->getEntityID();
       if ($item->getType() == 'User') {
-         $query = array();
-         foreach ($DB->request("glpi_profiles_users",
-                               "`users_id` = '".$item->fields['id']."'") as $data) {
-            $entities[] = $data['entities_id'];
-         }
-         $restrict = $entities;
-
+         $restrict = Profile_User::getEntitiesForUser($item->getID());
       }
+      
       $query = "SELECT `glpi_links`.`id`,
                        `glpi_links`.`link` AS link,
                        `glpi_links`.`name` AS name ,
