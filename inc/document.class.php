@@ -1233,9 +1233,10 @@ class Document extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
 
-      $p['name']   = 'documents_id';
-      $p['entity'] = '';
-      $p['used']   = array();
+      $p['name']    = 'documents_id';
+      $p['entity']  = '';
+      $p['used']    = array();
+      $p['display'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1263,7 +1264,10 @@ class Document extends CommonDBTM {
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
-      $rand     = Dropdown::showFromArray('_rubdoc', $values, array('width' => '30%'));
+      $rand = mt_rand();
+      $out  = Dropdown::showFromArray('_rubdoc', $values, array('width'   => '30%',
+                                                                'rand'    => $rand,
+                                                                'display' => false));
       $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
       $params   = array('rubdoc' => '__VALUE__',
@@ -1272,18 +1276,19 @@ class Document extends CommonDBTM {
                         'myname' => $p['name'],
                         'used'   => $p['used']);
 
-      Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name']."$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params);
-      echo "<span id='show_".$p['name']."$rand'>";
-      $_POST["entity"] = $p['entity'];
-      $_POST["rubdoc"] = 0;
-      $_POST["myname"] = $p['name'];
-      $_POST["rand"]   = $rand;
-      $_POST["used"]   = $p['used'];
-      include (GLPI_ROOT."/ajax/dropdownRubDocument.php");
-      echo "</span>\n";
+      $out .= Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name'].$rand,
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params, false);
+      $out .= "<span id='show_".$p['name']."$rand'>";
+      $out .= "</span>\n";
 
-      return $rand;
+      $params['rubdoc'] = 0;
+      $out .= Ajax::updateItem("show_".$p['name'].$rand, $CFG_GLPI["root_doc"]. "/ajax/dropdownRubDocument.php",  $params, false);
+      if ($p['display']) {
+         echo $out;
+         return $rand;
+      } else {
+         return $out;
+      }
    }
 
 
