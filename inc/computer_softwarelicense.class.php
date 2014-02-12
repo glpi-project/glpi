@@ -44,8 +44,21 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static public $itemtype_2 = 'SoftwareLicense';
    static public $items_id_2 = 'softwarelicenses_id';
 
+   function post_addItem() {
 
+      SoftwareLicense::updateValidityIndicator($this->fields['softwarelicenses_id']);
+      
+      parent::post_addItem();
+   }
+   
+   function post_deleteFromDB() {
 
+      SoftwareLicense::updateValidityIndicator($this->fields['softwarelicenses_id']);
+
+      parent::post_deleteFromDB();
+   }
+
+   
    /**
     * Get search function for the class
     *
@@ -188,8 +201,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * Get number of installed licenses of a license
     *
     * @param $softwarelicenses_id   license ID
-    * @param $entity                to search for computer in (default = all active entities)
-    *                               (default '')
+    * @param $entity                to search for computer in (default = all entities)
+    *                               (default '') -1 means no entity restriction
     *
     * @return number of installations
    **/
@@ -203,8 +216,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$softwarelicenses_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'" .
-                      getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
+                      
+      if ($entity != -1) {
+         $query .= getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
+      }
 
       $result = $DB->query($query);
 
@@ -437,7 +453,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                           'specific_actions'
                            => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_license'
                                              => _x('button', 'Move'),
-                                    'delete' => _x('button', 'Delete permanently')));
+                                    'purge' => _x('button', 'Delete permanently')));
                // Options to update license
                $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
                $massiveactionparams['extraparams']['options']['move']['softwares_id']
@@ -578,7 +594,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     *
     * @return nothing
    **/
-   static function GetLicenseForInstallation($computers_id, $softwareversions_id) {
+   static function getLicenseForInstallation($computers_id, $softwareversions_id) {
       global $DB;
 
       $lic = array();

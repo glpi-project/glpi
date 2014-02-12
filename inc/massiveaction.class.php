@@ -200,7 +200,7 @@ class MassiveAction {
                         $POST['processor'] = $action[0];
                         $POST['action']    = $action[1];
                      } else {
-                        $POST['processor'] = '';
+                        $POST['processor'] = 'MassiveAction';
                         $POST['action']    = $POST['action'];
                      }
                   }
@@ -611,6 +611,7 @@ class MassiveAction {
       global $CFG_GLPI;
 
       $processor = $this->processor;
+
       if (!$processor::showMassiveActionsSubForm($this)) {
          $this->showDefaultSubForm();
       }

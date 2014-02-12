@@ -535,7 +535,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<td>".formatUserName($data['userid'], $data['username'], $data['userrealname'],
                                           $data['userfirstname'], $linkUser)."</td>";
 
-               $lics = Computer_SoftwareLicense::GetLicenseForInstallation($data['cID'],
+               $lics = Computer_SoftwareLicense::getLicenseForInstallation($data['cID'],
                                                                            $data['vID']);
                echo "<td>";
 
