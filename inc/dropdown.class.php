@@ -1002,19 +1002,34 @@ class Dropdown {
     * Print a select named $name with hours options and selected value $value
     *
     *@param $name             string   HTML select name
-    *@param $value            integer  HTML select selected value
-    *@param $limit_planning            limit planning to the configuration range (default 0)
+    *@param $options array of options :
+    *     - value              default value (default '')
+    *     - limit_planning     limit planning to the configuration range (default false)
+    *     - display   boolean  if false get string
+    *     - width              specific width needed (default 80%)
     *
+    * @since 0.85 update prototype
     *@return Nothing (display)
     **/
-   static function showHours($name, $value, $limit_planning=0) {
+   static function showHours($name, $options=array()) {
       global $CFG_GLPI;
 
+      $p['value']          = '';
+      $p['limit_planning'] = false;
+      $p['display']        = true;
+      $p['width']          = '80%';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      
       $begin = 0;
       $end   = 24;
       $step  = $CFG_GLPI["time_step"];
       // Check if the $step is Ok for the $value field
-      $split = explode(":", $value);
+      $split = explode(":", $p['value']);
 
       // Valid value XX:YY ou XX:YY:ZZ
       if ((count($split) == 2) || (count($split) == 3)) {
@@ -1027,7 +1042,7 @@ class Dropdown {
          }
       }
 
-      if ($limit_planning) {
+      if ($p['limit_planning']) {
          $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
          $plan_end   = explode(":", $CFG_GLPI["planning_end"]);
          $begin      = (int) $plan_begin[0];
@@ -1051,7 +1066,7 @@ class Dropdown {
                $val = $tmp.":$j";
             }
             $values[$val] = $val;
-            if (($value == $val.":00") || ($value == $val)) {
+            if (($p['value'] == $val.":00") || ($p['value'] == $val)) {
                $selected = $val;
             }
          }
@@ -1059,10 +1074,11 @@ class Dropdown {
       // Last item
       $val = $end.":00";
       $values[$val] = $val;
-      if (($value == $val.":00") || ($value == $val)) {
+      if (($p['value'] == $val.":00") || ($p['value'] == $val)) {
          $selected = $val;
       }
-      return Dropdown::showFromArray($name, $values, array('value' => $selected));
+      $p['value'] = $selected;
+      return Dropdown::showFromArray($name, $values, $p);
    }
 
 
@@ -1251,7 +1267,7 @@ class Dropdown {
     *
     * @param $myname          select name
     * @param $options   array of additionnal options :
-    *     - value              default value (defaul 0)
+    *     - value              default value (default 0)
     *     - rand               random value
     *     - min                min value (default 0)
     *     - max                max value (default 100)

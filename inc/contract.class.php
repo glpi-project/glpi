@@ -291,10 +291,10 @@ class Contract extends CommonDBTM {
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("week_begin_hour", $this->fields["week_begin_hour"]);
+      Dropdown::showHours("week_begin_hour", array('value' => $this->fields["week_begin_hour"]));
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span></td><td width='20%'>";
-      Dropdown::showHours("week_end_hour", $this->fields["week_end_hour"]);
+      Dropdown::showHours("week_end_hour", array('value' => $this->fields["week_end_hour"]));
       echo "</td></tr></table>";
       echo "</td></tr>";
 
@@ -306,11 +306,11 @@ class Contract extends CommonDBTM {
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("saturday_begin_hour", $this->fields["saturday_begin_hour"]);
+      Dropdown::showHours("saturday_begin_hour", array('value' => $this->fields["saturday_begin_hour"]));
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("saturday_end_hour", $this->fields["saturday_end_hour"]);
+      Dropdown::showHours("saturday_end_hour", array('value' => $this->fields["saturday_end_hour"]));
       echo "</td></tr></table>";
       echo "</td></tr>";
 
@@ -322,11 +322,11 @@ class Contract extends CommonDBTM {
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("monday_begin_hour", $this->fields["monday_begin_hour"]);
+      Dropdown::showHours("monday_begin_hour", array('value' => $this->fields["monday_begin_hour"]));
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("monday_end_hour", $this->fields["monday_end_hour"]);
+      Dropdown::showHours("monday_end_hour", array('value' => $this->fields["monday_end_hour"]));
       echo "</td></tr></table>";
       echo "</td></tr>";
 
