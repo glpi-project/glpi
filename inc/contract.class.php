@@ -691,11 +691,6 @@ class Contract extends CommonDBTM {
       $tab[16]['name']              = __('Comments');
       $tab[16]['datatype']          = 'text';
 
-      $tab[90]['table']             = $this->getTable();
-      $tab[90]['field']             = 'notepad';
-      $tab[90]['name']              = __('Notes');
-      $tab[90]['massiveaction']     = false;
-
       $tab[80]['table']             = 'glpi_entities';
       $tab[80]['field']             = 'completename';
       $tab[80]['name']              = __('Entity');
@@ -732,6 +727,8 @@ class Contract extends CommonDBTM {
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
 
+      $tab += Notepad::getSearchOptionsToAdd();
+      
       $tab['cost']                  = __('Cost');
 
       $tab[11]['table']             = 'glpi_contractcosts';

@@ -88,6 +88,7 @@ class Search {
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
       self::constructDatas($data);
+//       Html::printCleanArray($data);
       self::displayDatas($data);
    }
 
@@ -4306,7 +4307,7 @@ class Search {
                                                                        'display' => false)));
 
                      } else {
-                        $out = $text;
+                        $out .= $text;
                      }
                   }
                }

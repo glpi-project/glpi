@@ -663,12 +663,6 @@ class Printer  extends CommonDBTM {
       $tab[18]['joinparams']       = array('jointype' => 'child',
                                            'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
 
-      $tab[90]['table']            = $this->getTable();
-      $tab[90]['field']            = 'notepad';
-      $tab[90]['name']             = __('Notes');
-      $tab[90]['massiveaction']    = false;
-      $tab[90]['datatype']         = 'text';
-
       $tab[32]['table']            = 'glpi_networks';
       $tab[32]['field']            = 'name';
       $tab[32]['name']             = __('Network');
@@ -715,6 +709,8 @@ class Printer  extends CommonDBTM {
       $tab[86]['name']             = __('Child entities');
       $tab[86]['datatype']         = 'bool';
 
+      $tab += Notepad::getSearchOptionsToAdd();
+      
       return $tab;
    }
 

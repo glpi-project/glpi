@@ -470,12 +470,6 @@ class Software extends CommonDBTM {
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'notepad';
-      $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']  = false;
-      $tab[90]['datatype']       = 'text';
-
       $tab[62]['table']          = 'glpi_softwarecategories';
       $tab[62]['field']          = 'completename';
       $tab[62]['name']           = __('Category');
@@ -596,6 +590,8 @@ class Software extends CommonDBTM {
                                           => array('table'      => 'glpi_softwareversions',
                                                    'joinparams' => array('jointype' => 'child')));
 
+      $tab += Notepad::getSearchOptionsToAdd();
+      
       $tab['license']            = _n('License', 'Licenses', 2);
 
       $licjoin       = array();

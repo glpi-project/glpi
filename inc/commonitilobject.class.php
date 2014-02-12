@@ -3036,7 +3036,6 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function showActorAddFormOnCreate($type, array $options) {
       global $CFG_GLPI;
-
       switch ($type) {
          case CommonITILActor::REQUESTER :
             $typename = 'requester';

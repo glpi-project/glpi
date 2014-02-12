@@ -2804,12 +2804,16 @@ function update084to085() {
 
 
    // Clean display prefs
+   // Notepad
    $query = "UPDATE `glpi_displaypreferences`
              SET `num` = 90
              WHERE `itemtype` = 'Entity'
                    AND `num` = 28";
    $DB->query($query);
-
+   $query = "UPDATE `glpi_displaypreferences`
+             SET `num` = 200
+             WHERE `num` = 90";
+   $DB->query($query);
    
    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
