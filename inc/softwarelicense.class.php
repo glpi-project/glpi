@@ -78,7 +78,48 @@ class SoftwareLicense extends CommonDBTM {
       return $input;
    }
 
+   function prepareInputForUpdate($input) {
 
+      // Update number : compute validity indicator
+      if (isset($input['number'])) {
+         $input['is_valid'] = self::computeValidityIndicator($input['id'], $input['number']);
+      }
+
+      return $input;
+   }
+
+   /**
+    * Compute licence validity indicator.
+    * @param $ID ID of the licence
+    * @param $number licence count to check
+    * @since version 0.85
+    * @return validity indicator
+   **/
+   static function computeValidityIndicator($ID, $number = -1) {
+      if (($number >= 0)
+         && ($number < Computer_SoftwareLicense::countForLicense($ID, -1))) {
+         return 0;
+      }
+      // Default return 1
+      return 1;
+   }
+   
+   /**
+    * Update validity indicator of a specific license
+    * @param $ID ID of the licence
+    * @since version 0.85
+    * @return nothing
+   **/
+   static function updateValidityIndicator($ID) {
+      $lic = new self();
+      if ($lic->getFromDB($ID)) {
+         $valid = self::computeValidityIndicator($ID, $lic->fields['number']);
+         if ($valid != $lic->fields['is_valid']) {
+            $lic->update(array('id'       => $ID,
+                               'is_valid' => $valid));
+         }
+      }
+   }
    /**
     * @since version 0.84
    **/
@@ -225,6 +266,12 @@ class SoftwareLicense extends CommonDBTM {
                                            'max'   => 1000,
                                            'step'  => 1,
                                            'toadd' => array(-1 => __('Unlimited'))));
+      echo "&nbsp;";
+      if ($this->fields['is_valid']) {
+         echo "<span class='green'>".__('Valid').'<span>';
+      } else {
+         echo "<span class='red'>".__('Not valid').'<span>';
+      }
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -251,7 +298,6 @@ class SoftwareLicense extends CommonDBTM {
 
       return true;
    }
-
 
    /**
     * Is the license may be recursive

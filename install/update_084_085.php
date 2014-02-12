@@ -2629,42 +2629,45 @@ function update084to085() {
 
 
    // for licence validity
-   if ($migration->addField("glpi_softwarelicenses", "valid", "bool", array("value" => 1))) {
+   if ($migration->addField("glpi_softwarelicenses", "is_valid", "bool", array("value" => 1))) {
       $migration->migrationOneTable("glpi_softwarelicenses");
 
-      $queryl = "SELECT `id`, `entities_id`, `number`
+      // Force all entities
+      if (!isset($_SESSION['glpishowallentities'])) {
+         $_SESSION['glpishowallentities'] = 0;
+      }
+      $savesession = $_SESSION['glpishowallentities'];
+      $_SESSION['glpishowallentities'] = 1;
+      
+      $queryl = "SELECT `id`, `number`
                  FROM `glpi_softwarelicenses`";
 
       foreach ($DB->request($queryl) AS $datal) {
-         toolbox::logdebug("id", $datal['id'], "number", $datal['number'], "compté",
-                           Computer_SoftwareLicense::countForLicense($datal['id'],
-                                                                     $datal['entities_id']));
-         if (($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'],
-                                                                           $datal['entities_id']))
-             && ($datal['number'] >= 0)) {
+         if (($datal['number'] >= 0)
+            && ($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'], -1))) {
 
             $queryl2 = "UPDATE `glpi_softwarelicenses`
-                        SET `valid` = 0
+                        SET `is_valid` = 0
                         WHERE `id` = '".$datal['id']."'";
 
             $DB->queryOrDie($queryl2, "0.85 update softwarelicense");
          }
       }
+      $_SESSION['glpishowallentities'] = $savesession;
    }
 
-   if ($migration->addField("glpi_softwares", "valid", "bool", array("value" => 1))) {
+   if ($migration->addField("glpi_softwares", "is_valid", "bool", array("value" => 1))) {
       $migration->migrationOneTable("glpi_softwares");
 
-      $querys = "SELECT `glpi_softwares`.`id` AS id, `glpi_softwarelicenses`.`valid` AS licvalid,
-                        `glpi_softwarelicenses`.`softwares_id`
+      $querys = "SELECT `glpi_softwares`.`id`
                  FROM `glpi_softwares`
                  LEFT JOIN `glpi_softwarelicenses`
-                     ON `glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`
-                 WHERE `glpi_softwarelicenses`.`valid` = 0";
+                     ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                 WHERE `glpi_softwarelicenses`.`is_valid` = 0";
 
       foreach ($DB->request($querys) AS $datas) {
          $querys2 = "UPDATE `glpi_softwares`
-                     SET `valid` = 0
+                     SET `is_valid` = 0
                      WHERE `id` = '".$datas['id']."'";
 
          $DB->queryOrDie($querys2, "0.85 update software");
