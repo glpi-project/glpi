@@ -255,8 +255,9 @@ class TicketTemplate extends CommonDropdown {
                                                         'glpi_itilcategories'),
                       $ticket->getSearchOptionIDByField('field', 'type', 'glpi_tickets'),
                       $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
-
+                      $ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
+                      66 // users_id_observer
+                      );
       return $fields;
    }
 

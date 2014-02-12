@@ -2862,6 +2862,41 @@ class User extends CommonDBTM {
                $where = '0';
             }
             break;
+            
+         case "groups" :
+            $groups = array();
+            if (isset($_SESSION['glpigroups'])) {
+               $groups = $_SESSION['glpigroups'];
+            }
+            $users  = array();
+            if (count($groups)) {
+               $query = "SELECT `glpi_users`.`id`
+                         FROM `glpi_groups_users`
+                         LEFT JOIN `glpi_users`
+                              ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
+                         WHERE `glpi_groups_users`.`groups_id` IN (".implode(",",$groups).")
+                               AND `glpi_groups_users`.`users_id` <> '".Session::getLoginUserID()."'";
+               $result = $DB->query($query);
+
+               if ($DB->numrows($result)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                        $users[$data["id"]] = $data["id"];
+                  }
+               }
+            }
+            // Add me to users list for central
+            if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               $users[Session::getLoginUserID()] = Session::getLoginUserID();
+            }
+
+            if (count($users)) {
+               $where = " `glpi_users`.`id` IN (".implode(",",$users).")";
+            } else {
+               $where = '0';
+            }
+
+            break;
+         
 
          case "all" :
             $where = " `glpi_users`.`id` > '1' ".
@@ -3128,6 +3163,7 @@ class User extends CommonDBTM {
                         'on_change'           => $p['on_change'],
                         'used'                => $p['used'],
                         'entity_restrict'     => $p['entity']);
+
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
                                        $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
                                        $param);

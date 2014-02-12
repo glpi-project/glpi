@@ -2961,6 +2961,9 @@ class Ticket extends CommonITILObject {
                                                               => (($email == "")?0:1)),
                               'nodelegate'          => 1,
                               '_users_id_requester' => 0,
+                              '_users_id_observer'  => 0,
+                              '_users_id_observer_notif'
+                                                    => array('use_notification' => 1),
                               'name'                => '',
                               'content'             => '',
                               'itilcategories_id'   => 0,
@@ -3225,6 +3228,27 @@ class Ticket extends CommonITILObject {
          echo "</td></tr>";
       }
 
+      if (!$tt->isHiddenField('_users_id_observer')
+            || $tt->isPredefinedField('_users_id_observer')) {
+         echo "<tr class='tab_bg_1'><td>".__('Watcher')."</td>";
+         echo "<td>";
+         $values['_right'] = "groups";
+         // Observer
+         if (!$tt->isHiddenField('_users_id_observer')) {
+           $this->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $values);
+           echo '<hr>';
+         } else { // predefined value
+           if (isset($values["_users_id_observer"]) && $values["_users_id_observer"]) {
+               echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_users", $values["_users_id_observer"]);
+               echo "<input type='hidden' name='_users_id_observer' value=\"".
+                     $values["_users_id_observer"]."\">";
+               echo '<hr>';
+           }
+         }
+         echo "</td></tr>";
+      }
+            
       if (!$tt->isHiddenField('name')
           || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
