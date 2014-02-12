@@ -266,8 +266,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $specificities = parent::getRelationMassiveActionsSpecificities();
 
       // Set the labels for add_item and remove_item
-      $specificities['button_labels']['add']    = __s('Associate');
-      $specificities['button_labels']['remove'] = __s('Dissociate');
+      $specificities['button_labels']['add']    = _sx('button', 'Associate');
+      $specificities['button_labels']['remove'] = _sx('button', 'Dissociate');
 
       return $specificities;
    }

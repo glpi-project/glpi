@@ -300,8 +300,8 @@ class Computer_Item extends CommonDBRelation{
       $specificities['only_remove_all_at_once']                   = true;
 
       // Set the labels for add_item and remove_item
-      $specificities['button_labels']['add']                      = __s('Connect');
-      $specificities['button_labels']['remove']                   = __s('Disconnect');
+      $specificities['button_labels']['add']                      = _sx('button', 'Connect');
+      $specificities['button_labels']['remove']                   = _sx('button', 'Disconnect');
 
       return $specificities;
    }

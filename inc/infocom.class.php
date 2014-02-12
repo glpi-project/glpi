@@ -703,7 +703,7 @@ class Infocom extends CommonDBChild {
       $result = $DB->query($query);
       if ($DB->result($result,0,0) > 0) {
          $add  = "";
-         $text = __('Show');
+         $text = _x('button', 'Show');
       } else if (!Infocom::canUpdate()) {
          return false;
       }

@@ -2022,7 +2022,7 @@ class Ticket extends CommonITILObject {
 
       $tab[131]['table']            = $this->getTable();
       $tab[131]['field']            = 'itemtype';
-      $tab[131]['name']             = __('Associated item type');
+      $tab[131]['name']             = _n('Associated item type', 'Associated item types',1);
       $tab[131]['datatype']         = 'itemtypename';
       $tab[131]['itemtype_list']    = 'ticket_types';
       $tab[131]['nosort']           = true;

@@ -1948,7 +1948,7 @@ class Dropdown {
 
       Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
-             title=\"".__s('Export')."\" value=\"".__s('Export')."\">";
+             title=\""._sx('button', 'Export')."\" value=\""._sx('button', 'Export')."\">";
    }
 
 

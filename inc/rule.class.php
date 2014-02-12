@@ -563,8 +563,8 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate'] = __('Duplicate');
-      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'export']    = __('Export');
+      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate'] = _x('button', 'Duplicate');
+      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'export']    = _x('button', 'Export');
 
       return $actions;
    }
@@ -880,11 +880,11 @@ class Rule extends CommonDBTM {
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
             echo "<a class='vsubmit' href='#' onClick=\"".
                   Html::jsGetElementbyID('ruletest'.$rand).".dialog('open');\">".
-                  __('Test')."</a>";
+                  _x('button', 'Test')."</a>";
             Ajax::createIframeModalWindow('ruletest'.$rand,
                                           $url."/front/rule.test.php?". "sub_type=".$this->getType().
                                              "&rules_id=".$this->fields["id"],
-                                          array('title' => __('Test')));
+                                          array('title' => _x('button', 'Test')));
             echo "</td></tr>\n";
          }
       }

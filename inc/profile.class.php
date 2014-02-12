@@ -848,7 +848,7 @@ class Profile extends CommonDBTM {
 
 
       $rights = array(array('itemtype'  => 'Contact',
-                            'label'     => _n('Contacts', 'Contacts', 2)." / ".
+                            'label'     => _n('Contact', 'Contacts', 2)." / ".
                                            _n('Supplier', 'Suppliers', 2),
                             'field'     => 'contact_enterprise'),
                       array('itemtype'  => 'Document',

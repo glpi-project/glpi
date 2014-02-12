@@ -454,7 +454,7 @@ class Change extends CommonITILObject {
                    self::APPROVAL      => __('Approval'),
                    self::ACCEPTED      => _x('change', 'Accepted'),
                    self::WAITING       => __('Pending'),
-                   self::TEST          => __('Test'),
+                   self::TEST          => _x('change','Test'),
                    self::QUALIFICATION => __('Qualification'),
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),

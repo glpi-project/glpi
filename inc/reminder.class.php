@@ -680,7 +680,7 @@ class Reminder extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._x('reminder', 'Visibility')."</td>";
+      echo "<td>".__('Visibility')."</td>";
       echo "<td>";
       echo '<table><tr><td>';
       echo __('Begin').'</td><td>';

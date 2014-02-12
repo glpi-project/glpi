@@ -123,13 +123,13 @@ function step0() {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='no'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\"".__('Install')."\"></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\""._sx('button', 'Install')."\"></p>";
    Html::closeForm();
 
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='yes'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\"".__('Upgrade')."\"></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\""._sx('button', 'Upgrade')."\"></p>";
    Html::closeForm();
 }
 

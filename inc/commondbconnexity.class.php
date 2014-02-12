@@ -410,8 +410,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
                    'itemtypes'     => array(),
                    'normalized'    => array('affect'   => array('affect'),
                                             'unaffect' => array('unaffect')),
-                   'action_name'   => array('affect'   => __('Associate'),
-                                            'unaffect' => __('Dissociate')));
+                   'action_name'   => array('affect'   => _x('button', 'Associate'),
+                                            'unaffect' => _x('button', 'Dissociate')));
    }
 
 
@@ -528,7 +528,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   }
                }
             }
-            echo "<br><br>".Html::submit(__('Dissociate'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_x('button', 'Dissociate'), array('name' => 'massiveaction'));
             return true;
 
          case 'affect' :
@@ -572,7 +572,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                Dropdown::showSelectItemFromItemtypes($options);
             }
 
-            echo "<br><br>".Html::submit(__('Associate'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_x('button', 'Associate'), array('name' => 'massiveaction'));
             return true;
       }
 
