@@ -777,12 +777,6 @@ class Document extends CommonDBTM {
          $tab[6]['massiveaction']   = false;
       }
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'notepad';
-      $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']  = false;
-      $tab[90]['datatype']       = 'text';
-
       $tab[7]['table']           = 'glpi_documentcategories';
       $tab[7]['field']           = 'completename';
       $tab[7]['name']            = __('Heading');
@@ -819,6 +813,8 @@ class Document extends CommonDBTM {
       $tab[72]['datatype']       = 'count';
       $tab[72]['massiveaction']  = false;
       $tab[72]['joinparams']     = array('jointype' => 'child');
+
+      $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;
    }

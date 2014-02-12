@@ -486,12 +486,6 @@ class Project extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'notepad';
-      $tab[90]['name']           = __('Notes');
-      $tab[90]['massiveaction']  = false;
-      $tab[90]['datatype']       = 'text';
-
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
@@ -502,6 +496,8 @@ class Project extends CommonDBTM {
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
 
+      $tab += Notepad::getSearchOptionsToAdd();
+      
       return $tab;
    }
 

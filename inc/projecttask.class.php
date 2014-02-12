@@ -675,12 +675,6 @@ class ProjectTask extends CommonDBChild {
       $tab[16]['name']              = __('Comments');
       $tab[16]['datatype']          = 'text';
 
-      $tab[90]['table']             = $this->getTable();
-      $tab[90]['field']             = 'notepad';
-      $tab[90]['name']              = __('Notes');
-      $tab[90]['massiveaction']     = false;
-      $tab[90]['datatype']          = 'text';
-
       $tab[80]['table']             = 'glpi_entities';
       $tab[80]['field']             = 'completename';
       $tab[80]['name']              = __('Entity');
@@ -690,6 +684,8 @@ class ProjectTask extends CommonDBChild {
       $tab[86]['field']             = 'is_recursive';
       $tab[86]['name']              = __('Child entities');
       $tab[86]['datatype']          = 'bool';
+
+      $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;
    }
