@@ -3412,7 +3412,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    function getUnallowedFieldsForUnicity() {
-      return array('alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id', 'notepad');
+      return array('alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id');
    }
 
 

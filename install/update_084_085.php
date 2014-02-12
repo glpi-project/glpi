@@ -2802,6 +2802,15 @@ function update084to085() {
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
+
+   // Clean display prefs
+   $query = "UPDATE `glpi_displaypreferences`
+             SET `num` = 90
+             WHERE `itemtype` = 'Entity'
+                   AND `num` = 28";
+   $DB->query($query);
+
+   
    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
    // must always be at the end
