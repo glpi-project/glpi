@@ -731,7 +731,7 @@ class Config extends CommonDBTM {
       echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
       for ($impact=5 ; $impact>=1 ; $impact--) {
-         echo "<td>".Ticket::getImpactName($impact).'&nbsp;';
+         echo "<td class='center'>".Ticket::getImpactName($impact).'<br>';
 
          if ($impact==3) {
             $isimpact[3] = 1;
@@ -778,7 +778,7 @@ class Config extends CommonDBTM {
 
             if ($isurgency[$urgency] && $isimpact[$impact]) {
                $bgcolor=$_SESSION["glpipriority_$pri"];
-               echo "<td bgcolor='$bgcolor'>";
+               echo "<td class='center' bgcolor='$bgcolor'>";
                Ticket::dropdownPriority(array('value' => $pri,
                                               'name'  => "_matrix_${urgency}_${impact}"));
                echo "</td>";
