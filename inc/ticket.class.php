@@ -5822,7 +5822,8 @@ class Ticket extends CommonITILObject {
                 && ($ok || empty($mime))) {
                // Replace tags by image in textarea
                $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
-                        "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
+                        "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'
+                        width='300'/>";
 
                // Replace tag by the image
                $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
