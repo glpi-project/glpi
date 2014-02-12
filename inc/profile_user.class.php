@@ -750,6 +750,35 @@ class Profile_User extends CommonDBRelation {
       return $entities;
    }
 
+   /**
+    * retrieve the entities associated to a user
+    *
+    * @param $users_id     Integer  ID of the user
+    * @param $child        Boolean  when true, include child entity when recursive right
+    *                               (false by default)
+    *
+    * @return Array of entity ID
+   **/
+   static function getEntitiesForUser($users_id, $child=false) {
+      global $DB;
+
+      $query = "SELECT `entities_id`, `is_recursive`
+                FROM `glpi_profiles_users`
+                WHERE `users_id` = '$users_id'";
+
+      $entities = array();
+      foreach ($DB->request($query) as $data) {
+         if ($child
+             && $data['is_recursive']) {
+            foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
+               $entities[$id] = $id;
+            }
+         } else {
+            $entities[$data['entities_id']] = $data['entities_id'];
+         }
+      }
+      return $entities;
+   }   
 
    /**
     * Get entities for which a user have a right
