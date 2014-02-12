@@ -4936,7 +4936,7 @@ class Search {
             // Search options added by plugins
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
             if (count($plugsearch)) {
-               $search[$itemtype] += array('plugins' => __('Plugins'));
+               $search[$itemtype] += array('plugins' => _n('Plugin','Plugins',2));
                $search[$itemtype] += $plugsearch;
             }
          }

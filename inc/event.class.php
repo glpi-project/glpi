@@ -137,7 +137,7 @@ class Event extends CommonDBTM {
                           'cron'         => _n('Automatic action', 'Automatic actions', 2),
                           'document'     => _n('Document', 'Documents', 2),
                           'notification' => _n('Notification', 'Notifications',2),
-                          'plugin'       => __('Plugins'));
+                          'plugin'       => _n('Plugin', 'Plugins',2));
 
       return array($logItemtype, $logService);
    }

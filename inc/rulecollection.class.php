@@ -800,8 +800,8 @@ class RuleCollection extends CommonDBTM {
       $buttons = array();
       $title   = "";
 
-      $buttons["rule.backup.php?action=import"] = __('Import');
-      $buttons["rule.backup.php?action=export"] = __('Export');
+      $buttons["rule.backup.php?action=import"] = _x('button', 'Import');
+      $buttons["rule.backup.php?action=export"] = _x('button', 'Export');
 
       Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/sauvegardes.png",
                          _n('User', 'Users', 2), $title, $buttons);

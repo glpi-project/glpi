@@ -705,7 +705,7 @@ class Bookmark extends CommonDBTM {
             echo "<td>";
             if ($canedit) {
                echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
-                      $this->fields["id"]."\" alt='".__s('Update')."'>".
+                      $this->fields["id"]."\" alt='"._sx('button', 'Update')."'>".
                       $this->fields["name"]."</a>";
             } else {
                echo $this->fields["name"];

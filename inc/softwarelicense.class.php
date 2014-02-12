@@ -281,9 +281,9 @@ class SoftwareLicense extends CommonDBTM {
       if ($ID > 0) {
          echo "&nbsp;";
          if ($this->fields['is_valid']) {
-            echo "<span class='green'>".__('Valid').'<span>';
+            echo "<span class='green'>"._x('adjective', 'Valid').'<span>';
          } else {
-            echo "<span class='red'>".__('Not valid').'<span>';
+            echo "<span class='red'>"._x('adjective', 'Invalid').'<span>';
          }
       }
       echo "</td></tr>\n";

@@ -1149,7 +1149,7 @@ class Html {
          $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                                 'ReservationItem', 'Report', 'MigrationCleaner');
 
-         $menu['plugins']['title']      = __('Plugins');
+         $menu['plugins']['title']      = _n('Plugin', 'Plugins',2);
          $menu['plugins']['types']      = array();
 
          $menu['admin']['title']        = __('Administration');
@@ -1988,7 +1988,7 @@ class Html {
 
          asort($list);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\"".__s('Plugins')."\" class='itemP'>". __('Plugins')."</a>";  // default none
+         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', 2)."\" class='itemP'>". __('Plugins')."</a>";  // default none
          echo "<ul class='ssmenu'>";
 
          // list menu item

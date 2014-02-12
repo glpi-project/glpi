@@ -519,6 +519,7 @@ class Software extends CommonDBTM {
 
       $tab[63]['table']          = $this->getTable();
       $tab[63]['field']          = 'is_valid';
+                                 //TRANS: Indicator to know is all licenses of the software are valids
       $tab[63]['name']           = __('Valid licenses');
       $tab[63]['datatype']       = 'bool';
       
@@ -671,7 +672,7 @@ class Software extends CommonDBTM {
       
       $tab[167]['table']         = 'glpi_softwarelicenses';
       $tab[167]['field']         =  'is_valid';
-      $tab[167]['name']          = __('Valid');
+      $tab[167]['name']          = _x('adjective', 'Valid');
       $tab[167]['forcegroupby']  = true;
       $tab[167]['datatype']      = 'bool';
       $tab[167]['massiveaction'] = false;

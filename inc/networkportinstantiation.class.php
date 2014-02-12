@@ -785,7 +785,7 @@ class NetworkPortInstantiation extends CommonDBChild {
             if ($canedit
                 || $device2->canEdit($device2->fields["id"])) {
                echo "&nbsp;";
-               Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Disconnect'),
+               Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', _x('button', 'Disconnect'),
                                     array('id' => $relations_id));
             }
 
@@ -811,7 +811,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                               'entity'      => $device1->fields["entities_id"],
                                               'entity_sons' => $device1->isRecursive()));
                } else {
-                  echo "<a href=\"".$netport->getFormURL()."?id=$ID\">". __('Connect')."</a>";
+                  echo "<a href=\"".$netport->getFormURL()."?id=$ID\">". _x('button', 'Connect')."</a>";
                }
             } else {
                echo "&nbsp;";

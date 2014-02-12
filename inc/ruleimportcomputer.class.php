@@ -305,7 +305,6 @@ class RuleImportComputer extends Rule {
       $sql_where = '1';
       $sql_from  = '';
 
-      // TODO : why don't take care of Rule match attribute ?
       $needport = false;
       $needip   = false;
       foreach ($complex_criterias as $criteria) {
