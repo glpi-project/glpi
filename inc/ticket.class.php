@@ -5834,14 +5834,15 @@ class Ticket extends CommonITILObject {
                                            '&gt;&lt;', $content_text);
 
                // If the tag is from another ticket : link document to ticket
-               if($image['tickets_id'] != $this->fields['id']){
-                  $docitem = new Document_Item();
-                  $docitem->add(array('documents_id'  => $image['id'],
-                                      '_do_notif'     => false,
-                                      '_disablenotif' => true,
-                                      'itemtype'      => $this->getType(),
-                                      'items_id'      => $this->fields['id']));
-               }
+               /// TODO : comment maybe not used
+//                if($image['tickets_id'] != $this->fields['id']){
+//                   $docitem = new Document_Item();
+//                   $docitem->add(array('documents_id'  => $image['id'],
+//                                       '_do_notif'     => false,
+//                                       '_disablenotif' => true,
+//                                       'itemtype'      => $this->getType(),
+//                                       'items_id'      => $this->fields['id']));
+//                }
 
             } else {
                // Remove tag
