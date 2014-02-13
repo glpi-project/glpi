@@ -97,8 +97,8 @@ function update0841to0843() {
 
             if (isset($options['field'])) {
                // update ticket statuses
-               if (($data['itemtype'] = 'Ticket'
-                  || $data['itemtype'] = 'Problem')
+               if (($data['itemtype'] == 'Ticket'
+                  || $data['itemtype'] == 'Problem')
                      && $data['type'] == Bookmark::SEARCH) {
                   foreach ($options['field'] as $key => $val) {
                      if ($val == 12 && isset($options['contains'][$key])) {
@@ -110,8 +110,8 @@ function update0841to0843() {
                }
 
                // Fix computer / allassets bookmarks : 17 -> 7 / 18 -> 8 / 7 -> 17
-               if (($data['itemtype'] = 'Computer'
-                  || $data['itemtype'] = 'AllAssets')
+               if (($data['itemtype'] == 'Computer'
+                  || $data['itemtype'] == 'AllAssets')
                      && $data['type'] == Bookmark::SEARCH) {
                   foreach ($options['field'] as $key => $val) {
                      switch ($val) {
