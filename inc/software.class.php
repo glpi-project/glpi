@@ -508,6 +508,7 @@ class Software extends CommonDBTM {
       if (Session::getLoginUserID()) {
          $tab[72]['joinparams']  = array('jointype'   => 'child',
                                          'condition'  => "AND NEWTABLE.`is_deleted_computer` = '0'
+                                                          AND NEWTABLE.`is_deleted` = '0'
                                                           AND NEWTABLE.`is_template_computer` = '0'
                                                           ".getEntitiesRestrictRequest('AND', 'NEWTABLE'),
                                          'beforejoin' => array('table' => 'glpi_softwareversions',
