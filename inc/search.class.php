@@ -3726,7 +3726,8 @@ class Search {
                   return " $LINK `glpi_computers_softwareversions`
                                     AS glpi_computers_softwareversions_$to_type
                               ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`)
+                                       = `glpi_computers`.`id`
+                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = '0')
                            $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`)
@@ -3812,7 +3813,8 @@ class Search {
                            $LINK `glpi_computers_softwareversions`
                                     AS glpi_computers_softwareversions_$to_type
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$to_type`.`id`)
+                                       = `glpi_softwareversions_$to_type`.`id`
+                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = '0')
                            $LINK `glpi_computers`
                               ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
                                        = `glpi_computers`.`id` ".
