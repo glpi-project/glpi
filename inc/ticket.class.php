@@ -3697,7 +3697,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       // Default check
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -5202,7 +5202,8 @@ class Ticket extends CommonITILObject {
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_ticket","1")) {
+      if (!Session::haveRight("show_all_ticket","1")
+          && !Session::haveRight("create_ticket","1")) {
          return false;
       }
 
@@ -5317,19 +5318,23 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
 
       if ($number > 0) {
+         if (Session::haveRight("show_all_ticket","1")) {
 
-         Session::initNavigateListItems('Ticket',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
-                                                $item->getName()));
+            Session::initNavigateListItems('Ticket',
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
+                                                   $item->getName()));
 
-         echo "<tr><th colspan='11'>";
-         $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
-         $link = "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                  Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
-         $title = printf(__('%1$s (%2$s)'), $title, $link);
-         echo "</th></tr>";
+            echo "<tr><th colspan='11'>";
+            $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
+            $link = "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                      Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
+            $title = printf(__('%1$s (%2$s)'), $title, $link);
+            echo "</th></tr>";
 
+         } else {
+            echo "<tr><th>".__("You don't have right to see all tickets")."</th></tr>";
+         }
       } else {
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
       }
@@ -5345,7 +5350,8 @@ class Ticket extends CommonITILObject {
       }
 
       // Ticket list
-      if ($number > 0) {
+      if (($number > 0)
+          && Session::haveRight("show_all_ticket","1")) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
@@ -5366,7 +5372,8 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      if (count($restrict)) {
+      if (count($restrict)
+          && Session::haveRight("show_all_ticket","1")) {
          $query = "SELECT ".self::getCommonSelect()."
                    FROM `glpi_tickets` ".self::getCommonLeftJoin()."
                    WHERE ".implode(' OR ', $restrict).
