@@ -3325,7 +3325,7 @@ class User extends CommonDBTM {
     * @param $login
    **/
    static function getIdByName($login) {
-      self::getIdByField('name', $login);
+      return self::getIdByField('name', $login);
    }
 
 
