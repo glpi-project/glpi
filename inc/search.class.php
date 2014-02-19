@@ -2289,7 +2289,6 @@ class Search {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
       }
-
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
@@ -4884,12 +4883,11 @@ class Search {
             $search[$itemtype]['tracking']          = __('Assistance');
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';
-            $search[$itemtype][60]['linkfield']     = 'items_id';
-            $search[$itemtype][60]['field']         = 'count';
+            $search[$itemtype][60]['field']         = 'id';
+            $search[$itemtype][60]['datatype']      = 'count';
             $search[$itemtype][60]['name']          = _x('quantity', 'Number of tickets');
             $search[$itemtype][60]['forcegroupby']  = true;
             $search[$itemtype][60]['usehaving']     = true;
-            $search[$itemtype][60]['datatype']      = 'number';
             $search[$itemtype][60]['massiveaction'] = false;
             $search[$itemtype][60]['joinparams']    = array('jointype'
                                                              => "itemtype_item",
@@ -4897,11 +4895,11 @@ class Search {
                                                              => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
             $search[$itemtype][140]['table']         = 'glpi_problems';
-            $search[$itemtype][140]['field']         = 'count';
+            $search[$itemtype][140]['field']         = 'id';
+            $search[$itemtype][140]['datatype']      = 'count';
             $search[$itemtype][140]['name']          = _x('quantity', 'Number of problems');
             $search[$itemtype][140]['forcegroupby']  = true;
             $search[$itemtype][140]['usehaving']     = true;
-            $search[$itemtype][140]['datatype']      = 'number';
             $search[$itemtype][140]['massiveaction'] = false;
             $search[$itemtype][140]['joinparams']    = array('beforejoin'
                                                               => array('table'
