@@ -3740,7 +3740,7 @@ class Html {
                       'root_doc' => $CFG_GLPI['root_doc'],
                       'rand'     => $rand,
 //                      'maxsize'  => 500,
-                      'lang'     => array('pasteimage'   => _sx('button', 'Dans and drop or paste image'),
+                      'lang'     => array('pasteimage'   => _sx('button', 'Drag and drop or paste image'),
                                           'itemnotfound' => __('Item not found'),
                                           'toolarge'     => __('Item is too large'),
                                           'save'         => _sx('button', 'Save'),
