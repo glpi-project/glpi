@@ -5278,6 +5278,13 @@ class Ticket extends CommonITILObject {
          default :
             $restrict                 = "(`items_id` = '".$item->getID()."'
                                           AND `itemtype` = '".$item->getType()."')";
+            // you can only see your tickets
+            if (!Session::haveRight("show_all_ticket","1")) {
+               $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
+                                   OR (`glpi_tickets_users`.`tickets_id` = '".$item->getID()."'
+                                       AND `glpi_tickets_users`.`users_id`
+                                            = '".Session::getLoginUserID()."'))";
+            }
             $order                    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['field'][0]      = 12;
@@ -5333,7 +5340,7 @@ class Ticket extends CommonITILObject {
             echo "</th></tr>";
 
          } else {
-            echo "<tr><th>".__("You don't have right to see all tickets")."</th></tr>";
+            echo "<tr><th colspan='11'>".__("You don't have right to see all tickets")."</th></tr>";
          }
       } else {
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
@@ -5350,8 +5357,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Ticket list
-      if (($number > 0)
-          && Session::haveRight("show_all_ticket","1")) {
+      if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
