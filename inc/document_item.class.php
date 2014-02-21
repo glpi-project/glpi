@@ -387,11 +387,14 @@ class Document_Item extends CommonDBRelation{
                                 AND ";
             } else {
                $query .= "`glpi_entities`.`id` AS entity
-                          FROM `glpi_documents_items`, `$itemtable`
-                          LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = `$itemtable`.`entities_id`)
-                          WHERE `$itemtable`.`id` = `glpi_documents_items`.`items_id`
-                                AND ";
+                          FROM `glpi_documents_items`, `$itemtable`";
+
+               if ($itemtype != 'Entity') {
+                  $query .= " LEFT JOIN `glpi_entities`
+                                 ON (`glpi_entities`.`id` = `$itemtable`.`entities_id`)";
+               }
+               $query .= " WHERE `$itemtable`.`id` = `glpi_documents_items`.`items_id`
+                                 AND ";
             }
             $query .= "`glpi_documents_items`.`itemtype` = '$itemtype'
                        AND `glpi_documents_items`.`documents_id` = '$instID' ";
