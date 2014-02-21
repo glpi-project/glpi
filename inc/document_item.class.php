@@ -544,20 +544,24 @@ class Document_Item extends CommonDBRelation{
       $canedit       =  $item->canAddItem('Document');
       $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
+      $itemtable     = getTableForItemType($item->getType());
 
-      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
+      $query = "SELECT `$itemtable`.*,
+                       `glpi_documents_items`.`id` AS assocID,
                        `glpi_documents_items`.`date_mod` AS assocdate,
                        `glpi_entities`.`id` AS entityID,
                        `glpi_entities`.`completename` AS entity,
                        `glpi_documentcategories`.`completename` AS headings,
                        `glpi_documents`.*
                 FROM `glpi_documents_items`
+                LEFT JOIN `$itemtable`
+                   ON `$itemtable`.`id` = `glpi_documents_items`.`items_id`
                 LEFT JOIN `glpi_documents`
                           ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
                 LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
                 LEFT JOIN `glpi_documentcategories`
                         ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                WHERE `glpi_documents_items`.`items_id` = '$ID'
+                WHERE `glpi_documents_items`.`items_id` = $ID
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
       if (Session::getLoginUserID()) {
