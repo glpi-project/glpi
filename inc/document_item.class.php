@@ -520,6 +520,19 @@ class Document_Item extends CommonDBRelation{
          return false;
       }
 
+
+      $columns = array('name'      => __('Name'),
+                       'entity'    => __('Entity'),
+                       'filename'  => __('File'),
+                       'link'      => __('Web link'),
+                       'headings'  => __('Heading'),
+                       'mime'      => __('MIME type'));
+      if ($CFG_GLPI['use_rich_text']) {
+         $columns['tag'] = __('Tag');
+      }
+      $columns['assocdate'] = __('Date');
+
+      
       if (empty($withtemplate)) {
          $withtemplate = 0;
       }
@@ -535,7 +548,8 @@ class Document_Item extends CommonDBRelation{
          $order = "DESC";
       }
 
-      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
+      if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
+         && isset($columns[$_GET["sort"]])) {
          $sort = "`".$_GET["sort"]."`";
       } else {
          $sort = "`assocdate`";
@@ -544,24 +558,20 @@ class Document_Item extends CommonDBRelation{
       $canedit       =  $item->canAddItem('Document');
       $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
-      $itemtable     = getTableForItemType($item->getType());
 
-      $query = "SELECT `$itemtable`.*,
-                       `glpi_documents_items`.`id` AS assocID,
+      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
                        `glpi_documents_items`.`date_mod` AS assocdate,
                        `glpi_entities`.`id` AS entityID,
                        `glpi_entities`.`completename` AS entity,
                        `glpi_documentcategories`.`completename` AS headings,
                        `glpi_documents`.*
                 FROM `glpi_documents_items`
-                LEFT JOIN `$itemtable`
-                   ON `$itemtable`.`id` = `glpi_documents_items`.`items_id`
                 LEFT JOIN `glpi_documents`
                           ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
                 LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
                 LEFT JOIN `glpi_documentcategories`
                         ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                WHERE `glpi_documents_items`.`items_id` = $ID
+                WHERE `glpi_documents_items`.`items_id` = '$ID'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
       if (Session::getLoginUserID()) {
@@ -729,16 +739,6 @@ class Document_Item extends CommonDBRelation{
          $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= "</th>";
       }
-      $columns = array('name'      => __('Name'),
-                       'entity'    => __('Entity'),
-                       'filename'  => __('File'),
-                       'link'      => __('Web link'),
-                       'headings'  => __('Heading'),
-                       'mime'      => __('MIME type'));
-      if ($CFG_GLPI['use_rich_text']) {
-         $columns['tag'] = __('Tag');
-      }
-      $columns['assocdate'] = __('Date');
 
       foreach ($columns as $key => $val) {
          $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
