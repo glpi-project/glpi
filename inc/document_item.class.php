@@ -366,7 +366,11 @@ class Document_Item extends CommonDBRelation{
          }
 
          if ($item->canView()) {
-            $column = "name";
+            if ($item instanceof CommonDevice) {
+               $column = "designation";
+            } else {
+               $column = "name";
+            }
             if ($itemtype == 'Ticket') {
                $column = "id";
             }
@@ -435,7 +439,11 @@ class Document_Item extends CommonDBRelation{
                         $data["name"] = sprintf(__('%1$s - %2$s'), $data["name"],
                                                 $soft->fields['name']);
                      }
-                     $linkname = $data["name"];
+                     if ($item instanceof CommonDevice) {
+                        $linkname = $data["designation"];
+                     } else {
+                        $linkname = $data["name"];
+                     }
                      if ($_SESSION["glpiis_ids_visible"]
                          || empty($data["name"])) {
                         $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
