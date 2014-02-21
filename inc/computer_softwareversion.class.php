@@ -665,7 +665,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_softwareversions`.`id` AS verid,
                        `glpi_softwareversions`.`softwares_id`,
                        `glpi_softwareversions`.`name` AS version,
-                       `glpi_softwares`.`valid` AS softvalid
+                       `glpi_softwares`.`is_valid` AS softvalid
                 FROM `glpi_computers_softwareversions`
                 LEFT JOIN `glpi_softwareversions`
                      ON (`glpi_computers_softwareversions`.`softwareversions_id`
