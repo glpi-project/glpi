@@ -700,6 +700,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                }
 
                $tmp['##author.email##']  = $user_tmp->getDefaultEmail();
+               $tmp['##author.mobile##'] = $user_tmp->getField('mobile');
                $tmp['##author.phone##']  = $user_tmp->getField('phone');
                $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
                $datas['authors'][]       = $tmp;
@@ -897,6 +898,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => __('Requester'),
                     'author.location'                   => __('Requester location'),
+                    'author.mobile'                     => __('Mobile phone'),
                     'author.phone'                      => __('Phone'),
                     'author.phone2'                     => __('Phone 2'),
                     'author.email'                      => _n('Email', 'Emails', 1),
