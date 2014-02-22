@@ -413,6 +413,21 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                             `softwares_id` = '$new_software_id'
                         WHERE `id` = '$version_id'");
          } else {
+            // Delete software can be in double after update
+            $sql = "SELECT gcs_2.*
+                    FROM  `glpi_computers_softwareversions` 
+                    LEFT JOIN  `glpi_computers_softwareversions` AS gcs_2 
+                       ON  `glpi_computers_softwareversions`.`computers_id` = gcs_2.`computers_id` 
+                    WHERE  `glpi_computers_softwareversions`.`softwareversions_id` = '$new_versionID'
+                        AND gcs_2.`softwareversions_id` = '$version_id'";
+            $res = $DB->query($sql);
+            if ($DB->numrows($res) > 0) {
+               while ($result = $DB->fetch_assoc($res)) {
+                  $DB->query("DELETE FROM `glpi_computers_softwareversions`
+                        WHERE `id` = '".$result['id']."'");
+               }
+            }
+            
             //Change ID of the version in glpi_computers_softwareversions
             $DB->query("UPDATE `glpi_computers_softwareversions`
                         SET `softwareversions_id` = '$new_versionID'
