@@ -1227,8 +1227,10 @@ class Search {
          $headers_line_top .= self::showBeginHeader($data['display_type']);
          $headers_line_top .= self::showNewLine($data['display_type']);
 
+         if ($data['display_type'] == self::HTML_OUTPUT) {
 //          $headers_line_bottom .= self::showBeginHeader($data['display_type']);
-         $headers_line_bottom .= self::showNewLine($data['display_type']);
+            $headers_line_bottom .= self::showNewLine($data['display_type']);
+         }
 
          $header_num = 1;
          if (($data['display_type'] == self::HTML_OUTPUT)
@@ -1237,10 +1239,12 @@ class Search {
                .= self::showHeaderItem($data['display_type'],
                                        Html::getCheckAllAsCheckbox($massformid),
                                        $header_num, "", 0, $data['search']['order']);
-            $headers_line_bottom
-               .= self::showHeaderItem($data['display_type'],
-                                       Html::getCheckAllAsCheckbox($massformid),
-                                       $header_num, "", 0, $data['search']['order']);
+            if ($data['display_type'] == self::HTML_OUTPUT) {
+               $headers_line_bottom
+                  .= self::showHeaderItem($data['display_type'],
+                                          Html::getCheckAllAsCheckbox($massformid),
+                                          $header_num, "", 0, $data['search']['order']);
+            }
          }
 
          // Display column Headers for toview items
@@ -1287,7 +1291,9 @@ class Search {
          $headers_line        .= self::showEndLine($data['display_type']);
 
          $headers_line_top    .= $headers_line;
-         $headers_line_bottom .= $headers_line;
+         if ($data['display_type'] == self::HTML_OUTPUT) {
+            $headers_line_bottom .= $headers_line;
+         }
 
          $headers_line_top    .= self::showEndHeader($data['display_type']);
 //          $headers_line_bottom .= self::showEndHeader($data['display_type']);
