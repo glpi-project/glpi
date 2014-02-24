@@ -1332,19 +1332,19 @@ class Auth extends CommonGLPI {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . __('Phone') . "</td>";
-      echo "<td><input type='text' name='phone_ssofield'value='".$CFG_GLPI['phone_ssofield']."'>";
+      echo "<td><input type='text' name='phone_ssofield' value='".$CFG_GLPI['phone_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" .  __('Phone 2') . "</td>";
-      echo "<td><input type='text' name='phone2_ssofield'value='".$CFG_GLPI['phone2_ssofield']."'>";
+      echo "<td><input type='text' name='phone2_ssofield' value='".$CFG_GLPI['phone2_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . __('Mobile phone') . "</td>";
-      echo "<td><input type='text' name='mobile_ssofield'value='".$CFG_GLPI['mobile_ssofield']."'>";
+      echo "<td><input type='text' name='mobile_ssofield' value='".$CFG_GLPI['mobile_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";
 
