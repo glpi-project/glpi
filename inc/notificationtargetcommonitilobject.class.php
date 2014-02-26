@@ -342,7 +342,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    function getTaskAuthor($options=array()) {
       global $DB;
 
-      if (isset($options['task_id'])) {
+      // In case of delete task pass user id
+      if (isset($options['task_users_id'])) {
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_users` ".
+                  $this->getProfileJoinSql()."
+                  WHERE `glpi_users`.`id` = '".$options['task_users_id']."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+      } else if (isset($options['task_id'])) {
          $tasktable = getTableForItemType($this->obj->getType().'Task');
 
          $query = $this->getDistinctUserSql()."
@@ -366,7 +376,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    function getTaskAssignUser($options=array()) {
       global $DB;
 
-      if (isset($options['task_id'])) {
+      // In case of delete task pass user id
+      if (isset($options['task_users_id_tech'])) {
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_users` ".
+                  $this->getProfileJoinSql()."
+                  WHERE `glpi_users`.`id` = '".$options['task_users_id_tech']."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+      } else if (isset($options['task_id'])) {
          $tasktable = getTableForItemType($this->obj->getType().'Task');
 
          $query = $this->getDistinctUserSql()."

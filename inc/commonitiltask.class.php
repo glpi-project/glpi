@@ -178,7 +178,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function post_deleteFromDB() {
-
+      global $CFG_GLPI;
+      
       $itemtype = $this->getItilObjectItemType();
       $item     = new $itemtype();
       $item->getFromDB($this->fields[$item->getForeignKeyField()]);
@@ -192,10 +193,15 @@ abstract class CommonITILTask  extends CommonDBTM {
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
                    $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('task_id'    => $this->fields["id"],
-                        // Force is_private with data / not available
-                       'is_private' => $this->isPrivate());
-      NotificationEvent::raiseEvent('delete_task', $item, $options);
+      if ($CFG_GLPI["use_mailing"]) {
+         $options = array('task_id'    => $this->fields["id"],
+                           // Force is_private with data / not available
+                        'is_private' => $this->isPrivate(),
+                        // Pass users values
+                        'task_users_id' => $this->fields['users_id'],
+                        'task_users_id_tech' => $this->fields['users_id_tech']);
+         NotificationEvent::raiseEvent('delete_task', $item, $options);
+      }
    }
 
 
