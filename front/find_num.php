@@ -119,7 +119,7 @@ if (isset($_POST["send"])) {
          $Computer = $ligne['name'];
          $s1       = $ligne['serial'];
          $s2       = $ligne['otherserial'];
-         echo " <tr class='tab_find' onClick=\"fillidfield(".$type.",".$Comp_num.")\">";
+         echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$type.",".$Comp_num.")\">";
          echo "<td class='center'>&nbsp;$Contact&nbsp;</td>";
          echo "<td class='center'>&nbsp;$label&nbsp;</td>";
          echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
