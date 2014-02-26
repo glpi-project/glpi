@@ -938,7 +938,7 @@ class Html {
           $output .= "<tr><th class='center'>".$param['title']."&nbsp;".$percent."%</th></tr>";
        }
        $output .= "<tr><td>
-                   <table><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
+                   <table class='tabcompact'><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
                     "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".
                     $percentwidth." px' height='12'>";
 

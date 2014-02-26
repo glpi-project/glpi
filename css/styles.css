@@ -617,6 +617,13 @@ td { }
    border-collapse:collapse;
 }
 
+.tabcompact {
+   padding: 0px;
+   margin: 0px;
+   border: 0px;
+   border-collapse:collapse;   
+}
+
 .tab_format td {
    padding: 1px;
    margin: 0px;
