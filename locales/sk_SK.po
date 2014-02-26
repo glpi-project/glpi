@@ -4,15 +4,15 @@
 # 
 # Translators:
 # balucha <balucha@horizon.sk>, 2012-2013
-# balucha <balucha@horizon.sk>, 2013
+# balucha <balucha@horizon.sk>, 2013-2014
 # mhh <marian.hvolka@stuba.sk>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-18 22:49+0100\n"
-"PO-Revision-Date: 2014-02-18 21:50+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-02-26 09:42+0000\n"
+"Last-Translator: balucha <balucha@horizon.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -787,7 +787,7 @@ msgstr "Zmazať globálne kritériá vyhľadávania"
 
 #: ajax/searchoptionvalue.php:77
 msgid "My groups"
-msgstr ""
+msgstr "Moje skupiny"
 
 #: ajax/searchrow.php:63
 msgid "Add a search criterion"
@@ -816,11 +816,11 @@ msgstr "Položiek nájdené"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:59
 msgid "Choose an existing device"
-msgstr ""
+msgstr "Vybrať existujúce zariadenie"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "and/or"
-msgstr ""
+msgstr "a/alebo"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "Add new devices"
@@ -1114,7 +1114,7 @@ msgstr "Zmazané"
 
 #: front/backup.php:578 front/backup.php:583
 msgid "Backup the database?"
-msgstr ""
+msgstr "Zálohovať databázu?"
 
 #: front/backup.php:581
 msgid "SQL Dump"
@@ -1407,7 +1407,7 @@ msgstr "%s zmazal účastníka"
 #: front/problem_user.form.php:60 front/ticket_user.form.php:62
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr ""
+msgstr "Boli ste presmerovaný pretože už viacej nemáte prístup k tejto položke"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:56 front/contractcost.form.php:53
@@ -2310,7 +2310,7 @@ msgstr "Operácia bola úspešná"
 #: front/massiveaction.php:73
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d autorizačných problémov, %2$d zlyhaní)"
 
 #: front/migrationcleaner.php:41
 msgid "You don't need the \"migration cleaner\" tool anymore..."
@@ -2394,7 +2394,7 @@ msgstr ""
 #: front/pluginimage.send.php:53
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr ""
+msgstr "%s sa pokúša použiť neštandardnú cestu."
 
 #: front/plugin.php:56
 #, php-format
@@ -3923,7 +3923,7 @@ msgstr ""
 #: inc/user.class.php:1819 inc/user.class.php:1822 inc/user.class.php:1827
 #: inc/user.class.php:2129 inc/user.class.php:2132 inc/user.class.php:2136
 msgid "Picture"
-msgstr ""
+msgstr "Fotografia"
 
 #: inc/authldap.class.php:769
 msgid "Import entities from LDAP directory"
@@ -4128,7 +4128,7 @@ msgstr "Čítať"
 
 #: inc/backup.class.php:64 inc/commondbtm.class.php:4265
 msgid "Create"
-msgstr ""
+msgstr "Vytvoriť"
 
 #: inc/backup.class.php:66
 msgid "Check for upgrade"
@@ -4643,7 +4643,7 @@ msgstr "Pridať náplne"
 #. TRANS : multiplier
 #: inc/cartridge.class.php:894
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: inc/cartridge.class.php:900
 msgid "No cartridge available"
@@ -4756,15 +4756,15 @@ msgstr "Prah upozornenia"
 
 #: inc/cartridgeitem.class.php:308 inc/printer.class.php:647
 msgid "Number of used cartridges"
-msgstr ""
+msgstr "Počet použitých náplní"
 
 #: inc/cartridgeitem.class.php:319 inc/printer.class.php:658
 msgid "Number of worn cartridges"
-msgstr ""
+msgstr "Počet opotrebovaných náplní"
 
 #: inc/cartridgeitem.class.php:329
 msgid "Number of new cartridges"
-msgstr ""
+msgstr "Počet nových náplní"
 
 #: inc/cartridgeitem.class.php:389 inc/cartridgeitem.class.php:534
 msgid "Send alarms on cartridges"
@@ -5160,7 +5160,7 @@ msgstr ""
 
 #: inc/change.class.php:860 inc/problem.class.php:1473
 msgid "See (author)"
-msgstr ""
+msgstr "Zobraziť (autor)"
 
 #: inc/change_item.class.php:128 inc/contract_item.class.php:589
 #: inc/document_item.class.php:313 inc/item_problem.class.php:132
@@ -5197,7 +5197,7 @@ msgstr[2] ""
 
 #: inc/change_project.class.php:258
 msgid "Add a project"
-msgstr ""
+msgstr "Pridať projekt"
 
 #: inc/changetask.class.php:45
 msgid "Change task"
@@ -5265,11 +5265,11 @@ msgstr "Zrušiť priradenie"
 
 #: inc/commondbconnexity.class.php:509
 msgid "First Item"
-msgstr ""
+msgstr "Prvá položka"
 
 #: inc/commondbconnexity.class.php:516
 msgid "Second Item"
-msgstr ""
+msgstr "Druhá položka"
 
 #: inc/commondbconnexity.class.php:521
 #, php-format
@@ -5282,7 +5282,7 @@ msgstr ""
 
 #: inc/commondbrelation.class.php:1210
 msgid "Remove all at once"
-msgstr ""
+msgstr "Odstrániť všetko naraz"
 
 #: inc/commondbtm.class.php:961
 msgid "Item successfully added"
@@ -5464,7 +5464,7 @@ msgstr "Zmazať"
 
 #: inc/commondbtm.class.php:4276
 msgid "Read note"
-msgstr ""
+msgstr "Čítať poznámky"
 
 #: inc/commondbtm.class.php:4277
 msgid "Read the item's note"
@@ -5472,11 +5472,11 @@ msgstr ""
 
 #: inc/commondbtm.class.php:4278
 msgid "Update note"
-msgstr ""
+msgstr "Aktualizovať poznámky"
 
 #: inc/commondbtm.class.php:4279
 msgid "Update the item's note"
-msgstr ""
+msgstr "Aktualizovať poznámku položky"
 
 #: inc/commondropdown.class.php:506
 msgid "You can't delete that item, because it has sub-items"
@@ -5557,11 +5557,11 @@ msgstr ""
 
 #: inc/commonglpi.class.php:1243
 msgid "Authorization error"
-msgstr ""
+msgstr "Chyba autorizácie"
 
 #: inc/commonglpi.class.php:1246
 msgid "Incompatible items"
-msgstr ""
+msgstr "Nekompatibilné položky"
 
 #: inc/commonglpi.class.php:1249
 msgid "Error on executing the action"
@@ -5676,7 +5676,7 @@ msgstr[2] "Ceny požiadavky"
 
 #: inc/commonitilcost.class.php:471
 msgid "Item duration"
-msgstr ""
+msgstr "Trvanie položky"
 
 #: inc/commonitilcost.class.php:479 inc/document_item.class.php:430
 #: inc/entity.class.php:1606 inc/event.class.php:128 inc/html.class.php:1949
@@ -6766,7 +6766,7 @@ msgstr[2] "Inštalácií"
 
 #: inc/computer_softwareversion.class.php:723
 msgid "All categories"
-msgstr ""
+msgstr "Všetky kategórie"
 
 #: inc/computer_softwareversion.class.php:724
 msgid "Uncategorized software"
@@ -6774,7 +6774,7 @@ msgstr "Nekategorizovaný softvér"
 
 #: inc/computer_softwareversion.class.php:771
 msgid "Valid license"
-msgstr ""
+msgstr "Platná licencia"
 
 #: inc/computervirtualmachine.class.php:195
 #: inc/computervirtualmachine.class.php:346
@@ -7185,7 +7185,7 @@ msgstr "Počet výsledkov na domovskej stránke"
 
 #: inc/config.class.php:954
 msgid "PDF export font"
-msgstr ""
+msgstr "Písmo pre export do PDF"
 
 #: inc/config.class.php:960
 msgid "Keep devices when purging an item"
@@ -7193,7 +7193,7 @@ msgstr ""
 
 #: inc/config.class.php:965
 msgid "Go to created item after creation"
-msgstr ""
+msgstr "Otvoriť položku po jej vytvorení"
 
 #: inc/config.class.php:976
 msgid "Private followups by default"
@@ -7556,11 +7556,11 @@ msgstr[2] "Modely spotrebného materiálu"
 
 #: inc/consumableitem.class.php:270
 msgid "Number of used consumables"
-msgstr ""
+msgstr "Počet použitého spotrebného materiálu"
 
 #: inc/consumableitem.class.php:280
 msgid "Number of new consumables"
-msgstr ""
+msgstr "Počet nového spotrebného materiálu"
 
 #: inc/consumableitem.class.php:328 inc/consumableitem.class.php:431
 msgid "Send alarms on consumables"
@@ -8148,7 +8148,7 @@ msgstr[2] ""
 #: inc/crontask.class.php:1378
 #, php-format
 msgid "Deletion of archived log file: %s"
-msgstr ""
+msgstr "Zmazanie zaarchivovaného log súboru: %s"
 
 #: inc/crontask.class.php:1381
 #, php-format
@@ -8438,11 +8438,11 @@ msgstr "Základná frekvencia"
 
 #: inc/deviceprocessor.class.php:58 inc/deviceprocessor.class.php:85
 msgid "Number of cores"
-msgstr ""
+msgstr "Počet jadier"
 
 #: inc/deviceprocessor.class.php:61 inc/deviceprocessor.class.php:90
 msgid "Number of threads"
-msgstr ""
+msgstr "Počet vlákien"
 
 #: inc/displaypreference.class.php:294
 msgid "No personal criteria. Create personal parameters?"
@@ -8711,7 +8711,7 @@ msgstr "Ikona"
 
 #: inc/documenttype.class.php:54 inc/documenttype.class.php:98
 msgid "Authorized upload"
-msgstr ""
+msgstr "Autorizované odoslanie"
 
 #: inc/documenttype.class.php:57 inc/documenttype.class.php:82
 msgid "Extension"
@@ -8789,16 +8789,16 @@ msgstr[2] "Kategórie úloh"
 #: inc/dropdown.class.php:728 inc/projectstate.class.php:47
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Stav projektu"
+msgstr[1] "Stavy projektov"
+msgstr[2] "Stavy projektov"
 
 #: inc/dropdown.class.php:729 inc/projecttype.class.php:47
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Typ projektu"
+msgstr[1] "Typy projektov"
+msgstr[2] "Typy projektov"
 
 #: inc/dropdown.class.php:730 inc/projecttasktype.class.php:46
 msgid "Project tasks type"
@@ -9572,7 +9572,7 @@ msgstr "Úplne špecifikované meno domény. Použite klasickú konvenciu (jedno
 
 #: inc/fqdn.class.php:80
 msgid "FQDN must not be empty"
-msgstr ""
+msgstr "FQDN nesmie byť prázdne"
 
 #: inc/fqdn.class.php:89
 msgid "FQDN is not valid"
@@ -9621,7 +9621,7 @@ msgstr "Pridať používateľa"
 #: inc/group.class.php:343
 msgctxt "button"
 msgid "Add a manager"
-msgstr ""
+msgstr "Pridať manažéra"
 
 #: inc/group.class.php:344
 msgctxt "button"
@@ -9719,7 +9719,7 @@ msgstr ""
 #: inc/html.class.php:363
 #, php-format
 msgid "%1$s%2$d days %3$d hours %4$d minutes %5$d seconds"
-msgstr ""
+msgstr "%1$s%2$d dní %3$d hodín %4$d minút %5$d sekúnd"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of days, %3$d number of
 #. hours,
@@ -9735,7 +9735,7 @@ msgstr ""
 #: inc/html.class.php:381
 #, php-format
 msgid "%1$s%2$d hours %3$d minutes %4$d seconds"
-msgstr ""
+msgstr "%1$s%2$d hodín %3$d minút %4$d sekúnd"
 
 #. TRANS: %1$s is the sign (-or empty), %2$d number of hours, %3$d number of
 #. minutes
@@ -9749,7 +9749,7 @@ msgstr ""
 #: inc/html.class.php:391
 #, php-format
 msgid "%1$s%2$d minutes %3$d seconds"
-msgstr ""
+msgstr "%1$s%2$d minút %3$d sekúnd"
 
 #. TRANS: %1$s is the sign (-or empty), %2$d number of minutes
 #: inc/html.class.php:395
@@ -9765,9 +9765,9 @@ msgstr[2] ""
 #, php-format
 msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%1$s%2$s sekunda"
+msgstr[1] "%1$s%2$s sekundy"
+msgstr[2] "%1$s%2$s sekúnd"
 
 #: inc/html.class.php:514 inc/html.class.php:3744
 #: inc/profile_user.class.php:424
@@ -10040,7 +10040,7 @@ msgstr ""
 
 #: inc/html.class.php:5173 inc/html.class.php:5277 inc/profile.class.php:2646
 msgid "Select/unselect all"
-msgstr ""
+msgstr "Označit/odznačiť všetko"
 
 #: inc/infocom.class.php:422
 #, php-format
@@ -10161,7 +10161,7 @@ msgstr "Doživotne"
 #: inc/infocom.class.php:1158
 #, php-format
 msgid "Valid to %s"
-msgstr ""
+msgstr "Platný do %s"
 
 #: inc/infocom.class.php:1426
 msgid "Comments on financial and administrative information"
@@ -10277,7 +10277,7 @@ msgstr ""
 
 #: inc/item_devices.class.php:144
 msgid "bus ID"
-msgstr ""
+msgstr "ID zbernice"
 
 #: inc/item_devices.class.php:353
 msgid "Type of component"
@@ -10301,7 +10301,7 @@ msgstr ""
 #: inc/item_devices.class.php:500 inc/item_devices.class.php:513
 #, php-format
 msgid "%1$s of %2$s: %3$s"
-msgstr ""
+msgstr "%1$s z %2$sa: %3$s"
 
 #: inc/item_devices.class.php:615 inc/knowbaseitem.class.php:1442
 msgid "View"
@@ -10602,7 +10602,7 @@ msgstr[2] "Uzamknutia"
 
 #: inc/lock.class.php:77
 msgid "Locked items"
-msgstr ""
+msgstr "Zamknuté položky"
 
 #: inc/lock.class.php:310
 msgctxt "button"
@@ -10683,7 +10683,7 @@ msgstr "Odomknúť položku"
 
 #: inc/log.class.php:370
 msgid "Restore the item"
-msgstr ""
+msgstr "Obnoviť položku"
 
 #: inc/log.class.php:379
 msgid "Add the component"
@@ -10812,7 +10812,7 @@ msgstr "Vyzdvihnúť emailové požiadavky"
 #: inc/mailcollector.class.php:459
 #, php-format
 msgid "Email %s not found. Impossible import."
-msgstr ""
+msgstr "Email %s nenájdený. Import nie je možný."
 
 #. TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
 #: inc/mailcollector.class.php:593
@@ -10894,7 +10894,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:257
 msgid "No selected items"
-msgstr ""
+msgstr "Neboli vybrané žiadne položky"
 
 #: inc/massiveaction.class.php:271
 msgid "Invalid process"
@@ -10930,7 +10930,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:746
 msgid "Select the field that you want to update"
-msgstr ""
+msgstr "Vyberte pole, ktoré chcete aktualizovať"
 
 #: inc/massiveaction.class.php:751 inc/rule.class.php:766
 #: inc/rule.class.php:923 inc/rule.class.php:2455
@@ -11279,7 +11279,7 @@ msgstr "Lokálny sieťový port"
 
 #: inc/networkportinstantiation.class.php:292
 msgid "this port"
-msgstr ""
+msgstr "tento port"
 
 #: inc/networkportinstantiation.class.php:523
 msgid "No network card available"
@@ -11425,9 +11425,9 @@ msgstr "ESSID"
 #: inc/notepad.class.php:55
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Poznámka"
+msgstr[1] "Poznámky"
+msgstr[2] "Poznámky"
 
 #: inc/notepad.class.php:157 inc/notepad.class.php:161
 msgid "Notes"
@@ -11661,7 +11661,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:412
 msgid "Requester group manager"
-msgstr ""
+msgstr "Manažér skupín žiadateľov"
 
 #: inc/notificationtargetcommonitilobject.class.php:414
 msgid "Requester group except manager users"
@@ -11862,15 +11862,15 @@ msgstr "Symptómy"
 
 #: inc/notificationtargetproject.class.php:51
 msgid "New project"
-msgstr ""
+msgstr "Nový projekt"
 
 #: inc/notificationtargetproject.class.php:52
 msgid "Update of a project"
-msgstr ""
+msgstr "Aktualizovať projekt"
 
 #: inc/notificationtargetproject.class.php:53
 msgid "Deletion of a project"
-msgstr ""
+msgstr "Zmazanie projektu"
 
 #: inc/notificationtargetproject.class.php:65
 #: inc/notificationtargetproject.class.php:571 inc/project.class.php:454
@@ -11982,7 +11982,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:479
 msgctxt "quantity"
 msgid "Number of team members"
-msgstr ""
+msgstr "Počet členov týmu"
 
 #: inc/notificationtargetproject.class.php:662
 #: inc/notificationtargetproject.class.php:665
@@ -11992,9 +11992,9 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:579
 msgid "Team member"
 msgid_plural "Team members"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Člen týmu"
+msgstr[1] "Členovia týmu"
+msgstr[2] "Členovia týmu"
 
 #: inc/notificationtargetproject.class.php:681
 #: inc/notificationtargetprojecttask.class.php:565
@@ -12007,7 +12007,7 @@ msgstr[2] ""
 
 #: inc/notificationtargetprojecttask.class.php:51
 msgid "New project task"
-msgstr ""
+msgstr "Nová projektová úloha"
 
 #: inc/notificationtargetprojecttask.class.php:52
 msgid "Update of a project task"
@@ -12015,7 +12015,7 @@ msgstr ""
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Deletion of a project task"
-msgstr ""
+msgstr "Zmazanie úlohy projektu"
 
 #: inc/notificationtargetprojecttask.class.php:64
 msgid "Project team user"
@@ -12031,9 +12031,9 @@ msgstr ""
 #: inc/projecttask.class.php:342 inc/projecttask.class.php:577
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekt"
+msgstr[1] "Projekty"
+msgstr[2] "Projekty"
 
 #: inc/notificationtargetprojecttask.class.php:476
 #: inc/projecttask.class.php:455
@@ -12852,13 +12852,13 @@ msgstr ""
 #: inc/profile.class.php:1405
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Globálna rozbaľovacia ponuka"
+msgstr[1] "Globálne rozbaľovacie ponuky"
+msgstr[2] "Globálne rozbaľovacie ponuky"
 
 #: inc/profile.class.php:1407
 msgid "Entity dropdowns"
-msgstr ""
+msgstr "Rozbaľovacie ponuky subjektu"
 
 #: inc/profile.class.php:1756 inc/ruleticket.class.php:51
 #: inc/ruleticketcollection.class.php:67
@@ -12914,9 +12914,9 @@ msgstr "%1$s, %2$s"
 #: inc/profile_user.class.php:950
 msgid "Authorization"
 msgid_plural "Authorizations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Autorizácia"
+msgstr[1] "Autorizácie"
+msgstr[2] "Autorizácie"
 
 #: inc/project.class.php:117 inc/projecttask.class.php:148
 msgid "See (actor)"
@@ -13055,13 +13055,13 @@ msgstr ""
 #: inc/projecttask.class.php:63
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projektová úloha"
+msgstr[1] "Projektové úlohy"
+msgstr[2] "Projektové úlohy"
 
 #: inc/projecttask.class.php:149
 msgid "Update (actor)"
-msgstr ""
+msgstr "Aktualizovať (účatník)"
 
 #: inc/projecttask.class.php:629 inc/rssfeed.class.php:400
 msgid "Creator"
@@ -13088,7 +13088,7 @@ msgstr[2] ""
 
 #: inc/projecttask_ticket.class.php:178
 msgid "Create a ticket from this task"
-msgstr ""
+msgstr "Vytvoriť požiadavku z tejto úlohy"
 
 #: inc/queuedmail.class.php:81
 msgctxt "button"
@@ -13199,11 +13199,11 @@ msgstr "Viditeľnosť do"
 
 #: inc/reminder.class.php:421
 msgid "Planning start date"
-msgstr ""
+msgstr "Plánovaný počiatočný dátum"
 
 #: inc/reminder.class.php:426
 msgid "Planning end date"
-msgstr ""
+msgstr "Plánovaný dátum ukončenia"
 
 #: inc/reminder.class.php:543 inc/reminder.class.php:589
 #: inc/rssfeed.class.php:537 inc/ticket.class.php:4325
@@ -13364,7 +13364,7 @@ msgid "Reservable item"
 msgid_plural "Reservable items"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Rezervovateľné položky"
 
 #: inc/reservationitem.class.php:260
 msgid "Make unavailable"
@@ -13380,7 +13380,7 @@ msgstr "Zakázať rezervácie"
 
 #: inc/reservationitem.class.php:272
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr ""
+msgstr "Naozaj chcete vrátiť túto nerezervovateľnú položku?"
 
 #: inc/reservationitem.class.php:273
 msgid "That will remove all the reservations in progress."
@@ -13397,7 +13397,7 @@ msgstr "Upraviť komentár"
 
 #: inc/reservationitem.class.php:355
 msgid "See all reservable items"
-msgstr ""
+msgstr "Zobraziť všetky rezervovateľné položky"
 
 #: inc/reservationitem.class.php:361 inc/reservationitem.class.php:372
 msgid "Find a free item in a specific period"
@@ -14187,7 +14187,7 @@ msgstr ""
 #. TRANS: Indicator to know is all licenses of the software are valids
 #: inc/software.class.php:523
 msgid "Valid licenses"
-msgstr ""
+msgstr "Platné licencie"
 
 #: inc/software.class.php:534
 msgctxt "quantity"
@@ -14234,7 +14234,7 @@ msgstr ""
 #: inc/software.class.php:676 inc/softwarelicense.class.php:284
 msgctxt "adjective"
 msgid "Valid"
-msgstr ""
+msgstr "Platná"
 
 #: inc/software.class.php:950
 msgid "Merge"
@@ -14267,7 +14267,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:403
 msgid "Valid"
-msgstr ""
+msgstr "Platná"
 
 #: inc/softwarelicense.class.php:423
 msgid "Send alarms on expired licenses"
@@ -14419,7 +14419,7 @@ msgstr[2] "Priradené kontrakty"
 
 #: inc/ticket.class.php:148
 msgid "Create ticket"
-msgstr ""
+msgstr "Vytvoriť požiadavku"
 
 #: inc/ticket.class.php:493 inc/ticket.class.php:510
 msgid "Created tickets"
@@ -14581,7 +14581,7 @@ msgstr "Dátum uzatvorenia"
 
 #: inc/ticket.class.php:4052
 msgid "Reopen"
-msgstr ""
+msgstr "Znovu otvoriť"
 
 #: inc/ticket.class.php:4416
 #, php-format
@@ -14737,7 +14737,7 @@ msgstr "Pridaný súbor: %s"
 
 #: inc/ticketfollowup.class.php:324 inc/ticketfollowup.class.php:570
 msgid "If you want to reopen the ticket, you must specify a reason"
-msgstr ""
+msgstr "Ak chceš znovu otvoriť požiadavku, tak musíš špecifikovať dôvod."
 
 #: inc/ticketfollowup.class.php:328
 msgid "If you reject the solution, you must specify a reason"
@@ -14749,7 +14749,7 @@ msgstr "Zdroj poznatku"
 
 #: inc/ticketfollowup.class.php:698
 msgid "Reopen the ticket"
-msgstr ""
+msgstr "Znovu otvoriť požiadavku"
 
 #: inc/ticketfollowup.class.php:710
 msgid "No followup for this ticket."
@@ -14781,7 +14781,7 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:876
 msgid "Add followup (associated groups)"
-msgstr ""
+msgstr "Pridať poznatky (priradené skupinám)"
 
 #: inc/ticketfollowup.class.php:877
 msgid "Add a followup to tickets of associated groups"
@@ -14793,7 +14793,7 @@ msgstr "Aktualizovať poznatky (autor)"
 
 #: inc/ticketfollowup.class.php:879
 msgid "Add followup (requester)"
-msgstr ""
+msgstr "Pridať poznatky (žiadateľ)"
 
 #: inc/ticketfollowup.class.php:880
 msgid "Add a followup to tickets (requester)"
@@ -15089,15 +15089,15 @@ msgstr ""
 
 #: inc/toolbox.class.php:1182
 msgid "Kio"
-msgstr ""
+msgstr "KiB"
 
 #: inc/toolbox.class.php:1182
 msgid "Gio"
-msgstr ""
+msgstr "GiB"
 
 #: inc/toolbox.class.php:1182
 msgid "Tio"
-msgstr ""
+msgstr "TiB"
 
 #: inc/toolbox.class.php:1416 inc/toolbox.class.php:1418
 #: inc/toolbox.class.php:1423 inc/toolbox.class.php:1425
@@ -15158,7 +15158,7 @@ msgstr "TLS"
 #. open.php
 #: inc/toolbox.class.php:2090
 msgid "NO-TLS"
-msgstr ""
+msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -15176,13 +15176,13 @@ msgstr "VALIDATE-CERT"
 #. open.php
 #: inc/toolbox.class.php:2124
 msgid "NORSH"
-msgstr ""
+msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2134
 msgid "SECURE"
-msgstr ""
+msgstr "SECURE"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -15215,7 +15215,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3137
 msgid "If software are no longer used"
-msgstr ""
+msgstr "Ak softvér nieje viac používaný"
 
 #: inc/transfer.class.php:3147
 msgid "Components of computers"
@@ -15247,23 +15247,23 @@ msgstr "Priame spojenia"
 
 #: inc/transfer.class.php:3191
 msgid "If monitors are no longer used"
-msgstr ""
+msgstr "Ak monitory nie sú viac používané"
 
 #: inc/transfer.class.php:3201
 msgid "If printers are no longer used"
-msgstr ""
+msgstr "Ak tlačiarne nie sú viac používané"
 
 #: inc/transfer.class.php:3211
 msgid "If devices are no longer used"
-msgstr ""
+msgstr "Ak zariadenia nie sú viac používané"
 
 #: inc/transfer.class.php:3221
 msgid "If phones are no longer used"
-msgstr ""
+msgstr "Ak telefóny nie sú viac používané"
 
 #: inc/transfer.class.php:3234
 msgid "If suppliers are no longer used"
-msgstr ""
+msgstr "Ak dodávatelia nie sú viac používaný"
 
 #: inc/transfer.class.php:3240
 msgid "Links between suppliers and contacts"
@@ -15271,7 +15271,7 @@ msgstr "Väzby medzi dodávateľmi a kontaktmi"
 
 #: inc/transfer.class.php:3244
 msgid "If contacts are no longer used"
-msgstr ""
+msgstr "Ak kontrakty nie sú viac používané"
 
 #: inc/transfer.class.php:3254
 msgid "If documents are no longer used"
@@ -15329,11 +15329,11 @@ msgstr "Potvrdenie hesla"
 
 #: inc/user.class.php:1878
 msgid "Valid since"
-msgstr ""
+msgstr "Platný od"
 
 #: inc/user.class.php:1884
 msgid "Valid until"
-msgstr ""
+msgstr "Platný do"
 
 #. TRANS: %s is the date of last sync
 #: inc/user.class.php:1902
@@ -15661,11 +15661,11 @@ msgstr "Databáza vytvorená"
 
 #: install/install.php:401
 msgid "Error in creating database!"
-msgstr ""
+msgstr "Chyba pri vytváraní databázy!"
 
 #: install/install.php:408
 msgid "You didn't select a database!"
-msgstr ""
+msgstr "Nezvolili ste databázu!"
 
 #: install/install.php:434
 msgid "The installation is finished"

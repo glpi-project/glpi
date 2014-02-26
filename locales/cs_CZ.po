@@ -5,15 +5,15 @@
 # Translators:
 # marchino.cz <marchino.cz@gmail.com>, 2013
 # marchino.cz <marchino.cz@gmail.com>, 2013-2014
-# tachec <ondra@tachec.org>, 2013
+# tachec <ondra@tachec.org>, 2013-2014
 # tachec <ondra@tachec.org>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-18 22:49+0100\n"
-"PO-Revision-Date: 2014-02-18 21:50+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-02-26 09:11+0000\n"
+"Last-Translator: tachec <ondra@tachec.org>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/GLPI/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9992,7 +9992,7 @@ msgstr[2] "+ %d roků"
 #: inc/html.class.php:3743
 msgctxt "button"
 msgid "Drag and drop or paste image"
-msgstr ""
+msgstr "Přetáhněte a pusťte nebo vložte obrázek"
 
 #: inc/html.class.php:3745
 msgid "Item is too large"
@@ -11881,7 +11881,7 @@ msgstr "Vedoucí skupina"
 
 #: inc/notificationtargetproject.class.php:66
 msgid "Manager of manager group"
-msgstr ""
+msgstr "Správce vedoucí skupiny"
 
 #: inc/notificationtargetproject.class.php:68
 msgid "Manager group except manager users"
@@ -13172,9 +13172,9 @@ msgstr "PCI"
 #: inc/registeredid.class.php:61
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Registrované ID (vydané PCI-SIG)"
+msgstr[1] "Registrované ID (vydané PCI-SIG)"
+msgstr[2] "Registrované ID (vydané PCI-SIG)"
 
 #: inc/reminder.class.php:57
 msgid "Reminder"
@@ -13592,7 +13592,7 @@ msgstr "Vyhodnocený výsledek pravidla se předá následujícímu pravidlu."
 
 #: inc/rulecollection.class.php:376
 msgid "Rules are conditionals. Each one can be used on multiple actions."
-msgstr ""
+msgstr "Pravidla jsou podmiňovací. Každé z nich může být použito ve více akcích."
 
 #: inc/rulecollection.class.php:429
 msgid "Rules used for"
@@ -14653,7 +14653,7 @@ msgstr[2] "Posledních %d požadavků"
 
 #: inc/ticket.class.php:5242
 msgid "You don't have right to see all tickets"
-msgstr ""
+msgstr "Nemáte oprávnění zobrazit všechny požadavky"
 
 #: inc/ticket.class.php:5297
 msgid "Ticket on linked items"
@@ -15499,7 +15499,7 @@ msgstr "Přidat uživatele z externích zdrojů"
 #. TRANS: short for : Read method for user authentication and synchronization
 #: inc/user.class.php:4089
 msgid "Read auth"
-msgstr ""
+msgstr "Načíst autentizaci"
 
 #: inc/user.class.php:4090
 msgid "Read user authentication and synchronization method"
@@ -15509,7 +15509,7 @@ msgstr "Číst metodu ověření a synchronizace  uživatele"
 #. synchronization
 #: inc/user.class.php:4092
 msgid "Update auth and sync"
-msgstr ""
+msgstr "Aktualizace autentizace a synchronizace"
 
 #: inc/user.class.php:4093
 msgid "Update method for user authentication and synchronization"
