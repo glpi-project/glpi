@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# bambr <andrey.kaptelin@gmail.com>, 2014
 # bambr <andrey.kaptelin@gmail.com>, 2013
 # fukcb <fukcb@mail.ru>, 2013
 # Глеб Мехренин <mehrenin@gmail.com>, 2013
@@ -15,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-18 22:49+0100\n"
-"PO-Revision-Date: 2014-02-18 21:50+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-02-26 07:00+0000\n"
+"Last-Translator: bambr <andrey.kaptelin@gmail.com>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/GLPI/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -673,7 +674,7 @@ msgid "Action"
 msgid_plural "Actions"
 msgstr[0] "Действие"
 msgstr[1] "Действия"
-msgstr[2] "Действий"
+msgstr[2] "Действия"
 
 #: ajax/planningcheck.php:49 ajax/planningcheck.php:56 front/planning.php:55
 #: inc/commonitiltask.class.php:1174 inc/commonitiltask.class.php:1181
@@ -1009,7 +1010,7 @@ msgstr "Повторить"
 #: config/config.php:224 inc/plugin.class.php:491 install/install.php:132
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Обновить"
+msgstr "Обновление"
 
 #: config/config.php:230
 msgid ""
@@ -1658,7 +1659,7 @@ msgid "Component"
 msgid_plural "Components"
 msgstr[0] "Компонент"
 msgstr[1] "Компоненты"
-msgstr[2] "Компонентов"
+msgstr[2] "Компоненты"
 
 #: front/dictionnary.php:39 inc/html.class.php:1155 inc/profile.class.php:100
 #: inc/profile.class.php:1327 inc/profile.class.php:1752
@@ -2885,7 +2886,7 @@ msgstr "Открыто"
 #: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
 #: inc/ticket.class.php:2463
 msgid "Solved"
-msgstr "Решена"
+msgstr "Pешена"
 
 #: front/stat.global.php:94 front/stat.graph.php:339
 #: inc/commonitilobject.class.php:2461 inc/stat.class.php:441
@@ -2910,11 +2911,11 @@ msgstr "Закрыто"
 #: front/stat.global.php:146 front/stat.graph.php:387
 #: inc/commonitilobject.class.php:4070 inc/stat.class.php:474
 msgid "Resolution"
-msgstr "Решение"
+msgstr "Pешение"
 
 #: front/stat.global.php:147 front/stat.graph.php:388
 msgid "Real duration"
-msgstr "Реальная продолжительность"
+msgstr "Pеальная продолжительность"
 
 #: front/stat.global.php:151 front/stat.graph.php:392
 #: inc/commonitilobject.class.php:4059 inc/stat.class.php:472
@@ -4070,7 +4071,7 @@ msgstr "Просмотр обновленных пользователей"
 #: inc/authldap.class.php:3019 inc/networkport.class.php:817
 #: inc/software.class.php:319
 msgid "from"
-msgstr "Отправитель"
+msgstr "с"
 
 #: inc/authldap.class.php:3026 inc/networkport.class.php:819
 msgid "to"
@@ -4999,7 +5000,7 @@ msgstr "Не закрыты"
 #: inc/change.class.php:468
 msgctxt "change"
 msgid "Solved + Closed"
-msgstr "Решено + Закрыто"
+msgstr "Закрыто + Решено"
 
 #: inc/change.class.php:614 inc/commonitilobject.class.php:2431
 #: inc/commonitilobject.class.php:4039
@@ -5948,9 +5949,9 @@ msgstr "Время ожидания"
 #: inc/ruleticket.class.php:370 inc/ruleticket.class.php:466
 msgid "Requester group"
 msgid_plural "Requester groups"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] "Группа заказчика"
+msgstr[0] "Группа заказчика"
+msgstr[1] "Группы заказчика"
+msgstr[2] "Группы заказчика"
 
 #: inc/commonitilobject.class.php:2656 inc/commonitilobject.class.php:2839
 #: inc/notificationtargetcommonitilobject.class.php:424
@@ -6172,7 +6173,7 @@ msgstr "К исполнению"
 
 #: inc/commonitiltask.class.php:998
 msgid "Planned"
-msgstr ""
+msgstr "Запланировано"
 
 #: inc/commonitiltask.class.php:1004 inc/planning.class.php:164
 #: inc/planning.class.php:180
@@ -6267,7 +6268,7 @@ msgstr "Общее состояние для проверок"
 #: inc/commonitilvalidation.class.php:743
 #: inc/commonitilvalidation.class.php:1043 inc/ruleticket.class.php:550
 msgid "Minimum validation required"
-msgstr "Требуется минимальная проервка"
+msgstr "Требуется минимальная проверка"
 
 #: inc/commonitilvalidation.class.php:784 inc/ruleticket.class.php:537
 #: inc/ruleticket.class.php:543 inc/ruleticket.class.php:549
@@ -8317,8 +8318,8 @@ msgstr "оптимизировать"
 msgid "Case"
 msgid_plural "Cases"
 msgstr[0] "Корпус"
-msgstr[1] "Корпусы"
-msgstr[2] "Корпусы"
+msgstr[1] "Корпуса"
+msgstr[2] "Корпуса"
 
 #: inc/devicecasetype.class.php:44 inc/dropdown.class.php:754
 msgid "Case type"
@@ -8442,11 +8443,11 @@ msgstr "Частота по умолчанию"
 
 #: inc/deviceprocessor.class.php:58 inc/deviceprocessor.class.php:85
 msgid "Number of cores"
-msgstr ""
+msgstr "Количество ядер"
 
 #: inc/deviceprocessor.class.php:61 inc/deviceprocessor.class.php:90
 msgid "Number of threads"
-msgstr ""
+msgstr "Количество потоков"
 
 #: inc/displaypreference.class.php:294
 msgid "No personal criteria. Create personal parameters?"
@@ -10583,15 +10584,15 @@ msgstr "Кодовый номер"
 
 #: inc/location.class.php:64 inc/location.class.php:136
 msgid "Longitude"
-msgstr ""
+msgstr "Долгота"
 
 #: inc/location.class.php:68 inc/location.class.php:142
 msgid "Latitude"
-msgstr ""
+msgstr "Широта"
 
 #: inc/location.class.php:72 inc/location.class.php:148
 msgid "Altitude"
-msgstr ""
+msgstr "Высота"
 
 #: inc/location.class.php:107
 msgid "Location comments"
@@ -11085,7 +11086,7 @@ msgstr "HDMI"
 
 #: inc/monitor.class.php:322 inc/monitor.class.php:509
 msgid "DisplayPort"
-msgstr "Порт дисплея"
+msgstr "DisplayPort"
 
 #: inc/netpoint.class.php:94
 #, php-format
@@ -12613,7 +12614,7 @@ msgstr "Не закрыты"
 #: inc/problem.class.php:498
 msgctxt "problem"
 msgid "Solved + Closed"
-msgstr "Решено + Закрыто"
+msgstr "Закрыто + Решено"
 
 #: inc/problem.class.php:670 inc/problem.class.php:720
 msgid "Problems on pending status"
@@ -13175,9 +13176,9 @@ msgstr "PCI"
 #: inc/registeredid.class.php:61
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Зарегистрированный ID (выданный PCI-SIG)"
+msgstr[1] "Зарегистрированные ID (выданные PCI-SIG)"
+msgstr[2] "Зарегистрированные ID (выданные PCI-SIG)"
 
 #: inc/reminder.class.php:57
 msgid "Reminder"
@@ -14046,7 +14047,7 @@ msgstr "Актуальность или влияние использованы 
 
 #: inc/ruleticket.class.php:346
 msgid "Requester in group"
-msgstr ""
+msgstr "Группа заказчика"
 
 #: inc/ruleticket.class.php:358
 msgid "Item location"
@@ -14182,7 +14183,7 @@ msgstr "Объединение"
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:317 install/update.php:865
 msgid "Upgrade"
-msgstr "Обновить"
+msgstr "Обновление"
 
 #: inc/software.class.php:347
 msgid "Recalculate the category"
@@ -14513,7 +14514,7 @@ msgstr "Не закрыты"
 
 #: inc/ticket.class.php:2470
 msgid "Solved + Closed"
-msgstr "Решено + Закрыто"
+msgstr "Закрыто + Решено"
 
 #: inc/ticket.class.php:2675
 msgid "Devices own by my groups"
