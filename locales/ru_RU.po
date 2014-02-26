@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-18 22:49+0100\n"
-"PO-Revision-Date: 2014-02-26 07:00+0000\n"
+"PO-Revision-Date: 2014-02-26 10:21+0000\n"
 "Last-Translator: bambr <andrey.kaptelin@gmail.com>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/GLPI/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
@@ -7198,7 +7198,7 @@ msgstr "Сохранять устройства при удалении объе
 
 #: inc/config.class.php:965
 msgid "Go to created item after creation"
-msgstr ""
+msgstr "Перейти к созданному объекту после создания"
 
 #: inc/config.class.php:976
 msgid "Private followups by default"
@@ -7636,7 +7636,7 @@ msgstr "Город"
 #: inc/supplier.class.php:182 inc/supplier.class.php:257
 msgctxt "location"
 msgid "State"
-msgstr "Состояние"
+msgstr "Область"
 
 #: inc/contact.class.php:218 inc/contact.class.php:346
 #: inc/entity.class.php:507 inc/entity.class.php:1058
@@ -8731,8 +8731,8 @@ msgstr "Может быть регулярное выражение"
 msgid "Document type"
 msgid_plural "Document types"
 msgstr[0] "Тип документа"
-msgstr[1] "Типа документов"
-msgstr[2] "Типов документов"
+msgstr[1] "Типы документов"
+msgstr[2] "Типы документов"
 
 #: inc/documenttype.class.php:154 inc/documenttype.class.php:155
 #: inc/html.class.php:1325 inc/html.class.php:1326 inc/html.class.php:1911
