@@ -560,28 +560,6 @@ td { }
 }
 
 
-.tab_check {
-   text-align:center;
-   margin: 20px;
-   margin-left: auto;
-   margin-right: auto;
-   width: 90%;
-   border: 1px solid #aaaaaa;
-   padding:10px;
-}
-
-.tab_check th {
-   font-size: 12px;
-   font-weight: bold;
-   color: #fccc6f;
-   vertical-align:bottom;
-}
-
-.tab_check td {
-   font-size:11px;
-   border-bottom:1px solid #bbbbbb;
-}
-
 
 .tab_format {
    padding: 0px;
