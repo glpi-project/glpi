@@ -238,14 +238,19 @@ class CronTask extends CommonDBTM{
       $result = $DB->query($query);
 
       if ($DB->affected_rows($result) > 0) {
-         // No gettext for log
+         // No gettext for log but add gettext line to be parsed for pot generation
          if ($retcode < 0) {
+            $content = __('Action completed, partially processed');
             $content = 'Action completed, partially processed';
+            
          } else if ($retcode > 0) {
+            $content = __('Action completed, fully processed');
             $content = 'Action completed, fully processed';
          } else {
             $content = 'Action completed, no processing required';
+            $content = __('Action completed, no processing required');
          }
+         
          $log = new CronTaskLog();
          $log->add(array('crontasks_id'    => $this->fields['id'],
                          'date'            => $_SESSION['glpi_currenttime'],
