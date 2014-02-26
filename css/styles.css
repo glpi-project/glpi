@@ -499,7 +499,7 @@ td { }
    vertical-align: middle;	
 }
 
-.tab_cadrehov, .tab_cadrehov_pointer {
+.tab_cadrehov {
    margin: 0 auto;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
@@ -527,7 +527,7 @@ td { }
    width:90%;
 }
 
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th, .tab_cadre_report th {
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadre_report th {
    font-size: 12px;
    font-weight: bold;
    background-color: #E1D39E;
@@ -541,7 +541,7 @@ td { }
    padding: 2px;*/
 }
 
-.tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td, .tab_cadrehov_pointer td, 
+.tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td,
 .tab_cadre_report td {
    padding: 3px 5px;
 }
@@ -550,14 +550,9 @@ td { }
 /*    background-color: #FFF4DF; */
 /*  } */
 
-.tab_cadrehov_pointer tr:hover {
-   cursor: pointer;
-/*    background-color: #FFF4DF; */
-}
 
 /* Table Hover Effects */
 .tab_cadrehov th.headHover,
-.tab_cadrehov_pointer th.headHover, 
 .tab_cadre_fixehov th.headHover{
    background-color:#ddd;
 /*   opacity: 0.5;
@@ -565,7 +560,6 @@ td { }
 }
 
 .tab_cadrehov td.columnHover,
-.tab_cadrehov_pointer td.columnHover,
 .tab_cadre_fixehov td.columnHover{
    background-color:#ddd;
 /*   opacity: 0.5;
@@ -573,7 +567,6 @@ td { }
 }
 
 .tab_cadrehov tr.rowHover, 
-.tab_cadrehov_pointer tr.rowHover,
 .tab_cadre_fixehov tr.rowHover{
    background-color:#e7e7e2;
 /*   opacity: 0.5;
@@ -601,11 +594,6 @@ td { }
 .tab_check td {
    font-size:11px;
    border-bottom:1px solid #bbbbbb;
-}
-
-/* Ajout pour IE */
-.tab_cadrehov_pointer tr {
-   cursor: pointer;
 }
 
 
