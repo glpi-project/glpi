@@ -699,7 +699,7 @@ class Project extends CommonDBTM {
 
    static function checkPlanAndRealDates($input) {
 
-      if (isset($input['plan_start_date'])
+      if (isset($input['plan_start_date']) && !empty($input['plan_start_date'])
           && isset($input['plan_end_date']) && !empty($input['plan_end_date'])
           && (($input['plan_end_date'] < $input['plan_start_date'])
               || empty($input['plan_start_date']))) {
@@ -708,7 +708,7 @@ class Project extends CommonDBTM {
          unset($input['plan_start_date']);
          unset($input['plan_end_date']);
       }
-      if (isset($input['real_start_date'])
+      if (isset($input['real_start_date']) && !empty($input['real_start_date'])
           && isset($input['real_end_date']) && !empty($input['real_end_date'])
           && (($input['real_end_date'] < $input['real_start_date'])
               || empty($input['real_start_date']))) {
@@ -1150,7 +1150,6 @@ class Project extends CommonDBTM {
             }
          }
 
-         /// TODO : manage null real_begin / real_end. Do not add and add warning
          // Add current project
          $todisplay[$real_begin.'#'.$real_end.'#project'.$project->getID()]
                       = array('name'     => $project->fields['name'],
@@ -1204,57 +1203,68 @@ class Project extends CommonDBTM {
          ksort($todisplay);
       }
 
+      $data = array();
+      $invalid = array();
       if (count($todisplay)) {
 
          // Prepare for display
-         $data = array();
          foreach ($todisplay as $key => $val) {
-            $temp  = array();
-            $color = 'ganttRed';
-            if ($val['percent'] > 50) {
-               $color = 'ganttOrange';
-            }
-            if ($val['percent'] == 100) {
-               $color = 'ganttGreen';
-            }
-            switch ($val['type']) {
-               case 'project' :
-                  $temp = array('name'   => $val['link'],
-                                'desc'   => '',
-                                'values' => array(array('from'
-                                                         => "/Date(".strtotime($val['from'])."000)/",
-                                                        'to'
-                                                         => "/Date(".strtotime($val['to'])."000)/",
-                                                        'desc'
-                                                         => $val['desc'],
-                                                        'label'
-                                                         => $val['link'],
-                                                        'customClass'
-                                                         => $color))
-                               );
-                  break;
+            if (!empty($val['from']) && !empty($val['to'])) {
+               $temp  = array();
+               $color = 'ganttRed';
+               if ($val['percent'] > 50) {
+                  $color = 'ganttOrange';
+               }
+               if ($val['percent'] == 100) {
+                  $color = 'ganttGreen';
+               }
+               switch ($val['type']) {
+                  case 'project' :
+                     $temp = array('name'   => $val['link'],
+                                 'desc'   => '',
+                                 'values' => array(array('from'
+                                                            => "/Date(".strtotime($val['from'])."000)/",
+                                                         'to'
+                                                            => "/Date(".strtotime($val['to'])."000)/",
+                                                         'desc'
+                                                            => $val['desc'],
+                                                         'label'
+                                                            => $val['link'],
+                                                         'customClass'
+                                                            => $color))
+                                 );
+                     break;
 
-               case 'task' :
-                  $temp = array('name'   => ' ',
-                                'desc'   => $val['link'],
-                                'values' => array(array('from'
-                                                         => "/Date(".strtotime($val['from'])."000)/",
-                                                        'to'
-                                                         => "/Date(".strtotime($val['to'])."000)/",
-                                                        'desc'
-                                                         => $val['desc'],
-                                                        'label'
-                                                         => $val['link'],
-                                                        'customClass'
-                                                         => $color))
-                               );
-                  break;
-            }
-
+                  case 'task' :
+                     $temp = array('name'   => ' ',
+                                 'desc'   => $val['link'],
+                                 'values' => array(array('from'
+                                                            => "/Date(".strtotime($val['from'])."000)/",
+                                                         'to'
+                                                            => "/Date(".strtotime($val['to'])."000)/",
+                                                         'desc'
+                                                            => $val['desc'],
+                                                         'label'
+                                                            => $val['link'],
+                                                         'customClass'
+                                                            => $color))
+                                 );
+                     break;
+               }
             $data[] = $temp;
+            } else {
+               $invalid[] = $val['link'];
+            }
          }
 //       Html::printCleanArray($data);
+      }
 
+      if (count($invalid)) {
+         echo sprintf(__('Invalid items (no start or end date): %s'), implode(',',$invalid));
+         echo "<br><br>";
+      }
+      
+      if (count($data)) {
 //       exit();
          $months = array(__('January'), __('February'), __('March'), __('April'), __('May'),
                          __('June'), __('July'), __('August'), __('September'),
