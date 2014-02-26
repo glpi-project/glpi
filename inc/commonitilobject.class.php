@@ -4954,46 +4954,41 @@ abstract class CommonITILObject extends CommonDBTM {
 
          //tenth column
          $tenth_column = '';
+         $planned_infos = '';
 
          $tasktype = $item->getType()."Task";
          $plan         = new $tasktype();
          $items        = array();
+
          foreach ($DB->request($plan->getTable(),
                                array($item->getForeignKeyField() => $item->fields['id'])) as $plan) {
-            $i                  = $plan['id'];
-            $items[$i]['begin'] = $plan['begin'];
-            $items[$i]['end']   = $plan['end'];
 
-            if (isset($items[$i]['begin']) && $items[$i]['begin']) {
-
-               foreach ($DB->request("glpi_users",
-                                     array('id' => $plan['users_id_tech'])) as $user) {
-                  $j                      = $user['id'];
-                  $items[$j]['realname']  = $user['realname'];
-                  $items[$j]['firstname'] = $user['firstname'];
-                  if (($items[$j]['realname'] == '')
-                      && ($items[$j]['firstname'] == '')) {
-                     $name[$j] = $user['name'];
-                  } else {
-                     $name[$j] =  $items[$j]['realname']." ". $items[$j]['firstname'];
-                  }
+            if (isset($plan['begin']) && $plan['begin']) {
+               $items[$plan['id']] = $plan['id'];
+               $planned_infos .= sprintf(__('From %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                          Html::convDateTime($plan['begin']));
+               $planned_infos .= sprintf(__('To %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                          Html::convDateTime($plan['end']));
+               if ($plan['users_id_tech']) {
+                  $planned_infos .= sprintf(__('By %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                             getUserName($plan['users_id_tech']));
                }
-
-               if ($i) {
-                  $tenth_column .= sprintf(__('From %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
-                                           Html::convDateTime($items[$i]['begin']));
-                  $tenth_column .= sprintf(__('To %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
-                                           Html::convDateTime($items[$i]['end']));
-                  if (isset($j)) {
-                     $tenth_column .= sprintf(__('By %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
-                                              $name[$j]);
-                  }
-                  $tenth_column .= "<br>";
-               }
+               $planned_infos .= "<br>";
             }
 
          }
          unset($i, $j);
+
+         $tenth_column = count($items);
+         if ($tenth_column) {
+            $tenth_column = "<span class='pointer'
+                              id='".$item->getType().$item->fields["id"]."planning$rand'>".$tenth_column.'</span>';            
+            $tenth_column = sprintf(__('%1$s %2$s'), $tenth_column,
+                                    Html::showToolTip($planned_infos,
+                                                      array('display' => false,
+                                                            'applyto' => $item->getType().$item->fields["id"].
+                                                                           "planning".$rand)));
+         }
          echo Search::showItem($p['output_type'], $tenth_column, $item_num, $p['row_num'],
                                $align_desc." width='150'");
 
