@@ -611,14 +611,6 @@ td { }
    background-color: #f2f2f2;
 }
 
-.tab_find {
-   background-color: #ccccc7;
-}
-
-.tab_find:hover {
-   background-color:#FFF2C2;
-   cursor:pointer;
-}
 
 .tab_resa {
    border:1px dashed #cccccc;
