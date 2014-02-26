@@ -179,7 +179,8 @@ class CronTask extends CommonDBTM{
          $this->timer  = microtime(true);
          $this->volume = 0;
          $log = new CronTaskLog();
-         $txt = sprintf(__('%1$s: %2$s'), __('Run mode'),
+         // No gettext for log
+         $txt = sprintf('%1$s: %2$s', 'Run mode',
                         $this->getModeName(isCommandLine() ? self::MODE_EXTERNAL
                                                            : self::MODE_INTERNAL));
 
@@ -237,12 +238,13 @@ class CronTask extends CommonDBTM{
       $result = $DB->query($query);
 
       if ($DB->affected_rows($result) > 0) {
+         // No gettext for log
          if ($retcode < 0) {
-            $content = __('Action completed, partially processed');
+            $content = 'Action completed, partially processed';
          } else if ($retcode > 0) {
-            $content = __('Action completed, fully processed');
+            $content = 'Action completed, fully processed';
          } else {
-            $content = __('Action completed, no processing required');
+            $content = 'Action completed, no processing required';
          }
          $log = new CronTaskLog();
          $log->add(array('crontasks_id'    => $this->fields['id'],
@@ -1046,7 +1048,8 @@ class CronTask extends CommonDBTM{
                                                  number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;&nbsp;</td>";
                echo "<td class='numeric'>".$data['volume']."</td>";
-               echo "<td>".$data['content']."</td>";
+               // Use gettext to display
+               echo "<td>".__($data['content'])."</td>";
                echo "</tr>\n";
             } while ($data = $DB->fetch_assoc($result));
             echo $header;
@@ -1097,26 +1100,38 @@ class CronTask extends CommonDBTM{
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>".($first ? Html::convDateTime($data['date'])
                                                   : "&nbsp;")."</a></td>";
-
+               $content = $data['content'];
                switch ($data['state']) {
                   case CronTaskLog::STATE_START :
                      echo "<td>".__('Start')."</td>";
+                     // Pass content to gettext
+                     // implode (Run mode: XXX)
+                     $list = explode(':',$data['content']);
+                     if (count($list)==2) {
+                        $content = sprintf('%1$s: %2$s', __($list[0]), $list[1]);
+                     }
                      break;
 
                   case CronTaskLog::STATE_STOP :
                      echo "<td>".__('End')."</td>";
+                     // Pass content to gettext
+                     $content = __($data['content']);
                      break;
 
                   default :
                      echo "<td>".__('Running')."</td>";
+                     // Pass content to gettext
+                     $content = __($data['content']);
                }
+               
 
                echo "<td class='right'>".sprintf(_n('%s second', '%s seconds',
                                                     intval($data['elapsed'])),
                                                  number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;</td>";
                echo "<td class='numeric'>".$data['volume']."</td>";
-               echo "<td>".$data['content']."</td>";
+               
+               echo "<td>".$content."</td>";
                echo "</tr>\n";
                $first = false;
             } while ($data = $DB->fetch_assoc($result));
