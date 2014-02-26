@@ -79,7 +79,7 @@ class RuleImportEntity extends Rule {
                      }
                      if ($res != null) {
                         //Get the entity associated with the TAG
-                        $target_entity = Entity::getEntityIDByTag($res);
+                        $target_entity = Entity::getEntityIDByTag(addslashes($res));
                         if ($target_entity != '') {
                            $output["entities_id"] = $target_entity;
                         }
