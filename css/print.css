@@ -328,7 +328,7 @@ td { }
    width:95%;
 }
 
-.tab_cadrehov, .tab_cadrehov_pointer {
+.tab_cadrehov {
    margin: 0 auto;
    -moz-border-radius: 4px;
    border: 1px solid #cccccc;
@@ -349,7 +349,7 @@ td { }
    width:95%;
 }
 
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th , 
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, 
 .tab_cadre_report th {
    font-size: 11px;
    font-weight: bold;
@@ -359,7 +359,7 @@ td { }
    border-bottom:1px solid #cccccc;
 }
 
-.tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td, .tab_cadrehov_pointer td , 
+.tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td, 
 .tab_cadre_report td {
    padding-left: 5px;
 }
@@ -367,18 +367,6 @@ td { }
 .tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover {
    background-color: #FFF4DF;
 }
-
-.tab_cadrehov_pointer tr:hover {
-   cursor: pointer;
-   background-color: #FFF4DF;
-}
-
-
-/* Ajout pour IE */
-.tab_cadrehov_pointer tr {
-   cursor: pointer;
-}
-
 
 .tab_bg_1 {
    background-color: #f2f2f2;
