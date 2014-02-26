@@ -1257,7 +1257,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "</script>";
 
             echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
-            echo "<span class='showplan'>".__('Plan this task')."</span>";
+            echo "<span class='vsubmit'>".__('Plan this task')."</span>";
             echo "</div>\n";
             echo "<div id='viewplan'></div>\n";
 
