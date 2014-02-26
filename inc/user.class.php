@@ -1968,6 +1968,11 @@ class User extends CommonDBTM {
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>"._n('Authorization','Authorizations',1)."</th>";
+         echo "<td>" .  __('Recursive') . "</td><td>";
+         Dropdown::showYesNo("_is_recursive",0);
+         echo "</td></tr>";
+         echo "<tr class='tab_bg_1'>";
          echo "<td>" .  __('Profile') . "</td><td>";
          Profile::dropdownUnder(array('name'  => '_profiles_id',
                                       'value' => Profile::getDefault()));
