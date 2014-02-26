@@ -47,5 +47,5 @@ $display = false;
 
 $ra = new RuleAction();
 
-$ra->displayActionSelectPattern($_POST);
+$ra->displayActionSelectPattern(Toolbox::stripslashes_deep($_POST));
 ?>
