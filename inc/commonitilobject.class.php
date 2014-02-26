@@ -1637,23 +1637,23 @@ abstract class CommonITILObject extends CommonDBTM {
       $values = array();
 
       if ($p['showtype'] == 'search') {
-         $values[0]  = _x('priority', 'All');
-         $values[-5] = _x('priority', 'At least very high');
-         $values[-4] = _x('priority', 'At least high');
-         $values[-3] = _x('priority', 'At least medium');
-         $values[-2] = _x('priority', 'At least low');
-         $values[-1] = _x('priority', 'At least very low');
+         $values[0]  = static::getPriorityName(0);
+         $values[-5] = static::getPriorityName(-5);
+         $values[-4] = static::getPriorityName(-4);
+         $values[-3] = static::getPriorityName(-3);
+         $values[-2] = static::getPriorityName(-2);
+         $values[-1] = static::getPriorityName(-1);
       }
 
       if (($p['showtype'] == 'search')
           || $p['withmajor']) {
-         $values[6] = _x('priority', 'Major');
+         $values[6] = static::getPriorityName(5);
      }
-      $values[5] = _x('priority', 'Very high');
-      $values[4] = _x('priority', 'High');
-      $values[3] = _x('priority', 'Medium');
-      $values[2] = _x('priority', 'Low');
-      $values[1] = _x('priority', 'Very low');
+      $values[5] = static::getPriorityName(5);
+      $values[4] = static::getPriorityName(4);
+      $values[3] = static::getPriorityName(3);
+      $values[2] = static::getPriorityName(2);
+      $values[1] = static::getPriorityName(1);
 
 
       return Dropdown::showFromArray($p['name'],$values, $p);
@@ -1686,7 +1686,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 1 :
             return _x('priority', 'Very low');
-
+            
+         // Non standard one :
+         case 0 :
+            return _x('priority', 'All');
+         case -1 :
+            return _x('priority', 'At least very low');
+         case -2 :
+            return _x('priority', 'At least low');
+         case -3 :
+            return _x('priority', 'At least medium');
+         case -4 :
+            return _x('priority', 'At least high');
+         case -5 :
+            return _x('priority', 'At least very high');
+            
          default :
             // Return $value if not define
             return $value;
@@ -1725,35 +1739,35 @@ abstract class CommonITILObject extends CommonDBTM {
       $values = array();
 
       if ($p['showtype'] == 'search') {
-         $values[0]  = _x('urgency', 'All');
-         $values[-5] = _x('urgency', 'At least very high');
-         $values[-4] = _x('urgency','At least high');
-         $values[-3] = _x('urgency','At least medium');
-         $values[-2] = _x('urgency','At least low');
-         $values[-1] = _x('urgency', 'At least very low');
+         $values[0]  = static::getUrgencyName(0);
+         $values[-5] = static::getUrgencyName(-1);
+         $values[-4] = static::getUrgencyName(-4);
+         $values[-3] = static::getUrgencyName(-3);
+         $values[-2] = static::getUrgencyName(-2);
+         $values[-1] = static::getUrgencyName(-1);
       }
 
       if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<5))) {
-            $values[5]  = _x('urgency', 'Very high');
+            $values[5]  = static::getUrgencyName(5);
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<4))) {
-            $values[4]  = _x('urgency', 'High');
+            $values[4]  = static::getUrgencyName(4);
          }
 
-         $values[3]  = _x('urgency', 'Medium');
+         $values[3]  = static::getUrgencyName(3);
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<2))) {
-            $values[2]  = _x('urgency', 'Low');
+            $values[2]  = static::getUrgencyName(2);
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
-            $values[1]  = _x('urgency', 'Very low');
+            $values[1]  = static::getUrgencyName(1);
          }
       }
 
@@ -1784,6 +1798,20 @@ abstract class CommonITILObject extends CommonDBTM {
          case 1 :
             return _x('urgency', 'Very low');
 
+         // Non standard one :
+         case 0 :
+            return _x('urgency', 'All');
+         case -1 :
+            return _x('urgency', 'At least very low');
+         case -2 :
+            return _x('urgency', 'At least low');
+         case -3 :
+            return _x('urgency', 'At least medium');
+         case -4 :
+            return _x('urgency', 'At least high');
+         case -5 :
+            return _x('urgency', 'At least very high');
+         
          default :
             // Return $value if not define
             return $value;
@@ -1823,35 +1851,35 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       if ($p['showtype'] == 'search') {
-         $values[0]  = _x('impact', 'All');
-         $values[-5] = _x('impact', 'At least very high');
-         $values[-4] = _x('impact', 'At least high');
-         $values[-3] = _x('impact', 'At least medium');
-         $values[-2] = _x('impact', 'At least low');
-         $values[-1] = _x('impact', 'At least very low');
+         $values[0]  = static::getImpactName(0);
+         $values[-5] = static::getImpactName(-5);
+         $values[-4] = static::getImpactName(-4);
+         $values[-3] = static::getImpactName(-3);
+         $values[-2] = static::getImpactName(-2);
+         $values[-1] = static::getImpactName(-1);
       }
 
       if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<5))) {
-            $values[5]  = _x('impact', 'Very high');
+            $values[5]  = static::getImpactName(5);
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<4))) {
-            $values[4]  = _x('impact', 'High');
+            $values[4]  = static::getImpactName(4);
          }
 
-         $values[3]  = _x('impact', 'Medium');
+         $values[3]  = static::getImpactName(3);
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<2))) {
-            $values[2]  = _x('impact', 'Low');
+            $values[2]  = static::getImpactName(2);
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<1))) {
-            $values[1]  = _x('impact', 'Very low');
+            $values[1]  = static::getImpactName(1);
          }
       }
 
@@ -1882,6 +1910,20 @@ abstract class CommonITILObject extends CommonDBTM {
          case 1 :
             return _x('impact', 'Very low');
 
+         // Non standard one :
+         case 0 :
+            return _x('impact', 'All');
+         case -1 :
+            return _x('impact', 'At least very low');
+         case -2 :
+            return _x('impact', 'At least low');
+         case -3 :
+            return _x('impact', 'At least medium');
+         case -4 :
+            return _x('impact', 'At least high');
+         case -5 :
+            return _x('impact', 'At least very high');
+            
          default :
             // Return $value if not define
             return $value;
