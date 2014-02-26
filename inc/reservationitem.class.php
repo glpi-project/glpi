@@ -435,7 +435,7 @@ class ReservationItem extends CommonDBChild {
       // GET method passed to form creation
       echo "<div id='nosearch' class='center'>";
       echo "<form name='form' method='GET' action='reservation.form.php'>";
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='".($showentity?"5":"4")."'>".self::getTypeName(1)."</th></tr>\n";
 
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
