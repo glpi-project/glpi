@@ -574,7 +574,7 @@ class Budget extends CommonDropdown{
 
       $colspan = count($found_types)+2;
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
+      echo "<tr class='noHover'><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
       echo "<tr><th>".__('Entity')."</th>";
       if (count($found_types)) {
          foreach ($found_types as $type => $typename) {
@@ -618,7 +618,7 @@ class Budget extends CommonDropdown{
          echo "<td class='numeric b'>".Html::formatNumber($total)."</td>";
          echo "</tr>";
       }
-      echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
+      echo "<tr class='tab_bg_1 noHover'><th colspan='$colspan'><br></th></tr>";
       echo "<tr class='tab_bg_1 noHover'>";
       echo "<td class='right' colspan='".($colspan-1)."'>".__('Total spent on the budget')."</td>";
       echo "<td class='numeric b'>".Html::formatNumber($total)."</td></tr>";
