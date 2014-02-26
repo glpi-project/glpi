@@ -1438,6 +1438,7 @@ class Search {
                   $titlecontain = " ".$criteria['link']." ";
                }
                $gdname = '';
+               $valuename = '';
                switch ($criteria['field']) {
                   case "all" :
                      $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('All'));
@@ -1452,11 +1453,21 @@ class Search {
                      $titlecontain
                         = sprintf(__('%1$s %2$s'), $titlecontain,
                                     $searchopt[$criteria['field']]["name"]);
+                     $itemtype = getItemTypeForTable($searchopt[$criteria['field']]
+                                                                        ["table"]);
+                     $valuename = '';
+                     if ($item = getItemForItemtype($itemtype)) {
+                        $valuename = $item->getValueToDisplay($searchopt[$criteria['field']], $criteria['value']);
+                     }
+
                      $gdname = Dropdown::getDropdownName($searchopt[$criteria['field']]
                                                                      ["table"],
                                                          $criteria['value']);
                }
 
+               if (empty($valuename)) {
+                  $valuename = $criteria['value'];
+               }
                switch ($criteria['searchtype']) {
                   case "equals" :
                      if (in_array($searchopt[$criteria['field']]["field"],
@@ -1465,7 +1476,7 @@ class Search {
                                                 $gdname);
                      } else {
                         $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                                $criteria['value']);
+                                                $valuename);
                      }
                      break;
 
@@ -1476,23 +1487,23 @@ class Search {
                                                 $gdname);
                      } else {
                         $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
-                                                $criteria['value']);
+                                                $valuename);
                      }
                      break;
 
                   case "lessthan" :
                      $titlecontain = sprintf(__('%1$s < %2$s'), $titlecontain,
-                                             $criteria['value']);
+                                             $valuename);
                      break;
 
                   case "morethan" :
                      $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain,
-                                             $criteria['value']);
+                                             $valuename);
                      break;
 
                   case "contains" :
                      $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                             '%'.$criteria['value'].'%');
+                                             '%'.$valuename.'%');
                      break;
 
                   case "under" :
@@ -1509,7 +1520,7 @@ class Search {
 
                   default :
                      $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                             $criteria['value']);
+                                             $valuename);
                      break;
                }
             }
