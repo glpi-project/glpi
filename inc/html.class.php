@@ -3739,6 +3739,7 @@ class Html {
       $params = array('name'     => $name,
                       'root_doc' => $CFG_GLPI['root_doc'],
                       'rand'     => $rand,
+                      'showfilesize' => 1,
 //                      'maxsize'  => 500,
                       'lang'     => array('pasteimage'   => _sx('button', 'Drag and drop or paste image'),
                                           'itemnotfound' => __('Item not found'),
