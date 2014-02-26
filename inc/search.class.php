@@ -4212,7 +4212,10 @@ class Search {
                return $out;
 
             case 'glpi_ticketsatisfactions.satisfaction' :
-               return TicketSatisfaction::displaySatisfaction($data[$num][0]['name']);
+               if (self::$output_type == self::HTML_OUTPUT) {
+                  return TicketSatisfaction::displaySatisfaction($data[$num][0]['name']);
+               }
+               break;
 
             case 'glpi_cartridgeitems._virtual' :
                return Cartridge::getCount($data["id"], $data[$num][0]['alarm_threshold'],
