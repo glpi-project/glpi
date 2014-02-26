@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-12 07:11+0000\n"
+"PO-Revision-Date: 2014-02-25 21:50+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/GLPI/language/et_EE/)\n"
 "MIME-Version: 1.0\n"
@@ -4455,7 +4455,7 @@ msgstr ""
 #: inc/central.class.php:169
 #, php-format
 msgid "For security reasons, please remove file: %s"
-msgstr ""
+msgstr "Palun kustutage turvalisuse eesmärgil fail: %s"
 
 #: inc/central.class.php:179 inc/central.class.php:180 inc/html.class.php:2391
 msgid "MySQL replica: read only"
@@ -7354,7 +7354,7 @@ msgstr "Kiirus"
 
 #: inc/devicegraphiccard.class.php:50 inc/devicegraphiccard.class.php:65
 msgid "Memory by default"
-msgstr ""
+msgstr "Mälu vaikimisi"
 
 #: inc/deviceharddrive.class.php:42
 msgid "Hard drive"
@@ -9349,7 +9349,7 @@ msgstr "Vabasta"
 
 #: inc/lock.class.php:310
 msgid "No locked item"
-msgstr ""
+msgstr "Lukustatud väljasid pole"
 
 #: inc/lock.class.php:393
 msgid "Unlock monitors"
@@ -10202,7 +10202,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:409
 msgid "Requester group manager"
-msgstr ""
+msgstr "Nõudja grupi haldur"
 
 #: inc/notificationtargetcommonitilobject.class.php:411
 msgid "Requester group without manager"
@@ -10219,7 +10219,7 @@ msgstr "Vara kasutaja"
 
 #: inc/notificationtargetcommonitilobject.class.php:423
 msgid "Watcher group manager"
-msgstr ""
+msgstr "Ülevaataja grupi haldur"
 
 #: inc/notificationtargetcommonitilobject.class.php:425
 msgid "Watcher group without manager"
@@ -12710,7 +12710,7 @@ msgstr "Seotud asja tüüp"
 
 #: inc/ticket.class.php:2116
 msgid "Creation date"
-msgstr ""
+msgstr "Loomisaeg"
 
 #: inc/ticket.class.php:2123
 msgid "Response date"

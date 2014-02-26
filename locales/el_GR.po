@@ -4,14 +4,14 @@
 # 
 # Translators:
 # gtsamis <gtsamis@yahoo.com>, 2013
-# el_EL <stergios.vradelis@dramahospital.gr>, 2013
+# el_EL <stergios.vradelis@dramahospital.gr>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-12 07:11+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-02-21 08:00+0000\n"
+"Last-Translator: el_EL <stergios.vradelis@dramahospital.gr>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/GLPI/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2085,7 +2085,7 @@ msgstr "%s προσθέτει έναν χρήστη στην οντότητα"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
-msgstr "Λίστα υλικού που είναι σε συμβόλαιο"
+msgstr "Λίστα υλικού που είναι σε σύμβαση"
 
 #: front/report.contract.list.php:115 front/report.infocom.php:121
 #: front/report.year.list.php:127 inc/authldap.class.php:403
@@ -4223,7 +4223,7 @@ msgstr[1] "%d εκτυπωμένες σελίδες"
 
 #: inc/cartridge.class.php:615
 msgid "Counter error"
-msgstr ""
+msgstr "Σφάλμα μετρητή"
 
 #: inc/cartridge.class.php:630 inc/cartridge.class.php:861
 msgid "Average time in stock"
@@ -4921,7 +4921,7 @@ msgstr ""
 #: inc/commondbtm.class.php:3456
 msgctxt "button"
 msgid "Add a contract"
-msgstr "Προσθήκη Συμβολαίου"
+msgstr "Προσθήκη Σύμβασης"
 
 #: inc/commondbtm.class.php:3457
 msgctxt "button"
@@ -6106,11 +6106,11 @@ msgstr "Χρήση του σκλάβου σαν μηχανή αναζήτηση�
 
 #: inc/config.class.php:543
 msgid "If synced (all changes)"
-msgstr ""
+msgstr "Εαν συγχρονιστεί(όλες οι αλλαγές)"
 
 #: inc/config.class.php:544
 msgid "If synced (current user changes)"
-msgstr ""
+msgstr "Εαν συγχρονιστεί(αλλαγές τρέχοντα χρήστη)"
 
 #: inc/config.class.php:545
 msgid "If synced or read-only account"
@@ -6118,7 +6118,7 @@ msgstr ""
 
 #: inc/config.class.php:546
 msgid "Always"
-msgstr ""
+msgstr "Πάντα"
 
 #: inc/config.class.php:583 inc/config.class.php:846 inc/config.class.php:1446
 #: inc/dropdown.class.php:671 inc/entity.class.php:304 inc/event.class.php:124
@@ -6759,7 +6759,7 @@ msgstr "Αριθμός λογαριασμού"
 
 #: inc/contract.class.php:227
 msgid "Contract renewal period"
-msgstr "Περίοδος Συμβολαίου"
+msgstr "Περίοδος ανανέωσης σύμβασης"
 
 #: inc/contract.class.php:236 inc/contract.class.php:441
 #: inc/contract.class.php:616
@@ -6803,7 +6803,7 @@ msgstr ""
 
 #: inc/contract.class.php:350
 msgid "Contract number"
-msgstr ""
+msgstr "Αριθμός σύμβασης"
 
 #: inc/contract.class.php:377 inc/contract.class.php:601
 #: inc/notificationtargetcontract.class.php:46
@@ -6884,19 +6884,19 @@ msgstr "Ληγμένες συμβάσεις τις τελευταίες 30 ημ�
 
 #: inc/contract.class.php:862
 msgid "Contracts expiring in less than 7 days"
-msgstr "Συμβάσεις που λήγουν κάτω από 7 ημέρες"
+msgstr "Συμβάσεις που λήγουν σε λιγότερο από 7 ημέρες"
 
 #: inc/contract.class.php:869
 msgid "Contracts expiring in less than 30 days"
-msgstr "Συμβάσεις που λήγουν κάτω από 30 ημέρες"
+msgstr "Συμβάσεις που λήγουν σε λιγότερο από 30 ημέρες"
 
 #: inc/contract.class.php:876
 msgid "Contracts where notice begins in less than 7 days"
-msgstr "Συμβάσεις όπου η ειδοποίηση ξεκινάει κάτω από 7 ημέρες"
+msgstr "Συμβάσεις που η ειδοποίηση ξεκινάει σε λιγότερο από 7 ημέρες"
 
 #: inc/contract.class.php:883
 msgid "Contracts where notice begins in less than 30 days"
-msgstr "Συμβάσεις όπου η ειδοποίηση ξεκινάει κάτω από 30 ημέρες"
+msgstr "Συμβάσεις που η ειδοποίηση ξεκινάει σε λιγότερο από 30 ημέρες"
 
 #: inc/contract.class.php:912
 msgid "Send alarms on contracts"
@@ -6904,23 +6904,23 @@ msgstr "Στείλε συναγερμούς για συμβάσεις"
 
 #: inc/contract.class.php:992
 msgid "Contract entered in notice time"
-msgstr ""
+msgstr "Εισαγωγή σύμβασης στον χρόνο ειδοποίησης"
 
 #: inc/contract.class.php:997
 msgid "Contract ended"
-msgstr ""
+msgstr "Η σύμβαση έληξε"
 
 #: inc/contract.class.php:1069
 msgid "Contract entered in notice time for period"
-msgstr ""
+msgstr "Εισαγωγή σύμβασης στον χρόνο ειδοποίησης για την περίοδο"
 
 #: inc/contract.class.php:1073
 msgid "Contract period ended"
-msgstr ""
+msgstr "Η περίοδος σύμβασης έληξε"
 
 #: inc/contract.class.php:1115
 msgid "send contract alert failed"
-msgstr ""
+msgstr "Αποστολή συναγερμού σύμβασης απέτυχε"
 
 #: inc/contract.class.php:1255 inc/contract.class.php:1276
 #: inc/contract.class.php:1296
@@ -6951,8 +6951,8 @@ msgstr ""
 #: inc/contract_item.class.php:88
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "Σύνδεσμος Συμβολαίου/Στοιχείου"
-msgstr[1] "Σύνδεσμοι Συμβολαίου/Στοιχείου"
+msgstr[0] "Σύνδεσμος Σύμβασης/Στοιχείου"
+msgstr[1] "Σύνδεσμοι Σύμβασης/Στοιχείου"
 
 #: inc/contract_item.class.php:154
 msgid "Associated item ID"
@@ -7037,7 +7037,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:724
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Απαιτούνται συνήθως κατ'ελάχιστο 64 Mio για το GLPI."
 
 #: inc/crontask.class.php:729
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -7045,11 +7045,11 @@ msgstr "Καμία εργασία σε λειτουργία εκτέλεσης =
 
 #: inc/crontask.class.php:735
 msgid "External"
-msgstr ""
+msgstr "Εξωτερικός"
 
 #: inc/crontask.class.php:736
 msgid "Internal"
-msgstr ""
+msgstr "Εσωτερικός"
 
 #. TRANS: %1$s is mode (external or internal), %2$s is an order number,
 #: inc/crontask.class.php:750 inc/crontask.class.php:758
@@ -7061,24 +7061,24 @@ msgstr ""
 
 #: inc/crontask.class.php:753
 msgid "Launch"
-msgstr ""
+msgstr "Εκκίνησε"
 
 #: inc/crontask.class.php:761 inc/crontask.class.php:775
 msgid "Can't start"
-msgstr ""
+msgstr "Δεν εκκινεί"
 
 #: inc/crontask.class.php:770 inc/crontask.class.php:777
 #, php-format
 msgid "Undefined function %s (for cron)"
-msgstr ""
+msgstr "Μη ορισμένη λειτουργία %s (για τον cron)"
 
 #: inc/crontask.class.php:783
 msgid "Nothing to launch"
-msgstr ""
+msgstr "Τίποτα για εκκίνηση"
 
 #: inc/crontask.class.php:791
 msgid "Can't get DB lock"
-msgstr ""
+msgstr "Αδυναμία κλειδώματος DB"
 
 #: inc/crontask.class.php:886
 msgid "Run count"
@@ -7089,16 +7089,16 @@ msgstr "Μετρητής εκτελέσεων"
 #, php-format
 msgid "%s start"
 msgid_plural "%s starts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s εκκινεί"
+msgstr[1] "%s εκκινούν"
 
 #. TRANS: %s is the number of stops
 #: inc/crontask.class.php:895
 #, php-format
 msgid "%s stop"
 msgid_plural "%s stops"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s σταματά"
+msgstr[1] "%s σταματούν"
 
 #: inc/crontask.class.php:918
 msgid "Minimal time"
@@ -7112,8 +7112,8 @@ msgstr "Κατώτατος χρόνος"
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s δευτερόλεπτο"
+msgstr[1] "%s δευτερόλεπτα"
 
 #: inc/crontask.class.php:923
 msgid "Maximal time"
@@ -7184,15 +7184,15 @@ msgstr ""
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Καθαρισμός %1$d αρχείου συνεδρίας δημιουργημένου πριν από τουλάχιστον %2$s δευτερόλεπτα"
+msgstr[1] "Καθαρισμός %1$d αρχείων συνεδρίας δημιουργημένων πριν από τουλάχιστον %2$s δευτερόλεπτα"
 
 #: inc/crontask.class.php:1353
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Καθαρισμός %1$d αρχείου γραφήματος δημιουργημένου πριν από τουλάχιστον %2$s δευτερόλεπτα"
+msgstr[1] "Καθαρισμός %1$d αρχείων γραφήματος δημιουργημένων πριν από τουλάχιστον %2$s δευτερόλεπτα"
 
 #: inc/crontask.class.php:1461
 msgid "Check for new updates"
@@ -7281,7 +7281,7 @@ msgstr "Διακομιστής Mysql:%s δεν μπορεί να συνδεθε�
 #: inc/dbconnection.class.php:385
 #, php-format
 msgid "Mysql server: %1$s, difference between master and slave: %2$s"
-msgstr ""
+msgstr "Διακομιστής Mysql: %1$s, διαφορά μεταξύ πρωτεύοντος και ακολούθου: %2$s"
 
 #: inc/dbconnection.class.php:423
 msgid "can't connect to the database"
@@ -7304,7 +7304,7 @@ msgstr "Βελτιστοποίηση πινάκων"
 #: inc/dbmysql.class.php:564 inc/dbmysql.class.php:578
 #: inc/dbmysql.class.php:590
 msgid "optimize"
-msgstr ""
+msgstr "βελτιστοποίησε"
 
 #: inc/devicecase.class.php:42
 msgid "Case"
@@ -7410,8 +7410,8 @@ msgstr "Ροή"
 #: inc/devicepci.class.php:42
 msgid "Other component"
 msgid_plural "Other components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Άλλο εξάρτημα"
+msgstr[1] "Άλλα εξαρτήματα"
 
 #: inc/devicepowersupply.class.php:50 inc/devicepowersupply.class.php:64
 msgid "ATX"
@@ -7514,11 +7514,11 @@ msgstr "Τύπος MIME"
 
 #: inc/document.class.php:363 inc/document.class.php:877
 msgid "Checksum"
-msgstr ""
+msgstr "Checksum"
 
 #: inc/document.class.php:363 inc/document.class.php:877
 msgid "SHA1"
-msgstr ""
+msgstr "SHA1"
 
 #. TRANS: %s is a size
 #: inc/document.class.php:383
@@ -7642,7 +7642,7 @@ msgstr "Εικόνα"
 
 #: inc/documenttype.class.php:47 inc/documenttype.class.php:91
 msgid "Authorized upload"
-msgstr ""
+msgstr "Εξουσιοδοτημένη φόρτωση"
 
 #: inc/documenttype.class.php:50 inc/documenttype.class.php:75
 msgid "Extension"
@@ -7650,7 +7650,7 @@ msgstr "Προέκταση"
 
 #: inc/documenttype.class.php:52
 msgid "May be a regular expression"
-msgstr ""
+msgstr "Ίσως είναι regular expression"
 
 #: inc/documenttype.class.php:60 inc/dropdown.class.php:725
 #: inc/profile.class.php:1372 inc/profile.class.php:1595
@@ -9804,7 +9804,7 @@ msgstr ""
 #: inc/networkport.class.php:427 inc/networkport.class.php:433
 #: inc/networkport.class.php:580 inc/networkport.class.php:581
 msgid "Internet information"
-msgstr ""
+msgstr "Πληροφορίες διαδικτύου"
 
 #: inc/networkport.class.php:431
 msgid "Common options"
@@ -13141,7 +13141,7 @@ msgstr "Πρέπει να εγκαταστήσετε κατ'ελαχιστο τ�
 
 #: inc/toolbox.class.php:814
 msgid "MySQL Improved extension test"
-msgstr ""
+msgstr "Δοκιμή"
 
 #: inc/toolbox.class.php:817 inc/toolbox.class.php:818
 msgid "Ok - the MySQLi class exist - Perfect!"

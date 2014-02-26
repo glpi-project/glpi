@@ -5,14 +5,15 @@
 # Translators:
 # Ted Jansen  <info@jansented.nl>, 2014
 # iwan4 <i_van_de_weijer@hotmail.com>, 2013
+# kzpm <keesepema@linuxmail.org>, 2014
 # royjanssen1 <royjanssen1@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-12 07:11+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-02-24 11:47+0000\n"
+"Last-Translator: kzpm <keesepema@linuxmail.org>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/GLPI/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -151,14 +152,14 @@ msgstr "%1$s - %2$s"
 #: ajax/dropdownConnectNetworkPort.php:96
 #, php-format
 msgid "%1$s - The port %2$s"
-msgstr ""
+msgstr "%1$s - Poort %2$s"
 
 #. TRANS: %1$s is a string (device name - port name...), %2$s is network
 #. outlet name
 #: ajax/dropdownConnectNetworkPort.php:103
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr ""
+msgstr "%1$s - Netwerk oulet %2$s"
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -456,12 +457,12 @@ msgstr "Toevoegen"
 #: ajax/dropdownShowIPNetwork.php:55
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr ""
+msgstr "IP netwerk %1$s%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:56
 #, php-format
 msgid "First/last addresses: %1$s/%2$s"
-msgstr ""
+msgstr "Eerste/laatste adres:%1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:59
 #, php-format
@@ -547,7 +548,7 @@ msgstr "Kies een einddatum"
 #: inc/commonitiltask.class.php:1085 inc/reminder.class.php:778
 msgctxt "Planning"
 msgid "Reminder"
-msgstr ""
+msgstr "Herinnering"
 
 #: ajax/private_public.php:52 inc/bookmark.class.php:106
 msgid "Personal"
@@ -617,7 +618,7 @@ msgstr ""
 
 #: ajax/searchoptionvalue.php:81
 msgid "My groups"
-msgstr ""
+msgstr "Mijn groepen"
 
 #: ajax/subvisibility.php:52
 msgid "No restriction"
@@ -824,7 +825,7 @@ msgstr "Onderhoud"
 
 #: front/backup.php:125
 msgid "ERROR:"
-msgstr ""
+msgstr "FOUT:"
 
 #: front/backup.php:242 inc/document.class.php:935
 #, php-format
@@ -1013,7 +1014,7 @@ msgstr "%1$s voegt het item %2$s toe"
 #: front/supplier.form.php:59 front/ticket.form.php:90 front/user.form.php:75
 #, php-format
 msgid "%s deletes an item"
-msgstr ""
+msgstr "%s verwijdert een item"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:74 front/cartridgeitem.form.php:69
@@ -1027,7 +1028,7 @@ msgstr ""
 #: front/supplier.form.php:67 front/ticket.form.php:109 front/user.form.php:83
 #, php-format
 msgid "%s restores an item"
-msgstr ""
+msgstr "%s zet een item terug"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:84 front/cartridgeitem.form.php:79
@@ -1051,7 +1052,7 @@ msgstr ""
 #: front/ticket.form.php:100 front/transfer.form.php:58 front/user.form.php:90
 #, php-format
 msgid "%s purges an item"
-msgstr ""
+msgstr "%s verwijdert een item"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:94 front/cartridgeitem.form.php:89
@@ -1076,7 +1077,7 @@ msgstr ""
 #: front/user.form.php:107
 #, php-format
 msgid "%s updates an item"
-msgstr ""
+msgstr "%s actualiseert een item"
 
 #: front/budget.form.php:110 front/dropdown.common.form.php:125
 #: front/group.form.php:76 front/ldap.group.import.php:74
@@ -1266,17 +1267,17 @@ msgstr ""
 #: front/cron.php:43
 #, php-format
 msgid "ERROR: %s is not writable"
-msgstr ""
+msgstr "FOUT: %s is niet beschrijfbaar"
 
 #: front/cron.php:44
 msgid "run script as apache user"
-msgstr ""
+msgstr "voer script uit als 'apache' gebruiker"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:50
 #, php-format
 msgid "Task %s executed"
-msgstr ""
+msgstr "Taak %s uitgevoerd"
 
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
 #. between ()
@@ -1668,7 +1669,7 @@ msgstr "Verkeerde bestandsnaam"
 #: front/dropdown.common.form.php:96
 #, php-format
 msgid "%s replaces an item"
-msgstr ""
+msgstr "%s vervangt een item"
 
 #: front/dropdown.common.form.php:116 front/massiveaction.php:157
 #: inc/profile_user.class.php:93 inc/transfer.class.php:3317
@@ -1938,7 +1939,7 @@ msgstr "Operatie mislukt"
 #: front/massiveaction.php:142 front/massiveaction.php:148
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d authorisatie problemen, %2$d fouten)"
 
 #: front/massiveaction.php:147
 msgid "Operation performed partially successful"
@@ -1980,7 +1981,7 @@ msgstr "%s stelt eenheidsmanagement in"
 #: front/networkname.form.php:43 front/networkport.form.php:63
 #, php-format
 msgid "%s adds an item"
-msgstr ""
+msgstr "%s voegt een item toe"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:90
@@ -2385,7 +2386,7 @@ msgstr "Vereenvoudigde weergave"
 #: front/reservationitem.form.php:48
 #, php-format
 msgid "%1$s adds the item %2$s (%3$d)"
-msgstr ""
+msgstr "%1$s voegt het item %2$s (%3$d)"
 
 #: front/rule.common.php:74
 msgid "Replay the rules dictionary"
@@ -2499,49 +2500,49 @@ msgstr "Sjablonen beheren ..."
 #: front/slalevel.form.php:46
 #, php-format
 msgid "%s updates a sla level"
-msgstr ""
+msgstr "%s actualiseert een sla niveau"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:68
 #, php-format
 msgid "%s deletes a sla level"
-msgstr ""
+msgstr "%s verwijdert een sla niveau"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:52
 #, php-format
 msgid "%1$s adds the license %2$s"
-msgstr ""
+msgstr "%1$s voegt de licensie %2$s toe"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:61
 #, php-format
 msgid "%1$s deletes the license %2$s"
-msgstr ""
+msgstr "%1$s verwijdert licentie %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:70
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr ""
+msgstr "%1$s actualiseert licentie %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:53
 #, php-format
 msgid "%1$s adds the version %2$s"
-msgstr ""
+msgstr "%1$s voegt versie %2$s toe"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:65
 #, php-format
 msgid "%1$s deletes the version %2$s"
-msgstr ""
+msgstr "%1$s verwijdert versie %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:74
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr ""
+msgstr "%1$s actualiseert versie %2$s"
 
 #: front/stat.global.php:36 front/stat.graph.php:36 front/stat.item.php:36
 #: front/stat.location.php:36 front/stat.php:36 front/stat.tracking.php:36
@@ -2987,19 +2988,19 @@ msgstr "%s voegt een acteur toe"
 #: front/tickettemplatehiddenfield.form.php:46
 #, php-format
 msgid "%s adds hidden field"
-msgstr ""
+msgstr "%s voegt een verborgen veld toe"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatemandatoryfield.form.php:46
 #, php-format
 msgid "%s adds mandatory field"
-msgstr ""
+msgstr "%s voegt een verplicht veld toe"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatepredefinedfield.form.php:47
 #, php-format
 msgid "%s adds predefined field"
-msgstr ""
+msgstr "%s voegt een voorgedefinieerd veld toe"
 
 #. TRANS: %s is the user login
 #: front/ticket_ticket.form.php:48
@@ -5410,7 +5411,7 @@ msgstr "%1$s (#%2$d)"
 #: inc/commonitiltask.class.php:802 inc/reminder.class.php:999
 #, php-format
 msgid "Recall on %s"
-msgstr ""
+msgstr "%s ingetrokken"
 
 #: inc/commonitiltask.class.php:900 inc/commonitiltask.class.php:1076
 #: inc/dbconnection.class.php:428 inc/group_user.class.php:173
@@ -6939,11 +6940,11 @@ msgstr "Stoppen + Opzeggen"
 
 #: inc/contract.class.php:1348
 msgid "Period end"
-msgstr ""
+msgstr "Einde periode"
 
 #: inc/contract.class.php:1349
 msgid "Period end + Notice"
-msgstr ""
+msgstr "Einde periode en opmerking"
 
 #: inc/contractcost.class.php:287 inc/ticketcost.class.php:363
 msgid "Add a new cost"
@@ -8514,7 +8515,7 @@ msgstr ""
 
 #: inc/group_user.class.php:456
 msgid "Change group"
-msgstr ""
+msgstr "Wijzig groep"
 
 #. TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
 #. %4$d number of seconds
@@ -8601,7 +8602,7 @@ msgstr[1] "Rapporten"
 
 #: inc/html.class.php:1388 inc/networkportmigration.class.php:49
 msgid "Network port migration"
-msgstr ""
+msgstr "Netwerk poort migratie"
 
 #: inc/html.class.php:1706
 msgid "Peripheral type"
@@ -9447,7 +9448,7 @@ msgstr ""
 #: inc/log.class.php:381 inc/ticket.class.php:4016
 #, php-format
 msgid "%1$s by %2$s"
-msgstr ""
+msgstr "%1$s door %2$s"
 
 #: inc/log.class.php:391
 msgid "Delete the component"
@@ -9787,12 +9788,12 @@ msgstr "Geen netwerk naam gevonden"
 
 #: inc/networkportaggregate.class.php:46
 msgid "Aggregation port"
-msgstr ""
+msgstr "combinatiepoort"
 
 #: inc/networkportaggregate.class.php:95 inc/networkportalias.class.php:93
 #: inc/networkportinstantiation.class.php:621
 msgid "Origin port"
-msgstr ""
+msgstr "Bron poort"
 
 #: inc/networkportalias.class.php:45
 msgid "Alias port"
@@ -9826,7 +9827,7 @@ msgstr "%1$s: %2$d"
 
 #: inc/networkport.class.php:592 inc/networkport.class.php:681
 msgid "Network ports waiting for manual migration"
-msgstr ""
+msgstr "Netwerk poorten, die nog handmatig moeten worden aangepast"
 
 #: inc/networkport.class.php:767
 msgid "No network port found"
@@ -9973,17 +9974,17 @@ msgstr "Ongeldig netwerk (Reeds gedefinieerd of met ongeldige adressen)"
 
 #: inc/networkportmigration.class.php:122
 msgid "Gateway not include inside the network"
-msgstr ""
+msgstr "Gateway maakt geen deel uit van het netwerk"
 
 #: inc/networkportmigration.class.php:204
 #: inc/networkportmigration.class.php:332
 msgid "Transform this network port to"
-msgstr ""
+msgstr "Vorm deze netwoorkpoort om naar"
 
 #: inc/networkportmigration.class.php:218
 #, php-format
 msgid "Network port information conflicting with %s"
-msgstr ""
+msgstr "Informatie over netwerkpoorten, die conflicteren met %s"
 
 #: inc/networkportmigration.class.php:221
 msgid "Invalid address or netmask"
@@ -10012,7 +10013,7 @@ msgstr ""
 
 #: inc/networkportmigration.class.php:253
 msgid "Add a correct IP to the network port"
-msgstr ""
+msgstr "Voer een correct IP adres voor de netwerkpoort in "
 
 #: inc/networkportmigration.class.php:255
 msgid "Unknown network port"
@@ -10033,7 +10034,7 @@ msgstr "Op alle gebeurtenissen"
 
 #: inc/networkportmigration.class.php:278
 msgid "Original network port information"
-msgstr ""
+msgstr "Informatie van de bron netwerkpoort"
 
 #: inc/networkportmigration.class.php:290
 #: inc/networkportmigration.class.php:441
@@ -10309,7 +10310,7 @@ msgstr "Vervaldatum contract"
 
 #: inc/notificationtargetcontract.class.php:47
 msgid "Periodicity notice"
-msgstr ""
+msgstr "Periodieke herinnering"
 
 #: inc/notificationtargetcontract.class.php:63
 msgid "Contracts alarm"
@@ -10327,11 +10328,11 @@ msgstr "Contract opgezegd sinds"
 
 #: inc/notificationtargetcontract.class.php:133
 msgid "Contract reached the end of a period since the"
-msgstr ""
+msgstr "Het periodecontract is geeindigd per "
 
 #: inc/notificationtargetcontract.class.php:138
 msgid "Contract with notice for the current period since the"
-msgstr ""
+msgstr "Contract met een herinnering voor de huideige periode sinds"
 
 #: inc/notificationtargetcrontask.class.php:104
 msgid ""
@@ -10378,7 +10379,7 @@ msgstr "Vervaldatum"
 
 #: inc/notificationtargetplanningrecall.class.php:43
 msgid "Planning recall"
-msgstr ""
+msgstr "Herroepen van de planning"
 
 #: inc/notificationtargetproblem.class.php:51
 msgid "New problem"
@@ -10514,7 +10515,7 @@ msgstr "Een validatie aanvraag werd ingediend door %s"
 #: inc/notificationtargetticket.class.php:490
 #, php-format
 msgid "An answer to an an approval request was produced by %s"
-msgstr ""
+msgstr "Een reactie op uw goedkeuringsverzoek werd ingediend door %s"
 
 #: inc/notificationtargetticket.class.php:614
 #: inc/notificationtargetticket.class.php:652 inc/ticket.class.php:2387
@@ -10842,7 +10843,7 @@ msgstr[1] "%d weken"
 
 #: inc/planningrecall.class.php:332
 msgid "Send planning recalls"
-msgstr ""
+msgstr "Stuur herinneringen voor de planning"
 
 #: inc/plugin.class.php:326
 msgid "Plugins list"
@@ -12370,7 +12371,7 @@ msgstr ""
 
 #: inc/search.class.php:1550 inc/search.class.php:1552
 msgid "Show the dustbin"
-msgstr ""
+msgstr "Toon de prullenbak"
 
 #: inc/search.class.php:1550 inc/search.class.php:1552
 msgid "Don't show deleted items"
@@ -12392,7 +12393,7 @@ msgstr "U heeft de rechten niet om te verbinden"
 msgid ""
 "You don't have access to this application because your account was "
 "deactivated or removed"
-msgstr ""
+msgstr "U heeft geen toegang tot deze toepassing, omdat uw account verwijderd is of buiten werking is gesteld"
 
 #: inc/session.class.php:353 inc/session.class.php:356
 msgid "tree structure"
@@ -12435,7 +12436,7 @@ msgstr "Uitvoering"
 
 #: inc/slalevel.class.php:213
 msgid "Automatic reminders of SLA"
-msgstr ""
+msgstr "Automatische SLA herinneringen"
 
 #: inc/slalevel.class.php:338
 #, php-format
@@ -12530,7 +12531,7 @@ msgstr "Stuur alarm over vervallen licenties"
 #: inc/softwarelicense.class.php:408
 #, php-format
 msgid "License %1$s expired on %2$s"
-msgstr ""
+msgstr "Licentie %1$s verliep op %2$s"
 
 #: inc/softwarelicense.class.php:442
 msgid "Send licenses alert failed"
@@ -12685,7 +12686,7 @@ msgstr "Onbekend ticket"
 #: inc/ticket.class.php:841 inc/ticket.class.php:1445
 #, php-format
 msgid "%1$s updates the item %2$s"
-msgstr ""
+msgstr "%1$s actualiseert het item %2$s"
 
 #: inc/ticket.class.php:1715 inc/ticketfollowup.class.php:630
 msgid "Add a new followup"
@@ -12727,7 +12728,7 @@ msgstr "Houd rekening met tijd"
 
 #: inc/ticket.class.php:2238
 msgid "All linked tickets"
-msgstr ""
+msgstr "Alle verbonden tickets"
 
 #: inc/ticket.class.php:2245
 msgid "Duplicated tickets"
@@ -12845,7 +12846,7 @@ msgstr "Uw af te sluiten Incident-tickets"
 
 #: inc/ticket.class.php:4791 inc/ticket.class.php:4852
 msgid "Tickets on pending status"
-msgstr ""
+msgstr "Tickets met de status \"In behandeling\""
 
 #: inc/ticket.class.php:4805 inc/ticket.class.php:4868
 msgid "Tickets to be processed"
@@ -12908,7 +12909,7 @@ msgstr[1] "Incident-tickets met betrekking tot verwante elementen"
 #: inc/ticket.class.php:5475
 #, php-format
 msgid "Put on hold on %s"
-msgstr ""
+msgstr "Zet in de wacht op %s"
 
 #: inc/ticket.class.php:5638 inc/ticket.class.php:5736
 msgid "No ticket in progress."
@@ -12972,7 +12973,7 @@ msgstr "Voorlopige creatie"
 #: inc/ticketrecurrent.class.php:289
 #, php-format
 msgid "Next creation on %s"
-msgstr ""
+msgstr "Volgende productie op %s"
 
 #: inc/ticketrecurrent.class.php:329
 msgid "Invalid frequency. It must be greater than the preliminary creation."
@@ -12982,12 +12983,12 @@ msgstr "Ongeldige frequentie. Het moet groter zijn dan de voorlopige creatie."
 #: inc/ticketrecurrent.class.php:418
 #, php-format
 msgid "Failed to create recurrent ticket %s"
-msgstr ""
+msgstr "Niet geslaagd om een terugkerend %s aan te maken"
 
 #: inc/ticketrecurrent.class.php:473
 #, php-format
 msgid "Ticket %d successfully created"
-msgstr ""
+msgstr "Ticket %d succesvol aangemaakt"
 
 #: inc/ticketrecurrent.class.php:476
 msgid "Ticket creation failed (check mandatory fields)"
@@ -13142,7 +13143,7 @@ msgstr "U moet minimaal PHP 5.3.0 installeren"
 
 #: inc/toolbox.class.php:814
 msgid "MySQL Improved extension test"
-msgstr ""
+msgstr "Test"
 
 #: inc/toolbox.class.php:817 inc/toolbox.class.php:818
 msgid "Ok - the MySQLi class exist - Perfect!"
@@ -13456,27 +13457,27 @@ msgstr ""
 
 #: inc/transfer.class.php:3111
 msgid "Components of computers"
-msgstr ""
+msgstr "Computer componenten"
 
 #: inc/transfer.class.php:3117
 msgid "Links between printers and cartridge types and cartridges"
-msgstr ""
+msgstr "Verbindingen tussen printers, cartridge types en cartridges"
 
 #: inc/transfer.class.php:3122
 msgid "If the cartridge types are no longer used"
-msgstr ""
+msgstr "Als de cartridges niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3128
 msgid "Links between cartridge types and cartridges"
-msgstr ""
+msgstr "Verbindingen tussen cartridge types en cartridges"
 
 #: inc/transfer.class.php:3138
 msgid "Links between consumable types and consumables"
-msgstr ""
+msgstr "Verbindingen tussen types verbruiksartikelen en verbuiksartikelen"
 
 #: inc/transfer.class.php:3142
 msgid "Links between computers and volumes"
-msgstr ""
+msgstr "Relaties tussen computers en opslagcapaciteit"
 
 #: inc/transfer.class.php:3148
 msgid "Direct connections"
@@ -13504,7 +13505,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3204
 msgid "Links between suppliers and contacts"
-msgstr ""
+msgstr "Relaties tussen leveranciers en contacten"
 
 #: inc/transfer.class.php:3208
 msgid "If contacts are no longer used"
@@ -13564,7 +13565,7 @@ msgstr "Password bevestiging"
 #: inc/user.class.php:1716
 #, php-format
 msgid "Last synchronization on %s"
-msgstr ""
+msgstr "Laatste synchronisatie op %s"
 
 #: inc/user.class.php:1721 inc/user.class.php:2452 inc/user.class.php:3546
 msgid "User DN"
@@ -13577,7 +13578,7 @@ msgstr "Standaard entiteit"
 #: inc/user.class.php:1821
 #, php-format
 msgid "Last login on %s"
-msgstr ""
+msgstr "Laatste inlog op %s"
 
 #: inc/user.class.php:2066
 msgid "Use GLPI in mode"
@@ -13606,11 +13607,11 @@ msgstr "Laatste ingelogd"
 
 #: inc/user.class.php:2408
 msgid "LDAP directory for authentication"
-msgstr ""
+msgstr "LDAP authenticatie directory"
 
 #: inc/user.class.php:2416
 msgid "Email server for authentication"
-msgstr ""
+msgstr "Email authenticatie server "
 
 #: inc/user.class.php:2464
 msgid "Last synchronization"
@@ -13618,11 +13619,11 @@ msgstr "Laatste synchronisatie"
 
 #: inc/user.class.php:2502
 msgid "Number of tickets as requester"
-msgstr ""
+msgstr "Aantal tickets als indiener"
 
 #: inc/user.class.php:2519
 msgid "Number of written tickets"
-msgstr ""
+msgstr "Aantal geschreven tickets"
 
 #: inc/user.class.php:2944
 msgid "Automatically add a user of an external source"
@@ -13760,7 +13761,7 @@ msgstr "Kies 'Installeren' voor een nieuwe complete installatie van GLPI."
 #: install/install.php:124
 msgid ""
 "Select 'Upgrade' to update your version of GLPI from an earlier version"
-msgstr ""
+msgstr "Selecteer \"Opwaarderen\" om uw GLPI versie naar de meest recente versie op te waarderen."
 
 #: install/install.php:144
 msgid ""
@@ -13887,7 +13888,7 @@ msgstr "Start van de installatie"
 #: install/install.php:576 install/install.php:588
 #, php-format
 msgid "Step %d"
-msgstr ""
+msgstr "Stap %d"
 
 #: install/update_05_051.php:78
 msgid "Commercial"

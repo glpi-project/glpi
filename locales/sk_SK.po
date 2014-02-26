@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# balucha <balucha@horizon.sk>, 2013
+# balucha <balucha@horizon.sk>, 2013-2014
 # balucha <balucha@horizon.sk>, 2012
 # mhh <marian.hvolka@stuba.sk>, 2013
 msgid ""
@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-12 07:11+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-02-24 21:10+0000\n"
+"Last-Translator: balucha <balucha@horizon.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -619,7 +619,7 @@ msgstr "Každý mesiac, ten istý deň v týždni"
 
 #: ajax/searchoptionvalue.php:81
 msgid "My groups"
-msgstr ""
+msgstr "Moje skupiny"
 
 #: ajax/subvisibility.php:52
 msgid "No restriction"
@@ -879,7 +879,7 @@ msgstr "Zmazané"
 
 #: front/backup.php:576 front/backup.php:580
 msgid "Backup the database?"
-msgstr ""
+msgstr "Zálohovať databázu?"
 
 #: front/backup.php:578
 msgid "SQL Dump"
@@ -1149,7 +1149,7 @@ msgstr "%s zmazal účastníka"
 #: front/ticket.form.php:136 front/ticket.form.php:151
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr ""
+msgstr "Boli ste presmerovaný pretože už viacej nemáte prístup k tejto položke"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:56
@@ -2057,7 +2057,7 @@ msgstr ""
 #: front/pluginimage.send.php:53
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr ""
+msgstr "%s sa pokúša použiť neštandardnú cestu."
 
 #: front/plugin.php:56
 #, php-format
@@ -8559,7 +8559,7 @@ msgstr "Úplne špecifikované meno domény. Použite klasickú konvenciu (jedno
 
 #: inc/fqdn.class.php:87
 msgid "FQDN must not be empty"
-msgstr ""
+msgstr "FQDN nesmie byť prázdne"
 
 #: inc/fqdn.class.php:96
 msgid "FQDN is not valid"
@@ -9542,7 +9542,7 @@ msgstr[2] "Uzamknutia"
 
 #: inc/lock.class.php:77
 msgid "Locked items"
-msgstr ""
+msgstr "Zamknuté položky"
 
 #: inc/lock.class.php:307
 msgctxt "button"
@@ -9632,7 +9632,7 @@ msgstr "Odomknúť položku"
 
 #: inc/log.class.php:352
 msgid "Restore the item"
-msgstr ""
+msgstr "Obnoviť položku"
 
 #: inc/log.class.php:361
 msgid "Add the component"
@@ -9755,7 +9755,7 @@ msgstr "Vyzdvihnúť emailové požiadavky"
 #: inc/mailcollector.class.php:434
 #, php-format
 msgid "Email %s not found. Impossible import."
-msgstr ""
+msgstr "Email %s nenájdený. Import nie je možný."
 
 #. TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
 #: inc/mailcollector.class.php:568
@@ -10133,7 +10133,7 @@ msgstr "Lokálny sieťový port"
 
 #: inc/networkportinstantiation.class.php:289
 msgid "this port"
-msgstr ""
+msgstr "tento port"
 
 #: inc/networkportinstantiation.class.php:513
 msgid "No network card available"
@@ -10382,7 +10382,7 @@ msgstr "Manažér skupiny"
 
 #: inc/notificationtarget.class.php:746
 msgid "Group without manager"
-msgstr ""
+msgstr "Skupina bez manažéra"
 
 #: inc/notificationtarget.class.php:764
 #: inc/notificationtargetdbconnection.class.php:51
@@ -10407,11 +10407,11 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:409
 msgid "Requester group manager"
-msgstr ""
+msgstr "Manažér skupín žiadateľov"
 
 #: inc/notificationtargetcommonitilobject.class.php:411
 msgid "Requester group without manager"
-msgstr ""
+msgstr "Skupina žiadateľov bez manažéra"
 
 #: inc/notificationtargetcommonitilobject.class.php:416
 msgid "Technician in charge of the ticket"
@@ -11592,7 +11592,7 @@ msgstr "Aktualizovať všetky problémy"
 
 #: inc/profile.class.php:1036 inc/profile.class.php:1938
 msgid "Delete all problems"
-msgstr ""
+msgstr "Zmazať všetky problémy"
 
 #: inc/profile.class.php:1093 inc/profile.class.php:1909
 msgid "Life cycle of tickets"
@@ -11668,7 +11668,7 @@ msgstr ""
 
 #: inc/profile.class.php:1366 inc/profile.class.php:1579
 msgid "Entity dropdowns"
-msgstr ""
+msgstr "Rozbaľovacie ponuky subjektu"
 
 #: inc/profile.class.php:1378 inc/profile.class.php:1671
 msgid "Check for upgrade"
@@ -11734,11 +11734,11 @@ msgstr "Viditeľnosť do"
 
 #: inc/reminder.class.php:437
 msgid "Planning start date"
-msgstr ""
+msgstr "Plánovaný počiatočný dátum"
 
 #: inc/reminder.class.php:442
 msgid "Planning end date"
-msgstr ""
+msgstr "Plánovaný dátum ukončenia"
 
 #: inc/reminder.class.php:644 inc/rssfeed.class.php:589
 msgid "New note"
@@ -11930,9 +11930,9 @@ msgstr "Skončené rezervácie"
 #: inc/reservationitem.class.php:49
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Rezervovateľná položka"
+msgstr[1] "Rezervovateľné položky"
+msgstr[2] "Rezervovateľné položky"
 
 #: inc/reservationitem.class.php:247
 msgid "Make unavailable"
@@ -13382,7 +13382,7 @@ msgstr "Musíte nainštalovať minimálne PHP 5.3.0"
 
 #: inc/toolbox.class.php:814
 msgid "MySQL Improved extension test"
-msgstr ""
+msgstr "Test"
 
 #: inc/toolbox.class.php:817 inc/toolbox.class.php:818
 msgid "Ok - the MySQLi class exist - Perfect!"
@@ -13518,15 +13518,15 @@ msgstr ""
 
 #: inc/toolbox.class.php:1085
 msgid "Kio"
-msgstr ""
+msgstr "KiB"
 
 #: inc/toolbox.class.php:1085
 msgid "Gio"
-msgstr ""
+msgstr "GiB"
 
 #: inc/toolbox.class.php:1085
 msgid "Tio"
-msgstr ""
+msgstr "TiB"
 
 #: inc/toolbox.class.php:1235 inc/toolbox.class.php:1237
 #: inc/toolbox.class.php:1242 inc/toolbox.class.php:1244
@@ -13587,7 +13587,7 @@ msgstr "TLS"
 #. open.php
 #: inc/toolbox.class.php:1967
 msgid "NO-TLS"
-msgstr ""
+msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -13605,13 +13605,13 @@ msgstr "VALIDATE-CERT"
 #. open.php
 #: inc/toolbox.class.php:1984
 msgid "NORSH"
-msgstr ""
+msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:1991
 msgid "SECURE"
-msgstr ""
+msgstr "SECURE"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -13692,7 +13692,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3101
 msgid "If software are no longer used"
-msgstr ""
+msgstr "Ak softvér nieje viac používaný"
 
 #: inc/transfer.class.php:3111
 msgid "Components of computers"
@@ -13724,23 +13724,23 @@ msgstr "Priame spojenia"
 
 #: inc/transfer.class.php:3155
 msgid "If monitors are no longer used"
-msgstr ""
+msgstr "Ak monitory nie sú viac používané"
 
 #: inc/transfer.class.php:3165
 msgid "If printers are no longer used"
-msgstr ""
+msgstr "Ak tlačiarne nie sú viac používané"
 
 #: inc/transfer.class.php:3175
 msgid "If devices are no longer used"
-msgstr ""
+msgstr "Ak zariadenia nie sú viac používané"
 
 #: inc/transfer.class.php:3185
 msgid "If phones are no longer used"
-msgstr ""
+msgstr "Ak telefóny nie sú viac používané"
 
 #: inc/transfer.class.php:3198
 msgid "If suppliers are no longer used"
-msgstr ""
+msgstr "Ak dodávatelia nie sú viac používaný"
 
 #: inc/transfer.class.php:3204
 msgid "Links between suppliers and contacts"
@@ -13748,7 +13748,7 @@ msgstr "Väzby medzi dodávateľmi a kontaktmi"
 
 #: inc/transfer.class.php:3208
 msgid "If contacts are no longer used"
-msgstr ""
+msgstr "Ak kontrakty nie sú viac používané"
 
 #: inc/transfer.class.php:3218
 msgid "If documents are no longer used"
@@ -14074,11 +14074,11 @@ msgstr "Databáza vytvorená"
 
 #: install/install.php:412
 msgid "Error in creating database!"
-msgstr ""
+msgstr "Chyba pri vytváraní databázy!"
 
 #: install/install.php:419
 msgid "You didn't select a database!"
-msgstr ""
+msgstr "Nezvolili ste databázu!"
 
 #: install/install.php:442
 msgid "The installation is finished"
