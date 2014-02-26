@@ -902,8 +902,8 @@ class RSSFeed extends CommonDBTM {
          }
       }
 
-      echo "<br><table class='tab_cadre_report'>";
-      echo "<tr><th colspan='2'><div class='relative'><span>$titre</span>";
+      echo "<br><table class='tab_cadrehov'>";
+      echo "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
 
       if (self::canCreate()) {
          echo "<span class='rssfeed_right'>";

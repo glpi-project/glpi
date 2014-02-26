@@ -732,14 +732,14 @@ function massiveUpdateCheckbox(criterion, reference) {
 $(function(){
 
         $("body").delegate('td','mouseover mouseleave', function(e) {
-                var table = $(this).parent().parent();
-                var col = $(this).parent().children().index($(this));
-                var row = $(this).parent().parent().children().index($(this).parent());
-                if (!$(this).parent().hasClass('noHover')) {
-
+//                 var table = $(this).closest('table');
+                var col = $(this).closest('tr').children().index($(this));
+//                 var row = table.children().index($(this).parent());
+                if (!$(this).closest('tr').hasClass('noHover')) {
+//                   alert(col);
                   if (e.type == 'mouseover') {
    //                         $(this).addClass("hover");
-                           $(this).parent().addClass("rowHover");
+                           $(this).closest('tr').addClass("rowHover");
 //                            $(this).parent().children().addClass("columnHover");
 
                            $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
@@ -749,7 +749,7 @@ $(function(){
                   else {
    //                         $(this).removeClass("hover");
 //                            $(this).parent().children().removeClass("columnHover");
-                           $(this).parent().removeClass("rowHover");
+                           $(this).closest('tr').removeClass("rowHover");
 //                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("columnHover");
 //                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("headHover");
                            $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");

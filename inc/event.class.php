@@ -236,7 +236,7 @@ class Event extends CommonDBTM {
       // Output events
       $i = 0;
 
-      echo "<br><div class='spaced'><table class='tab_cadre_report'>";
+      echo "<br><div class='spaced'><table class='tab_cadre'>";
       echo "<tr><th colspan='5'>";
       //TRANS: %d is the number of item to display
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".

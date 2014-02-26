@@ -645,8 +645,8 @@ class Problem extends CommonITILObject {
       }
 
       if ($numrows > 0) {
-         echo "<table class='tab_cadre_report'>";
-         echo "<tr><th colspan='5'>";
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr class='noHover'><th colspan='3'>";
 
          $options['reset'] = 'reset';
          $forcetab         = '';
@@ -848,8 +848,8 @@ class Problem extends CommonITILObject {
       $options['criteria'][0]['link']       = 'AND';
       $options['reset']                     ='reset';
 
-      echo "<table class='tab_cadre_report' >";
-      echo "<tr><th colspan='2'>";
+      echo "<table class='tab_cadrehov' >";
+      echo "<tr class='noHover'><th colspan='2'>";
 
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                Toolbox::append_params($options,'&amp;')."\">".__('Problem followup')."</a>";

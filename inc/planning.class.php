@@ -1056,7 +1056,7 @@ class Planning extends CommonGLPI {
 
       ksort($interv);
 
-      echo "<table class='tab_cadre_report'><tr><th>";
+      echo "<table class='tab_cadrehov'><tr class='noHover'><th>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?uID=$who'>".__('Your planning').
            "</a>";
       echo "</th></tr>";

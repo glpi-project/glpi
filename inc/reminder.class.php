@@ -1071,8 +1071,8 @@ class Reminder extends CommonDBTM {
       $result = $DB->query($query);
       $nb     = $DB->numrows($result);
 
-      echo "<br><table class='tab_cadre_report'>";
-      echo "<tr><th><div class='relative'><span>$titre</span>";
+      echo "<br><table class='tab_cadrehov'>";
+      echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
 
       if (self::canCreate()) {
          echo "<span class='reminder_right'>";

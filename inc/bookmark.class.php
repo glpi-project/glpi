@@ -302,7 +302,7 @@ class Bookmark extends CommonDBTM {
          echo "<input type='hidden' name='url' value='" . rawurlencode($options['url']) . "'>";
       }
 
-      echo "<table class='tab_cadre_report' width='".self::WIDTH."px'>";
+      echo "<table class='tab_cadre' width='".self::WIDTH."px'>";
       echo "<tr><th>&nbsp;</th><th>";
       if ($ID > 0) {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
